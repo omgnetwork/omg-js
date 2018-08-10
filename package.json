@@ -1,0 +1,22 @@
+{
+  "name": "omg-js",
+  "version": "0.0.1",
+  "description": "JavaScript Library to interact with OMG Network",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm test"
+  },
+  "author": "Pong Cheecharern",
+  "license": "MIT",
+  "dependencies": {
+    "base-x": "^3.0.4",
+    "http-request": "^0.7.0",
+    "json-rpc2": "^1.0.2",
+    "node-fetch": "^2.2.0",
+    "repl": "^0.1.3",
+    "rlp": "^2.1.0"
+  },
+  "devDependencies": {
+    "run-func": "^1.0.2"
+  }
+}
