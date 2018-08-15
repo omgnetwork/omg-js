@@ -19,6 +19,7 @@
     "rlp": "^2.1.0"
   },
   "devDependencies": {
+    "mocha": "^5.2.0",
     "run-func": "^1.0.2"
   }
 }

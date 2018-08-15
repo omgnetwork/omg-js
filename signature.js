@@ -28,7 +28,7 @@ input:
 keccak256 = require('js-sha3').keccak256;
 
 
-//elixir
+//converting elixir's Uint8 Array to hex
 /*
 var hello_elixir_bytes = Buffer.from(new Uint8Array([58, 194, 37, 22, 141, 245, 66, 18, 162, 92, 28, 1, 253, 53, 190, 191, 234, 64,
     143, 218, 194, 227, 29, 221, 111, 128, 164, 187, 249, 165, 241, 203]))
@@ -42,7 +42,17 @@ const hash = async (message) => {
     return uint8Value
 }
 
+// Produces a stand-alone, 65 bytes long, signature for message hash.
+const signatureDigest = async (digest, priv) => {
 
+}
+
+const signature = async (message, privateKey) => {
+    let hashedMsg = await hash(message);
+    // signatureDigested = (hashedMsg, privateKey)
+}
+
+module.exports = {signature, hash}
 
 
 
@@ -60,4 +70,4 @@ hash(new Uint8Array([141, 71, 59, 252, 39, 243, 159, 15, 219, 218, 102, 12, 86, 
 
 //sign message with private key
 
-//pack signature
+
