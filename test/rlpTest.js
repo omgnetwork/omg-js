@@ -2,7 +2,7 @@
 //Test Case based on Demo1 in omg repo
 
 
-const { rlpEncode, ArrToUint8 } = require('../rlp')
+const { rlpEncodeArr, ArrToUint8 } = require('../rlp')
 const byteArrToBuffer = require('../helpers/byteArrToBuffer')
 var assert = require('assert')
 
@@ -34,9 +34,9 @@ const txRlpEncoded =
 ]
 
 describe('should handle RLP conversions', () => {
-        
+
     it('should RLP encode', async () => {
-        let rlpEncoded = await rlpEncode(inputRaw)
+        let rlpEncoded = await rlpEncodeArr(inputRaw)
         assert.deepEqual(rlpEncoded, txRlpEncoded)
     })
     

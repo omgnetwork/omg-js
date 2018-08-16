@@ -20,7 +20,7 @@ struct
 
 //encode rawTx into RLP encoded Buffer
 //replicate Transaction.encode() function
-const rlpEncode = async (rawTx) => {
+const rlpEncodeArr = async (rawTx) => {
     try {
         //if is Array, turn into Uint8 and Transform to Buffer
         let arr = await ArrToUint8(rawTx)
@@ -56,4 +56,4 @@ const ArrToUint8 = async (arr) => {
     
 }
 
-module.exports = { rlpEncode, ArrToUint8 }
+module.exports = { rlpEncodeArr, ArrToUint8 }

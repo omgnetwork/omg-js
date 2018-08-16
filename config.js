@@ -1,0 +1,1 @@
+//setting the URL to OmiseGO-Childchain API

@@ -4,12 +4,16 @@
   "description": "JavaScript Library to interact with OMG Network",
   "main": "index.js",
   "scripts": {
-    "test": "npm test"
+    "test": "./node_modules/mocha/bin/mocha"
   },
   "author": "Pong Cheecharern",
   "license": "MIT",
   "dependencies": {
+    "@warren-bank/ethereumjs-tx-sign": "^2.0.0",
     "base-x": "^3.0.4",
+    "eth-sig-util": "^2.0.2",
+    "ethereumjs-tx": "^1.3.7",
+    "ethereumjs-util": "^5.2.0",
     "http-request": "^0.7.0",
     "js-sha3": "^0.8.0",
     "json-rpc2": "^1.0.2",

@@ -26,7 +26,25 @@ input:
 */
 
 keccak256 = require('js-sha3').keccak256;
+const EthereumTx = require('ethereumjs-tx')
+const privateKey = Buffer.from('e331b6d69882b4cb4ea581d88e0b604039a3de5967688d3dcffdd2270c0fd109', 'hex')
 
+const txParams = {
+    nonce: '0x00',
+    gasPrice: '0x09184e72a000', 
+    gasLimit: '0x2710',
+    to: '0x0000000000000000000000000000000000000000', 
+    value: '0x00', 
+    data: '0x7f7465737432000000000000000000000000000000000000000000000000000000600057',
+    // EIP 155 chainId - mainnet: 1, ropsten: 3
+    chainId: 3
+  }
+  
+  const tx = new EthereumTx(txParams)
+  tx.sign(privateKey)
+  const serializedTx = tx.serialize()
+
+  /*f889808609184e72a00082271094000000000000000000000000000000000000000080a47f746573743200000000000000000000000000000000000000000000000000000060005729a0f2d54d3399c9bcd3ac3482a5ffaeddfe68e9a805375f626b4f2f8cf530c2d95aa05b3bb54e6e8db52083a9b674e578c843a87c292f0383ddba168573808d36dc8e*/
 
 //converting elixir's Uint8 Array to hex
 /*
@@ -49,7 +67,7 @@ const signatureDigest = async (digest, priv) => {
 
 const signature = async (message, privateKey) => {
     let hashedMsg = await hash(message);
-    // signatureDigested = (hashedMsg, privateKey)
+    // signatureDigested function
 }
 
 module.exports = {signature, hash}
@@ -61,13 +79,16 @@ module.exports = {signature, hash}
 //console.log(input_hex)
 
 //Javascript
-hash(new Uint8Array([141, 71, 59, 252, 39, 243, 159, 15, 219, 218, 102, 12, 86, 193, 183, 238, 72,
+/*
+const hashed = hash(new Uint8Array([141, 71, 59, 252, 39, 243, 159, 15, 219, 218, 102, 12, 86, 193, 183, 238, 72,
     224, 70, 252, 26, 46, 111, 176, 96, 198, 135, 5, 51, 164, 225, 234, 124, 176,
     154, 37, 151, 221, 232, 225, 107, 149, 50, 243, 63, 178, 96, 109, 176, 28, 48,
     135, 224, 35, 140, 220, 191, 244, 40, 136, 229, 155, 174, 223, 27]))
+    */
 //intToByteArray(3ac225168df54212a25c1c01fd35bebfea408fdac2e31ddd6f80a4bbf9a5f1cb)
 
 
 //sign message with private key
 
+module.exports = hash;
 
