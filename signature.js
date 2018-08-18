@@ -26,6 +26,10 @@ input:
 */
 
 keccak256 = require('js-sha3').keccak256;
+const ethUtil = require('eth-sig-util')
+const signatureDigest = require('./sigDigest')
+
+/*
 const EthereumTx = require('ethereumjs-tx')
 const privateKey = Buffer.from('e331b6d69882b4cb4ea581d88e0b604039a3de5967688d3dcffdd2270c0fd109', 'hex')
 
@@ -43,7 +47,7 @@ const txParams = {
   const tx = new EthereumTx(txParams)
   tx.sign(privateKey)
   const serializedTx = tx.serialize()
-
+  */
   /*f889808609184e72a00082271094000000000000000000000000000000000000000080a47f746573743200000000000000000000000000000000000000000000000000000060005729a0f2d54d3399c9bcd3ac3482a5ffaeddfe68e9a805375f626b4f2f8cf530c2d95aa05b3bb54e6e8db52083a9b674e578c843a87c292f0383ddba168573808d36dc8e*/
 
 //converting elixir's Uint8 Array to hex
@@ -60,15 +64,23 @@ const hash = async (message) => {
     return uint8Value
 }
 
-// Produces a stand-alone, 65 bytes long, signature for message hash.
-const signatureDigest = async (digest, priv) => {
-
-}
 
 const signature = async (message, privateKey) => {
+    //TODO: Add logic to add 0 to function without message inputs
+
     let hashedMsg = await hash(message);
-    // signatureDigested function
+    let signed = signatureDigest(hashedMsg, privateKey)
+    
+    return signed;
 }
+
+let hashed = Buffer.from( new Uint8Array([28, 138, 255, 149, 6, 133, 194, 237, 75, 195, 23, 79, 52, 114, 40, 123, 86, 217, 81, 123, 156, 148, 129, 39, 49, 154, 9, 167, 163, 109, 234, 200]))
+
+let alicePriv = Buffer.from( new Uint8Array([165, 253, 5, 87, 255, 90, 198, 97, 236, 75, 74, 205, 119, 102, 148, 243, 213, 102, 3, 104, 36, 251, 206, 152, 50, 114, 92, 65, 154, 84, 48, 47]))
+
+signatureDigest(hashed, alicePriv)
+
+//hash("hello")
 
 module.exports = {signature, hash}
 
@@ -89,6 +101,4 @@ const hashed = hash(new Uint8Array([141, 71, 59, 252, 39, 243, 159, 15, 219, 218
 
 
 //sign message with private key
-
-module.exports = hash;
 
