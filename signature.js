@@ -1,61 +1,10 @@
 //generates signature
 
-/*
-input:
-<<248, 208, 131, 4, 3, 89, 128, 128, 128, 128, 128, 148, 0, 0, 0, 0, 0, 0, 0, 0,
-  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 148, 116, 90, 78, 212, 118, 51, 233, 165,
-  245, 155, 19, 234, 50, 191, 20, 131, 178, 219, 41, 65, 7, 148, 101, 166, 194,
-  146, 88, 167, 6, 177, 55, 187, 239, 105, 27, 233, 12, 165, 29, 47, 182, 80, 3,
-  184, 65, 164, 116, 60, 85, 244, 130, 31, 15, 131, 76, 180, 87, 174, 195, 15,
-  154, 159, 213, 143, 45, 134, 5, 29, 191, 184, 20, 116, 163, 166, 80, 203, 16,
-  65, 223, 117, 138, 161, 49, 176, 77, 120, 87, 62, 116, 60, 44, 234, 232, 32,
-  47, 205, 172, 157, 115, 223, 89, 86, 188, 147, 191, 86, 54, 220, 188, 27, 184,
-  65, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0>>
-
-  output:
-  <<141, 71, 59, 252, 39, 243, 159, 15, 219, 218, 102, 12, 86, 193, 183, 238, 72,
-  224, 70, 252, 26, 46, 111, 176, 96, 198, 135, 5, 51, 164, 225, 234, 124, 176,
-  154, 37, 151, 221, 232, 225, 107, 149, 50, 243, 63, 178, 96, 109, 176, 28, 48,
-  135, 224, 35, 140, 220, 191, 244, 40, 136, 229, 155, 174, 223, 27>>
-
-  byte array for 'test'
-  [156, 34, 255, 95, 33, 240, 184, 27, 17, 62, 99, 247, 219, 109, 169, 79, 237,
-  239, 17, 178, 17, 155, 64, 136, 184, 150, 100, 251, 154, 60, 182, 88]
-*/
-
 keccak256 = require('js-sha3').keccak256;
 const ethUtil = require('eth-sig-util')
 const signatureDigest = require('./sigDigest')
+const { rlpEncodeArr, ArrToUint8 } = require('./rlp')
 
-/*
-const EthereumTx = require('ethereumjs-tx')
-const privateKey = Buffer.from('e331b6d69882b4cb4ea581d88e0b604039a3de5967688d3dcffdd2270c0fd109', 'hex')
-
-const txParams = {
-    nonce: '0x00',
-    gasPrice: '0x09184e72a000', 
-    gasLimit: '0x2710',
-    to: '0x0000000000000000000000000000000000000000', 
-    value: '0x00', 
-    data: '0x7f7465737432000000000000000000000000000000000000000000000000000000600057',
-    // EIP 155 chainId - mainnet: 1, ropsten: 3
-    chainId: 3
-  }
-  
-  const tx = new EthereumTx(txParams)
-  tx.sign(privateKey)
-  const serializedTx = tx.serialize()
-  */
-  /*f889808609184e72a00082271094000000000000000000000000000000000000000080a47f746573743200000000000000000000000000000000000000000000000000000060005729a0f2d54d3399c9bcd3ac3482a5ffaeddfe68e9a805375f626b4f2f8cf530c2d95aa05b3bb54e6e8db52083a9b674e578c843a87c292f0383ddba168573808d36dc8e*/
-
-//converting elixir's Uint8 Array to hex
-/*
-var hello_elixir_bytes = Buffer.from(new Uint8Array([58, 194, 37, 22, 141, 245, 66, 18, 162, 92, 28, 1, 253, 53, 190, 191, 234, 64,
-    143, 218, 194, 227, 29, 221, 111, 128, 164, 187, 249, 165, 241, 203]))
-var hello_elixir_hash = hello_elixir_bytes.toString('hex')
-*/
 const hash = async (message) => {
     let hexValue = await keccak256(message)
     let bufferValue = new Buffer(hexValue, "hex")
@@ -65,40 +14,164 @@ const hash = async (message) => {
 }
 
 
-const signature = async (message, privateKey) => {
+const signature = async (encodedTx, privateKey) => {
     //TODO: Add logic to add 0 to function without message inputs
 
-    let hashedMsg = await hash(message);
+    let hashedMsg = await hash(encodedTx);
     let signed = signatureDigest(hashedMsg, privateKey)
-    
-    return signed;
+    let signedToArr = Array.from(signed)
+    return signedToArr;
 }
 
-let hashed = Buffer.from( new Uint8Array([28, 138, 255, 149, 6, 133, 194, 237, 75, 195, 23, 79, 52, 114, 40, 123, 86, 217, 81, 123, 156, 148, 129, 39, 49, 154, 9, 167, 163, 109, 234, 200]))
+//for when there is encodedTx but, no privateKey available 
+const zeroSignature = () => {
+    let zeroBytes = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    return zeroBytes
+}
 
-let alicePriv = Buffer.from( new Uint8Array([165, 253, 5, 87, 255, 90, 198, 97, 236, 75, 74, 205, 119, 102, 148, 243, 213, 102, 3, 104, 36, 251, 206, 152, 50, 114, 92, 65, 154, 84, 48, 47]))
-
-signatureDigest(hashed, alicePriv)
-
-//hash("hello")
-
-module.exports = {signature, hash}
-
-
-
-
-//input_hex = Buffer.from(hello_elixir_hash)
-//console.log(input_hex)
-
-//Javascript
+//sign transaction object
 /*
-const hashed = hash(new Uint8Array([141, 71, 59, 252, 39, 243, 159, 15, 219, 218, 102, 12, 86, 193, 183, 238, 72,
-    224, 70, 252, 26, 46, 111, 176, 96, 198, 135, 5, 51, 164, 225, 234, 124, 176,
-    154, 37, 151, 221, 232, 225, 107, 149, 50, 243, 63, 178, 96, 109, 176, 28, 48,
-    135, 224, 35, 140, 220, 191, 244, 40, 136, 229, 155, 174, 223, 27]))
-    */
-//intToByteArray(3ac225168df54212a25c1c01fd35bebfea408fdac2e31ddd6f80a4bbf9a5f1cb)
+Object Struct input
+{
+    amount1: 7,
+    amount2: 3,
+    blknum1: 66004001, 
+    blknum2: 0,
+    cur12: <<0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0>>,
+    newowner1: <<116, 90, 78, 212,
+      118, 51, 233, 165, 245, 155, 19,
+      234, 50, 191, 20, 131, 178, 219,
+      41, 65>>,
+    newowner2: <<101, 166, 194, 146,
+      88, 167, 6, 177, 55, 187, 239,
+      105, 27, 233, 12, 165, 29, 47,
+      182, 80>>,
+    oindex1: 0,
+    oindex2: 0,
+    txindex1: 0,
+    txindex2: 0
+  }
+
+  object struct OUTPUT
+  {
+    amount1: 7,
+    amount2: 3,
+    blknum1: 66004001,
+    blknum2: 0,
+    cur12: <<0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0>>,
+    newowner1: <<116, 90, 78, 212,
+      118, 51, 233, 165, 245, 155,
+      19, 234, 50, 191, 20, 131,
+      178, 219, 41, 65>>,
+    newowner2: <<101, 166, 194, 146,
+      88, 167, 6, 177, 55, 187, 239,
+      105, 27, 233, 12, 165, 29, 47,
+      182, 80>>,
+    oindex1: 0,
+    oindex2: 0,
+    txindex1: 0, 
+    txindex2: 0
+  },
+  sig1: [172, 240, 111, 235, 159, 24, 36, 208, 125, 144, 104, 77, 164, 187, 181, 212,
+  19, 5, 40, 73, 213, 194, 57, 209, 146, 191, 98, 62, 203, 125, 158, 141, 118,
+  214, 78, 154, 41, 123, 146, 31, 111, 9, 176, 123, 237, 1, 226, 211, 252, 139,
+  105, 166, 27, 173, 5, 20, 125, 74, 151, 30, 163, 125, 238, 27, 28],
+  sig2: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  signed_tx_bytes: [248, 209, 132, 3, 239, 36, 33, 128, 128, 128, 128, 128, 148, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 148, 116, 90, 78, 212, 118, 51, 233,
+  165, 245, 155, 19, 234, 50, 191, 20, 131, 178, 219, 41, 65, 7, 148, 101, 166,
+  194, 146, 88, 167, 6, 177, 55, 187, 239, 105, 27, 233, 12, 165, 29, 47, 182,
+  80, 3, 184, 65, 172, 240, 111, 235, 159, 24, 36, 208, 125, 144, 104, 77, 164, 
+  187, 181, 212, 19, 5, 40, 73, 213, 194, 57, 209, 146, 191, 98, 62, 203, 125,
+  158, 141, 118, 214, 78, 154, 41, 123, 146, 31, 111, 9, 176, 123, 237, 1, 226,
+  211, 252, 139, 105, 166, 27, 173, 5, 20, 125, 74, 151, 30, 163, 125, 238, 27,
+  28, 184, 65, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+}
+  */
+
+ const sampleTx = {
+    amount1: 7,
+    amount2: 3,
+    blknum1: 66004001,
+    blknum2: 0,
+    cur12: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0],
+    newowner1: [116, 90, 78, 212, 118, 51, 233, 165, 245, 155,
+      19, 234, 50, 191, 20, 131, 178, 219, 41, 65],
+    newowner2: [101, 166, 194, 146, 88, 167, 6, 177, 55, 187, 239, 105, 27, 233, 12, 165, 29, 47, 182, 80],
+    oindex1: 0,
+    oindex2: 0,
+    txindex1: 0,
+    txindex2: 0
+  }  
+
+//
+const signedEncode = async (tx, sig1, sig2) => {
+    let transactionBody = [
+        tx.blknum1,
+        tx.txindex1,
+        tx.oindex1,
+        tx.blknum2,
+        tx.txindex2,
+        tx.oindex2,
+        tx.cur12,
+        tx.newowner1,
+        tx.amount1,
+        tx.newowner2,
+        tx.amount2,
+        sig1,
+        sig2
+    ]
+
+    let rlpEncoded = await rlpEncodeArr(transactionBody)
+    return rlpEncoded
+    
+}
 
 
-//sign message with private key
+const singleSign = async (tx, priv1) => {
+    //transform tx into array format
+    let txArray =  
+    [
+        tx.blknum1,
+        tx.txindex1,
+        tx.oindex1,
+        tx.blknum2,
+        tx.txindex2,
+        tx.oindex2,
+        tx.cur12,
+        tx.newowner1,
+        tx.amount1,
+        tx.newowner2,
+        tx.amount2
+    ]
+    //encode tx array
+    let encodedTx = await rlpEncodeArr(txArray)    
+    //generate first signature (signature function)
+    let sig1 = await signature(encodedTx, priv1)
+    //generate second signature (zero signature function)
+    let sig2 = await zeroSignature()
+    //generate signed_tx_bytes (with another Signed.encode function)
+    let signed_tx_bytes = await signedEncode(tx, sig1, sig2)
+    //putting it all together and return the object
+    let signedTransaction = {
+        raw_tx: tx,
+        sig1,
+        sig2,
+        signed_tx_bytes
+    }
+    
+    return signedTransaction
+}
 
+
+
+module.exports = {signature, hash, signedEncode, zeroSignature, singleSign}
