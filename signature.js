@@ -97,21 +97,7 @@ Object Struct input
 }
   */
 
- const sampleTx = {
-    amount1: 7,
-    amount2: 3,
-    blknum1: 66004001,
-    blknum2: 0,
-    cur12: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-      0, 0],
-    newowner1: [116, 90, 78, 212, 118, 51, 233, 165, 245, 155,
-      19, 234, 50, 191, 20, 131, 178, 219, 41, 65],
-    newowner2: [101, 166, 194, 146, 88, 167, 6, 177, 55, 187, 239, 105, 27, 233, 12, 165, 29, 47, 182, 80],
-    oindex1: 0,
-    oindex2: 0,
-    txindex1: 0,
-    txindex2: 0
-  }  
+ 
 
 //
 const signedEncode = async (tx, sig1, sig2) => {
