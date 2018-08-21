@@ -28,7 +28,6 @@ const rlpEncodeArr = async (rawTx) => {
         let encoded = RLP.encode(arr);
         let stringifyJSON = await JSON.stringify(encoded)
         let rlpEncoded =  await JSON.parse(stringifyJSON).data
-        console.log(rlpEncoded)
         return rlpEncoded
         
     }
@@ -48,7 +47,6 @@ const ArrToUint8 = async (arr) => {
                 arr[i] = Buffer.from( new Uint8Array(arr[i]) );
             } 
         }
-        //console.log(arr)
         return arr      
     } catch(err) {
         console.log(err)

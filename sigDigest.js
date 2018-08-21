@@ -9,7 +9,6 @@ const signatureDigest = (hashed, priv) => {
         let rpcSig = EthUtil.bufferToHex(sigUtil.concatSig(ecSigned.v, ecSigned.r, ecSigned.s))
         let hexToUint8 = hexToByteArr(rpcSig)
         return hexToUint8
-        console.log(hexToUint8)
     } catch(err){
         console.log(err)
     }

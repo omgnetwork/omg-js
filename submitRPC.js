@@ -19,7 +19,7 @@ let submitTx = async (tx, url) => {
             body: JSON.stringify(payload)
         })
         let resp1 = await resp.json()
-        let resp2 = await console.log(resp1)
+        return resp1
 
 
     } catch(error) {

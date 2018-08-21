@@ -9,7 +9,6 @@ const hash = async (message) => {
     let hexValue = await keccak256(message)
     let bufferValue = new Buffer(hexValue, "hex")
     let uint8Value = new Uint8Array(bufferValue)
-    console.log(uint8Value)
     return uint8Value
 }
 
