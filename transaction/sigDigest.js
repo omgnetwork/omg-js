@@ -1,6 +1,6 @@
 var EthUtil = require('ethereumjs-util');
 var sigUtil = require('eth-sig-util');
-var hexToByteArr = require('./helpers/hexToByteArr')
+var hexToByteArr = require('../helpers/hexToByteArr')
 
 //call this is implementation of signature_digest function
 const signatureDigest = (hashed, priv) => {

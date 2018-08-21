@@ -2,7 +2,7 @@
 //Test Case based on Demo1 in omg repo
 
 
-const { rlpEncodeArr, ArrToUint8 } = require('../rlp')
+const { rlpEncodeArr, ArrToUint8 } = require('../transaction/rlp')
 const byteArrToBuffer = require('../helpers/byteArrToBuffer')
 var assert = require('assert')
 

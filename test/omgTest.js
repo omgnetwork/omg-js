@@ -38,10 +38,6 @@ const expectedReturn = {
 
 const Omg = new OMG()
 
-//Omg.sendTransaction(childChainPort, _inputs, _currency, _outputs, alicePriv).then(res => console.log("result is"+ res))
-
-
-
 //Declaring as Omg as OMG
 describe('calls OMG functions', () => {
     it('should generate, sign, encode and submit transaction', async () => {

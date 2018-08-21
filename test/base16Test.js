@@ -2,7 +2,7 @@
 //Test Case based on Demo1 in omg repo
 
 var assert = require('assert')
-const { base16Encode, base16Decode } = require('../base16')
+const { base16Encode, base16Decode } = require('../transaction/base16')
 
 describe('Base16 functions', () => {
     it('should encode base16', async() => {

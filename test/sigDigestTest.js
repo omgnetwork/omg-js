@@ -1,5 +1,5 @@
 var assert = require('assert');
-var signatureDigest = require('../sigDigest')
+var signatureDigest = require('../transaction/sigDigest')
 
 let alicePriv = Buffer.from( new Uint8Array([165, 253, 5, 87, 255, 90, 198, 97, 236, 75, 74, 205, 119, 102, 148, 243, 213, 102, 3, 104, 36, 251, 206, 152, 50, 114, 92, 65, 154, 84, 48, 47]))
 

@@ -1,4 +1,4 @@
-const { hash, signature, zeroSignature, singleSign } = require('../signature')
+const { hash, signature, zeroSignature, singleSign } = require('../transaction/signature')
 var assert = require('assert')
 
 const hashedTx =
