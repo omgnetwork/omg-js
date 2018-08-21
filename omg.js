@@ -4,6 +4,7 @@ const { hash, signature, zeroSignature, singleSign, signedEncode } = require('./
 const signatureDigest = require('./sigDigest')
 const { rlpEncodeArr, ArrToUint8 } = require('./rlp')
 const { base16Encode, base16Decode } = require('./base16')
+const submitTx = require('./submitRPC');
 
 var methods = ['sendTxWithPrive']
 
@@ -29,27 +30,36 @@ const _currency = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
 const _outputs = [{newowner1, amount1},{newowner2, amount2}]
 
-var omg = async (method, inputs, currency, outputs, privKey) => {
-        try {
-            //creates new transaction object
-            let transactionBody = await newTx(inputs, currency, outputs)
-            //sign transaction
-            let signedTx = await singleSign(transactionBody, alicePriv)
-            //encode transaction with RLP
-            let obj = signedTx.raw_tx
-            let rlpEncodedTransaction = await signedEncode(obj, signedTx.sig1, signedTx.sig2) 
-            //encode transaction with base16
-            let base16 = await base16Encode(rlpEncodedTransaction)
-            //submit via JSON RPC
-        }   
-        catch(err){
-            console.log(err)
-        }
+class OMG {
+    constructor() {
+        //'use strict';
+        this.sendTransaction = async (url, inputs, currency, outputs, privKey) => {
+            try {
+                //creates new transaction object
+                let transactionBody = await newTx(inputs, currency, outputs);
+                //sign transaction
+                let signedTx = await singleSign(transactionBody, privKey);
+                //encode transaction with RLP
+                let obj = signedTx.raw_tx;
+                let rlpEncodedTransaction = await signedEncode(obj, signedTx.sig1, signedTx.sig2);
+                //encode transaction with base16
+                let base16 = await base16Encode(rlpEncodedTransaction);
+                //submit via JSON RPC
+                let submission =  submitTx(base16, url)
+                return submission
+            }
+            catch (err) {
+                console.log(err);
+            }
+        };
+    }
 }
-  
-omg('sendTxWithPrive', _inputs, _currency, _outputs)
 
-module.exports = omg
+let Omg = new OMG()
+  
+Omg.sendTransaction("http://35.200.30.83:9656" , _inputs, _currency, _outputs, alicePriv)
+
+module.exports = OMG
 
 //F8D18403EF2421808080808094000000000000000000000000000000000000000094745A4ED47633E9A5F59B13EA32BF1483B2DB2941079465A6C29258A706B137BBEF691BE90CA51D2FB65003B841ACF06FEB9F1824D07D90684DA4BBB5D413052849D5C239D192BF623ECB7D9E8D76D64E9A297B921F6F09B07BED01E2D3FC8B69A61BAD05147D4A971EA37DEE1B1CB8410000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 //F8D18403EF2421808080808094000000000000000000000000000000000000000094745A4ED47633E9A5F59B13EA32BF1483B2DB2941079465A6C29258A706B137BBEF691BE90CA51D2FB65003B841ACF06FEB9F1824D07D90684DA4BBB5D413052849D5C239D192BF623ECB7D9E8D76D64E9A297B921F6F09B07BED01E2D3FC8B69A61BAD05147D4A971EA37DEE1B1CB8410000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000

@@ -2,7 +2,7 @@
 
 const fetch = require('node-fetch');
 
-let submitTx = async (tx) => {
+let submitTx = async (tx, url) => {
 
     let payload = {
         "params":{
@@ -14,14 +14,13 @@ let submitTx = async (tx) => {
     }
 
     try {
-        let resp = await fetch('http://localhost:9656', { 
+        let resp = await fetch(url, { 
             method: 'POST',
             body: JSON.stringify(payload)
         })
+        let resp1 = await resp.json()
+        let resp2 = await console.log(resp1)
 
-        let data = await resp.json()
-        return data;
-        console.log(data)
 
     } catch(error) {
         console.log(error)
