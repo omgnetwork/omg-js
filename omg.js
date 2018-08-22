@@ -5,11 +5,14 @@ const signatureDigest = require('./transaction/sigDigest')
 const { rlpEncodeArr, ArrToUint8 } = require('./transaction/rlp')
 const { base16Encode, base16Decode } = require('./transaction/base16')
 const submitTx = require('./transaction/submitRPC');
+global.Buffer = global.Buffer || require("buffer").Buffer;
+
 
 class OMG {
-    constructor() {
-        //'use strict';
-        this.sendTransaction = async (url, inputs, currency, outputs, privKey) => {
+    constructor(childChainUrl) {
+        let url = childChainUrl
+
+        this.sendTransaction = async (inputs, currency, outputs, privKey) => {
             try {
                 //creates new transaction object
                 let transactionBody = await newTx(inputs, currency, outputs);
@@ -31,13 +34,10 @@ class OMG {
     }
 }
 
-/*
-let Omg = new OMG()
-  
-Omg.sendTransaction("http://35.200.30.83:9656" , _inputs, _currency, _outputs, alicePriv)
-*/
-
-module.exports = OMG
-
-
+//to export Class for Browserify
+//global.Omg = OMG;
+//to Export Class for React
+//export default OMG
+//to Run in Node.js
+module.exports = OMG;
 

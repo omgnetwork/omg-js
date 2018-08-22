@@ -1,5 +1,5 @@
 //generates signature
-
+global.Buffer = global.Buffer || require("buffer").Buffer;
 keccak256 = require('js-sha3').keccak256;
 const ethUtil = require('eth-sig-util')
 const signatureDigest = require('./sigDigest')

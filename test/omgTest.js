@@ -33,15 +33,19 @@ const _outputs = [{newowner1, amount1},{newowner2, amount2}]
 const expectedReturn = { 
     jsonrpc: '2.0',
     id: 0,
-    error: { message: 'Internal error', code: -32603 } 
+    error: { 
+        message: 'Internal error', 
+        data: "utxo_not_found",
+        code: -32603 
+    } 
 }
 
-const Omg = new OMG()
+const Omg = new OMG(childChainPort)
 
 //Declaring as Omg as OMG
 describe('calls OMG functions', () => {
     it('should generate, sign, encode and submit transaction', async () => {
-            let sentTransaction = await Omg.sendTransaction(childChainPort, _inputs, _currency, _outputs, alicePriv)
+            let sentTransaction = await Omg.sendTransaction(_inputs, _currency, _outputs, alicePriv)
             assert.deepEqual(sentTransaction, expectedReturn)
     
     })

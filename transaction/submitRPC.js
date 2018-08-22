@@ -16,9 +16,11 @@ let submitTx = async (tx, url) => {
     try {
         let resp = await fetch(url, { 
             method: 'POST',
+            mode: 'cors',
             body: JSON.stringify(payload)
         })
         let resp1 = await resp.json()
+        console.log(resp1)
         return resp1
 
 
@@ -28,5 +30,6 @@ let submitTx = async (tx, url) => {
 }
 
 module.exports = submitTx   
+
 
 

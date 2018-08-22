@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<script src="/Users/pongcheecharern/workspace/omg.js/bundle.js"></script>
+<script type="text/javascript">
+   let childChainLocal = "http://localhost:9656"
+   let childChainPort = "http://35.200.30.83:9656"
+
+    let alicePriv = Buffer.from( new Uint8Array([106, 207, 117, 46, 150, 0, 149, 34, 174, 60, 163, 63, 65, 218, 206, 114, 216, 69, 40, 30, 49, 70, 79, 95, 108, 4, 133, 50, 78, 238, 203, 64]))
+
+    var amount1 = 7
+    var amount2 = 3
+    var blknum1 = 102001
+    var blknum2 = 0
+    var oindex1 = 0
+    var oindex2 = 0
+    var txindex1 = 0
+    var txindex2 = 0
+    var cur12 = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+
+    var newowner1 = [224, 221, 52, 231, 37, 65, 171, 127, 103, 11, 162, 4, 25, 10, 15, 75, 70, 11, 60, 241]
+    var newowner2 = [175, 95, 45, 137, 128, 70, 9, 176, 62, 9, 101, 153, 142, 191, 49, 165, 49, 64, 7, 255]
+
+    var _inputs = [{blknum1, txindex1, oindex1}]
+
+    var _currency = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+
+    var _outputs = [{newowner1, amount1},{newowner2, amount2}]
+    //omg.sendTransaction(_inputs, _currency, _outputs, alicePriv)
+    //var Omg = new OMG(childChainLocal)
+</script>
+</head>
+<body>
+    <h1>Submit Transaction</h1>
+    <button type="button" onClick="Omg.sendTransaction(_inputs, _currency, _outputs, alicePriv);">Submit TX</button>
+</body>
+</html>
