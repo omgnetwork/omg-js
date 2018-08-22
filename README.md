@@ -37,3 +37,8 @@ In order to run the HTML files with Dist scribts, run (in project root)
 ```
 browserify omg.js --standalon Omg > bundle.js
 ```
+And then, inside Console (with the HTML files open) Run the following:
+```
+var omg = new Omg(childChainPort)
+omg.sendTransaction(_inputs, _currency, _outputs, alicePriv)
+```
