@@ -8,7 +8,8 @@ const expect = chai.expect;
 
 let childChainPort = "http://35.200.30.83:9656"
 
-let alicePriv = Buffer.from( new Uint8Array([165, 253, 5, 87, 255, 90, 198, 97, 236, 75, 74, 205, 119, 102, 148, 243, 213, 102, 3, 104, 36, 251, 206, 152, 50, 114, 92, 65, 154, 84, 48, 47]))
+//let alicePriv = Buffer.from( new Uint8Array([165, 253, 5, 87, 255, 90, 198, 97, 236, 75, 74, 205, 119, 102, 148, 243, 213, 102, 3, 104, 36, 251, 206, 152, 50, 114, 92, 65, 154, 84, 48, 47]))
+let alicePriv = "0xa5fd0557ff5ac661ec4b4acd776694f3d566036824fbce9832725c419a54302f"
 
 const amount1 = 7
 const amount2 = 3

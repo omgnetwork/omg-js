@@ -1,4 +1,3 @@
-//Main Transaction Function
 const newTx = require('./transaction/newTx')
 const { hash, signature, zeroSignature, singleSign, signedEncode } = require('./transaction/signature')
 const signatureDigest = require('./transaction/sigDigest')
@@ -6,18 +5,35 @@ const { rlpEncodeArr, ArrToUint8 } = require('./transaction/rlp')
 const { base16Encode, base16Decode } = require('./transaction/base16')
 const submitTx = require('./transaction/submitRPC');
 const hexToByteArr = require('./helpers/hexToByteArr')
+const byteArrToBuffer = require('./helpers/byteArrToBuffer')
 global.Buffer = global.Buffer || require("buffer").Buffer;
 
+/* 
+*Summary: Interact with Tesuji Plasma Childchain from JavaScript (Node.js and Browser)
+*Description: allows user to interact with Tesuji Plasma from JavaScript. look up examples for implementations in boith Client and Server
+*
+*@param {string} childChainUrl contains the url of the childchain server to communicate with
+*
+*/
 
 class OMG {
     constructor(childChainUrl) {
-        let url = childChainUrl
+        let url = childChainUrl 
+
+        /*
+        @params {object} inputs 
+        @params {object} currency
+        @params {object} outputs
+        @params {string} privKey private key of the transaction Signer 
+        */
 
         this.sendTransaction = async (inputs, currency, outputs, privKey) => {
             try {
-                //turns 2 hex addresses inputs to 2 arrays
-                outputs[0].newowner1 = await Array.from(hexToByteArr(outputs[0].newowner1 ))
-                outputs[1].newowner2 = await Array.from(hexToByteArr(outputs[1].newowner2 ))
+                //turns 2 hex addresses input to 2 arrays 
+                outputs[0].newowner1 = await Array.from(hexToByteArr(outputs[0].newowner1))
+                outputs[1].newowner2 = await Array.from(hexToByteArr(outputs[1].newowner2))
+                //turn privkey string to addr
+                privKey = await byteArrToBuffer(hexToByteArr(privKey))
                 //creates new transaction object
                 let transactionBody = await newTx(inputs, currency, outputs);
                 //sign transaction
@@ -38,8 +54,6 @@ class OMG {
     }
 }
 
-//to export Class for Browserify
-//global.Omg = OMG;
 //to Export Class for React
 //export default OMG
 //to Run in Node.js
