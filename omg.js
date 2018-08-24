@@ -5,6 +5,7 @@ const signatureDigest = require('./transaction/sigDigest')
 const { rlpEncodeArr, ArrToUint8 } = require('./transaction/rlp')
 const { base16Encode, base16Decode } = require('./transaction/base16')
 const submitTx = require('./transaction/submitRPC');
+const hexToByteArr = require('./helpers/hexToByteArr')
 global.Buffer = global.Buffer || require("buffer").Buffer;
 
 
@@ -14,6 +15,9 @@ class OMG {
 
         this.sendTransaction = async (inputs, currency, outputs, privKey) => {
             try {
+                //turns 2 hex addresses inputs to 2 arrays
+                outputs[0].newowner1 = await Array.from(hexToByteArr(outputs[0].newowner1 ))
+                outputs[1].newowner2 = await Array.from(hexToByteArr(outputs[1].newowner2 ))
                 //creates new transaction object
                 let transactionBody = await newTx(inputs, currency, outputs);
                 //sign transaction

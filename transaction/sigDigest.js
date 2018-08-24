@@ -7,7 +7,6 @@ global.Buffer = global.Buffer || require("buffer").Buffer;
 //call this is implementation of signature_digest function
 const signatureDigest = (hashed, priv) => {
     try {
-        //console.log(hashed, priv)
         let buffedHash = byteArrToBuffer(hashed)
         let buffedPriv = byteArrToBuffer(priv)
         //let toBuffer = EthUtil.toBuffer(hashed)
