@@ -21,9 +21,9 @@ class OMG {
         let url = childChainUrl 
 
         /*
-        @params {object} inputs 
-        @params {object} currency
-        @params {object} outputs
+        @params {array} inputs 
+        @params {array} currency
+        @params {array} outputs
         @params {string} privKey private key of the transaction Signer 
         */
 
