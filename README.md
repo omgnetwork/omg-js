@@ -1,9 +1,9 @@
 ## OMG.JS 
-### Clientside Library Implementation for Tesuji 
+### JavaScript Library Implementation for Tesuji 
 
-IMPORTANT: This is a Pre-Alpha implementation of a Client JS library, things WILL break
+IMPORTANT: This is a Pre-Alpha implementation of a JS library, things WILL break
 
-This is a library that allows a NodeJS Application to Interact with the Tesuji Plasma
+This is a library that allows a Client/Server JavaScript application to Interact with the Tesuji Plasma
 So that you could:
 
 1. Deposit
@@ -18,6 +18,7 @@ ETH From the Childchain server to the Rootchain
 ### Installation
 
 Please make sure you have `Node` (v8.11.3) and also `npm` (v6.3.0) installed
+0. Clone the repository
 1. Install all the packages
 ```
 npm install
@@ -28,7 +29,7 @@ npm install
 npm run test
 ```
 
-### Gettin Started
+### Getting Started
 #### Initializing
 Before running any functions, you must first initialize new Omg with a url to the child chain server
 
@@ -66,20 +67,32 @@ this function will:
 - `obj`: json rpc return message (success message contains `tx_index`, `tx_hash` and `blknum`)
 
 #### getTransactionParam
-coming soon
+coming soon TM
 
 #### deposit
-coming soon
+coming soon TM
 
 #### exit
-coming soon
+coming soon TM
 
 ### Implementation
 You can find example applications inside `examples` folder
 to use library in html, please use the file in the `dist` folder
 
-#### submitTx.html
-In order to run the HTML files with Dist scribts, run (in project root)
+#### Server side 
+Library can be used as is (currently not an NPM package) in order to use it, inside the project root, run:
+```
+npm link
+```
+then inside your server app, simply require it and declare new instance
+```
+const OMG = require('omg-js/omg')
+const Omg = new OMG(childChainPort)
+
+Omg.sendTransaction(_inputs, _currency, _outputs, alicePriv)
+```
+#### Client side 
+In order to use the JS library in browser, run (in project root)
 ```
 npm run build
 ```
