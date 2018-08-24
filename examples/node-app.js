@@ -6,11 +6,12 @@ let childChainPort = "http://35.200.30.83:9656"
 let childChainLocal = "http://localhost:9656"
 
 
-let alicePriv = Buffer.from( new Uint8Array([106, 207, 117, 46, 150, 0, 149, 34, 174, 60, 163, 63, 65, 218, 206, 114, 216, 69, 40, 30, 49, 70, 79, 95, 108, 4, 133, 50, 78, 238, 203, 64]))
+//let alicePriv = Buffer.from( new Uint8Array([165, 253, 5, 87, 255, 90, 198, 97, 236, 75, 74, 205, 119, 102, 148, 243, 213, 102, 3, 104, 36, 251, 206, 152, 50, 114, 92, 65, 154, 84, 48, 47]))
+let alicePriv = "0xa5fd0557ff5ac661ec4b4acd776694f3d566036824fbce9832725c419a54302f"
 
 const amount1 = 7
 const amount2 = 3
-const blknum1 = 102001
+const blknum1 = 66004001
 const blknum2 = 0
 const oindex1 = 0
 const oindex2 = 0
@@ -18,10 +19,11 @@ const txindex1 = 0
 const txindex2 = 0
 const cur12 = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
-const newowner1 = [224, 221, 52, 231, 37, 65, 171, 127, 103, 11, 162, 4, 25, 10, 15, 75, 70, 11, 60, 241]
-const newowner2 = [175, 95, 45, 137, 128, 70, 9, 176, 62, 9, 101, 153, 142, 191, 49, 165, 49, 64, 7, 255]
-
-const _inputs = [{blknum1, txindex1, oindex1}]
+//const newowner1 = [116, 90, 78, 212, 118, 51, 233, 165, 245, 155, 19, 234, 50, 191, 20, 131, 178, 219, 41, 65]
+const newowner1 = "0x745a4ed47633e9a5f59b13ea32bf1483b2db2941"
+//const newowner2 = [101, 166, 194, 146, 88, 167, 6, 177, 55, 187, 239, 105, 27, 233, 12, 165, 29, 47, 182, 80]
+const newowner2 = "0x65a6c29258a706b137bbef691be90ca51d2fb650"
+const _inputs = [{blknum1, txindex1, oindex1},{blknum2, txindex2, oindex2}]
 
 const _currency = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
@@ -29,7 +31,7 @@ const _outputs = [{newowner1, amount1},{newowner2, amount2}]
 
 
 const OMG = require('../omg')
-const Omg = new OMG(childChainLocal)
+const Omg = new OMG(childChainPort)
 
 Omg.sendTransaction(_inputs, _currency, _outputs, alicePriv)
 

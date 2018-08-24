@@ -32,7 +32,7 @@ const newowner1 = [116, 90, 78, 212, 118, 51, 233, 165, 245, 155,
     19, 234, 50, 191, 20, 131, 178, 219, 41, 65]
 const newowner2 = [101, 166, 194, 146, 88, 167, 6, 177, 55, 187, 239, 105, 27, 233, 12, 165, 29, 47, 182, 80]
 
-const inputs = [{blknum1, txindex1, oindex1}]
+const inputs = [{blknum1, txindex1, oindex1},{blknum2, txindex2, oindex2}]
 
 const currency = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 

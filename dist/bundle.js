@@ -15685,22 +15685,42 @@ module.exports = function stripHexPrefix(str) {
 
 },{"is-hex-prefixed":49}],80:[function(require,module,exports){
 (function (global){
-//Main Transaction Function
 const newTx = require('./transaction/newTx')
 const { hash, signature, zeroSignature, singleSign, signedEncode } = require('./transaction/signature')
 const signatureDigest = require('./transaction/sigDigest')
 const { rlpEncodeArr, ArrToUint8 } = require('./transaction/rlp')
 const { base16Encode, base16Decode } = require('./transaction/base16')
 const submitTx = require('./transaction/submitRPC');
+const hexToByteArr = require('./helpers/hexToByteArr')
+const byteArrToBuffer = require('./helpers/byteArrToBuffer')
 global.Buffer = global.Buffer || require("buffer").Buffer;
 
+/* 
+*Summary: Interact with Tesuji Plasma Childchain from JavaScript (Node.js and Browser)
+*Description: allows user to interact with Tesuji Plasma from JavaScript. look up examples for implementations in boith Client and Server
+*
+*@param {string} childChainUrl contains the url of the childchain server to communicate with
+*
+*/
 
 class OMG {
     constructor(childChainUrl) {
-        let url = childChainUrl
+        let url = childChainUrl 
+
+        /*
+        @params {object} inputs 
+        @params {object} currency
+        @params {object} outputs
+        @params {string} privKey private key of the transaction Signer 
+        */
 
         this.sendTransaction = async (inputs, currency, outputs, privKey) => {
             try {
+                //turns 2 hex addresses input to 2 arrays 
+                outputs[0].newowner1 = await Array.from(hexToByteArr(outputs[0].newowner1))
+                outputs[1].newowner2 = await Array.from(hexToByteArr(outputs[1].newowner2))
+                //turn privkey string to addr
+                privKey = await byteArrToBuffer(hexToByteArr(privKey))
                 //creates new transaction object
                 let transactionBody = await newTx(inputs, currency, outputs);
                 //sign transaction
@@ -15721,8 +15741,6 @@ class OMG {
     }
 }
 
-//to export Class for Browserify
-//global.Omg = OMG;
 //to Export Class for React
 //export default OMG
 //to Run in Node.js
@@ -15730,7 +15748,7 @@ module.exports = OMG;
 
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./transaction/base16":81,"./transaction/newTx":82,"./transaction/rlp":83,"./transaction/sigDigest":84,"./transaction/signature":85,"./transaction/submitRPC":86,"buffer":93}],81:[function(require,module,exports){
+},{"./helpers/byteArrToBuffer":2,"./helpers/hexToByteArr":3,"./transaction/base16":81,"./transaction/newTx":82,"./transaction/rlp":83,"./transaction/sigDigest":84,"./transaction/signature":85,"./transaction/submitRPC":86,"buffer":93}],81:[function(require,module,exports){
 //decoding and encoding BASE16 Values
 
 const BASE16 = "0123456789abcdef"
@@ -15759,22 +15777,6 @@ let base16Encode = async (binary) => {
 
 module.exports = { base16Encode, base16Decode };
 },{"base-x":4}],82:[function(require,module,exports){
-const sampleTx = {
-    amount1: 7,
-    amount2: 3,
-    blknum1: 66004001,
-    blknum2: 0,
-    cur12: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-      0, 0],
-    newowner1: [116, 90, 78, 212, 118, 51, 233, 165, 245, 155,
-      19, 234, 50, 191, 20, 131, 178, 219, 41, 65],
-    newowner2: [101, 166, 194, 146, 88, 167, 6, 177, 55, 187, 239, 105, 27, 233, 12, 165, 29, 47, 182, 80],
-    oindex1: 0,
-    oindex2: 0,
-    txindex1: 0,
-    txindex2: 0
-}  
-
 //IMPORTANT: assuming Oindex2, txIndex2, blknum2 is 0 for now
 
 //constructor for transaction object
@@ -15782,14 +15784,14 @@ function Transaction(inputs, currency, outputs) {
     this.amount1 = outputs[0].amount1
     this.amount2 = outputs[1].amount2
     this.blknum1 = inputs[0].blknum1
-    this.blknum2 = 0
+    this.blknum2 = inputs[1].blknum2
     this.cur12 = currency
     this.newowner1 = outputs[0].newowner1
     this.newowner2 = outputs[1].newowner2
     this.oindex1 = inputs[0].oindex1
-    this.oindex2 = 0
+    this.oindex2 = inputs[1].oindex2
     this.txindex1 = inputs[0].txindex1
-    this.txindex2 = 0
+    this.txindex2 = inputs[1].txindex2
 }
 
 const newTx = (inputs, currency, outputs) => {

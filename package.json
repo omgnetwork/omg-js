@@ -4,7 +4,8 @@
   "description": "JavaScript Library to interact with OMG Network",
   "main": "omg.js",
   "scripts": {
-    "test": "./node_modules/mocha/bin/mocha"
+    "test": "./node_modules/mocha/bin/mocha",
+    "build": "browserify browserify.js --standalon Omg > ./dist/bundle.js"
   },
   "author": "Pong Cheecharern<pong@omise.co>",
   "license": "MIT",

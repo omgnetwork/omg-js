@@ -25,7 +25,7 @@ const cur12 = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 const newowner1 = "0x745a4ed47633e9a5f59b13ea32bf1483b2db2941"
 //const newowner2 = [101, 166, 194, 146, 88, 167, 6, 177, 55, 187, 239, 105, 27, 233, 12, 165, 29, 47, 182, 80]
 const newowner2 = "0x65a6c29258a706b137bbef691be90ca51d2fb650"
-const _inputs = [{blknum1, txindex1, oindex1}]
+const _inputs = [{blknum1, txindex1, oindex1},{blknum2, txindex2, oindex2}]
 
 const _currency = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
