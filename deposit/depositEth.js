@@ -11,12 +11,14 @@ const depositEth = async function (amount, fromAddr, contractAddr, web3Provider)
       from: web3.eth.accounts[1]
     });
 
-    let txHash = await plasmaContract.methods.deposit().send({ from: fromAddr, value: amount }, function (error, transactionHash) {
+    let txHash = await plasmaContract.methods.deposit().send({ from: fromAddr, value: web3.utils.toWei(amount, 'ether')})
+    .on('transactionHash', function(transactionHash){
       console.log(transactionHash)
       return transactionHash
-    });
+    })
 
     return txHash
+
   } catch (err) {
     console.log(err)
   }

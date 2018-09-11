@@ -84,7 +84,7 @@ class OMG {
     //retrieve the deposited block
     this.getDepositBlock = async (txhash) => {
       try{
-        let gotDeposit = getDepositBlock(txhash)
+        let gotDeposit = getDepositBlock(txhash, self.web3Provider)
         return gotDeposit
       } catch (err) {
         console.log(err)

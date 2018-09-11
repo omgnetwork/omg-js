@@ -1,3 +1,5 @@
+//this is ABI for Plasma contract
+
 const abi = [
 	{
 		"constant": false,

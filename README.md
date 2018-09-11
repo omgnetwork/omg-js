@@ -1,7 +1,9 @@
 ## OMG.JS 
 ### JavaScript Library Implementation for Tesuji 
 
-IMPORTANT: This is a Pre-Alpha implementation of a JS library, things WILL break
+IMPORTANT: 
+* This is a Pre-Alpha implementation of a JS library, things WILL break
+* this was worked against the `elixir-omg` commit hash: dc4d176d3f5d27030e1e627bd5cc0a630690c178 
 
 This is a library that allows a Client/Server JavaScript application to Interact with the Tesuji Plasma
 So that you could:
