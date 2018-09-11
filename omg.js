@@ -12,14 +12,20 @@ global.Buffer = global.Buffer || require("buffer").Buffer;
 *Summary: Interact with Tesuji Plasma Childchain from JavaScript (Node.js and Browser)
 *Description: allows user to interact with Tesuji Plasma from JavaScript. look up examples for implementations in boith Client and Server
 *
-*@param {string} childChainUrl contains the url of the childchain server to communicate with
+*@param {string} _childChainUrl contains the url of the childchain server to communicate with
+*@param {string} _watcherUrl contains the url of the watcher server 
+*@param {string} _web3Provider contains the url of geth node
+*@param {string} _plasmaAddr contains the url of the plasma smart contract already deployed
 *
 */
 
 class OMG {
-    constructor(childChainUrl) {
-        let url = childChainUrl 
-
+    constructor(_watcherUrl, _childChainUrl, _web3Provider, _plasmaAddr) {
+        this.watcherUrl = _watcherUrl
+        this.childChainUrl = _childChainUrl
+        this.web3Provider = _web3Provider
+        this.plasmaAddr = _plasmaAddr
+        let self = this 
         /*
         @params {array} inputs 
         @params {array} currency
@@ -44,7 +50,7 @@ class OMG {
                 //encode transaction with base16
                 let base16 = await base16Encode(rlpEncodedTransaction);
                 //submit via JSON RPC
-                let submission =  submitTx(base16, url)
+                let submission =  submitTx(base16, self.childChainUrl)
                 return submission
             }
             catch (err) {
