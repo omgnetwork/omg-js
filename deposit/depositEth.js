@@ -1,5 +1,4 @@
 //handles deposit
-//caveats: you must have Geth account unlocked
 const abi = require('./plasmaAbi')
 
 const depositEth = async function (amount, fromAddr, contractAddr, web3Provider) {

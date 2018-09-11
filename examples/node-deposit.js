@@ -5,7 +5,7 @@
 
 let gethRpc = "http://localhost:8545"
 
-const alice = "0xf26dc2b4f928ca140e340ad3e40d8d33655f6f81"
+const alice = "0x05cd0e128824ec7377f11c22902b49405cf43952"
 //const alicePriv = "0xe0f4fdaafb613e2b3000d1ecd7682beedd3dcd81acfdf975728e836f5a378b2e"
 
 const OMG = require('../omg')
@@ -13,9 +13,9 @@ const Omg = new OMG("watcher_url", "childChainLocal", "http://localhost:8545", "
 
 //deposit 100 ETH from Alice acc.
 async function depositAndGetBlock(){
-  let deposited = await Omg.depositEth("10", alice)
+  let deposited = await Omg.depositEth("1", alice)
   console.log("finished")
-  let blockNum = await Omg.getDepositBlock('0x2793f2c0512a4a99a7da03635dac862acaacf615b62d2e01f75941af1cd9c332')
+  let blockNum = await Omg.getDepositBlock(deposited)
 }
 
 depositAndGetBlock()
