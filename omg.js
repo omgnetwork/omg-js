@@ -5,6 +5,8 @@ const { rlpEncodeArr, ArrToUint8 } = require('./transaction/rlp')
 const { base16Encode, base16Decode } = require('./transaction/base16')
 const submitTx = require('./transaction/submitRPC');
 const getUtxo = require('./transaction/getUtxo');
+const depositEth = require('./deposit/depositEth')
+const getDepositBlock = require('./deposit/getDepositBlock')
 const hexToByteArr = require('./helpers/hexToByteArr')
 const byteArrToBuffer = require('./helpers/byteArrToBuffer')
 global.Buffer = global.Buffer || require("buffer").Buffer;
@@ -59,10 +61,31 @@ class OMG {
       }
     };
 
+    //retrieves utxo
     this.getUtxo = async (address) => {
       try {
         let gotUtxo = getUtxo(self.watcherUrl, address)
         return gotUtxo
+      } catch (err) {
+        console.log(err)
+      }
+    }
+    
+    //handles deposits of Eth to ethereum
+    this.depositEth = async (amount, fromAddr) => {
+      try{
+        let deposited = depositEth(amount, fromAddr, self.plasmaAddr, self.web3Provider)
+        return deposited
+      } catch (err) {
+        console.log(err)
+      }
+    }
+
+    //retrieve the deposited block
+    this.getDepositBlock = async (txhash) => {
+      try{
+        let gotDeposit = getDepositBlock(txhash)
+        return gotDeposit
       } catch (err) {
         console.log(err)
       }
