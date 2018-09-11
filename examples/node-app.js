@@ -32,7 +32,7 @@ const _outputs = [{newowner1, amount1},{newowner2, amount2}]
 
 
 const OMG = require('../omg')
-const Omg = new OMG(childChainLocal)
+const Omg = new OMG("watcher_url",childChainLocal, "web3_provider", "plasma_addr")
 
 //Omg.sendTransaction(_inputs, _currency, _outputs, alicePriv)
 //console.log(_inputs, _currency, _outputs, alicePriv)

@@ -36,12 +36,11 @@ const expectedReturn = {
   id: 0,
   error: {
     message: 'Internal error',
-    data: "utxo_not_found",
     code: -32603
   }
 }
 
-const Omg = new OMG(childChainPort)
+const Omg = new OMG("watcher_url", childChainPort, "web3_provider", "plasma_addr")
 
 //Declaring as Omg as OMG
 describe('calls OMG functions', () => {
