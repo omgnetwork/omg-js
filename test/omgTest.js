@@ -25,29 +25,29 @@ const cur12 = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 const newowner1 = "0x745a4ed47633e9a5f59b13ea32bf1483b2db2941"
 //const newowner2 = [101, 166, 194, 146, 88, 167, 6, 177, 55, 187, 239, 105, 27, 233, 12, 165, 29, 47, 182, 80]
 const newowner2 = "0x65a6c29258a706b137bbef691be90ca51d2fb650"
-const _inputs = [{blknum1, txindex1, oindex1},{blknum2, txindex2, oindex2}]
+const _inputs = [{ blknum1, txindex1, oindex1 }, { blknum2, txindex2, oindex2 }]
 
 const _currency = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
-const _outputs = [{newowner1, amount1},{newowner2, amount2}]
+const _outputs = [{ newowner1, amount1 }, { newowner2, amount2 }]
 
-const expectedReturn = { 
-    jsonrpc: '2.0',
-    id: 0,
-    error: { 
-        message: 'Internal error', 
-        data: "utxo_not_found",
-        code: -32603 
-    } 
+const expectedReturn = {
+  jsonrpc: '2.0',
+  id: 0,
+  error: {
+    message: 'Internal error',
+    data: "utxo_not_found",
+    code: -32603
+  }
 }
 
 const Omg = new OMG(childChainPort)
 
 //Declaring as Omg as OMG
 describe('calls OMG functions', () => {
-    it('should generate, sign, encode and submit transaction', async () => {
-            let sentTransaction = await Omg.sendTransaction(_inputs, _currency, _outputs, alicePriv)
-            assert.deepEqual(sentTransaction, expectedReturn)
-    
-    })
+  it('should generate, sign, encode and submit transaction', async () => {
+    let sentTransaction = await Omg.sendTransaction(_inputs, _currency, _outputs, alicePriv)
+    assert.deepEqual(sentTransaction, expectedReturn)
+
+  })
 })
