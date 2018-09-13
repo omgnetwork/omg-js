@@ -2,21 +2,30 @@
   "name": "omg-js",
   "version": "0.0.1",
   "description": "JavaScript Library to interact with OMG Network",
-  "main": "index.js",
+  "main": "omg.js",
   "scripts": {
-    "test": "npm test"
+    "test": "./node_modules/mocha/bin/mocha",
+    "build": "browserify browserify.js --standalon Omg > ./dist/bundle.js"
   },
-  "author": "Pong Cheecharern",
+  "author": "Pong Cheecharern<pong@omise.co>",
   "license": "MIT",
   "dependencies": {
+    "@warren-bank/ethereumjs-tx-sign": "^2.0.0",
     "base-x": "^3.0.4",
+    "buffer": "^5.2.0",
+    "chai": "^4.1.2",
+    "eth-sig-util": "^2.0.2",
+    "ethereumjs-util": "^5.2.0",
     "http-request": "^0.7.0",
-    "json-rpc2": "^1.0.2",
+    "js-sha3": "^0.8.0",
+    "jssha": "^2.3.1",
     "node-fetch": "^2.2.0",
-    "repl": "^0.1.3",
-    "rlp": "^2.1.0"
+    "rlp": "^2.1.0",
+    "web3": "^1.0.0-beta.32"
   },
   "devDependencies": {
-    "run-func": "^1.0.2"
+    "mocha": "^5.2.0",
+    "webpack": "^4.17.1",
+    "webpack-cli": "^3.1.0"
   }
 }

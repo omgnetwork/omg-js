@@ -10,18 +10,18 @@ var encodedHash = "4382FCE0E13CCAECB46AE0A7DC0615B16FA5DE2AAC1AFF31F6702650B61CE
 //output: <Buffer 43 82 fc e0 e1 3c ca ec b4 6a e0 a7 dc 06 15 b1 6f a5 de 2a ac 1a ff 31 f6 70 26 50 b6 1c ed 1a>
 */
 let base16Decode = async (encodedHash) => {
-    let lowerCaseHash = encodedHash.toLowerCase()
-    let decoded = await JSON.stringify(bs16.decode(lowerCaseHash))
-    let decodedObject = await JSON.parse(decoded).data
-    console.log(decodedObject)
-    return decodedObject
+  let lowerCaseHash = encodedHash.toLowerCase()
+  let decoded = await JSON.stringify(bs16.decode(lowerCaseHash))
+  let decodedObject = await JSON.parse(decoded).data
+  console.log(decodedObject)
+  return decodedObject
 }
 
 //encoding function
 let base16Encode = async (binary) => {
-    let base16Encoded = bs16.encode(binary).toUpperCase()
-    console.log(base16Encoded)
-    return base16Encoded
+  let base16Encoded = bs16.encode(binary).toUpperCase()
+  console.log(base16Encoded)
+  return base16Encoded
 }
 
 module.exports = { base16Encode, base16Decode };
