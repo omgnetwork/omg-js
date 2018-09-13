@@ -2,7 +2,7 @@
 ### JavaScript Library Implementation for Tesuji 
 
 IMPORTANT: 
-* This is a Pre-Alpha implementation of a JS library, things WILL break
+* This is a first implementation of a JS library, things WILL break
 * this was worked against the `elixir-omg` specific commit hash: dc4d176d3f5d27030e1e627bd5cc0a630690c178 
 
 This is a library that allows a Client/Server JavaScript application to Interact with the Tesuji Plasma
@@ -14,12 +14,9 @@ So that you could:
 
 ETH From the Childchain server to the Rootchain
 
-** Note: Currently supporting only one function which is Transaction Submission
-*** This first implementation is for DevCon Demo
-
 ### Installation
 
-Please make sure you have `Node` (v8.11.3) and also `npm` (v6.3.0) installed
+Please make sure you have `Node` (>v8.11.3) and also `npm` (>v6.3.0) installed
 0. Clone the repository
 1. Install all the packages
 ```
