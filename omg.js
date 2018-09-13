@@ -72,7 +72,7 @@ class OMG {
     }
     
     //handles deposits of Eth to ethereum
-    this.depositEth = async (amount, fromAddr) => {
+    this.depositEth = (amount, fromAddr) => {
       try{
         let deposited = depositEth(amount, fromAddr, self.plasmaAddr, self.web3Provider)
         return deposited
@@ -84,7 +84,7 @@ class OMG {
     //retrieve the deposited block
     this.getDepositBlock = async (txhash) => {
       try{
-        let gotDeposit = getDepositBlock(txhash, self.web3Provider)
+        let gotDeposit = await getDepositBlock(txhash, self.web3Provider)
         return gotDeposit
       } catch (err) {
         console.log(err)

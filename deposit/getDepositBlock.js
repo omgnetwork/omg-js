@@ -21,6 +21,3 @@ const getDepositBlock = async function (txhash, web3Provider) {
 }
 
 module.exports = getDepositBlock
-
-
-

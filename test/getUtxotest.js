@@ -1,5 +1,5 @@
 const getUtxo = require('../transaction/getUtxo')
-var assert = require('assert')
+const assert = require('assert')
 const chai = require('chai');
 const expect = chai.expect;
 

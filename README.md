@@ -3,13 +3,13 @@
 
 IMPORTANT: 
 * This is a Pre-Alpha implementation of a JS library, things WILL break
-* this was worked against the `elixir-omg` commit hash: dc4d176d3f5d27030e1e627bd5cc0a630690c178 
+* this was worked against the `elixir-omg` specific commit hash: dc4d176d3f5d27030e1e627bd5cc0a630690c178 
 
 This is a library that allows a Client/Server JavaScript application to Interact with the Tesuji Plasma
 So that you could:
 
-1. Deposit
-2. Transact
+1. Deposit (Eth/Token)
+2. Transact (Eth/Token)
 3. Exit
 
 ETH From the Childchain server to the Rootchain
@@ -41,7 +41,10 @@ const Omg = new OMG(childChainPort)
 
 #### SendTransaction
 
-NOTE: This function currently takes in Private Key as raw hex `string`... the client/server is responsible for proper Key Management
+NOTE: 
+- this function currently takes in Private Key as raw hex `string`... the client/server is responsible for proper Key Management
+- this function does not support splitting or merging of tokens, and is tested only with 
+- for details on how to implement this function- refer to the `node-sendTx` example
 
 ```
 Omg.sendTransaction(inputs, currency, outputs)

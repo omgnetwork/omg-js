@@ -1,4 +1,3 @@
-//handles deposit
 const abi = require('./plasmaAbi')
 
 const depositEth = async function (amount, fromAddr, contractAddr, web3Provider) {
@@ -6,17 +5,20 @@ const depositEth = async function (amount, fromAddr, contractAddr, web3Provider)
     let Web3 = require('web3');
     let web3 = new Web3(web3Provider)
 
-    let plasmaContract = new web3.eth.Contract(abi.abi, contractAddr, {
-      from: web3.eth.accounts[1]
-    });
+    let plasmaContract = new web3.eth.Contract(abi.abi, contractAddr)
 
-    let txHash = await plasmaContract.methods.deposit().send({ from: fromAddr, value: web3.utils.toWei(amount, 'ether')})
-    .on('transactionHash', function(transactionHash){
-      console.log(transactionHash)
-      return transactionHash
+    let txHash = await web3.eth.sendTransaction({
+      from: fromAddr,
+      to: contractAddr,
+      value: web3.utils.toWei(amount, 'ether'),
+      data: '0xd0e30db0'
+    })
+    .on('transactionHash', function(hash){
+      console.log(hash)
+      return hash
     })
 
-    return txHash
+    return txHash.transactionHash
 
   } catch (err) {
     console.log(err)
@@ -24,4 +26,3 @@ const depositEth = async function (amount, fromAddr, contractAddr, web3Provider)
 }
 
 module.exports = depositEth
-
