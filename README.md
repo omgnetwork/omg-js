@@ -33,6 +33,7 @@ npm run test
 
 ### Getting Started
 #### Initializing
+Make sure that you have `elixir-omg` running locally
 Before running any functions, you must first initialize new Omg with a url to the child chain server
 
 ```
@@ -49,13 +50,6 @@ NOTE:
 ```
 Omg.sendTransaction(inputs, currency, outputs)
 ```
-
-this function will:
-1. Generate new Plasma transaction
-2. Sign transaction with Private Key
-3. RLP encode the signed transaction
-4. Encode in Base 64
-5. Submit directly to childchain server through json rpc
 
 ##### Params
 1. `inputs`- `array` :  an array of two objects `[{blknum1, txindex1, oindex1},{blknum2, txindex2, oindex2}]` 
@@ -75,17 +69,22 @@ this function will:
 ```
 Omg.getUtxo(address)
 ```
-1. fetch utxo of an address from the watcher
+##### Params
+1. `address` - `string`: address to query
+
+##### Returns
+- `array`: array of available utxos
 
 #### depositEth
 NOTE: This function requires a user to have a Geth node running with `fromAddr` account unlocked
 ```
 Omg.depositEth(amount, fromAddr)
 ```
-
-This function will:
-1. deposit ETH `amount` from a specified `fromAddr`
-2. returns a block hash
+##### Params
+1. `amount` - `string`: amount of ETH
+1. `fromAddr` - `string`: hex address of the account
+##### Returns
+- `string`: transaction hash of the deposited ETH
 
 #### depositToken
 coming soon TM
@@ -95,10 +94,10 @@ NOTE: use in conjunction with the `.depositEth` function, refer to node-deposit 
 ```
 Omg.getDepositBlock(txHash)
 ```
-
-This function will:
-1. take in a transaction hash `txHash` of the deposit 
-2. return the blocknumber that the deposit went through
+##### Params
+1. `txHash` - `string`: transaction hash of the deposit
+##### Returns
+- `number`: a block number of the deposited token
 
 #### exit
 coming soon TM
@@ -124,7 +123,7 @@ In order to use the JS library in browser, run (in project root)
 ```
 npm run build
 ```
-And then, inside Console (with the HTML files open) Run the following:
+And then, inside Console (with the HTML files open) Run the following to get started:
 ```
 var omg = new Omg(childChainPort)
 omg.sendTransaction(_inputs, _currency, _outputs, alicePriv)
