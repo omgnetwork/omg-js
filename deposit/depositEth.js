@@ -1,12 +1,10 @@
-const abi = require('./plasmaAbi')
-
+//deposit eth
 const depositEth = async function (amount, fromAddr, contractAddr, web3Provider) {
   try {
     let Web3 = require('web3');
     let web3 = new Web3(web3Provider)
-
-    let plasmaContract = new web3.eth.Contract(abi.abi, contractAddr)
-
+    
+    //send deposit transaction
     let txHash = await web3.eth.sendTransaction({
       from: fromAddr,
       to: contractAddr,

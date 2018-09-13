@@ -9,7 +9,7 @@ const OMG = require('../omg')
 const Omg = new OMG("watcher_url", childChainLocal, "web3_provider", "plasma_addr")
 
 
-let inputz_1 = { blknum1: 1167001, txindex1: 0, oindex1: 0 }
+let inputz_1 = { blknum1: 1404001, txindex1: 0, oindex1: 0 }
 let inputz_2 = { blknum2: 0, txindex2: 0, oindex2: 0 }
 let currz = [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ]
 let ownerz = [ 

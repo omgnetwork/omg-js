@@ -10,8 +10,6 @@ const OMG = require('../omg')
 const Omg = new OMG("watcher_url", "childChainLocal", "http://localhost:8545", "0x733bf3b72381f4c8ae9b2952e6da36deb18297eb")
 
 async function depositAndGetBlock(){
-  //const depositEth = require('../deposit/depositEth')
-  //let deposited = await depositEth("1", alice, "0x733bf3b72381f4c8ae9b2952e6da36deb18297eb","http://localhost:8545")
   let depositEth = await Omg.depositEth("10", alice)
   let blockNum = await Omg.getDepositBlock(depositEth)
 }
