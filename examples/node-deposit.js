@@ -11,7 +11,7 @@ const alice = "0x05cd0e128824ec7377f11c22902b49405cf43952"
 const OMG = require('../omg')
 const Omg = new OMG("watcher_url", "childChainLocal", "http://localhost:8545", "0xbf6a53f7e517752de846ef41db74117f2bd16010")
 
-//deposit 100 ETH from Alice acc.
+//deposit 1 ETH from Alice acc.
 async function depositAndGetBlock(){
   let deposited = await Omg.depositEth("1", alice)
   console.log("finished")

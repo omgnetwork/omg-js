@@ -14,11 +14,11 @@ function Transaction(inputs, currency, outputs) {
   this.txindex2 = inputs[1].txindex2
 }
 
-const newTx = (inputs, currency, outputs) => {
+const newTransaction = (inputs, currency, outputs) => {
   let transaction = new Transaction(inputs, currency, outputs)
   return transaction
 }
 
 
 
-module.exports = newTx
+module.exports = newTransaction

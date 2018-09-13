@@ -1,4 +1,4 @@
-const newTx = require('./transaction/newTx')
+const newTransaction = require('./transaction/newTx')
 const { hash, signature, zeroSignature, singleSign, signedEncode } = require('./transaction/signature')
 const signatureDigest = require('./transaction/sigDigest')
 const { rlpEncodeArr, ArrToUint8 } = require('./transaction/rlp')
@@ -39,12 +39,12 @@ class OMG {
     this.sendTransaction = async (inputs, currency, outputs, privKey) => {
       try {
         //turns 2 hex addresses input to 2 arrays 
-        outputs[0].newowner1 = await Array.from(hexToByteArr(outputs[0].newowner1))
-        outputs[1].newowner2 = await Array.from(hexToByteArr(outputs[1].newowner2))
+        outputs[0].newowner1 = Array.from(hexToByteArr(outputs[0].newowner1))
+        outputs[1].newowner2 = Array.from(hexToByteArr(outputs[1].newowner2))
         //turn privkey string to addr
-        privKey = await byteArrToBuffer(hexToByteArr(privKey))
+        privKey = byteArrToBuffer(hexToByteArr(privKey))
         //creates new transaction object
-        let transactionBody = await newTx(inputs, currency, outputs);
+        let transactionBody = await newTransaction(inputs, currency, outputs);
         //sign transaction
         let signedTx = await singleSign(transactionBody, privKey);
         //encode transaction with RLP

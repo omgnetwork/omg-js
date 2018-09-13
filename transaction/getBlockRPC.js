@@ -2,7 +2,7 @@
 
 const fetch = require('node-fetch');
 
-let getBlock = async (blockhash) => {
+let getBlock = async (blockhash, childchainUrl) => {
 
   let payload = {
     "params": {
@@ -14,7 +14,7 @@ let getBlock = async (blockhash) => {
   }
 
   try {
-    let resp = await fetch('http://localhost:9656', {
+    let resp = await fetch(childchainUrl, {
       method: 'POST',
       body: JSON.stringify(payload)
     })

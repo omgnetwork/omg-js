@@ -68,11 +68,34 @@ this function will:
 ##### Returns
 - `obj`: json rpc return message (success message contains `tx_index`, `tx_hash` and `blknum`)
 
-#### getTransactionParam
+#### getUtxo
+```
+Omg.getUtxo(address)
+```
+1. fetch utxo of an address from the watcher
+
+#### depositEth
+NOTE: This function requires a user to have a Geth node running with `fromAddr` account unlocked
+```
+Omg.depositEth(amount, fromAddr)
+```
+
+This function will:
+1. deposit ETH `amount` from a specified `fromAddr`
+2. returns a block hash
+
+#### depositToken
 coming soon TM
 
-#### deposit
-coming soon TM
+#### getDepositBlock
+NOTE: use in conjunction with the `.depositEth` function, refer to node-deposit example
+```
+Omg.getDepositBlock(txHash)
+```
+
+This function will:
+1. take in a transaction hash `txHash` of the deposit 
+2. return the blocknumber that the deposit went through
 
 #### exit
 coming soon TM
