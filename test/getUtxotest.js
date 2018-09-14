@@ -4,7 +4,6 @@ const chai = require('chai');
 const expect = chai.expect;
 const nock = require('nock');
 
-//let getPath = "http://localhost:4000/account/utxo?address=0xd72afdfa06ae5857a639051444f7608fea1528d4"
 let watcherUrl = "http://omg-watcher"
 let address = "0xd72afdfa06ae5857a639051444f7608fea1528d4"
 
