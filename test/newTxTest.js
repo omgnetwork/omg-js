@@ -1,5 +1,5 @@
-var assert = require('assert')
-var newTx = require('../transaction/newTx')
+const assert = require('assert')
+const newTx = require('../transaction/newTx')
 const sampleTx = {
     amount1: 7,
     amount2: 3,
