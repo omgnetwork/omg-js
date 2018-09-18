@@ -7,7 +7,7 @@ const getDepositBlock = async function (txhash, web3Provider) {
       return receipt
     });
 
-    let encodedBlkNum = "0x" + blockReceipt.logs[0].data.substring(66, 130)
+    let encodedBlkNum = "0x" + blockReceipt.logs[1].data.substring(66, 130)
     let blkNum = Number(web3.eth.abi.decodeParameter("uint256", encodedBlkNum))
     console.log(blkNum)
 
