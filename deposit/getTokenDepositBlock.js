@@ -1,4 +1,4 @@
-const getDepositBlockFromToken = async function (txhash, web3Provider) {
+const getTokenDepositBlock= async function (txhash, web3Provider) {
   try {
     let Web3 = require('web3');
     let web3 = new Web3(web3Provider)
@@ -18,4 +18,4 @@ const getDepositBlockFromToken = async function (txhash, web3Provider) {
   }
 }
 
-module.exports = getDepositBlockFromToken
+module.exports = getTokenDepositBlock

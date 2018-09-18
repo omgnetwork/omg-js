@@ -1,45 +1,48 @@
+/*
+* before running this function, make sure ERC20 token is created and approved
+*
+*/
 const abi = require('./plasmaAbi')
-const getDepositBlockFromToken = require('./getDepositBlockFromToken')
+const getTokenDepositBlock = require('./getTokenDepositBlock')
 //deposit ERC20 Token
-const depositToken = async function ( amount, plasmaAddr, fromAddr, tokenAddr) {
+const depositToken = async function ( amount, plasmaAddr, fromAddr, tokenAddr, provider) {
   try {
     let Web3 = require('web3');
-    let web3 = new Web3('http://localhost:8545')
+    let web3 = new Web3(provider)
     //let plasmaAbi = JSON.parse()                   
     plasmaContract = new web3.eth.Contract(abi.abi, plasmaAddr)
-    let depositData = await plasmaContract.methods.depositFrom(fromAddr, tokenAddr, amount).encodeABI()//.send({from: "0xef2d8b6f11fe56a81f800d471acc3b951cbbae5f"}).
-    /* .on('transactionHash', function(hash){
-      console.log(hash)
-    }) */
+    //let addToken = await plasmaContract.methods.addToken(tokenAddr).encodeABI()
+    let depositData = await plasmaContract.methods.depositFrom(fromAddr, tokenAddr, amount).encodeABI()
     console.log(depositData)
-    /* .on('transactionHash', function(hash){
-      console.log(hash)
-      return hash
-    })   */
-    //send deposit transaction
-     let txHash = await web3.eth.sendTransaction({
+    let txHash = await web3.eth.sendTransaction({
       from: fromAddr,
       to: plasmaAddr,
       data: depositData,
-      gas: 103788
-    }) 
+      gas: 303788
+    })  
     
     console.log(txHash)
-    return txHash.transactionHash
+    return txHash.transactionHash 
 
   } catch (err) {
     console.log(err)
   }
 }
 
-let aliceAddress = "0x3b9d59efb13029ad2873ab500c689d20707f76bc"
-let plasmaAddress = "0x49a3565c825fb94371b14a5172c48b041b263668"
-let tokenAddress = "0x7e963b0f1033203d5add032690ab43d64f5c7002"
+/*
+WIP implementing deposit + get deposit block
+*/
+
+/* let _aliceAddress = "0x95d6c5cf598adbd58ce2e169cde751fc51109f8b"
+let _plasmaAddress = "0x771fac262f96722a86bdb09eafac4d15b8952af3"
+let _tokenAddress = "0x218017b5f7c3f1a58dde9e0b945d1e2e0df9d8ba"
+                     
+let _provider = "http://localhost:8545"
 
 async function depositGetblock() {
-  let tokenHash = await depositToken( 5, plasmaAddress, aliceAddress, tokenAddress) 
-  let blockNum = await getDepositBlockFromToken("0x062c6fb8da02fe0d4669af759815d8046d15967f7e29a00b3957df1d639d9797", "http://localhost:8545")
+  let tokenHash = await depositToken( 2, _plasmaAddress, _aliceAddress, _tokenAddress, _provider) 
+  let blockNum = await getTokenDepositBlock(tokenHash, _provider)
 }
 
-depositGetblock()
+depositGetblock() */
 //module.exports = depositToken

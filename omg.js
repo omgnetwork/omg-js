@@ -6,6 +6,7 @@ const { base16Encode, base16Decode } = require('./transaction/base16')
 const submitTx = require('./transaction/submitRPC');
 const getUtxo = require('./transaction/getUtxo');
 const depositEth = require('./deposit/depositEth')
+const depositToken = require('./deposit/depositToken')
 const getDepositBlock = require('./deposit/getDepositBlock')
 const hexToByteArr = require('./helpers/hexToByteArr')
 const byteArrToBuffer = require('./helpers/byteArrToBuffer')
@@ -74,8 +75,17 @@ class OMG {
     //handles deposits of Eth to ethereum
     this.depositEth = (amount, fromAddr) => {
       try{
-        let deposited = depositEth(amount, fromAddr, self.plasmaAddr, self.web3Provider)
-        return deposited
+        let depositedEth = depositEth(amount, fromAddr, self.plasmaAddr, self.web3Provider)
+        return depositedEth
+      } catch (err) {
+        console.log(err)
+      }
+    }
+
+    this.depositToken = async (fromAddr, tokenAddr, amount) => {
+      try{
+        let depositedToken = depositToken(amount, self.plasmaAddr, fromAddr, tokenAddr, self.web3Provider)
+        return depositedToken 
       } catch (err) {
         console.log(err)
       }
