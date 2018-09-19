@@ -3,14 +3,13 @@
 
 IMPORTANT: 
 * This is a first implementation of a JS library, things WILL break
-* this was worked against the `elixir-omg` specific commit hash: dc4d176d3f5d27030e1e627bd5cc0a630690c178 
+* this was developed against the `elixir-omg` specific commit hash: dc4d176d3f5d27030e1e627bd5cc0a630690c178 
 
 This is a library that allows a Client/Server JavaScript application to Interact with the Tesuji Plasma
 So that you could:
 
 1. Deposit (Eth/Token)
 2. Transact (Eth/Token)
-3. Exit
 
 ETH From the Childchain server to the Rootchain
 
@@ -31,10 +30,11 @@ npm run test
 ### Getting Started
 #### Initializing
 Make sure that you have `elixir-omg` running locally
-Before running any functions, you must first initialize new Omg with a url to the child chain server
+Before running any functions, you must first initialize new Omg object with following parameters:
+watcherUrl, childChainUrl, web3Provider, plasmaAddr
 
 ```
-const Omg = new OMG(childChainPort)
+const Omg = new OMG(watcherUrl, childChainUrl, web3Provider, plasmaAddr)
 ```
 
 #### SendTransaction
@@ -78,13 +78,22 @@ NOTE: This function requires a user to have a Geth node running with `fromAddr` 
 Omg.depositEth(amount, fromAddr)
 ```
 ##### Params
-1. `amount` - `string`: amount of ETH
-1. `fromAddr` - `string`: hex address of the account
+1. `amount` - `number`: amount in ETH
+2. `fromAddr` - `string`: hex address of the account
 ##### Returns
 - `string`: transaction hash of the deposited ETH
 
 #### depositToken
-coming soon TM
+NOTE: This function requires a user to have a Geth node running with `fromAddr` account unlocked
+```
+Omg.depositToken(amount, tokenAddr, fromAddr)
+```
+##### Params
+1. `amount` - `number`: amount of token
+2. `tokenAddress` - `string`
+3. `fromAddr` - `string`: hex address of the account
+##### Returns
+- `string`: transaction hash of the deposited Token
 
 #### getDepositBlock
 NOTE: use in conjunction with the `.depositEth` function, refer to node-deposit example
@@ -101,27 +110,4 @@ coming soon TM
 
 ### Implementation
 You can find example applications inside `examples` folder
-to use library in html, please use the file in the `dist` folder
-
-#### Server side 
-Library can be used as is (currently not an NPM package) in order to use it, inside the project root, run:
-```
-npm link
-```
-then inside your server app, simply require it and declare new instance
-```
-const OMG = require('omg-js/omg')
-const Omg = new OMG(childChainPort)
-
-Omg.sendTransaction(_inputs, _currency, _outputs, alicePriv)
-```
-#### Client side 
-In order to use the JS library in browser, run (in project root)
-```
-npm run build
-```
-And then, inside Console (with the HTML files open) Run the following to get started:
-```
-var omg = new Omg(childChainPort)
-omg.sendTransaction(_inputs, _currency, _outputs, alicePriv)
-```
+to use library on the client side, run `npm run build`

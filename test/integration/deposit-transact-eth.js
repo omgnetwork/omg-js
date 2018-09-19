@@ -22,7 +22,7 @@ const alicePriv = "0x8f265d5e82cb327c687222d0a9de4178ad9b40922f9dda08932b5319d5a
 
 async function depositAndTransact(){
   console.log("===== alice deposit 2 ETH")
-  let depositEth = await Omg.depositEth("2", alice)
+  let depositEth = await Omg.depositEth(2, alice)
   console.log("===== alice retrieves the blocknumber of her deposit")
   let depositedBlockNum = await Omg.getDepositBlock(depositEth)
   let input_1 = { blknum1: depositedBlockNum, txindex1: 0, oindex1: 0 }
@@ -52,7 +52,7 @@ describe('alice make an ETH deposit and then transact to bob', async () => {
           tx_index: 0
         },
       }
-      //this.timeout(10000);
+
       let result = await depositAndTransact()
       assert.notDeepEqual(result, txResult)
   })

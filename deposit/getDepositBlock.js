@@ -1,3 +1,8 @@
+/*
+* get the deposited block number based on txHash
+*
+*/
+
 const getDepositBlock = async function (txhash, web3Provider) {
   try {
     let Web3 = require('web3');
