@@ -76,7 +76,7 @@ class OMG {
 
     this.getUtxo = async (address) => {
       try {
-        let utxos = getUtxo(self.watcherUrl, address)
+        let utxos = await getUtxo(self.watcherUrl, address)
         return utxos
       } catch (err) {
         console.log(err)
@@ -92,9 +92,9 @@ class OMG {
      * @return {String} transaction hash of the deposited ETH
      */
 
-    this.depositEth = (amount, fromAddr) => {
+    this.depositEth = async (amount, fromAddr) => {
       try{
-        let depositedEth = depositEth(amount, fromAddr, self.plasmaAddr, self.web3Provider)
+        let depositedEth = await depositEth(amount, fromAddr, self.plasmaAddr, self.web3Provider)
         return depositedEth
       } catch (err) {
         console.log(err)
@@ -113,7 +113,7 @@ class OMG {
 
     this.depositToken = async (fromAddr, tokenAddr, amount) => {
       try{
-        let depositedToken = depositToken(amount, self.plasmaAddr, fromAddr, tokenAddr, self.web3Provider)
+        let depositedToken = await depositToken(amount, self.plasmaAddr, fromAddr, tokenAddr, self.web3Provider)
         return depositedToken 
       } catch (err) {
         console.log(err)
