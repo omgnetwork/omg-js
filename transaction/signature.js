@@ -12,7 +12,6 @@ const hash = async (message) => {
   return uint8Value
 }
 
-
 const signature = async (encodedTx, privateKey) => {
   //TODO: Add logic to add 0 to function without message inputs
 
@@ -48,9 +47,7 @@ const signedEncode = async (tx, sig1, sig2) => {
 
   let rlpEncoded = await rlpEncodeArr(transactionBody)
   return rlpEncoded
-
 }
-
 
 const singleSign = async (tx, priv1) => {
   //transform tx into array format
@@ -86,7 +83,5 @@ const singleSign = async (tx, priv1) => {
 
   return signedTransaction
 }
-
-
 
 module.exports = { signature, hash, signedEncode, zeroSignature, singleSign }

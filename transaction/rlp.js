@@ -21,37 +21,23 @@ struct
 //encode rawTx into RLP encoded Buffer
 //replicate Transaction.encode() function
 const rlpEncodeArr = async (rawTx) => {
-  try {
-    //if is Array, turn into Uint8 and Transform to Buffer
-    let arr = await ArrToUint8(rawTx)
+  //if is Array, turn into Uint8 and Transform to Buffer
+  let arr = await ArrToUint8(rawTx)
 
-    let encoded = RLP.encode(arr);
-    let stringifyJSON = await JSON.stringify(encoded)
-    let rlpEncoded = await JSON.parse(stringifyJSON).data
-    return rlpEncoded
-
-  }
-  catch (err) {
-    console.log(err)
-  }
+  let encoded = RLP.encode(arr);
+  let stringifyJSON = await JSON.stringify(encoded)
+  let rlpEncoded = await JSON.parse(stringifyJSON).data
+  return rlpEncoded
 }
-
-
-
 
 //private function, turns regular arr into arr with Buffer binary
 const ArrToUint8 = async (arr) => {
-  try {
-    for (var i = 0; i < arr.length; i++) {
-      if (Array.isArray(arr[i])) {
-        arr[i] = Buffer.from(new Uint8Array(arr[i]));
-      }
+  for (var i = 0; i < arr.length; i++) {
+    if (Array.isArray(arr[i])) {
+      arr[i] = Buffer.from(new Uint8Array(arr[i]));
     }
-    return arr
-  } catch (err) {
-    console.log(err)
   }
-
+  return arr
 }
 
 module.exports = { rlpEncodeArr, ArrToUint8 }
