@@ -5,12 +5,11 @@
 */
 
 const Web3 = require('web3');
-const web3 = new Web3(provider)
 const abi = require('./plasmaAbi')
 
 const depositToken = async function ( amount, plasmaAddr, fromAddr, tokenAddr, provider) {
   try {
-    
+    const web3 = new Web3(provider)
     const plasmaContract = new web3.eth.Contract(abi.abi, plasmaAddr)
     let depositData = plasmaContract.methods.depositFrom(fromAddr, tokenAddr, amount).encodeABI()
     console.log(depositData)
