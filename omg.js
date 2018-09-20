@@ -10,6 +10,7 @@ const depositToken = require('./deposit/depositToken')
 const getDepositBlock = require('./deposit/getDepositBlock')
 const hexToByteArr = require('./helpers/hexToByteArr')
 const byteArrToBuffer = require('./helpers/byteArrToBuffer')
+const InvalidArgumentError = require('./errors/InvalidArgumentError')
 global.Buffer = global.Buffer || require("buffer").Buffer;
 
 /* 
@@ -42,28 +43,28 @@ class OMG {
      */
 
     this.sendTransaction = async (inputs, currency, outputs, privKey) => {
-      try {
-        //turns 2 hex addresses input to 2 arrays 
-        outputs[0].newowner1 = Array.from(hexToByteArr(outputs[0].newowner1))
-        outputs[1].newowner2 = Array.from(hexToByteArr(outputs[1].newowner2))
-        //turn privkey string to addr
-        privKey = byteArrToBuffer(hexToByteArr(privKey))
-        //creates new transaction object
-        let transactionBody = await newTransaction(inputs, currency, outputs);
-        //sign transaction
-        let signedTx = await singleSign(transactionBody, privKey);
-        //encode transaction with RLP
-        let obj = signedTx.raw_tx;
-        let rlpEncodedTransaction = await signedEncode(obj, signedTx.sig1, signedTx.sig2);
-        //encode transaction with base16
-        let base16 = await base16Encode(rlpEncodedTransaction);
-        //submit via JSON RPC
-        let submission = submitTx(base16, self.childChainUrl)
-        return submission
-      }
-      catch (err) {
-        console.log(err);
-      }
+      // Validate arguments
+      validateInputs(inputs)
+      validateCurrency(currency)
+      validateOutputs(outputs)
+      validatePrivateKey(privKey)
+
+      //turns 2 hex addresses input to 2 arrays 
+      outputs[0].newowner1 = Array.from(hexToByteArr(outputs[0].newowner1))
+      outputs[1].newowner2 = Array.from(hexToByteArr(outputs[1].newowner2))
+      //turn privkey string to addr
+      privKey = byteArrToBuffer(hexToByteArr(privKey))
+      //creates new transaction object
+      let transactionBody = await newTransaction(inputs, currency, outputs);
+      //sign transaction
+      let signedTx = await singleSign(transactionBody, privKey);
+      //encode transaction with RLP
+      let obj = signedTx.raw_tx;
+      let rlpEncodedTransaction = await signedEncode(obj, signedTx.sig1, signedTx.sig2);
+      //encode transaction with base16
+      let base16 = await base16Encode(rlpEncodedTransaction);
+      //submit via JSON RPC
+      return submitTx(base16, self.childChainUrl)
     };
 
     /**
@@ -75,14 +76,10 @@ class OMG {
      */
 
     this.getUtxo = async (address) => {
-      try {
-        let utxos = await getUtxo(self.watcherUrl, address)
-        return utxos
-      } catch (err) {
-        console.log(err)
-      }
+      validateAddress(address)
+      return getUtxo(self.watcherUrl, address)
     }
-    
+
     /**
      * Deposit ETH to Plasma contract
      *
@@ -92,32 +89,27 @@ class OMG {
      * @return {String} transaction hash of the deposited ETH
      */
 
-    this.depositEth = async (amount, fromAddr) => {
-      try{
-        let depositedEth = await depositEth(amount, fromAddr, self.plasmaAddr, self.web3Provider)
-        return depositedEth
-      } catch (err) {
-        console.log(err)
-      }
+    this.depositEth = (amount, fromAddr) => {
+      validateAmount(amount)
+      validateAddress(fromAddr)
+      return depositEth(amount, fromAddr, self.plasmaAddr, self.web3Provider)
     }
-    
-  /**
-   * Deposit ERC20 Token to Plasma contract
-   *
-   * @method depositToken
-   * @param {String} fromAddr
-   * @param {String} tokenAddr
-   * @param {String} amount
-   * @return {String} transaction hash of the deposited Token
-   */
+
+    /**
+     * Deposit ERC20 Token to Plasma contract
+     *
+     * @method depositToken
+     * @param {String} fromAddr
+     * @param {String} tokenAddr
+     * @param {String} amount
+     * @return {String} transaction hash of the deposited Token
+     */
 
     this.depositToken = async (fromAddr, tokenAddr, amount) => {
-      try{
-        let depositedToken = await depositToken(amount, self.plasmaAddr, fromAddr, tokenAddr, self.web3Provider)
-        return depositedToken 
-      } catch (err) {
-        console.log(err)
-      }
+      validateAddress(fromAddr)
+      validateAddress(tokenAddr)
+      validateAmount(amount)
+      return depositToken(amount, self.plasmaAddr, fromAddr, tokenAddr, self.web3Provider)
     }
 
     /**
@@ -127,17 +119,68 @@ class OMG {
      * @param {String} txhash
      * @return {Number} block number of the deposited block
      */
-    
+
     this.getDepositBlock = async (txhash) => {
-      try{
-        let gotDeposit = await getDepositBlock(txhash, self.web3Provider)
-        return gotDeposit
-      } catch (err) {
-        console.log(err)
-      }
+      validateTransactionHash(txhash)
+      return getDepositBlock(txhash, self.web3Provider)
     }
   }
 }
 
-module.exports = OMG;
+function validateInputs(arg) {
+  // TODO
+  const valid = true;
+  if (!valid) {
+    throw new InvalidArgumentError();
+  }
+}
 
+function validateOutputs(arg) {
+  // TODO
+  const valid = true;
+  if (!valid) {
+    throw new InvalidArgumentError();
+  }
+}
+
+function validateCurrency(arg) {
+  // TODO
+  const valid = true;
+  if (!valid) {
+    throw new InvalidArgumentError();
+  }
+}
+
+function validatePrivateKey(arg) {
+  // TODO
+  const valid = true;
+  if (!valid) {
+    throw new InvalidArgumentError();
+  }
+}
+
+function validateAddress(arg) {
+  // TODO
+  const valid = true;
+  if (!valid) {
+    throw new InvalidArgumentError();
+  }
+}
+
+function validateAmount(arg) {
+  // TODO
+  const valid = true;
+  if (!valid) {
+    throw new InvalidArgumentError();
+  }
+}
+
+function validateTransactionHash(arg) {
+  // TODO
+  const valid = true;
+  if (!valid) {
+    throw new InvalidArgumentError();
+  }
+}
+
+module.exports = OMG;
