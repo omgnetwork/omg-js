@@ -15,10 +15,6 @@ let submitTx = async (tx, url) => {
 
   try {
 
-    /*  let header = new Headers({
-         'Access-Control-Allow-Origin':'*'
-     }); */
-
     let resp = await fetch(url, {
       method: 'POST',
       mode: 'cors',

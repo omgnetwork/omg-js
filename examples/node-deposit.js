@@ -2,13 +2,13 @@
 //You must have a Geth running with the specified account unlocked
 //dont forget to retrieve the plasma addr before running
 
-const alice = "0x2eac736d6f0d71d3e51345417a5b205bfa4748a8"
+const alice = "0x3b9d59efb13029ad2873ab500c689d20707f76bc"
 
 const OMG = require('../omg')
-const Omg = new OMG("watcher_url", "childChainLocal", "http://localhost:8545", "0x733bf3b72381f4c8ae9b2952e6da36deb18297eb")
+const Omg = new OMG("watcher_url", "childChainLocal", "http://localhost:8545", "0x49a3565c825fb94371b14a5172c48b041b263668")
 
 async function depositAndGetBlock(){
-  let depositEth = await Omg.depositEth("10", alice)
+  let depositEth = await Omg.depositEth("2", alice)
   let blockNum = await Omg.getDepositBlock(depositEth)
 }
 

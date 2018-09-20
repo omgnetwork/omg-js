@@ -5,12 +5,12 @@
   "main": "omg.js",
   "scripts": {
     "test": "./node_modules/mocha/bin/mocha",
+    "integration": "mocha --timeout 30000 ./test/integration/deposit-transact-eth",
     "build": "browserify browserify.js --standalon Omg > ./dist/bundle.js"
   },
   "author": "Pong Cheecharern<pong@omise.co>",
   "license": "MIT",
   "dependencies": {
-    "@warren-bank/ethereumjs-tx-sign": "^2.0.0",
     "base-x": "^3.0.4",
     "buffer": "^5.2.0",
     "chai": "^4.1.2",
@@ -18,7 +18,7 @@
     "ethereumjs-util": "^5.2.0",
     "http-request": "^0.7.0",
     "js-sha3": "^0.8.0",
-    "jssha": "^2.3.1",
+    "nock": "^9.6.1",
     "node-fetch": "^2.2.0",
     "rlp": "^2.1.0",
     "web3": "^1.0.0-beta.32"

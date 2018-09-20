@@ -6,6 +6,7 @@ const { base16Encode, base16Decode } = require('./transaction/base16')
 const submitTx = require('./transaction/submitRPC');
 const getUtxo = require('./transaction/getUtxo');
 const depositEth = require('./deposit/depositEth')
+const depositToken = require('./deposit/depositToken')
 const getDepositBlock = require('./deposit/getDepositBlock')
 const hexToByteArr = require('./helpers/hexToByteArr')
 const byteArrToBuffer = require('./helpers/byteArrToBuffer')
@@ -15,8 +16,8 @@ global.Buffer = global.Buffer || require("buffer").Buffer;
 *Summary: Interact with Tesuji Plasma Childchain from JavaScript (Node.js and Browser)
 *Description: allows user to interact with Tesuji Plasma from JavaScript. look up examples for implementations in boith Client and Server
 *
-*@param {string} _childChainUrl contains the url of the childchain server to communicate with
 *@param {string} _watcherUrl contains the url of the watcher server 
+*@param {string} _childChainUrl contains the url of the childchain server to communicate with
 *@param {string} _web3Provider contains the url of geth node
 *@param {string} _plasmaAddr contains the url of the plasma smart contract already deployed
 *
@@ -29,12 +30,16 @@ class OMG {
     this.web3Provider = _web3Provider
     this.plasmaAddr = _plasmaAddr
     let self = this
-    /*
-    @params {array} inputs 
-    @params {array} currency
-    @params {array} outputs
-    @params {string} privKey private key of the transaction Signer 
-    */
+
+    /**
+     * generate, sign, encode and submit transaction to childchain
+     *
+     * @method sendTransaction
+     * @param {array} inputs
+     * @param {array} currency
+     * @param {array} outputs
+     * @return {object} success/error message with `tx_index`, `tx_hash` and `blknum` params
+     */
 
     this.sendTransaction = async (inputs, currency, outputs, privKey) => {
       try {
@@ -61,27 +66,68 @@ class OMG {
       }
     };
 
-    //retrieves utxo
+    /**
+     * Obtain UTXO of an address
+     *
+     * @method getUtxo
+     * @param {String} address
+     * @return {array} arrays of UTXOs
+     */
+
     this.getUtxo = async (address) => {
       try {
-        let gotUtxo = getUtxo(self.watcherUrl, address)
-        return gotUtxo
+        let utxos = await getUtxo(self.watcherUrl, address)
+        return utxos
       } catch (err) {
         console.log(err)
       }
     }
     
-    //handles deposits of Eth to ethereum
-    this.depositEth = (amount, fromAddr) => {
+    /**
+     * Deposit ETH to Plasma contract
+     *
+     * @method depositEth
+     * @param {String} fromAddr
+     * @param {String} amount
+     * @return {String} transaction hash of the deposited ETH
+     */
+
+    this.depositEth = async (amount, fromAddr) => {
       try{
-        let deposited = depositEth(amount, fromAddr, self.plasmaAddr, self.web3Provider)
-        return deposited
+        let depositedEth = await depositEth(amount, fromAddr, self.plasmaAddr, self.web3Provider)
+        return depositedEth
+      } catch (err) {
+        console.log(err)
+      }
+    }
+    
+  /**
+   * Deposit ERC20 Token to Plasma contract
+   *
+   * @method depositToken
+   * @param {String} fromAddr
+   * @param {String} tokenAddr
+   * @param {String} amount
+   * @return {String} transaction hash of the deposited Token
+   */
+
+    this.depositToken = async (fromAddr, tokenAddr, amount) => {
+      try{
+        let depositedToken = await depositToken(amount, self.plasmaAddr, fromAddr, tokenAddr, self.web3Provider)
+        return depositedToken 
       } catch (err) {
         console.log(err)
       }
     }
 
-    //retrieve the deposited block
+    /**
+     * get the block number of deposit ETH
+     *
+     * @method getDepositBlock
+     * @param {String} txhash
+     * @return {Number} block number of the deposited block
+     */
+    
     this.getDepositBlock = async (txhash) => {
       try{
         let gotDeposit = await getDepositBlock(txhash, self.web3Provider)
@@ -93,8 +139,5 @@ class OMG {
   }
 }
 
-//to Export Class for React
-//export default OMG
-//to Run in Node.js
 module.exports = OMG;
 

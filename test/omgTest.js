@@ -2,11 +2,13 @@ const OMG = require('../omg')
 var assert = require('assert')
 const chai = require('chai');
 const expect = chai.expect;
+const nock = require('nock');
 
 //This test assumes that the E
 //Arguements for Omg.sendTransaction() function 
 
-let childChainPort = "http://35.200.30.83:9656"
+let childChainPort = "http://omg-childchain.co"
+//let childChainPort = "http://35.200.30.83:9656"
 
 //let alicePriv = Buffer.from( new Uint8Array([165, 253, 5, 87, 255, 90, 198, 97, 236, 75, 74, 205, 119, 102, 148, 243, 213, 102, 3, 104, 36, 251, 206, 152, 50, 114, 92, 65, 154, 84, 48, 47]))
 let alicePriv = "0xa5fd0557ff5ac661ec4b4acd776694f3d566036824fbce9832725c419a54302f"
@@ -45,8 +47,10 @@ const Omg = new OMG("watcher_url", childChainPort, "web3_provider", "plasma_addr
 //Declaring as Omg as OMG
 describe('calls OMG functions', () => {
   it('should generate, sign, encode and submit transaction', async () => {
+    let utxoStore = nock('http://omg-childchain.co')
+                .post('/')
+                .reply(200, expectedReturn)
     let sentTransaction = await Omg.sendTransaction(_inputs, _currency, _outputs, alicePriv)
     assert.deepEqual(sentTransaction, expectedReturn)
-
   })
 })
