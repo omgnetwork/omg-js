@@ -13,21 +13,12 @@ let submitTx = async (tx, url) => {
     "id": 0
   }
 
-  try {
-
-    let resp = await fetch(url, {
-      method: 'POST',
-      mode: 'cors',
-      body: JSON.stringify(payload)
-    })
-    let resp1 = await resp.json()
-    console.log(resp1)
-    return resp1
-
-
-  } catch (error) {
-    console.log(error)
-  }
+  let resp = await fetch(url, {
+    method: 'POST',
+    mode: 'cors',
+    body: JSON.stringify(payload)
+  })
+  return resp.json()
 }
 
 module.exports = submitTx

@@ -13,21 +13,12 @@ let getBlock = async (blockhash, childchainUrl) => {
     "id": 0
   }
 
-  try {
-    let resp = await fetch(childchainUrl, {
-      method: 'POST',
-      body: JSON.stringify(payload)
-    })
+  let resp = await fetch(childchainUrl, {
+    method: 'POST',
+    body: JSON.stringify(payload)
+  })
 
-    let data = await resp.json()
-    return data
-    console.log(data)
-
-  } catch (error) {
-    console.log(error)
-  }
+  return resp.json()
 }
 
 module.exports = getBlock;
-
-
