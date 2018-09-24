@@ -1,9 +1,9 @@
-//decoding and encoding BASE16 Values
+// decoding and encoding BASE16 Values
 
-const BASE16 = "0123456789abcdef"
+const BASE16 = '0123456789abcdef'
 let bs16 = require('base-x')(BASE16)
 
-//decoding function
+// decoding function
 /*
 var elixirrlp = "<<67, 130, 252, 224, 225, 60, 202, 236, 180, 106, 224, 167, 220, 6, 21, 177, 111, 165, 222, 42, 172, 26, 255, 49, 246, 112, 38, 80, 182, 28, 237, 26>>"
 var encodedHash = "4382FCE0E13CCAECB46AE0A7DC0615B16FA5DE2AAC1AFF31F6702650B61CED1A"
@@ -17,11 +17,11 @@ let base16Decode = async (encodedHash) => {
   return decodedObject
 }
 
-//encoding function
+// encoding function
 let base16Encode = async (binary) => {
   let base16Encoded = bs16.encode(binary).toUpperCase()
   console.log(base16Encoded)
   return base16Encoded
 }
 
-module.exports = { base16Encode, base16Decode };
+module.exports = { base16Encode, base16Decode }

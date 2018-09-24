@@ -1,4 +1,4 @@
-//get UTXO from watcher
+// get UTXO from watcher
 const fetch = require('node-fetch')
 
 const getUtxo = async (watcherUrl, address) => {

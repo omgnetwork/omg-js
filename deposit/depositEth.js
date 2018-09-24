@@ -3,7 +3,7 @@
 *
 */
 
-const Web3 = require('web3');
+const Web3 = require('web3')
 
 const depositEth = async function (amount, fromAddr, contractAddr, web3Provider) {
   const web3 = new Web3(web3Provider)

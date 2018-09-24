@@ -1,17 +1,17 @@
 const OMG = require('../omg')
 var assert = require('assert')
-const chai = require('chai');
-const expect = chai.expect;
-const nock = require('nock');
+const chai = require('chai')
+const expect = chai.expect
+const nock = require('nock')
 
-//This test assumes that the E
-//Arguements for Omg.sendTransaction() function 
+// This test assumes that the E
+// Arguements for Omg.sendTransaction() function
 
-let childChainPort = "http://omg-childchain.co"
-//let childChainPort = "http://35.200.30.83:9656"
+let childChainPort = 'http://omg-childchain.co'
+// let childChainPort = "http://35.200.30.83:9656"
 
-//let alicePriv = Buffer.from( new Uint8Array([165, 253, 5, 87, 255, 90, 198, 97, 236, 75, 74, 205, 119, 102, 148, 243, 213, 102, 3, 104, 36, 251, 206, 152, 50, 114, 92, 65, 154, 84, 48, 47]))
-let alicePriv = "0xa5fd0557ff5ac661ec4b4acd776694f3d566036824fbce9832725c419a54302f"
+// let alicePriv = Buffer.from( new Uint8Array([165, 253, 5, 87, 255, 90, 198, 97, 236, 75, 74, 205, 119, 102, 148, 243, 213, 102, 3, 104, 36, 251, 206, 152, 50, 114, 92, 65, 154, 84, 48, 47]))
+let alicePriv = '0xa5fd0557ff5ac661ec4b4acd776694f3d566036824fbce9832725c419a54302f'
 
 const amount1 = 7
 const amount2 = 3
@@ -23,10 +23,10 @@ const txindex1 = 0
 const txindex2 = 0
 const cur12 = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
-//const newowner1 = [116, 90, 78, 212, 118, 51, 233, 165, 245, 155, 19, 234, 50, 191, 20, 131, 178, 219, 41, 65]
-const newowner1 = "0x745a4ed47633e9a5f59b13ea32bf1483b2db2941"
-//const newowner2 = [101, 166, 194, 146, 88, 167, 6, 177, 55, 187, 239, 105, 27, 233, 12, 165, 29, 47, 182, 80]
-const newowner2 = "0x65a6c29258a706b137bbef691be90ca51d2fb650"
+// const newowner1 = [116, 90, 78, 212, 118, 51, 233, 165, 245, 155, 19, 234, 50, 191, 20, 131, 178, 219, 41, 65]
+const newowner1 = '0x745a4ed47633e9a5f59b13ea32bf1483b2db2941'
+// const newowner2 = [101, 166, 194, 146, 88, 167, 6, 177, 55, 187, 239, 105, 27, 233, 12, 165, 29, 47, 182, 80]
+const newowner2 = '0x65a6c29258a706b137bbef691be90ca51d2fb650'
 const _inputs = [{ blknum1, txindex1, oindex1 }, { blknum2, txindex2, oindex2 }]
 
 const _currency = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
@@ -42,14 +42,14 @@ const expectedReturn = {
   }
 }
 
-const Omg = new OMG("watcher_url", childChainPort, "web3_provider", "plasma_addr")
+const Omg = new OMG('watcher_url', childChainPort, 'web3_provider', 'plasma_addr')
 
-//Declaring as Omg as OMG
+// Declaring as Omg as OMG
 describe('calls OMG functions', () => {
   it('should generate, sign, encode and submit transaction', async () => {
     let utxoStore = nock('http://omg-childchain.co')
-                .post('/')
-                .reply(200, expectedReturn)
+      .post('/')
+      .reply(200, expectedReturn)
     let sentTransaction = await Omg.sendTransaction(_inputs, _currency, _outputs, alicePriv)
     assert.deepEqual(sentTransaction, expectedReturn)
   })

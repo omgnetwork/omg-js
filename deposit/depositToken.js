@@ -4,7 +4,7 @@
 *
 */
 
-const Web3 = require('web3');
+const Web3 = require('web3')
 const abi = require('./plasmaAbi')
 
 const depositToken = async function (amount, plasmaAddr, fromAddr, tokenAddr, provider) {
@@ -22,3 +22,4 @@ const depositToken = async function (amount, plasmaAddr, fromAddr, tokenAddr, pr
   return txHash.transactionHash
 }
 
+module.exports = depositToken

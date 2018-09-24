@@ -1,16 +1,15 @@
-//submit tx on JSON
+// submit tx on JSON
 
-const fetch = require('node-fetch');
+const fetch = require('node-fetch')
 
 let submitTx = async (tx, url) => {
-
   let payload = {
-    "params": {
-      "transaction": tx
+    'params': {
+      'transaction': tx
     },
-    "method": "submit",
-    "jsonrpc": "2.0",
-    "id": 0
+    'method': 'submit',
+    'jsonrpc': '2.0',
+    'id': 0
   }
 
   let resp = await fetch(url, {
@@ -22,6 +21,3 @@ let submitTx = async (tx, url) => {
 }
 
 module.exports = submitTx
-
-
-
