@@ -1,9 +1,11 @@
 // Test for RLP Encode function
 // Test Case based on Demo1 in omg repo
 
-const { rlpEncodeArr, ArrToUint8 } = require('../transaction/rlp')
-const byteArrToBuffer = require('../helpers/byteArrToBuffer')
-var assert = require('assert')
+const { rlpEncodeArr } = require('../transaction/rlp')
+const mocha = require('mocha')
+const describe = mocha.describe
+const it = mocha.it
+const assert = require('chai').assert
 
 /* dummy data */
 // this does not have signature

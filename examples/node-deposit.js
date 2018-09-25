@@ -10,6 +10,7 @@ const Omg = new OMG('watcher_url', 'childChainLocal', 'http://localhost:8545', '
 async function depositAndGetBlock () {
   let depositEth = await Omg.depositEth('2', alice)
   let blockNum = await Omg.getDepositBlock(depositEth)
+  return blockNum
 }
 
 depositAndGetBlock()

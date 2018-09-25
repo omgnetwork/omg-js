@@ -1,5 +1,9 @@
-const assert = require('assert')
+const mocha = require('mocha')
+const describe = mocha.describe
+const it = mocha.it
+const assert = require('chai').assert
 const newTx = require('../transaction/newTx')
+
 const sampleTx = {
   amount1: 7,
   amount2: 3,
@@ -26,7 +30,6 @@ const oindex1 = 0
 const oindex2 = 0
 const txindex1 = 0
 const txindex2 = 0
-const cur12 = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
 const newowner1 = [116, 90, 78, 212, 118, 51, 233, 165, 245, 155,
   19, 234, 50, 191, 20, 131, 178, 219, 41, 65]

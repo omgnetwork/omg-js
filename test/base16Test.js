@@ -1,7 +1,10 @@
 // Test for Base16 Encode and Decode function
 // Test Case based on Demo1 in omg repo
 
-var assert = require('assert')
+const mocha = require('mocha')
+const describe = mocha.describe
+const it = mocha.it
+const assert = require('chai').assert
 const { base16Encode, base16Decode } = require('../transaction/base16')
 
 describe('Base16 functions', () => {

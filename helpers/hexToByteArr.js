@@ -5,7 +5,7 @@ const hexToByteArr = (hex) => {
   if (hex.includes('0x')) {
     var hex = hex.replace('0x', '')
   }
-  let buffered = new Buffer(hex, 'hex')
+  let buffered = Buffer.from(hex, 'hex')
   let uint8Value = new Uint8Array(buffered)
   return uint8Value
 }

@@ -1,7 +1,8 @@
 const OMG = require('../omg')
-var assert = require('assert')
-const chai = require('chai')
-const expect = chai.expect
+const mocha = require('mocha')
+const describe = mocha.describe
+const it = mocha.it
+const assert = require('chai').assert
 const nock = require('nock')
 
 // This test assumes that the E
@@ -21,7 +22,6 @@ const oindex1 = 0
 const oindex2 = 0
 const txindex1 = 0
 const txindex2 = 0
-const cur12 = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
 // const newowner1 = [116, 90, 78, 212, 118, 51, 233, 165, 245, 155, 19, 234, 50, 191, 20, 131, 178, 219, 41, 65]
 const newowner1 = '0x745a4ed47633e9a5f59b13ea32bf1483b2db2941'
@@ -50,6 +50,7 @@ describe('calls OMG functions', () => {
     let utxoStore = nock('http://omg-childchain.co')
       .post('/')
       .reply(200, expectedReturn)
+    console.log(utxoStore)
     let sentTransaction = await Omg.sendTransaction(_inputs, _currency, _outputs, alicePriv)
     assert.deepEqual(sentTransaction, expectedReturn)
   })

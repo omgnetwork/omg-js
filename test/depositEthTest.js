@@ -1,8 +1,10 @@
 // testing ETH function
-const assert = require('assert')
-const depositEth = require('../deposit/depositEth')
+const mocha = require('mocha')
+const describe = mocha.describe
+const it = mocha.it
 const chai = require('chai')
 const expect = chai.expect
+const depositEth = require('../deposit/depositEth')
 
 describe('deposit ETH function', () => {
   it('should throw a web3 error on invalid provider', async () => {
@@ -14,8 +16,7 @@ describe('deposit ETH function', () => {
     try {
       await depositEth(amount, fromAddr, contractAddr, provider)
     } catch (err) {
-      expect(err).to.contain(thrownError);
+      expect(err).to.contain(thrownError)
     }
-    
   })
 })
