@@ -1,5 +1,8 @@
 const { hash, signature, zeroSignature, singleSign } = require('../transaction/signature')
+const mocha = require('mocha')
 var assert = require('assert')
+const describe = mocha.describe
+const it = mocha.it
 
 const hashedTx =
 new Uint8Array([41, 144, 16, 100, 71, 248, 218, 223, 141, 45, 112, 193, 233, 207, 77, 182, 81,
