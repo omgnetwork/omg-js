@@ -2,7 +2,7 @@
 
 const fetch = require('node-fetch')
 
-let submitTx = async (tx, url) => {
+async function submitTx (tx, url) {
   let payload = {
     'params': {
       'transaction': tx

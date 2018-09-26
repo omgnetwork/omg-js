@@ -14,7 +14,7 @@ function Transaction (inputs, currency, outputs) {
   this.txindex2 = inputs[1].txindex2
 }
 
-const newTransaction = (inputs, currency, outputs) => {
+function newTransaction (inputs, currency, outputs) {
   let transaction = new Transaction(inputs, currency, outputs)
   return transaction
 }

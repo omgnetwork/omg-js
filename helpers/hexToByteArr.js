@@ -1,6 +1,6 @@
 // convert hex to byteArr
 
-const hexToByteArr = (hex) => {
+function hexToByteArr (hex) {
   // delete 0x prefix if exists
   if (hex.includes('0x')) {
     hex = hex.replace('0x', '')

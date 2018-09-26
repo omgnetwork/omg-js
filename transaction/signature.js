@@ -4,14 +4,14 @@ const keccak256 = require('js-sha3').keccak256
 const signatureDigest = require('./sigDigest')
 const { rlpEncodeArr } = require('./rlp')
 
-const hash = async (message) => {
+async function hash (message) {
   let hexValue = await keccak256(message)
   let bufferValue = Buffer.from(hexValue, 'hex')
   let uint8Value = new Uint8Array(bufferValue)
   return uint8Value
 }
 
-const signature = async (encodedTx, privateKey) => {
+async function signature (encodedTx, privateKey) {
   // TODO: Add logic to add 0 to function without message inputs
 
   let hashedMsg = await hash(encodedTx)
@@ -21,13 +21,13 @@ const signature = async (encodedTx, privateKey) => {
 }
 
 // for when there is encodedTx but, no privateKey available
-const zeroSignature = () => {
+function zeroSignature () {
   let zeroBytes = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
   return zeroBytes
 }
 
 // sign an encoded signature
-const signedEncode = async (tx, sig1, sig2) => {
+async function signedEncode (tx, sig1, sig2) {
   let transactionBody = [
     tx.blknum1,
     tx.txindex1,
@@ -48,7 +48,7 @@ const signedEncode = async (tx, sig1, sig2) => {
   return rlpEncoded
 }
 
-const singleSign = async (tx, priv1) => {
+async function singleSign (tx, priv1) {
   // transform tx into array format
   let txArray =
     [

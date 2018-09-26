@@ -2,7 +2,7 @@
 
 const fetch = require('node-fetch')
 
-let getBlock = async (blockhash, childchainUrl) => {
+async function getBlock (blockhash, childchainUrl) {
   let payload = {
     'params': {
       'hash': blockhash

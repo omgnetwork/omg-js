@@ -3,7 +3,7 @@
 *
 */
 
-const getDepositBlock = async function (txhash, web3Provider) {
+async function getDepositBlock (txhash, web3Provider) {
   let Web3 = require('web3')
   let web3 = new Web3(web3Provider)
 
