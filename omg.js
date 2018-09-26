@@ -23,7 +23,7 @@ global.Buffer = global.Buffer || require('buffer').Buffer
 */
 
 class OMG {
-  constructor(watcherUrl, childChainUrl, web3Provider, plasmaAddr) {
+  constructor (watcherUrl, childChainUrl, web3Provider, plasmaAddr) {
     this.watcherUrl = watcherUrl
     this.childChainUrl = childChainUrl
     this.web3Provider = web3Provider
@@ -39,7 +39,7 @@ class OMG {
    * @return {object} success/error message with `tx_index`, `tx_hash` and `blknum` params
    */
 
-  async sendTransaction(inputs, currency, outputs, privKey) {
+  async sendTransaction (inputs, currency, outputs, privKey) {
     // Validate arguments
     validateInputs(inputs)
     validateCurrency(currency)
@@ -72,7 +72,7 @@ class OMG {
    * @return {array} arrays of UTXOs
    */
 
-  async getUtxo(address) {
+  async getUtxo (address) {
     validateAddress(address)
     return getUtxo(this.watcherUrl, address)
   }
@@ -86,7 +86,7 @@ class OMG {
    * @return {String} transaction hash of the deposited ETH
    */
 
-  async depositEth(amount, fromAddr) {
+  async depositEth (amount, fromAddr) {
     validateAmount(amount)
     validateAddress(fromAddr)
     return depositEth(amount, fromAddr, this.plasmaAddr, this.web3Provider)
@@ -102,7 +102,7 @@ class OMG {
    * @return {String} transaction hash of the deposited Token
    */
 
-  async depositToken(fromAddr, tokenAddr, amount) {
+  async depositToken (fromAddr, tokenAddr, amount) {
     validateAddress(fromAddr)
     validateAddress(tokenAddr)
     validateAmount(amount)
@@ -117,13 +117,13 @@ class OMG {
    * @return {Number} block number of the deposited block
    */
 
-  async getDepositBlock(txhash) {
+  async getDepositBlock (txhash) {
     validateTransactionHash(txhash)
     return getDepositBlock(txhash, this.web3Provider)
   }
 }
 
-function validateInputs(arg) {
+function validateInputs (arg) {
   // TODO
   const valid = true
   if (!valid) {
@@ -131,7 +131,7 @@ function validateInputs(arg) {
   }
 }
 
-function validateOutputs(arg) {
+function validateOutputs (arg) {
   // TODO
   const valid = true
   if (!valid) {
@@ -139,7 +139,7 @@ function validateOutputs(arg) {
   }
 }
 
-function validateCurrency(arg) {
+function validateCurrency (arg) {
   // TODO
   const valid = true
   if (!valid) {
@@ -147,7 +147,7 @@ function validateCurrency(arg) {
   }
 }
 
-function validatePrivateKey(arg) {
+function validatePrivateKey (arg) {
   // TODO
   const valid = true
   if (!valid) {
@@ -155,7 +155,7 @@ function validatePrivateKey(arg) {
   }
 }
 
-function validateAddress(arg) {
+function validateAddress (arg) {
   // TODO
   const valid = true
   if (!valid) {
@@ -163,7 +163,7 @@ function validateAddress(arg) {
   }
 }
 
-function validateAmount(arg) {
+function validateAmount (arg) {
   // TODO
   const valid = true
   if (!valid) {
@@ -171,7 +171,7 @@ function validateAmount(arg) {
   }
 }
 
-function validateTransactionHash(arg) {
+function validateTransactionHash (arg) {
   // TODO
   const valid = true
   if (!valid) {
