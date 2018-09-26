@@ -1,16 +1,15 @@
-//Get_block on JSON RPC
+// Get_block on JSON RPC
 
-const fetch = require('node-fetch');
+const fetch = require('node-fetch')
 
 let getBlock = async (blockhash, childchainUrl) => {
-
   let payload = {
-    "params": {
-      "hash": blockhash
+    'params': {
+      'hash': blockhash
     },
-    "method": "get_block",
-    "jsonrpc": "2.0",
-    "id": 0
+    'method': 'get_block',
+    'jsonrpc': '2.0',
+    'id': 0
   }
 
   let resp = await fetch(childchainUrl, {
@@ -21,4 +20,4 @@ let getBlock = async (blockhash, childchainUrl) => {
   return resp.json()
 }
 
-module.exports = getBlock;
+module.exports = getBlock

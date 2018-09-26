@@ -1,4 +1,4 @@
 
 class InvalidArgumentError extends Error {}
 
-module.exports = InvalidArgumentError;
+module.exports = InvalidArgumentError

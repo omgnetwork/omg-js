@@ -1,14 +1,13 @@
-//convert hex to byteArr
+// convert hex to byteArr
 
 const hexToByteArr = (hex) => {
-    //delete 0x prefix if exists
-    if(hex.includes("0x")){
-        var hex = hex.replace("0x", "")
-    }
-    let buffered = new Buffer(hex, "hex")
-    let uint8Value = new Uint8Array(buffered)
-    return uint8Value
+  // delete 0x prefix if exists
+  if (hex.includes('0x')) {
+    hex = hex.replace('0x', '')
+  }
+  let buffered = Buffer.from(hex, 'hex')
+  let uint8Value = new Uint8Array(buffered)
+  return uint8Value
 }
 
-module.exports = hexToByteArr;
-
+module.exports = hexToByteArr

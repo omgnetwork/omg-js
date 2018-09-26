@@ -1,9 +1,13 @@
 ## OMG.JS 
+[![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
+
+[![JavaScript Style Guide](https://cdn.rawgit.com/standard/standard/master/badge.svg)](https://github.com/standard/standard)
+
 ### JavaScript Library Implementation for Tesuji 
 
 IMPORTANT: 
-* This is a first implementation of a JS library, things WILL break
 * this was developed against the `elixir-omg` specific commit hash: dc4d176d3f5d27030e1e627bd5cc0a630690c178 
+* This is a first implementation of a JS library, things WILL break
 
 This is a library that allows a Client/Server JavaScript application to Interact with the Tesuji Plasma
 So that you could:

@@ -16057,13 +16057,13 @@ const singleSign = async (tx, priv1) => {
     //generate second signature (zero signature function)
     let sig2 = await zeroSignature()
     //generate signed_tx_bytes (with another Signed.encode function)
-    let signed_tx_bytes = await signedEncode(tx, sig1, sig2)
+    let signedTxBytes = await signedEncode(tx, sig1, sig2)
     //putting it all together and return the object
     let signedTransaction = {
         raw_tx: tx,
         sig1,
         sig2,
-        signed_tx_bytes
+        signedTxBytes
     }
     
     return signedTransaction
