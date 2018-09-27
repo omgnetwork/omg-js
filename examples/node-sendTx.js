@@ -1,11 +1,12 @@
 // example node app to run OMG.JS Library
 // IMPORTANT: Do not store Privatekey as strings in production apps
 
-// let childChainPort = "http://35.200.30.83:9656"
-let childChainLocal = 'http://localhost:9656'
+const ChildChain = require('../packages/omg-js-childchain')
 
-const OMG = require('../omg')
-const Omg = new OMG('watcher_url', childChainLocal, 'web3_provider', 'plasma_addr')
+const watcherUrl = 'http://localhost:4000'
+const childChainUrl = 'http://localhost:9656'
+
+const childChain = new ChildChain(watcherUrl, childChainUrl)
 
 let input1 = { blknum1: 1404001, txindex1: 0, oindex1: 0 }
 let input2 = { blknum2: 0, txindex2: 0, oindex2: 0 }
@@ -16,4 +17,4 @@ let owner = [
 ]
 let alicePriv = '0xe6dfd35b7c5b4f2e69b57756c926a89b185c5e7e0551a604c890e6a840192ae4'
 
-Omg.sendTransaction([input1, input2], curr, owner, alicePriv)
+childChain.sendTransaction([input1, input2], curr, owner, alicePriv)

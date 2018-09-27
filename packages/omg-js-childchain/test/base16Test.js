@@ -5,7 +5,7 @@ const mocha = require('mocha')
 const describe = mocha.describe
 const it = mocha.it
 const assert = require('chai').assert
-const { base16Encode, base16Decode } = require('../transaction/base16')
+const { base16Encode, base16Decode } = require('../src/transaction/base16')
 
 describe('Base16 functions', () => {
   it('should encode base16', async () => {

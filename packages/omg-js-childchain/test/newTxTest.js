@@ -2,7 +2,7 @@ const mocha = require('mocha')
 const describe = mocha.describe
 const it = mocha.it
 const assert = require('chai').assert
-const newTx = require('../transaction/newTx')
+const newTx = require('../src/transaction/newTx')
 
 const sampleTx = {
   amount1: 7,

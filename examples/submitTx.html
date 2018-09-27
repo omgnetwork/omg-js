@@ -32,13 +32,13 @@
     const _outputs = [{ newowner1, amount1 }, { newowner2, amount2 }]
 
     //omg.sendTransaction(_inputs, _currency, _outputs, alicePriv)
-    //var Omg = new OMG(childChainLocal)
+    //var childChain = new ChildChain(childChainLocal)
   </script>
 </head>
 
 <body>
   <h1>SUBMIT TO PLASMA CHAIN</h1>
-  <button type="button" onClick="omg.sendTransaction(_inputs, _currency, _outputs, alicePriv);">Submit TX</button>
+  <button type="button" onClick="childChain.sendTransaction(_inputs, _currency, _outputs, alicePriv);">Submit TX</button>
 </body>
 
 </html>

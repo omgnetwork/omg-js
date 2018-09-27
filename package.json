@@ -1,30 +1,30 @@
 {
   "name": "omg-js",
   "version": "0.0.1",
+  "private": true,
   "description": "JavaScript Library to interact with OMG Network",
-  "main": "omg.js",
   "scripts": {
-    "test": "./node_modules/.bin/standard && ./node_modules/mocha/bin/mocha",
-    "integration": "mocha --timeout 30000 ./test/integration/deposit-transact-eth",
-    "build": "browserify browserify.js --standalon Omg > ./dist/bundle.js"
+    "test": "./node_modules/.bin/standard && ./node_modules/.bin/mocha packages/omg-js-childchain/test packages/omg-js-rootchain/test",
+    "build": "browserify browserify.js --standalone ChildChain > ./dist/bundle.js"
   },
-  "author": "Pong Cheecharern<pong@omise.co>",
-  "license": "MIT",
-  "dependencies": {
-    "base-x": "^3.0.4",
-    "buffer": "^5.2.0",
-    "chai": "^4.1.2",
-    "eth-sig-util": "^2.0.2",
-    "ethereumjs-util": "^5.2.0",
-    "http-request": "^0.7.0",
-    "js-sha3": "^0.8.0",
-    "nock": "^9.6.1",
-    "node-fetch": "^2.2.0",
-    "rlp": "^2.1.0",
-    "web3": "^1.0.0-beta.32"
+  "author": "OmiseGo",
+  "contributors": [
+    "Pong Cheecharern <pong@omise.co>",
+    "Kevin Sullivan <kevinsul@omise.co>"
+  ],
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/omisego/omg-js.git"
+  },
+  "bugs": {
+    "url": "https://github.com/omisego/omg-js/issues"
   },
   "devDependencies": {
+    "chai": "^4.1.2",
+    "lerna": "^3.4.0",
     "mocha": "^5.2.0",
+    "nock": "^9.6.1",
     "standard": "^12.0.1",
     "webpack": "^4.17.1",
     "webpack-cli": "^3.1.0"

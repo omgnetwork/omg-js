@@ -1,7 +1,6 @@
 var EthUtil = require('ethereumjs-util')
 var sigUtil = require('eth-sig-util')
-var hexToByteArr = require('../helpers/hexToByteArr')
-const byteArrToBuffer = require('../helpers/byteArrToBuffer')
+const { hexToByteArr, byteArrToBuffer } = require('omg-js-util')
 global.Buffer = global.Buffer || require('buffer').Buffer
 
 // call this is implementation of signature_digest function

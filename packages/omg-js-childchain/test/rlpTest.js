@@ -1,7 +1,7 @@
 // Test for RLP Encode function
 // Test Case based on Demo1 in omg repo
 
-const { rlpEncodeArr } = require('../transaction/rlp')
+const { rlpEncodeArr } = require('../src/transaction/rlp')
 const mocha = require('mocha')
 const describe = mocha.describe
 const it = mocha.it

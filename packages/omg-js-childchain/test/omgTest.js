@@ -1,4 +1,4 @@
-const OMG = require('../omg')
+const OMG = require('../src/index')
 const mocha = require('mocha')
 const describe = mocha.describe
 const it = mocha.it

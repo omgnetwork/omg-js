@@ -1,4 +1,4 @@
-const { hash, signature, zeroSignature, singleSign } = require('../transaction/signature')
+const { hash, signature, zeroSignature, singleSign } = require('../src/transaction/signature')
 const mocha = require('mocha')
 var assert = require('assert')
 const describe = mocha.describe
