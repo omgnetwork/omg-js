@@ -1,7 +1,7 @@
 // get UTXO from watcher
 const fetch = require('node-fetch')
 
-const getUtxo = async (watcherUrl, address) => {
+async function getUtxo (watcherUrl, address) {
   let resp = await fetch(`${watcherUrl}/account/utxo?address=${address}`)
   return resp.json()
 }

@@ -9,7 +9,7 @@ var elixirrlp = "<<67, 130, 252, 224, 225, 60, 202, 236, 180, 106, 224, 167, 220
 var encodedHash = "4382FCE0E13CCAECB46AE0A7DC0615B16FA5DE2AAC1AFF31F6702650B61CED1A"
 //output: <Buffer 43 82 fc e0 e1 3c ca ec b4 6a e0 a7 dc 06 15 b1 6f a5 de 2a ac 1a ff 31 f6 70 26 50 b6 1c ed 1a>
 */
-let base16Decode = async (encodedHash) => {
+async function base16Decode (encodedHash) {
   let lowerCaseHash = encodedHash.toLowerCase()
   let decoded = await JSON.stringify(bs16.decode(lowerCaseHash))
   let decodedObject = await JSON.parse(decoded).data

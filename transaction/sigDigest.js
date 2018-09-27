@@ -5,7 +5,7 @@ const byteArrToBuffer = require('../helpers/byteArrToBuffer')
 global.Buffer = global.Buffer || require('buffer').Buffer
 
 // call this is implementation of signature_digest function
-const signatureDigest = (hashed, priv) => {
+function signatureDigest (hashed, priv) {
   let buffedHash = byteArrToBuffer(hashed)
   let buffedPriv = byteArrToBuffer(priv)
   // let toBuffer = EthUtil.toBuffer(hashed)
