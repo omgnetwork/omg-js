@@ -42,9 +42,8 @@ class OMG {
    * @param {array} outputs - an array of two objects `[{newowner1, amount1},{newowner2, amount2}]`
    * @returns {object} success/error message with `tx_index`, `tx_hash` and `blknum` params
    * 
-   * @example 
-   * //sending ETH from Alice to Bob
-   * @see {@link ../examples/node-sendTx.js}
+   * @example
+   * //refer to node-sendTx.js
    */
 
   async sendTransaction (inputs, currency, outputs, privKey) {
@@ -94,8 +93,7 @@ class OMG {
    * @returns {String} transaction hash of the deposited ETH
    * 
    * @example 
-   * //depositing Token from Alice to Bob
-   * @see {@link ../examples/node-deposit.js}
+   * //refer to node-deposit.js
    */
 
   async depositEth (amount, fromAddr) {
