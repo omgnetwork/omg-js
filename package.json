@@ -1,10 +1,10 @@
 {
   "name": "omg-js",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "private": true,
   "description": "JavaScript Library to interact with OMG Network",
   "scripts": {
-    "postinstall": "lerna bootstrap --hoist"
+    "postinstall": "lerna bootstrap --hoist",
     "test": "./node_modules/.bin/standard && ./node_modules/.bin/mocha packages/omg-js-childchain/test packages/omg-js-rootchain/test",
     "build": "browserify browserify.js --standalone ChildChain > ./dist/bundle.js"
   },

@@ -1,13 +1,21 @@
 {
   "name": "omg-js-rootchain",
   "version": "0.1.0",
-  "main": "./src/index.js",
-  "scripts": {
-    "test": "../../node_modules/.bin/standard && ../../node_modules/mocha/bin/mocha"
-  },
-  "author": "",
+  "description": "Module to interact with the Ethereum RootChain",
+  "main": "src/index.js",
+  "author": "OmiseGo",
+  "contributors": [
+    "Pong Cheecharern <pong@omise.co>",
+    "Kevin Sullivan <kevinsul@omise.co>"
+  ],
   "license": "Apache-2.0",
-  "description": "",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/omisego/omg-js.git"
+  },
+  "bugs": {
+    "url": "https://github.com/omisego/omg-js/issues"
+  },
   "dependencies": {
     "omg-js-util": "^0.1.0",
     "web3-eth": "^1.0.0-beta.36",
