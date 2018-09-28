@@ -10,12 +10,15 @@ async function getDepositBlock (txhash, web3Provider) {
   let blockReceipt = await web3.eth.getTransactionReceipt(txhash, function (e, receipt) {
     return receipt
   })
-
-  let encodedBlkNum = '0x' + blockReceipt.logs[0].data.substring(66, 130)
+  
+  let encodedBlkNum = blockReceipt.logs[0].topics[2]
   let blkNum = Number(web3.eth.abi.decodeParameter('uint256', encodedBlkNum))
+  
   console.log(blkNum)
-
+  
   return blkNum
 }
 
 module.exports = getDepositBlock
+
+
