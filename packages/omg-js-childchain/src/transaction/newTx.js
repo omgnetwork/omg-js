@@ -1,3 +1,4 @@
+const debug = require('debug')('omg.childchain.newTransaction')
 
 // constructor for transaction object
 function Transaction (inputs, currency, outputs) {
@@ -16,6 +17,7 @@ function Transaction (inputs, currency, outputs) {
 
 function newTransaction (inputs, currency, outputs) {
   let transaction = new Transaction(inputs, currency, outputs)
+  debug(`new transaction: ${JSON.stringify(transaction)}`)
   return transaction
 }
 
