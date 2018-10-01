@@ -2,7 +2,7 @@ const mocha = require('mocha')
 const describe = mocha.describe
 const it = mocha.it
 const assert = require('chai').assert
-const getUtxo = require('../transaction/getUtxo')
+const getUtxo = require('../src/transaction/getUtxo')
 const nock = require('nock')
 
 let watcherUrl = 'http://omg-watcher'

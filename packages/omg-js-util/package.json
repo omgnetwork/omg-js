@@ -1,0 +1,19 @@
+{
+  "name": "omg-js-util",
+  "version": "0.1.0",
+  "description": "OMG util module",
+  "main": "src/index.js",
+  "author": "OmiseGo",
+  "contributors": [
+    "Pong Cheecharern <pong@omise.co>",
+    "Kevin Sullivan <kevinsul@omise.co>"
+  ],
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/omisego/omg-js.git"
+  },
+  "bugs": {
+    "url": "https://github.com/omisego/omg-js/issues"
+  }
+}

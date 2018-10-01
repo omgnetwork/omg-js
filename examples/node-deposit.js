@@ -2,15 +2,19 @@
 // You must have a Geth running with the specified account unlocked
 // dont forget to retrieve the plasma addr before running
 
-const alice = '0x3b9d59efb13029ad2873ab500c689d20707f76bc'
+const RootChain = require('../packages/omg-js-rootchain')
 
-const OMG = require('../omg')
-const Omg = new OMG('watcher_url', 'childChainLocal', 'http://localhost:8545', '0x49a3565c825fb94371b14a5172c48b041b263668')
+const rootChain = new RootChain('http://localhost:8545')
 
 async function depositAndGetBlock () {
-  let depositEth = await Omg.depositEth('2', alice)
-  let blockNum = await Omg.getDepositBlock(depositEth)
-  return blockNum
+  const amount = '2'
+  const alice = '0x3b9d59efb13029ad2873ab500c689d20707f76bc'
+  const plasmaContractAddress = '0x49a3565c825fb94371b14a5172c48b041b263668'
+
+  const txhash = await rootChain.depositEth(amount, alice, plasmaContractAddress)
+  console.log(`Deposited ${amount} eth into plasma contract, txhash = ${txhash}`)
+  const blockNumber = await rootChain.getDepositBlock(txhash)
+  console.log(`blockNumber = ${blockNumber}`)
 }
 
 depositAndGetBlock()

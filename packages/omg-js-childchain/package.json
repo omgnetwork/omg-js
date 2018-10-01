@@ -1,0 +1,30 @@
+{
+  "name": "omg-js-childchain",
+  "version": "0.1.0",
+  "description": "Module to interact with OMG ChildChain",
+  "main": "src/index.js",
+  "author": "OmiseGo",
+  "contributors": [
+    "Pong Cheecharern <pong@omise.co>",
+    "Kevin Sullivan <kevinsul@omise.co>"
+  ],
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/omisego/omg-js.git"
+  },
+  "bugs": {
+    "url": "https://github.com/omisego/omg-js/issues"
+  },
+  "dependencies": {
+    "base-x": "^3.0.4",
+    "buffer": "^5.2.0",
+    "eth-sig-util": "^2.0.2",
+    "ethereumjs-util": "^5.2.0",
+    "http-request": "^0.7.0",
+    "js-sha3": "^0.8.0",
+    "node-fetch": "^2.2.0",
+    "omg-js-util": "^0.1.0",
+    "rlp": "^2.1.0"
+  }
+}

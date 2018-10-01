@@ -1,0 +1,45 @@
+
+const Web3Eth = require('web3-eth')
+const Web3Utils = require('web3-utils')
+const plasmaAbi = require('./plasmaAbi')
+
+class RootChain {
+  constructor (web3Provider) {
+    this.eth = new Web3Eth(web3Provider)
+  }
+
+  async depositEth (amount, fromAddress, plasmaContractAddress) {
+    const receipt = await this.eth.sendTransaction({
+      from: fromAddress,
+      to: plasmaContractAddress,
+      value: Web3Utils.toWei(amount.toString(), 'ether'),
+      data: '0xd0e30db0' // TODO What's this data for?
+    })
+
+    return receipt.transactionHash
+  }
+
+  async depositToken (amount, plasmaContractAddress, fromAddress, tokenAddress) {
+    const plasmaContract = new this.eth.Contract(plasmaAbi.abi, plasmaContractAddress)
+    const depositData = plasmaContract.methods.depositFrom(fromAddress, tokenAddress, amount).encodeABI()
+    const receipt = await this.eth.sendTransaction({
+      from: fromAddress,
+      to: plasmaContractAddress,
+      data: depositData
+    })
+
+    return receipt.transactionHash
+  }
+
+  async getDepositBlock (txhash) {
+    const receipt = await this.eth.getTransactionReceipt(txhash)
+    if (!receipt) {
+      console.error(`Error - no transaction receipt found for ${txhash}`)
+      return null
+    }
+    const encodedBlockNumber = '0x' + receipt.logs[0].data.substring(66, 130)
+    return Number(this.eth.abi.decodeParameter('uint256', encodedBlockNumber))
+  }
+}
+
+module.exports = RootChain

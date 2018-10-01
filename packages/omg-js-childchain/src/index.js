@@ -3,12 +3,7 @@ const { singleSign, signedEncode } = require('./transaction/signature')
 const { base16Encode } = require('./transaction/base16')
 const submitTx = require('./transaction/submitRPC')
 const getUtxo = require('./transaction/getUtxo')
-const depositEth = require('./deposit/depositEth')
-const depositToken = require('./deposit/depositToken')
-const getDepositBlock = require('./deposit/getDepositBlock')
-const hexToByteArr = require('./helpers/hexToByteArr')
-const byteArrToBuffer = require('./helpers/byteArrToBuffer')
-const InvalidArgumentError = require('./errors/InvalidArgumentError')
+const { hexToByteArr, byteArrToBuffer, InvalidArgumentError } = require('omg-js-util')
 global.Buffer = global.Buffer || require('buffer').Buffer
 
 /*
@@ -22,12 +17,10 @@ global.Buffer = global.Buffer || require('buffer').Buffer
 *
 */
 
-class OMG {
-  constructor (watcherUrl, childChainUrl, web3Provider, plasmaAddr) {
+class ChildChain {
+  constructor (watcherUrl, childChainUrl) {
     this.watcherUrl = watcherUrl
     this.childChainUrl = childChainUrl
-    this.web3Provider = web3Provider
-    this.plasmaAddr = plasmaAddr
   }
   /**
    * generate, sign, encode and submit transaction to childchain
@@ -76,51 +69,6 @@ class OMG {
     validateAddress(address)
     return getUtxo(this.watcherUrl, address)
   }
-
-  /**
-   * Deposit ETH to Plasma contract
-   *
-   * @method depositEth
-   * @param {String} fromAddr
-   * @param {String} amount
-   * @return {String} transaction hash of the deposited ETH
-   */
-
-  async depositEth (amount, fromAddr) {
-    validateAmount(amount)
-    validateAddress(fromAddr)
-    return depositEth(amount, fromAddr, this.plasmaAddr, this.web3Provider)
-  }
-
-  /**
-   * Deposit ERC20 Token to Plasma contract
-   *
-   * @method depositToken
-   * @param {String} fromAddr
-   * @param {String} tokenAddr
-   * @param {String} amount
-   * @return {String} transaction hash of the deposited Token
-   */
-
-  async depositToken (fromAddr, tokenAddr, amount) {
-    validateAddress(fromAddr)
-    validateAddress(tokenAddr)
-    validateAmount(amount)
-    return depositToken(amount, this.plasmaAddr, fromAddr, tokenAddr, this.web3Provider)
-  }
-
-  /**
-   * get the block number of deposit ETH
-   *
-   * @method getDepositBlock
-   * @param {String} txhash
-   * @return {Number} block number of the deposited block
-   */
-
-  async getDepositBlock (txhash) {
-    validateTransactionHash(txhash)
-    return getDepositBlock(txhash, this.web3Provider)
-  }
 }
 
 function validateInputs (arg) {
@@ -163,20 +111,4 @@ function validateAddress (arg) {
   }
 }
 
-function validateAmount (arg) {
-  // TODO
-  const valid = true
-  if (!valid) {
-    throw new InvalidArgumentError()
-  }
-}
-
-function validateTransactionHash (arg) {
-  // TODO
-  const valid = true
-  if (!valid) {
-    throw new InvalidArgumentError()
-  }
-}
-
-module.exports = OMG
+module.exports = ChildChain
