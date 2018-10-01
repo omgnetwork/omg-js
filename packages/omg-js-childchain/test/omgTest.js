@@ -4,6 +4,7 @@ const describe = mocha.describe
 const it = mocha.it
 const assert = require('chai').assert
 const nock = require('nock')
+const debug = require('debug')('omg.childchain.test')
 
 // This test assumes that the E
 // Arguements for Omg.sendTransaction() function
@@ -50,7 +51,7 @@ describe('calls OMG functions', () => {
     let utxoStore = nock('http://omg-childchain.co')
       .post('/')
       .reply(200, expectedReturn)
-    console.log(utxoStore)
+    debug(utxoStore)
     let sentTransaction = await Omg.sendTransaction(_inputs, _currency, _outputs, alicePriv)
     assert.deepEqual(sentTransaction, expectedReturn)
   })

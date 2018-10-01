@@ -3,6 +3,7 @@
 // dont forget to retrieve the plasma addr before running
 
 const RootChain = require('../packages/omg-js-rootchain')
+const debug = require('debug')('omg.examples')
 
 const rootChain = new RootChain('http://localhost:8545')
 
@@ -12,9 +13,9 @@ async function depositAndGetBlock () {
   const plasmaContractAddress = '0x49a3565c825fb94371b14a5172c48b041b263668'
 
   const txhash = await rootChain.depositEth(amount, alice, plasmaContractAddress)
-  console.log(`Deposited ${amount} eth into plasma contract, txhash = ${txhash}`)
+  debug(`Deposited ${amount} eth into plasma contract, txhash = ${txhash}`)
   const blockNumber = await rootChain.getDepositBlock(txhash)
-  console.log(`blockNumber = ${blockNumber}`)
+  debug(`blockNumber = ${blockNumber}`)
 }
 
 depositAndGetBlock()
