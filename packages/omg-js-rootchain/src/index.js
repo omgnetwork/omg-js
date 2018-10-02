@@ -41,9 +41,9 @@ class RootChain {
       console.error(`Error - no transaction receipt found for ${txhash}`)
       return null
     }
-    const encodedBlockNumber = '0x' + receipt.logs[0].data.substring(66, 130)
-    debug(`encoded block number: ${encodedBlockNumber}`)
-    return Number(this.eth.abi.decodeParameter('uint256', encodedBlockNumber))
+    let encodedBlkNum = receipt.logs[0].topics[2]
+    debug(`encoded block number: ${encodedBlkNum}`)
+    return Number(this.eth.abi.decodeParameter('uint256', encodedBlkNum))
   }
 }
 
