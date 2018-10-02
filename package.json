@@ -6,7 +6,7 @@
   "scripts": {
     "postinstall": "lerna bootstrap --hoist",
     "test": "./node_modules/.bin/standard && ./node_modules/.bin/mocha packages/omg-js-childchain/test packages/omg-js-rootchain/test",
-    "build": "browserify browserify.js --standalone ChildChain > ./dist/bundle.js"
+    "build": "browserify browserify.js --standalone chain > ./dist/bundle.js"
   },
   "author": "OmiseGo",
   "contributors": [

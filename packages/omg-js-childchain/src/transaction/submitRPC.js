@@ -17,8 +17,8 @@ async function submitTx (tx, url) {
     mode: 'cors',
     body: JSON.stringify(payload)
   })
-  let response = resp.json()
-  debug(`rpc response is ${response}`)
+  let response = await resp.json()
+  debug(`rpc response is ${JSON.stringify(response)}`)
   return response
 }
 
