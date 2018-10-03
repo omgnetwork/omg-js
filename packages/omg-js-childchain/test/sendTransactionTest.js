@@ -1,4 +1,4 @@
-const ChildChain = require('../src/index')
+const ChildChain = require('../src')
 const mocha = require('mocha')
 const describe = mocha.describe
 const it = mocha.it
