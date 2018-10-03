@@ -43,21 +43,21 @@ const sampletxSigned = {
 }
 
 describe('signature', () => {
-  it('should hash a message', async () => {
-    let hashed = await hash(txInput)
+  it('should hash a message', () => {
+    let hashed = hash(txInput)
     assert.deepStrictEqual(hashed, hashedTx)
   })
-  it('should sign correct signature', async () => {
-    let signed = await signature(txInput, alicePriv)
+  it('should sign correct signature', () => {
+    let signed = signature(txInput, alicePriv)
     assert.deepStrictEqual(signedTX, signed)
   })
-  it('should produce 0 bytes for signature', async () => {
+  it('should produce 0 bytes for signature', () => {
     let zeroSig = zeroSignature()
     assert.deepStrictEqual(zeroBytes, zeroSig)
   })
   // test single sign
-  it('should sign the entire transaction object correctly', async () => {
-    let singleSigned = await singleSign(sampleTx, alicePriv)
+  it('should sign the entire transaction object correctly', () => {
+    let singleSigned = singleSign(sampleTx, alicePriv)
     assert.deepStrictEqual(singleSigned, sampletxSigned)
   })
   // test signedEncoded

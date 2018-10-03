@@ -13,8 +13,8 @@ let hashedValue = Buffer.from(new Uint8Array([41, 144, 16, 100, 71, 248, 218, 22
 let uint8Answer = new Uint8Array([179, 94, 231, 66, 67, 197, 6, 211, 36, 81, 9, 117, 1, 211, 238, 69, 177, 3, 228, 171, 97, 165, 197, 31, 209, 88, 108, 120, 65, 230, 52, 74, 63, 4, 110, 246, 242, 89, 122, 159, 95, 101, 212, 72, 233, 97, 238, 18, 136, 144, 102, 46, 27, 27, 197, 86, 235, 175, 57, 173, 215, 8, 187, 44, 27])
 
 describe('sigDigest', () => {
-  it('should sign hashed transaction with private key', async () => {
-    let signDigested = await signatureDigest(hashedValue, alicePriv)
+  it('should sign hashed transaction with private key', () => {
+    let signDigested = signatureDigest(hashedValue, alicePriv)
     assert.deepEqual(uint8Answer, signDigested)
   })
 })

@@ -45,14 +45,14 @@ class ChildChain {
     // turn privkey string to addr
     privKey = byteArrToBuffer(hexToByteArr(privKey))
     // creates new transaction object
-    let transactionBody = await newTransaction(inputs, currency, outputs)
+    let transactionBody = newTransaction(inputs, currency, outputs)
     // sign transaction
-    let signedTx = await singleSign(transactionBody, privKey)
+    let signedTx = singleSign(transactionBody, privKey)
     // encode transaction with RLP
     let obj = signedTx.raw_tx
-    let rlpEncodedTransaction = await signedEncode(obj, signedTx.sig1, signedTx.sig2)
+    let rlpEncodedTransaction = signedEncode(obj, signedTx.sig1, signedTx.sig2)
     // encode transaction with base16
-    let base16 = await base16Encode(rlpEncodedTransaction)
+    let base16 = base16Encode(rlpEncodedTransaction)
     // submit via JSON RPC
     return submitTx(base16, this.childChainUrl)
   }

@@ -5,17 +5,17 @@ const signatureDigest = require('./sigDigest')
 const { rlpEncodeArr } = require('./rlp')
 const debug = require('debug')('omg.childchain.signatureDigest')
 
-async function hash (message) {
-  let hexValue = await keccak256(message)
+function hash (message) {
+  let hexValue = keccak256(message)
   let bufferValue = Buffer.from(hexValue, 'hex')
   let uint8Value = new Uint8Array(bufferValue)
   return uint8Value
 }
 
-async function signature (encodedTx, privateKey) {
+function signature (encodedTx, privateKey) {
   // TODO: Add logic to add 0 to function without message inputs
 
-  let hashedMsg = await hash(encodedTx)
+  let hashedMsg = hash(encodedTx)
   let signed = signatureDigest(hashedMsg, privateKey)
   let signedToArr = Array.from(signed)
   return signedToArr
@@ -28,7 +28,7 @@ function zeroSignature () {
 }
 
 // sign an encoded signature
-async function signedEncode (tx, sig1, sig2) {
+function signedEncode (tx, sig1, sig2) {
   let transactionBody = [
     tx.blknum1,
     tx.txindex1,
@@ -45,11 +45,11 @@ async function signedEncode (tx, sig1, sig2) {
     sig2
   ]
 
-  let rlpEncoded = await rlpEncodeArr(transactionBody)
+  let rlpEncoded = rlpEncodeArr(transactionBody)
   return rlpEncoded
 }
 
-async function singleSign (tx, priv1) {
+function singleSign (tx, priv1) {
   // transform tx into array format
   let txArray =
     [
@@ -66,13 +66,13 @@ async function singleSign (tx, priv1) {
       tx.amount2
     ]
   // encode tx array
-  let encodedTx = await rlpEncodeArr(txArray)
+  let encodedTx = rlpEncodeArr(txArray)
   // generate first signature (signature function)
-  let sig1 = await signature(encodedTx, priv1)
+  let sig1 = signature(encodedTx, priv1)
   // generate second signature (zero signature function)
-  let sig2 = await zeroSignature()
+  let sig2 = zeroSignature()
   // generate signedTxBytes (with another Signed.encode function)
-  let signedTxBytes = await signedEncode(tx, sig1, sig2)
+  let signedTxBytes = signedEncode(tx, sig1, sig2)
   // putting it all together and return the object
   let signedTransaction = {
     raw_tx: tx,
