@@ -17,6 +17,7 @@
     "url": "https://github.com/omisego/omg-js/issues"
   },
   "dependencies": {
+    "debug": "^4.0.1",
     "omg-js-util": "^0.1.0",
     "web3-eth": "^1.0.0-beta.36",
     "web3-utils": "^1.0.0-beta.36"

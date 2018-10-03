@@ -1,6 +1,6 @@
 // submit tx on JSON
-
 const fetch = require('node-fetch')
+const debug = require('debug')('omg.childchain.submitTx')
 
 async function submitTx (tx, url) {
   let payload = {
@@ -17,7 +17,9 @@ async function submitTx (tx, url) {
     mode: 'cors',
     body: JSON.stringify(payload)
   })
-  return resp.json()
+  let response = await resp.json()
+  debug(`rpc response is ${JSON.stringify(response)}`)
+  return response
 }
 
 module.exports = submitTx

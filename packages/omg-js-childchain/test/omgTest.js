@@ -47,10 +47,9 @@ const Omg = new OMG('watcher_url', childChainPort, 'web3_provider', 'plasma_addr
 // Declaring as Omg as OMG
 describe('calls OMG functions', () => {
   it('should generate, sign, encode and submit transaction', async () => {
-    let utxoStore = nock('http://omg-childchain.co')
+    nock('http://omg-childchain.co')
       .post('/')
       .reply(200, expectedReturn)
-    console.log(utxoStore)
     let sentTransaction = await Omg.sendTransaction(_inputs, _currency, _outputs, alicePriv)
     assert.deepEqual(sentTransaction, expectedReturn)
   })

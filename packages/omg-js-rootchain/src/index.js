@@ -2,6 +2,7 @@
 const Web3Eth = require('web3-eth')
 const Web3Utils = require('web3-utils')
 const plasmaAbi = require('./plasmaAbi')
+const debug = require('debug')('omg.rootchain')
 
 class RootChain {
   constructor (web3Provider) {
@@ -15,7 +16,8 @@ class RootChain {
       value: Web3Utils.toWei(amount.toString(), 'ether'),
       data: '0xd0e30db0' // TODO What's this data for?
     })
-
+    debug(`deposit receipt: ${receipt}`)
+    debug(`returned transaction hash: ${receipt.transactionHash}`)
     return receipt.transactionHash
   }
 
@@ -28,6 +30,8 @@ class RootChain {
       data: depositData
     })
 
+    debug(`depositToken receipt: ${receipt}`)
+    debug(`depositToken transaction hash: ${receipt.transactionHash}`)
     return receipt.transactionHash
   }
 
@@ -37,8 +41,9 @@ class RootChain {
       console.error(`Error - no transaction receipt found for ${txhash}`)
       return null
     }
-    const encodedBlockNumber = '0x' + receipt.logs[0].data.substring(66, 130)
-    return Number(this.eth.abi.decodeParameter('uint256', encodedBlockNumber))
+    let encodedBlkNum = receipt.logs[0].topics[2]
+    debug(`encoded block number: ${encodedBlkNum}`)
+    return Number(this.eth.abi.decodeParameter('uint256', encodedBlkNum))
   }
 }
 
