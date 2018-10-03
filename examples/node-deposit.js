@@ -8,8 +8,8 @@ const rootChain = new RootChain('http://localhost:8545')
 
 async function depositAndGetBlock () {
   const amount = '2'
-  const alice = '0x3b9d59efb13029ad2873ab500c689d20707f76bc'
-  const plasmaContractAddress = '0x49a3565c825fb94371b14a5172c48b041b263668'
+  const alice = '0x512c66a21ed773dd1af5b0b4969bd183cbbbe2dd'
+  const plasmaContractAddress = '0xc93d606c071b23fd8015a77ce438dd0c1069e0da'
 
   const txhash = await rootChain.depositEth(amount, alice, plasmaContractAddress)
   console.log(`Deposited ${amount} eth into plasma contract, txhash = ${txhash}`)

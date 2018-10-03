@@ -1,6 +1,6 @@
 // encoding & decoding to RLP
-var RLP = require('rlp')
-
+const RLP = require('rlp')
+const debug = require('debug')('omg.childchain.rlp')
 /*
 struct
 [
@@ -23,10 +23,10 @@ struct
 async function rlpEncodeArr (rawTx) {
   // if is Array, turn into Uint8 and Transform to Buffer
   let arr = await ArrToUint8(rawTx)
-
   let encoded = RLP.encode(arr)
   let stringifyJSON = await JSON.stringify(encoded)
   let rlpEncoded = await JSON.parse(stringifyJSON).data
+  debug(`rlp encoded array is: ${rlpEncoded}`)
   return rlpEncoded
 }
 

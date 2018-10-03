@@ -3,6 +3,7 @@ global.Buffer = global.Buffer || require('buffer').Buffer
 const keccak256 = require('js-sha3').keccak256
 const signatureDigest = require('./sigDigest')
 const { rlpEncodeArr } = require('./rlp')
+const debug = require('debug')('omg.childchain.signatureDigest')
 
 async function hash (message) {
   let hexValue = await keccak256(message)
@@ -79,7 +80,7 @@ async function singleSign (tx, priv1) {
     sig2,
     signedTxBytes
   }
-
+  debug(`signed transaction object is: ${JSON.stringify(signedTransaction)}`)
   return signedTransaction
 }
 
