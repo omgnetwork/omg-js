@@ -1,6 +1,3 @@
-const mocha = require('mocha')
-const describe = mocha.describe
-const it = mocha.it
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 const ChildChain = require('../src')
@@ -11,21 +8,24 @@ const assert = chai.assert
 
 const watcherUrl = 'http://omg-watcher'
 
-describe('getUtxo', () => {
+describe('getBalance', () => {
   it('should return object with empty array as utxo with an address', async () => {
     const address = '0xd72afdfa06ae5857a639051444f7608fea1528d4'
-    const expectedObject = {
-      utxos: [],
-      address
-    }
+    const expectedObject = [{
+      currency: '00000000000000000000',
+      balance: 1000000000000000000
+    }]
 
     nock(watcherUrl)
-      .get(`/utxos?address=${address}`)
+      .get(`/account/${address}/balance`)
       .reply(200, { result: 'success', data: expectedObject })
 
     const childChain = new ChildChain(watcherUrl, '')
-    const returnUtxo = await childChain.getUtxos(address)
-    assert.deepEqual(expectedObject, returnUtxo)
+    const result = await childChain.getBalance(address)
+    assert(Array.isArray(result))
+    assert.equal(result.length, 1)
+    assert.equal(expectedObject[0].currency, result[0].currency)
+    assert.equal(expectedObject[0].balance.toString(), result[0].balance.toString())
   })
 
   it('should throw an error on failure', async () => {
@@ -36,10 +36,10 @@ describe('getUtxo', () => {
     }
 
     nock(watcherUrl)
-      .get(`/utxos?address=${address}`)
+      .get(`/account/${address}/balance`)
       .reply(200, { result: 'error', data: errorObject })
 
     const childChain = new ChildChain(watcherUrl, '')
-    return assert.isRejected(childChain.getUtxos(address), Error, errorObject.description)
+    return assert.isRejected(childChain.getBalance(address), Error, errorObject.description)
   })
 })

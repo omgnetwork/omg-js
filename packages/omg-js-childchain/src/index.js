@@ -2,7 +2,7 @@ const newTransaction = require('./transaction/newTx')
 const { singleSign, signedEncode } = require('./transaction/signature')
 const { base16Encode } = require('./transaction/base16')
 const submitTx = require('./transaction/submitRPC')
-const getUtxo = require('./transaction/getUtxo')
+const watcherApi = require('./watcherApi')
 const { hexToByteArr, byteArrToBuffer, InvalidArgumentError } = require('omg-js-util')
 global.Buffer = global.Buffer || require('buffer').Buffer
 
@@ -58,16 +58,29 @@ class ChildChain {
   }
 
   /**
-   * Obtain UTXO of an address
+   * Obtain UTXOs of an address
    *
-   * @method getUtxo
+   * @method getUtxos
    * @param {String} address
    * @return {array} arrays of UTXOs
    */
 
-  async getUtxo (address) {
+  async getUtxos (address) {
     validateAddress(address)
-    return getUtxo(this.watcherUrl, address)
+    return watcherApi.get(`${this.watcherUrl}/utxos?address=${address}`)
+  }
+
+  /**
+   * Get the balance of an address
+   *
+   * @method getBalance
+   * @param {String} address
+   * @return {array} array of balances (one per currency)
+   */
+
+  async getBalance (address) {
+    validateAddress(address)
+    return watcherApi.get(`${this.watcherUrl}/account/${address}/balance`)
   }
 }
 

@@ -24,6 +24,7 @@
     "ethereumjs-util": "^5.2.0",
     "http-request": "^0.7.0",
     "js-sha3": "^0.8.0",
+    "json-bigint": "^0.3.0",
     "node-fetch": "^2.2.0",
     "omg-js-util": "^0.1.0",
     "rlp": "^2.1.0"
