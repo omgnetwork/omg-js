@@ -13,6 +13,7 @@ async function get (url) {
   const body = await resp.text()
   let json
   try {
+    // Need to use a JSON parser capable of handling uint256
     json = JSONBigNumber.parse(body)
   } catch (err) {
     throw new WatcherError('Unknown server error')
