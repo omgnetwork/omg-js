@@ -1,6 +1,6 @@
 {
   "name": "omg-js-childchain",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Module to interact with OMG ChildChain",
   "main": "src/index.js",
   "author": "OmiseGo",
@@ -26,7 +26,7 @@
     "js-sha3": "^0.8.0",
     "json-bigint": "^0.3.0",
     "node-fetch": "^2.2.0",
-    "omg-js-util": "^0.1.0",
+    "omg-js-util": "^0.1.1",
     "rlp": "^2.1.0"
   }
 }
