@@ -5,10 +5,26 @@ const plasmaAbi = require('./plasmaAbi')
 const debug = require('debug')('omg.rootchain')
 
 class RootChain {
+
+  /**
+  *Summary: Interact with Tesuji Plasma Rootchain from JavaScript (Node.js and Browser)
+  *Description: allows user to interact with Tesuji Plasma Rootchain (Ethereum) from JavaScript.
+  *
+  *@param {string} web3Provider contains the url of the watcher server
+  *
+  */
   constructor (web3Provider) {
     this.eth = new Web3Eth(web3Provider)
   }
-
+  /**
+   * deposit ETH to rootchain
+   *
+   * @method depositEth
+   * @param {number} amount amount of ETH to deposit
+   * @param {string} fromAddress address to make the deposit from
+   * @param {string} plasmaContractAddress address of the plasma contract
+   * @return {string} transaction Hash of the deposit
+   */
   async depositEth (amount, fromAddress, plasmaContractAddress) {
     const receipt = await this.eth.sendTransaction({
       from: fromAddress,
@@ -20,6 +36,17 @@ class RootChain {
     debug(`returned transaction hash: ${receipt.transactionHash}`)
     return receipt.transactionHash
   }
+
+   /**
+   * deposit Token to rootchain
+   *
+   * @method depositToken
+   * @param {number} amount amount of ETH to deposit
+   * @param {string} plasmaContractAddress address of the plasma contract
+   * @param {string} fromAddress address to make the deposit from
+   * @param {string} tokenAddress address of the ERC20 Token
+   * @return {string} transaction Hash of the deposit
+   */
 
   async depositToken (amount, plasmaContractAddress, fromAddress, tokenAddress) {
     const plasmaContract = new this.eth.Contract(plasmaAbi.abi, plasmaContractAddress)
@@ -34,6 +61,14 @@ class RootChain {
     debug(`depositToken transaction hash: ${receipt.transactionHash}`)
     return receipt.transactionHash
   }
+
+  /**
+   * get the block number of the deposit in the childchain
+   *
+   * @method getDepositBlock
+   * @param {string} txhash transaction hash
+   * @return {number} block number of the deposit inside the childchain
+   */
 
   async getDepositBlock (txhash) {
     const receipt = await this.eth.getTransactionReceipt(txhash)
