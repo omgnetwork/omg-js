@@ -42,7 +42,7 @@ you could use import each one seperately, or use both via importing omg-js modul
 
 #### Documentation
 
-[Documentation for omg-js ](docs/index.html)
+[Documentation for omg-js ](http://omisego.github.io/omg-js)
 
 #### Example Implementations
 
