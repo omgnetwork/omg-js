@@ -7,11 +7,11 @@ const { hexToByteArr, byteArrToBuffer, InvalidArgumentError } = require('omg-js-
 global.Buffer = global.Buffer || require('buffer').Buffer
 
 /**
-*Summary: Interact with Tesuji Plasma Childchain from JavaScript (Node.js and Browser)
-*Description: allows user to interact with Tesuji Plasma from JavaScript. look up examples for implementations in boith Client and Server
+*Interact with Tesuji Plasma Childchain from JavaScript (Node.js and Browser)
 *
 *@param {string} watcherUrl contains the url of the watcher server
 *@param {string} childChainUrl contains the url of the childchain server to communicate with
+*@return {object} Childchain Object
 *
 */
 

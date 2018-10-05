@@ -41,10 +41,18 @@ The project is seperated into 2 submodules:
 you could use import each one seperately, or use both via importing omg-js module
 
 #### Documentation
-[Documentation for omg-js-childchain](./packages/omg-js-childchain/src/docs/index.html)
 
-[Documentation for omg-js-rootchain ](./packages/omg-js-rootchain/src/docs/index.html)
+[Documentation for omg-js-childchain](packages/omg-js-childchain/src/docs/index.html)
 
-#### Implementation
+[Documentation for omg-js-rootchain ](packages/omg-js-rootchain/src/docs/index.html)
+
+#### Example Implementations
+
 You can find example applications inside `examples` folder
-to use library on the client side, run `npm run build`
+
+[Deposit ETH through Rootchain Contract](examples/node-deposit.js)
+
+[Transact ETH through Childchain](examples/node-sendTx.js)
+
+[Fetch spendable UTXO of an address](examples/fetch-utxo.js)
+
