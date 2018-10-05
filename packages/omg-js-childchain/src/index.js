@@ -6,29 +6,28 @@ const watcherApi = require('./watcherApi')
 const { hexToByteArr, byteArrToBuffer, InvalidArgumentError } = require('omg-js-util')
 global.Buffer = global.Buffer || require('buffer').Buffer
 
-/*
-*Summary: Interact with Tesuji Plasma Childchain from JavaScript (Node.js and Browser)
-*Description: allows user to interact with Tesuji Plasma from JavaScript. look up examples for implementations in boith Client and Server
-*
-*@param {string} watcherUrl contains the url of the watcher server
-*@param {string} childChainUrl contains the url of the childchain server to communicate with
-*@param {string} web3Provider contains the url of geth node
-*@param {string} plasmaAddr contains the url of the plasma smart contract already deployed
-*
-*/
 
 class ChildChain {
+  /**
+  *Interact with Tesuji Plasma Childchain from JavaScript (Node.js and Browser)
+  *
+  *@param {string} watcherUrl contains the url of the watcher server
+  *@param {string} childChainUrl contains the url of the childchain server to communicate with
+  *@return {object} Childchain Object
+  *
+  */
   constructor (watcherUrl, childChainUrl) {
     this.watcherUrl = watcherUrl
     this.childChainUrl = childChainUrl
   }
   /**
-   * generate, sign, encode and submit transaction to childchain
+   * generate, sign, encode and submit transaction to childchain (refer to examples/node-sendTx.js for example inputs)
    *
    * @method sendTransaction
    * @param {array} inputs
    * @param {array} currency
    * @param {array} outputs
+   * @param {string} privateKey private key for signer (in hex with '0x' prefix)
    * @return {object} success/error message with `tx_index`, `tx_hash` and `blknum` params
    */
 

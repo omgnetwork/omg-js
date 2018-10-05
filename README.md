@@ -6,8 +6,8 @@
 ### JavaScript Library Implementation for Tesuji 
 
 IMPORTANT: 
-* this was developed against the `elixir-omg` specific commit hash: dc4d176d3f5d27030e1e627bd5cc0a630690c178 
-* This is a first implementation of a JS library, things WILL break
+* this was developed against the first release version of `elixir-omg` 
+* This is a first implementation of a JS library, expect breaking changes
 
 This is a library that allows a Client/Server JavaScript application to Interact with the Tesuji Plasma
 So that you could:
@@ -15,7 +15,7 @@ So that you could:
 1. Deposit (Eth/Token)
 2. Transact (Eth/Token)
 
-ETH From the Childchain server to the Rootchain
+From the Childchain server to the Rootchain
 
 ### Installation
 
@@ -32,86 +32,25 @@ npm run test
 ```
 
 ### Getting Started
-#### Initializing
-Make sure that you have `elixir-omg` running locally
-Before running any functions, you must first initialize new Omg object with following parameters:
-watcherUrl, childChainUrl, web3Provider, plasmaAddr
 
-```
-const Omg = new OMG(watcherUrl, childChainUrl, web3Provider, plasmaAddr)
-```
+The project is seperated into 2 submodules:
 
-#### SendTransaction
+1. omg-js-childchain
+2. omg-js-rootchain
 
-NOTE: 
-- this function currently takes in Private Key as raw hex `string`... the client/server is responsible for proper Key Management
-- this function does not support splitting or merging of tokens, and is tested only with 
-- for details on how to implement this function- refer to the `node-sendTx` example
+you can import either one separately, or both at once by importing the parent omg-js package
 
-```
-Omg.sendTransaction(inputs, currency, outputs)
-```
+#### Documentation
 
-##### Params
-1. `inputs`- `array` :  an array of two objects `[{blknum1, txindex1, oindex1},{blknum2, txindex2, oindex2}]` 
-    - `blknum` - `integer` block number
-    - `txindex` - `integer` block transaction index
-    - `oindex` - `integer` output index
-    
-2. `currency`- `array` : an array of integer by default, ETH is `[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]`
-3.  `outputs`- `array` : an array of two objects `[{newowner1, amount1},{newowner2, amount2}]`
-    - `newowner`- `string`: hex address of newowner1 with 0x prefix
-    - `amount` - `integer`: integer amount in that denoted currency
+[Documentation for omg-js ](http://omisego.github.io/omg-js)
 
-##### Returns
-- `obj`: json rpc return message (success message contains `tx_index`, `tx_hash` and `blknum`)
+#### Example Implementations
 
-#### getUtxo
-```
-Omg.getUtxo(address)
-```
-##### Params
-1. `address` - `string`: address to query
-
-##### Returns
-- `array`: array of available utxos
-
-#### depositEth
-NOTE: This function requires a user to have a Geth node running with `fromAddr` account unlocked
-```
-Omg.depositEth(amount, fromAddr)
-```
-##### Params
-1. `amount` - `number`: amount in ETH
-2. `fromAddr` - `string`: hex address of the account
-##### Returns
-- `string`: transaction hash of the deposited ETH
-
-#### depositToken
-NOTE: This function requires a user to have a Geth node running with `fromAddr` account unlocked
-```
-Omg.depositToken(amount, tokenAddr, fromAddr)
-```
-##### Params
-1. `amount` - `number`: amount of token
-2. `tokenAddress` - `string`
-3. `fromAddr` - `string`: hex address of the account
-##### Returns
-- `string`: transaction hash of the deposited Token
-
-#### getDepositBlock
-NOTE: use in conjunction with the `.depositEth` function, refer to node-deposit example
-```
-Omg.getDepositBlock(txHash)
-```
-##### Params
-1. `txHash` - `string`: transaction hash of the deposit
-##### Returns
-- `number`: a block number of the deposited token
-
-#### exit
-coming soon TM
-
-### Implementation
 You can find example applications inside `examples` folder
-to use library on the client side, run `npm run build`
+
+[Deposit ETH through Rootchain Contract](examples/node-deposit.js)
+
+[Transact ETH through Childchain](examples/node-sendTx.js)
+
+[Fetch spendable UTXO of an address](examples/fetch-utxo.js)
+
