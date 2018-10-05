@@ -42,9 +42,7 @@ you could use import each one seperately, or use both via importing omg-js modul
 
 #### Documentation
 
-[Documentation for omg-js-childchain](packages/omg-js-childchain/src/docs/index.html)
-
-[Documentation for omg-js-rootchain ](packages/omg-js-rootchain/src/docs/index.html)
+[Documentation for omg-js ](docs/index.html)
 
 #### Example Implementations
 
