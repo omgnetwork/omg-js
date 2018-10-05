@@ -4,15 +4,15 @@ const Web3Utils = require('web3-utils')
 const plasmaAbi = require('./plasmaAbi')
 const debug = require('debug')('omg.rootchain')
 
-/**
+class RootChain {
+
+  /**
   * Interact with Tesuji Plasma Rootchain from JavaScript (Node.js and Browser)
   *
   * @param {string} web3Provider contains the url of the watcher server
   * @return {object} Rootchain Object
   *
   */
-
-class RootChain {
 
   constructor (web3Provider) {
     this.eth = new Web3Eth(web3Provider)

@@ -9,7 +9,7 @@ const ChildChain = require('omg-js-childchain')
   *@param {string} web3Provider contains the url of the geth node/ web3 provider
   *@return {object} Omg (Omg.childchain and Omg.rootChain)
   */
-
+ 
 class Omg {
   constructor (watcherUrl, childChainUrl, web3Provider) {
     this.childChain = new ChildChain(watcherUrl, childChainUrl)

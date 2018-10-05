@@ -6,16 +6,16 @@ const watcherApi = require('./watcherApi')
 const { hexToByteArr, byteArrToBuffer, InvalidArgumentError } = require('omg-js-util')
 global.Buffer = global.Buffer || require('buffer').Buffer
 
-/**
-*Interact with Tesuji Plasma Childchain from JavaScript (Node.js and Browser)
-*
-*@param {string} watcherUrl contains the url of the watcher server
-*@param {string} childChainUrl contains the url of the childchain server to communicate with
-*@return {object} Childchain Object
-*
-*/
 
 class ChildChain {
+  /**
+  *Interact with Tesuji Plasma Childchain from JavaScript (Node.js and Browser)
+  *
+  *@param {string} watcherUrl contains the url of the watcher server
+  *@param {string} childChainUrl contains the url of the childchain server to communicate with
+  *@return {object} Childchain Object
+  *
+  */
   constructor (watcherUrl, childChainUrl) {
     this.watcherUrl = watcherUrl
     this.childChainUrl = childChainUrl

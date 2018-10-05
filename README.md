@@ -38,7 +38,7 @@ The project is seperated into 2 submodules:
 1. omg-js-childchain
 2. omg-js-rootchain
 
-you could use import each one seperately, or use both via importing omg-js module
+you can import either one separately, or both at once by importing the parent omg-js package
 
 #### Documentation
 
