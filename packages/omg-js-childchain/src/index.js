@@ -1,9 +1,8 @@
-const newTransaction = require('./transaction/newTx')
-const { singleSign, signedEncode } = require('./transaction/signature')
-const { base16Encode } = require('./transaction/base16')
-const submitTx = require('./transaction/submitRPC')
 const watcherApi = require('./watcherApi')
-const { hexToByteArr, byteArrToBuffer, InvalidArgumentError } = require('omg-js-util')
+const sign = require('./transaction/signature')
+const submitTx = require('./transaction/submitRPC')
+const rlp = require('rlp')
+const { InvalidArgumentError } = require('omg-js-util')
 global.Buffer = global.Buffer || require('buffer').Buffer
 
 /*
@@ -23,48 +22,12 @@ class ChildChain {
     this.childChainUrl = childChainUrl
   }
   /**
-   * generate, sign, encode and submit transaction to childchain
-   *
-   * @method sendTransaction
-   * @param {array} inputs
-   * @param {array} currency
-   * @param {array} outputs
-   * @return {object} success/error message with `tx_index`, `tx_hash` and `blknum` params
-   */
-
-  async sendTransaction (inputs, currency, outputs, privKey) {
-    // Validate arguments
-    validateInputs(inputs)
-    validateCurrency(currency)
-    validateOutputs(outputs)
-    validatePrivateKey(privKey)
-
-    // turns 2 hex addresses input to 2 arrays
-    outputs[0].newowner1 = Array.from(hexToByteArr(outputs[0].newowner1))
-    outputs[1].newowner2 = Array.from(hexToByteArr(outputs[1].newowner2))
-    // turn privkey string to addr
-    privKey = byteArrToBuffer(hexToByteArr(privKey))
-    // creates new transaction object
-    let transactionBody = newTransaction(inputs, currency, outputs)
-    // sign transaction
-    let signedTx = singleSign(transactionBody, privKey)
-    // encode transaction with RLP
-    let obj = signedTx.raw_tx
-    let rlpEncodedTransaction = signedEncode(obj, signedTx.sig1, signedTx.sig2)
-    // encode transaction with base16
-    let base16 = base16Encode(rlpEncodedTransaction)
-    // submit via JSON RPC
-    return submitTx(base16, this.childChainUrl)
-  }
-
-  /**
    * Obtain UTXOs of an address
    *
    * @method getUtxos
    * @param {String} address
    * @return {array} arrays of UTXOs
    */
-
   async getUtxos (address) {
     validateAddress(address)
     return watcherApi.get(`${this.watcherUrl}/utxos?address=${address}`)
@@ -77,29 +40,62 @@ class ChildChain {
    * @param {String} address
    * @return {array} array of balances (one per currency)
    */
-
   async getBalance (address) {
     validateAddress(address)
     return watcherApi.get(`${this.watcherUrl}/account/${address}/balance`)
   }
 
+  /**
+   * Create an unsigned transaction
+   *
+   * @method createTransaction
+   * @param {object} transactionBody
+   * @return {object}
+   */
   async createTransaction (transactionBody) {
-    // validateTxBody(transactionBody)
+    validateTxBody(transactionBody)
     return watcherApi.post(`${this.watcherUrl}/transaction`, transactionBody)
   }
 
-  signTransaction (unsignedTx, privateKey) {
+  /**
+   * Sign a transaction
+   *
+   * @method signTransaction
+   * @param {string} unsignedTx
+   * @param {array} privateKeys
+   * @return {object}
+   */
+  signTransaction (unsignedTx, privateKeys) {
+    privateKeys.forEach(key => validatePrivateKey)
+
     // sign transaction
-    const rawTx = Buffer.from(unsignedTx, 'hex')
-    const rlpEncodedTransaction = singleSign(rawTx, privateKey)
-    const base16 = base16Encode(rlpEncodedTransaction)
-    return base16
+    const txBytes = Buffer.from(unsignedTx, 'hex')
+    const signatures = sign(txBytes, privateKeys)
+
+    // rlp-decode the tx bytes
+    const decodedTx = rlp.decode(txBytes)
+    // Append the signatures
+    const signedTx = [...decodedTx, ...signatures]
+    // rlp-encode the transaction + signatures
+    return rlp.encode(signedTx).toString('hex')
   }
 
+  /**
+   * Submit a signed transaction to the childchain
+   *
+   * @method submitTransaction
+   * @param {string} transaction
+   * @return {object}
+   */
   async submitTransaction (transaction) {
     // validateTxBody(transactionBody)
     return submitTx(transaction, this.childChainUrl)
   }
+}
+
+function validateTxBody (arg) {
+  validateInputs(arg.inputs)
+  validateOutputs(arg.outputs)
 }
 
 function validateInputs (arg) {
@@ -111,14 +107,6 @@ function validateInputs (arg) {
 }
 
 function validateOutputs (arg) {
-  // TODO
-  const valid = true
-  if (!valid) {
-    throw new InvalidArgumentError()
-  }
-}
-
-function validateCurrency (arg) {
   // TODO
   const valid = true
   if (!valid) {
