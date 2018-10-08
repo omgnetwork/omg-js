@@ -9,7 +9,11 @@ const config = {
     host: process.env.WATCHER_HOST || 'localhost',
     port: process.env.WATCHER_PORT || '4000'
   },
-  plasmaContract: process.env.PLASMA_CONTRACT || '0x45ff03d1c82c4dd62b33eb0eb9e71593055a376b'
+  childchain: {
+    host: process.env.CHILDCHAIN_HOST || 'localhost',
+    port: process.env.CHILDCHAIN_PORT || '9656'
+  },
+  plasmaContract: process.env.PLASMA_CONTRACT || '0x0f7da01a8f038c22e5122b972263017e65591a00'
 }
 
 module.exports = config

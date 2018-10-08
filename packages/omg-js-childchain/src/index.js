@@ -7,15 +7,15 @@ const { hexToByteArr, byteArrToBuffer, InvalidArgumentError } = require('omg-js-
 global.Buffer = global.Buffer || require('buffer').Buffer
 
 /*
-*Summary: Interact with Tesuji Plasma Childchain from JavaScript (Node.js and Browser)
-*Description: allows user to interact with Tesuji Plasma from JavaScript. look up examples for implementations in boith Client and Server
-*
-*@param {string} watcherUrl contains the url of the watcher server
-*@param {string} childChainUrl contains the url of the childchain server to communicate with
-*@param {string} web3Provider contains the url of geth node
-*@param {string} plasmaAddr contains the url of the plasma smart contract already deployed
-*
-*/
+ *Summary: Interact with Tesuji Plasma Childchain from JavaScript (Node.js and Browser)
+ *Description: allows user to interact with Tesuji Plasma from JavaScript. look up examples for implementations in boith Client and Server
+ *
+ *@param {string} watcherUrl contains the url of the watcher server
+ *@param {string} childChainUrl contains the url of the childchain server to communicate with
+ *@param {string} web3Provider contains the url of geth node
+ *@param {string} plasmaAddr contains the url of the plasma smart contract already deployed
+ *
+ */
 
 class ChildChain {
   constructor (watcherUrl, childChainUrl) {
@@ -81,6 +81,24 @@ class ChildChain {
   async getBalance (address) {
     validateAddress(address)
     return watcherApi.get(`${this.watcherUrl}/account/${address}/balance`)
+  }
+
+  async createTransaction (transactionBody) {
+    // validateTxBody(transactionBody)
+    return watcherApi.post(`${this.watcherUrl}/transaction`, transactionBody)
+  }
+
+  signTransaction (unsignedTx, privateKey) {
+    // sign transaction
+    const rawTx = Buffer.from(unsignedTx, 'hex')
+    const rlpEncodedTransaction = singleSign(rawTx, privateKey)
+    const base16 = base16Encode(rlpEncodedTransaction)
+    return base16
+  }
+
+  async submitTransaction (transaction) {
+    // validateTxBody(transactionBody)
+    return submitTx(transaction, this.childChainUrl)
   }
 }
 

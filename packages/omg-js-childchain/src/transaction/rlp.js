@@ -30,6 +30,10 @@ function rlpEncodeArr (rawTx) {
   return rlpEncoded
 }
 
+function rlpDecode (data) {
+  return RLP.decode(data)
+}
+
 // private function, turns regular arr into arr with Buffer binary
 function ArrToUint8 (arr) {
   for (var i = 0; i < arr.length; i++) {
@@ -40,4 +44,8 @@ function ArrToUint8 (arr) {
   return arr
 }
 
-module.exports = { rlpEncodeArr, ArrToUint8 }
+module.exports = {
+  rlpEncodeArr,
+  rlpDecode,
+  ArrToUint8
+}

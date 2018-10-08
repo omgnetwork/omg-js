@@ -10,6 +10,19 @@ class WatcherError extends Error {
 
 async function get (url) {
   const resp = await fetch(url)
+  return rpcResponse(resp)
+}
+
+async function post (url, body) {
+  const resp = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  })
+  return rpcResponse(resp)
+}
+
+async function rpcResponse (resp) {
   const body = await resp.text()
   let json
   try {
@@ -24,4 +37,7 @@ async function get (url) {
   return json.data
 }
 
-module.exports = { get }
+module.exports = {
+  get,
+  post
+}
