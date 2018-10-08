@@ -69,11 +69,14 @@ describe('Childchain transfer tests', async () => {
       }]
     }
 
-    // Create the transaction
+    // Create the unsigned transaction
     const unsignedTx = await childChain.createTransaction(txBody)
-    // Sign the transaction
-    const signedTx = await childChain.signTransaction(unsignedTx, [srcAccount.privateKey])
-    // Submit the signed the transaction
+    // Sign it
+    const signatures = await childChain.signTransaction(unsignedTx, [srcAccount.privateKey])
+    assert.equal(signatures.length, 2)
+    // Build the signed transaction
+    const signedTx = await childChain.buildSignedTransaction(unsignedTx, signatures)
+    // Submit the signed transaction to the childchain
     const result = await childChain.submitTransaction(signedTx)
     console.log(`Submitted transaction: ${JSON.stringify(result)}`)
 

@@ -63,17 +63,24 @@ class ChildChain {
    * @method signTransaction
    * @param {string} unsignedTx
    * @param {array} privateKeys
-   * @return {object}
+   * @return {array} signatures
    */
   signTransaction (unsignedTx, privateKeys) {
     privateKeys.forEach(key => validatePrivateKey)
+    return sign(Buffer.from(unsignedTx, 'hex'), privateKeys)
+  }
 
-    // sign transaction
-    const txBytes = Buffer.from(unsignedTx, 'hex')
-    const signatures = sign(txBytes, privateKeys)
-
+  /**
+   * Build a signed transaction into the format expected by submitTransaction
+   *
+   * @method buildSignedTransaction
+   * @param {string} unsignedTx
+   * @param {array} signatures
+   * @return {object}
+   */
+  buildSignedTransaction (unsignedTx, signatures) {
     // rlp-decode the tx bytes
-    const decodedTx = rlp.decode(txBytes)
+    const decodedTx = rlp.decode(Buffer.from(unsignedTx, 'hex'))
     // Append the signatures
     const signedTx = [...decodedTx, ...signatures]
     // rlp-encode the transaction + signatures
