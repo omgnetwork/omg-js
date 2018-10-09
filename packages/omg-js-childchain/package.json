@@ -1,8 +1,12 @@
 {
   "name": "@omisego/omg-js-childchain",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Module to interact with OMG ChildChain",
-  "keywords": ["OMG", "OmiseGo", "Plasma"],
+  "keywords": [
+    "OMG",
+    "OmiseGo",
+    "Plasma"
+  ],
   "main": "src/index.js",
   "author": "OmiseGo",
   "contributors": [
@@ -18,6 +22,7 @@
     "url": "https://github.com/omisego/omg-js/issues"
   },
   "dependencies": {
+    "@omisego/omg-js-util": "^0.1.2",
     "base-x": "^3.0.4",
     "buffer": "^5.2.0",
     "debug": "^4.0.1",
@@ -27,7 +32,6 @@
     "js-sha3": "^0.8.0",
     "json-bigint": "^0.3.0",
     "node-fetch": "^2.2.0",
-    "@omisego/omg-js-util": "^0.1.1",
     "rlp": "^2.1.0"
   }
 }
