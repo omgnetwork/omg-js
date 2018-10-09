@@ -15,5 +15,8 @@
   },
   "bugs": {
     "url": "https://github.com/omisego/omg-js/issues"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

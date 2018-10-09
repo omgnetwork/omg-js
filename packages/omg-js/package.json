@@ -25,5 +25,8 @@
     "@omisego/omg-js-childchain": "^0.1.2",
     "@omisego/omg-js-rootchain": "^0.1.2",
     "@omisego/omg-js-util": "^0.1.2"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
