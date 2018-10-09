@@ -5,7 +5,7 @@ const submitTx = require('./transaction/submitRPC')
 const watcherApi = require('./watcherApi')
 const { hexToByteArr, byteArrToBuffer, InvalidArgumentError } = require('@omisego/omg-js-util')
 global.Buffer = global.Buffer || require('buffer').Buffer
-
+const Web3Utils = require('web3-utils')
 
 class ChildChain {
   /**
@@ -78,8 +78,23 @@ class ChildChain {
    */
 
   async getBalance (address) {
+    // return watcherApi.get(`${this.watcherUrl}/account/${address}/balance`)
+
+    // TODO Temporarily use getUtxos to calculate balance because watcher/account/${address}/balance api is not deployed yet. 
     validateAddress(address)
-    return watcherApi.get(`${this.watcherUrl}/account/${address}/balance`)
+    const utxos = await this.getUtxos(address)
+    const balanceMap = utxos.reduce((acc, curr) => {
+      const amount = new Web3Utils.BN(curr.amount.toString())
+      if (acc.has(curr.currency)) {
+        const v = acc.get(curr.currency)
+        acc.set(curr.currency, v.add(amount))
+      } else {
+        acc.set(curr.currency, amount)
+      }
+      return acc
+    }, new Map())
+
+    return Array.from(balanceMap).map(elem => ({ currency: elem[0], amount: elem[1] }))
   }
 }
 
