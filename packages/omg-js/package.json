@@ -1,7 +1,12 @@
 {
-  "name": "omg-js",
-  "version": "0.1.1",
+  "name": "@omisego/omg-js",
+  "version": "0.1.5",
   "description": "JavaScript Library to interact with OMG Network",
+  "keywords": [
+    "OMG",
+    "OmiseGo",
+    "Plasma"
+  ],
   "main": "src/index.js",
   "author": "OmiseGo",
   "contributors": [
@@ -17,8 +22,11 @@
     "url": "https://github.com/omisego/omg-js/issues"
   },
   "dependencies": {
-    "omg-js-childchain": "^0.1.1",
-    "omg-js-rootchain": "^0.1.1",
-    "omg-js-util": "^0.1.1"
+    "@omisego/omg-js-childchain": "^0.1.5",
+    "@omisego/omg-js-rootchain": "^0.1.5",
+    "@omisego/omg-js-util": "^0.1.5"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
