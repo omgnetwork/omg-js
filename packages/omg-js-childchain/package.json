@@ -1,7 +1,8 @@
 {
-  "name": "omg-js-childchain",
+  "name": "@omisego/omg-js-childchain",
   "version": "0.1.1",
   "description": "Module to interact with OMG ChildChain",
+  "keywords": ["OMG", "OmiseGo", "Plasma"],
   "main": "src/index.js",
   "author": "OmiseGo",
   "contributors": [
@@ -26,7 +27,7 @@
     "js-sha3": "^0.8.0",
     "json-bigint": "^0.3.0",
     "node-fetch": "^2.2.0",
-    "omg-js-util": "^0.1.1",
+    "@omisego/omg-js-util": "^0.1.1",
     "rlp": "^2.1.0"
   }
 }

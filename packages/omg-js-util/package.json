@@ -1,5 +1,5 @@
 {
-  "name": "omg-js-util",
+  "name": "@omisego/omg-js-util",
   "version": "0.1.1",
   "description": "OMG util module",
   "main": "src/index.js",
