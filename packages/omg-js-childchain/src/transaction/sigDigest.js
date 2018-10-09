@@ -1,6 +1,6 @@
 var EthUtil = require('ethereumjs-util')
 var sigUtil = require('eth-sig-util')
-const { hexToByteArr, byteArrToBuffer } = require('omg-js-util')
+const { hexToByteArr, byteArrToBuffer } = require('@omisego/omg-js-util')
 global.Buffer = global.Buffer || require('buffer').Buffer
 const debug = require('debug')('omg.childchain.signatureDigest')
 

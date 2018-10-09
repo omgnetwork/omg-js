@@ -3,7 +3,7 @@ const { singleSign, signedEncode } = require('./transaction/signature')
 const { base16Encode } = require('./transaction/base16')
 const submitTx = require('./transaction/submitRPC')
 const watcherApi = require('./watcherApi')
-const { hexToByteArr, byteArrToBuffer, InvalidArgumentError } = require('omg-js-util')
+const { hexToByteArr, byteArrToBuffer, InvalidArgumentError } = require('@omisego/omg-js-util')
 global.Buffer = global.Buffer || require('buffer').Buffer
 
 
