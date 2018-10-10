@@ -1,7 +1,7 @@
 const config = require('../test-config')
 const helper = require('./helper')
 const Web3 = require('web3')
-const ChildChain = require('omg-js-childchain')
+const ChildChain = require('@omisego/omg-js-childchain')
 const chai = require('chai')
 const assert = chai.assert
 
