@@ -1,4 +1,4 @@
-/* 
+/*
 Copyright 2018 OmiseGO Pte Ltd
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -28,7 +28,7 @@ const config = {
     host: process.env.CHILDCHAIN_HOST || 'localhost',
     port: process.env.CHILDCHAIN_PORT || '9656'
   },
-  plasmaContract: process.env.PLASMA_CONTRACT || '0x0f7da01a8f038c22e5122b972263017e65591a00'
+  plasmaContract: process.env.PLASMA_CONTRACT || '0x518b624fbdf288908f50acfc9d60df4466e82d3e'
 }
 
 module.exports = config
