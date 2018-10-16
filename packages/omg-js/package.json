@@ -1,6 +1,6 @@
 {
   "name": "@omisego/omg-js",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "JavaScript Library to interact with OMG Network",
   "keywords": [
     "OMG",
@@ -22,7 +22,7 @@
     "url": "https://github.com/omisego/omg-js/issues"
   },
   "dependencies": {
-    "@omisego/omg-js-childchain": "^0.1.5",
+    "@omisego/omg-js-childchain": "^0.1.6",
     "@omisego/omg-js-rootchain": "^0.1.5",
     "@omisego/omg-js-util": "^0.1.5"
   },

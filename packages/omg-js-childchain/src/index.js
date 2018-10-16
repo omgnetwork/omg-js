@@ -1,10 +1,25 @@
+/* 
+Copyright 2018 OmiseGO Pte Ltd
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License. */
+
 const watcherApi = require('./watcherApi')
 const sign = require('./transaction/signature')
 const submitTx = require('./transaction/submitRPC')
 const rlp = require('rlp')
 const { InvalidArgumentError } = require('@omisego/omg-js-util')
 global.Buffer = global.Buffer || require('buffer').Buffer
-
+const Web3Utils = require('web3-utils')
 
 class ChildChain {
   /**
@@ -39,8 +54,23 @@ class ChildChain {
    * @return {array} array of balances (one per currency)
    */
   async getBalance (address) {
+    // return watcherApi.get(`${this.watcherUrl}/account/${address}/balance`)
+
+    // TODO Temporarily use getUtxos to calculate balance because watcher/account/${address}/balance api is not deployed yet. 
     validateAddress(address)
-    return watcherApi.get(`${this.watcherUrl}/account/${address}/balance`)
+    const utxos = await this.getUtxos(address)
+    const balanceMap = utxos.reduce((acc, curr) => {
+      const amount = new Web3Utils.BN(curr.amount.toString())
+      if (acc.has(curr.currency)) {
+        const v = acc.get(curr.currency)
+        acc.set(curr.currency, v.add(amount))
+      } else {
+        acc.set(curr.currency, amount)
+      }
+      return acc
+    }, new Map())
+
+    return Array.from(balanceMap).map(elem => ({ currency: elem[0], amount: elem[1] }))
   }
 
   /**
