@@ -1,4 +1,4 @@
-/* 
+/*
 Copyright 2018 OmiseGO Pte Ltd
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,6 +16,7 @@ limitations under the License. */
 const watcherApi = require('./watcherApi')
 const sign = require('./transaction/signature')
 const submitTx = require('./transaction/submitRPC')
+const transaction = require('./transaction/transaction')
 const rlp = require('rlp')
 const { InvalidArgumentError } = require('@omisego/omg-js-util')
 global.Buffer = global.Buffer || require('buffer').Buffer
@@ -56,7 +57,7 @@ class ChildChain {
   async getBalance (address) {
     // return watcherApi.get(`${this.watcherUrl}/account/${address}/balance`)
 
-    // TODO Temporarily use getUtxos to calculate balance because watcher/account/${address}/balance api is not deployed yet. 
+    // TODO Temporarily use getUtxos to calculate balance because watcher/account/${address}/balance api is not deployed yet.
     validateAddress(address)
     const utxos = await this.getUtxos(address)
     const balanceMap = utxos.reduce((acc, curr) => {
@@ -80,9 +81,10 @@ class ChildChain {
    * @param {object} transactionBody
    * @return {object}
    */
-  async createTransaction (transactionBody) {
-    validateTxBody(transactionBody)
-    return watcherApi.post(`${this.watcherUrl}/transaction`, transactionBody)
+  createTransaction (transactionBody) {
+    transaction.validate(transactionBody)
+    const txArray = transaction.toArray(transactionBody)
+    return rlp.encode(txArray).toString('hex')
   }
 
   /**
@@ -125,27 +127,6 @@ class ChildChain {
   async submitTransaction (transaction) {
     // validateTxBody(transactionBody)
     return submitTx(transaction, this.childChainUrl)
-  }
-}
-
-function validateTxBody (arg) {
-  validateInputs(arg.inputs)
-  validateOutputs(arg.outputs)
-}
-
-function validateInputs (arg) {
-  // TODO
-  const valid = true
-  if (!valid) {
-    throw new InvalidArgumentError()
-  }
-}
-
-function validateOutputs (arg) {
-  // TODO
-  const valid = true
-  if (!valid) {
-    throw new InvalidArgumentError()
   }
 }
 
