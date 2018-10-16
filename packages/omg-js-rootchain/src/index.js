@@ -28,9 +28,12 @@ class RootChain {
   *
   */
 
-  constructor (web3Provider) {
+  constructor (web3Provider, plasmaContractAddress) {
     this.eth = new Web3Eth(web3Provider)
+    this.plasmaContractAddress = plasmaContractAddress
+    this.plasmaContract = new this.eth.Contract(plasmaAbi.abi, plasmaContractAddress)
   }
+
   /**
    * deposit ETH to rootchain
    *
@@ -40,16 +43,17 @@ class RootChain {
    * @param {string} plasmaContractAddress address of the plasma contract
    * @return {string} transaction Hash of the deposit
    */
-  async depositEth (amount, fromAddress, plasmaContractAddress) {
-    const receipt = await this.eth.sendTransaction({
+
+  async depositEth (amount, fromAddress, privateKey) {
+    const txDetails = {
       from: fromAddress,
-      to: plasmaContractAddress,
-      value: Web3Utils.toWei(amount.toString(), 'ether'),
-      data: '0xd0e30db0' // TODO What's this data for?
-    })
-    debug(`deposit receipt: ${receipt}`)
-    debug(`returned transaction hash: ${receipt.transactionHash}`)
-    return receipt.transactionHash
+      to: this.plasmaContractAddress,
+      value: amount,
+      data: this.plasmaContract.methods.deposit().encodeABI(),
+      gas: 2000000
+    }
+
+    return sendTx(this.eth, txDetails, privateKey)
   }
 
    /**
@@ -63,18 +67,15 @@ class RootChain {
    * @return {string} transaction Hash of the deposit
    */
 
-  async depositToken (amount, plasmaContractAddress, fromAddress, tokenAddress) {
-    const plasmaContract = new this.eth.Contract(plasmaAbi.abi, plasmaContractAddress)
-    const depositData = plasmaContract.methods.depositFrom(fromAddress, tokenAddress, amount).encodeABI()
-    const receipt = await this.eth.sendTransaction({
+  async depositToken (amount, fromAddress, tokenAddress, privateKey) {
+    const txDetails = {
       from: fromAddress,
-      to: plasmaContractAddress,
-      data: depositData
-    })
+      to: this.plasmaContractAddress,
+      data: this.plasmaContract.methods.depositFrom(fromAddress, tokenAddress, amount).encodeABI(),
+      gas: 2000000
+    }
 
-    debug(`depositToken receipt: ${receipt}`)
-    debug(`depositToken transaction hash: ${receipt.transactionHash}`)
-    return receipt.transactionHash
+    return sendTx(this.eth, txDetails, privateKey)
   }
 
   /**
@@ -94,6 +95,45 @@ class RootChain {
     let encodedBlkNum = receipt.logs[0].topics[2]
     debug(`encoded block number: ${encodedBlkNum}`)
     return Number(this.eth.abi.decodeParameter('uint256', encodedBlkNum))
+  }
+
+  async startExit(fromAddress, utxoPos, txBytes, proof, sigs, privateKey) {
+    const txDetails = {
+      from: fromAddress,
+      to: this.plasmaContractAddress,
+      data: this.plasmaContract.methods.startExit(
+        utxoPos, 
+        Web3Utils.hexToBytes(`0x${txBytes}`), 
+        Web3Utils.hexToBytes(`0x${proof}`), 
+        Web3Utils.hexToBytes(`0x${sigs}`)
+      ).encodeABI(),
+      gas: 2000000
+    }
+
+    return sendTx(this.eth, txDetails, privateKey)
+  }
+
+  async finalizeExits(fromAddress, token, privateKey) {
+    const txDetails = {
+      from: fromAddress,
+      to: this.plasmaContractAddress,
+      data: this.plasmaContract.methods.finalizeExits(token).encodeABI(),
+      gas: 2000000
+    }
+
+    return sendTx(this.eth, txDetails, privateKey)
+  }
+}
+
+async function sendTx (eth, txDetails, privateKey) {
+  if (!privateKey) {
+    // No privateKey to sign with, assume sending from an unlocked geth account
+    return eth.sendTransaction(txDetails)
+  } else {
+    // First sign the transaction
+    const signedTx = await eth.accounts.signTransaction(txDetails, privateKey)
+    // Then send it
+    return eth.sendSignedTransaction(signedTx.rawTransaction)
   }
 }
 

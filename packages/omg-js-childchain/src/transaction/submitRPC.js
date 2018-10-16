@@ -34,7 +34,10 @@ async function submitTx (tx, url) {
   })
   let response = await resp.json()
   debug(`rpc response is ${JSON.stringify(response)}`)
-  return response
+  if (response.error) {
+    throw new Error(JSON.stringify(response.error))
+  }
+  return response.result
 }
 
 module.exports = submitTx

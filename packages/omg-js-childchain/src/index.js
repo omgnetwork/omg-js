@@ -21,6 +21,8 @@ const watcherApi = require('./watcherApi')
 const { hexToByteArr, byteArrToBuffer, InvalidArgumentError } = require('@omisego/omg-js-util')
 global.Buffer = global.Buffer || require('buffer').Buffer
 const Web3Utils = require('web3-utils')
+const BN = require('bn.js')
+
 
 class ChildChain {
   /**
@@ -111,6 +113,23 @@ class ChildChain {
 
     return Array.from(balanceMap).map(elem => ({ currency: elem[0], amount: elem[1] }))
   }
+
+  async getExitData (utxo) {
+    // Calculate the utxoPos
+    const utxoPos = encodeUtxoPos(utxo)
+    return watcherApi.get(`${this.watcherUrl}/utxo/${utxoPos}/exit_data`)
+  }
+}
+
+const BLOCK_OFFSET = new BN(1000000000)
+const TX_OFFSET = new BN(10000)
+
+function encodeUtxoPos(utxo) {
+  const blknum = new BN(utxo.blknum.toString());
+  // blknum * @block_offset + txindex * @transaction_offset + oindex
+  const blockPos = blknum.mul(BLOCK_OFFSET)
+  const txPos = new BN(utxo.txindex.toString()).mul(TX_OFFSET)
+  return blockPos.add(txPos).add(new BN(utxo.oindex))
 }
 
 function validateInputs (arg) {
