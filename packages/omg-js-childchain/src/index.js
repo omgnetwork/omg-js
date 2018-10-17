@@ -134,12 +134,12 @@ class ChildChain {
    * 
    * @method sendTransaction
    * @param {array} fromUtxos - array of utxos gathered from the watcher
-   * @param {string} fromPrivateKey - hex string private key
+   * @param {array} fromPrivateKeys - array of hex string private key
    * @param {string} toAddress - address
    * @param {number} toAmount - amount to transact
    * @return {object} 
    */
-  async sendTransaction (fromUtxos, fromPrivateKey, toAddress, toAmount) {
+  async sendTransaction (fromUtxos, fromPrivateKeys, toAddress, toAmount) {
     validateAddress(toAddress)
     validatePrivateKey(fromPrivateKey)
     //transform fromUtxo to txbody
@@ -147,7 +147,7 @@ class ChildChain {
     //create transaction
     const unsignedTx = this.createTransaction(txBody)
     //sign a transaction
-    const signatures = await this.signTransaction(unsignedTx, [fromPrivateKey])
+    const signatures = await this.signTransaction(unsignedTx, fromPrivateKeys)
     //build a transaction
     const signedTx = await this.buildSignedTransaction(unsignedTx, signatures)
     //submit via JSON rpc

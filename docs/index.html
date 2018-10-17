@@ -305,7 +305,7 @@
       <div class="clearfix small pointer toggle-sibling">
         <div class="py1 contain">
             <a class='icon pin-right py1 dark-link caret-right'>▸</a>
-            <span class='code strong strong truncate'>sendTransaction(utxos, fromPrivateKey, toAddress, toAmount)</span>
+            <span class='code strong strong truncate'>sendTransaction(fromUtxos, fromPrivateKeys, toAddress, toAmount)</span>
         </div>
       </div>
       <div class="clearfix display-none toggle-target">
@@ -317,7 +317,7 @@
 
  
   
-    <div class='pre p1 fill-light mt0'>sendTransaction(utxos: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">array</a>, fromPrivateKey: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, toAddress: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, toAmount: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a></div>
+    <div class='pre p1 fill-light mt0'>sendTransaction(fromUtxos: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">array</a>, fromPrivateKeys: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">array</a>, toAddress: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, toAmount: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a></div>
    
   
   
@@ -335,7 +335,7 @@
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>utxos</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">array</a>)</code>
+            <span class='code bold'>fromUtxos</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">array</a>)</code>
 	    array of utxos gathered from the watcher
 
           </div>
@@ -344,8 +344,8 @@
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>fromPrivateKey</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
-	    hex string private key
+            <span class='code bold'>fromPrivateKeys</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">array</a>)</code>
+	    array of hex string private key
 
           </div>
           
