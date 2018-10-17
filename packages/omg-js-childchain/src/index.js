@@ -14,7 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License. */
 
 const watcherApi = require('./watcherApi')
-const utxoToInput = require('./transaction/utxoToInput')
 const sign = require('./transaction/signature')
 const submitTx = require('./transaction/submitRPC')
 const transaction = require('./transaction/transaction')
@@ -131,20 +130,20 @@ class ChildChain {
   }
 
   /**
-   * create, sign, build and submit transaction to the childchain using raw privatekey and single utxo
+   * create, sign, build and submit a transaction to the childchain using raw privatekey
    * 
    * @method sendTransaction
-   * @param {object} utxo - (only supports single utxo)
-   * @param {string} fromPrivateKey
-   * @param {string} toAddress
-   * @param {number} toAmount 
+   * @param {array} fromUtxos - array of utxos gathered from the watcher
+   * @param {string} fromPrivateKey - hex string private key
+   * @param {string} toAddress - hex string of address to transact
+   * @param {number} toAmount - amount to transact
    * @return {object} 
    */
-  async sendSingleTransaction (fromUtxo, fromPrivateKey, toAddress, toAmount) {
+  async sendTransaction (fromUtxos, fromPrivateKey, toAddress, toAmount) {
     validateAddress(toAddress)
     validatePrivateKey(fromPrivateKey)
     //transform fromUtxo to txbody
-    const txBody = utxoToInput(utxo, toAddress, toAmount)
+    const txBody = transaction.createTransactionBody(fromUtxos, toAddress, toAmount)
     //create transaction
     const unsignedTx = createTransaction(txBody)
     //sign a transaction

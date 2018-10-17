@@ -82,7 +82,31 @@ function addOutput (array, output) {
   array.push(output.amount)
 }
 
+function createTransactionBody (fromUtxos, toAddress, toAmount) {
+  validateInputs(fromUtxos)
+  let inputArr = []
+  let outputArr = []
+  
+  for (let i = 0; i < fromUtxos.length; i++) {
+    //push to inputArr
+    inputArr.push(fromUtxos[i])
+  }
+
+  outputArr.push({
+    owner: toAddress,
+    amount: Number(toAmount)
+  })
+
+  const txBody = {
+    inputs: inputArr,
+    outputs: ouputArr
+  }
+
+ return txBody 
+}
+
 module.exports = {
   toArray,
-  validate
+  validate,
+  createTransactionBody
 }
