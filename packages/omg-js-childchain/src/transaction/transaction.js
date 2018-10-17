@@ -87,10 +87,7 @@ function createTransactionBody (fromUtxos, toAddress, toAmount) {
   let inputArr = []
   let outputArr = []
   
-  for (let i = 0; i < fromUtxos.length; i++) {
-    //push to inputArr
-    inputArr.push(fromUtxos[i])
-  }
+  const inputArr = fromUtxos.map(utxo => utxo)
 
   outputArr.push({
     owner: toAddress,
