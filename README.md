@@ -54,7 +54,7 @@ You can find example applications inside `examples` folder
 
 [Deposit ETH through Rootchain Contract](examples/node-deposit.js)
 
-[Transact ETH through Childchain](examples/node-sendTx.js)
+[Transact ETH through Childchain](examples/node-transact.js)
 
 [Fetch spendable UTXO of an address](examples/fetch-utxo.js)
 

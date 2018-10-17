@@ -99,7 +99,7 @@ function createTransactionBody (fromUtxos, toAddress, toAmount) {
 
   const txBody = {
     inputs: inputArr,
-    outputs: ouputArr
+    outputs: outputArr
   }
 
  return txBody 
