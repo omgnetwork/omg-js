@@ -17,7 +17,7 @@ describe('Childchain transfer tests', async () => {
   const INTIIAL_DEST_AMOUNT = web3.utils.toWei('1', 'ether')
   const TRANSFER_AMOUNT = web3.utils.toWei('1', 'ether')
   let srcAccount
-  let destAccount = { 'address': '0xf283999941601ade336bf3b186eeef0258634cfc', 'privateKey': '0xa195f5d833c7d7a95c42c33bf2ad3dfb70750eecf67811338e9ce03c2a7727c8' }
+  let destAccount
 
   before(async () => {
     const accounts = await web3.eth.getAccounts()
@@ -30,7 +30,7 @@ describe('Childchain transfer tests', async () => {
     console.log(`Created dest account ${JSON.stringify(destAccount)}`)
   })
 
-  it.only('should deposit funds to the Plasma contract, then transfer on the childchain', async () => {
+  it('should deposit funds to the Plasma contract, then transfer on the childchain', async () => {
     // Deposit ETH into the Plasma contract
     await rootChain.depositEth(TRANSFER_AMOUNT, srcAccount.address, srcAccount.privateKey)
 
