@@ -141,13 +141,13 @@ class ChildChain {
    */
   async sendTransaction (fromUtxos, fromPrivateKeys, toAddress, toAmount) {
     validateAddress(toAddress)
-    validatePrivateKey(fromPrivateKey)
+    validatePrivateKey(fromPrivateKeys)
     //transform fromUtxo to txbody
     const txBody = transaction.createTransactionBody(fromUtxos, toAddress, toAmount)
     //create transaction
     const unsignedTx = this.createTransaction(txBody)
     //sign a transaction
-    const signatures = await this.signTransaction(unsignedTx, fromPrivateKeys)
+    const signatures = this.signTransaction(unsignedTx, fromPrivateKeys)
     //build a transaction
     const signedTx = await this.buildSignedTransaction(unsignedTx, signatures)
     //submit via JSON rpc

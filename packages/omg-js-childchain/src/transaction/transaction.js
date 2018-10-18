@@ -86,7 +86,7 @@ function createTransactionBody (fromUtxos, toAddress, toAmount) {
   validateInputs(fromUtxos)
   const inputArr = fromUtxos.map(utxo => utxo)
   //assuming a single output
-  let outputArr = [{
+  const outputArr = [{
     owner: toAddress,
     amount: Number(toAmount)
   }]
