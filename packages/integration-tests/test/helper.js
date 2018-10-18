@@ -1,4 +1,4 @@
-/* 
+/*
 Copyright 2018 OmiseGO Pte Ltd
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,27 +13,43 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License. */
 
-async function createAccount (web3, password) {
-  const acc = await web3.eth.personal.newAccount(password)
-  return acc.toLowerCase()
+const promiseRetry = require('promise-retry')
+
+function createAccount (web3) {
+  const ret = web3.eth.accounts.create()
+  ret.address = ret.address.toLowerCase()
+  return ret
 }
 
-async function createAndFundAccount (
-  web3,
-  newAccountPassword,
-  fundAccount,
-  fundAccountPassword,
-  value) {
-  const account = await createAccount(web3, newAccountPassword)
+async function createAndFundAccount (web3, fundAccount, fundAccountPassword, value) {
+  const newAccount = createAccount(web3)
 
   await web3.eth.personal.unlockAccount(fundAccount, fundAccountPassword)
   await web3.eth.sendTransaction({
     from: fundAccount,
-    to: account,
+    to: newAccount.address,
     value
   })
 
-  return account
+  return newAccount
 }
 
-module.exports = { createAccount, createAndFundAccount }
+function waitForBalance (childChain, address, expectedBalance) {
+  return promiseRetry(async (retry, number) => {
+    console.log('Waiting for balance... ', number)
+    const resp = await childChain.getBalance(address)
+    if (resp.length === 0 || resp[0].amount.toString() !== expectedBalance) {
+      retry()
+    }
+    return resp
+  }, {
+    minTimeout: 2000,
+    factor: 1
+  })
+}
+
+module.exports = {
+  createAccount,
+  createAndFundAccount,
+  waitForBalance
+}

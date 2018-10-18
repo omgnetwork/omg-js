@@ -1,4 +1,4 @@
-/* 
+/*
 Copyright 2018 OmiseGO Pte Ltd
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,7 +19,6 @@ const plasmaAbi = require('./plasmaAbi')
 const debug = require('debug')('omg.rootchain')
 
 class RootChain {
-
   /**
   * Interact with Tesuji Plasma Rootchain from JavaScript (Node.js and Browser)
   *
@@ -52,7 +51,7 @@ class RootChain {
     return receipt.transactionHash
   }
 
-   /**
+  /**
    * deposit Token to rootchain
    *
    * @method depositToken

@@ -1,4 +1,4 @@
-/* 
+/*
 Copyright 2018 OmiseGO Pte Ltd
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,12 +13,12 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License. */
 
-const newTransaction = require('./transaction/newTx')
-const { singleSign, signedEncode } = require('./transaction/signature')
-const { base16Encode } = require('./transaction/base16')
-const submitTx = require('./transaction/submitRPC')
 const watcherApi = require('./watcherApi')
-const { hexToByteArr, byteArrToBuffer, InvalidArgumentError } = require('@omisego/omg-js-util')
+const sign = require('./transaction/signature')
+const submitTx = require('./transaction/submitRPC')
+const transaction = require('./transaction/transaction')
+const rlp = require('rlp')
+const { InvalidArgumentError } = require('@omisego/omg-js-util')
 global.Buffer = global.Buffer || require('buffer').Buffer
 const Web3Utils = require('web3-utils')
 
@@ -36,49 +36,12 @@ class ChildChain {
     this.childChainUrl = childChainUrl
   }
   /**
-   * generate, sign, encode and submit transaction to childchain (refer to examples/node-sendTx.js for example inputs)
-   *
-   * @method sendTransaction
-   * @param {array} inputs
-   * @param {array} currency
-   * @param {array} outputs
-   * @param {string} privateKey private key for signer (in hex with '0x' prefix)
-   * @return {object} success/error message with `tx_index`, `tx_hash` and `blknum` params
-   */
-
-  async sendTransaction (inputs, currency, outputs, privKey) {
-    // Validate arguments
-    validateInputs(inputs)
-    validateCurrency(currency)
-    validateOutputs(outputs)
-    validatePrivateKey(privKey)
-
-    // turns 2 hex addresses input to 2 arrays
-    outputs[0].newowner1 = Array.from(hexToByteArr(outputs[0].newowner1))
-    outputs[1].newowner2 = Array.from(hexToByteArr(outputs[1].newowner2))
-    // turn privkey string to addr
-    privKey = byteArrToBuffer(hexToByteArr(privKey))
-    // creates new transaction object
-    let transactionBody = newTransaction(inputs, currency, outputs)
-    // sign transaction
-    let signedTx = singleSign(transactionBody, privKey)
-    // encode transaction with RLP
-    let obj = signedTx.raw_tx
-    let rlpEncodedTransaction = signedEncode(obj, signedTx.sig1, signedTx.sig2)
-    // encode transaction with base16
-    let base16 = base16Encode(rlpEncodedTransaction)
-    // submit via JSON RPC
-    return submitTx(base16, this.childChainUrl)
-  }
-
-  /**
    * Obtain UTXOs of an address
    *
    * @method getUtxos
    * @param {String} address
    * @return {array} arrays of UTXOs
    */
-
   async getUtxos (address) {
     validateAddress(address)
     return watcherApi.get(`${this.watcherUrl}/utxos?address=${address}`)
@@ -91,11 +54,10 @@ class ChildChain {
    * @param {String} address
    * @return {array} array of balances (one per currency)
    */
-
   async getBalance (address) {
     // return watcherApi.get(`${this.watcherUrl}/account/${address}/balance`)
 
-    // TODO Temporarily use getUtxos to calculate balance because watcher/account/${address}/balance api is not deployed yet. 
+    // TODO Temporarily use getUtxos to calculate balance because watcher/account/${address}/balance api is not deployed yet.
     validateAddress(address)
     const utxos = await this.getUtxos(address)
     const balanceMap = utxos.reduce((acc, curr) => {
@@ -111,29 +73,86 @@ class ChildChain {
 
     return Array.from(balanceMap).map(elem => ({ currency: elem[0], amount: elem[1] }))
   }
-}
 
-function validateInputs (arg) {
-  // TODO
-  const valid = true
-  if (!valid) {
-    throw new InvalidArgumentError()
+  /**
+   * Create an unsigned transaction
+   *
+   * @method createTransaction
+   * @param {object} transactionBody
+   * @return {object}
+   */
+  createTransaction (transactionBody) {
+    transaction.validate(transactionBody)
+    const txArray = transaction.toArray(transactionBody)
+    return rlp.encode(txArray).toString('hex')
   }
-}
 
-function validateOutputs (arg) {
-  // TODO
-  const valid = true
-  if (!valid) {
-    throw new InvalidArgumentError()
+  /**
+   * Sign a transaction
+   *
+   * @method signTransaction
+   * @param {string} unsignedTx
+   * @param {array} privateKeys
+   * @return {array} signatures
+   */
+  signTransaction (unsignedTx, privateKeys) {
+    privateKeys.forEach(key => validatePrivateKey)
+    return sign(Buffer.from(unsignedTx, 'hex'), privateKeys)
   }
-}
 
-function validateCurrency (arg) {
-  // TODO
-  const valid = true
-  if (!valid) {
-    throw new InvalidArgumentError()
+  /**
+   * Build a signed transaction into the format expected by submitTransaction
+   *
+   * @method buildSignedTransaction
+   * @param {string} unsignedTx
+   * @param {array} signatures
+   * @return {object}
+   */
+  buildSignedTransaction (unsignedTx, signatures) {
+    // rlp-decode the tx bytes
+    const decodedTx = rlp.decode(Buffer.from(unsignedTx, 'hex'))
+    // Append the signatures
+    const signedTx = [...decodedTx, ...signatures]
+    // rlp-encode the transaction + signatures
+    return rlp.encode(signedTx).toString('hex')
+  }
+
+  /**
+   * Submit a signed transaction to the childchain
+   *
+   * @method submitTransaction
+   * @param {string} transaction
+   * @return {object}
+   */
+  async submitTransaction (transaction) {
+    // validateTxBody(transactionBody)
+    return submitTx(transaction, this.childChainUrl)
+  }
+
+  /**
+   * create, sign, build and submit a transaction to the childchain using raw privatekey
+   * 
+   * @method sendTransaction
+   * @param {array} fromUtxos - array of utxos gathered from the watcher
+   * @param {array} fromPrivateKeys - array of hex string private key
+   * @param {string} toAddress - address
+   * @param {number} toAmount - amount to transact
+   * @return {object} 
+   */
+  async sendTransaction (fromUtxos, fromPrivateKeys, toAddress, toAmount) {
+    validateAddress(toAddress)
+    validatePrivateKey(fromPrivateKeys)
+    //transform fromUtxo to txbody
+    const txBody = transaction.createTransactionBody(fromUtxos, toAddress, toAmount)
+    //create transaction
+    const unsignedTx = this.createTransaction(txBody)
+    //sign a transaction
+    const signatures = this.signTransaction(unsignedTx, fromPrivateKeys)
+    //build a transaction
+    const signedTx = await this.buildSignedTransaction(unsignedTx, signatures)
+    //submit via JSON rpc
+    const result = await this.submitTransaction(signedTx)
+    return result
   }
 }
 

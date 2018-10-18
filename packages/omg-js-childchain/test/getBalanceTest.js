@@ -1,4 +1,4 @@
-/* 
+/*
 Copyright 2018 OmiseGO Pte Ltd
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -89,5 +89,4 @@ describe('getBalance', () => {
     assert.equal(expectedObject[1].currency, result[1].currency)
     assert.equal(expectedObject[1].amount.toString(), result[1].amount.toString())
   })
-
 })

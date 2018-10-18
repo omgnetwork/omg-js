@@ -40,9 +40,13 @@ The project is seperated into 2 submodules:
 
 you can import either one separately, or both at once by importing the parent omg-js package
 
-#### Documentation
+#### Code Documentation
 
 [Documentation for omg-js ](http://omisego.github.io/omg-js)
+
+#### Design Documentation
+
+[How to create your own signing method](/integration-docs/signing-methods.md)
 
 #### Example Implementations
 
@@ -50,7 +54,7 @@ You can find example applications inside `examples` folder
 
 [Deposit ETH through Rootchain Contract](examples/node-deposit.js)
 
-[Transact ETH through Childchain](examples/node-sendTx.js)
+[Transact ETH through Childchain](examples/node-transact.js)
 
 [Fetch spendable UTXO of an address](examples/fetch-utxo.js)
 

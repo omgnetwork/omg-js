@@ -1,4 +1,4 @@
-/* 
+/*
 Copyright 2018 OmiseGO Pte Ltd
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,87 +16,36 @@ limitations under the License. */
 // generates signature
 global.Buffer = global.Buffer || require('buffer').Buffer
 const keccak256 = require('js-sha3').keccak256
-const signatureDigest = require('./sigDigest')
-const { rlpEncodeArr } = require('./rlp')
-const debug = require('debug')('omg.childchain.signatureDigest')
+const ethUtil = require('ethereumjs-util')
+const sigUtil = require('eth-sig-util')
 
-function hash (message) {
-  let hexValue = keccak256(message)
-  let bufferValue = Buffer.from(hexValue, 'hex')
-  let uint8Value = new Uint8Array(bufferValue)
-  return uint8Value
+const NULL_SIG = '0x0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
+
+function ecSign (tosign, privateKey) {
+  const hashed = keccak256(tosign)
+  const signed = ethUtil.ecsign(
+    Buffer.from(hashed, 'hex'),
+    Buffer.from(privateKey.replace('0x', ''), 'hex')
+  )
+  return sigUtil.concatSig(signed.v, signed.r, signed.s)
 }
 
-function signature (encodedTx, privateKey) {
-  // TODO: Add logic to add 0 to function without message inputs
+function sign (tx, privateKeys) {
+  // Currently transaction always have 2 inputs.
+  // If no private key is given for an input, then we sign with a 'null' signature
+  const REQUIRED_SIGNATURES = 2
+  const signatures = []
 
-  let hashedMsg = hash(encodedTx)
-  let signed = signatureDigest(hashedMsg, privateKey)
-  let signedToArr = Array.from(signed)
-  return signedToArr
-}
-
-// for when there is encodedTx but, no privateKey available
-function zeroSignature () {
-  let zeroBytes = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-  return zeroBytes
-}
-
-// sign an encoded signature
-function signedEncode (tx, sig1, sig2) {
-  let transactionBody = [
-    tx.blknum1,
-    tx.txindex1,
-    tx.oindex1,
-    tx.blknum2,
-    tx.txindex2,
-    tx.oindex2,
-    tx.cur12,
-    tx.newowner1,
-    tx.amount1,
-    tx.newowner2,
-    tx.amount2,
-    sig1,
-    sig2
-  ]
-
-  let rlpEncoded = rlpEncodeArr(transactionBody)
-  return rlpEncoded
-}
-
-function singleSign (tx, priv1) {
-  // transform tx into array format
-  let txArray =
-    [
-      tx.blknum1,
-      tx.txindex1,
-      tx.oindex1,
-      tx.blknum2,
-      tx.txindex2,
-      tx.oindex2,
-      tx.cur12,
-      tx.newowner1,
-      tx.amount1,
-      tx.newowner2,
-      tx.amount2
-    ]
-  // encode tx array
-  let encodedTx = rlpEncodeArr(txArray)
-  // generate first signature (signature function)
-  let sig1 = signature(encodedTx, priv1)
-  // generate second signature (zero signature function)
-  let sig2 = zeroSignature()
-  // generate signedTxBytes (with another Signed.encode function)
-  let signedTxBytes = signedEncode(tx, sig1, sig2)
-  // putting it all together and return the object
-  let signedTransaction = {
-    raw_tx: tx,
-    sig1,
-    sig2,
-    signedTxBytes
+  for (let i = 0; i < REQUIRED_SIGNATURES; i++) {
+    if (privateKeys.length > i) {
+      signatures.push(ecSign(tx, privateKeys[i]))
+    } else {
+      // Use null sig for the second signature
+      signatures.push(NULL_SIG)
+    }
   }
-  debug(`signed transaction object is: ${JSON.stringify(signedTransaction)}`)
-  return signedTransaction
+
+  return signatures
 }
 
-module.exports = { signature, hash, signedEncode, zeroSignature, singleSign }
+module.exports = sign
