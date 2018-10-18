@@ -12,6 +12,9 @@ const childChain = new ChildChain(`http://${config.watcher.host}:${config.watche
 const rootChain = new RootChain(GETH_URL, config.plasmaContract)
 const ETH_CURRENCY = '0000000000000000000000000000000000000000'
 
+// NB This test is designed to run against a modified RootChain contract that allows exits after 20 seconds.
+const CHALLENGE_PERIOD = 20 * 1000
+
 describe('Childchain transfer tests', async () => {
   const INTIIAL_SRC_AMOUNT = web3.utils.toWei('2', 'ether')
   const INTIIAL_DEST_AMOUNT = web3.utils.toWei('1', 'ether')
@@ -48,8 +51,6 @@ describe('Childchain transfer tests', async () => {
     assert.equal(utxos[0].amount.toString(), TRANSFER_AMOUNT)
     assert.equal(utxos[0].currency, ETH_CURRENCY)
 
-    console.log(`Got utxo ${JSON.stringify(utxos[0])}`)
-
     // Convert it to a Number from BigNumber
     utxos[0].amount = Number(utxos[0].amount)
     const txBody = {
@@ -73,7 +74,7 @@ describe('Childchain transfer tests', async () => {
     const result = await childChain.submitTransaction(signedTx)
     console.log(`Submitted transaction: ${JSON.stringify(result)}`)
 
-    // destAccount balance should be TEST_AMOUNT
+    // destAccount balance should be TRANSFER_AMOUNT
     balance = await helper.waitForBalance(childChain, destAccount.address, TRANSFER_AMOUNT)
     assert.equal(balance.length, 1)
     assert.equal(balance[0].amount.toString(), TRANSFER_AMOUNT)
@@ -103,8 +104,8 @@ describe('Childchain transfer tests', async () => {
     console.log(`Destination account called RootChain.startExit(): txhash = ${receipt.transactionHash}`)
 
     // Wait for challenge period
-    console.log('Waiting for challenge period...')
-    await helper.sleep(20 * 1000)
+    console.log(`Waiting for challenge period... ${CHALLENGE_PERIOD}ms`)
+    await helper.sleep(CHALLENGE_PERIOD)
 
     // Call finalize exits.
     receipt = await rootChain.finalizeExits(destAccount.address, ETH_CURRENCY, destAccount.privateKey)
@@ -112,7 +113,7 @@ describe('Childchain transfer tests', async () => {
 
     // Get ETH balance of destAccount
     const destEthBalance = await web3.eth.getBalance(destAccount.address)
-    // Expect dest account's balance to be above INTIIAL_DEST_AMOUNT + TRANSFER_AMOUNT - (gas)
+    // Expect dest account's balance to be above INTIIAL_DEST_AMOUNT + TRANSFER_AMOUNT - (some gas)
     const expected = web3.utils.toBN(INTIIAL_DEST_AMOUNT).add(web3.utils.toBN(TRANSFER_AMOUNT)).sub(web3.utils.toBN(100000000))
     assert.isAbove(Number(destEthBalance), Number(expected.toString()))
   })
