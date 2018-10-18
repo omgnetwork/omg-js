@@ -1,4 +1,4 @@
-/* 
+/*
 Copyright 2018 OmiseGO Pte Ltd
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -43,14 +43,14 @@ function waitForBalance (childChain, address, expectedBalance) {
     }
     return resp
   }, {
-    factor: 1,
-    minTimeout: 2000
+    minTimeout: 2000,
+    factor: 1
   })
 }
 
-function sleep(ms){
-  return new Promise(resolve=>{
-      setTimeout(resolve,ms)
+function sleep (ms) {
+  return new Promise(resolve => {
+    setTimeout(resolve, ms)
   })
 }
 

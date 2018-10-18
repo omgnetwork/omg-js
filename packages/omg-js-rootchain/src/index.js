@@ -1,4 +1,4 @@
-/* 
+/*
 Copyright 2018 OmiseGO Pte Ltd
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,7 +19,6 @@ const plasmaAbi = require('./plasmaAbi')
 const debug = require('debug')('omg.rootchain')
 
 class RootChain {
-
   /**
   * Interact with Tesuji Plasma Rootchain from JavaScript (Node.js and Browser)
   *
@@ -56,7 +55,7 @@ class RootChain {
     return sendTx(this.eth, txDetails, privateKey)
   }
 
-   /**
+  /**
    * deposit Token to rootchain
    *
    * @method depositToken
@@ -97,14 +96,14 @@ class RootChain {
     return Number(this.eth.abi.decodeParameter('uint256', encodedBlkNum))
   }
 
-  async startExit(fromAddress, utxoPos, txBytes, proof, sigs, privateKey) {
+  async startExit (fromAddress, utxoPos, txBytes, proof, sigs, privateKey) {
     const txDetails = {
       from: fromAddress,
       to: this.plasmaContractAddress,
       data: this.plasmaContract.methods.startExit(
-        utxoPos, 
-        Web3Utils.hexToBytes(`0x${txBytes}`), 
-        Web3Utils.hexToBytes(`0x${proof}`), 
+        utxoPos,
+        Web3Utils.hexToBytes(`0x${txBytes}`),
+        Web3Utils.hexToBytes(`0x${proof}`),
         Web3Utils.hexToBytes(`0x${sigs}`)
       ).encodeABI(),
       gas: 2000000
@@ -113,7 +112,7 @@ class RootChain {
     return sendTx(this.eth, txDetails, privateKey)
   }
 
-  async finalizeExits(fromAddress, token, privateKey) {
+  async finalizeExits (fromAddress, token, privateKey) {
     const txDetails = {
       from: fromAddress,
       to: this.plasmaContractAddress,

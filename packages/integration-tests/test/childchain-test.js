@@ -1,4 +1,4 @@
-/* 
+/*
 Copyright 2018 OmiseGO Pte Ltd
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -47,7 +47,7 @@ describe('integration tests', async () => {
 
     // Wait for transaction to be mined and reflected in the account's balance
     const balance = await helper.waitForBalance(childChain, account.address, TEST_AMOUNT)
-    
+
     // Check balance is correct
     assert.equal(balance[0].currency, '0000000000000000000000000000000000000000')
     assert.equal(balance[0].amount.toString(), web3.utils.toWei('1', 'ether'))
