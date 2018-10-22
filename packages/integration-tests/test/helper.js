@@ -22,21 +22,21 @@ function createAccount (web3) {
 }
 
 async function createAndFundAccount (web3, fundAccount, fundAccountPassword, value) {
-  const newAccount = createAccount(web3)
+  const account = createAccount(web3)
 
   await web3.eth.personal.unlockAccount(fundAccount, fundAccountPassword)
   await web3.eth.sendTransaction({
     from: fundAccount,
-    to: newAccount.address,
+    to: account.address,
     value
   })
 
-  return newAccount
+  return account
 }
 
 function waitForBalance (childChain, address, expectedBalance) {
   return promiseRetry(async (retry, number) => {
-    console.log('Waiting for balance... ', number)
+    console.log(`Waiting for balance...  (${number})`)
     const resp = await childChain.getBalance(address)
     if (resp.length === 0 || resp[0].amount.toString() !== expectedBalance) {
       retry()
@@ -48,8 +48,15 @@ function waitForBalance (childChain, address, expectedBalance) {
   })
 }
 
+function sleep (ms) {
+  return new Promise(resolve => {
+    setTimeout(resolve, ms)
+  })
+}
+
 module.exports = {
   createAccount,
   createAndFundAccount,
-  waitForBalance
+  waitForBalance,
+  sleep
 }

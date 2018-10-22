@@ -21,6 +21,9 @@ const MAX_OUTPUTS = 2
 const NULL_INPUT = { blknum: 0, txindex: 0, oindex: 0 }
 const NULL_OUTPUT = { owner: '0x0000000000000000000000000000000000000000', amount: 0 }
 
+const BLOCK_OFFSET = 1000000000
+const TX_OFFSET = 10000
+
 function validate (arg) {
   validateInputs(arg.inputs)
   validateOutputs(arg.outputs)
@@ -85,7 +88,7 @@ function addOutput (array, output) {
 function createTransactionBody (fromUtxos, toAddress, toAmount) {
   validateInputs(fromUtxos)
   const inputArr = fromUtxos.map(utxo => utxo)
-  //assuming a single output
+  // assuming a single output
   const outputArr = [{
     owner: toAddress,
     amount: Number(toAmount)
@@ -96,11 +99,16 @@ function createTransactionBody (fromUtxos, toAddress, toAmount) {
     outputs: outputArr
   }
 
-  return txBody 
+  return txBody
+}
+
+function encodeUtxoPos (utxo) {
+  return BLOCK_OFFSET * utxo.blknum + TX_OFFSET * utxo.txindex + utxo.oindex
 }
 
 module.exports = {
   toArray,
   validate,
-  createTransactionBody
+  createTransactionBody,
+  encodeUtxoPos
 }

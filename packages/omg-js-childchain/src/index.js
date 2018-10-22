@@ -74,6 +74,12 @@ class ChildChain {
     return Array.from(balanceMap).map(elem => ({ currency: elem[0], amount: elem[1] }))
   }
 
+  async getExitData (utxo) {
+    // Calculate the utxoPos
+    const utxoPos = transaction.encodeUtxoPos(utxo)
+    return watcherApi.get(`${this.watcherUrl}/utxo/${utxoPos}/exit_data`)
+  }
+
   /**
    * Create an unsigned transaction
    *
@@ -131,26 +137,26 @@ class ChildChain {
 
   /**
    * create, sign, build and submit a transaction to the childchain using raw privatekey
-   * 
+   *
    * @method sendTransaction
    * @param {array} fromUtxos - array of utxos gathered from the watcher
    * @param {array} fromPrivateKeys - array of hex string private key
    * @param {string} toAddress - address
    * @param {number} toAmount - amount to transact
-   * @return {object} 
+   * @return {object}
    */
   async sendTransaction (fromUtxos, fromPrivateKeys, toAddress, toAmount) {
     validateAddress(toAddress)
     validatePrivateKey(fromPrivateKeys)
-    //transform fromUtxo to txbody
+    // transform fromUtxo to txbody
     const txBody = transaction.createTransactionBody(fromUtxos, toAddress, toAmount)
-    //create transaction
+    // create transaction
     const unsignedTx = this.createTransaction(txBody)
-    //sign a transaction
+    // sign a transaction
     const signatures = this.signTransaction(unsignedTx, fromPrivateKeys)
-    //build a transaction
-    const signedTx = await this.buildSignedTransaction(unsignedTx, signatures)
-    //submit via JSON rpc
+    // build a transaction
+    const signedTx = this.buildSignedTransaction(unsignedTx, signatures)
+    // submit via JSON rpc
     const result = await this.submitTransaction(signedTx)
     return result
   }
