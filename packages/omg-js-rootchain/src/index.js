@@ -15,7 +15,6 @@ limitations under the License. */
 
 const Web3Eth = require('web3-eth')
 const Web3Utils = require('web3-utils')
-const plasmaAbi = require('./plasmaAbi')
 const debug = require('debug')('omg.rootchain')
 
 class RootChain {
@@ -23,14 +22,17 @@ class RootChain {
   * Interact with Tesuji Plasma Rootchain from JavaScript (Node.js and Browser)
   *
   * @param {string} web3Provider contains the url of the watcher server
+  * @param {string} plasmaContractAddress the address of the RootChain contract
+  * @param {string} plasmaAbi the abi of the RootChain contract. If not set the default abi included in './contracts/Rootchain' will be used.
   * @return {object} Rootchain Object
   *
   */
 
-  constructor (web3Provider, plasmaContractAddress) {
+  constructor (web3Provider, plasmaContractAddress, plasmaAbi) {
     this.eth = new Web3Eth(web3Provider)
     this.plasmaContractAddress = plasmaContractAddress
-    this.plasmaContract = new this.eth.Contract(plasmaAbi.abi, plasmaContractAddress)
+    const contractAbi = plasmaAbi || require('./contracts/Rootchain.json')
+    this.plasmaContract = new this.eth.Contract(contractAbi.abi, plasmaContractAddress)
   }
 
   /**
@@ -39,7 +41,7 @@ class RootChain {
    * @method depositEth
    * @param {number} amount amount of ETH to deposit
    * @param {string} fromAddress address to make the deposit from
-   * @param {string} plasmaContractAddress address of the plasma contract
+   * @param {string} privateKey private key to sign the transaction with. If not set, assume sending from an unlocked geth account
    * @return {string} transaction Hash of the deposit
    */
 
@@ -60,9 +62,9 @@ class RootChain {
    *
    * @method depositToken
    * @param {number} amount amount of ETH to deposit
-   * @param {string} plasmaContractAddress address of the plasma contract
    * @param {string} fromAddress address to make the deposit from
    * @param {string} tokenAddress address of the ERC20 Token
+   * @param {string} privateKey private key to sign the transaction with. If not set, assume sending from an unlocked geth account
    * @return {string} transaction Hash of the deposit
    */
 
