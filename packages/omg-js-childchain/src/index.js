@@ -80,6 +80,12 @@ class ChildChain {
     return watcherApi.get(`${this.watcherUrl}/utxo/${utxoPos}/exit_data`)
   }
 
+  async getChallengeData (utxo) {
+    // Calculate the utxoPos
+    const utxoPos = transaction.encodeUtxoPos(utxo)
+    return watcherApi.get(`${this.watcherUrl}/utxo/${utxoPos}/challenge_data`)
+  }
+
   /**
    * Create an unsigned transaction
    *
