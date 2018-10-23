@@ -5,7 +5,6 @@ const ChildChain = require('@omisego/omg-js-childchain')
 const RootChain = require('@omisego/omg-js-rootchain')
 const chai = require('chai')
 const assert = chai.assert
-const promiseRetry = require('promise-retry')
 
 const GETH_URL = `http://${config.geth.host}:${config.geth.port}`
 const web3 = new Web3(GETH_URL)
@@ -16,7 +15,7 @@ const ETH_CURRENCY = '0000000000000000000000000000000000000000'
 // NB This test is designed to run against a modified RootChain contract that allows exits after 20 seconds.
 const CHALLENGE_PERIOD = 20 * 1000
 
-describe.only('Challenge exit tests', async () => {
+describe('Challenge exit tests', async () => {
   const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('2', 'ether')
   const INTIIAL_BOB_AMOUNT = web3.utils.toWei('1', 'ether')
   const DEPOSIT_AMOUNT = web3.utils.toWei('1', 'ether')
@@ -43,7 +42,7 @@ describe.only('Challenge exit tests', async () => {
 
   it('should succesfully challenge a dishonest exit', async () => {
     // Send TRANSFER_AMOUNT from Alice to Bob
-    await sendAndWait(aliceAccount.address, bobAccount.address, Number(TRANSFER_AMOUNT), [aliceAccount.privateKey], TRANSFER_AMOUNT)
+    await helper.sendAndWait(childChain, aliceAccount.address, bobAccount.address, Number(TRANSFER_AMOUNT), [aliceAccount.privateKey], TRANSFER_AMOUNT)
     console.log(`Transferred ${TRANSFER_AMOUNT} from Alice to Bob`)
 
     // Save Alice's latest utxo
@@ -51,7 +50,7 @@ describe.only('Challenge exit tests', async () => {
     const aliceDishonestUtxo = aliceUtxos[0]
 
     // Send another TRANSFER_AMOUNT from Alice to Bob
-    await sendAndWait(aliceAccount.address, bobAccount.address, Number(TRANSFER_AMOUNT), [aliceAccount.privateKey], TRANSFER_AMOUNT * 2)
+    await helper.sendAndWait(childChain, aliceAccount.address, bobAccount.address, Number(TRANSFER_AMOUNT), [aliceAccount.privateKey], TRANSFER_AMOUNT * 2)
     console.log(`Transferred ${TRANSFER_AMOUNT} from Alice to Bob again`)
 
     // Now Alice wants to cheat and exit with the dishonest utxo
@@ -98,7 +97,7 @@ describe.only('Challenge exit tests', async () => {
 
   it('should exit dishonestly if not challenged', async () => {
     // Send TRANSFER_AMOUNT from Alice to Bob
-    await sendAndWait(aliceAccount.address, bobAccount.address, Number(TRANSFER_AMOUNT), [aliceAccount.privateKey], TRANSFER_AMOUNT)
+    await helper.sendAndWait(childChain, aliceAccount.address, bobAccount.address, Number(TRANSFER_AMOUNT), [aliceAccount.privateKey], TRANSFER_AMOUNT)
     console.log(`Transferred ${TRANSFER_AMOUNT} from Alice to Bob`)
 
     // Save Alice's latest utxo
@@ -106,7 +105,7 @@ describe.only('Challenge exit tests', async () => {
     const aliceDishonestUtxo = aliceUtxos[0]
 
     // Send another TRANSFER_AMOUNT from Alice to Bob
-    await sendAndWait(aliceAccount.address, bobAccount.address, Number(TRANSFER_AMOUNT), [aliceAccount.privateKey], TRANSFER_AMOUNT * 2)
+    await helper.sendAndWait(childChain, aliceAccount.address, bobAccount.address, Number(TRANSFER_AMOUNT), [aliceAccount.privateKey], TRANSFER_AMOUNT * 2)
     console.log(`Transferred ${TRANSFER_AMOUNT} from Alice to Bob again`)
 
     // Now Alice wants to cheat and exit with the dishonest utxo
@@ -139,47 +138,3 @@ describe.only('Challenge exit tests', async () => {
     assert.isAbove(Number(aliceEthBalance), Number(expected.toString()))
   })
 })
-
-async function sendAndWait (from, to, amount, privateKeys, expectedBalance) {
-  await send(from, to, amount, privateKeys)
-  return helper.waitForBalance(childChain, to, expectedBalance)
-}
-
-async function send (from, to, amount, privateKeys) {
-  // Get 'from' account's utxos
-  const utxos = await childChain.getUtxos(from)
-
-  // Convert 'amount' to a Number
-  utxos[0].amount = Number(utxos[0].amount)
-
-  // Construct the tx body
-  const txBody = {
-    inputs: [utxos[0]],
-    outputs: [{
-      owner: to,
-      amount
-    }, {
-      owner: from,
-      amount: utxos[0].amount - amount
-    }]
-  }
-
-  // Create the unsigned transaction
-  const unsignedTx = await childChain.createTransaction(txBody)
-  // Sign it
-  const signatures = await childChain.signTransaction(unsignedTx, privateKeys)
-  assert.equal(signatures.length, 2)
-  // Build the signed transaction
-  const signedTx = await childChain.buildSignedTransaction(unsignedTx, signatures)
-  // Submit the signed transaction to the childchain
-  // const result = await childChain.submitTransaction(signedTx)
-  const result = await promiseRetry(async (retry, number) => {
-    console.log(`Submitting...  (${number})`)
-    return childChain.submitTransaction(signedTx).catch(retry)
-  }, {
-    minTimeout: 2000,
-    factor: 1,
-    retries: 30
-  })
-  console.log(`Submitted transaction: ${JSON.stringify(result)}`)
-}

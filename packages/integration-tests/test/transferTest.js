@@ -17,77 +17,66 @@ const config = require('../test-config')
 const helper = require('./helper')
 const Web3 = require('web3')
 const ChildChain = require('@omisego/omg-js-childchain')
+const RootChain = require('@omisego/omg-js-rootchain')
 const chai = require('chai')
 const assert = chai.assert
 
-const web3 = new Web3(`http://${config.geth.host}:${config.geth.port}`)
-const childChain = new ChildChain(
-  `http://${config.watcher.host}:${config.watcher.port}`,
-  `http://${config.childchain.host}:${config.childchain.port}`
-)
+const GETH_URL = `http://${config.geth.host}:${config.geth.port}`
+const web3 = new Web3(GETH_URL)
+const childChain = new ChildChain(`http://${config.watcher.host}:${config.watcher.port}`, `http://${config.childchain.host}:${config.childchain.port}`)
+const rootChain = new RootChain(GETH_URL, config.plasmaContract)
+const ETH_CURRENCY = '0000000000000000000000000000000000000000'
 
-const PLASMA_CONTRACT_ADDRESS = config.plasmaContract
-
-describe('Childchain transfer tests', async () => {
-  let srcAccount
-  let destAccount
+describe('Transfer tests', async () => {
+  const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('2', 'ether')
+  const DEPOSIT_AMOUNT = web3.utils.toWei('1', 'ether')
+  const TRANSFER_AMOUNT = web3.utils.toWei('0.2', 'ether')
+  let aliceAccount
+  let bobAccount
 
   before(async () => {
     const accounts = await web3.eth.getAccounts()
     // Assume the funding account is accounts[0] and has a blank password
-    // Create and fund src account
-    srcAccount = await helper.createAndFundAccount(web3, accounts[0], '', web3.utils.toWei('2', 'ether'))
-    console.log(`Created src account ${JSON.stringify(srcAccount)}`)
-    // Create dest account
-    destAccount = helper.createAccount(web3)
-    console.log(`Created dest account ${JSON.stringify(destAccount)}`)
+    // Create and fund Alice's account
+    aliceAccount = await helper.createAndFundAccount(web3, accounts[0], '', INTIIAL_ALICE_AMOUNT)
+    console.log(`Created Alice account ${JSON.stringify(aliceAccount)}`)
+    // Create Bob's account
+    bobAccount = helper.createAccount(web3)
+    console.log(`Created Bob account ${JSON.stringify(bobAccount)}`)
+    // Alice deposits ETH into the Plasma contract
+    await rootChain.depositEth(DEPOSIT_AMOUNT, aliceAccount.address, aliceAccount.privateKey)
+    // Wait for transaction to be mined
+    const balance = await helper.waitForBalance(childChain, aliceAccount.address, DEPOSIT_AMOUNT)
+    assert.equal(balance[0].amount.toString(), DEPOSIT_AMOUNT)
+    console.log(`Alice deposited ${DEPOSIT_AMOUNT} into RootChain contract`)
   })
 
-  it('should deposit funds to the Plasma contract, then transfer on the childchain', async () => {
-    // Deposit ETH into the Plasma contract
-    const TEST_AMOUNT = web3.utils.toWei('1', 'ether')
-    try {
-      const signedTx = await web3.eth.accounts.signTransaction({
-        from: srcAccount.address,
-        to: PLASMA_CONTRACT_ADDRESS,
-        value: TEST_AMOUNT,
-        gas: 2000000,
-        data: '0xd0e30db0'
-      }, srcAccount.privateKey)
-
-      await web3.eth.sendSignedTransaction(signedTx.rawTransaction)
-    } catch (err) {
-      console.error(err)
-      throw err
-    }
-
-    // Wait for transaction to be mined
-    let balance = await helper.waitForBalance(childChain, srcAccount.address, TEST_AMOUNT)
-    // Check src account balance is correct
-    assert.equal(balance.length, 1)
-    assert.equal(balance[0].amount.toString(), TEST_AMOUNT)
-
+  it('should transfer funds on the childchain', async () => {
     // Check utxos on the child chain
-    const utxos = await childChain.getUtxos(srcAccount.address)
+    const utxos = await childChain.getUtxos(aliceAccount.address)
     assert.equal(utxos.length, 1)
     assert.hasAllKeys(utxos[0], ['txindex', 'txbytes', 'oindex', 'currency', 'blknum', 'amount'])
-    assert.equal(utxos[0].amount.toString(), TEST_AMOUNT)
-    assert.equal(utxos[0].currency, '0000000000000000000000000000000000000000')
+    assert.equal(utxos[0].amount.toString(), DEPOSIT_AMOUNT)
+    assert.equal(utxos[0].currency, ETH_CURRENCY)
 
-    // Convert it to a Number from BigNumber
+    // Convert 'amount' to a Number
     utxos[0].amount = Number(utxos[0].amount)
+    const CHANGE_AMOUNT = utxos[0].amount - TRANSFER_AMOUNT
     const txBody = {
       inputs: [utxos[0]],
       outputs: [{
-        owner: destAccount.address,
-        amount: Number(TEST_AMOUNT)
+        owner: bobAccount.address,
+        amount: Number(TRANSFER_AMOUNT)
+      }, {
+        owner: aliceAccount.address,
+        amount: CHANGE_AMOUNT
       }]
     }
 
     // Create the unsigned transaction
     const unsignedTx = childChain.createTransaction(txBody)
     // Sign it
-    const signatures = await childChain.signTransaction(unsignedTx, [srcAccount.privateKey])
+    const signatures = await childChain.signTransaction(unsignedTx, [aliceAccount.privateKey])
     assert.equal(signatures.length, 2)
     // Build the signed transaction
     const signedTx = await childChain.buildSignedTransaction(unsignedTx, signatures)
@@ -95,13 +84,14 @@ describe('Childchain transfer tests', async () => {
     const result = await childChain.submitTransaction(signedTx)
     console.log(`Submitted transaction: ${JSON.stringify(result)}`)
 
-    // destAccount balance should be TEST_AMOUNT
-    balance = await helper.waitForBalance(childChain, destAccount.address, TEST_AMOUNT)
+    // Bob's balance should be TRANSFER_AMOUNT
+    let balance = await helper.waitForBalance(childChain, bobAccount.address, TRANSFER_AMOUNT)
     assert.equal(balance.length, 1)
-    assert.equal(balance[0].amount.toString(), TEST_AMOUNT)
+    assert.equal(balance[0].amount.toString(), TRANSFER_AMOUNT)
 
-    // srcAccount balance should be zero
-    balance = await childChain.getBalance(srcAccount.address)
-    assert.equal(balance.length, 0)
+    // Alice's balance should be CHANGE_AMOUNT
+    balance = await childChain.getBalance(aliceAccount.address)
+    assert.equal(balance.length, 1)
+    assert.equal(balance[0].amount.toString(), CHANGE_AMOUNT)
   })
 })

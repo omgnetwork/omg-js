@@ -2,7 +2,7 @@ const chai = require('chai')
 const assert = chai.assert
 const transcation = require('../src/transaction/transaction')
 
-describe.only('Encode UTXO tests', () => {
+describe('Encode UTXO tests', () => {
   it('should return the encoded utxo position', () => {
     const utxo = {
       blknum: 96035000,
