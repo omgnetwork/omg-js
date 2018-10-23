@@ -112,6 +112,23 @@ class RootChain {
     return sendTx(this.eth, txDetails, privateKey)
   }
 
+  async challengeExit (fromAddress, cUtxoPos, eUtxoIndex, txBytes, proof, sigs, privateKey) {
+    const txDetails = {
+      from: fromAddress,
+      to: this.plasmaContractAddress,
+      data: this.plasmaContract.methods.challengeExit(
+        cUtxoPos,
+        eUtxoIndex,
+        Web3Utils.hexToBytes(`0x${txBytes}`),
+        Web3Utils.hexToBytes(`0x${proof}`),
+        Web3Utils.hexToBytes(`0x${sigs}`)
+      ).encodeABI(),
+      gas: 2000000
+    }
+
+    return sendTx(this.eth, txDetails, privateKey)
+  }
+
   async finalizeExits (fromAddress, token, privateKey) {
     const txDetails = {
       from: fromAddress,
