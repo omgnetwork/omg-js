@@ -114,11 +114,11 @@ class RootChain {
     return sendTx(this.eth, txDetails, privateKey)
   }
 
-  async finalizeExits (fromAddress, token, privateKey) {
+  async finalizeExits (fromAddress, token, topUtxoPos, exitsToProcess, privateKey) {
     const txDetails = {
       from: fromAddress,
       to: this.plasmaContractAddress,
-      data: this.plasmaContract.methods.finalizeExits(token).encodeABI(),
+      data: this.plasmaContract.methods.finalizeExits(token, topUtxoPos, exitsToProcess).encodeABI(),
       gas: 2000000
     }
 
