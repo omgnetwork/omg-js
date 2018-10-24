@@ -31,7 +31,7 @@ class RootChain {
   constructor (web3Provider, plasmaContractAddress, plasmaAbi) {
     this.eth = new Web3Eth(web3Provider)
     this.plasmaContractAddress = plasmaContractAddress
-    const contractAbi = plasmaAbi || require('./contracts/Rootchain.json')
+    const contractAbi = plasmaAbi || require('./contracts/RootChain.json')
     this.plasmaContract = new this.eth.Contract(contractAbi.abi, plasmaContractAddress)
   }
 
