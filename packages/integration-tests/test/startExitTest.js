@@ -84,7 +84,7 @@ describe('Exit tests', async () => {
     await helper.sleep(CHALLENGE_PERIOD)
 
     // Call finalize exits.
-    receipt = await rootChain.finalizeExits(bobAccount.address, ETH_CURRENCY, bobAccount.privateKey)
+    receipt = await rootChain.finalizeExits(bobAccount.address, ETH_CURRENCY, 0, 1, bobAccount.privateKey)
     console.log(`Bob called RootChain.finalizeExits(): txhash = ${receipt.transactionHash}`)
 
     // Get Bob's ETH balance

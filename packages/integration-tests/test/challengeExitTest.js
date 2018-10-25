@@ -99,7 +99,7 @@ describe('Challenge exit tests', async () => {
     await helper.sleep(CHALLENGE_PERIOD)
 
     // ...and calls finalize exits.
-    receipt = await rootChain.finalizeExits(aliceAccount.address, ETH_CURRENCY, aliceAccount.privateKey)
+    receipt = await rootChain.finalizeExits(aliceAccount.address, ETH_CURRENCY, 0, 1, aliceAccount.privateKey)
     console.log(`Alice called RootChain.finalizeExits(): txhash = ${receipt.transactionHash}`)
 
     // Get Alice's ETH balance
@@ -142,7 +142,7 @@ describe('Challenge exit tests', async () => {
     await helper.sleep(CHALLENGE_PERIOD)
 
     // ...and calls finalize exits.
-    receipt = await rootChain.finalizeExits(aliceAccount.address, ETH_CURRENCY, aliceAccount.privateKey)
+    receipt = await rootChain.finalizeExits(aliceAccount.address, ETH_CURRENCY, 0, 1, aliceAccount.privateKey)
     console.log(`Alice called RootChain.finalizeExits(): txhash = ${receipt.transactionHash}`)
 
     // Get Alice's ETH balance
