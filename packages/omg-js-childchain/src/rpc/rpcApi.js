@@ -14,45 +14,38 @@ See the License for the specific language governing permissions and
 limitations under the License. */
 
 const fetch = require('node-fetch')
+const debug = require('debug')('omg.childchain.submitTx')
 const JSONBigNumber = require('json-bigint')
 
-class WatcherError extends Error {
-  constructor ({ code, description }) {
-    super(description)
-    this.code = code
-  }
-}
-
 async function get (url) {
-  const resp = await fetch(url)
-  return rpcResponse(resp)
+  return fetch(url).then(parseResponse)
 }
 
-async function post (url, body) {
-  const resp = await fetch(url, {
+async function post (url, body, headers) {
+  body.jsonrpc = body.jsonrpc || '2.0'
+  body.id = body.id || 0
+  return fetch(url, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers,
     body: JSON.stringify(body)
-  })
-  return rpcResponse(resp)
+  }).then(parseResponse)
 }
 
-async function rpcResponse (resp) {
+async function parseResponse (resp) {
   const body = await resp.text()
   let json
   try {
     // Need to use a JSON parser capable of handling uint256
     json = JSONBigNumber.parse(body)
   } catch (err) {
-    throw new WatcherError('Unknown server error')
+    throw new Error('Unknown server error')
   }
-  if (json.result === 'error') {
-    throw new WatcherError(json.data)
-  }
-  return json.data
+  debug(`rpc response is ${JSON.stringify(json)}`)
+  return json
 }
 
 module.exports = {
   get,
-  post
+  post,
+  parseResponse
 }
