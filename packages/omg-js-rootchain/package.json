@@ -1,6 +1,6 @@
 {
   "name": "@omisego/omg-js-rootchain",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "Module to interact with the Ethereum RootChain",
   "keywords": [
     "OMG",
