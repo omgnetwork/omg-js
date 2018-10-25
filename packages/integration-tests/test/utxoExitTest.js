@@ -39,19 +39,14 @@ describe('Exit tests', async () => {
   let bobAccount
 
   before(async () => {
-    const accounts = await web3.eth.getAccounts()
+    // Create Alice and Bob's accounts
     // Assume the funding account is accounts[0] and has a blank password
-    // Create and fund Alice's account
-    aliceAccount = await helper.createAndFundAccount(web3, accounts[0], '', INTIIAL_ALICE_AMOUNT)
+    const accounts = await web3.eth.getAccounts()
+    ;[aliceAccount, bobAccount] = await helper.createAndFundManyAccounts(web3, accounts[0], '', [INTIIAL_ALICE_AMOUNT, INTIIAL_BOB_AMOUNT])
     console.log(`Created Alice account ${JSON.stringify(aliceAccount)}`)
-    // Create Bob's account
-    bobAccount = await helper.createAndFundAccount(web3, accounts[0], '', INTIIAL_BOB_AMOUNT)
     console.log(`Created Bob account ${JSON.stringify(bobAccount)}`)
     // Alice deposits ETH into the Plasma contract
-    await rootChain.depositEth(DEPOSIT_AMOUNT, aliceAccount.address, aliceAccount.privateKey)
-    // Wait for transaction to be mined
-    const balance = await helper.waitForBalance(childChain, aliceAccount.address, DEPOSIT_AMOUNT)
-    assert.equal(balance[0].amount.toString(), DEPOSIT_AMOUNT)
+    await helper.depositEthAndWait(rootChain, childChain, aliceAccount.address, DEPOSIT_AMOUNT, aliceAccount.privateKey)
     console.log(`Alice deposited ${DEPOSIT_AMOUNT} into RootChain contract`)
   })
 
@@ -79,16 +74,25 @@ describe('Exit tests', async () => {
     )
     console.log(`Bob called RootChain.startExit(): txhash = ${receipt.transactionHash}`)
 
+    // Call finalize exits before the challenge period is over
+    receipt = await rootChain.finalizeExits(bobAccount.address, ETH_CURRENCY, 0, 1, bobAccount.privateKey)
+    console.log(`Bob called RootChain.finalizeExits() before challenge period: txhash = ${receipt.transactionHash}`)
+
+    // Get Bob's ETH balance
+    let bobEthBalance = await web3.eth.getBalance(bobAccount.address)
+    // Expect Bob's balance to be less than INTIIAL_BOB_AMOUNT because the exit has not been processed yet
+    assert.isBelow(Number(bobEthBalance), Number(INTIIAL_BOB_AMOUNT))
+
     // Wait for challenge period
     console.log(`Waiting for challenge period... ${CHALLENGE_PERIOD}ms`)
     await helper.sleep(CHALLENGE_PERIOD)
 
-    // Call finalize exits.
+    // Call finalize exits again.
     receipt = await rootChain.finalizeExits(bobAccount.address, ETH_CURRENCY, 0, 1, bobAccount.privateKey)
-    console.log(`Bob called RootChain.finalizeExits(): txhash = ${receipt.transactionHash}`)
+    console.log(`Bob called RootChain.finalizeExits() after challenge period: txhash = ${receipt.transactionHash}`)
 
     // Get Bob's ETH balance
-    const bobEthBalance = await web3.eth.getBalance(bobAccount.address)
+    bobEthBalance = await web3.eth.getBalance(bobAccount.address)
     // Expect Bob's balance to be greater than INTIIAL_BOB_AMOUNT + TRANSFER_AMOUNT - (some gas)
     const expected = web3.utils.toBN(INTIIAL_BOB_AMOUNT).add(web3.utils.toBN(TRANSFER_AMOUNT)).sub(web3.utils.toBN(100000000))
     assert.isAbove(Number(bobEthBalance), Number(expected.toString()))
