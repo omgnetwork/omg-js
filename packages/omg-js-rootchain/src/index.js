@@ -114,6 +114,21 @@ class RootChain {
     return sendTx(this.eth, txDetails, privateKey)
   }
 
+  async startDepositExit (fromAddress, depositPos, token, amount, privateKey) {
+    const txDetails = {
+      from: fromAddress,
+      to: this.plasmaContractAddress,
+      data: this.plasmaContract.methods.startDepositExit(
+        depositPos,
+        token,
+        amount
+      ).encodeABI(),
+      gas: 2000000
+    }
+
+    return sendTx(this.eth, txDetails, privateKey)
+  }
+
   async challengeExit (fromAddress, cUtxoPos, eUtxoIndex, txBytes, proof, sigs, privateKey) {
     const txDetails = {
       from: fromAddress,

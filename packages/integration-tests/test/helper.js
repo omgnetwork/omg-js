@@ -94,11 +94,18 @@ async function send (childChain, from, to, amount, privateKeys) {
   return childChain.submitTransaction(signedTx)
 }
 
+async function depositEthAndWait (rootChain, childChain, address, amount, privateKey) {
+  await rootChain.depositEth(amount, address, privateKey)
+  // Wait for transaction to be mined
+  return waitForBalance(childChain, address, amount)
+}
+
 module.exports = {
   createAccount,
   createAndFundAccount,
   waitForBalance,
   sleep,
   send,
-  sendAndWait
+  sendAndWait,
+  depositEthAndWait
 }

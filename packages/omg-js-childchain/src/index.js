@@ -76,14 +76,18 @@ class ChildChain {
 
   async getExitData (utxo) {
     // Calculate the utxoPos
-    const utxoPos = transaction.encodeUtxoPos(utxo)
+    const utxoPos = this.encodeUtxoPos(utxo)
     return watcherApi.get(`${this.watcherUrl}/utxo/${utxoPos}/exit_data`)
   }
 
   async getChallengeData (utxo) {
     // Calculate the utxoPos
-    const utxoPos = transaction.encodeUtxoPos(utxo)
+    const utxoPos = this.encodeUtxoPos(utxo)
     return watcherApi.get(`${this.watcherUrl}/utxo/${utxoPos}/challenge_data`)
+  }
+
+  encodeUtxoPos (utxo) {
+    return transaction.encodeUtxoPos(utxo)
   }
 
   /**
