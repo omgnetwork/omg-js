@@ -31,7 +31,7 @@ class RootChain {
   constructor (web3Provider, plasmaContractAddress, plasmaAbi) {
     this.eth = new Web3Eth(web3Provider)
     this.plasmaContractAddress = plasmaContractAddress
-    const contractAbi = plasmaAbi || require('./contracts/Rootchain.json')
+    const contractAbi = plasmaAbi || require('./contracts/RootChain.json')
     this.plasmaContract = new this.eth.Contract(contractAbi.abi, plasmaContractAddress)
   }
 
@@ -114,11 +114,11 @@ class RootChain {
     return sendTx(this.eth, txDetails, privateKey)
   }
 
-  async finalizeExits (fromAddress, token, privateKey) {
+  async finalizeExits (fromAddress, token, topUtxoPos, exitsToProcess, privateKey) {
     const txDetails = {
       from: fromAddress,
       to: this.plasmaContractAddress,
-      data: this.plasmaContract.methods.finalizeExits(token).encodeABI(),
+      data: this.plasmaContract.methods.finalizeExits(token, topUtxoPos, exitsToProcess).encodeABI(),
       gas: 2000000
     }
 

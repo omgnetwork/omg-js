@@ -108,7 +108,7 @@ describe('Childchain transfer tests', async () => {
     await helper.sleep(CHALLENGE_PERIOD)
 
     // Call finalize exits.
-    receipt = await rootChain.finalizeExits(destAccount.address, ETH_CURRENCY, destAccount.privateKey)
+    receipt = await rootChain.finalizeExits(destAccount.address, ETH_CURRENCY, 0, 1, destAccount.privateKey)
     console.log(`Destination account called RootChain.finalizeExits(): txhash = ${receipt.transactionHash}`)
 
     // Get ETH balance of destAccount
