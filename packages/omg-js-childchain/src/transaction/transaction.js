@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License. */
 
 const { InvalidArgumentError } = require('@omisego/omg-js-util')
+const Web3Utils = require('web3-utils')
 
 const MAX_INPUTS = 2
 const MAX_OUTPUTS = 2
@@ -21,7 +22,7 @@ const MAX_OUTPUTS = 2
 const NULL_INPUT = { blknum: 0, txindex: 0, oindex: 0 }
 const NULL_OUTPUT = { owner: '0x0000000000000000000000000000000000000000', amount: 0 }
 
-const BLOCK_OFFSET = 1000000000
+const BLOCK_OFFSET = Web3Utils.toBN(1000000000)
 const TX_OFFSET = 10000
 
 function validate (arg) {
@@ -103,7 +104,9 @@ function createTransactionBody (fromUtxos, toAddress, toAmount) {
 }
 
 function encodeUtxoPos (utxo) {
-  return BLOCK_OFFSET * utxo.blknum + TX_OFFSET * utxo.txindex + utxo.oindex
+  const blk = Web3Utils.toBN(utxo.blknum).mul(BLOCK_OFFSET)
+  const tx = Web3Utils.toBN(utxo.txindex).muln(TX_OFFSET)
+  return blk.add(tx).addn(utxo.oindex)
 }
 
 module.exports = {
