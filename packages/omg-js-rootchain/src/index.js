@@ -15,7 +15,6 @@ limitations under the License. */
 
 const Web3Eth = require('web3-eth')
 const Web3Utils = require('web3-utils')
-const debug = require('debug')('omg.rootchain')
 
 class RootChain {
   /**
@@ -77,25 +76,6 @@ class RootChain {
     }
 
     return sendTx(this.eth, txDetails, privateKey)
-  }
-
-  /**
-   * get the block number of the deposit in the childchain
-   *
-   * @method getDepositBlock
-   * @param {string} txhash transaction hash
-   * @return {number} block number of the deposit inside the childchain
-   */
-
-  async getDepositBlock (txhash) {
-    const receipt = await this.eth.getTransactionReceipt(txhash)
-    if (!receipt) {
-      console.error(`Error - no transaction receipt found for ${txhash}`)
-      return null
-    }
-    let encodedBlkNum = receipt.logs[0].topics[2]
-    debug(`encoded block number: ${encodedBlkNum}`)
-    return Number(this.eth.abi.decodeParameter('uint256', encodedBlkNum))
   }
 
   async startExit (fromAddress, utxoPos, txBytes, proof, sigs, privateKey) {

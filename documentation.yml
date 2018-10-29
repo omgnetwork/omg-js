@@ -13,4 +13,3 @@ toc:
     children:
       - depositEth
       - depositToken
-      - getDepositBlock

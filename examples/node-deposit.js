@@ -21,15 +21,13 @@ const RootChain = require('../packages/omg-js-rootchain')
 
 const rootChain = new RootChain('http://localhost:8545')
 
-async function depositAndGetBlock () {
+async function deposit () {
   const amount = '2'
   const alice = '0x512c66a21ed773dd1af5b0b4969bd183cbbbe2dd'
   const plasmaContractAddress = '0xc93d606c071b23fd8015a77ce438dd0c1069e0da'
 
   const txhash = await rootChain.depositEth(amount, alice, plasmaContractAddress)
   console.log(`Deposited ${amount} eth into plasma contract, txhash = ${txhash}`)
-  const blockNumber = await rootChain.getDepositBlock(txhash)
-  console.log(`blockNumber = ${blockNumber}`)
 }
 
-depositAndGetBlock()
+deposit()
