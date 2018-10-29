@@ -24,14 +24,20 @@ function createAccount (web3) {
 async function createAndFundAccount (web3, fundAccount, fundAccountPassword, value) {
   const account = createAccount(web3)
 
-  await web3.eth.personal.unlockAccount(fundAccount, fundAccountPassword)
-  await web3.eth.sendTransaction({
-    from: fundAccount,
-    to: account.address,
-    value
-  })
+  if (value > 0) {
+    await web3.eth.personal.unlockAccount(fundAccount, fundAccountPassword)
+    await web3.eth.sendTransaction({
+      from: fundAccount,
+      to: account.address,
+      value
+    })
+  }
 
   return account
+}
+
+async function createAndFundManyAccounts (web3, fundAccount, fundAccountPassword, initialAmounts) {
+  return Promise.all(initialAmounts.map(amount => createAndFundAccount(web3, fundAccount, fundAccountPassword, amount)))
 }
 
 function waitForBalance (childChain, address, expectedBalance) {
@@ -94,11 +100,19 @@ async function send (childChain, from, to, amount, privateKeys) {
   return childChain.submitTransaction(signedTx)
 }
 
+async function depositEthAndWait (rootChain, childChain, address, amount, privateKey) {
+  await rootChain.depositEth(amount, address, privateKey)
+  // Wait for transaction to be mined
+  return waitForBalance(childChain, address, amount)
+}
+
 module.exports = {
   createAccount,
   createAndFundAccount,
+  createAndFundManyAccounts,
   waitForBalance,
   sleep,
   send,
-  sendAndWait
+  sendAndWait,
+  depositEthAndWait
 }

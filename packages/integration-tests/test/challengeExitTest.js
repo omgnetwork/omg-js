@@ -39,19 +39,14 @@ describe('Challenge exit tests', async () => {
   let bobAccount
 
   beforeEach(async () => {
-    const accounts = await web3.eth.getAccounts()
+    // Create Alice and Bob's accounts
     // Assume the funding account is accounts[0] and has a blank password
-    // Create and fund Alice's account
-    aliceAccount = await helper.createAndFundAccount(web3, accounts[0], '', INTIIAL_ALICE_AMOUNT)
+    const accounts = await web3.eth.getAccounts()
+    ;[aliceAccount, bobAccount] = await helper.createAndFundManyAccounts(web3, accounts[0], '', [INTIIAL_ALICE_AMOUNT, INTIIAL_BOB_AMOUNT])
     console.log(`Created Alice account ${JSON.stringify(aliceAccount)}`)
-    // Create Bob's account
-    bobAccount = await helper.createAndFundAccount(web3, accounts[0], '', INTIIAL_BOB_AMOUNT)
     console.log(`Created Bob account ${JSON.stringify(bobAccount)}`)
     // Alice deposits ETH into the Plasma contract
-    await rootChain.depositEth(DEPOSIT_AMOUNT, aliceAccount.address, aliceAccount.privateKey)
-    // Wait for transaction to be mined
-    const balance = await helper.waitForBalance(childChain, aliceAccount.address, DEPOSIT_AMOUNT)
-    assert.equal(balance[0].amount.toString(), DEPOSIT_AMOUNT)
+    await helper.depositEthAndWait(rootChain, childChain, aliceAccount.address, DEPOSIT_AMOUNT, aliceAccount.privateKey)
     console.log(`Alice deposited ${DEPOSIT_AMOUNT} into RootChain contract`)
   })
 
