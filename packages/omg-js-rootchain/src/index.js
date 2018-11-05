@@ -39,7 +39,7 @@ class RootChain {
   }
 
    /**
-   * deposit Token to rootchain
+   * deposit Token to rootchain (caller must be msg.sender)
    *
    * @method depositToken
    * @param {number} amount amount of ETH to deposit
@@ -51,7 +51,7 @@ class RootChain {
 
   async depositToken (amount, plasmaContractAddress, fromAddress, tokenAddress) {
     const plasmaContract = new this.eth.Contract(plasmaAbi.abi, plasmaContractAddress)
-    const depositData = plasmaContract.methods.depositFrom(fromAddress, tokenAddress, amount).encodeABI()
+    const depositData = plasmaContract.methods.depositFrom(tokenAddress, amount).encodeABI()
     const receipt = await this.eth.sendTransaction({
       from: fromAddress,
       to: plasmaContractAddress,

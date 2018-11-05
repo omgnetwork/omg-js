@@ -62,10 +62,6 @@ const abi = [
     'constant': false,
     'inputs': [
       {
-        'name': '_owner',
-        'type': 'address'
-      },
-      {
         'name': '_token',
         'type': 'address'
       },
