@@ -39,7 +39,7 @@ class RootChain {
   }
 
    /**
-   * deposit Token to rootchain (caller must be msg.sender)
+   * deposit Token to rootchain (caller must be the token owner)
    *
    * @method depositToken
    * @param {number} amount amount of ETH to deposit
