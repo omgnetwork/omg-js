@@ -56,6 +56,7 @@ class RootChain {
     return sendTx(this.eth, txDetails, privateKey)
   }
 
+
   /**
    * deposit Token to rootchain (caller must be token owner)
    *
