@@ -3,10 +3,13 @@ toc:
   - name: ChildChain
     children:
       - sendTransaction
+      - createTransaction
+      - signTransaction
+      - buildSignedTransaction
+      - submitTransaction
       - getUtxos
       - getBalance
   - name: RootChain
     children:
       - depositEth
       - depositToken
-      - getDepositBlock

@@ -1,85 +1,164 @@
+/*
+Copyright 2018 OmiseGO Pte Ltd
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License. */
 
 const Web3Eth = require('web3-eth')
 const Web3Utils = require('web3-utils')
-const plasmaAbi = require('./plasmaAbi')
-const debug = require('debug')('omg.rootchain')
 
 class RootChain {
-
   /**
   * Interact with Tesuji Plasma Rootchain from JavaScript (Node.js and Browser)
   *
   * @param {string} web3Provider contains the url of the watcher server
+  * @param {string} plasmaContractAddress the address of the RootChain contract
+  * @param {string} plasmaAbi the abi of the RootChain contract. If not set the default abi included in './contracts/Rootchain' will be used.
   * @return {object} Rootchain Object
   *
   */
 
-  constructor (web3Provider) {
+  constructor (web3Provider, plasmaContractAddress, plasmaAbi) {
     this.eth = new Web3Eth(web3Provider)
+    this.plasmaContractAddress = plasmaContractAddress
+    const contractAbi = plasmaAbi || require('./contracts/RootChain.json')
+    this.plasmaContract = new this.eth.Contract(contractAbi.abi, plasmaContractAddress)
   }
+
   /**
    * deposit ETH to rootchain
    *
    * @method depositEth
    * @param {number} amount amount of ETH to deposit
    * @param {string} fromAddress address to make the deposit from
-   * @param {string} plasmaContractAddress address of the plasma contract
+   * @param {string} privateKey private key to sign the transaction with. If not set, assume sending from an unlocked geth account
    * @return {string} transaction Hash of the deposit
    */
-  async depositEth (amount, fromAddress, plasmaContractAddress) {
-    const receipt = await this.eth.sendTransaction({
+
+  async depositEth (amount, fromAddress, privateKey) {
+    const txDetails = {
       from: fromAddress,
-      to: plasmaContractAddress,
-      value: Web3Utils.toWei(amount.toString(), 'ether'),
-      data: '0xd0e30db0' // TODO What's this data for?
-    })
-    debug(`deposit receipt: ${receipt}`)
-    debug(`returned transaction hash: ${receipt.transactionHash}`)
-    return receipt.transactionHash
+      to: this.plasmaContractAddress,
+      value: amount,
+      data: this.plasmaContract.methods.deposit().encodeABI(),
+      gas: 2000000
+    }
+
+    return sendTx(this.eth, txDetails, privateKey)
   }
 
+<<<<<<< HEAD
    /**
    * deposit Token to rootchain (caller must be the token owner)
+=======
+  /**
+   * deposit Token to rootchain
+>>>>>>> 5187694b4dab72cfb957088957fce5675187d32f
    *
    * @method depositToken
    * @param {number} amount amount of ETH to deposit
-   * @param {string} plasmaContractAddress address of the plasma contract
    * @param {string} fromAddress address to make the deposit from
    * @param {string} tokenAddress address of the ERC20 Token
+   * @param {string} privateKey private key to sign the transaction with. If not set, assume sending from an unlocked geth account
    * @return {string} transaction Hash of the deposit
    */
 
+<<<<<<< HEAD
   async depositToken (amount, plasmaContractAddress, fromAddress, tokenAddress) {
     const plasmaContract = new this.eth.Contract(plasmaAbi.abi, plasmaContractAddress)
     const depositData = plasmaContract.methods.depositFrom(tokenAddress, amount).encodeABI()
     const receipt = await this.eth.sendTransaction({
+=======
+  async depositToken (amount, fromAddress, tokenAddress, privateKey) {
+    const txDetails = {
+>>>>>>> 5187694b4dab72cfb957088957fce5675187d32f
       from: fromAddress,
-      to: plasmaContractAddress,
-      data: depositData
-    })
+      to: this.plasmaContractAddress,
+      data: this.plasmaContract.methods.depositFrom(fromAddress, tokenAddress, amount).encodeABI(),
+      gas: 2000000
+    }
 
-    debug(`depositToken receipt: ${receipt}`)
-    debug(`depositToken transaction hash: ${receipt.transactionHash}`)
-    return receipt.transactionHash
+    return sendTx(this.eth, txDetails, privateKey)
   }
 
-  /**
-   * get the block number of the deposit in the childchain
-   *
-   * @method getDepositBlock
-   * @param {string} txhash transaction hash
-   * @return {number} block number of the deposit inside the childchain
-   */
-
-  async getDepositBlock (txhash) {
-    const receipt = await this.eth.getTransactionReceipt(txhash)
-    if (!receipt) {
-      console.error(`Error - no transaction receipt found for ${txhash}`)
-      return null
+  async startExit (fromAddress, utxoPos, txBytes, proof, sigs, privateKey) {
+    const txDetails = {
+      from: fromAddress,
+      to: this.plasmaContractAddress,
+      data: this.plasmaContract.methods.startExit(
+        utxoPos,
+        Web3Utils.hexToBytes(`0x${txBytes}`),
+        Web3Utils.hexToBytes(`0x${proof}`),
+        Web3Utils.hexToBytes(`0x${sigs}`)
+      ).encodeABI(),
+      gas: 2000000
     }
-    let encodedBlkNum = receipt.logs[0].topics[2]
-    debug(`encoded block number: ${encodedBlkNum}`)
-    return Number(this.eth.abi.decodeParameter('uint256', encodedBlkNum))
+
+    return sendTx(this.eth, txDetails, privateKey)
+  }
+
+  async startDepositExit (fromAddress, depositPos, token, amount, privateKey) {
+    const txDetails = {
+      from: fromAddress,
+      to: this.plasmaContractAddress,
+      data: this.plasmaContract.methods.startDepositExit(
+        depositPos,
+        token,
+        amount
+      ).encodeABI(),
+      gas: 2000000
+    }
+
+    return sendTx(this.eth, txDetails, privateKey)
+  }
+
+  async challengeExit (fromAddress, cUtxoPos, eUtxoIndex, txBytes, proof, sigs, privateKey) {
+    const txDetails = {
+      from: fromAddress,
+      to: this.plasmaContractAddress,
+      data: this.plasmaContract.methods.challengeExit(
+        cUtxoPos,
+        eUtxoIndex,
+        Web3Utils.hexToBytes(`0x${txBytes}`),
+        Web3Utils.hexToBytes(`0x${proof}`),
+        Web3Utils.hexToBytes(`0x${sigs}`)
+      ).encodeABI(),
+      gas: 2000000
+    }
+
+    return sendTx(this.eth, txDetails, privateKey)
+  }
+
+  async finalizeExits (fromAddress, token, topUtxoPos, exitsToProcess, privateKey) {
+    const txDetails = {
+      from: fromAddress,
+      to: this.plasmaContractAddress,
+      data: this.plasmaContract.methods.finalizeExits(token, topUtxoPos, exitsToProcess).encodeABI(),
+      gas: 2000000
+    }
+
+    return sendTx(this.eth, txDetails, privateKey)
+  }
+}
+
+async function sendTx (eth, txDetails, privateKey) {
+  if (!privateKey) {
+    // No privateKey to sign with, assume sending from an unlocked geth account
+    return eth.sendTransaction(txDetails)
+  } else {
+    // First sign the transaction
+    const signedTx = await eth.accounts.signTransaction(txDetails, privateKey)
+    // Then send it
+    return eth.sendSignedTransaction(signedTx.rawTransaction)
   }
 }
 
