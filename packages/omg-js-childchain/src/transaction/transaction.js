@@ -86,14 +86,24 @@ function addOutput (array, output) {
   array.push(output.amount)
 }
 
-function createTransactionBody (fromUtxos, toAddress, toAmount) {
+function createTransactionBody (fromAddress, fromUtxos, toAddress, toAmount) {
   validateInputs(fromUtxos)
   const inputArr = fromUtxos.map(utxo => utxo)
-  // assuming a single output
+
+  const totalInputValue = inputArr.reduce((acc, curr) => acc.add(Web3Utils.toBN(curr.amount.toString())), Web3Utils.toBN(0))
+
   const outputArr = [{
     owner: toAddress,
-    amount: Number(toAmount)
+    amount: Number(Web3Utils.toBN(toAmount))
   }]
+
+  if (totalInputValue.gt(Web3Utils.toBN(toAmount))) {
+    // The 'change' output
+    outputArr.push({
+      owner: fromAddress,
+      amount: Number(totalInputValue.sub(Web3Utils.toBN(toAmount)).toString())
+    })
+  }
 
   const txBody = {
     inputs: inputArr,
