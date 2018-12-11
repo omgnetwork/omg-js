@@ -36,6 +36,43 @@ async function createAndFundAccount (web3, fundAccount, fundAccountPassword, val
   return account
 }
 
+async function fundAccountERC20 (web3, erc20Contract, fundAccount, fundAccountPassword, toAccount, value) {
+  await web3.eth.personal.unlockAccount(fundAccount, fundAccountPassword)
+  return erc20Contract.methods.transfer(toAccount, value).send({
+    from: fundAccount,
+    gas: 2000000
+  })
+}
+
+async function approveERC20 (web3,
+  erc20Contract,
+  ownerAccount,
+  ownerAccountPassword,
+  spender,
+  value
+) {
+  const txDetails = {
+    from: ownerAccount,
+    to: erc20Contract._address,
+    data: erc20Contract.methods.approve(spender, value).encodeABI(),
+    gas: 2000000
+  }
+
+  return sendTx(web3.eth, txDetails, ownerAccountPassword)
+}
+
+async function sendTx (eth, txDetails, privateKey) {
+  if (!privateKey) {
+    // No privateKey to sign with, assume sending from an unlocked geth account
+    return eth.sendTransaction(txDetails)
+  } else {
+    // First sign the transaction
+    const signedTx = await eth.accounts.signTransaction(txDetails, privateKey)
+    // Then send it
+    return eth.sendSignedTransaction(signedTx.rawTransaction)
+  }
+}
+
 async function createAndFundManyAccounts (web3, fundAccount, fundAccountPassword, initialAmounts) {
   return Promise.all(initialAmounts.map(amount => createAndFundAccount(web3, fundAccount, fundAccountPassword, amount)))
 }
@@ -114,5 +151,7 @@ module.exports = {
   sleep,
   send,
   sendAndWait,
-  depositEthAndWait
+  depositEthAndWait,
+  fundAccountERC20,
+  approveERC20
 }

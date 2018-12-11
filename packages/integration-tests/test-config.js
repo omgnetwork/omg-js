@@ -28,7 +28,8 @@ const config = {
     host: process.env.CHILDCHAIN_HOST || 'localhost',
     port: process.env.CHILDCHAIN_PORT || '9656'
   },
-  plasmaContract: process.env.PLASMA_CONTRACT || '0x518b624fbdf288908f50acfc9d60df4466e82d3e'
+  plasmaContract: process.env.PLASMA_CONTRACT || '0x106c4906f94343fab5004d74df21d6b8c1b23d69',
+  testErc20Contract: process.env.TEST_ERC20_CONTRACT || '0xbfdf85743ef16cfb1f8d4dd1dfc74c51dc496434'
 }
 
 module.exports = config

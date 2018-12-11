@@ -56,12 +56,11 @@ class RootChain {
     return sendTx(this.eth, txDetails, privateKey)
   }
 
-
   /**
    * deposit Token to rootchain (caller must be token owner)
    *
    * @method depositToken
-   * @param {number} amount amount of ETH to deposit 
+   * @param {number} amount amount of ETH to deposit
    * @param {string} fromAddress address to make the deposit from
    * @param {string} tokenAddress address of the ERC20 Token
    * @param {string} privateKey private key to sign the transaction with. If not set, assume sending from an unlocked geth account

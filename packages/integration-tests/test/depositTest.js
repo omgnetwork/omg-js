@@ -25,39 +25,84 @@ const web3 = new Web3(`http://${config.geth.host}:${config.geth.port}`)
 const rootChain = new RootChain(`http://${config.geth.host}:${config.geth.port}`, config.plasmaContract)
 const childChain = new ChildChain(`http://${config.watcher.host}:${config.watcher.port}`)
 
-describe('integration tests', async () => {
-  let account
+describe('Deposit tests', async () => {
+  describe('deposit ETH', async () => {
+    let account
 
-  before(async () => {
+    before(async () => {
     // Create and fund a new account
-    const accounts = await web3.eth.getAccounts()
-    // Assume the funding account is accounts[0] and has a blank password
-    account = await helper.createAndFundAccount(web3, accounts[0], '', web3.utils.toWei('2', 'ether'))
-    console.log(`Created new account ${JSON.stringify(account)}`)
+      const accounts = await web3.eth.getAccounts()
+      // Assume the funding account is accounts[0] and has a blank password
+      account = await helper.createAndFundAccount(web3, accounts[0], '', web3.utils.toWei('2', 'ether'))
+      console.log(`Created new account ${JSON.stringify(account)}`)
+    })
+
+    it('should deposit ETH to the Plasma contract', async () => {
+    // The new account should have no initial balance
+      const initialBalance = await childChain.getBalance(account.address)
+      assert.equal(initialBalance.length, 0)
+
+      // Deposit ETH into the Plasma contract
+      const TEST_AMOUNT = web3.utils.toWei('1', 'ether')
+      await rootChain.depositEth(TEST_AMOUNT, account.address, account.privateKey)
+
+      // Wait for transaction to be mined and reflected in the account's balance
+      const balance = await helper.waitForBalance(childChain, account.address, TEST_AMOUNT)
+
+      // Check balance is correct
+      assert.equal(balance[0].currency, '0000000000000000000000000000000000000000')
+      assert.equal(balance[0].amount.toString(), web3.utils.toWei('1', 'ether'))
+      console.log(`Balance: ${balance[0].amount.toString()}`)
+
+      // THe account should have one utxo on the child chain
+      const utxos = await childChain.getUtxos(account.address)
+      assert.equal(utxos.length, 1)
+      assert.hasAllKeys(utxos[0], ['txindex', 'txbytes', 'oindex', 'currency', 'blknum', 'amount'])
+      assert.equal(utxos[0].amount.toString(), web3.utils.toWei('1', 'ether'))
+      assert.equal(utxos[0].currency, '0000000000000000000000000000000000000000')
+    })
   })
 
-  it('should deposit ETH to the Plasma contract', async () => {
-    // The new account should have no initial balance
-    const initialBalance = await childChain.getBalance(account.address)
-    assert.equal(initialBalance.length, 0)
+  describe('deposit ERC20', async () => {
+    let account
+    const contractAbi = require('../tokens/build/contracts/ERC20.json')
+    const testErc20Contract = new web3.eth.Contract(contractAbi.abi, config.testErc20Contract)
+    const INITIAL_AMOUNT = 100
+    const DEPOSIT_AMOUNT = 20
 
-    // Deposit ETH into the Plasma contract
-    const TEST_AMOUNT = web3.utils.toWei('1', 'ether')
-    await rootChain.depositEth(TEST_AMOUNT, account.address, account.privateKey)
+    before(async () => {
+    // Create and fund a new account
+      const accounts = await web3.eth.getAccounts()
+      // Assume the funding account is accounts[0] and has a blank password
+      account = await helper.createAndFundAccount(web3, accounts[0], '', web3.utils.toWei('0.1', 'ether'))
+      console.log(`Created new account ${JSON.stringify(account)}`)
+      // Send ERC20 tokens to the new account
+      await helper.fundAccountERC20(web3, testErc20Contract, accounts[0], '', account.address, INITIAL_AMOUNT)
+    })
 
-    // Wait for transaction to be mined and reflected in the account's balance
-    const balance = await helper.waitForBalance(childChain, account.address, TEST_AMOUNT)
+    it('should deposit ERC20 tokens to the Plasma contract', async () => {
+      // The new account should have no initial balance
+      const initialBalance = await childChain.getBalance(account.address)
+      assert.equal(initialBalance.length, 0)
 
-    // Check balance is correct
-    assert.equal(balance[0].currency, '0000000000000000000000000000000000000000')
-    assert.equal(balance[0].amount.toString(), web3.utils.toWei('1', 'ether'))
-    console.log(`Balance: ${balance[0].amount.toString()}`)
+      // Account must approve the Plasma contract
+      await helper.approveERC20(web3, testErc20Contract, account.address, account.privateKey, config.plasmaContract, DEPOSIT_AMOUNT)
 
-    // THe account should have one utxo on the child chain
-    const utxos = await childChain.getUtxos(account.address)
-    assert.equal(utxos.length, 1)
-    assert.hasAllKeys(utxos[0], ['txindex', 'txbytes', 'oindex', 'currency', 'blknum', 'amount'])
-    assert.equal(utxos[0].amount.toString(), web3.utils.toWei('1', 'ether'))
-    assert.equal(utxos[0].currency, '0000000000000000000000000000000000000000')
+      // Deposit ERC20 tokens into the Plasma contract
+      await rootChain.depositToken(DEPOSIT_AMOUNT, account.address, config.testErc20Contract, account.privateKey)
+
+      // Wait for transaction to be mined and reflected in the account's balance
+      const balance = await helper.waitForBalance(childChain, account.address, DEPOSIT_AMOUNT)
+
+      // Check balance is correct
+      assert.equal(balance[0].amount.toString(), DEPOSIT_AMOUNT)
+      console.log(`Balance: ${balance[0].amount.toString()}`)
+
+      // THe account should have one utxo on the child chain
+      const utxos = await childChain.getUtxos(account.address)
+      assert.equal(utxos.length, 1)
+      assert.hasAllKeys(utxos[0], ['txindex', 'txbytes', 'oindex', 'currency', 'blknum', 'amount'])
+      assert.equal(utxos[0].amount.toString(), DEPOSIT_AMOUNT)
+    })
   })
 })
