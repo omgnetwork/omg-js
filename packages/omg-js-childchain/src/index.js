@@ -13,9 +13,9 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License. */
 
-const watcherApi = require('./watcherApi')
+const watcherApi = require('./rpc/watcherApi')
+const childchainApi = require('./rpc/childchainApi')
 const sign = require('./transaction/signature')
-const submitTx = require('./transaction/submitRPC')
 const transaction = require('./transaction/transaction')
 const rlp = require('rlp')
 const { InvalidArgumentError } = require('@omisego/omg-js-util')
@@ -142,7 +142,12 @@ class ChildChain {
    */
   async submitTransaction (transaction) {
     // validateTxBody(transactionBody)
-    return submitTx(transaction, this.childChainUrl)
+    return childchainApi.post(`${this.childChainUrl}`, {
+      method: 'submit',
+      params: {
+        transaction
+      }
+    })
   }
 
   /**

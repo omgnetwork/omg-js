@@ -13,31 +13,33 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License. */
 
-// submit tx on JSON
-const fetch = require('node-fetch')
-const debug = require('debug')('omg.childchain.submitTx')
+const rpcApi = require('./rpcApi')
 
-async function submitTx (tx, url) {
-  let payload = {
-    'params': {
-      'transaction': tx
-    },
-    'method': 'submit',
-    'jsonrpc': '2.0',
-    'id': 0
+class ChildChainError extends Error {
+  constructor ({ code, message, data }) {
+    super(`${message}: ${data}`)
+    this.code = code
   }
+}
 
-  let resp = await fetch(url, {
-    method: 'POST',
-    mode: 'cors',
-    body: JSON.stringify(payload)
-  })
-  let response = await resp.json()
-  debug(`rpc response is ${JSON.stringify(response)}`)
+async function get (url) {
+  return rpcApi.get(url).then(handleResponse)
+}
+
+async function post (url, body) {
+  body.jsonrpc = body.jsonrpc || '2.0'
+  body.id = body.id || 0
+  return rpcApi.post(url, body).then(handleResponse)
+}
+
+function handleResponse (response) {
   if (response.error) {
-    throw new Error(JSON.stringify(response.error))
+    throw new ChildChainError(response.error)
   }
   return response.result
 }
 
-module.exports = submitTx
+module.exports = {
+  get,
+  post
+}

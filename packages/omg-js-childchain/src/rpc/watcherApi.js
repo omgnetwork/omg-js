@@ -13,26 +13,31 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License. */
 
-// Get_block on JSON RPC
+const rpcApi = require('./rpcApi')
 
-const fetch = require('node-fetch')
-
-async function getBlock (blockhash, childchainUrl) {
-  let payload = {
-    'params': {
-      'hash': blockhash
-    },
-    'method': 'get_block',
-    'jsonrpc': '2.0',
-    'id': 0
+class WatcherError extends Error {
+  constructor ({ code, description }) {
+    super(description)
+    this.code = code
   }
-
-  let resp = await fetch(childchainUrl, {
-    method: 'POST',
-    body: JSON.stringify(payload)
-  })
-
-  return resp.json()
 }
 
-module.exports = getBlock
+async function get (url) {
+  return rpcApi.get(url).then(handleResponse)
+}
+
+async function post (url, body) {
+  return rpcApi.post(url, body, { 'Content-Type': 'application/json' }).then(handleResponse)
+}
+
+function handleResponse (response) {
+  if (response.result === 'error') {
+    throw new WatcherError(response.data)
+  }
+  return response.data
+}
+
+module.exports = {
+  get,
+  post
+}
