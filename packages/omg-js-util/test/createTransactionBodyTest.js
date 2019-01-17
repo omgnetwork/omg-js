@@ -1,8 +1,8 @@
-const transaction = require('../src/transaction/transaction')
+const transaction = require('../src/transaction')
 const Web3Utils = require('web3-utils')
 const assert = require('chai').assert
 
-describe.only('createTransactionBody', () => {
+describe('createTransactionBody', () => {
   it('should create a transaction body from one input and give change', () => {
     const fromAddress = '0xf4ebbe787311bb955bb353b7a4d8b97af8ed1c9b'
     const fromUtxos = [

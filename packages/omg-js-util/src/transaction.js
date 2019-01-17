@@ -13,14 +13,16 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License. */
 
-const { InvalidArgumentError } = require('@omisego/omg-js-util')
+const InvalidArgumentError = require('./InvalidArgumentError')
 const Web3Utils = require('web3-utils')
+const rlp = require('rlp')
 
-const MAX_INPUTS = 2
-const MAX_OUTPUTS = 2
+const MAX_INPUTS = 4
+const MAX_OUTPUTS = 4
 
+const NULL_ADDRESS = '0x0000000000000000000000000000000000000000'
 const NULL_INPUT = { blknum: 0, txindex: 0, oindex: 0 }
-const NULL_OUTPUT = { owner: '0x0000000000000000000000000000000000000000', amount: 0 }
+const NULL_OUTPUT = { owner: NULL_ADDRESS, amount: 0, currency: NULL_ADDRESS }
 
 const BLOCK_OFFSET = Web3Utils.toBN(1000000000)
 const TX_OFFSET = 10000
@@ -57,33 +59,34 @@ function validateOutputs (arg) {
 function toArray (transactionBody) {
   const txArray = []
 
+  const inputArray = []
   for (let i = 0; i < MAX_INPUTS; i++) {
-    addInput(txArray, i < transactionBody.inputs.length
-      ? transactionBody.inputs[i]
-      : NULL_INPUT)
+    addInput(inputArray,
+      i < transactionBody.inputs.length
+        ? transactionBody.inputs[i]
+        : NULL_INPUT)
   }
 
-  // TODO Can't mix currencies yet...
-  txArray.push(Buffer.from(transactionBody.inputs[0].currency, 'hex'))
+  txArray.push(inputArray)
 
+  const outputArray = []
   for (let i = 0; i < MAX_OUTPUTS; i++) {
-    addOutput(txArray, i < transactionBody.outputs.length
-      ? transactionBody.outputs[i]
-      : NULL_OUTPUT)
+    addOutput(outputArray,
+      i < transactionBody.outputs.length
+        ? transactionBody.outputs[i]
+        : NULL_OUTPUT)
   }
 
+  txArray.push(outputArray)
   return txArray
 }
 
 function addInput (array, input) {
-  array.push(input.blknum)
-  array.push(input.txindex)
-  array.push(input.oindex)
+  array.push([input.blknum, input.txindex, input.oindex])
 }
 
 function addOutput (array, output) {
-  array.push(output.owner)
-  array.push(output.amount)
+  array.push([output.owner, output.currency, output.amount])
 }
 
 function createTransactionBody (fromAddress, fromUtxos, toAddress, toAmount) {
@@ -119,9 +122,20 @@ function encodeUtxoPos (utxo) {
   return blk.add(tx).addn(utxo.oindex)
 }
 
+function encodeDepositTx (owner, amount, currency) {
+  const txArray = toArray({
+    inputs: [],
+    outputs: [{ owner, amount, currency }]
+  })
+
+  return `0x${rlp.encode(txArray).toString('hex').toUpperCase()}`
+}
+
 module.exports = {
+  NULL_ADDRESS,
   toArray,
   validate,
   createTransactionBody,
-  encodeUtxoPos
+  encodeUtxoPos,
+  encodeDepositTx
 }

@@ -16,9 +16,8 @@ limitations under the License. */
 const watcherApi = require('./rpc/watcherApi')
 const childchainApi = require('./rpc/childchainApi')
 const sign = require('./transaction/signature')
-const transaction = require('./transaction/transaction')
 const rlp = require('rlp')
-const { InvalidArgumentError } = require('@omisego/omg-js-util')
+const { InvalidArgumentError, transaction } = require('@omisego/omg-js-util')
 global.Buffer = global.Buffer || require('buffer').Buffer
 const Web3Utils = require('web3-utils')
 

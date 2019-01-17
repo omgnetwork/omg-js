@@ -18,5 +18,8 @@
   },
   "publishConfig": {
     "access": "public"
+  },
+  "dependencies": {
+    "rlp": "^2.2.2"
   }
 }

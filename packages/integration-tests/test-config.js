@@ -22,13 +22,13 @@ const config = {
   },
   watcher: {
     host: process.env.WATCHER_HOST || 'localhost',
-    port: process.env.WATCHER_PORT || '4000'
+    port: process.env.WATCHER_PORT || '7434'
   },
   childchain: {
     host: process.env.CHILDCHAIN_HOST || 'localhost',
     port: process.env.CHILDCHAIN_PORT || '9656'
   },
-  plasmaContract: process.env.PLASMA_CONTRACT || '0x106c4906f94343fab5004d74df21d6b8c1b23d69',
+  plasmaContract: process.env.PLASMA_CONTRACT || '0xf27dda090f93e878acfff7bf650ed89a857ca9fe',
   testErc20Contract: process.env.TEST_ERC20_CONTRACT || '0xbfdf85743ef16cfb1f8d4dd1dfc74c51dc496434'
 }
 
