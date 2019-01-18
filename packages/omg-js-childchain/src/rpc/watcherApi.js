@@ -31,10 +31,10 @@ async function post (url, body) {
 }
 
 function handleResponse (response) {
-  if (response.result === 'error') {
-    throw new WatcherError(response.data)
+  if (response.success) {
+    return response.data
   }
-  return response.data
+  throw new WatcherError(response.data)
 }
 
 module.exports = {
