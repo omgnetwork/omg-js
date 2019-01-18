@@ -122,10 +122,21 @@ function encodeUtxoPos (utxo) {
   return blk.add(tx).addn(utxo.oindex)
 }
 
+function sanitiseAddress (address) {
+  if (typeof address !== 'string' || !address.startsWith('0x')) {
+    return `0x${address}`
+  }
+  return address
+}
+
 function encodeDepositTx (owner, amount, currency) {
   const txArray = toArray({
     inputs: [],
-    outputs: [{ owner, amount, currency }]
+    outputs: [{
+      owner: sanitiseAddress(owner), // must start with '0x' to be encoded properly
+      amount: Number(amount), // must be a Number to be encoded properly
+      currency: sanitiseAddress(currency) // must start with '0x' to be encoded properly
+    }]
   })
 
   return `0x${rlp.encode(txArray).toString('hex').toUpperCase()}`
