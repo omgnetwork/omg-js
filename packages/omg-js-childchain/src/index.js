@@ -110,7 +110,7 @@ class ChildChain {
     // rlp-decode the tx bytes
     const decodedTx = rlp.decode(Buffer.from(unsignedTx, 'hex'))
     // Append the signatures
-    const signedTx = [...decodedTx, ...signatures]
+    const signedTx = [signatures, ...decodedTx]
     // rlp-encode the transaction + signatures
     return rlp.encode(signedTx).toString('hex')
   }
