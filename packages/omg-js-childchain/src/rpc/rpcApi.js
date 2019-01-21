@@ -19,7 +19,7 @@ const JSONBigNumber = require('json-bigint')
 
 class RpcError extends Error {
   constructor ({ code, description }) {
-    super(description)
+    super(description || code)
     this.code = code
   }
 }
