@@ -86,7 +86,11 @@ function addInput (array, input) {
 }
 
 function addOutput (array, output) {
-  array.push([output.owner, output.currency, output.amount])
+  array.push([
+    sanitiseAddress(output.owner), // must start with '0x' to be encoded properly
+    sanitiseAddress(output.currency), // must be a Number to be encoded properly
+    Number(output.amount) // must start with '0x' to be encoded properly
+  ])
 }
 
 function createTransactionBody (fromAddress, fromUtxos, toAddress, toAmount) {
@@ -132,11 +136,7 @@ function sanitiseAddress (address) {
 function encodeDepositTx (owner, amount, currency) {
   const txArray = toArray({
     inputs: [],
-    outputs: [{
-      owner: sanitiseAddress(owner), // must start with '0x' to be encoded properly
-      amount: Number(amount), // must be a Number to be encoded properly
-      currency: sanitiseAddress(currency) // must start with '0x' to be encoded properly
-    }]
+    outputs: [{ owner, amount, currency }]
   })
 
   return `0x${rlp.encode(txArray).toString('hex').toUpperCase()}`
