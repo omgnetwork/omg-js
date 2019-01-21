@@ -50,7 +50,7 @@ describe('Transfer tests', async () => {
     // Check utxos on the child chain
     const utxos = await childChain.getUtxos(aliceAccount.address)
     assert.equal(utxos.length, 1)
-    assert.hasAllKeys(utxos[0], ['txindex', 'txbytes', 'oindex', 'currency', 'blknum', 'amount'])
+    assert.hasAllKeys(utxos[0], ['utxo_pos', 'txindex', 'owner', 'oindex', 'currency', 'blknum', 'amount'])
     assert.equal(utxos[0].amount.toString(), DEPOSIT_AMOUNT)
     assert.equal(utxos[0].currency, ETH_CURRENCY)
 
@@ -61,9 +61,11 @@ describe('Transfer tests', async () => {
       inputs: [utxos[0]],
       outputs: [{
         owner: bobAccount.address,
+        currency: ETH_CURRENCY,
         amount: Number(TRANSFER_AMOUNT)
       }, {
         owner: aliceAccount.address,
+        currency: ETH_CURRENCY,
         amount: CHANGE_AMOUNT
       }]
     }
@@ -72,7 +74,7 @@ describe('Transfer tests', async () => {
     const unsignedTx = childChain.createTransaction(txBody)
     // Sign it
     const signatures = await childChain.signTransaction(unsignedTx, [aliceAccount.privateKey])
-    assert.equal(signatures.length, 2)
+    assert.equal(signatures.length, 1)
     // Build the signed transaction
     const signedTx = await childChain.buildSignedTransaction(unsignedTx, signatures)
     // Submit the signed transaction to the childchain

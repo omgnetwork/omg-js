@@ -38,7 +38,7 @@ describe('Deposit tests', async () => {
       console.log(`Created new account ${JSON.stringify(account)}`)
     })
 
-    it.only('should deposit ETH to the Plasma contract', async () => {
+    it('should deposit ETH to the Plasma contract', async () => {
       // The new account should have no initial balance
       const initialBalance = await childChain.getBalance(account.address)
       assert.equal(initialBalance.length, 0)

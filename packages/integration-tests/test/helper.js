@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License. */
 
 const promiseRetry = require('promise-retry')
+const { transaction } = require('@omisego/omg-js-util')
 
 function createAccount (web3) {
   const ret = web3.eth.accounts.create()
@@ -138,7 +139,8 @@ async function send (childChain, from, to, amount, privateKeys) {
 }
 
 async function depositEthAndWait (rootChain, childChain, address, amount, privateKey) {
-  await rootChain.depositEth(amount, address, privateKey)
+  const depositTx = transaction.encodeDepositTx(address, amount, transaction.NULL_ADDRESS)
+  await rootChain.depositEth(depositTx, amount, { from: address, privateKey: privateKey })
   // Wait for transaction to be mined
   return waitForBalance(childChain, address, amount)
 }
