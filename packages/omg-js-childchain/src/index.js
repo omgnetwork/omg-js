@@ -13,8 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License. */
 
-const watcherApi = require('./rpc/watcherApi')
-const childchainApi = require('./rpc/childchainApi')
+const rpcApi = require('./rpc/rpcApi')
 const sign = require('./transaction/signature')
 const rlp = require('rlp')
 const { InvalidArgumentError, transaction } = require('@omisego/omg-js-util')
@@ -42,7 +41,7 @@ class ChildChain {
    */
   async getUtxos (address) {
     validateAddress(address)
-    return watcherApi.post(`${this.watcherUrl}/account.get_utxos`, { address })
+    return rpcApi.post(`${this.watcherUrl}/account.get_utxos`, { address })
   }
 
   /**
@@ -54,19 +53,19 @@ class ChildChain {
    */
   async getBalance (address) {
     validateAddress(address)
-    return watcherApi.post(`${this.watcherUrl}/account.get_balance`, { address })
+    return rpcApi.post(`${this.watcherUrl}/account.get_balance`, { address })
   }
 
   async getExitData (utxo) {
     // Calculate the utxoPos
     const utxoPos = this.encodeUtxoPos(utxo)
-    return watcherApi.post(`${this.watcherUrl}/utxo.get_exit_data`, { utxo_pos: utxoPos })
+    return rpcApi.post(`${this.watcherUrl}/utxo.get_exit_data`, { utxo_pos: utxoPos })
   }
 
   async getChallengeData (utxo) {
     // Calculate the utxoPos
     const utxoPos = this.encodeUtxoPos(utxo)
-    return watcherApi.post(`${this.watcherUrl}/utxo.get_challenge_data`, { utxo_pos: utxoPos })
+    return rpcApi.post(`${this.watcherUrl}/utxo.get_challenge_data`, { utxo_pos: utxoPos })
   }
 
   encodeUtxoPos (utxo) {
@@ -125,12 +124,7 @@ class ChildChain {
    */
   async submitTransaction (transaction) {
     // validateTxBody(transactionBody)
-    return childchainApi.post(`${this.childChainUrl}`, {
-      method: 'submit',
-      params: {
-        transaction
-      }
-    })
+    return rpcApi.post(`${this.childChainUrl}/transaction.submit`, { transaction })
   }
 
   /**
