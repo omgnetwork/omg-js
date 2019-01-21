@@ -29,14 +29,11 @@ const watcherUrl = 'http://omg-watcher'
 describe('getUtxo', () => {
   it('should return object with empty array as utxo with an address', async () => {
     const address = '0xd72afdfa06ae5857a639051444f7608fea1528d4'
-    const expectedObject = {
-      utxos: [],
-      address
-    }
+    const expectedObject = []
 
     nock(watcherUrl)
-      .get(`/utxos?address=${address}`)
-      .reply(200, { result: 'success', data: expectedObject })
+      .post(`/account.get_utxos`, { address, 'jsonrpc': '2.0', 'id': 0 })
+      .reply(200, { success: true, data: expectedObject })
 
     const childChain = new ChildChain(watcherUrl, '')
     const returnUtxo = await childChain.getUtxos(address)
@@ -51,8 +48,8 @@ describe('getUtxo', () => {
     }
 
     nock(watcherUrl)
-      .get(`/utxos?address=${address}`)
-      .reply(200, { result: 'error', data: errorObject })
+      .post(`/account.get_utxos`, { address, 'jsonrpc': '2.0', 'id': 0 })
+      .reply(200, { success: false, data: errorObject })
 
     const childChain = new ChildChain(watcherUrl, '')
     return assert.isRejected(childChain.getUtxos(address), Error, errorObject.description)
