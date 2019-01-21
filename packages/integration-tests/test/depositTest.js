@@ -18,6 +18,7 @@ const helper = require('./helper')
 const Web3 = require('web3')
 const ChildChain = require('@omisego/omg-js-childchain')
 const RootChain = require('@omisego/omg-js-rootchain')
+const { transaction } = require('@omisego/omg-js-util')
 const chai = require('chai')
 const assert = chai.assert
 
@@ -37,14 +38,20 @@ describe('Deposit tests', async () => {
       console.log(`Created new account ${JSON.stringify(account)}`)
     })
 
-    it('should deposit ETH to the Plasma contract', async () => {
-    // The new account should have no initial balance
+    it.only('should deposit ETH to the Plasma contract', async () => {
+      // The new account should have no initial balance
       const initialBalance = await childChain.getBalance(account.address)
       assert.equal(initialBalance.length, 0)
 
-      // Deposit ETH into the Plasma contract
       const TEST_AMOUNT = web3.utils.toWei('1', 'ether')
-      await rootChain.depositEth(TEST_AMOUNT, account.address, account.privateKey)
+      console.log(TEST_AMOUNT)
+
+      // Create the deposit transaction
+      const depositTx = transaction.encodeDepositTx(account.address, TEST_AMOUNT, transaction.NULL_ADDRESS)
+      console.log(depositTx)
+
+      // Deposit ETH into the Plasma contract
+      await rootChain.depositEth(depositTx, TEST_AMOUNT, { from: account.address, privateKey: account.privateKey })
 
       // Wait for transaction to be mined and reflected in the account's balance
       const balance = await helper.waitForBalance(childChain, account.address, TEST_AMOUNT)
@@ -57,13 +64,13 @@ describe('Deposit tests', async () => {
       // THe account should have one utxo on the child chain
       const utxos = await childChain.getUtxos(account.address)
       assert.equal(utxos.length, 1)
-      assert.hasAllKeys(utxos[0], ['txindex', 'txbytes', 'oindex', 'currency', 'blknum', 'amount'])
+      assert.hasAllKeys(utxos[0], ['utxo_pos', 'txindex', 'owner', 'oindex', 'currency', 'blknum', 'amount'])
       assert.equal(utxos[0].amount.toString(), web3.utils.toWei('1', 'ether'))
       assert.equal(utxos[0].currency, '0000000000000000000000000000000000000000')
     })
   })
 
-  describe('deposit ERC20', async () => {
+  describe.skip('deposit ERC20', async () => {
     let account
     const contractAbi = require('../tokens/build/contracts/ERC20.json')
     const testErc20Contract = new web3.eth.Contract(contractAbi.abi, config.testErc20Contract)
