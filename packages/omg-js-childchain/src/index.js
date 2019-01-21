@@ -19,7 +19,6 @@ const sign = require('./transaction/signature')
 const rlp = require('rlp')
 const { InvalidArgumentError, transaction } = require('@omisego/omg-js-util')
 global.Buffer = global.Buffer || require('buffer').Buffer
-const Web3Utils = require('web3-utils')
 
 class ChildChain {
   /**
@@ -43,7 +42,7 @@ class ChildChain {
    */
   async getUtxos (address) {
     validateAddress(address)
-    return watcherApi.get(`${this.watcherUrl}/utxos?address=${address}`)
+    return watcherApi.post(`${this.watcherUrl}/account.get_utxos`, { address })
   }
 
   /**
@@ -54,35 +53,20 @@ class ChildChain {
    * @return {array} array of balances (one per currency)
    */
   async getBalance (address) {
-    // return watcherApi.get(`${this.watcherUrl}/account/${address}/balance`)
-
-    // TODO Temporarily use getUtxos to calculate balance because watcher/account/${address}/balance api is not deployed yet.
     validateAddress(address)
-    const utxos = await this.getUtxos(address)
-    const balanceMap = utxos.reduce((acc, curr) => {
-      const amount = new Web3Utils.BN(curr.amount.toString())
-      if (acc.has(curr.currency)) {
-        const v = acc.get(curr.currency)
-        acc.set(curr.currency, v.add(amount))
-      } else {
-        acc.set(curr.currency, amount)
-      }
-      return acc
-    }, new Map())
-
-    return Array.from(balanceMap).map(elem => ({ currency: elem[0], amount: elem[1] }))
+    return watcherApi.post(`${this.watcherUrl}/account.get_balance`, { address })
   }
 
   async getExitData (utxo) {
     // Calculate the utxoPos
     const utxoPos = this.encodeUtxoPos(utxo)
-    return watcherApi.get(`${this.watcherUrl}/utxo/${utxoPos}/exit_data`)
+    return watcherApi.post(`${this.watcherUrl}/utxo.get_exit_data`, { utxo_pos: utxoPos })
   }
 
   async getChallengeData (utxo) {
     // Calculate the utxoPos
     const utxoPos = this.encodeUtxoPos(utxo)
-    return watcherApi.get(`${this.watcherUrl}/utxo/${utxoPos}/challenge_data`)
+    return watcherApi.post(`${this.watcherUrl}/utxo.get_challenge_data`, { utxo_pos: utxoPos })
   }
 
   encodeUtxoPos (utxo) {
