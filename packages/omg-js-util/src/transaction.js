@@ -123,7 +123,7 @@ function createTransactionBody (fromAddress, fromUtxos, toAddress, toAmount) {
 function encodeUtxoPos (utxo) {
   const blk = Web3Utils.toBN(utxo.blknum).mul(BLOCK_OFFSET)
   const tx = Web3Utils.toBN(utxo.txindex).muln(TX_OFFSET)
-  return blk.add(tx).addn(utxo.oindex)
+  return blk.add(tx).addn(utxo.oindex).toNumber()
 }
 
 function sanitiseAddress (address) {

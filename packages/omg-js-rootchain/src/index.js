@@ -16,6 +16,11 @@ limitations under the License. */
 const Web3Eth = require('web3-eth')
 const Web3Utils = require('web3-utils')
 
+const STANDARD_EXIT_BOND = 31415926535
+// const INFLIGHT_EXIT_BOND = 31415926535
+// const PIGGYBACK_BOND = 31415926535
+const DEFAULT_GAS = 2000000
+
 class RootChain {
   /**
   * Interact with Tesuji Plasma Rootchain from JavaScript (Node.js and Browser)
@@ -50,7 +55,7 @@ class RootChain {
       to: this.plasmaContractAddress,
       value: amount,
       data: this.plasmaContract.methods.deposit(depositTx).encodeABI(),
-      gas: txOptions.gas || 2000000
+      gas: txOptions.gas || DEFAULT_GAS
     }
 
     return sendTx(this.eth, txDetails, txOptions.privateKey)
@@ -70,7 +75,7 @@ class RootChain {
       from: txOptions.from,
       to: this.plasmaContractAddress,
       data: this.plasmaContract.methods.depositFrom(depositTx).encodeABI(),
-      gas: txOptions.gas || 2000000
+      gas: txOptions.gas || DEFAULT_GAS
     }
 
     return sendTx(this.eth, txDetails, txOptions.privateKey)
@@ -90,12 +95,13 @@ class RootChain {
     const txDetails = {
       from: txOptions.from,
       to: this.plasmaContractAddress,
-      data: this.plasmaContract.methods.startExit(
+      data: this.plasmaContract.methods.startStandardExit(
         outputId,
         Web3Utils.hexToBytes(`0x${outputTx}`),
         Web3Utils.hexToBytes(`0x${inclusionProof}`)
       ).encodeABI(),
-      gas: txOptions.gas || 2000000
+      value: txOptions.value || STANDARD_EXIT_BOND,
+      gas: txOptions.gas || DEFAULT_GAS
     }
 
     return sendTx(this.eth, txDetails, txOptions.privateKey)
@@ -116,13 +122,13 @@ class RootChain {
     const txDetails = {
       from: txOptions.from,
       to: this.plasmaContractAddress,
-      data: this.plasmaContract.methods.challengeExit(
+      data: this.plasmaContract.methods.challengeStandardExit(
         outputId,
         Web3Utils.hexToBytes(`0x${challengeTx}`),
         inputIndex,
         Web3Utils.hexToBytes(`0x${challengeTxSig}`)
       ).encodeABI(),
-      gas: txOptions.gas || 2000000
+      gas: txOptions.gas || DEFAULT_GAS
     }
 
     return sendTx(this.eth, txDetails, txOptions.privateKey)
@@ -141,8 +147,8 @@ class RootChain {
     const txDetails = {
       from: txOptions.from,
       to: this.plasmaContractAddress,
-      data: this.plasmaContract.methods.finalizeExits(token, topUtxoPos, exitsToProcess).encodeABI(),
-      gas: txOptions.gas || 2000000
+      data: this.plasmaContract.methods.processExits(token, topUtxoPos, exitsToProcess).encodeABI(),
+      gas: txOptions.gas || DEFAULT_GAS
     }
 
     return sendTx(this.eth, txDetails, txOptions.privateKey)

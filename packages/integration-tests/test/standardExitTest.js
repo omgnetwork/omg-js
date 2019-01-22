@@ -52,7 +52,16 @@ describe('Exit tests', async () => {
 
   it('should succesfully exit from the ChildChain', async () => {
     // Send TRANSFER_AMOUNT from Alice to Bob
-    await helper.sendAndWait(childChain, aliceAccount.address, bobAccount.address, Number(TRANSFER_AMOUNT), [aliceAccount.privateKey], TRANSFER_AMOUNT)
+    await helper.sendAndWait(
+      childChain,
+      aliceAccount.address,
+      bobAccount.address,
+      Number(TRANSFER_AMOUNT),
+      ETH_CURRENCY,
+      [aliceAccount.privateKey],
+      TRANSFER_AMOUNT
+    )
+
     console.log(`Transferred ${TRANSFER_AMOUNT} from Alice to Bob`)
 
     // Bob wants to exit
@@ -64,19 +73,32 @@ describe('Exit tests', async () => {
     const exitData = await childChain.getExitData(utxoToExit)
     assert.hasAllKeys(exitData, ['txbytes', 'sigs', 'proof', 'utxo_pos'])
 
-    let receipt = await rootChain.startExit(
-      bobAccount.address,
-      exitData.utxo_pos.toString(),
+    let receipt = await rootChain.startStandardExit(
+      exitData.utxo_pos,
       exitData.txbytes,
       exitData.proof,
-      exitData.sigs,
-      bobAccount.privateKey
+      {
+        privateKey: bobAccount.privateKey,
+        from: bobAccount.address
+      }
     )
     console.log(`Bob called RootChain.startExit(): txhash = ${receipt.transactionHash}`)
 
-    // Call finalize exits before the challenge period is over
-    receipt = await rootChain.finalizeExits(bobAccount.address, ETH_CURRENCY, 0, 1, bobAccount.privateKey)
-    console.log(`Bob called RootChain.finalizeExits() before challenge period: txhash = ${receipt.transactionHash}`)
+    // Keep track of how much Bob spends on gas
+    let bobSpentOnGas = await helper.spentOnGas(web3, receipt)
+
+    // Call processExits before the challenge period is over
+    receipt = await rootChain.processExits(
+      ETH_CURRENCY,
+      0,
+      1,
+      {
+        privateKey: bobAccount.privateKey,
+        from: bobAccount.address
+      }
+    )
+    console.log(`Bob called RootChain.processExits() before challenge period: txhash = ${receipt.transactionHash}`)
+    bobSpentOnGas.iadd(await helper.spentOnGas(web3, receipt))
 
     // Get Bob's ETH balance
     let bobEthBalance = await web3.eth.getBalance(bobAccount.address)
@@ -85,16 +107,27 @@ describe('Exit tests', async () => {
 
     // Wait for challenge period
     console.log(`Waiting for challenge period... ${CHALLENGE_PERIOD}ms`)
-    await helper.sleep(CHALLENGE_PERIOD)
+    await helper.sleep(CHALLENGE_PERIOD + 1000) // Wait an extra second to give the exit time to process.
 
-    // Call finalize exits again.
-    receipt = await rootChain.finalizeExits(bobAccount.address, ETH_CURRENCY, 0, 1, bobAccount.privateKey)
-    console.log(`Bob called RootChain.finalizeExits() after challenge period: txhash = ${receipt.transactionHash}`)
+    // Call processExits again.
+    receipt = await rootChain.processExits(
+      ETH_CURRENCY,
+      0,
+      1,
+      {
+        privateKey: bobAccount.privateKey,
+        from: bobAccount.address
+      }
+    )
+    console.log(`Bob called RootChain.processExits() after challenge period: txhash = ${receipt.transactionHash}`)
+    bobSpentOnGas.iadd(await helper.spentOnGas(web3, receipt))
 
     // Get Bob's ETH balance
     bobEthBalance = await web3.eth.getBalance(bobAccount.address)
-    // Expect Bob's balance to be greater than INTIIAL_BOB_AMOUNT + TRANSFER_AMOUNT - (some gas)
-    const expected = web3.utils.toBN(INTIIAL_BOB_AMOUNT).add(web3.utils.toBN(TRANSFER_AMOUNT)).sub(web3.utils.toBN(100000000))
-    assert.isAbove(Number(bobEthBalance), Number(expected.toString()))
+    // Expect Bob's balance to be INTIIAL_BOB_AMOUNT + TRANSFER_AMOUNT - gas spent
+    const expected = web3.utils.toBN(INTIIAL_BOB_AMOUNT)
+      .add(web3.utils.toBN(TRANSFER_AMOUNT))
+      .sub(bobSpentOnGas)
+    assert.equal(bobEthBalance.toString(), expected.toString())
   })
 })

@@ -98,12 +98,12 @@ function sleep (ms) {
   })
 }
 
-async function sendAndWait (childChain, from, to, amount, privateKeys, expectedBalance) {
-  await send(childChain, from, to, amount, privateKeys)
+async function sendAndWait (childChain, from, to, amount, currency, privateKeys, expectedBalance) {
+  await send(childChain, from, to, amount, currency, privateKeys)
   return waitForBalance(childChain, to, expectedBalance)
 }
 
-async function send (childChain, from, to, amount, privateKeys) {
+async function send (childChain, from, to, amount, currency, privateKeys) {
   // Get 'from' account's utxos
   const utxos = await childChain.getUtxos(from)
 
@@ -121,9 +121,11 @@ async function send (childChain, from, to, amount, privateKeys) {
     inputs: [utxos[0]],
     outputs: [{
       owner: to,
+      currency,
       amount
     }, {
       owner: from,
+      currency,
       amount: utxos[0].amount - amount
     }]
   }
@@ -145,6 +147,11 @@ async function depositEthAndWait (rootChain, childChain, address, amount, privat
   return waitForBalance(childChain, address, amount)
 }
 
+async function spentOnGas (web3, receipt) {
+  let tx = await web3.eth.getTransaction(receipt.transactionHash)
+  return web3.utils.toBN(tx.gasPrice).muln(receipt.gasUsed)
+}
+
 module.exports = {
   createAccount,
   createAndFundAccount,
@@ -155,5 +162,6 @@ module.exports = {
   sendAndWait,
   depositEthAndWait,
   fundAccountERC20,
-  approveERC20
+  approveERC20,
+  spentOnGas
 }
