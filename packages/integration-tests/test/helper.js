@@ -92,6 +92,23 @@ function waitForBalance (childChain, address, expectedBalance) {
   })
 }
 
+function waitForEvent (childChain, eventName) {
+  return promiseRetry(async (retry, number) => {
+    console.log(`Waiting for ${eventName} event...  (${number})`)
+    const status = await childChain.status()
+    if (status.byzantine_events) {
+      const found = status.byzantine_events.find(e => e.event === eventName)
+      if (found) {
+        return found
+      }
+    }
+    retry()
+  }, {
+    minTimeout: 2000,
+    factor: 1
+  })
+}
+
 function sleep (ms) {
   return new Promise(resolve => {
     setTimeout(resolve, ms)
@@ -164,5 +181,6 @@ module.exports = {
   depositEthAndWait,
   fundAccountERC20,
   approveERC20,
-  spentOnGas
+  spentOnGas,
+  waitForEvent
 }

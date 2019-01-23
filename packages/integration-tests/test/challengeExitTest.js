@@ -18,6 +18,7 @@ const helper = require('./helper')
 const Web3 = require('web3')
 const ChildChain = require('@omisego/omg-js-childchain')
 const RootChain = require('@omisego/omg-js-rootchain')
+const { transaction } = require('@omisego/omg-js-util')
 const chai = require('chai')
 const assert = chai.assert
 
@@ -50,9 +51,18 @@ describe('Challenge exit tests', async () => {
     console.log(`Alice deposited ${DEPOSIT_AMOUNT} into RootChain contract`)
   })
 
-  it('should succesfully challenge a dishonest exit', async () => {
+  it.only('should succesfully challenge a dishonest exit', async () => {
     // Send TRANSFER_AMOUNT from Alice to Bob
-    await helper.sendAndWait(childChain, aliceAccount.address, bobAccount.address, Number(TRANSFER_AMOUNT), [aliceAccount.privateKey], TRANSFER_AMOUNT)
+    await helper.sendAndWait(
+      childChain,
+      aliceAccount.address,
+      bobAccount.address,
+      Number(TRANSFER_AMOUNT),
+      ETH_CURRENCY,
+      [aliceAccount.privateKey],
+      TRANSFER_AMOUNT
+    )
+
     console.log(`Transferred ${TRANSFER_AMOUNT} from Alice to Bob`)
 
     // Save Alice's latest utxo
@@ -60,32 +70,46 @@ describe('Challenge exit tests', async () => {
     const aliceDishonestUtxo = aliceUtxos[0]
 
     // Send another TRANSFER_AMOUNT from Alice to Bob
-    await helper.sendAndWait(childChain, aliceAccount.address, bobAccount.address, Number(TRANSFER_AMOUNT), [aliceAccount.privateKey], TRANSFER_AMOUNT * 2)
+    await helper.sendAndWait(
+      childChain,
+      aliceAccount.address,
+      bobAccount.address,
+      Number(TRANSFER_AMOUNT),
+      ETH_CURRENCY,
+      [aliceAccount.privateKey],
+      TRANSFER_AMOUNT * 2
+    )
     console.log(`Transferred ${TRANSFER_AMOUNT} from Alice to Bob again`)
 
     // Now Alice wants to cheat and exit with the dishonest utxo
     const exitData = await childChain.getExitData(aliceDishonestUtxo)
-    let receipt = await rootChain.startExit(
-      aliceAccount.address,
-      exitData.utxo_pos.toString(),
+    let receipt = await rootChain.startStandardExit(
+      exitData.utxo_pos,
       exitData.txbytes,
       exitData.proof,
-      exitData.sigs,
-      aliceAccount.privateKey
+      {
+        privateKey: aliceAccount.privateKey,
+        from: aliceAccount.address
+      }
     )
     console.log(`Alice called RootChain.startExit(): txhash = ${receipt.transactionHash}`)
 
-    // Bob notices this and challenges the exit
-    const challengeData = await childChain.getChallengeData(aliceDishonestUtxo)
-    assert.hasAllKeys(challengeData, ['txbytes', 'sigs', 'proof', 'eutxoindex', 'cutxopos'])
-    receipt = await rootChain.challengeExit(
-      bobAccount.address,
-      challengeData.cutxopos.toString(),
-      challengeData.eutxoindex.toString(),
+    // Bob sees the invalid exit attempt...
+    const invalidExit = await helper.waitForEvent(childChain, 'invalid_exit')
+    assert.equal(transaction.encodeUtxoPos(aliceDishonestUtxo), invalidExit.details.utxo_pos)
+
+    // ...and challenges the exit
+    const challengeData = await childChain.getChallengeData(invalidExit.details.utxo_pos)
+    assert.hasAllKeys(challengeData, ['input_index', 'output_id', 'sig', 'txbytes'])
+    receipt = await rootChain.challengeStandardExit(
+      challengeData.output_id,
       challengeData.txbytes,
-      challengeData.proof,
-      challengeData.sigs,
-      bobAccount.privateKey
+      challengeData.input_index,
+      challengeData.sig,
+      {
+        privateKey: bobAccount.privateKey,
+        from: bobAccount.address
+      }
     )
     console.log(`Bob called RootChain.challengeExit(): txhash = ${receipt.transactionHash}`)
 
@@ -94,7 +118,15 @@ describe('Challenge exit tests', async () => {
     await helper.sleep(CHALLENGE_PERIOD)
 
     // ...and calls finalize exits.
-    receipt = await rootChain.finalizeExits(aliceAccount.address, ETH_CURRENCY, 0, 1, aliceAccount.privateKey)
+    receipt = await rootChain.processExits(
+      ETH_CURRENCY,
+      0,
+      1,
+      {
+        privateKey: aliceAccount.privateKey,
+        from: aliceAccount.address
+      }
+    )
     console.log(`Alice called RootChain.finalizeExits(): txhash = ${receipt.transactionHash}`)
 
     // Get Alice's ETH balance

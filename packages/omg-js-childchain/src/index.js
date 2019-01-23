@@ -62,10 +62,9 @@ class ChildChain {
     return rpcApi.post(`${this.watcherUrl}/utxo.get_exit_data`, { utxo_pos: Number(utxoPos.toString()) })
   }
 
-  async getChallengeData (utxo) {
+  async getChallengeData (utxoPos) {
     // Calculate the utxoPos
-    const utxoPos = this.encodeUtxoPos(utxo)
-    return rpcApi.post(`${this.watcherUrl}/utxo.get_challenge_data`, { utxo_pos: Number(utxoPos.toString()) })
+    return rpcApi.post(`${this.watcherUrl}/utxo.get_challenge_data`, { utxo_pos: utxoPos })
   }
 
   encodeUtxoPos (utxo) {
@@ -153,6 +152,17 @@ class ChildChain {
     const signedTx = this.buildSignedTransaction(unsignedTx, signatures)
     // submit transaction
     return this.submitTransaction(signedTx)
+  }
+
+  /**
+   * Returns the current status of the Watcher.
+   * Should be called periodically to see if there are any byzantine_events to be acted on.
+   *
+   * @method status
+   * @return {object}
+   */
+  async status () {
+    return rpcApi.post(`${this.watcherUrl}/status.get`, {})
   }
 }
 

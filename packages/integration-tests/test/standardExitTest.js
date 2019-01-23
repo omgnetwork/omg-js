@@ -30,7 +30,7 @@ const ETH_CURRENCY = '0000000000000000000000000000000000000000'
 // NB This test is designed to run against a modified RootChain contract that allows exits after 20 seconds.
 const CHALLENGE_PERIOD = 20 * 1000
 
-describe.only('Standard Exit tests', async () => {
+describe('Standard Exit tests', async () => {
   describe('Deposit transaction exit', async () => {
     const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('2', 'ether')
     const DEPOSIT_AMOUNT = web3.utils.toWei('1', 'ether')

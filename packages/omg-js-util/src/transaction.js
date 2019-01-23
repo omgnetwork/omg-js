@@ -126,6 +126,14 @@ function encodeUtxoPos (utxo) {
   return blk.add(tx).addn(utxo.oindex)
 }
 
+function decodeUtxoPos (utxoPos) {
+  const bn = Web3Utils.toBN(utxoPos)
+  const blknum = bn.div(BLOCK_OFFSET).toNumber()
+  const txindex = bn.mod(BLOCK_OFFSET).divn(TX_OFFSET).toNumber()
+  const oindex = bn.modn(TX_OFFSET)
+  return { blknum, txindex, oindex }
+}
+
 function sanitiseAddress (address) {
   if (typeof address !== 'string' || !address.startsWith('0x')) {
     return `0x${address}`
@@ -148,5 +156,6 @@ module.exports = {
   validate,
   createTransactionBody,
   encodeUtxoPos,
+  decodeUtxoPos,
   encodeDepositTx
 }
