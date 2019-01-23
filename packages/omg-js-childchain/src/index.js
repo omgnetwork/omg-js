@@ -59,13 +59,13 @@ class ChildChain {
   async getExitData (utxo) {
     // Calculate the utxoPos
     const utxoPos = this.encodeUtxoPos(utxo)
-    return rpcApi.post(`${this.watcherUrl}/utxo.get_exit_data`, { utxo_pos: utxoPos })
+    return rpcApi.post(`${this.watcherUrl}/utxo.get_exit_data`, { utxo_pos: Number(utxoPos.toString()) })
   }
 
   async getChallengeData (utxo) {
     // Calculate the utxoPos
     const utxoPos = this.encodeUtxoPos(utxo)
-    return rpcApi.post(`${this.watcherUrl}/utxo.get_challenge_data`, { utxo_pos: utxoPos })
+    return rpcApi.post(`${this.watcherUrl}/utxo.get_challenge_data`, { utxo_pos: Number(utxoPos.toString()) })
   }
 
   encodeUtxoPos (utxo) {
