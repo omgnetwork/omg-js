@@ -142,9 +142,10 @@ async function send (childChain, from, to, amount, currency, privateKeys) {
 
 async function depositEthAndWait (rootChain, childChain, address, amount, privateKey) {
   const depositTx = transaction.encodeDepositTx(address, amount, transaction.NULL_ADDRESS)
-  await rootChain.depositEth(depositTx, amount, { from: address, privateKey: privateKey })
+  const receipt = await rootChain.depositEth(depositTx, amount, { from: address, privateKey: privateKey })
   // Wait for transaction to be mined
-  return waitForBalance(childChain, address, amount)
+  await waitForBalance(childChain, address, amount)
+  return receipt
 }
 
 async function spentOnGas (web3, receipt) {
