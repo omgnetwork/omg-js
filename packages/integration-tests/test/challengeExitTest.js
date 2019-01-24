@@ -46,12 +46,16 @@ describe('Challenge exit tests', async () => {
     ;[aliceAccount, bobAccount] = await helper.createAndFundManyAccounts(web3, accounts[0], '', [INTIIAL_ALICE_AMOUNT, INTIIAL_BOB_AMOUNT])
     console.log(`Created Alice account ${JSON.stringify(aliceAccount)}`)
     console.log(`Created Bob account ${JSON.stringify(bobAccount)}`)
-    // Alice deposits ETH into the Plasma contract
-    await helper.depositEthAndWait(rootChain, childChain, aliceAccount.address, DEPOSIT_AMOUNT, aliceAccount.privateKey)
-    console.log(`Alice deposited ${DEPOSIT_AMOUNT} into RootChain contract`)
   })
 
   it('should succesfully challenge a dishonest exit', async () => {
+    // Alice deposits ETH into the Plasma contract
+    let receipt = await helper.depositEthAndWait(rootChain, childChain, aliceAccount.address, DEPOSIT_AMOUNT, aliceAccount.privateKey)
+    console.log(`Alice deposited ${DEPOSIT_AMOUNT} into RootChain contract`)
+
+    // Keep track of how much Alice spends on gas
+    let aliceSpentOnGas = await helper.spentOnGas(web3, receipt)
+
     // Send TRANSFER_AMOUNT from Alice to Bob
     await helper.sendAndWait(
       childChain,
@@ -83,7 +87,7 @@ describe('Challenge exit tests', async () => {
 
     // Now Alice wants to cheat and exit with the dishonest utxo
     const exitData = await childChain.getExitData(aliceDishonestUtxo)
-    let receipt = await rootChain.startStandardExit(
+    receipt = await rootChain.startStandardExit(
       exitData.utxo_pos,
       exitData.txbytes,
       exitData.proof,
@@ -93,8 +97,9 @@ describe('Challenge exit tests', async () => {
       }
     )
     console.log(`Alice called RootChain.startExit(): txhash = ${receipt.transactionHash}`)
+    aliceSpentOnGas.iadd(await helper.spentOnGas(web3, receipt))
 
-    // Bob sees the invalid exit attempt...
+    // Bob calls watcher/status.get and sees the invalid exit attempt...
     const invalidExit = await helper.waitForEvent(childChain, 'invalid_exit')
     assert.equal(transaction.encodeUtxoPos(aliceDishonestUtxo), invalidExit.details.utxo_pos)
 
@@ -113,6 +118,9 @@ describe('Challenge exit tests', async () => {
     )
     console.log(`Bob called RootChain.challengeExit(): txhash = ${receipt.transactionHash}`)
 
+    // Keep track of how much Bob spends on gas
+    let bobSpentOnGas = await helper.spentOnGas(web3, receipt)
+
     // Alice waits for the challenge period to be over...
     console.log(`Waiting for challenge period... ${CHALLENGE_PERIOD}ms`)
     await helper.sleep(CHALLENGE_PERIOD)
@@ -127,16 +135,29 @@ describe('Challenge exit tests', async () => {
         from: aliceAccount.address
       }
     )
-    console.log(`Alice called RootChain.finalizeExits(): txhash = ${receipt.transactionHash}`)
+    console.log(`Alice called RootChain.processExits(): txhash = ${receipt.transactionHash}`)
+    aliceSpentOnGas.iadd(await helper.spentOnGas(web3, receipt))
 
     // Get Alice's ETH balance
+    // Get Alice's ETH balance
     const aliceEthBalance = await web3.eth.getBalance(aliceAccount.address)
-    // Alice's dishonest exit did not successfully complete, so her balance should
-    // still be lower than INTIIAL_ALICE_AMOUNT - DEPOSIT_AMOUNT (it's lower because of gas spent)
-    const expected = web3.utils.toBN(INTIIAL_ALICE_AMOUNT).sub(web3.utils.toBN(DEPOSIT_AMOUNT))
-    assert.isBelow(Number(aliceEthBalance), Number(expected.toString()))
+    // Alice's dishonest exit did not successfully complete, so her balance should be
+    // INTIIAL_ALICE_AMOUNT - DEPOSIT_AMOUNT - STANDARD_EXIT_BOND - gas spent
+    const expected = web3.utils.toBN(INTIIAL_ALICE_AMOUNT)
+      .sub(web3.utils.toBN(DEPOSIT_AMOUNT))
+      .sub(web3.utils.toBN(rootChain.getStandardExitBond()))
+      .sub(aliceSpentOnGas)
+    assert.equal(aliceEthBalance.toString(), expected.toString())
+
+    // Bob successfully challenged the exit, so he should have received the exit bond
+    const bobEthBalance = await web3.eth.getBalance(bobAccount.address)
+    const bobExpectedBalance = web3.utils.toBN(INTIIAL_BOB_AMOUNT)
+      .add(web3.utils.toBN(rootChain.getStandardExitBond()))
+      .sub(bobSpentOnGas)
+    assert.equal(bobEthBalance.toString(), bobExpectedBalance.toString())
   })
 
+  // Skip this test as it leaves the childchain byzantine
   it.skip('should exit dishonestly if not challenged', async () => {
     // Send TRANSFER_AMOUNT from Alice to Bob
     await helper.sendAndWait(

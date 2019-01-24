@@ -153,6 +153,11 @@ class RootChain {
 
     return sendTx(this.eth, txDetails, txOptions.privateKey)
   }
+
+  getStandardExitBond () {
+    // TODO Get this from the contract
+    return STANDARD_EXIT_BOND
+  }
 }
 
 async function sendTx (eth, txDetails, privateKey) {
