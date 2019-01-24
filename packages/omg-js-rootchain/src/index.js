@@ -97,8 +97,8 @@ class RootChain {
       to: this.plasmaContractAddress,
       data: this.plasmaContract.methods.startStandardExit(
         outputId,
-        Web3Utils.hexToBytes(`0x${outputTx}`),
-        Web3Utils.hexToBytes(`0x${inclusionProof}`)
+        Web3Utils.hexToBytes(outputTx),
+        Web3Utils.hexToBytes(inclusionProof)
       ).encodeABI(),
       value: txOptions.value || STANDARD_EXIT_BOND,
       gas: txOptions.gas || DEFAULT_GAS
@@ -124,9 +124,9 @@ class RootChain {
       to: this.plasmaContractAddress,
       data: this.plasmaContract.methods.challengeStandardExit(
         outputId,
-        Web3Utils.hexToBytes(`0x${challengeTx}`),
+        Web3Utils.hexToBytes(challengeTx),
         inputIndex,
-        Web3Utils.hexToBytes(`0x${challengeTxSig}`)
+        Web3Utils.hexToBytes(challengeTxSig)
       ).encodeABI(),
       gas: txOptions.gas || DEFAULT_GAS
     }

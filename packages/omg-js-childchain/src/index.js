@@ -123,7 +123,9 @@ class ChildChain {
    */
   async submitTransaction (transaction) {
     // validateTxBody(transactionBody)
-    return rpcApi.post(`${this.childChainUrl}/transaction.submit`, { transaction })
+    return rpcApi.post(`${this.childChainUrl}/transaction.submit`, {
+      transaction: transaction.startsWith('0x') ? transaction : `0x${transaction}`
+    })
   }
 
   /**

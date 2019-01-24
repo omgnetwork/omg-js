@@ -25,7 +25,7 @@ const GETH_URL = `http://${config.geth.host}:${config.geth.port}`
 const web3 = new Web3(GETH_URL)
 const childChain = new ChildChain(`http://${config.watcher.host}:${config.watcher.port}`, `http://${config.childchain.host}:${config.childchain.port}`)
 const rootChain = new RootChain(GETH_URL, config.plasmaContract)
-const ETH_CURRENCY = '0000000000000000000000000000000000000000'
+const ETH_CURRENCY = '0x0000000000000000000000000000000000000000'
 
 describe('Transfer tests', async () => {
   const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('2', 'ether')

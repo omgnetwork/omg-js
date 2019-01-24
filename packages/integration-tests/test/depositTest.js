@@ -26,6 +26,8 @@ const web3 = new Web3(`http://${config.geth.host}:${config.geth.port}`)
 const rootChain = new RootChain(`http://${config.geth.host}:${config.geth.port}`, config.plasmaContract)
 const childChain = new ChildChain(`http://${config.watcher.host}:${config.watcher.port}`)
 
+const ETH_CURRENCY = '0x0000000000000000000000000000000000000000'
+
 describe('Deposit tests', async () => {
   describe('deposit ETH', async () => {
     let account
@@ -57,7 +59,7 @@ describe('Deposit tests', async () => {
       const balance = await helper.waitForBalance(childChain, account.address, TEST_AMOUNT)
 
       // Check balance is correct
-      assert.equal(balance[0].currency, '0000000000000000000000000000000000000000')
+      assert.equal(balance[0].currency, ETH_CURRENCY)
       assert.equal(balance[0].amount.toString(), web3.utils.toWei('1', 'ether'))
       console.log(`Balance: ${balance[0].amount.toString()}`)
 
@@ -66,7 +68,7 @@ describe('Deposit tests', async () => {
       assert.equal(utxos.length, 1)
       assert.hasAllKeys(utxos[0], ['utxo_pos', 'txindex', 'owner', 'oindex', 'currency', 'blknum', 'amount'])
       assert.equal(utxos[0].amount.toString(), web3.utils.toWei('1', 'ether'))
-      assert.equal(utxos[0].currency, '0000000000000000000000000000000000000000')
+      assert.equal(utxos[0].currency, ETH_CURRENCY)
     })
   })
 
