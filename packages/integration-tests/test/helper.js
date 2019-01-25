@@ -157,11 +157,11 @@ async function send (childChain, from, to, amount, currency, privateKeys) {
   return childChain.submitTransaction(signedTx)
 }
 
-async function depositEthAndWait (rootChain, childChain, address, amount, privateKey) {
+async function depositEthAndWait (rootChain, childChain, address, amount, privateKey, expectedBalance) {
   const depositTx = transaction.encodeDepositTx(address, amount, transaction.NULL_ADDRESS)
   const receipt = await rootChain.depositEth(depositTx, amount, { from: address, privateKey: privateKey })
   // Wait for transaction to be mined
-  await waitForBalance(childChain, address, amount)
+  await waitForBalance(childChain, address, expectedBalance || amount)
   return receipt
 }
 
