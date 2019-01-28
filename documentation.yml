@@ -2,14 +2,21 @@ toc:
   - Omg
   - name: ChildChain
     children:
-      - sendTransaction
+      - getUtxos
+      - getBalance
+      - getExitData
+      - getChallengeData
       - createTransaction
       - signTransaction
       - buildSignedTransaction
       - submitTransaction
-      - getUtxos
-      - getBalance
+      - sendTransaction
+      - status
+
   - name: RootChain
     children:
       - depositEth
       - depositToken
+      - startStandardExit
+      - challengeStandardExit
+      - processExits

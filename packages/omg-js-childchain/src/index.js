@@ -21,23 +21,24 @@ global.Buffer = global.Buffer || require('buffer').Buffer
 
 class ChildChain {
   /**
-  *Interact with Tesuji Plasma Childchain from JavaScript (Node.js and Browser)
+  * Creates a ChildChain object
   *
-  *@param {string} watcherUrl contains the url of the watcher server
-  *@param {string} childChainUrl contains the url of the childchain server to communicate with
-  *@return {object} Childchain Object
+  *@param {string} watcherUrl the url of the watcher server
+  *@param {string} childChainUrl the url of the childchain server
+  *@return {Object} ChildChain Object
   *
   */
   constructor (watcherUrl, childChainUrl) {
     this.watcherUrl = watcherUrl
     this.childChainUrl = childChainUrl
   }
+
   /**
-   * Obtain UTXOs of an address
+   * Gets the UTXOs of an address
    *
    * @method getUtxos
-   * @param {String} address
-   * @return {array} arrays of UTXOs
+   * @param {string} address
+   * @return {Array} array of UTXOs
    */
   async getUtxos (address) {
     validateAddress(address)
@@ -48,35 +49,44 @@ class ChildChain {
    * Get the balance of an address
    *
    * @method getBalance
-   * @param {String} address
-   * @return {array} array of balances (one per currency)
+   * @param {string} address
+   * @return {Array} array of balances (one per currency)
    */
   async getBalance (address) {
     validateAddress(address)
     return rpcApi.post(`${this.watcherUrl}/account.get_balance`, { address })
   }
 
+  /**
+   * Get the exit data for a UTXO
+   *
+   * @method getExitData
+   * @param {Object} utxo
+   * @return {string} exit data for the UTXO
+   */
   async getExitData (utxo) {
     // Calculate the utxoPos
-    const utxoPos = this.encodeUtxoPos(utxo)
+    const utxoPos = transaction.encodeUtxoPos(utxo)
     return rpcApi.post(`${this.watcherUrl}/utxo.get_exit_data`, { utxo_pos: Number(utxoPos.toString()) })
   }
 
+  /**
+   * Get the challenge data for a UTXO
+   *
+   * @method getChallengeData
+   * @param {Object} utxo
+   * @return {string} challenge data for the UTXO
+   */
   async getChallengeData (utxoPos) {
-    // Calculate the utxoPos
     return rpcApi.post(`${this.watcherUrl}/utxo.get_challenge_data`, { utxo_pos: utxoPos })
-  }
-
-  encodeUtxoPos (utxo) {
-    return transaction.encodeUtxoPos(utxo)
   }
 
   /**
    * Create an unsigned transaction
    *
    * @method createTransaction
-   * @param {object} transactionBody
-   * @return {object}
+   * @param {Object} transactionBody
+   * @return {string} unsigned transaction
    */
   createTransaction (transactionBody) {
     transaction.validate(transactionBody)
@@ -89,8 +99,8 @@ class ChildChain {
    *
    * @method signTransaction
    * @param {string} unsignedTx
-   * @param {array} privateKeys
-   * @return {array} signatures
+   * @param {Array} privateKeys
+   * @return {Array} array of signatures
    */
   signTransaction (unsignedTx, privateKeys) {
     privateKeys.forEach(key => validatePrivateKey)
@@ -102,8 +112,8 @@ class ChildChain {
    *
    * @method buildSignedTransaction
    * @param {string} unsignedTx
-   * @param {array} signatures
-   * @return {object}
+   * @param {Array} signatures
+   * @return {string} signed transaction
    */
   buildSignedTransaction (unsignedTx, signatures) {
     // rlp-decode the tx bytes
@@ -119,7 +129,7 @@ class ChildChain {
    *
    * @method submitTransaction
    * @param {string} transaction
-   * @return {object}
+   * @return {Object} the submitted transaction
    */
   async submitTransaction (transaction) {
     // validateTxBody(transactionBody)
@@ -132,12 +142,12 @@ class ChildChain {
    * create, sign, build and submit a transaction to the childchain using raw privatekey
    *
    * @method sendTransaction
-   * @param {array} fromAddress - the address of the sender
-   * @param {array} fromUtxos - array of utxos gathered from the watcher
-   * @param {array} fromPrivateKeys - array of hex string private key
+   * @param {Array} fromAddress - the address of the sender
+   * @param {Array} fromUtxos - array of utxos to spend
+   * @param {Array} fromPrivateKeys - private keys of the utxos to spend
    * @param {string} toAddress - the address of the recipient
    * @param {number} toAmount - amount to transact
-   * @return {object}
+   * @return {Object} the submitted transaction
    */
   async sendTransaction (fromAddress, fromUtxos, fromPrivateKeys, toAddress, toAmount) {
     validateAddress(fromAddress)
@@ -161,7 +171,7 @@ class ChildChain {
    * Should be called periodically to see if there are any byzantine_events to be acted on.
    *
    * @method status
-   * @return {object}
+   * @return {Object}
    */
   async status () {
     return rpcApi.post(`${this.watcherUrl}/status.get`, {})
