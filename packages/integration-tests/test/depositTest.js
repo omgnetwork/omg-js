@@ -72,7 +72,7 @@ describe('Deposit tests', async () => {
     })
   })
 
-  describe.skip('deposit ERC20', async () => {
+  describe('deposit ERC20', async () => {
     let account
     const contractAbi = require('../tokens/build/contracts/ERC20.json')
     const testErc20Contract = new web3.eth.Contract(contractAbi.abi, config.testErc20Contract)
@@ -83,7 +83,7 @@ describe('Deposit tests', async () => {
     // Create and fund a new account
       const accounts = await web3.eth.getAccounts()
       // Assume the funding account is accounts[0] and has a blank password
-      account = await helper.createAndFundAccount(web3, accounts[0], '', web3.utils.toWei('0.1', 'ether'))
+      account = await helper.createAndFundAccount(web3, accounts[0], '', web3.utils.toWei('1', 'ether'))
       console.log(`Created new account ${JSON.stringify(account)}`)
       // Send ERC20 tokens to the new account
       await helper.fundAccountERC20(web3, testErc20Contract, accounts[0], '', account.address, INITIAL_AMOUNT)
@@ -97,8 +97,11 @@ describe('Deposit tests', async () => {
       // Account must approve the Plasma contract
       await helper.approveERC20(web3, testErc20Contract, account.address, account.privateKey, config.plasmaContract, DEPOSIT_AMOUNT)
 
+      // Create the deposit transaction
+      const depositTx = transaction.encodeDepositTx(account.address, DEPOSIT_AMOUNT, config.testErc20Contract)
+
       // Deposit ERC20 tokens into the Plasma contract
-      await rootChain.depositToken(DEPOSIT_AMOUNT, account.address, config.testErc20Contract, account.privateKey)
+      await rootChain.depositToken(depositTx, { from: account.address, privateKey: account.privateKey })
 
       // Wait for transaction to be mined and reflected in the account's balance
       const balance = await helper.waitForBalance(childChain, account.address, DEPOSIT_AMOUNT)
@@ -110,8 +113,9 @@ describe('Deposit tests', async () => {
       // THe account should have one utxo on the child chain
       const utxos = await childChain.getUtxos(account.address)
       assert.equal(utxos.length, 1)
-      assert.hasAllKeys(utxos[0], ['txindex', 'txbytes', 'oindex', 'currency', 'blknum', 'amount'])
+      assert.hasAllKeys(utxos[0], ['utxo_pos', 'txindex', 'owner', 'oindex', 'currency', 'blknum', 'amount'])
       assert.equal(utxos[0].amount.toString(), DEPOSIT_AMOUNT)
+      assert.equal(utxos[0].currency, config.testErc20Contract)
     })
   })
 })
