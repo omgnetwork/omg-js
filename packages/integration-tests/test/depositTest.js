@@ -94,7 +94,7 @@ describe('Deposit tests', async () => {
       await helper.fundAccountERC20(web3, testErc20Contract, accounts[0], '', account.address, INITIAL_AMOUNT)
     })
 
-    it('should deposit ERC20 tokens to the Plasma contract', async () => {
+    it.skip('should deposit ERC20 tokens to the Plasma contract', async () => {
       // The new account should have no initial balance
       const initialBalance = await childChain.getBalance(account.address)
       assert.equal(initialBalance.length, 0)
