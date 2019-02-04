@@ -21,16 +21,21 @@ const RootChain = require('@omisego/omg-js-rootchain')
 const chai = require('chai')
 const assert = chai.assert
 
-const GETH_URL = `http://${config.geth.host}:${config.geth.port}`
-const web3 = new Web3(GETH_URL)
-const childChain = new ChildChain(`http://${config.watcher.host}:${config.watcher.port}`, `http://${config.childchain.host}:${config.childchain.port}`)
-const rootChain = new RootChain(GETH_URL, config.plasmaContract)
+const web3 = new Web3(config.geth_url)
+const childChain = new ChildChain(config.watcher_url, config.childchain_url)
+let rootChain
+
 const ETH_CURRENCY = '0x0000000000000000000000000000000000000000'
 
-// NB This test is designed to run against a modified RootChain contract that allows exits after 20 seconds.
-const CHALLENGE_PERIOD = 20 * 1000
+// NB This test waits for at least RootChain.MIN_EXIT_PERIOD so it should be run against a
+// modified RootChain contract with a shorter than normal MIN_EXIT_PERIOD.
 
 describe('Standard Exit tests', async () => {
+  before(async () => {
+    const plasmaContract = await helper.getPlasmaContractAddress(config.contract_exchanger_url)
+    rootChain = new RootChain(config.geth_url, plasmaContract.contract_addr)
+  })
+
   describe('Deposit transaction exit', async () => {
     const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('2', 'ether')
     const DEPOSIT_AMOUNT = web3.utils.toWei('1', 'ether')
@@ -96,8 +101,9 @@ describe('Standard Exit tests', async () => {
       assert.isBelow(Number(aliceEthBalance), Number(INTIIAL_ALICE_AMOUNT))
 
       // Wait for challenge period
-      console.log(`Waiting for challenge period... ${CHALLENGE_PERIOD}ms`)
-      await helper.sleep(CHALLENGE_PERIOD + 1000) // Wait an extra second to give the exit time to process.
+      const toWait = await helper.getTimeToExit(rootChain.plasmaContract, exitData.utxo_pos)
+      console.log(`Waiting for challenge period... ${toWait}ms`)
+      await helper.sleep(toWait)
 
       // Call processExits again.
       receipt = await rootChain.processExits(
@@ -197,8 +203,9 @@ describe('Standard Exit tests', async () => {
       assert.isBelow(Number(bobEthBalance), Number(INTIIAL_BOB_AMOUNT))
 
       // Wait for challenge period
-      console.log(`Waiting for challenge period... ${CHALLENGE_PERIOD}ms`)
-      await helper.sleep(CHALLENGE_PERIOD + 1000) // Wait an extra second to give the exit time to process.
+      const toWait = await helper.getTimeToExit(rootChain.plasmaContract, exitData.utxo_pos)
+      console.log(`Waiting for challenge period... ${toWait}ms`)
+      await helper.sleep(toWait)
 
       // Call processExits again.
       receipt = await rootChain.processExits(

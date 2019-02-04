@@ -15,6 +15,7 @@ limitations under the License. */
 
 const promiseRetry = require('promise-retry')
 const { transaction } = require('@omisego/omg-js-util')
+const fetch = require('node-fetch')
 
 function createAccount (web3) {
   const ret = web3.eth.accounts.create()
@@ -170,6 +171,16 @@ async function spentOnGas (web3, receipt) {
   return web3.utils.toBN(tx.gasPrice).muln(receipt.gasUsed)
 }
 
+async function getPlasmaContractAddress (url) {
+  const repsonse = await fetch(url)
+  return repsonse.json()
+}
+
+async function getTimeToExit (plasmaContract, output) {
+  const exitableAt = await plasmaContract.methods.getExitableTimestamp(output).call()
+  return (Number(exitableAt) - Math.trunc(Date.now() / 1000)) * 1000
+}
+
 module.exports = {
   createAccount,
   createAndFundAccount,
@@ -182,5 +193,7 @@ module.exports = {
   fundAccountERC20,
   approveERC20,
   spentOnGas,
-  waitForEvent
+  waitForEvent,
+  getPlasmaContractAddress,
+  getTimeToExit
 }
