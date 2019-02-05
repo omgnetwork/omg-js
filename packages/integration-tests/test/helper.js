@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License. */
 
 const promiseRetry = require('promise-retry')
+const { transaction } = require('@omisego/omg-js-util')
 
 function createAccount (web3) {
   const ret = web3.eth.accounts.create()
@@ -91,18 +92,35 @@ function waitForBalance (childChain, address, expectedBalance) {
   })
 }
 
+function waitForEvent (childChain, eventName) {
+  return promiseRetry(async (retry, number) => {
+    console.log(`Waiting for ${eventName} event...  (${number})`)
+    const status = await childChain.status()
+    if (status.byzantine_events) {
+      const found = status.byzantine_events.find(e => e.event === eventName)
+      if (found) {
+        return found
+      }
+    }
+    retry()
+  }, {
+    minTimeout: 2000,
+    factor: 1
+  })
+}
+
 function sleep (ms) {
   return new Promise(resolve => {
     setTimeout(resolve, ms)
   })
 }
 
-async function sendAndWait (childChain, from, to, amount, privateKeys, expectedBalance) {
-  await send(childChain, from, to, amount, privateKeys)
+async function sendAndWait (childChain, from, to, amount, currency, privateKeys, expectedBalance) {
+  await send(childChain, from, to, amount, currency, privateKeys)
   return waitForBalance(childChain, to, expectedBalance)
 }
 
-async function send (childChain, from, to, amount, privateKeys) {
+async function send (childChain, from, to, amount, currency, privateKeys) {
   // Get 'from' account's utxos
   const utxos = await childChain.getUtxos(from)
 
@@ -120,9 +138,11 @@ async function send (childChain, from, to, amount, privateKeys) {
     inputs: [utxos[0]],
     outputs: [{
       owner: to,
+      currency,
       amount
     }, {
       owner: from,
+      currency,
       amount: utxos[0].amount - amount
     }]
   }
@@ -137,10 +157,17 @@ async function send (childChain, from, to, amount, privateKeys) {
   return childChain.submitTransaction(signedTx)
 }
 
-async function depositEthAndWait (rootChain, childChain, address, amount, privateKey) {
-  await rootChain.depositEth(amount, address, privateKey)
+async function depositEthAndWait (rootChain, childChain, address, amount, privateKey, expectedBalance) {
+  const depositTx = transaction.encodeDepositTx(address, amount, transaction.NULL_ADDRESS)
+  const receipt = await rootChain.depositEth(depositTx, amount, { from: address, privateKey: privateKey })
   // Wait for transaction to be mined
-  return waitForBalance(childChain, address, amount)
+  await waitForBalance(childChain, address, expectedBalance || amount)
+  return receipt
+}
+
+async function spentOnGas (web3, receipt) {
+  let tx = await web3.eth.getTransaction(receipt.transactionHash)
+  return web3.utils.toBN(tx.gasPrice).muln(receipt.gasUsed)
 }
 
 module.exports = {
@@ -153,5 +180,7 @@ module.exports = {
   sendAndWait,
   depositEthAndWait,
   fundAccountERC20,
-  approveERC20
+  approveERC20,
+  spentOnGas,
+  waitForEvent
 }

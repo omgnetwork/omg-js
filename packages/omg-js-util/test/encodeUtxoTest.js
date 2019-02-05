@@ -1,6 +1,6 @@
 const chai = require('chai')
 const assert = chai.assert
-const transcation = require('../src/transaction/transaction')
+const transaction = require('../src/transaction')
 
 describe('Encode UTXO tests', () => {
   it('should return the encoded utxo position', () => {
@@ -12,7 +12,7 @@ describe('Encode UTXO tests', () => {
       txindex: 0
     }
 
-    const utxoPos = transcation.encodeUtxoPos(utxo)
+    const utxoPos = transaction.encodeUtxoPos(utxo)
     assert.equal(utxoPos.toString(), '96035000000000000')
   })
 
@@ -25,7 +25,7 @@ describe('Encode UTXO tests', () => {
       txindex: 7
     }
 
-    const utxoPos = transcation.encodeUtxoPos(utxo)
+    const utxoPos = transaction.encodeUtxoPos(utxo)
     assert.equal(utxoPos.toString(), '96035000000070001')
   })
 
@@ -38,7 +38,7 @@ describe('Encode UTXO tests', () => {
       txindex: 8888
     }
 
-    const utxoPos = transcation.encodeUtxoPos(utxo)
+    const utxoPos = transaction.encodeUtxoPos(utxo)
     assert.equal(utxoPos.toString(), '777777777088880999')
   })
 })

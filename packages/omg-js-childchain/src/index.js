@@ -13,89 +13,80 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License. */
 
-const watcherApi = require('./rpc/watcherApi')
-const childchainApi = require('./rpc/childchainApi')
+const rpcApi = require('./rpc/rpcApi')
 const sign = require('./transaction/signature')
-const transaction = require('./transaction/transaction')
 const rlp = require('rlp')
-const { InvalidArgumentError } = require('@omisego/omg-js-util')
+const { InvalidArgumentError, transaction } = require('@omisego/omg-js-util')
 global.Buffer = global.Buffer || require('buffer').Buffer
-const Web3Utils = require('web3-utils')
 
 class ChildChain {
   /**
-  *Interact with Tesuji Plasma Childchain from JavaScript (Node.js and Browser)
+  * Creates a ChildChain object
   *
-  *@param {string} watcherUrl contains the url of the watcher server
-  *@param {string} childChainUrl contains the url of the childchain server to communicate with
-  *@return {object} Childchain Object
+  *@param {string} watcherUrl the url of the watcher server
+  *@param {string} childChainUrl the url of the childchain server
+  *@return {Object} ChildChain Object
   *
   */
   constructor (watcherUrl, childChainUrl) {
     this.watcherUrl = watcherUrl
     this.childChainUrl = childChainUrl
   }
+
   /**
-   * Obtain UTXOs of an address
+   * Gets the UTXOs of an address
    *
    * @method getUtxos
-   * @param {String} address
-   * @return {array} arrays of UTXOs
+   * @param {string} address
+   * @return {Array} array of UTXOs
    */
   async getUtxos (address) {
     validateAddress(address)
-    return watcherApi.get(`${this.watcherUrl}/utxos?address=${address}`)
+    return rpcApi.post(`${this.watcherUrl}/account.get_utxos`, { address })
   }
 
   /**
    * Get the balance of an address
    *
    * @method getBalance
-   * @param {String} address
-   * @return {array} array of balances (one per currency)
+   * @param {string} address
+   * @return {Array} array of balances (one per currency)
    */
   async getBalance (address) {
-    // return watcherApi.get(`${this.watcherUrl}/account/${address}/balance`)
-
-    // TODO Temporarily use getUtxos to calculate balance because watcher/account/${address}/balance api is not deployed yet.
     validateAddress(address)
-    const utxos = await this.getUtxos(address)
-    const balanceMap = utxos.reduce((acc, curr) => {
-      const amount = new Web3Utils.BN(curr.amount.toString())
-      if (acc.has(curr.currency)) {
-        const v = acc.get(curr.currency)
-        acc.set(curr.currency, v.add(amount))
-      } else {
-        acc.set(curr.currency, amount)
-      }
-      return acc
-    }, new Map())
-
-    return Array.from(balanceMap).map(elem => ({ currency: elem[0], amount: elem[1] }))
+    return rpcApi.post(`${this.watcherUrl}/account.get_balance`, { address })
   }
 
+  /**
+   * Get the exit data for a UTXO
+   *
+   * @method getExitData
+   * @param {Object} utxo
+   * @return {string} exit data for the UTXO
+   */
   async getExitData (utxo) {
     // Calculate the utxoPos
-    const utxoPos = this.encodeUtxoPos(utxo)
-    return watcherApi.get(`${this.watcherUrl}/utxo/${utxoPos}/exit_data`)
+    const utxoPos = transaction.encodeUtxoPos(utxo)
+    return rpcApi.post(`${this.watcherUrl}/utxo.get_exit_data`, { utxo_pos: Number(utxoPos.toString()) })
   }
 
-  async getChallengeData (utxo) {
-    // Calculate the utxoPos
-    const utxoPos = this.encodeUtxoPos(utxo)
-    return watcherApi.get(`${this.watcherUrl}/utxo/${utxoPos}/challenge_data`)
-  }
-
-  encodeUtxoPos (utxo) {
-    return transaction.encodeUtxoPos(utxo)
+  /**
+   * Get the challenge data for a UTXO
+   *
+   * @method getChallengeData
+   * @param {Object} utxo
+   * @return {string} challenge data for the UTXO
+   */
+  async getChallengeData (utxoPos) {
+    return rpcApi.post(`${this.watcherUrl}/utxo.get_challenge_data`, { utxo_pos: utxoPos })
   }
 
   /**
    * Create an unsigned transaction
    *
    * @method createTransaction
-   * @param {object} transactionBody
-   * @return {object}
+   * @param {Object} transactionBody
+   * @return {string} unsigned transaction
    */
   createTransaction (transactionBody) {
     transaction.validate(transactionBody)
@@ -108,8 +99,8 @@ class ChildChain {
    *
    * @method signTransaction
    * @param {string} unsignedTx
-   * @param {array} privateKeys
-   * @return {array} signatures
+   * @param {Array} privateKeys
+   * @return {Array} array of signatures
    */
   signTransaction (unsignedTx, privateKeys) {
     privateKeys.forEach(key => validatePrivateKey)
@@ -121,14 +112,14 @@ class ChildChain {
    *
    * @method buildSignedTransaction
    * @param {string} unsignedTx
-   * @param {array} signatures
-   * @return {object}
+   * @param {Array} signatures
+   * @return {string} signed transaction
    */
   buildSignedTransaction (unsignedTx, signatures) {
     // rlp-decode the tx bytes
     const decodedTx = rlp.decode(Buffer.from(unsignedTx, 'hex'))
     // Append the signatures
-    const signedTx = [...decodedTx, ...signatures]
+    const signedTx = [signatures, ...decodedTx]
     // rlp-encode the transaction + signatures
     return rlp.encode(signedTx).toString('hex')
   }
@@ -138,15 +129,12 @@ class ChildChain {
    *
    * @method submitTransaction
    * @param {string} transaction
-   * @return {object}
+   * @return {Object} the submitted transaction
    */
   async submitTransaction (transaction) {
     // validateTxBody(transactionBody)
-    return childchainApi.post(`${this.childChainUrl}`, {
-      method: 'submit',
-      params: {
-        transaction
-      }
+    return rpcApi.post(`${this.childChainUrl}/transaction.submit`, {
+      transaction: transaction.startsWith('0x') ? transaction : `0x${transaction}`
     })
   }
 
@@ -154,12 +142,12 @@ class ChildChain {
    * create, sign, build and submit a transaction to the childchain using raw privatekey
    *
    * @method sendTransaction
-   * @param {array} fromAddress - the address of the sender
-   * @param {array} fromUtxos - array of utxos gathered from the watcher
-   * @param {array} fromPrivateKeys - array of hex string private key
+   * @param {Array} fromAddress - the address of the sender
+   * @param {Array} fromUtxos - array of utxos to spend
+   * @param {Array} fromPrivateKeys - private keys of the utxos to spend
    * @param {string} toAddress - the address of the recipient
    * @param {number} toAmount - amount to transact
-   * @return {object}
+   * @return {Object} the submitted transaction
    */
   async sendTransaction (fromAddress, fromUtxos, fromPrivateKeys, toAddress, toAmount) {
     validateAddress(fromAddress)
@@ -176,6 +164,17 @@ class ChildChain {
     const signedTx = this.buildSignedTransaction(unsignedTx, signatures)
     // submit transaction
     return this.submitTransaction(signedTx)
+  }
+
+  /**
+   * Returns the current status of the Watcher.
+   * Should be called periodically to see if there are any byzantine_events to be acted on.
+   *
+   * @method status
+   * @return {Object}
+   */
+  async status () {
+    return rpcApi.post(`${this.watcherUrl}/status.get`, {})
   }
 }
 

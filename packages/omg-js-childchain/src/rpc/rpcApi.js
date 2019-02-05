@@ -17,16 +17,24 @@ const fetch = require('node-fetch')
 const debug = require('debug')('omg.childchain.submitTx')
 const JSONBigNumber = require('json-bigint')
 
+class RpcError extends Error {
+  constructor ({ code, description }) {
+    super(description || code)
+    this.code = code
+  }
+}
+
 async function get (url) {
   return fetch(url).then(parseResponse)
 }
 
-async function post (url, body, headers) {
+async function post (url, body) {
   body.jsonrpc = body.jsonrpc || '2.0'
   body.id = body.id || 0
+
   return fetch(url, {
     method: 'POST',
-    headers,
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body)
   }).then(parseResponse)
 }
@@ -41,7 +49,11 @@ async function parseResponse (resp) {
     throw new Error('Unknown server error')
   }
   debug(`rpc response is ${JSON.stringify(json)}`)
-  return json
+
+  if (json.success) {
+    return json.data
+  }
+  throw new RpcError(json.data)
 }
 
 module.exports = {
