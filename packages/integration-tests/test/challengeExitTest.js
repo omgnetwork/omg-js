@@ -22,14 +22,13 @@ const { transaction } = require('@omisego/omg-js-util')
 const chai = require('chai')
 const assert = chai.assert
 
-const GETH_URL = `http://${config.geth.host}:${config.geth.port}`
-const web3 = new Web3(GETH_URL)
-const childChain = new ChildChain(`http://${config.watcher.host}:${config.watcher.port}`, `http://${config.childchain.host}:${config.childchain.port}`)
-const rootChain = new RootChain(GETH_URL, config.plasmaContract)
+const web3 = new Web3(config.geth_url)
+const childChain = new ChildChain(config.watcher_url, config.childchain_url)
 const ETH_CURRENCY = '0000000000000000000000000000000000000000'
+let rootChain
 
-// NB This test is designed to run against a modified RootChain contract that allows exits after 20 seconds.
-const CHALLENGE_PERIOD = 20 * 1000
+// NB This test waits for at least RootChain.MIN_EXIT_PERIOD so it should be run against a
+// modified RootChain contract with a shorter than normal MIN_EXIT_PERIOD.
 
 describe('Challenge exit tests', async () => {
   const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('2', 'ether')
@@ -38,6 +37,11 @@ describe('Challenge exit tests', async () => {
   const TRANSFER_AMOUNT = web3.utils.toWei('0.2', 'ether')
   let aliceAccount
   let bobAccount
+
+  before(async () => {
+    const plasmaContract = await helper.getPlasmaContractAddress(config.contract_exchanger_url)
+    rootChain = new RootChain(config.geth_url, plasmaContract.contract_addr)
+  })
 
   beforeEach(async () => {
     // Create Alice and Bob's accounts
@@ -122,8 +126,9 @@ describe('Challenge exit tests', async () => {
     let bobSpentOnGas = await helper.spentOnGas(web3, receipt)
 
     // Alice waits for the challenge period to be over...
-    console.log(`Waiting for challenge period... ${CHALLENGE_PERIOD}ms`)
-    await helper.sleep(CHALLENGE_PERIOD)
+    const toWait = await helper.getTimeToExit(rootChain.plasmaContract, exitData.utxo_pos)
+    console.log(`Waiting for challenge period... ${toWait}ms`)
+    await helper.sleep(toWait)
 
     // ...and calls finalize exits.
     receipt = await rootChain.processExits(
@@ -138,7 +143,6 @@ describe('Challenge exit tests', async () => {
     console.log(`Alice called RootChain.processExits(): txhash = ${receipt.transactionHash}`)
     aliceSpentOnGas.iadd(await helper.spentOnGas(web3, receipt))
 
-    // Get Alice's ETH balance
     // Get Alice's ETH balance
     const aliceEthBalance = await web3.eth.getBalance(aliceAccount.address)
     // Alice's dishonest exit did not successfully complete, so her balance should be
@@ -203,8 +207,9 @@ describe('Challenge exit tests', async () => {
     // Bob does NOT notice Alice's dishonest exit, so he doesn't challenge it :(
 
     // Alice waits for the challenge period to be over...
-    console.log(`Waiting for challenge period... ${CHALLENGE_PERIOD}ms`)
-    await helper.sleep(CHALLENGE_PERIOD)
+    const toWait = await helper.getTimeToExit(rootChain.plasmaContract, exitData.utxo_pos)
+    console.log(`Waiting for challenge period... ${toWait}ms`)
+    await helper.sleep(toWait)
 
     // ...and calls finalize exits.
     receipt = await rootChain.processExits(

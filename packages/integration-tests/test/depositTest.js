@@ -22,18 +22,23 @@ const { transaction } = require('@omisego/omg-js-util')
 const chai = require('chai')
 const assert = chai.assert
 
-const web3 = new Web3(`http://${config.geth.host}:${config.geth.port}`)
-const rootChain = new RootChain(`http://${config.geth.host}:${config.geth.port}`, config.plasmaContract)
-const childChain = new ChildChain(`http://${config.watcher.host}:${config.watcher.port}`)
+const web3 = new Web3(config.geth_url)
+const childChain = new ChildChain(config.watcher_url, config.childchain_url)
+let rootChain
 
 const ETH_CURRENCY = '0x0000000000000000000000000000000000000000'
 
 describe('Deposit tests', async () => {
+  before(async () => {
+    const plasmaContract = await helper.getPlasmaContractAddress(config.contract_exchanger_url)
+    rootChain = new RootChain(config.geth_url, plasmaContract.contract_addr)
+  })
+
   describe('deposit ETH', async () => {
     let account
 
     before(async () => {
-    // Create and fund a new account
+      // Create and fund a new account
       const accounts = await web3.eth.getAccounts()
       // Assume the funding account is accounts[0] and has a blank password
       account = await helper.createAndFundAccount(web3, accounts[0], '', web3.utils.toWei('2', 'ether'))
@@ -89,13 +94,13 @@ describe('Deposit tests', async () => {
       await helper.fundAccountERC20(web3, testErc20Contract, accounts[0], '', account.address, INITIAL_AMOUNT)
     })
 
-    it('should deposit ERC20 tokens to the Plasma contract', async () => {
+    it.skip('should deposit ERC20 tokens to the Plasma contract', async () => {
       // The new account should have no initial balance
       const initialBalance = await childChain.getBalance(account.address)
       assert.equal(initialBalance.length, 0)
 
       // Account must approve the Plasma contract
-      await helper.approveERC20(web3, testErc20Contract, account.address, account.privateKey, config.plasmaContract, DEPOSIT_AMOUNT)
+      await helper.approveERC20(web3, testErc20Contract, account.address, account.privateKey, rootChain.plasmaContractAddress, DEPOSIT_AMOUNT)
 
       // Create the deposit transaction
       const depositTx = transaction.encodeDepositTx(account.address, DEPOSIT_AMOUNT, config.testErc20Contract)

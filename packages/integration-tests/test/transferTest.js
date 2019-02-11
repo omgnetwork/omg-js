@@ -21,13 +21,18 @@ const RootChain = require('@omisego/omg-js-rootchain')
 const chai = require('chai')
 const assert = chai.assert
 
-const GETH_URL = `http://${config.geth.host}:${config.geth.port}`
-const web3 = new Web3(GETH_URL)
-const childChain = new ChildChain(`http://${config.watcher.host}:${config.watcher.port}`, `http://${config.childchain.host}:${config.childchain.port}`)
-const rootChain = new RootChain(GETH_URL, config.plasmaContract)
+const web3 = new Web3(config.geth_url)
+const childChain = new ChildChain(config.watcher_url, config.childchain_url)
+let rootChain
+
 const ETH_CURRENCY = '0x0000000000000000000000000000000000000000'
 
 describe('Transfer tests', async () => {
+  before(async () => {
+    const plasmaContract = await helper.getPlasmaContractAddress(config.contract_exchanger_url)
+    rootChain = new RootChain(config.geth_url, plasmaContract.contract_addr)
+  })
+
   describe('Simple transfer', async () => {
     const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('2', 'ether')
     const DEPOSIT_AMOUNT = web3.utils.toWei('1', 'ether')

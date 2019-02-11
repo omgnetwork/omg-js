@@ -12,6 +12,7 @@
   "dependencies": {
     "@omisego/omg-js-childchain": "^0.1.9",
     "@omisego/omg-js-rootchain": "^0.1.9",
-    "@omisego/omg-js-util": "^0.1.7"
+    "@omisego/omg-js-util": "^0.1.7",
+    "node-fetch": "^2.3.0"
   }
 }
