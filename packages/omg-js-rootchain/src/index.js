@@ -13,8 +13,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License. */
 
-const Web3Eth = require('web3-eth')
-const Web3Utils = require('web3-utils')
+const { Eth } = require('web3-eth')
+const web3Utils = require('web3-utils')
 
 const STANDARD_EXIT_BOND = 31415926535
 // const INFLIGHT_EXIT_BOND = 31415926535
@@ -32,7 +32,7 @@ class RootChain {
   *
   */
   constructor (web3Provider, plasmaContractAddress, plasmaAbi) {
-    this.eth = new Web3Eth(web3Provider)
+    this.eth = new Eth(web3Provider)
     this.plasmaContractAddress = plasmaContractAddress
     const contractAbi = plasmaAbi || require('./contracts/RootChain.json')
     this.plasmaContract = new this.eth.Contract(contractAbi.abi, plasmaContractAddress)
@@ -94,8 +94,8 @@ class RootChain {
       to: this.plasmaContractAddress,
       data: this.plasmaContract.methods.startStandardExit(
         outputId,
-        Web3Utils.hexToBytes(outputTx),
-        Web3Utils.hexToBytes(inclusionProof)
+        web3Utils.hexToBytes(outputTx),
+        web3Utils.hexToBytes(inclusionProof)
       ).encodeABI(),
       value: txOptions.value || STANDARD_EXIT_BOND,
       gas: txOptions.gas || DEFAULT_GAS
@@ -121,9 +121,9 @@ class RootChain {
       to: this.plasmaContractAddress,
       data: this.plasmaContract.methods.challengeStandardExit(
         outputId,
-        Web3Utils.hexToBytes(challengeTx),
+        web3Utils.hexToBytes(challengeTx),
         inputIndex,
-        Web3Utils.hexToBytes(challengeTxSig)
+        web3Utils.hexToBytes(challengeTxSig)
       ).encodeABI(),
       gas: txOptions.gas || DEFAULT_GAS
     }

@@ -167,8 +167,10 @@ async function depositEthAndWait (rootChain, childChain, address, amount, privat
 }
 
 async function spentOnGas (web3, receipt) {
-  let tx = await web3.eth.getTransaction(receipt.transactionHash)
-  return web3.utils.toBN(tx.gasPrice).muln(receipt.gasUsed)
+  const tx = await web3.eth.getTransaction(receipt.transactionHash)
+  // web3.eth 1.0.0-beta.46 returns receipt.gasUsed as a hex-string instead of a number. Probably a bug.
+  const gasUsed = (typeof receipt.gasUsed === 'string' ? parseInt(receipt.gasUsed, 'hex') : receipt.gasUsed)
+  return web3.utils.toBN(tx.gasPrice).muln(gasUsed)
 }
 
 async function getPlasmaContractAddress (url) {

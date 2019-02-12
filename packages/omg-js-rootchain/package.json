@@ -24,8 +24,8 @@
   "dependencies": {
     "@omisego/omg-js-util": "^0.1.7",
     "debug": "^4.0.1",
-    "web3-eth": "^1.0.0-beta.36",
-    "web3-utils": "^1.0.0-beta.36"
+    "web3-eth": "^1.0.0-beta.46",
+    "web3-utils": "^1.0.0-beta.46"
   },
   "publishConfig": {
     "access": "public"
