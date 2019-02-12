@@ -14,8 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License. */
 
 module.exports = {
-  byteArrToBuffer: require('./byteArrToBuffer'),
-  hexToByteArr: require('./hexToByteArr'),
   InvalidArgumentError: require('./InvalidArgumentError'),
   transaction: require('./transaction')
 }
