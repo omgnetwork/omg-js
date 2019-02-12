@@ -13,7 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License. */
 
-const { Eth } = require('web3-eth')
+const Web3Eth= require('web3-eth')
 const web3Utils = require('web3-utils')
 
 const STANDARD_EXIT_BOND = 31415926535
@@ -32,7 +32,7 @@ class RootChain {
   *
   */
   constructor (web3Provider, plasmaContractAddress, plasmaAbi) {
-    this.eth = new Eth(web3Provider)
+    this.eth = new Web3Eth(web3Provider)
     this.plasmaContractAddress = plasmaContractAddress
     const contractAbi = plasmaAbi || require('./contracts/RootChain.json')
     this.plasmaContract = new this.eth.Contract(contractAbi.abi, plasmaContractAddress)

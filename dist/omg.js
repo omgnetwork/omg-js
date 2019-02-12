@@ -25889,7 +25889,7 @@ global.RootChain = RootChain
 global.OmgUtil = OmgUtil
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./packages/omg-js-childchain/src/index":200,"./packages/omg-js-rootchain/src/index":587,"./packages/omg-js-util/src/index":666}],174:[function(require,module,exports){
+},{"./packages/omg-js-childchain/src/index":200,"./packages/omg-js-rootchain/src/index":412,"./packages/omg-js-util/src/index":491}],174:[function(require,module,exports){
 // This was ported from https://github.com/emn178/js-sha3, with some minor
 // modifications and pruning. It is licensed under MIT:
 //
@@ -37618,7 +37618,7 @@ function validateAddress (arg) {
 module.exports = ChildChain
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer)
-},{"./rpc/rpcApi":201,"@omisego/omg-js-util":666,"buffer":51,"rlp":199}],201:[function(require,module,exports){
+},{"./rpc/rpcApi":201,"@omisego/omg-js-util":491,"buffer":51,"rlp":199}],201:[function(require,module,exports){
 /*
 Copyright 2018 OmiseGO Pte Ltd
 
@@ -37684,393 +37684,199 @@ module.exports = {
 }
 
 },{"debug":192,"json-bigint":194,"node-fetch":198}],202:[function(require,module,exports){
-function _arrayWithoutHoles(arr) {
-  if (Array.isArray(arr)) {
-    for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) {
-      arr2[i] = arr[i];
+module.exports = require('./register')().Promise
+
+},{"./register":204}],203:[function(require,module,exports){
+"use strict"
+    // global key for user preferred registration
+var REGISTRATION_KEY = '@@any-promise/REGISTRATION',
+    // Prior registration (preferred or detected)
+    registered = null
+
+/**
+ * Registers the given implementation.  An implementation must
+ * be registered prior to any call to `require("any-promise")`,
+ * typically on application load.
+ *
+ * If called with no arguments, will return registration in
+ * following priority:
+ *
+ * For Node.js:
+ *
+ * 1. Previous registration
+ * 2. global.Promise if node.js version >= 0.12
+ * 3. Auto detected promise based on first sucessful require of
+ *    known promise libraries. Note this is a last resort, as the
+ *    loaded library is non-deterministic. node.js >= 0.12 will
+ *    always use global.Promise over this priority list.
+ * 4. Throws error.
+ *
+ * For Browser:
+ *
+ * 1. Previous registration
+ * 2. window.Promise
+ * 3. Throws error.
+ *
+ * Options:
+ *
+ * Promise: Desired Promise constructor
+ * global: Boolean - Should the registration be cached in a global variable to
+ * allow cross dependency/bundle registration?  (default true)
+ */
+module.exports = function(root, loadImplementation){
+  return function register(implementation, opts){
+    implementation = implementation || null
+    opts = opts || {}
+    // global registration unless explicitly  {global: false} in options (default true)
+    var registerGlobal = opts.global !== false;
+
+    // load any previous global registration
+    if(registered === null && registerGlobal){
+      registered = root[REGISTRATION_KEY] || null
     }
 
-    return arr2;
-  }
-}
-
-module.exports = _arrayWithoutHoles;
-},{}],203:[function(require,module,exports){
-function _assertThisInitialized(self) {
-  if (self === void 0) {
-    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-  }
-
-  return self;
-}
-
-module.exports = _assertThisInitialized;
-},{}],204:[function(require,module,exports){
-function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
-  try {
-    var info = gen[key](arg);
-    var value = info.value;
-  } catch (error) {
-    reject(error);
-    return;
-  }
-
-  if (info.done) {
-    resolve(value);
-  } else {
-    Promise.resolve(value).then(_next, _throw);
-  }
-}
-
-function _asyncToGenerator(fn) {
-  return function () {
-    var self = this,
-        args = arguments;
-    return new Promise(function (resolve, reject) {
-      var gen = fn.apply(self, args);
-
-      function _next(value) {
-        asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);
-      }
-
-      function _throw(err) {
-        asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);
-      }
-
-      _next(undefined);
-    });
-  };
-}
-
-module.exports = _asyncToGenerator;
-},{}],205:[function(require,module,exports){
-function _classCallCheck(instance, Constructor) {
-  if (!(instance instanceof Constructor)) {
-    throw new TypeError("Cannot call a class as a function");
-  }
-}
-
-module.exports = _classCallCheck;
-},{}],206:[function(require,module,exports){
-function _defineProperties(target, props) {
-  for (var i = 0; i < props.length; i++) {
-    var descriptor = props[i];
-    descriptor.enumerable = descriptor.enumerable || false;
-    descriptor.configurable = true;
-    if ("value" in descriptor) descriptor.writable = true;
-    Object.defineProperty(target, descriptor.key, descriptor);
-  }
-}
-
-function _createClass(Constructor, protoProps, staticProps) {
-  if (protoProps) _defineProperties(Constructor.prototype, protoProps);
-  if (staticProps) _defineProperties(Constructor, staticProps);
-  return Constructor;
-}
-
-module.exports = _createClass;
-},{}],207:[function(require,module,exports){
-function _defineProperty(obj, key, value) {
-  if (key in obj) {
-    Object.defineProperty(obj, key, {
-      value: value,
-      enumerable: true,
-      configurable: true,
-      writable: true
-    });
-  } else {
-    obj[key] = value;
-  }
-
-  return obj;
-}
-
-module.exports = _defineProperty;
-},{}],208:[function(require,module,exports){
-var getPrototypeOf = require("./getPrototypeOf");
-
-var superPropBase = require("./superPropBase");
-
-function _get(target, property, receiver) {
-  if (typeof Reflect !== "undefined" && Reflect.get) {
-    module.exports = _get = Reflect.get;
-  } else {
-    module.exports = _get = function _get(target, property, receiver) {
-      var base = superPropBase(target, property);
-      if (!base) return;
-      var desc = Object.getOwnPropertyDescriptor(base, property);
-
-      if (desc.get) {
-        return desc.get.call(receiver);
-      }
-
-      return desc.value;
-    };
-  }
-
-  return _get(target, property, receiver || target);
-}
-
-module.exports = _get;
-},{"./getPrototypeOf":209,"./superPropBase":216}],209:[function(require,module,exports){
-function _getPrototypeOf(o) {
-  module.exports = _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-    return o.__proto__ || Object.getPrototypeOf(o);
-  };
-  return _getPrototypeOf(o);
-}
-
-module.exports = _getPrototypeOf;
-},{}],210:[function(require,module,exports){
-var setPrototypeOf = require("./setPrototypeOf");
-
-function _inherits(subClass, superClass) {
-  if (typeof superClass !== "function" && superClass !== null) {
-    throw new TypeError("Super expression must either be null or a function");
-  }
-
-  subClass.prototype = Object.create(superClass && superClass.prototype, {
-    constructor: {
-      value: subClass,
-      writable: true,
-      configurable: true
+    if(registered !== null
+        && implementation !== null
+        && registered.implementation !== implementation){
+      // Throw error if attempting to redefine implementation
+      throw new Error('any-promise already defined as "'+registered.implementation+
+        '".  You can only register an implementation before the first '+
+        ' call to require("any-promise") and an implementation cannot be changed')
     }
-  });
-  if (superClass) setPrototypeOf(subClass, superClass);
-}
 
-module.exports = _inherits;
-},{"./setPrototypeOf":215}],211:[function(require,module,exports){
-function _iterableToArray(iter) {
-  if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter);
-}
-
-module.exports = _iterableToArray;
-},{}],212:[function(require,module,exports){
-function _nonIterableSpread() {
-  throw new TypeError("Invalid attempt to spread non-iterable instance");
-}
-
-module.exports = _nonIterableSpread;
-},{}],213:[function(require,module,exports){
-var _typeof = require("../helpers/typeof");
-
-var assertThisInitialized = require("./assertThisInitialized");
-
-function _possibleConstructorReturn(self, call) {
-  if (call && (_typeof(call) === "object" || typeof call === "function")) {
-    return call;
-  }
-
-  return assertThisInitialized(self);
-}
-
-module.exports = _possibleConstructorReturn;
-},{"../helpers/typeof":218,"./assertThisInitialized":203}],214:[function(require,module,exports){
-var getPrototypeOf = require("./getPrototypeOf");
-
-var superPropBase = require("./superPropBase");
-
-var defineProperty = require("./defineProperty");
-
-function set(target, property, value, receiver) {
-  if (typeof Reflect !== "undefined" && Reflect.set) {
-    set = Reflect.set;
-  } else {
-    set = function set(target, property, value, receiver) {
-      var base = superPropBase(target, property);
-      var desc;
-
-      if (base) {
-        desc = Object.getOwnPropertyDescriptor(base, property);
-
-        if (desc.set) {
-          desc.set.call(receiver, value);
-          return true;
-        } else if (!desc.writable) {
-          return false;
+    if(registered === null){
+      // use provided implementation
+      if(implementation !== null && typeof opts.Promise !== 'undefined'){
+        registered = {
+          Promise: opts.Promise,
+          implementation: implementation
         }
-      }
-
-      desc = Object.getOwnPropertyDescriptor(receiver, property);
-
-      if (desc) {
-        if (!desc.writable) {
-          return false;
-        }
-
-        desc.value = value;
-        Object.defineProperty(receiver, property, desc);
       } else {
-        defineProperty(receiver, property, value);
+        // require implementation if implementation is specified but not provided
+        registered = loadImplementation(implementation)
       }
 
-      return true;
-    };
+      if(registerGlobal){
+        // register preference globally in case multiple installations
+        root[REGISTRATION_KEY] = registered
+      }
+    }
+
+    return registered
   }
-
-  return set(target, property, value, receiver);
 }
 
-function _set(target, property, value, receiver, isStrict) {
-  var s = set(target, property, value, receiver || target);
+},{}],204:[function(require,module,exports){
+"use strict";
+module.exports = require('./loader')(window, loadImplementation)
 
-  if (!s && isStrict) {
-    throw new Error('failed to set property');
+/**
+ * Browser specific loadImplementation.  Always uses `window.Promise`
+ *
+ * To register a custom implementation, must register with `Promise` option.
+ */
+function loadImplementation(){
+  if(typeof window.Promise === 'undefined'){
+    throw new Error("any-promise browser requires a polyfill or explicit registration"+
+      " e.g: require('any-promise/register/bluebird')")
   }
-
-  return value;
-}
-
-module.exports = _set;
-},{"./defineProperty":207,"./getPrototypeOf":209,"./superPropBase":216}],215:[function(require,module,exports){
-function _setPrototypeOf(o, p) {
-  module.exports = _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-    o.__proto__ = p;
-    return o;
-  };
-
-  return _setPrototypeOf(o, p);
-}
-
-module.exports = _setPrototypeOf;
-},{}],216:[function(require,module,exports){
-var getPrototypeOf = require("./getPrototypeOf");
-
-function _superPropBase(object, property) {
-  while (!Object.prototype.hasOwnProperty.call(object, property)) {
-    object = getPrototypeOf(object);
-    if (object === null) break;
+  return {
+    Promise: window.Promise,
+    implementation: 'window.Promise'
   }
-
-  return object;
 }
 
-module.exports = _superPropBase;
-},{"./getPrototypeOf":209}],217:[function(require,module,exports){
-var arrayWithoutHoles = require("./arrayWithoutHoles");
-
-var iterableToArray = require("./iterableToArray");
-
-var nonIterableSpread = require("./nonIterableSpread");
-
-function _toConsumableArray(arr) {
-  return arrayWithoutHoles(arr) || iterableToArray(arr) || nonIterableSpread();
-}
-
-module.exports = _toConsumableArray;
-},{"./arrayWithoutHoles":202,"./iterableToArray":211,"./nonIterableSpread":212}],218:[function(require,module,exports){
-function _typeof2(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof2 = function _typeof2(obj) { return typeof obj; }; } else { _typeof2 = function _typeof2(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof2(obj); }
-
-function _typeof(obj) {
-  if (typeof Symbol === "function" && _typeof2(Symbol.iterator) === "symbol") {
-    module.exports = _typeof = function _typeof(obj) {
-      return _typeof2(obj);
-    };
-  } else {
-    module.exports = _typeof = function _typeof(obj) {
-      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof2(obj);
-    };
-  }
-
-  return _typeof(obj);
-}
-
-module.exports = _typeof;
-},{}],219:[function(require,module,exports){
-module.exports = require("regenerator-runtime");
-
-},{"regenerator-runtime":539}],220:[function(require,module,exports){
+},{"./loader":203}],205:[function(require,module,exports){
 arguments[4][1][0].apply(exports,arguments)
-},{"./asn1/api":221,"./asn1/base":223,"./asn1/constants":227,"./asn1/decoders":229,"./asn1/encoders":232,"bn.js":234,"dup":1}],221:[function(require,module,exports){
+},{"./asn1/api":206,"./asn1/base":208,"./asn1/constants":212,"./asn1/decoders":214,"./asn1/encoders":217,"bn.js":219,"dup":1}],206:[function(require,module,exports){
 arguments[4][2][0].apply(exports,arguments)
-},{"../asn1":220,"dup":2,"inherits":336,"vm":171}],222:[function(require,module,exports){
+},{"../asn1":205,"dup":2,"inherits":316,"vm":171}],207:[function(require,module,exports){
 arguments[4][3][0].apply(exports,arguments)
-},{"../base":223,"buffer":51,"dup":3,"inherits":336}],223:[function(require,module,exports){
+},{"../base":208,"buffer":51,"dup":3,"inherits":316}],208:[function(require,module,exports){
 arguments[4][4][0].apply(exports,arguments)
-},{"./buffer":222,"./node":224,"./reporter":225,"dup":4}],224:[function(require,module,exports){
+},{"./buffer":207,"./node":209,"./reporter":210,"dup":4}],209:[function(require,module,exports){
 arguments[4][5][0].apply(exports,arguments)
-},{"../base":223,"dup":5,"minimalistic-assert":512}],225:[function(require,module,exports){
+},{"../base":208,"dup":5,"minimalistic-assert":320}],210:[function(require,module,exports){
 arguments[4][6][0].apply(exports,arguments)
-},{"dup":6,"inherits":336}],226:[function(require,module,exports){
+},{"dup":6,"inherits":316}],211:[function(require,module,exports){
 arguments[4][7][0].apply(exports,arguments)
-},{"../constants":227,"dup":7}],227:[function(require,module,exports){
+},{"../constants":212,"dup":7}],212:[function(require,module,exports){
 arguments[4][8][0].apply(exports,arguments)
-},{"./der":226,"dup":8}],228:[function(require,module,exports){
+},{"./der":211,"dup":8}],213:[function(require,module,exports){
 arguments[4][9][0].apply(exports,arguments)
-},{"../../asn1":220,"dup":9,"inherits":336}],229:[function(require,module,exports){
+},{"../../asn1":205,"dup":9,"inherits":316}],214:[function(require,module,exports){
 arguments[4][10][0].apply(exports,arguments)
-},{"./der":228,"./pem":230,"dup":10}],230:[function(require,module,exports){
+},{"./der":213,"./pem":215,"dup":10}],215:[function(require,module,exports){
 arguments[4][11][0].apply(exports,arguments)
-},{"./der":228,"buffer":51,"dup":11,"inherits":336}],231:[function(require,module,exports){
+},{"./der":213,"buffer":51,"dup":11,"inherits":316}],216:[function(require,module,exports){
 arguments[4][12][0].apply(exports,arguments)
-},{"../../asn1":220,"buffer":51,"dup":12,"inherits":336}],232:[function(require,module,exports){
+},{"../../asn1":205,"buffer":51,"dup":12,"inherits":316}],217:[function(require,module,exports){
 arguments[4][13][0].apply(exports,arguments)
-},{"./der":231,"./pem":233,"dup":13}],233:[function(require,module,exports){
+},{"./der":216,"./pem":218,"dup":13}],218:[function(require,module,exports){
 arguments[4][14][0].apply(exports,arguments)
-},{"./der":231,"dup":14,"inherits":336}],234:[function(require,module,exports){
-arguments[4][20][0].apply(exports,arguments)
-},{"buffer":22,"dup":20}],235:[function(require,module,exports){
+},{"./der":216,"dup":14,"inherits":316}],219:[function(require,module,exports){
+arguments[4][176][0].apply(exports,arguments)
+},{"dup":176}],220:[function(require,module,exports){
 arguments[4][21][0].apply(exports,arguments)
-},{"crypto":22,"dup":21}],236:[function(require,module,exports){
+},{"crypto":22,"dup":21}],221:[function(require,module,exports){
 arguments[4][23][0].apply(exports,arguments)
-},{"dup":23,"safe-buffer":543}],237:[function(require,module,exports){
+},{"dup":23,"safe-buffer":346}],222:[function(require,module,exports){
 arguments[4][24][0].apply(exports,arguments)
-},{"./aes":236,"./ghash":241,"./incr32":242,"buffer-xor":263,"cipher-base":264,"dup":24,"inherits":336,"safe-buffer":543}],238:[function(require,module,exports){
+},{"./aes":221,"./ghash":226,"./incr32":227,"buffer-xor":248,"cipher-base":249,"dup":24,"inherits":316,"safe-buffer":346}],223:[function(require,module,exports){
 arguments[4][25][0].apply(exports,arguments)
-},{"./decrypter":239,"./encrypter":240,"./modes/list.json":250,"dup":25}],239:[function(require,module,exports){
+},{"./decrypter":224,"./encrypter":225,"./modes/list.json":235,"dup":25}],224:[function(require,module,exports){
 arguments[4][26][0].apply(exports,arguments)
-},{"./aes":236,"./authCipher":237,"./modes":249,"./streamCipher":252,"cipher-base":264,"dup":26,"evp_bytestokey":319,"inherits":336,"safe-buffer":543}],240:[function(require,module,exports){
+},{"./aes":221,"./authCipher":222,"./modes":234,"./streamCipher":237,"cipher-base":249,"dup":26,"evp_bytestokey":299,"inherits":316,"safe-buffer":346}],225:[function(require,module,exports){
 arguments[4][27][0].apply(exports,arguments)
-},{"./aes":236,"./authCipher":237,"./modes":249,"./streamCipher":252,"cipher-base":264,"dup":27,"evp_bytestokey":319,"inherits":336,"safe-buffer":543}],241:[function(require,module,exports){
+},{"./aes":221,"./authCipher":222,"./modes":234,"./streamCipher":237,"cipher-base":249,"dup":27,"evp_bytestokey":299,"inherits":316,"safe-buffer":346}],226:[function(require,module,exports){
 arguments[4][28][0].apply(exports,arguments)
-},{"dup":28,"safe-buffer":543}],242:[function(require,module,exports){
+},{"dup":28,"safe-buffer":346}],227:[function(require,module,exports){
 arguments[4][29][0].apply(exports,arguments)
-},{"dup":29}],243:[function(require,module,exports){
+},{"dup":29}],228:[function(require,module,exports){
 arguments[4][30][0].apply(exports,arguments)
-},{"buffer-xor":263,"dup":30}],244:[function(require,module,exports){
+},{"buffer-xor":248,"dup":30}],229:[function(require,module,exports){
 arguments[4][31][0].apply(exports,arguments)
-},{"buffer-xor":263,"dup":31,"safe-buffer":543}],245:[function(require,module,exports){
+},{"buffer-xor":248,"dup":31,"safe-buffer":346}],230:[function(require,module,exports){
 arguments[4][32][0].apply(exports,arguments)
-},{"dup":32,"safe-buffer":543}],246:[function(require,module,exports){
+},{"dup":32,"safe-buffer":346}],231:[function(require,module,exports){
 arguments[4][33][0].apply(exports,arguments)
-},{"dup":33,"safe-buffer":543}],247:[function(require,module,exports){
+},{"dup":33,"safe-buffer":346}],232:[function(require,module,exports){
 arguments[4][34][0].apply(exports,arguments)
-},{"../incr32":242,"buffer-xor":263,"dup":34,"safe-buffer":543}],248:[function(require,module,exports){
+},{"../incr32":227,"buffer-xor":248,"dup":34,"safe-buffer":346}],233:[function(require,module,exports){
 arguments[4][35][0].apply(exports,arguments)
-},{"dup":35}],249:[function(require,module,exports){
+},{"dup":35}],234:[function(require,module,exports){
 arguments[4][36][0].apply(exports,arguments)
-},{"./cbc":243,"./cfb":244,"./cfb1":245,"./cfb8":246,"./ctr":247,"./ecb":248,"./list.json":250,"./ofb":251,"dup":36}],250:[function(require,module,exports){
+},{"./cbc":228,"./cfb":229,"./cfb1":230,"./cfb8":231,"./ctr":232,"./ecb":233,"./list.json":235,"./ofb":236,"dup":36}],235:[function(require,module,exports){
 arguments[4][37][0].apply(exports,arguments)
-},{"dup":37}],251:[function(require,module,exports){
+},{"dup":37}],236:[function(require,module,exports){
 arguments[4][38][0].apply(exports,arguments)
-},{"buffer":51,"buffer-xor":263,"dup":38}],252:[function(require,module,exports){
+},{"buffer":51,"buffer-xor":248,"dup":38}],237:[function(require,module,exports){
 arguments[4][39][0].apply(exports,arguments)
-},{"./aes":236,"cipher-base":264,"dup":39,"inherits":336,"safe-buffer":543}],253:[function(require,module,exports){
+},{"./aes":221,"cipher-base":249,"dup":39,"inherits":316,"safe-buffer":346}],238:[function(require,module,exports){
 arguments[4][40][0].apply(exports,arguments)
-},{"browserify-aes/browser":238,"browserify-aes/modes":249,"browserify-des":254,"browserify-des/modes":255,"dup":40,"evp_bytestokey":319}],254:[function(require,module,exports){
+},{"browserify-aes/browser":223,"browserify-aes/modes":234,"browserify-des":239,"browserify-des/modes":240,"dup":40,"evp_bytestokey":299}],239:[function(require,module,exports){
 arguments[4][41][0].apply(exports,arguments)
-},{"cipher-base":264,"des.js":272,"dup":41,"inherits":336,"safe-buffer":543}],255:[function(require,module,exports){
+},{"cipher-base":249,"des.js":257,"dup":41,"inherits":316,"safe-buffer":346}],240:[function(require,module,exports){
 arguments[4][42][0].apply(exports,arguments)
-},{"dup":42}],256:[function(require,module,exports){
+},{"dup":42}],241:[function(require,module,exports){
 arguments[4][43][0].apply(exports,arguments)
-},{"bn.js":234,"buffer":51,"dup":43,"randombytes":534}],257:[function(require,module,exports){
+},{"bn.js":219,"buffer":51,"dup":43,"randombytes":340}],242:[function(require,module,exports){
 arguments[4][44][0].apply(exports,arguments)
-},{"./browser/algorithms.json":258,"dup":44}],258:[function(require,module,exports){
+},{"./browser/algorithms.json":243,"dup":44}],243:[function(require,module,exports){
 arguments[4][45][0].apply(exports,arguments)
-},{"dup":45}],259:[function(require,module,exports){
+},{"dup":45}],244:[function(require,module,exports){
 arguments[4][46][0].apply(exports,arguments)
-},{"dup":46}],260:[function(require,module,exports){
+},{"dup":46}],245:[function(require,module,exports){
 arguments[4][47][0].apply(exports,arguments)
-},{"./algorithms.json":258,"./sign":261,"./verify":262,"buffer":51,"create-hash":267,"dup":47,"inherits":336,"stream":160}],261:[function(require,module,exports){
+},{"./algorithms.json":243,"./sign":246,"./verify":247,"buffer":51,"create-hash":252,"dup":47,"inherits":316,"stream":160}],246:[function(require,module,exports){
 arguments[4][48][0].apply(exports,arguments)
-},{"./curves.json":259,"bn.js":234,"browserify-rsa":256,"buffer":51,"create-hmac":269,"dup":48,"elliptic":282,"parse-asn1":521}],262:[function(require,module,exports){
+},{"./curves.json":244,"bn.js":219,"browserify-rsa":241,"buffer":51,"create-hmac":254,"dup":48,"elliptic":267,"parse-asn1":328}],247:[function(require,module,exports){
 arguments[4][49][0].apply(exports,arguments)
-},{"./curves.json":259,"bn.js":234,"buffer":51,"dup":49,"elliptic":282,"parse-asn1":521}],263:[function(require,module,exports){
+},{"./curves.json":244,"bn.js":219,"buffer":51,"dup":49,"elliptic":267,"parse-asn1":328}],248:[function(require,module,exports){
 arguments[4][50][0].apply(exports,arguments)
-},{"buffer":51,"dup":50}],264:[function(require,module,exports){
+},{"buffer":51,"dup":50}],249:[function(require,module,exports){
 arguments[4][53][0].apply(exports,arguments)
-},{"dup":53,"inherits":336,"safe-buffer":543,"stream":160,"string_decoder":165}],265:[function(require,module,exports){
+},{"dup":53,"inherits":316,"safe-buffer":346,"stream":160,"string_decoder":165}],250:[function(require,module,exports){
 /* jshint node: true */
 (function () {
     "use strict";
@@ -38348,69 +38154,69 @@ arguments[4][53][0].apply(exports,arguments)
     };
 }());
 
-},{}],266:[function(require,module,exports){
+},{}],251:[function(require,module,exports){
 arguments[4][55][0].apply(exports,arguments)
-},{"bn.js":234,"buffer":51,"dup":55,"elliptic":282}],267:[function(require,module,exports){
+},{"bn.js":219,"buffer":51,"dup":55,"elliptic":267}],252:[function(require,module,exports){
 arguments[4][56][0].apply(exports,arguments)
-},{"cipher-base":264,"dup":56,"inherits":336,"md5.js":510,"ripemd160":542,"sha.js":547}],268:[function(require,module,exports){
+},{"cipher-base":249,"dup":56,"inherits":316,"md5.js":318,"ripemd160":345,"sha.js":350}],253:[function(require,module,exports){
 arguments[4][57][0].apply(exports,arguments)
-},{"dup":57,"md5.js":510}],269:[function(require,module,exports){
+},{"dup":57,"md5.js":318}],254:[function(require,module,exports){
 arguments[4][58][0].apply(exports,arguments)
-},{"./legacy":270,"cipher-base":264,"create-hash/md5":268,"dup":58,"inherits":336,"ripemd160":542,"safe-buffer":543,"sha.js":547}],270:[function(require,module,exports){
+},{"./legacy":255,"cipher-base":249,"create-hash/md5":253,"dup":58,"inherits":316,"ripemd160":345,"safe-buffer":346,"sha.js":350}],255:[function(require,module,exports){
 arguments[4][59][0].apply(exports,arguments)
-},{"cipher-base":264,"dup":59,"inherits":336,"safe-buffer":543}],271:[function(require,module,exports){
+},{"cipher-base":249,"dup":59,"inherits":316,"safe-buffer":346}],256:[function(require,module,exports){
 arguments[4][60][0].apply(exports,arguments)
-},{"browserify-cipher":253,"browserify-sign":260,"browserify-sign/algos":257,"create-ecdh":266,"create-hash":267,"create-hmac":269,"diffie-hellman":278,"dup":60,"pbkdf2":522,"public-encrypt":527,"randombytes":534,"randomfill":535}],272:[function(require,module,exports){
+},{"browserify-cipher":238,"browserify-sign":245,"browserify-sign/algos":242,"create-ecdh":251,"create-hash":252,"create-hmac":254,"diffie-hellman":263,"dup":60,"pbkdf2":329,"public-encrypt":334,"randombytes":340,"randomfill":341}],257:[function(require,module,exports){
 arguments[4][61][0].apply(exports,arguments)
-},{"./des/cbc":273,"./des/cipher":274,"./des/des":275,"./des/ede":276,"./des/utils":277,"dup":61}],273:[function(require,module,exports){
+},{"./des/cbc":258,"./des/cipher":259,"./des/des":260,"./des/ede":261,"./des/utils":262,"dup":61}],258:[function(require,module,exports){
 arguments[4][62][0].apply(exports,arguments)
-},{"dup":62,"inherits":336,"minimalistic-assert":512}],274:[function(require,module,exports){
+},{"dup":62,"inherits":316,"minimalistic-assert":320}],259:[function(require,module,exports){
 arguments[4][63][0].apply(exports,arguments)
-},{"dup":63,"minimalistic-assert":512}],275:[function(require,module,exports){
+},{"dup":63,"minimalistic-assert":320}],260:[function(require,module,exports){
 arguments[4][64][0].apply(exports,arguments)
-},{"../des":272,"dup":64,"inherits":336,"minimalistic-assert":512}],276:[function(require,module,exports){
+},{"../des":257,"dup":64,"inherits":316,"minimalistic-assert":320}],261:[function(require,module,exports){
 arguments[4][65][0].apply(exports,arguments)
-},{"../des":272,"dup":65,"inherits":336,"minimalistic-assert":512}],277:[function(require,module,exports){
+},{"../des":257,"dup":65,"inherits":316,"minimalistic-assert":320}],262:[function(require,module,exports){
 arguments[4][66][0].apply(exports,arguments)
-},{"dup":66}],278:[function(require,module,exports){
+},{"dup":66}],263:[function(require,module,exports){
 arguments[4][67][0].apply(exports,arguments)
-},{"./lib/dh":279,"./lib/generatePrime":280,"./lib/primes.json":281,"buffer":51,"dup":67}],279:[function(require,module,exports){
+},{"./lib/dh":264,"./lib/generatePrime":265,"./lib/primes.json":266,"buffer":51,"dup":67}],264:[function(require,module,exports){
 arguments[4][68][0].apply(exports,arguments)
-},{"./generatePrime":280,"bn.js":234,"buffer":51,"dup":68,"miller-rabin":511,"randombytes":534}],280:[function(require,module,exports){
+},{"./generatePrime":265,"bn.js":219,"buffer":51,"dup":68,"miller-rabin":319,"randombytes":340}],265:[function(require,module,exports){
 arguments[4][69][0].apply(exports,arguments)
-},{"bn.js":234,"dup":69,"miller-rabin":511,"randombytes":534}],281:[function(require,module,exports){
+},{"bn.js":219,"dup":69,"miller-rabin":319,"randombytes":340}],266:[function(require,module,exports){
 arguments[4][70][0].apply(exports,arguments)
-},{"dup":70}],282:[function(require,module,exports){
+},{"dup":70}],267:[function(require,module,exports){
 arguments[4][71][0].apply(exports,arguments)
-},{"../package.json":297,"./elliptic/curve":285,"./elliptic/curves":288,"./elliptic/ec":289,"./elliptic/eddsa":292,"./elliptic/utils":296,"brorand":235,"dup":71}],283:[function(require,module,exports){
+},{"../package.json":282,"./elliptic/curve":270,"./elliptic/curves":273,"./elliptic/ec":274,"./elliptic/eddsa":277,"./elliptic/utils":281,"brorand":220,"dup":71}],268:[function(require,module,exports){
 arguments[4][72][0].apply(exports,arguments)
-},{"../../elliptic":282,"bn.js":234,"dup":72}],284:[function(require,module,exports){
+},{"../../elliptic":267,"bn.js":219,"dup":72}],269:[function(require,module,exports){
 arguments[4][73][0].apply(exports,arguments)
-},{"../../elliptic":282,"../curve":285,"bn.js":234,"dup":73,"inherits":336}],285:[function(require,module,exports){
+},{"../../elliptic":267,"../curve":270,"bn.js":219,"dup":73,"inherits":316}],270:[function(require,module,exports){
 arguments[4][74][0].apply(exports,arguments)
-},{"./base":283,"./edwards":284,"./mont":286,"./short":287,"dup":74}],286:[function(require,module,exports){
+},{"./base":268,"./edwards":269,"./mont":271,"./short":272,"dup":74}],271:[function(require,module,exports){
 arguments[4][75][0].apply(exports,arguments)
-},{"../../elliptic":282,"../curve":285,"bn.js":234,"dup":75,"inherits":336}],287:[function(require,module,exports){
+},{"../../elliptic":267,"../curve":270,"bn.js":219,"dup":75,"inherits":316}],272:[function(require,module,exports){
 arguments[4][76][0].apply(exports,arguments)
-},{"../../elliptic":282,"../curve":285,"bn.js":234,"dup":76,"inherits":336}],288:[function(require,module,exports){
+},{"../../elliptic":267,"../curve":270,"bn.js":219,"dup":76,"inherits":316}],273:[function(require,module,exports){
 arguments[4][77][0].apply(exports,arguments)
-},{"../elliptic":282,"./precomputed/secp256k1":295,"dup":77,"hash.js":321}],289:[function(require,module,exports){
+},{"../elliptic":267,"./precomputed/secp256k1":280,"dup":77,"hash.js":301}],274:[function(require,module,exports){
 arguments[4][78][0].apply(exports,arguments)
-},{"../../elliptic":282,"./key":290,"./signature":291,"bn.js":234,"dup":78,"hmac-drbg":333}],290:[function(require,module,exports){
+},{"../../elliptic":267,"./key":275,"./signature":276,"bn.js":219,"dup":78,"hmac-drbg":313}],275:[function(require,module,exports){
 arguments[4][79][0].apply(exports,arguments)
-},{"../../elliptic":282,"bn.js":234,"dup":79}],291:[function(require,module,exports){
+},{"../../elliptic":267,"bn.js":219,"dup":79}],276:[function(require,module,exports){
 arguments[4][80][0].apply(exports,arguments)
-},{"../../elliptic":282,"bn.js":234,"dup":80}],292:[function(require,module,exports){
+},{"../../elliptic":267,"bn.js":219,"dup":80}],277:[function(require,module,exports){
 arguments[4][81][0].apply(exports,arguments)
-},{"../../elliptic":282,"./key":293,"./signature":294,"dup":81,"hash.js":321}],293:[function(require,module,exports){
+},{"../../elliptic":267,"./key":278,"./signature":279,"dup":81,"hash.js":301}],278:[function(require,module,exports){
 arguments[4][82][0].apply(exports,arguments)
-},{"../../elliptic":282,"dup":82}],294:[function(require,module,exports){
+},{"../../elliptic":267,"dup":82}],279:[function(require,module,exports){
 arguments[4][83][0].apply(exports,arguments)
-},{"../../elliptic":282,"bn.js":234,"dup":83}],295:[function(require,module,exports){
+},{"../../elliptic":267,"bn.js":219,"dup":83}],280:[function(require,module,exports){
 arguments[4][84][0].apply(exports,arguments)
-},{"dup":84}],296:[function(require,module,exports){
+},{"dup":84}],281:[function(require,module,exports){
 arguments[4][85][0].apply(exports,arguments)
-},{"bn.js":234,"dup":85,"minimalistic-assert":512,"minimalistic-crypto-utils":513}],297:[function(require,module,exports){
+},{"bn.js":219,"dup":85,"minimalistic-assert":320,"minimalistic-crypto-utils":321}],282:[function(require,module,exports){
 module.exports={
   "_from": "elliptic@^6.4.0",
   "_id": "elliptic@6.4.1",
@@ -38431,7 +38237,8 @@ module.exports={
   "_requiredBy": [
     "/browserify-sign",
     "/create-ecdh",
-    "/eth-lib"
+    "/eth-lib",
+    "/web3-eth-accounts/eth-lib"
   ],
   "_resolved": "https://registry.npmjs.org/elliptic/-/elliptic-6.4.1.tgz",
   "_shasum": "c2d0b7776911b86722c632c3c06c60f2f819939a",
@@ -38500,7 +38307,7 @@ module.exports={
   "version": "6.4.1"
 }
 
-},{}],298:[function(require,module,exports){
+},{}],283:[function(require,module,exports){
 (function (Buffer){
 var sha3 = require('js-sha3').keccak_256
 var uts46 = require('idna-uts46-hx')
@@ -38534,903 +38341,490 @@ exports.hash = namehash
 exports.normalize = normalize
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":51,"idna-uts46-hx":335,"js-sha3":338}],299:[function(require,module,exports){
-(function (Buffer){
-const Bytes = require("./bytes");
-const Nat = require("./nat");
-const elliptic = require("elliptic");
-const rlp = require("./rlp");
-const secp256k1 = new elliptic.ec("secp256k1"); // eslint-disable-line
-const { keccak256, keccak256s } = require("./hash");
+},{"buffer":51,"idna-uts46-hx":315,"js-sha3":284}],284:[function(require,module,exports){
+(function (process,global){
+/**
+ * [js-sha3]{@link https://github.com/emn178/js-sha3}
+ *
+ * @version 0.5.7
+ * @author Chen, Yi-Cyuan [emn178@gmail.com]
+ * @copyright Chen, Yi-Cyuan 2015-2016
+ * @license MIT
+ */
+/*jslint bitwise: true */
+(function () {
+  'use strict';
 
-const create = entropy => {
-  const innerHex = keccak256(Bytes.concat(Bytes.random(32), entropy || Bytes.random(32)));
-  const middleHex = Bytes.concat(Bytes.concat(Bytes.random(32), innerHex), Bytes.random(32));
-  const outerHex = keccak256(middleHex);
-  return fromPrivate(outerHex);
-};
-
-const toChecksum = address => {
-  const addressHash = keccak256s(address.slice(2));
-  let checksumAddress = "0x";
-  for (let i = 0; i < 40; i++) checksumAddress += parseInt(addressHash[i + 2], 16) > 7 ? address[i + 2].toUpperCase() : address[i + 2];
-  return checksumAddress;
-};
-
-const fromPrivate = privateKey => {
-  const buffer = new Buffer(privateKey.slice(2), "hex");
-  const ecKey = secp256k1.keyFromPrivate(buffer);
-  const publicKey = "0x" + ecKey.getPublic(false, 'hex').slice(2);
-  const publicHash = keccak256(publicKey);
-  const address = toChecksum("0x" + publicHash.slice(-40));
-  return {
-    address: address,
-    privateKey: privateKey
-  };
-};
-
-const encodeSignature = ([v, r, s]) => Bytes.flatten([r, s, v]);
-
-const decodeSignature = hex => [Bytes.slice(64, Bytes.length(hex), hex), Bytes.slice(0, 32, hex), Bytes.slice(32, 64, hex)];
-
-const makeSigner = addToV => (hash, privateKey) => {
-  const signature = secp256k1.keyFromPrivate(new Buffer(privateKey.slice(2), "hex")).sign(new Buffer(hash.slice(2), "hex"), { canonical: true });
-  return encodeSignature([Nat.fromString(Bytes.fromNumber(addToV + signature.recoveryParam)), Bytes.pad(32, Bytes.fromNat("0x" + signature.r.toString(16))), Bytes.pad(32, Bytes.fromNat("0x" + signature.s.toString(16)))]);
-};
-
-const sign = makeSigner(27); // v=27|28 instead of 0|1...
-
-const recover = (hash, signature) => {
-  const vals = decodeSignature(signature);
-  const vrs = { v: Bytes.toNumber(vals[0]), r: vals[1].slice(2), s: vals[2].slice(2) };
-  const ecPublicKey = secp256k1.recoverPubKey(new Buffer(hash.slice(2), "hex"), vrs, vrs.v < 2 ? vrs.v : 1 - vrs.v % 2); // because odd vals mean v=0... sadly that means v=0 means v=1... I hate that
-  const publicKey = "0x" + ecPublicKey.encode("hex", false).slice(2);
-  const publicHash = keccak256(publicKey);
-  const address = toChecksum("0x" + publicHash.slice(-40));
-  return address;
-};
-
-module.exports = {
-  create,
-  toChecksum,
-  fromPrivate,
-  sign,
-  makeSigner,
-  recover,
-  encodeSignature,
-  decodeSignature
-};
-}).call(this,require("buffer").Buffer)
-},{"./bytes":301,"./hash":302,"./nat":303,"./rlp":304,"buffer":51,"elliptic":282}],300:[function(require,module,exports){
-const generate = (num, fn) => {
-  let a = [];
-  for (var i = 0; i < num; ++i) a.push(fn(i));
-  return a;
-};
-
-const replicate = (num, val) => generate(num, () => val);
-
-const concat = (a, b) => a.concat(b);
-
-const flatten = a => {
-  let r = [];
-  for (let j = 0, J = a.length; j < J; ++j) for (let i = 0, I = a[j].length; i < I; ++i) r.push(a[j][i]);
-  return r;
-};
-
-const chunksOf = (n, a) => {
-  let b = [];
-  for (let i = 0, l = a.length; i < l; i += n) b.push(a.slice(i, i + n));
-  return b;
-};
-
-module.exports = {
-  generate,
-  replicate,
-  concat,
-  flatten,
-  chunksOf
-};
-},{}],301:[function(require,module,exports){
-const A = require("./array.js");
-
-const at = (bytes, index) => parseInt(bytes.slice(index * 2 + 2, index * 2 + 4), 16);
-
-const random = bytes => {
-  let rnd;
-  if (typeof window !== "undefined" && window.crypto && window.crypto.getRandomValues) rnd = window.crypto.getRandomValues(new Uint8Array(bytes));else if (typeof require !== "undefined") rnd = require("c" + "rypto").randomBytes(bytes);else throw "Safe random numbers not available.";
-  let hex = "0x";
-  for (let i = 0; i < bytes; ++i) hex += ("00" + rnd[i].toString(16)).slice(-2);
-  return hex;
-};
-
-const length = a => (a.length - 2) / 2;
-
-const flatten = a => "0x" + a.reduce((r, s) => r + s.slice(2), "");
-
-const slice = (i, j, bs) => "0x" + bs.slice(i * 2 + 2, j * 2 + 2);
-
-const reverse = hex => {
-  let rev = "0x";
-  for (let i = 0, l = length(hex); i < l; ++i) {
-    rev += hex.slice((l - i) * 2, (l - i + 1) * 2);
+  var root = typeof window === 'object' ? window : {};
+  var NODE_JS = !root.JS_SHA3_NO_NODE_JS && typeof process === 'object' && process.versions && process.versions.node;
+  if (NODE_JS) {
+    root = global;
   }
-  return rev;
-};
+  var COMMON_JS = !root.JS_SHA3_NO_COMMON_JS && typeof module === 'object' && module.exports;
+  var HEX_CHARS = '0123456789abcdef'.split('');
+  var SHAKE_PADDING = [31, 7936, 2031616, 520093696];
+  var KECCAK_PADDING = [1, 256, 65536, 16777216];
+  var PADDING = [6, 1536, 393216, 100663296];
+  var SHIFT = [0, 8, 16, 24];
+  var RC = [1, 0, 32898, 0, 32906, 2147483648, 2147516416, 2147483648, 32907, 0, 2147483649,
+            0, 2147516545, 2147483648, 32777, 2147483648, 138, 0, 136, 0, 2147516425, 0,
+            2147483658, 0, 2147516555, 0, 139, 2147483648, 32905, 2147483648, 32771,
+            2147483648, 32770, 2147483648, 128, 2147483648, 32778, 0, 2147483658, 2147483648,
+            2147516545, 2147483648, 32896, 2147483648, 2147483649, 0, 2147516424, 2147483648];
+  var BITS = [224, 256, 384, 512];
+  var SHAKE_BITS = [128, 256];
+  var OUTPUT_TYPES = ['hex', 'buffer', 'arrayBuffer', 'array'];
 
-const pad = (l, hex) => hex.length === l * 2 + 2 ? hex : pad(l, "0x" + "0" + hex.slice(2));
-
-const padRight = (l, hex) => hex.length === l * 2 + 2 ? hex : padRight(l, hex + "0");
-
-const toArray = hex => {
-  let arr = [];
-  for (let i = 2, l = hex.length; i < l; i += 2) arr.push(parseInt(hex.slice(i, i + 2), 16));
-  return arr;
-};
-
-const fromArray = arr => {
-  let hex = "0x";
-  for (let i = 0, l = arr.length; i < l; ++i) {
-    let b = arr[i];
-    hex += (b < 16 ? "0" : "") + b.toString(16);
-  }
-  return hex;
-};
-
-const toUint8Array = hex => new Uint8Array(toArray(hex));
-
-const fromUint8Array = arr => fromArray([].slice.call(arr, 0));
-
-const fromNumber = num => {
-  let hex = num.toString(16);
-  return hex.length % 2 === 0 ? "0x" + hex : "0x0" + hex;
-};
-
-const toNumber = hex => parseInt(hex.slice(2), 16);
-
-const concat = (a, b) => a.concat(b.slice(2));
-
-const fromNat = bn => bn === "0x0" ? "0x" : bn.length % 2 === 0 ? bn : "0x0" + bn.slice(2);
-
-const toNat = bn => bn[2] === "0" ? "0x" + bn.slice(3) : bn;
-
-const fromAscii = ascii => {
-  let hex = "0x";
-  for (let i = 0; i < ascii.length; ++i) hex += ("00" + ascii.charCodeAt(i).toString(16)).slice(-2);
-  return hex;
-};
-
-const toAscii = hex => {
-  let ascii = "";
-  for (let i = 2; i < hex.length; i += 2) ascii += String.fromCharCode(parseInt(hex.slice(i, i + 2), 16));
-  return ascii;
-};
-
-// From https://gist.github.com/pascaldekloe/62546103a1576803dade9269ccf76330
-const fromString = s => {
-  const makeByte = uint8 => {
-    const b = uint8.toString(16);
-    return b.length < 2 ? "0" + b : b;
+  var createOutputMethod = function (bits, padding, outputType) {
+    return function (message) {
+      return new Keccak(bits, padding, bits).update(message)[outputType]();
+    };
   };
-  let bytes = "0x";
-  for (let ci = 0; ci != s.length; ci++) {
-    let c = s.charCodeAt(ci);
-    if (c < 128) {
-      bytes += makeByte(c);
-      continue;
+
+  var createShakeOutputMethod = function (bits, padding, outputType) {
+    return function (message, outputBits) {
+      return new Keccak(bits, padding, outputBits).update(message)[outputType]();
+    };
+  };
+
+  var createMethod = function (bits, padding) {
+    var method = createOutputMethod(bits, padding, 'hex');
+    method.create = function () {
+      return new Keccak(bits, padding, bits);
+    };
+    method.update = function (message) {
+      return method.create().update(message);
+    };
+    for (var i = 0; i < OUTPUT_TYPES.length; ++i) {
+      var type = OUTPUT_TYPES[i];
+      method[type] = createOutputMethod(bits, padding, type);
     }
-    if (c < 2048) {
-      bytes += makeByte(c >> 6 | 192);
-    } else {
-      if (c > 0xd7ff && c < 0xdc00) {
-        if (++ci == s.length) return null;
-        let c2 = s.charCodeAt(ci);
-        if (c2 < 0xdc00 || c2 > 0xdfff) return null;
-        c = 0x10000 + ((c & 0x03ff) << 10) + (c2 & 0x03ff);
-        bytes += makeByte(c >> 18 | 240);
-        bytes += makeByte(c >> 12 & 63 | 128);
-      } else {
-        // c <= 0xffff
-        bytes += makeByte(c >> 12 | 224);
+    return method;
+  };
+
+  var createShakeMethod = function (bits, padding) {
+    var method = createShakeOutputMethod(bits, padding, 'hex');
+    method.create = function (outputBits) {
+      return new Keccak(bits, padding, outputBits);
+    };
+    method.update = function (message, outputBits) {
+      return method.create(outputBits).update(message);
+    };
+    for (var i = 0; i < OUTPUT_TYPES.length; ++i) {
+      var type = OUTPUT_TYPES[i];
+      method[type] = createShakeOutputMethod(bits, padding, type);
+    }
+    return method;
+  };
+
+  var algorithms = [
+    {name: 'keccak', padding: KECCAK_PADDING, bits: BITS, createMethod: createMethod},
+    {name: 'sha3', padding: PADDING, bits: BITS, createMethod: createMethod},
+    {name: 'shake', padding: SHAKE_PADDING, bits: SHAKE_BITS, createMethod: createShakeMethod}
+  ];
+
+  var methods = {}, methodNames = [];
+
+  for (var i = 0; i < algorithms.length; ++i) {
+    var algorithm = algorithms[i];
+    var bits  = algorithm.bits;
+    for (var j = 0; j < bits.length; ++j) {
+      var methodName = algorithm.name +'_' + bits[j];
+      methodNames.push(methodName);
+      methods[methodName] = algorithm.createMethod(bits[j], algorithm.padding);
+    }
+  }
+
+  function Keccak(bits, padding, outputBits) {
+    this.blocks = [];
+    this.s = [];
+    this.padding = padding;
+    this.outputBits = outputBits;
+    this.reset = true;
+    this.block = 0;
+    this.start = 0;
+    this.blockCount = (1600 - (bits << 1)) >> 5;
+    this.byteCount = this.blockCount << 2;
+    this.outputBlocks = outputBits >> 5;
+    this.extraBytes = (outputBits & 31) >> 3;
+
+    for (var i = 0; i < 50; ++i) {
+      this.s[i] = 0;
+    }
+  }
+
+  Keccak.prototype.update = function (message) {
+    var notString = typeof message !== 'string';
+    if (notString && message.constructor === ArrayBuffer) {
+      message = new Uint8Array(message);
+    }
+    var length = message.length, blocks = this.blocks, byteCount = this.byteCount,
+      blockCount = this.blockCount, index = 0, s = this.s, i, code;
+
+    while (index < length) {
+      if (this.reset) {
+        this.reset = false;
+        blocks[0] = this.block;
+        for (i = 1; i < blockCount + 1; ++i) {
+          blocks[i] = 0;
+        }
       }
-      bytes += makeByte(c >> 6 & 63 | 128);
+      if (notString) {
+        for (i = this.start; index < length && i < byteCount; ++index) {
+          blocks[i >> 2] |= message[index] << SHIFT[i++ & 3];
+        }
+      } else {
+        for (i = this.start; index < length && i < byteCount; ++index) {
+          code = message.charCodeAt(index);
+          if (code < 0x80) {
+            blocks[i >> 2] |= code << SHIFT[i++ & 3];
+          } else if (code < 0x800) {
+            blocks[i >> 2] |= (0xc0 | (code >> 6)) << SHIFT[i++ & 3];
+            blocks[i >> 2] |= (0x80 | (code & 0x3f)) << SHIFT[i++ & 3];
+          } else if (code < 0xd800 || code >= 0xe000) {
+            blocks[i >> 2] |= (0xe0 | (code >> 12)) << SHIFT[i++ & 3];
+            blocks[i >> 2] |= (0x80 | ((code >> 6) & 0x3f)) << SHIFT[i++ & 3];
+            blocks[i >> 2] |= (0x80 | (code & 0x3f)) << SHIFT[i++ & 3];
+          } else {
+            code = 0x10000 + (((code & 0x3ff) << 10) | (message.charCodeAt(++index) & 0x3ff));
+            blocks[i >> 2] |= (0xf0 | (code >> 18)) << SHIFT[i++ & 3];
+            blocks[i >> 2] |= (0x80 | ((code >> 12) & 0x3f)) << SHIFT[i++ & 3];
+            blocks[i >> 2] |= (0x80 | ((code >> 6) & 0x3f)) << SHIFT[i++ & 3];
+            blocks[i >> 2] |= (0x80 | (code & 0x3f)) << SHIFT[i++ & 3];
+          }
+        }
+      }
+      this.lastByteIndex = i;
+      if (i >= byteCount) {
+        this.start = i - byteCount;
+        this.block = blocks[blockCount];
+        for (i = 0; i < blockCount; ++i) {
+          s[i] ^= blocks[i];
+        }
+        f(s);
+        this.reset = true;
+      } else {
+        this.start = i;
+      }
     }
-    bytes += makeByte(c & 63 | 128);
-  }
-  return bytes;
-};
+    return this;
+  };
 
-const toString = bytes => {
-  let s = '';
-  let i = 0;
-  let l = length(bytes);
-  while (i < l) {
-    let c = at(bytes, i++);
-    if (c > 127) {
-      if (c > 191 && c < 224) {
-        if (i >= l) return null;
-        c = (c & 31) << 6 | at(bytes, i) & 63;
-      } else if (c > 223 && c < 240) {
-        if (i + 1 >= l) return null;
-        c = (c & 15) << 12 | (at(bytes, i) & 63) << 6 | at(bytes, ++i) & 63;
-      } else if (c > 239 && c < 248) {
-        if (i + 2 >= l) return null;
-        c = (c & 7) << 18 | (at(bytes, i) & 63) << 12 | (at(bytes, ++i) & 63) << 6 | at(bytes, ++i) & 63;
-      } else return null;
-      ++i;
-    }
-    if (c <= 0xffff) s += String.fromCharCode(c);else if (c <= 0x10ffff) {
-      c -= 0x10000;
-      s += String.fromCharCode(c >> 10 | 0xd800);
-      s += String.fromCharCode(c & 0x3FF | 0xdc00);
-    } else return null;
-  }
-  return s;
-};
-
-module.exports = {
-  random,
-  length,
-  concat,
-  flatten,
-  slice,
-  reverse,
-  pad,
-  padRight,
-  fromAscii,
-  toAscii,
-  fromString,
-  toString,
-  fromNumber,
-  toNumber,
-  fromNat,
-  toNat,
-  fromArray,
-  toArray,
-  fromUint8Array,
-  toUint8Array
-};
-},{"./array.js":300}],302:[function(require,module,exports){
-// This was ported from https://github.com/emn178/js-sha3, with some minor
-// modifications and pruning. It is licensed under MIT:
-//
-// Copyright 2015-2016 Chen, Yi-Cyuan
-//  
-// Permission is hereby granted, free of charge, to any person obtaining
-// a copy of this software and associated documentation files (the
-// "Software"), to deal in the Software without restriction, including
-// without limitation the rights to use, copy, modify, merge, publish,
-// distribute, sublicense, and/or sell copies of the Software, and to
-// permit persons to whom the Software is furnished to do so, subject to
-// the following conditions:
-// 
-// The above copyright notice and this permission notice shall be
-// included in all copies or substantial portions of the Software.
-// 
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-// LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-// OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-// WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-const HEX_CHARS = '0123456789abcdef'.split('');
-const KECCAK_PADDING = [1, 256, 65536, 16777216];
-const SHIFT = [0, 8, 16, 24];
-const RC = [1, 0, 32898, 0, 32906, 2147483648, 2147516416, 2147483648, 32907, 0, 2147483649, 0, 2147516545, 2147483648, 32777, 2147483648, 138, 0, 136, 0, 2147516425, 0, 2147483658, 0, 2147516555, 0, 139, 2147483648, 32905, 2147483648, 32771, 2147483648, 32770, 2147483648, 128, 2147483648, 32778, 0, 2147483658, 2147483648, 2147516545, 2147483648, 32896, 2147483648, 2147483649, 0, 2147516424, 2147483648];
-
-const Keccak = bits => ({
-  blocks: [],
-  reset: true,
-  block: 0,
-  start: 0,
-  blockCount: 1600 - (bits << 1) >> 5,
-  outputBlocks: bits >> 5,
-  s: (s => [].concat(s, s, s, s, s))([0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
-});
-
-const update = (state, message) => {
-  var length = message.length,
-      blocks = state.blocks,
-      byteCount = state.blockCount << 2,
-      blockCount = state.blockCount,
-      outputBlocks = state.outputBlocks,
-      s = state.s,
-      index = 0,
-      i,
-      code;
-
-  // update
-  while (index < length) {
-    if (state.reset) {
-      state.reset = false;
-      blocks[0] = state.block;
+  Keccak.prototype.finalize = function () {
+    var blocks = this.blocks, i = this.lastByteIndex, blockCount = this.blockCount, s = this.s;
+    blocks[i >> 2] |= this.padding[i & 3];
+    if (this.lastByteIndex === this.byteCount) {
+      blocks[0] = blocks[blockCount];
       for (i = 1; i < blockCount + 1; ++i) {
         blocks[i] = 0;
       }
     }
-    if (typeof message !== "string") {
-      for (i = state.start; index < length && i < byteCount; ++index) {
-        blocks[i >> 2] |= message[index] << SHIFT[i++ & 3];
-      }
-    } else {
-      for (i = state.start; index < length && i < byteCount; ++index) {
-        code = message.charCodeAt(index);
-        if (code < 0x80) {
-          blocks[i >> 2] |= code << SHIFT[i++ & 3];
-        } else if (code < 0x800) {
-          blocks[i >> 2] |= (0xc0 | code >> 6) << SHIFT[i++ & 3];
-          blocks[i >> 2] |= (0x80 | code & 0x3f) << SHIFT[i++ & 3];
-        } else if (code < 0xd800 || code >= 0xe000) {
-          blocks[i >> 2] |= (0xe0 | code >> 12) << SHIFT[i++ & 3];
-          blocks[i >> 2] |= (0x80 | code >> 6 & 0x3f) << SHIFT[i++ & 3];
-          blocks[i >> 2] |= (0x80 | code & 0x3f) << SHIFT[i++ & 3];
-        } else {
-          code = 0x10000 + ((code & 0x3ff) << 10 | message.charCodeAt(++index) & 0x3ff);
-          blocks[i >> 2] |= (0xf0 | code >> 18) << SHIFT[i++ & 3];
-          blocks[i >> 2] |= (0x80 | code >> 12 & 0x3f) << SHIFT[i++ & 3];
-          blocks[i >> 2] |= (0x80 | code >> 6 & 0x3f) << SHIFT[i++ & 3];
-          blocks[i >> 2] |= (0x80 | code & 0x3f) << SHIFT[i++ & 3];
-        }
-      }
+    blocks[blockCount - 1] |= 0x80000000;
+    for (i = 0; i < blockCount; ++i) {
+      s[i] ^= blocks[i];
     }
-    state.lastByteIndex = i;
-    if (i >= byteCount) {
-      state.start = i - byteCount;
-      state.block = blocks[blockCount];
-      for (i = 0; i < blockCount; ++i) {
-        s[i] ^= blocks[i];
-      }
-      f(s);
-      state.reset = true;
-    } else {
-      state.start = i;
-    }
-  }
+    f(s);
+  };
 
-  // finalize
-  i = state.lastByteIndex;
-  blocks[i >> 2] |= KECCAK_PADDING[i & 3];
-  if (state.lastByteIndex === byteCount) {
-    blocks[0] = blocks[blockCount];
-    for (i = 1; i < blockCount + 1; ++i) {
-      blocks[i] = 0;
-    }
-  }
-  blocks[blockCount - 1] |= 0x80000000;
-  for (i = 0; i < blockCount; ++i) {
-    s[i] ^= blocks[i];
-  }
-  f(s);
+  Keccak.prototype.toString = Keccak.prototype.hex = function () {
+    this.finalize();
 
-  // toString
-  var hex = '',
-      i = 0,
-      j = 0,
-      block;
-  while (j < outputBlocks) {
-    for (i = 0; i < blockCount && j < outputBlocks; ++i, ++j) {
+    var blockCount = this.blockCount, s = this.s, outputBlocks = this.outputBlocks,
+        extraBytes = this.extraBytes, i = 0, j = 0;
+    var hex = '', block;
+    while (j < outputBlocks) {
+      for (i = 0; i < blockCount && j < outputBlocks; ++i, ++j) {
+        block = s[i];
+        hex += HEX_CHARS[(block >> 4) & 0x0F] + HEX_CHARS[block & 0x0F] +
+               HEX_CHARS[(block >> 12) & 0x0F] + HEX_CHARS[(block >> 8) & 0x0F] +
+               HEX_CHARS[(block >> 20) & 0x0F] + HEX_CHARS[(block >> 16) & 0x0F] +
+               HEX_CHARS[(block >> 28) & 0x0F] + HEX_CHARS[(block >> 24) & 0x0F];
+      }
+      if (j % blockCount === 0) {
+        f(s);
+        i = 0;
+      }
+    }
+    if (extraBytes) {
       block = s[i];
-      hex += HEX_CHARS[block >> 4 & 0x0F] + HEX_CHARS[block & 0x0F] + HEX_CHARS[block >> 12 & 0x0F] + HEX_CHARS[block >> 8 & 0x0F] + HEX_CHARS[block >> 20 & 0x0F] + HEX_CHARS[block >> 16 & 0x0F] + HEX_CHARS[block >> 28 & 0x0F] + HEX_CHARS[block >> 24 & 0x0F];
+      if (extraBytes > 0) {
+        hex += HEX_CHARS[(block >> 4) & 0x0F] + HEX_CHARS[block & 0x0F];
+      }
+      if (extraBytes > 1) {
+        hex += HEX_CHARS[(block >> 12) & 0x0F] + HEX_CHARS[(block >> 8) & 0x0F];
+      }
+      if (extraBytes > 2) {
+        hex += HEX_CHARS[(block >> 20) & 0x0F] + HEX_CHARS[(block >> 16) & 0x0F];
+      }
     }
-    if (j % blockCount === 0) {
-      f(s);
-      i = 0;
-    }
-  }
-  return "0x" + hex;
-};
+    return hex;
+  };
 
-const f = s => {
-  var h, l, n, c0, c1, c2, c3, c4, c5, c6, c7, c8, c9, b0, b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, b18, b19, b20, b21, b22, b23, b24, b25, b26, b27, b28, b29, b30, b31, b32, b33, b34, b35, b36, b37, b38, b39, b40, b41, b42, b43, b44, b45, b46, b47, b48, b49;
+  Keccak.prototype.arrayBuffer = function () {
+    this.finalize();
 
-  for (n = 0; n < 48; n += 2) {
-    c0 = s[0] ^ s[10] ^ s[20] ^ s[30] ^ s[40];
-    c1 = s[1] ^ s[11] ^ s[21] ^ s[31] ^ s[41];
-    c2 = s[2] ^ s[12] ^ s[22] ^ s[32] ^ s[42];
-    c3 = s[3] ^ s[13] ^ s[23] ^ s[33] ^ s[43];
-    c4 = s[4] ^ s[14] ^ s[24] ^ s[34] ^ s[44];
-    c5 = s[5] ^ s[15] ^ s[25] ^ s[35] ^ s[45];
-    c6 = s[6] ^ s[16] ^ s[26] ^ s[36] ^ s[46];
-    c7 = s[7] ^ s[17] ^ s[27] ^ s[37] ^ s[47];
-    c8 = s[8] ^ s[18] ^ s[28] ^ s[38] ^ s[48];
-    c9 = s[9] ^ s[19] ^ s[29] ^ s[39] ^ s[49];
-
-    h = c8 ^ (c2 << 1 | c3 >>> 31);
-    l = c9 ^ (c3 << 1 | c2 >>> 31);
-    s[0] ^= h;
-    s[1] ^= l;
-    s[10] ^= h;
-    s[11] ^= l;
-    s[20] ^= h;
-    s[21] ^= l;
-    s[30] ^= h;
-    s[31] ^= l;
-    s[40] ^= h;
-    s[41] ^= l;
-    h = c0 ^ (c4 << 1 | c5 >>> 31);
-    l = c1 ^ (c5 << 1 | c4 >>> 31);
-    s[2] ^= h;
-    s[3] ^= l;
-    s[12] ^= h;
-    s[13] ^= l;
-    s[22] ^= h;
-    s[23] ^= l;
-    s[32] ^= h;
-    s[33] ^= l;
-    s[42] ^= h;
-    s[43] ^= l;
-    h = c2 ^ (c6 << 1 | c7 >>> 31);
-    l = c3 ^ (c7 << 1 | c6 >>> 31);
-    s[4] ^= h;
-    s[5] ^= l;
-    s[14] ^= h;
-    s[15] ^= l;
-    s[24] ^= h;
-    s[25] ^= l;
-    s[34] ^= h;
-    s[35] ^= l;
-    s[44] ^= h;
-    s[45] ^= l;
-    h = c4 ^ (c8 << 1 | c9 >>> 31);
-    l = c5 ^ (c9 << 1 | c8 >>> 31);
-    s[6] ^= h;
-    s[7] ^= l;
-    s[16] ^= h;
-    s[17] ^= l;
-    s[26] ^= h;
-    s[27] ^= l;
-    s[36] ^= h;
-    s[37] ^= l;
-    s[46] ^= h;
-    s[47] ^= l;
-    h = c6 ^ (c0 << 1 | c1 >>> 31);
-    l = c7 ^ (c1 << 1 | c0 >>> 31);
-    s[8] ^= h;
-    s[9] ^= l;
-    s[18] ^= h;
-    s[19] ^= l;
-    s[28] ^= h;
-    s[29] ^= l;
-    s[38] ^= h;
-    s[39] ^= l;
-    s[48] ^= h;
-    s[49] ^= l;
-
-    b0 = s[0];
-    b1 = s[1];
-    b32 = s[11] << 4 | s[10] >>> 28;
-    b33 = s[10] << 4 | s[11] >>> 28;
-    b14 = s[20] << 3 | s[21] >>> 29;
-    b15 = s[21] << 3 | s[20] >>> 29;
-    b46 = s[31] << 9 | s[30] >>> 23;
-    b47 = s[30] << 9 | s[31] >>> 23;
-    b28 = s[40] << 18 | s[41] >>> 14;
-    b29 = s[41] << 18 | s[40] >>> 14;
-    b20 = s[2] << 1 | s[3] >>> 31;
-    b21 = s[3] << 1 | s[2] >>> 31;
-    b2 = s[13] << 12 | s[12] >>> 20;
-    b3 = s[12] << 12 | s[13] >>> 20;
-    b34 = s[22] << 10 | s[23] >>> 22;
-    b35 = s[23] << 10 | s[22] >>> 22;
-    b16 = s[33] << 13 | s[32] >>> 19;
-    b17 = s[32] << 13 | s[33] >>> 19;
-    b48 = s[42] << 2 | s[43] >>> 30;
-    b49 = s[43] << 2 | s[42] >>> 30;
-    b40 = s[5] << 30 | s[4] >>> 2;
-    b41 = s[4] << 30 | s[5] >>> 2;
-    b22 = s[14] << 6 | s[15] >>> 26;
-    b23 = s[15] << 6 | s[14] >>> 26;
-    b4 = s[25] << 11 | s[24] >>> 21;
-    b5 = s[24] << 11 | s[25] >>> 21;
-    b36 = s[34] << 15 | s[35] >>> 17;
-    b37 = s[35] << 15 | s[34] >>> 17;
-    b18 = s[45] << 29 | s[44] >>> 3;
-    b19 = s[44] << 29 | s[45] >>> 3;
-    b10 = s[6] << 28 | s[7] >>> 4;
-    b11 = s[7] << 28 | s[6] >>> 4;
-    b42 = s[17] << 23 | s[16] >>> 9;
-    b43 = s[16] << 23 | s[17] >>> 9;
-    b24 = s[26] << 25 | s[27] >>> 7;
-    b25 = s[27] << 25 | s[26] >>> 7;
-    b6 = s[36] << 21 | s[37] >>> 11;
-    b7 = s[37] << 21 | s[36] >>> 11;
-    b38 = s[47] << 24 | s[46] >>> 8;
-    b39 = s[46] << 24 | s[47] >>> 8;
-    b30 = s[8] << 27 | s[9] >>> 5;
-    b31 = s[9] << 27 | s[8] >>> 5;
-    b12 = s[18] << 20 | s[19] >>> 12;
-    b13 = s[19] << 20 | s[18] >>> 12;
-    b44 = s[29] << 7 | s[28] >>> 25;
-    b45 = s[28] << 7 | s[29] >>> 25;
-    b26 = s[38] << 8 | s[39] >>> 24;
-    b27 = s[39] << 8 | s[38] >>> 24;
-    b8 = s[48] << 14 | s[49] >>> 18;
-    b9 = s[49] << 14 | s[48] >>> 18;
-
-    s[0] = b0 ^ ~b2 & b4;
-    s[1] = b1 ^ ~b3 & b5;
-    s[10] = b10 ^ ~b12 & b14;
-    s[11] = b11 ^ ~b13 & b15;
-    s[20] = b20 ^ ~b22 & b24;
-    s[21] = b21 ^ ~b23 & b25;
-    s[30] = b30 ^ ~b32 & b34;
-    s[31] = b31 ^ ~b33 & b35;
-    s[40] = b40 ^ ~b42 & b44;
-    s[41] = b41 ^ ~b43 & b45;
-    s[2] = b2 ^ ~b4 & b6;
-    s[3] = b3 ^ ~b5 & b7;
-    s[12] = b12 ^ ~b14 & b16;
-    s[13] = b13 ^ ~b15 & b17;
-    s[22] = b22 ^ ~b24 & b26;
-    s[23] = b23 ^ ~b25 & b27;
-    s[32] = b32 ^ ~b34 & b36;
-    s[33] = b33 ^ ~b35 & b37;
-    s[42] = b42 ^ ~b44 & b46;
-    s[43] = b43 ^ ~b45 & b47;
-    s[4] = b4 ^ ~b6 & b8;
-    s[5] = b5 ^ ~b7 & b9;
-    s[14] = b14 ^ ~b16 & b18;
-    s[15] = b15 ^ ~b17 & b19;
-    s[24] = b24 ^ ~b26 & b28;
-    s[25] = b25 ^ ~b27 & b29;
-    s[34] = b34 ^ ~b36 & b38;
-    s[35] = b35 ^ ~b37 & b39;
-    s[44] = b44 ^ ~b46 & b48;
-    s[45] = b45 ^ ~b47 & b49;
-    s[6] = b6 ^ ~b8 & b0;
-    s[7] = b7 ^ ~b9 & b1;
-    s[16] = b16 ^ ~b18 & b10;
-    s[17] = b17 ^ ~b19 & b11;
-    s[26] = b26 ^ ~b28 & b20;
-    s[27] = b27 ^ ~b29 & b21;
-    s[36] = b36 ^ ~b38 & b30;
-    s[37] = b37 ^ ~b39 & b31;
-    s[46] = b46 ^ ~b48 & b40;
-    s[47] = b47 ^ ~b49 & b41;
-    s[8] = b8 ^ ~b0 & b2;
-    s[9] = b9 ^ ~b1 & b3;
-    s[18] = b18 ^ ~b10 & b12;
-    s[19] = b19 ^ ~b11 & b13;
-    s[28] = b28 ^ ~b20 & b22;
-    s[29] = b29 ^ ~b21 & b23;
-    s[38] = b38 ^ ~b30 & b32;
-    s[39] = b39 ^ ~b31 & b33;
-    s[48] = b48 ^ ~b40 & b42;
-    s[49] = b49 ^ ~b41 & b43;
-
-    s[0] ^= RC[n];
-    s[1] ^= RC[n + 1];
-  }
-};
-
-const keccak = bits => str => {
-  var msg;
-  if (str.slice(0, 2) === "0x") {
-    msg = [];
-    for (var i = 2, l = str.length; i < l; i += 2) msg.push(parseInt(str.slice(i, i + 2), 16));
-  } else {
-    msg = str;
-  }
-  return update(Keccak(bits, bits), msg);
-};
-
-module.exports = {
-  keccak256: keccak(256),
-  keccak512: keccak(512),
-  keccak256s: keccak(256),
-  keccak512s: keccak(512)
-};
-},{}],303:[function(require,module,exports){
-const BN = require("bn.js");
-const Bytes = require("./bytes");
-
-const fromBN = bn => "0x" + bn.toString("hex");
-
-const toBN = str => new BN(str.slice(2), 16);
-
-const fromString = str => {
-  const bn = "0x" + (str.slice(0, 2) === "0x" ? new BN(str.slice(2), 16) : new BN(str, 10)).toString("hex");
-  return bn === "0x0" ? "0x" : bn;
-};
-
-const toEther = wei => toNumber(div(wei, fromString("10000000000"))) / 100000000;
-
-const fromEther = eth => mul(fromNumber(Math.floor(eth * 100000000)), fromString("10000000000"));
-
-const toString = a => toBN(a).toString(10);
-
-const fromNumber = a => typeof a === "string" ? /^0x/.test(a) ? a : "0x" + a : "0x" + new BN(a).toString("hex");
-
-const toNumber = a => toBN(a).toNumber();
-
-const toUint256 = a => Bytes.pad(32, a);
-
-const bin = method => (a, b) => fromBN(toBN(a)[method](toBN(b)));
-
-const add = bin("add");
-const mul = bin("mul");
-const div = bin("div");
-const sub = bin("sub");
-
-module.exports = {
-  toString,
-  fromString,
-  toNumber,
-  fromNumber,
-  toEther,
-  fromEther,
-  toUint256,
-  add,
-  mul,
-  div,
-  sub
-};
-},{"./bytes":301,"bn.js":234}],304:[function(require,module,exports){
-// The RLP format
-// Serialization and deserialization for the BytesTree type, under the following grammar:
-// | First byte | Meaning                                                                    |
-// | ---------- | -------------------------------------------------------------------------- |
-// | 0   to 127 | HEX(leaf)                                                                  |
-// | 128 to 183 | HEX(length_of_leaf + 128) + HEX(leaf)                                      |
-// | 184 to 191 | HEX(length_of_length_of_leaf + 128 + 55) + HEX(length_of_leaf) + HEX(leaf) |
-// | 192 to 247 | HEX(length_of_node + 192) + HEX(node)                                      |
-// | 248 to 255 | HEX(length_of_length_of_node + 128 + 55) + HEX(length_of_node) + HEX(node) |
-
-const encode = tree => {
-  const padEven = str => str.length % 2 === 0 ? str : "0" + str;
-
-  const uint = num => padEven(num.toString(16));
-
-  const length = (len, add) => len < 56 ? uint(add + len) : uint(add + uint(len).length / 2 + 55) + uint(len);
-
-  const dataTree = tree => {
-    if (typeof tree === "string") {
-      const hex = tree.slice(2);
-      const pre = hex.length != 2 || hex >= "80" ? length(hex.length / 2, 128) : "";
-      return pre + hex;
+    var blockCount = this.blockCount, s = this.s, outputBlocks = this.outputBlocks,
+        extraBytes = this.extraBytes, i = 0, j = 0;
+    var bytes = this.outputBits >> 3;
+    var buffer;
+    if (extraBytes) {
+      buffer = new ArrayBuffer((outputBlocks + 1) << 2);
     } else {
-      const hex = tree.map(dataTree).join("");
-      const pre = length(hex.length / 2, 192);
-      return pre + hex;
+      buffer = new ArrayBuffer(bytes);
+    }
+    var array = new Uint32Array(buffer);
+    while (j < outputBlocks) {
+      for (i = 0; i < blockCount && j < outputBlocks; ++i, ++j) {
+        array[j] = s[i];
+      }
+      if (j % blockCount === 0) {
+        f(s);
+      }
+    }
+    if (extraBytes) {
+      array[i] = s[i];
+      buffer = buffer.slice(0, bytes);
+    }
+    return buffer;
+  };
+
+  Keccak.prototype.buffer = Keccak.prototype.arrayBuffer;
+
+  Keccak.prototype.digest = Keccak.prototype.array = function () {
+    this.finalize();
+
+    var blockCount = this.blockCount, s = this.s, outputBlocks = this.outputBlocks,
+        extraBytes = this.extraBytes, i = 0, j = 0;
+    var array = [], offset, block;
+    while (j < outputBlocks) {
+      for (i = 0; i < blockCount && j < outputBlocks; ++i, ++j) {
+        offset = j << 2;
+        block = s[i];
+        array[offset] = block & 0xFF;
+        array[offset + 1] = (block >> 8) & 0xFF;
+        array[offset + 2] = (block >> 16) & 0xFF;
+        array[offset + 3] = (block >> 24) & 0xFF;
+      }
+      if (j % blockCount === 0) {
+        f(s);
+      }
+    }
+    if (extraBytes) {
+      offset = j << 2;
+      block = s[i];
+      if (extraBytes > 0) {
+        array[offset] = block & 0xFF;
+      }
+      if (extraBytes > 1) {
+        array[offset + 1] = (block >> 8) & 0xFF;
+      }
+      if (extraBytes > 2) {
+        array[offset + 2] = (block >> 16) & 0xFF;
+      }
+    }
+    return array;
+  };
+
+  var f = function (s) {
+    var h, l, n, c0, c1, c2, c3, c4, c5, c6, c7, c8, c9,
+        b0, b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17,
+        b18, b19, b20, b21, b22, b23, b24, b25, b26, b27, b28, b29, b30, b31, b32, b33,
+        b34, b35, b36, b37, b38, b39, b40, b41, b42, b43, b44, b45, b46, b47, b48, b49;
+    for (n = 0; n < 48; n += 2) {
+      c0 = s[0] ^ s[10] ^ s[20] ^ s[30] ^ s[40];
+      c1 = s[1] ^ s[11] ^ s[21] ^ s[31] ^ s[41];
+      c2 = s[2] ^ s[12] ^ s[22] ^ s[32] ^ s[42];
+      c3 = s[3] ^ s[13] ^ s[23] ^ s[33] ^ s[43];
+      c4 = s[4] ^ s[14] ^ s[24] ^ s[34] ^ s[44];
+      c5 = s[5] ^ s[15] ^ s[25] ^ s[35] ^ s[45];
+      c6 = s[6] ^ s[16] ^ s[26] ^ s[36] ^ s[46];
+      c7 = s[7] ^ s[17] ^ s[27] ^ s[37] ^ s[47];
+      c8 = s[8] ^ s[18] ^ s[28] ^ s[38] ^ s[48];
+      c9 = s[9] ^ s[19] ^ s[29] ^ s[39] ^ s[49];
+
+      h = c8 ^ ((c2 << 1) | (c3 >>> 31));
+      l = c9 ^ ((c3 << 1) | (c2 >>> 31));
+      s[0] ^= h;
+      s[1] ^= l;
+      s[10] ^= h;
+      s[11] ^= l;
+      s[20] ^= h;
+      s[21] ^= l;
+      s[30] ^= h;
+      s[31] ^= l;
+      s[40] ^= h;
+      s[41] ^= l;
+      h = c0 ^ ((c4 << 1) | (c5 >>> 31));
+      l = c1 ^ ((c5 << 1) | (c4 >>> 31));
+      s[2] ^= h;
+      s[3] ^= l;
+      s[12] ^= h;
+      s[13] ^= l;
+      s[22] ^= h;
+      s[23] ^= l;
+      s[32] ^= h;
+      s[33] ^= l;
+      s[42] ^= h;
+      s[43] ^= l;
+      h = c2 ^ ((c6 << 1) | (c7 >>> 31));
+      l = c3 ^ ((c7 << 1) | (c6 >>> 31));
+      s[4] ^= h;
+      s[5] ^= l;
+      s[14] ^= h;
+      s[15] ^= l;
+      s[24] ^= h;
+      s[25] ^= l;
+      s[34] ^= h;
+      s[35] ^= l;
+      s[44] ^= h;
+      s[45] ^= l;
+      h = c4 ^ ((c8 << 1) | (c9 >>> 31));
+      l = c5 ^ ((c9 << 1) | (c8 >>> 31));
+      s[6] ^= h;
+      s[7] ^= l;
+      s[16] ^= h;
+      s[17] ^= l;
+      s[26] ^= h;
+      s[27] ^= l;
+      s[36] ^= h;
+      s[37] ^= l;
+      s[46] ^= h;
+      s[47] ^= l;
+      h = c6 ^ ((c0 << 1) | (c1 >>> 31));
+      l = c7 ^ ((c1 << 1) | (c0 >>> 31));
+      s[8] ^= h;
+      s[9] ^= l;
+      s[18] ^= h;
+      s[19] ^= l;
+      s[28] ^= h;
+      s[29] ^= l;
+      s[38] ^= h;
+      s[39] ^= l;
+      s[48] ^= h;
+      s[49] ^= l;
+
+      b0 = s[0];
+      b1 = s[1];
+      b32 = (s[11] << 4) | (s[10] >>> 28);
+      b33 = (s[10] << 4) | (s[11] >>> 28);
+      b14 = (s[20] << 3) | (s[21] >>> 29);
+      b15 = (s[21] << 3) | (s[20] >>> 29);
+      b46 = (s[31] << 9) | (s[30] >>> 23);
+      b47 = (s[30] << 9) | (s[31] >>> 23);
+      b28 = (s[40] << 18) | (s[41] >>> 14);
+      b29 = (s[41] << 18) | (s[40] >>> 14);
+      b20 = (s[2] << 1) | (s[3] >>> 31);
+      b21 = (s[3] << 1) | (s[2] >>> 31);
+      b2 = (s[13] << 12) | (s[12] >>> 20);
+      b3 = (s[12] << 12) | (s[13] >>> 20);
+      b34 = (s[22] << 10) | (s[23] >>> 22);
+      b35 = (s[23] << 10) | (s[22] >>> 22);
+      b16 = (s[33] << 13) | (s[32] >>> 19);
+      b17 = (s[32] << 13) | (s[33] >>> 19);
+      b48 = (s[42] << 2) | (s[43] >>> 30);
+      b49 = (s[43] << 2) | (s[42] >>> 30);
+      b40 = (s[5] << 30) | (s[4] >>> 2);
+      b41 = (s[4] << 30) | (s[5] >>> 2);
+      b22 = (s[14] << 6) | (s[15] >>> 26);
+      b23 = (s[15] << 6) | (s[14] >>> 26);
+      b4 = (s[25] << 11) | (s[24] >>> 21);
+      b5 = (s[24] << 11) | (s[25] >>> 21);
+      b36 = (s[34] << 15) | (s[35] >>> 17);
+      b37 = (s[35] << 15) | (s[34] >>> 17);
+      b18 = (s[45] << 29) | (s[44] >>> 3);
+      b19 = (s[44] << 29) | (s[45] >>> 3);
+      b10 = (s[6] << 28) | (s[7] >>> 4);
+      b11 = (s[7] << 28) | (s[6] >>> 4);
+      b42 = (s[17] << 23) | (s[16] >>> 9);
+      b43 = (s[16] << 23) | (s[17] >>> 9);
+      b24 = (s[26] << 25) | (s[27] >>> 7);
+      b25 = (s[27] << 25) | (s[26] >>> 7);
+      b6 = (s[36] << 21) | (s[37] >>> 11);
+      b7 = (s[37] << 21) | (s[36] >>> 11);
+      b38 = (s[47] << 24) | (s[46] >>> 8);
+      b39 = (s[46] << 24) | (s[47] >>> 8);
+      b30 = (s[8] << 27) | (s[9] >>> 5);
+      b31 = (s[9] << 27) | (s[8] >>> 5);
+      b12 = (s[18] << 20) | (s[19] >>> 12);
+      b13 = (s[19] << 20) | (s[18] >>> 12);
+      b44 = (s[29] << 7) | (s[28] >>> 25);
+      b45 = (s[28] << 7) | (s[29] >>> 25);
+      b26 = (s[38] << 8) | (s[39] >>> 24);
+      b27 = (s[39] << 8) | (s[38] >>> 24);
+      b8 = (s[48] << 14) | (s[49] >>> 18);
+      b9 = (s[49] << 14) | (s[48] >>> 18);
+
+      s[0] = b0 ^ (~b2 & b4);
+      s[1] = b1 ^ (~b3 & b5);
+      s[10] = b10 ^ (~b12 & b14);
+      s[11] = b11 ^ (~b13 & b15);
+      s[20] = b20 ^ (~b22 & b24);
+      s[21] = b21 ^ (~b23 & b25);
+      s[30] = b30 ^ (~b32 & b34);
+      s[31] = b31 ^ (~b33 & b35);
+      s[40] = b40 ^ (~b42 & b44);
+      s[41] = b41 ^ (~b43 & b45);
+      s[2] = b2 ^ (~b4 & b6);
+      s[3] = b3 ^ (~b5 & b7);
+      s[12] = b12 ^ (~b14 & b16);
+      s[13] = b13 ^ (~b15 & b17);
+      s[22] = b22 ^ (~b24 & b26);
+      s[23] = b23 ^ (~b25 & b27);
+      s[32] = b32 ^ (~b34 & b36);
+      s[33] = b33 ^ (~b35 & b37);
+      s[42] = b42 ^ (~b44 & b46);
+      s[43] = b43 ^ (~b45 & b47);
+      s[4] = b4 ^ (~b6 & b8);
+      s[5] = b5 ^ (~b7 & b9);
+      s[14] = b14 ^ (~b16 & b18);
+      s[15] = b15 ^ (~b17 & b19);
+      s[24] = b24 ^ (~b26 & b28);
+      s[25] = b25 ^ (~b27 & b29);
+      s[34] = b34 ^ (~b36 & b38);
+      s[35] = b35 ^ (~b37 & b39);
+      s[44] = b44 ^ (~b46 & b48);
+      s[45] = b45 ^ (~b47 & b49);
+      s[6] = b6 ^ (~b8 & b0);
+      s[7] = b7 ^ (~b9 & b1);
+      s[16] = b16 ^ (~b18 & b10);
+      s[17] = b17 ^ (~b19 & b11);
+      s[26] = b26 ^ (~b28 & b20);
+      s[27] = b27 ^ (~b29 & b21);
+      s[36] = b36 ^ (~b38 & b30);
+      s[37] = b37 ^ (~b39 & b31);
+      s[46] = b46 ^ (~b48 & b40);
+      s[47] = b47 ^ (~b49 & b41);
+      s[8] = b8 ^ (~b0 & b2);
+      s[9] = b9 ^ (~b1 & b3);
+      s[18] = b18 ^ (~b10 & b12);
+      s[19] = b19 ^ (~b11 & b13);
+      s[28] = b28 ^ (~b20 & b22);
+      s[29] = b29 ^ (~b21 & b23);
+      s[38] = b38 ^ (~b30 & b32);
+      s[39] = b39 ^ (~b31 & b33);
+      s[48] = b48 ^ (~b40 & b42);
+      s[49] = b49 ^ (~b41 & b43);
+
+      s[0] ^= RC[n];
+      s[1] ^= RC[n + 1];
     }
   };
 
-  return "0x" + dataTree(tree);
-};
-
-const decode = hex => {
-  let i = 2;
-
-  const parseTree = () => {
-    if (i >= hex.length) throw "";
-    const head = hex.slice(i, i + 2);
-    return head < "80" ? (i += 2, "0x" + head) : head < "c0" ? parseHex() : parseList();
-  };
-
-  const parseLength = () => {
-    const len = parseInt(hex.slice(i, i += 2), 16) % 64;
-    return len < 56 ? len : parseInt(hex.slice(i, i += (len - 55) * 2), 16);
-  };
-
-  const parseHex = () => {
-    const len = parseLength();
-    return "0x" + hex.slice(i, i += len * 2);
-  };
-
-  const parseList = () => {
-    const lim = parseLength() * 2 + i;
-    let list = [];
-    while (i < lim) list.push(parseTree());
-    return list;
-  };
-
-  try {
-    return parseTree();
-  } catch (e) {
-    return [];
+  if (COMMON_JS) {
+    module.exports = methods;
+  } else {
+    for (var i = 0; i < methodNames.length; ++i) {
+      root[methodNames[i]] = methods[methodNames[i]];
+    }
   }
-};
+})();
 
-module.exports = { encode, decode };
-},{}],305:[function(require,module,exports){
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.version = "4.0.24";
-
-},{}],306:[function(require,module,exports){
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-var bignumber_1 = require("./utils/bignumber");
-var AddressZero = '0x0000000000000000000000000000000000000000';
-exports.AddressZero = AddressZero;
-var HashZero = '0x0000000000000000000000000000000000000000000000000000000000000000';
-exports.HashZero = HashZero;
-// NFKD (decomposed)
-//const EtherSymbol = '\uD835\uDF63';
-// NFKC (composed)
-var EtherSymbol = '\u039e';
-exports.EtherSymbol = EtherSymbol;
-var NegativeOne = bignumber_1.bigNumberify(-1);
-exports.NegativeOne = NegativeOne;
-var Zero = bignumber_1.bigNumberify(0);
-exports.Zero = Zero;
-var One = bignumber_1.bigNumberify(1);
-exports.One = One;
-var Two = bignumber_1.bigNumberify(2);
-exports.Two = Two;
-var WeiPerEther = bignumber_1.bigNumberify('1000000000000000000');
-exports.WeiPerEther = WeiPerEther;
-var MaxUint256 = bignumber_1.bigNumberify('0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff');
-exports.MaxUint256 = MaxUint256;
-
-},{"./utils/bignumber":310}],307:[function(require,module,exports){
-'use strict';
-Object.defineProperty(exports, "__esModule", { value: true });
-var _version_1 = require("./_version");
-// Unknown Error
-exports.UNKNOWN_ERROR = 'UNKNOWN_ERROR';
-// Not implemented
-exports.NOT_IMPLEMENTED = 'NOT_IMPLEMENTED';
-// Missing new operator to an object
-//  - name: The name of the class
-exports.MISSING_NEW = 'MISSING_NEW';
-// Call exception
-//  - transaction: the transaction
-//  - address?: the contract address
-//  - args?: The arguments passed into the function
-//  - method?: The Solidity method signature
-//  - errorSignature?: The EIP848 error signature
-//  - errorArgs?: The EIP848 error parameters
-//  - reason: The reason (only for EIP848 "Error(string)")
-exports.CALL_EXCEPTION = 'CALL_EXCEPTION';
-// Invalid argument (e.g. value is incompatible with type) to a function:
-//   - argument: The argument name that was invalid
-//   - value: The value of the argument
-exports.INVALID_ARGUMENT = 'INVALID_ARGUMENT';
-// Missing argument to a function:
-//   - count: The number of arguments received
-//   - expectedCount: The number of arguments expected
-exports.MISSING_ARGUMENT = 'MISSING_ARGUMENT';
-// Too many arguments
-//   - count: The number of arguments received
-//   - expectedCount: The number of arguments expected
-exports.UNEXPECTED_ARGUMENT = 'UNEXPECTED_ARGUMENT';
-// Numeric Fault
-//   - operation: the operation being executed
-//   - fault: the reason this faulted
-exports.NUMERIC_FAULT = 'NUMERIC_FAULT';
-// Insufficien funds (< value + gasLimit * gasPrice)
-//   - transaction: the transaction attempted
-exports.INSUFFICIENT_FUNDS = 'INSUFFICIENT_FUNDS';
-// Nonce has already been used
-//   - transaction: the transaction attempted
-exports.NONCE_EXPIRED = 'NONCE_EXPIRED';
-// The replacement fee for the transaction is too low
-//   - transaction: the transaction attempted
-exports.REPLACEMENT_UNDERPRICED = 'REPLACEMENT_UNDERPRICED';
-// Unsupported operation
-//   - operation
-exports.UNSUPPORTED_OPERATION = 'UNSUPPORTED_OPERATION';
-var _permanentCensorErrors = false;
-var _censorErrors = false;
-// @TODO: Enum
-function throwError(message, code, params) {
-    if (_censorErrors) {
-        throw new Error('unknown error');
-    }
-    if (!code) {
-        code = exports.UNKNOWN_ERROR;
-    }
-    if (!params) {
-        params = {};
-    }
-    var messageDetails = [];
-    Object.keys(params).forEach(function (key) {
-        try {
-            messageDetails.push(key + '=' + JSON.stringify(params[key]));
-        }
-        catch (error) {
-            messageDetails.push(key + '=' + JSON.stringify(params[key].toString()));
-        }
-    });
-    messageDetails.push("version=" + _version_1.version);
-    var reason = message;
-    if (messageDetails.length) {
-        message += ' (' + messageDetails.join(', ') + ')';
-    }
-    // @TODO: Any??
-    var error = new Error(message);
-    error.reason = reason;
-    error.code = code;
-    Object.keys(params).forEach(function (key) {
-        error[key] = params[key];
-    });
-    throw error;
-}
-exports.throwError = throwError;
-function checkNew(self, kind) {
-    if (!(self instanceof kind)) {
-        throwError('missing new', exports.MISSING_NEW, { name: kind.name });
-    }
-}
-exports.checkNew = checkNew;
-function checkArgumentCount(count, expectedCount, suffix) {
-    if (!suffix) {
-        suffix = '';
-    }
-    if (count < expectedCount) {
-        throwError('missing argument' + suffix, exports.MISSING_ARGUMENT, { count: count, expectedCount: expectedCount });
-    }
-    if (count > expectedCount) {
-        throwError('too many arguments' + suffix, exports.UNEXPECTED_ARGUMENT, { count: count, expectedCount: expectedCount });
-    }
-}
-exports.checkArgumentCount = checkArgumentCount;
-function setCensorship(censorship, permanent) {
-    if (_permanentCensorErrors) {
-        throwError('error censorship permanent', exports.UNSUPPORTED_OPERATION, { operation: 'setCensorship' });
-    }
-    _censorErrors = !!censorship;
-    _permanentCensorErrors = !!permanent;
-}
-exports.setCensorship = setCensorship;
-function checkNormalize() {
-    try {
-        // Make sure all forms of normalization are supported
-        ["NFD", "NFC", "NFKD", "NFKC"].forEach(function (form) {
-            try {
-                "test".normalize(form);
-            }
-            catch (error) {
-                throw new Error('missing ' + form);
-            }
-        });
-        if (String.fromCharCode(0xe9).normalize('NFD') !== String.fromCharCode(0x65, 0x0301)) {
-            throw new Error('broken implementation');
-        }
-    }
-    catch (error) {
-        throwError('platform missing String.prototype.normalize', exports.UNSUPPORTED_OPERATION, { operation: 'String.prototype.normalize', form: error.message });
-    }
-}
-exports.checkNormalize = checkNormalize;
-var LogLevels = { debug: 1, "default": 2, info: 2, warn: 3, error: 4, off: 5 };
-var LogLevel = LogLevels["default"];
-function setLogLevel(logLevel) {
-    var level = LogLevels[logLevel];
-    if (level == null) {
-        warn("invliad log level - " + logLevel);
-        return;
-    }
-    LogLevel = level;
-}
-exports.setLogLevel = setLogLevel;
-function log(logLevel, args) {
-    if (LogLevel > LogLevels[logLevel]) {
-        return;
-    }
-    console.log.apply(console, args);
-}
-function warn() {
-    var args = [];
-    for (var _i = 0; _i < arguments.length; _i++) {
-        args[_i] = arguments[_i];
-    }
-    log("warn", args);
-}
-exports.warn = warn;
-function info() {
-    var args = [];
-    for (var _i = 0; _i < arguments.length; _i++) {
-        args[_i] = arguments[_i];
-    }
-    log("info", args);
-}
-exports.info = info;
-
-},{"./_version":305}],308:[function(require,module,exports){
+}).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"_process":124}],285:[function(require,module,exports){
+arguments[4][174][0].apply(exports,arguments)
+},{"dup":174}],286:[function(require,module,exports){
+arguments[4][284][0].apply(exports,arguments)
+},{"_process":124,"dup":284}],287:[function(require,module,exports){
 'use strict';
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
@@ -39451,14 +38845,12 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 // See: https://github.com/ethereum/wiki/wiki/Ethereum-Contract-ABI
-var constants_1 = require("../constants");
-var errors = __importStar(require("../errors"));
 var address_1 = require("./address");
 var bignumber_1 = require("./bignumber");
 var bytes_1 = require("./bytes");
 var utf8_1 = require("./utf8");
 var properties_1 = require("./properties");
-///////////////////////////////
+var errors = __importStar(require("./errors"));
 var paramTypeBytes = new RegExp(/^bytes([0-9]*)$/);
 var paramTypeNumber = new RegExp(/^(u?int)([0-9]*)$/);
 var paramTypeArray = new RegExp(/^(.*)\[([0-9]*)\]$/);
@@ -39484,11 +38876,9 @@ function verifyType(type) {
     return type;
 }
 function parseParam(param, allowIndexed) {
-    var originalParam = param;
     function throwError(i) {
-        throw new Error('unexpected character "' + originalParam[i] + '" at position ' + i + ' in "' + originalParam + '"');
+        throw new Error('unexpected character "' + param[i] + '" at position ' + i + ' in "' + param + '"');
     }
-    param = param.replace(/\s/g, ' ');
     var parent = { type: '', name: '', state: { allowType: true } };
     var node = parent;
     for (var i = 0; i < param.length; i++) {
@@ -39629,7 +39019,7 @@ function parseSignatureEvent(fragment) {
             case '':
                 break;
             default:
-                errors.info('unknown modifier: ' + modifier);
+                console.log('unknown modifier: ' + modifier);
         }
     });
     if (abi.name && !abi.name.match(regexIdentifier)) {
@@ -39640,7 +39030,6 @@ function parseSignatureEvent(fragment) {
 function parseSignatureFunction(fragment) {
     var abi = {
         constant: false,
-        gas: null,
         inputs: [],
         name: '',
         outputs: [],
@@ -39648,18 +39037,7 @@ function parseSignatureFunction(fragment) {
         stateMutability: null,
         type: 'function'
     };
-    var comps = fragment.split('@');
-    if (comps.length !== 1) {
-        if (comps.length > 2) {
-            throw new Error('invalid signature');
-        }
-        if (!comps[1].match(/^[0-9]+$/)) {
-            throw new Error('invalid signature gas');
-        }
-        abi.gas = bignumber_1.bigNumberify(comps[1]);
-        fragment = comps[0];
-    }
-    comps = fragment.split(' returns ');
+    var comps = fragment.split(' returns ');
     var left = comps[0].match(regexParen);
     if (!left) {
         throw new Error('invalid signature');
@@ -39678,7 +39056,6 @@ function parseSignatureFunction(fragment) {
                 break;
             case 'payable':
                 abi.payable = true;
-                abi.stateMutability = 'payable';
                 break;
             case 'pure':
                 abi.constant = true;
@@ -39688,12 +39065,10 @@ function parseSignatureFunction(fragment) {
                 abi.constant = true;
                 abi.stateMutability = 'view';
                 break;
-            case 'external':
-            case 'public':
             case '':
                 break;
             default:
-                errors.info('unknown modifier: ' + modifier);
+                console.log('unknown modifier: ' + modifier);
         }
     });
     // We have outputs
@@ -39705,14 +39080,6 @@ function parseSignatureFunction(fragment) {
         splitNesting(right[2]).forEach(function (param) {
             abi.outputs.push(parseParam(param));
         });
-    }
-    if (abi.name === 'constructor') {
-        abi.type = "constructor";
-        if (abi.outputs.length) {
-            throw new Error('constructor may not have outputs');
-        }
-        delete abi.name;
-        delete abi.outputs;
     }
     return abi;
 }
@@ -39733,7 +39100,6 @@ exports.formatSignature = formatSignature;
 function parseSignature(fragment) {
     if (typeof (fragment) === 'string') {
         // Make sure the "returns" is surrounded by a space and all whitespace is exactly one space
-        fragment = fragment.replace(/\s/g, ' ');
         fragment = fragment.replace(/\(/g, ' (').replace(/\)/g, ') ').replace(/\s+/g, ' ');
         fragment = fragment.trim();
         if (fragment.substring(0, 6) === 'event ') {
@@ -39803,20 +39169,8 @@ var CoderNumber = /** @class */ (function (_super) {
     CoderNumber.prototype.encode = function (value) {
         try {
             var v = bignumber_1.bigNumberify(value);
-            if (this.signed) {
-                var bounds = constants_1.MaxUint256.maskn(this.size * 8 - 1);
-                if (v.gt(bounds)) {
-                    throw new Error('out-of-bounds');
-                }
-                bounds = bounds.add(constants_1.One).mul(constants_1.NegativeOne);
-                if (v.lt(bounds)) {
-                    throw new Error('out-of-bounds');
-                }
-            }
-            else if (v.lt(constants_1.Zero) || v.gt(constants_1.MaxUint256.maskn(this.size * 8))) {
-                throw new Error('out-of-bounds');
-            }
             v = v.toTwos(this.size * 8).maskn(this.size * 8);
+            //value = value.toTwos(size * 8).maskn(size * 8);
             if (this.signed) {
                 v = v.fromTwos(this.size * 8).toTwos(256);
             }
@@ -39897,8 +39251,8 @@ var CoderFixedBytes = /** @class */ (function (_super) {
         var result = new Uint8Array(32);
         try {
             var data = bytes_1.arrayify(value);
-            if (data.length !== this.length) {
-                throw new Error('incorrect data length');
+            if (data.length > 32) {
+                throw new Error();
             }
             result.set(data);
         }
@@ -40169,7 +39523,7 @@ var CoderArray = /** @class */ (function (_super) {
             count = value.length;
             result = uint256Coder.encode(count);
         }
-        errors.checkArgumentCount(count, value.length, ' in coder array' + (this.localName ? (" " + this.localName) : ""));
+        errors.checkArgumentCount(count, value.length, 'in coder array' + (this.localName ? (" " + this.localName) : ""));
         var coders = [];
         for (var i = 0; i < value.length; i++) {
             coders.push(this.coder);
@@ -40250,7 +39604,6 @@ function getTypes(coders) {
 }
 */
 function splitNesting(value) {
-    value = value.trim();
     var result = [];
     var accum = '';
     var depth = 0;
@@ -40273,9 +39626,7 @@ function splitNesting(value) {
             }
         }
     }
-    if (accum) {
-        result.push(accum);
-    }
+    result.push(accum);
     return result;
 }
 // @TODO: Is there a way to return "class"?
@@ -40325,9 +39676,8 @@ function getParamCoder(coerceFunc, param) {
     var match = param.type.match(paramTypeArray);
     if (match) {
         var size = parseInt(match[2] || "-1");
-        param = properties_1.shallowCopy(param);
+        param = properties_1.jsonCopy(param);
         param.type = match[1];
-        param = properties_1.deepCopy(param);
         return new CoderArray(coerceFunc, getParamCoder(coerceFunc, param), size, param.name);
     }
     if (param.type.substring(0, 5) === 'tuple') {
@@ -40382,7 +39732,7 @@ var AbiCoder = /** @class */ (function () {
                 typeObject = parseParam(type);
             }
             else {
-                typeObject = properties_1.deepCopy(type);
+                typeObject = properties_1.jsonCopy(type);
             }
             coders.push(getParamCoder(this.coerceFunc, typeObject));
         }, this);
@@ -40393,7 +39743,7 @@ var AbiCoder = /** @class */ (function () {
 exports.AbiCoder = AbiCoder;
 exports.defaultAbiCoder = new AbiCoder();
 
-},{"../constants":306,"../errors":307,"./address":309,"./bignumber":310,"./bytes":311,"./properties":313,"./utf8":315}],309:[function(require,module,exports){
+},{"./address":288,"./bignumber":289,"./bytes":290,"./errors":291,"./properties":293,"./utf8":296}],288:[function(require,module,exports){
 'use strict';
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
@@ -40404,8 +39754,7 @@ var bn_js_1 = __importDefault(require("bn.js"));
 var bytes_1 = require("./bytes");
 var keccak256_1 = require("./keccak256");
 var rlp_1 = require("./rlp");
-var errors = require("../errors");
-///////////////////////////////
+var errors = require("./errors");
 function getChecksumAddress(address) {
     if (typeof (address) !== 'string' || !address.match(/^0x[0-9A-Fa-f]{40}$/)) {
         errors.throwError('invalid address', errors.INVALID_ARGUMENT, { arg: 'address', value: address });
@@ -40520,8 +39869,18 @@ function getContractAddress(transaction) {
 }
 exports.getContractAddress = getContractAddress;
 
-},{"../errors":307,"./bytes":311,"./keccak256":312,"./rlp":314,"bn.js":234}],310:[function(require,module,exports){
+},{"./bytes":290,"./errors":291,"./keccak256":292,"./rlp":294,"bn.js":219}],289:[function(require,module,exports){
 'use strict';
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -40543,7 +39902,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var bn_js_1 = __importDefault(require("bn.js"));
 var bytes_1 = require("./bytes");
 var properties_1 = require("./properties");
-var errors = __importStar(require("../errors"));
+var types_1 = require("./types");
+var errors = __importStar(require("./errors"));
 var BN_1 = new bn_js_1.default.BN(-1);
 function toHex(bn) {
     var value = bn.toString(16);
@@ -40559,37 +39919,31 @@ function toHex(bn) {
     return '0x' + value;
 }
 function toBN(value) {
-    return _bnify(bigNumberify(value));
+    return bigNumberify(value)._bn;
 }
 function toBigNumber(bn) {
     return new BigNumber(toHex(bn));
 }
-function _bnify(value) {
-    var hex = value._hex;
-    if (hex[0] === '-') {
-        return (new bn_js_1.default.BN(hex.substring(3), 16)).mul(BN_1);
-    }
-    return new bn_js_1.default.BN(hex.substring(2), 16);
-}
-var BigNumber = /** @class */ (function () {
+var BigNumber = /** @class */ (function (_super) {
+    __extends(BigNumber, _super);
     function BigNumber(value) {
-        errors.checkNew(this, BigNumber);
-        properties_1.setType(this, 'BigNumber');
+        var _this = _super.call(this) || this;
+        errors.checkNew(_this, BigNumber);
         if (typeof (value) === 'string') {
             if (bytes_1.isHexString(value)) {
                 if (value == '0x') {
                     value = '0x0';
                 }
-                properties_1.defineReadOnly(this, '_hex', value);
+                properties_1.defineReadOnly(_this, '_hex', value);
             }
             else if (value[0] === '-' && bytes_1.isHexString(value.substring(1))) {
-                properties_1.defineReadOnly(this, '_hex', value);
+                properties_1.defineReadOnly(_this, '_hex', value);
             }
             else if (value.match(/^-?[0-9]*$/)) {
                 if (value == '') {
                     value = '0';
                 }
-                properties_1.defineReadOnly(this, '_hex', toHex(new bn_js_1.default.BN(value)));
+                properties_1.defineReadOnly(_this, '_hex', toHex(new bn_js_1.default.BN(value)));
             }
             else {
                 errors.throwError('invalid BigNumber string value', errors.INVALID_ARGUMENT, { arg: 'value', value: value });
@@ -40600,86 +39954,88 @@ var BigNumber = /** @class */ (function () {
                 errors.throwError('underflow', errors.NUMERIC_FAULT, { operation: 'setValue', fault: 'underflow', value: value, outputValue: parseInt(String(value)) });
             }
             try {
-                properties_1.defineReadOnly(this, '_hex', toHex(new bn_js_1.default.BN(value)));
+                properties_1.defineReadOnly(_this, '_hex', toHex(new bn_js_1.default.BN(value)));
             }
             catch (error) {
                 errors.throwError('overflow', errors.NUMERIC_FAULT, { operation: 'setValue', fault: 'overflow', details: error.message });
             }
         }
         else if (value instanceof BigNumber) {
-            properties_1.defineReadOnly(this, '_hex', value._hex);
+            properties_1.defineReadOnly(_this, '_hex', value._hex);
         }
         else if (value.toHexString) {
-            properties_1.defineReadOnly(this, '_hex', toHex(toBN(value.toHexString())));
-        }
-        else if (value._hex && bytes_1.isHexString(value._hex)) {
-            properties_1.defineReadOnly(this, '_hex', value._hex);
+            properties_1.defineReadOnly(_this, '_hex', toHex(toBN(value.toHexString())));
         }
         else if (bytes_1.isArrayish(value)) {
-            properties_1.defineReadOnly(this, '_hex', toHex(new bn_js_1.default.BN(bytes_1.hexlify(value).substring(2), 16)));
+            properties_1.defineReadOnly(_this, '_hex', toHex(new bn_js_1.default.BN(bytes_1.hexlify(value).substring(2), 16)));
         }
         else {
             errors.throwError('invalid BigNumber value', errors.INVALID_ARGUMENT, { arg: 'value', value: value });
         }
+        return _this;
     }
+    Object.defineProperty(BigNumber.prototype, "_bn", {
+        get: function () {
+            if (this._hex[0] === '-') {
+                return (new bn_js_1.default.BN(this._hex.substring(3), 16)).mul(BN_1);
+            }
+            return new bn_js_1.default.BN(this._hex.substring(2), 16);
+        },
+        enumerable: true,
+        configurable: true
+    });
     BigNumber.prototype.fromTwos = function (value) {
-        return toBigNumber(_bnify(this).fromTwos(value));
+        return toBigNumber(this._bn.fromTwos(value));
     };
     BigNumber.prototype.toTwos = function (value) {
-        return toBigNumber(_bnify(this).toTwos(value));
-    };
-    BigNumber.prototype.abs = function () {
-        if (this._hex[0] === '-') {
-            return toBigNumber(_bnify(this).mul(BN_1));
-        }
-        return this;
+        return toBigNumber(this._bn.toTwos(value));
     };
     BigNumber.prototype.add = function (other) {
-        return toBigNumber(_bnify(this).add(toBN(other)));
+        return toBigNumber(this._bn.add(toBN(other)));
     };
     BigNumber.prototype.sub = function (other) {
-        return toBigNumber(_bnify(this).sub(toBN(other)));
+        return toBigNumber(this._bn.sub(toBN(other)));
     };
     BigNumber.prototype.div = function (other) {
         var o = bigNumberify(other);
         if (o.isZero()) {
             errors.throwError('division by zero', errors.NUMERIC_FAULT, { operation: 'divide', fault: 'division by zero' });
         }
-        return toBigNumber(_bnify(this).div(toBN(other)));
+        return toBigNumber(this._bn.div(toBN(other)));
     };
     BigNumber.prototype.mul = function (other) {
-        return toBigNumber(_bnify(this).mul(toBN(other)));
+        return toBigNumber(this._bn.mul(toBN(other)));
     };
     BigNumber.prototype.mod = function (other) {
-        return toBigNumber(_bnify(this).mod(toBN(other)));
+        return toBigNumber(this._bn.mod(toBN(other)));
     };
     BigNumber.prototype.pow = function (other) {
-        return toBigNumber(_bnify(this).pow(toBN(other)));
+        return toBigNumber(this._bn.pow(toBN(other)));
     };
     BigNumber.prototype.maskn = function (value) {
-        return toBigNumber(_bnify(this).maskn(value));
+        return toBigNumber(this._bn.maskn(value));
     };
     BigNumber.prototype.eq = function (other) {
-        return _bnify(this).eq(toBN(other));
+        return this._bn.eq(toBN(other));
     };
     BigNumber.prototype.lt = function (other) {
-        return _bnify(this).lt(toBN(other));
+        return this._bn.lt(toBN(other));
     };
     BigNumber.prototype.lte = function (other) {
-        return _bnify(this).lte(toBN(other));
+        return this._bn.lte(toBN(other));
     };
     BigNumber.prototype.gt = function (other) {
-        return _bnify(this).gt(toBN(other));
+        return this._bn.gt(toBN(other));
     };
     BigNumber.prototype.gte = function (other) {
-        return _bnify(this).gte(toBN(other));
+        return this._bn.gte(toBN(other));
     };
     BigNumber.prototype.isZero = function () {
-        return _bnify(this).isZero();
+        return this._bn.isZero();
     };
     BigNumber.prototype.toNumber = function () {
         try {
-            return _bnify(this).toNumber();
+            return this._bn.toNumber();
         }
         catch (error) {
             errors.throwError('overflow', errors.NUMERIC_FAULT, { operation: 'setValue', fault: 'overflow', details: error.message });
@@ -40687,52 +40043,46 @@ var BigNumber = /** @class */ (function () {
         return null;
     };
     BigNumber.prototype.toString = function () {
-        return _bnify(this).toString(10);
+        return this._bn.toString(10);
     };
     BigNumber.prototype.toHexString = function () {
         return this._hex;
     };
-    BigNumber.isBigNumber = function (value) {
-        return properties_1.isType(value, 'BigNumber');
-    };
     return BigNumber;
-}());
-exports.BigNumber = BigNumber;
+}(types_1.BigNumber));
 function bigNumberify(value) {
-    if (BigNumber.isBigNumber(value)) {
+    if (value instanceof BigNumber) {
         return value;
     }
     return new BigNumber(value);
 }
 exports.bigNumberify = bigNumberify;
+exports.ConstantNegativeOne = bigNumberify(-1);
+exports.ConstantZero = bigNumberify(0);
+exports.ConstantOne = bigNumberify(1);
+exports.ConstantTwo = bigNumberify(2);
+exports.ConstantWeiPerEther = bigNumberify('1000000000000000000');
 
-},{"../errors":307,"./bytes":311,"./properties":313,"bn.js":234}],311:[function(require,module,exports){
+},{"./bytes":290,"./errors":291,"./properties":293,"./types":295,"bn.js":219}],290:[function(require,module,exports){
 "use strict";
 /**
  *  Conversion Utilities
  *
  */
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    result["default"] = mod;
-    return result;
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-var errors = __importStar(require("../errors"));
-///////////////////////////////
-function isHexable(value) {
-    return !!(value.toHexString);
+var errors = require("./errors");
+exports.AddressZero = '0x0000000000000000000000000000000000000000';
+exports.HashZero = '0x0000000000000000000000000000000000000000000000000000000000000000';
+function isBigNumber(value) {
+    return !!value._bn;
 }
-exports.isHexable = isHexable;
 function addSlice(array) {
     if (array.slice) {
         return array;
     }
     array.slice = function () {
         var args = Array.prototype.slice.call(arguments);
-        return addSlice(new Uint8Array(Array.prototype.slice.apply(array, args)));
+        return new Uint8Array(Array.prototype.slice.apply(array, args));
     };
     return array;
 }
@@ -40753,7 +40103,7 @@ function arrayify(value) {
     if (value == null) {
         errors.throwError('cannot convert null value to array', errors.INVALID_ARGUMENT, { arg: 'value', value: value });
     }
-    if (isHexable(value)) {
+    if (isBigNumber(value)) {
         value = value.toHexString();
     }
     if (typeof (value) === 'string') {
@@ -40773,6 +40123,8 @@ function arrayify(value) {
             result.push(parseInt(value.substr(i, 2), 16));
         }
         return addSlice(new Uint8Array(result));
+    }
+    else if (typeof (value) === 'string') {
     }
     if (isArrayish(value)) {
         return addSlice(new Uint8Array(value));
@@ -40837,20 +40189,12 @@ function isHexString(value, length) {
 exports.isHexString = isHexString;
 var HexCharacters = '0123456789abcdef';
 function hexlify(value) {
-    if (isHexable(value)) {
+    if (isBigNumber(value)) {
         return value.toHexString();
     }
     if (typeof (value) === 'number') {
         if (value < 0) {
             errors.throwError('cannot hexlify negative value', errors.INVALID_ARGUMENT, { arg: 'value', value: value });
-        }
-        // @TODO: Roll this into the above error as a numeric fault (overflow); next version, not backward compatible
-        // We can about (value == MAX_INT) to as well, since that may indicate we underflowed already
-        if (value >= 9007199254740991) {
-            errors.throwError("out-of-range", errors.NUMERIC_FAULT, {
-                operartion: "hexlify",
-                fault: "out-of-safe-range"
-            });
         }
         var hex = '';
         while (value) {
@@ -40897,7 +40241,7 @@ function hexDataLength(data) {
     return (data.length - 2) / 2;
 }
 exports.hexDataLength = hexDataLength;
-function hexDataSlice(data, offset, endOffset) {
+function hexDataSlice(data, offset, length) {
     if (!isHexString(data)) {
         errors.throwError('invalid hex data', errors.INVALID_ARGUMENT, { arg: 'value', value: data });
     }
@@ -40905,8 +40249,8 @@ function hexDataSlice(data, offset, endOffset) {
         errors.throwError('hex data length must be even', errors.INVALID_ARGUMENT, { arg: 'value', value: data });
     }
     offset = 2 + 2 * offset;
-    if (endOffset != null) {
-        return '0x' + data.substring(offset, 2 + 2 * endOffset);
+    if (length != null) {
+        return '0x' + data.substring(offset, offset + 2 * length);
     }
     return '0x' + data.substring(offset);
 }
@@ -40983,7 +40327,111 @@ function joinSignature(signature) {
 }
 exports.joinSignature = joinSignature;
 
-},{"../errors":307}],312:[function(require,module,exports){
+},{"./errors":291}],291:[function(require,module,exports){
+'use strict';
+Object.defineProperty(exports, "__esModule", { value: true });
+// Unknown Error
+exports.UNKNOWN_ERROR = 'UNKNOWN_ERROR';
+// Not implemented
+exports.NOT_IMPLEMENTED = 'NOT_IMPLEMENTED';
+// Missing new operator to an object
+//  - name: The name of the class
+exports.MISSING_NEW = 'MISSING_NEW';
+// Call exception
+//  - transaction: the transaction
+//  - address?: the contract address
+//  - args?: The arguments passed into the function
+//  - method?: The Solidity method signature
+//  - errorSignature?: The EIP848 error signature
+//  - errorArgs?: The EIP848 error parameters
+//  - reason: The reason (only for EIP848 "Error(string)")
+exports.CALL_EXCEPTION = 'CALL_EXCEPTION';
+// Response from a server was invalid
+//   - response: The body of the response
+//'BAD_RESPONSE',
+// Invalid argument (e.g. value is incompatible with type) to a function:
+//   - arg: The argument name that was invalid
+//   - value: The value of the argument
+exports.INVALID_ARGUMENT = 'INVALID_ARGUMENT';
+// Missing argument to a function:
+//   - count: The number of arguments received
+//   - expectedCount: The number of arguments expected
+exports.MISSING_ARGUMENT = 'MISSING_ARGUMENT';
+// Too many arguments
+//   - count: The number of arguments received
+//   - expectedCount: The number of arguments expected
+exports.UNEXPECTED_ARGUMENT = 'UNEXPECTED_ARGUMENT';
+// Numeric Fault
+//   - operation: the operation being executed
+//   - fault: the reason this faulted
+exports.NUMERIC_FAULT = 'NUMERIC_FAULT';
+// Unsupported operation
+//   - operation
+exports.UNSUPPORTED_OPERATION = 'UNSUPPORTED_OPERATION';
+var _permanentCensorErrors = false;
+var _censorErrors = false;
+// @TODO: Enum
+function throwError(message, code, params) {
+    if (_censorErrors) {
+        throw new Error('unknown error');
+    }
+    if (!code) {
+        code = exports.UNKNOWN_ERROR;
+    }
+    if (!params) {
+        params = {};
+    }
+    var messageDetails = [];
+    Object.keys(params).forEach(function (key) {
+        try {
+            messageDetails.push(key + '=' + JSON.stringify(params[key]));
+        }
+        catch (error) {
+            messageDetails.push(key + '=' + JSON.stringify(params[key].toString()));
+        }
+    });
+    var reason = message;
+    if (messageDetails.length) {
+        message += ' (' + messageDetails.join(', ') + ')';
+    }
+    // @TODO: Any??
+    var error = new Error(message);
+    error.reason = reason;
+    error.code = code;
+    Object.keys(params).forEach(function (key) {
+        error[key] = params[key];
+    });
+    throw error;
+}
+exports.throwError = throwError;
+function checkNew(self, kind) {
+    if (!(self instanceof kind)) {
+        throwError('missing new', exports.MISSING_NEW, { name: kind.name });
+    }
+}
+exports.checkNew = checkNew;
+function checkArgumentCount(count, expectedCount, suffix) {
+    if (!suffix) {
+        suffix = '';
+    }
+    if (count < expectedCount) {
+        throwError('missing argument' + suffix, exports.MISSING_ARGUMENT, { count: count, expectedCount: expectedCount });
+    }
+    if (count > expectedCount) {
+        throwError('too many arguments' + suffix, exports.UNEXPECTED_ARGUMENT, { count: count, expectedCount: expectedCount });
+    }
+}
+exports.checkArgumentCount = checkArgumentCount;
+function setCensorship(censorship, permanent) {
+    if (_permanentCensorErrors) {
+        throwError('error censorship permanent', exports.UNSUPPORTED_OPERATION, { operation: 'setCersorship' });
+    }
+    _censorErrors = !!censorship;
+    _permanentCensorErrors = !!permanent;
+}
+exports.setCensorship = setCensorship;
+
+},{}],292:[function(require,module,exports){
 'use strict';
 Object.defineProperty(exports, "__esModule", { value: true });
 var sha3 = require("js-sha3");
@@ -40993,17 +40441,9 @@ function keccak256(data) {
 }
 exports.keccak256 = keccak256;
 
-},{"./bytes":311,"js-sha3":338}],313:[function(require,module,exports){
+},{"./bytes":290,"js-sha3":286}],293:[function(require,module,exports){
 'use strict';
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    result["default"] = mod;
-    return result;
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-var errors = __importStar(require("../errors"));
 function defineReadOnly(object, name, value) {
     Object.defineProperty(object, name, {
         enumerable: true,
@@ -41012,16 +40452,14 @@ function defineReadOnly(object, name, value) {
     });
 }
 exports.defineReadOnly = defineReadOnly;
-// There are some issues with instanceof with npm link, so we use this
-// to ensure types are what we expect.
-function setType(object, type) {
-    Object.defineProperty(object, '_ethersType', { configurable: false, value: type, writable: false });
+function defineFrozen(object, name, value) {
+    var frozen = JSON.stringify(value);
+    Object.defineProperty(object, name, {
+        enumerable: true,
+        get: function () { return JSON.parse(frozen); }
+    });
 }
-exports.setType = setType;
-function isType(object, type) {
-    return (object && object._ethersType === type);
-}
-exports.isType = isType;
+exports.defineFrozen = defineFrozen;
 function resolveProperties(object) {
     var result = {};
     var promises = [];
@@ -41042,24 +40480,6 @@ function resolveProperties(object) {
     });
 }
 exports.resolveProperties = resolveProperties;
-function checkProperties(object, properties) {
-    if (!object || typeof (object) !== 'object') {
-        errors.throwError('invalid object', errors.INVALID_ARGUMENT, {
-            argument: 'object',
-            value: object
-        });
-    }
-    Object.keys(object).forEach(function (key) {
-        if (!properties[key]) {
-            errors.throwError('invalid object key - ' + key, errors.INVALID_ARGUMENT, {
-                argument: 'transaction',
-                value: object,
-                key: key
-            });
-        }
-    });
-}
-exports.checkProperties = checkProperties;
 function shallowCopy(object) {
     var result = {};
     for (var key in object) {
@@ -41068,72 +40488,12 @@ function shallowCopy(object) {
     return result;
 }
 exports.shallowCopy = shallowCopy;
-var opaque = { boolean: true, number: true, string: true };
-function deepCopy(object, frozen) {
-    // Opaque objects are not mutable, so safe to copy by assignment
-    if (object === undefined || object === null || opaque[typeof (object)]) {
-        return object;
-    }
-    // Arrays are mutable, so we need to create a copy
-    if (Array.isArray(object)) {
-        var result = object.map(function (item) { return deepCopy(item, frozen); });
-        if (frozen) {
-            Object.freeze(result);
-        }
-        return result;
-    }
-    if (typeof (object) === 'object') {
-        // Some internal objects, which are already immutable
-        if (isType(object, 'BigNumber')) {
-            return object;
-        }
-        if (isType(object, 'Description')) {
-            return object;
-        }
-        if (isType(object, 'Indexed')) {
-            return object;
-        }
-        var result = {};
-        for (var key in object) {
-            var value = object[key];
-            if (value === undefined) {
-                continue;
-            }
-            defineReadOnly(result, key, deepCopy(value, frozen));
-        }
-        if (frozen) {
-            Object.freeze(result);
-        }
-        return result;
-    }
-    // The function type is also immutable, so safe to copy by assignment
-    if (typeof (object) === 'function') {
-        return object;
-    }
-    throw new Error('Cannot deepCopy ' + typeof (object));
+function jsonCopy(object) {
+    return JSON.parse(JSON.stringify(object));
 }
-exports.deepCopy = deepCopy;
-// See: https://github.com/isaacs/inherits/blob/master/inherits_browser.js
-function inherits(ctor, superCtor) {
-    ctor.super_ = superCtor;
-    ctor.prototype = Object.create(superCtor.prototype, {
-        constructor: {
-            value: ctor,
-            enumerable: false,
-            writable: true,
-            configurable: true
-        }
-    });
-}
-function inheritable(parent) {
-    return function (child) {
-        inherits(child, parent);
-        defineReadOnly(child, 'inherits', inheritable(child));
-    };
-}
-exports.inheritable = inheritable;
+exports.jsonCopy = jsonCopy;
 
-},{"../errors":307}],314:[function(require,module,exports){
+},{}],294:[function(require,module,exports){
 "use strict";
 //See: https://github.com/ethereum/wiki/wiki/RLP
 Object.defineProperty(exports, "__esModule", { value: true });
@@ -41251,13 +40611,67 @@ function decode(data) {
 }
 exports.decode = decode;
 
-},{"./bytes":311}],315:[function(require,module,exports){
+},{"./bytes":290}],295:[function(require,module,exports){
+"use strict";
+///////////////////////////////
+// Bytes
+Object.defineProperty(exports, "__esModule", { value: true });
+///////////////////////////////
+// BigNumber
+var BigNumber = /** @class */ (function () {
+    function BigNumber() {
+    }
+    return BigNumber;
+}());
+exports.BigNumber = BigNumber;
+;
+;
+;
+///////////////////////////////
+// Interface
+var Indexed = /** @class */ (function () {
+    function Indexed() {
+    }
+    return Indexed;
+}());
+exports.Indexed = Indexed;
+/**
+ *  Provider
+ *
+ *  Note: We use an abstract class so we can use instanceof to determine if an
+ *        object is a Provider.
+ */
+var MinimalProvider = /** @class */ (function () {
+    function MinimalProvider() {
+    }
+    return MinimalProvider;
+}());
+exports.MinimalProvider = MinimalProvider;
+/**
+ *  Signer
+ *
+ *  Note: We use an abstract class so we can use instanceof to determine if an
+ *        object is a Signer.
+ */
+var Signer = /** @class */ (function () {
+    function Signer() {
+    }
+    return Signer;
+}());
+exports.Signer = Signer;
+///////////////////////////////
+// HDNode
+var HDNode = /** @class */ (function () {
+    function HDNode() {
+    }
+    return HDNode;
+}());
+exports.HDNode = HDNode;
+
+},{}],296:[function(require,module,exports){
 'use strict';
 Object.defineProperty(exports, "__esModule", { value: true });
-var constants_1 = require("../constants");
-var errors_1 = require("../errors");
 var bytes_1 = require("./bytes");
-///////////////////////////////
 var UnicodeNormalizationForm;
 (function (UnicodeNormalizationForm) {
     UnicodeNormalizationForm["current"] = "";
@@ -41271,36 +40685,31 @@ var UnicodeNormalizationForm;
 function toUtf8Bytes(str, form) {
     if (form === void 0) { form = UnicodeNormalizationForm.current; }
     if (form != UnicodeNormalizationForm.current) {
-        errors_1.checkNormalize();
         str = str.normalize(form);
     }
     var result = [];
+    var offset = 0;
     for (var i = 0; i < str.length; i++) {
         var c = str.charCodeAt(i);
-        if (c < 0x80) {
-            result.push(c);
+        if (c < 128) {
+            result[offset++] = c;
         }
-        else if (c < 0x800) {
-            result.push((c >> 6) | 0xc0);
-            result.push((c & 0x3f) | 0x80);
+        else if (c < 2048) {
+            result[offset++] = (c >> 6) | 192;
+            result[offset++] = (c & 63) | 128;
         }
-        else if ((c & 0xfc00) == 0xd800) {
-            i++;
-            var c2 = str.charCodeAt(i);
-            if (i >= str.length || (c2 & 0xfc00) !== 0xdc00) {
-                throw new Error('invalid utf-8 string');
-            }
+        else if (((c & 0xFC00) == 0xD800) && (i + 1) < str.length && ((str.charCodeAt(i + 1) & 0xFC00) == 0xDC00)) {
             // Surrogate Pair
-            c = 0x10000 + ((c & 0x03ff) << 10) + (c2 & 0x03ff);
-            result.push((c >> 18) | 0xf0);
-            result.push(((c >> 12) & 0x3f) | 0x80);
-            result.push(((c >> 6) & 0x3f) | 0x80);
-            result.push((c & 0x3f) | 0x80);
+            c = 0x10000 + ((c & 0x03FF) << 10) + (str.charCodeAt(++i) & 0x03FF);
+            result[offset++] = (c >> 18) | 240;
+            result[offset++] = ((c >> 12) & 63) | 128;
+            result[offset++] = ((c >> 6) & 63) | 128;
+            result[offset++] = (c & 63) | 128;
         }
         else {
-            result.push((c >> 12) | 0xe0);
-            result.push(((c >> 6) & 0x3f) | 0x80);
-            result.push((c & 0x3f) | 0x80);
+            result[offset++] = (c >> 12) | 224;
+            result[offset++] = ((c >> 6) & 63) | 128;
+            result[offset++] = (c & 63) | 128;
         }
     }
     return bytes_1.arrayify(result);
@@ -41308,96 +40717,69 @@ function toUtf8Bytes(str, form) {
 exports.toUtf8Bytes = toUtf8Bytes;
 ;
 // http://stackoverflow.com/questions/13356493/decode-utf-8-with-javascript#13691499
-function toUtf8String(bytes, ignoreErrors) {
+function toUtf8String(bytes) {
     bytes = bytes_1.arrayify(bytes);
     var result = '';
     var i = 0;
     // Invalid bytes are ignored
     while (i < bytes.length) {
         var c = bytes[i++];
-        // 0xxx xxxx
-        if (c >> 7 === 0) {
+        if (c >> 7 == 0) {
+            // 0xxx xxxx
             result += String.fromCharCode(c);
             continue;
         }
-        // Multibyte; how many bytes left for this character?
+        // Invalid starting byte
+        if (c >> 6 == 0x02) {
+            continue;
+        }
+        // Multibyte; how many bytes left for thus character?
         var extraLength = null;
-        var overlongMask = null;
-        // 110x xxxx 10xx xxxx
-        if ((c & 0xe0) === 0xc0) {
+        if (c >> 5 == 0x06) {
             extraLength = 1;
-            overlongMask = 0x7f;
-            // 1110 xxxx 10xx xxxx 10xx xxxx
         }
-        else if ((c & 0xf0) === 0xe0) {
+        else if (c >> 4 == 0x0e) {
             extraLength = 2;
-            overlongMask = 0x7ff;
-            // 1111 0xxx 10xx xxxx 10xx xxxx 10xx xxxx
         }
-        else if ((c & 0xf8) === 0xf0) {
+        else if (c >> 3 == 0x1e) {
             extraLength = 3;
-            overlongMask = 0xffff;
+        }
+        else if (c >> 2 == 0x3e) {
+            extraLength = 4;
+        }
+        else if (c >> 1 == 0x7e) {
+            extraLength = 5;
         }
         else {
-            if (!ignoreErrors) {
-                if ((c & 0xc0) === 0x80) {
-                    throw new Error('invalid utf8 byte sequence; unexpected continuation byte');
-                }
-                throw new Error('invalid utf8 byte sequence; invalid prefix');
-            }
             continue;
         }
         // Do we have enough bytes in our data?
         if (i + extraLength > bytes.length) {
-            if (!ignoreErrors) {
-                throw new Error('invalid utf8 byte sequence; too short');
-            }
-            // If there is an invalid unprocessed byte, skip continuation bytes
+            // If there is an invalid unprocessed byte, try to continue
             for (; i < bytes.length; i++) {
-                if (bytes[i] >> 6 !== 0x02) {
+                if (bytes[i] >> 6 != 0x02) {
                     break;
                 }
             }
-            continue;
+            if (i != bytes.length)
+                continue;
+            // All leftover bytes are valid.
+            return result;
         }
-        // Remove the length prefix from the char
+        // Remove the UTF-8 prefix from the char (res)
         var res = c & ((1 << (8 - extraLength - 1)) - 1);
-        for (var j = 0; j < extraLength; j++) {
-            var nextChar = bytes[i];
-            // Invalid continuation byte
-            if ((nextChar & 0xc0) != 0x80) {
-                res = null;
+        var count;
+        for (count = 0; count < extraLength; count++) {
+            var nextChar = bytes[i++];
+            // Is the char valid multibyte part?
+            if (nextChar >> 6 != 0x02) {
                 break;
             }
             ;
             res = (res << 6) | (nextChar & 0x3f);
-            i++;
         }
-        if (res === null) {
-            if (!ignoreErrors) {
-                throw new Error('invalid utf8 byte sequence; invalid continuation byte');
-            }
-            continue;
-        }
-        // Check for overlong seuences (more bytes than needed)
-        if (res <= overlongMask) {
-            if (!ignoreErrors) {
-                throw new Error('invalid utf8 byte sequence; overlong');
-            }
-            continue;
-        }
-        // Maximum code point
-        if (res > 0x10ffff) {
-            if (!ignoreErrors) {
-                throw new Error('invalid utf8 byte sequence; out-of-range');
-            }
-            continue;
-        }
-        // Reserved for UTF-16 surrogate halves
-        if (res >= 0xd800 && res <= 0xdfff) {
-            if (!ignoreErrors) {
-                throw new Error('invalid utf8 byte sequence; utf-16 surrogate');
-            }
+        if (count != extraLength) {
+            i--;
             continue;
         }
         if (res <= 0xffff) {
@@ -41410,80 +40792,29 @@ function toUtf8String(bytes, ignoreErrors) {
     return result;
 }
 exports.toUtf8String = toUtf8String;
-function formatBytes32String(text) {
-    // Get the bytes
-    var bytes = toUtf8Bytes(text);
-    // Check we have room for null-termination
-    if (bytes.length > 31) {
-        throw new Error('bytes32 string must be less than 32 bytes');
-    }
-    // Zero-pad (implicitly null-terminates)
-    return bytes_1.hexlify(bytes_1.concat([bytes, constants_1.HashZero]).slice(0, 32));
-}
-exports.formatBytes32String = formatBytes32String;
-function parseBytes32String(bytes) {
-    var data = bytes_1.arrayify(bytes);
-    // Must be 32 bytes with a null-termination
-    if (data.length !== 32) {
-        throw new Error('invalid bytes32 - not 32 bytes long');
-    }
-    if (data[31] !== 0) {
-        throw new Error('invalid bytes32 sdtring - no null terminator');
-    }
-    // Find the null termination
-    var length = 31;
-    while (data[length - 1] === 0) {
-        length--;
-    }
-    // Determine the string value
-    return toUtf8String(data.slice(0, length));
-}
-exports.parseBytes32String = parseBytes32String;
 
-},{"../constants":306,"../errors":307,"./bytes":311}],316:[function(require,module,exports){
+},{"./bytes":290}],297:[function(require,module,exports){
 arguments[4][175][0].apply(exports,arguments)
-},{"bn.js":317,"dup":175,"number-to-bn":515}],317:[function(require,module,exports){
-arguments[4][176][0].apply(exports,arguments)
-},{"dup":176}],318:[function(require,module,exports){
+},{"bn.js":219,"dup":175,"number-to-bn":322}],298:[function(require,module,exports){
 'use strict';
 
-var has = Object.prototype.hasOwnProperty
-  , prefix = '~';
-
-/**
- * Constructor to create a storage for our `EE` objects.
- * An `Events` instance is a plain object whose properties are event names.
- *
- * @constructor
- * @private
- */
-function Events() {}
-
 //
-// We try to not inherit from `Object.prototype`. In some engines creating an
-// instance in this way is faster than calling `Object.create(null)` directly.
+// We store our EE objects in a plain object whose properties are event names.
 // If `Object.create(null)` is not supported we prefix the event names with a
-// character to make sure that the built-in object properties are not
-// overridden or used as an attack vector.
+// `~` to make sure that the built-in object properties are not overridden or
+// used as an attack vector.
+// We also assume that `Object.create(null)` is available when the event name
+// is an ES6 Symbol.
 //
-if (Object.create) {
-  Events.prototype = Object.create(null);
-
-  //
-  // This hack is needed because the `__proto__` property is still inherited in
-  // some old browsers like Android 4, iPhone 5.1, Opera 11 and Safari 5.
-  //
-  if (!new Events().__proto__) prefix = false;
-}
+var prefix = typeof Object.create !== 'function' ? '~' : false;
 
 /**
- * Representation of a single event listener.
+ * Representation of a single EventEmitter function.
  *
- * @param {Function} fn The listener function.
- * @param {*} context The context to invoke the listener with.
- * @param {Boolean} [once=false] Specify if the listener is a one-time listener.
- * @constructor
- * @private
+ * @param {Function} fn Event handler to be called.
+ * @param {Mixed} context Context for function execution.
+ * @param {Boolean} once Only emit once
+ * @api private
  */
 function EE(fn, context, once) {
   this.fn = fn;
@@ -41492,135 +40823,63 @@ function EE(fn, context, once) {
 }
 
 /**
- * Add a listener for a given event.
- *
- * @param {EventEmitter} emitter Reference to the `EventEmitter` instance.
- * @param {(String|Symbol)} event The event name.
- * @param {Function} fn The listener function.
- * @param {*} context The context to invoke the listener with.
- * @param {Boolean} once Specify if the listener is a one-time listener.
- * @returns {EventEmitter}
- * @private
- */
-function addListener(emitter, event, fn, context, once) {
-  if (typeof fn !== 'function') {
-    throw new TypeError('The listener must be a function');
-  }
-
-  var listener = new EE(fn, context || emitter, once)
-    , evt = prefix ? prefix + event : event;
-
-  if (!emitter._events[evt]) emitter._events[evt] = listener, emitter._eventsCount++;
-  else if (!emitter._events[evt].fn) emitter._events[evt].push(listener);
-  else emitter._events[evt] = [emitter._events[evt], listener];
-
-  return emitter;
-}
-
-/**
- * Clear event by name.
- *
- * @param {EventEmitter} emitter Reference to the `EventEmitter` instance.
- * @param {(String|Symbol)} evt The Event name.
- * @private
- */
-function clearEvent(emitter, evt) {
-  if (--emitter._eventsCount === 0) emitter._events = new Events();
-  else delete emitter._events[evt];
-}
-
-/**
- * Minimal `EventEmitter` interface that is molded against the Node.js
- * `EventEmitter` interface.
+ * Minimal EventEmitter interface that is molded against the Node.js
+ * EventEmitter interface.
  *
  * @constructor
- * @public
+ * @api public
  */
-function EventEmitter() {
-  this._events = new Events();
-  this._eventsCount = 0;
-}
+function EventEmitter() { /* Nothing to set */ }
 
 /**
- * Return an array listing the events for which the emitter has registered
- * listeners.
+ * Holds the assigned EventEmitters by name.
  *
- * @returns {Array}
- * @public
+ * @type {Object}
+ * @private
  */
-EventEmitter.prototype.eventNames = function eventNames() {
-  var names = []
-    , events
-    , name;
-
-  if (this._eventsCount === 0) return names;
-
-  for (name in (events = this._events)) {
-    if (has.call(events, name)) names.push(prefix ? name.slice(1) : name);
-  }
-
-  if (Object.getOwnPropertySymbols) {
-    return names.concat(Object.getOwnPropertySymbols(events));
-  }
-
-  return names;
-};
+EventEmitter.prototype._events = undefined;
 
 /**
- * Return the listeners registered for a given event.
+ * Return a list of assigned event listeners.
  *
- * @param {(String|Symbol)} event The event name.
- * @returns {Array} The registered listeners.
- * @public
+ * @param {String} event The events that should be listed.
+ * @param {Boolean} exists We only need to know if there are listeners.
+ * @returns {Array|Boolean}
+ * @api public
  */
-EventEmitter.prototype.listeners = function listeners(event) {
+EventEmitter.prototype.listeners = function listeners(event, exists) {
   var evt = prefix ? prefix + event : event
-    , handlers = this._events[evt];
+    , available = this._events && this._events[evt];
 
-  if (!handlers) return [];
-  if (handlers.fn) return [handlers.fn];
+  if (exists) return !!available;
+  if (!available) return [];
+  if (available.fn) return [available.fn];
 
-  for (var i = 0, l = handlers.length, ee = new Array(l); i < l; i++) {
-    ee[i] = handlers[i].fn;
+  for (var i = 0, l = available.length, ee = new Array(l); i < l; i++) {
+    ee[i] = available[i].fn;
   }
 
   return ee;
 };
 
 /**
- * Return the number of listeners listening to a given event.
+ * Emit an event to all registered event listeners.
  *
- * @param {(String|Symbol)} event The event name.
- * @returns {Number} The number of listeners.
- * @public
- */
-EventEmitter.prototype.listenerCount = function listenerCount(event) {
-  var evt = prefix ? prefix + event : event
-    , listeners = this._events[evt];
-
-  if (!listeners) return 0;
-  if (listeners.fn) return 1;
-  return listeners.length;
-};
-
-/**
- * Calls each of the listeners registered for a given event.
- *
- * @param {(String|Symbol)} event The event name.
- * @returns {Boolean} `true` if the event had listeners, else `false`.
- * @public
+ * @param {String} event The name of the event.
+ * @returns {Boolean} Indication if we've emitted an event.
+ * @api public
  */
 EventEmitter.prototype.emit = function emit(event, a1, a2, a3, a4, a5) {
   var evt = prefix ? prefix + event : event;
 
-  if (!this._events[evt]) return false;
+  if (!this._events || !this._events[evt]) return false;
 
   var listeners = this._events[evt]
     , len = arguments.length
     , args
     , i;
 
-  if (listeners.fn) {
+  if ('function' === typeof listeners.fn) {
     if (listeners.once) this.removeListener(event, listeners.fn, undefined, true);
 
     switch (len) {
@@ -41648,7 +40907,6 @@ EventEmitter.prototype.emit = function emit(event, a1, a2, a3, a4, a5) {
         case 1: listeners[i].fn.call(listeners[i].context); break;
         case 2: listeners[i].fn.call(listeners[i].context, a1); break;
         case 3: listeners[i].fn.call(listeners[i].context, a1, a2); break;
-        case 4: listeners[i].fn.call(listeners[i].context, a1, a2, a3); break;
         default:
           if (!args) for (j = 1, args = new Array(len -1); j < len; j++) {
             args[j - 1] = arguments[j];
@@ -41663,98 +40921,115 @@ EventEmitter.prototype.emit = function emit(event, a1, a2, a3, a4, a5) {
 };
 
 /**
- * Add a listener for a given event.
+ * Register a new EventListener for the given event.
  *
- * @param {(String|Symbol)} event The event name.
- * @param {Function} fn The listener function.
- * @param {*} [context=this] The context to invoke the listener with.
- * @returns {EventEmitter} `this`.
- * @public
+ * @param {String} event Name of the event.
+ * @param {Functon} fn Callback function.
+ * @param {Mixed} context The context of the function.
+ * @api public
  */
 EventEmitter.prototype.on = function on(event, fn, context) {
-  return addListener(this, event, fn, context, false);
-};
+  var listener = new EE(fn, context || this)
+    , evt = prefix ? prefix + event : event;
 
-/**
- * Add a one-time listener for a given event.
- *
- * @param {(String|Symbol)} event The event name.
- * @param {Function} fn The listener function.
- * @param {*} [context=this] The context to invoke the listener with.
- * @returns {EventEmitter} `this`.
- * @public
- */
-EventEmitter.prototype.once = function once(event, fn, context) {
-  return addListener(this, event, fn, context, true);
-};
-
-/**
- * Remove the listeners of a given event.
- *
- * @param {(String|Symbol)} event The event name.
- * @param {Function} fn Only remove the listeners that match this function.
- * @param {*} context Only remove the listeners that have this context.
- * @param {Boolean} once Only remove one-time listeners.
- * @returns {EventEmitter} `this`.
- * @public
- */
-EventEmitter.prototype.removeListener = function removeListener(event, fn, context, once) {
-  var evt = prefix ? prefix + event : event;
-
-  if (!this._events[evt]) return this;
-  if (!fn) {
-    clearEvent(this, evt);
-    return this;
-  }
-
-  var listeners = this._events[evt];
-
-  if (listeners.fn) {
-    if (
-      listeners.fn === fn &&
-      (!once || listeners.once) &&
-      (!context || listeners.context === context)
-    ) {
-      clearEvent(this, evt);
-    }
-  } else {
-    for (var i = 0, events = [], length = listeners.length; i < length; i++) {
-      if (
-        listeners[i].fn !== fn ||
-        (once && !listeners[i].once) ||
-        (context && listeners[i].context !== context)
-      ) {
-        events.push(listeners[i]);
-      }
-    }
-
-    //
-    // Reset the array, or remove it completely if we have no more listeners.
-    //
-    if (events.length) this._events[evt] = events.length === 1 ? events[0] : events;
-    else clearEvent(this, evt);
+  if (!this._events) this._events = prefix ? {} : Object.create(null);
+  if (!this._events[evt]) this._events[evt] = listener;
+  else {
+    if (!this._events[evt].fn) this._events[evt].push(listener);
+    else this._events[evt] = [
+      this._events[evt], listener
+    ];
   }
 
   return this;
 };
 
 /**
- * Remove all listeners, or those of the specified event.
+ * Add an EventListener that's only called once.
  *
- * @param {(String|Symbol)} [event] The event name.
- * @returns {EventEmitter} `this`.
- * @public
+ * @param {String} event Name of the event.
+ * @param {Function} fn Callback function.
+ * @param {Mixed} context The context of the function.
+ * @api public
+ */
+EventEmitter.prototype.once = function once(event, fn, context) {
+  var listener = new EE(fn, context || this, true)
+    , evt = prefix ? prefix + event : event;
+
+  if (!this._events) this._events = prefix ? {} : Object.create(null);
+  if (!this._events[evt]) this._events[evt] = listener;
+  else {
+    if (!this._events[evt].fn) this._events[evt].push(listener);
+    else this._events[evt] = [
+      this._events[evt], listener
+    ];
+  }
+
+  return this;
+};
+
+/**
+ * Remove event listeners.
+ *
+ * @param {String} event The event we want to remove.
+ * @param {Function} fn The listener that we need to find.
+ * @param {Mixed} context Only remove listeners matching this context.
+ * @param {Boolean} once Only remove once listeners.
+ * @api public
+ */
+EventEmitter.prototype.removeListener = function removeListener(event, fn, context, once) {
+  var evt = prefix ? prefix + event : event;
+
+  if (!this._events || !this._events[evt]) return this;
+
+  var listeners = this._events[evt]
+    , events = [];
+
+  if (fn) {
+    if (listeners.fn) {
+      if (
+           listeners.fn !== fn
+        || (once && !listeners.once)
+        || (context && listeners.context !== context)
+      ) {
+        events.push(listeners);
+      }
+    } else {
+      for (var i = 0, length = listeners.length; i < length; i++) {
+        if (
+             listeners[i].fn !== fn
+          || (once && !listeners[i].once)
+          || (context && listeners[i].context !== context)
+        ) {
+          events.push(listeners[i]);
+        }
+      }
+    }
+  }
+
+  //
+  // Reset the array, or remove it completely if we have no more listeners.
+  //
+  if (events.length) {
+    this._events[evt] = events.length === 1 ? events[0] : events;
+  } else {
+    delete this._events[evt];
+  }
+
+  return this;
+};
+
+/**
+ * Remove all listeners or only the listeners for the specified event.
+ *
+ * @param {String} event The event want to remove all listeners for.
+ * @api public
  */
 EventEmitter.prototype.removeAllListeners = function removeAllListeners(event) {
-  var evt;
+  if (!this._events) return this;
 
-  if (event) {
-    evt = prefix ? prefix + event : event;
-    if (this._events[evt]) clearEvent(this, evt);
-  } else {
-    this._events = new Events();
-    this._eventsCount = 0;
-  }
+  if (event) delete this._events[prefix ? prefix + event : event];
+  else this._events = prefix ? {} : Object.create(null);
 
   return this;
 };
@@ -41766,14 +41041,16 @@ EventEmitter.prototype.off = EventEmitter.prototype.removeListener;
 EventEmitter.prototype.addListener = EventEmitter.prototype.on;
 
 //
+// This function doesn't apply anymore.
+//
+EventEmitter.prototype.setMaxListeners = function setMaxListeners() {
+  return this;
+};
+
+//
 // Expose the prefix.
 //
 EventEmitter.prefixed = prefix;
-
-//
-// Allow `EventEmitter` to be imported as module namespace.
-//
-EventEmitter.EventEmitter = EventEmitter;
 
 //
 // Expose the module.
@@ -41782,33 +41059,33 @@ if ('undefined' !== typeof module) {
   module.exports = EventEmitter;
 }
 
-},{}],319:[function(require,module,exports){
+},{}],299:[function(require,module,exports){
 arguments[4][88][0].apply(exports,arguments)
-},{"dup":88,"md5.js":510,"safe-buffer":543}],320:[function(require,module,exports){
+},{"dup":88,"md5.js":318,"safe-buffer":346}],300:[function(require,module,exports){
 arguments[4][89][0].apply(exports,arguments)
-},{"dup":89,"inherits":336,"safe-buffer":543,"stream":160}],321:[function(require,module,exports){
+},{"dup":89,"inherits":316,"safe-buffer":346,"stream":160}],301:[function(require,module,exports){
 arguments[4][90][0].apply(exports,arguments)
-},{"./hash/common":322,"./hash/hmac":323,"./hash/ripemd":324,"./hash/sha":325,"./hash/utils":332,"dup":90}],322:[function(require,module,exports){
+},{"./hash/common":302,"./hash/hmac":303,"./hash/ripemd":304,"./hash/sha":305,"./hash/utils":312,"dup":90}],302:[function(require,module,exports){
 arguments[4][91][0].apply(exports,arguments)
-},{"./utils":332,"dup":91,"minimalistic-assert":512}],323:[function(require,module,exports){
+},{"./utils":312,"dup":91,"minimalistic-assert":320}],303:[function(require,module,exports){
 arguments[4][92][0].apply(exports,arguments)
-},{"./utils":332,"dup":92,"minimalistic-assert":512}],324:[function(require,module,exports){
+},{"./utils":312,"dup":92,"minimalistic-assert":320}],304:[function(require,module,exports){
 arguments[4][93][0].apply(exports,arguments)
-},{"./common":322,"./utils":332,"dup":93}],325:[function(require,module,exports){
+},{"./common":302,"./utils":312,"dup":93}],305:[function(require,module,exports){
 arguments[4][94][0].apply(exports,arguments)
-},{"./sha/1":326,"./sha/224":327,"./sha/256":328,"./sha/384":329,"./sha/512":330,"dup":94}],326:[function(require,module,exports){
+},{"./sha/1":306,"./sha/224":307,"./sha/256":308,"./sha/384":309,"./sha/512":310,"dup":94}],306:[function(require,module,exports){
 arguments[4][95][0].apply(exports,arguments)
-},{"../common":322,"../utils":332,"./common":331,"dup":95}],327:[function(require,module,exports){
+},{"../common":302,"../utils":312,"./common":311,"dup":95}],307:[function(require,module,exports){
 arguments[4][96][0].apply(exports,arguments)
-},{"../utils":332,"./256":328,"dup":96}],328:[function(require,module,exports){
+},{"../utils":312,"./256":308,"dup":96}],308:[function(require,module,exports){
 arguments[4][97][0].apply(exports,arguments)
-},{"../common":322,"../utils":332,"./common":331,"dup":97,"minimalistic-assert":512}],329:[function(require,module,exports){
+},{"../common":302,"../utils":312,"./common":311,"dup":97,"minimalistic-assert":320}],309:[function(require,module,exports){
 arguments[4][98][0].apply(exports,arguments)
-},{"../utils":332,"./512":330,"dup":98}],330:[function(require,module,exports){
+},{"../utils":312,"./512":310,"dup":98}],310:[function(require,module,exports){
 arguments[4][99][0].apply(exports,arguments)
-},{"../common":322,"../utils":332,"dup":99,"minimalistic-assert":512}],331:[function(require,module,exports){
+},{"../common":302,"../utils":312,"dup":99,"minimalistic-assert":320}],311:[function(require,module,exports){
 arguments[4][100][0].apply(exports,arguments)
-},{"../utils":332,"dup":100}],332:[function(require,module,exports){
+},{"../utils":312,"dup":100}],312:[function(require,module,exports){
 'use strict';
 
 var assert = require('minimalistic-assert');
@@ -42088,9 +41365,9 @@ function shr64_lo(ah, al, num) {
 }
 exports.shr64_lo = shr64_lo;
 
-},{"inherits":336,"minimalistic-assert":512}],333:[function(require,module,exports){
+},{"inherits":316,"minimalistic-assert":320}],313:[function(require,module,exports){
 arguments[4][102][0].apply(exports,arguments)
-},{"dup":102,"hash.js":321,"minimalistic-assert":512,"minimalistic-crypto-utils":513}],334:[function(require,module,exports){
+},{"dup":102,"hash.js":301,"minimalistic-assert":320,"minimalistic-crypto-utils":321}],314:[function(require,module,exports){
 /* This file is generated from the Unicode IDNA table, using
    the build-unicode-tables.py script. Please edit that
    script instead of this file. */
@@ -42849,7 +42126,7 @@ return {
 };
 }));
 
-},{}],335:[function(require,module,exports){
+},{}],315:[function(require,module,exports){
 (function(root, factory) {
   /* istanbul ignore next */
   if (typeof define === 'function' && define.amd) {
@@ -42983,5398 +42260,11 @@ return {
   };
 }));
 
-},{"./idna-map":334,"punycode":131}],336:[function(require,module,exports){
+},{"./idna-map":314,"punycode":131}],316:[function(require,module,exports){
 arguments[4][16][0].apply(exports,arguments)
-},{"dup":16}],337:[function(require,module,exports){
+},{"dup":16}],317:[function(require,module,exports){
 arguments[4][177][0].apply(exports,arguments)
-},{"dup":177}],338:[function(require,module,exports){
-(function (process,global){
-/**
- * [js-sha3]{@link https://github.com/emn178/js-sha3}
- *
- * @version 0.5.7
- * @author Chen, Yi-Cyuan [emn178@gmail.com]
- * @copyright Chen, Yi-Cyuan 2015-2016
- * @license MIT
- */
-/*jslint bitwise: true */
-(function () {
-  'use strict';
-
-  var root = typeof window === 'object' ? window : {};
-  var NODE_JS = !root.JS_SHA3_NO_NODE_JS && typeof process === 'object' && process.versions && process.versions.node;
-  if (NODE_JS) {
-    root = global;
-  }
-  var COMMON_JS = !root.JS_SHA3_NO_COMMON_JS && typeof module === 'object' && module.exports;
-  var HEX_CHARS = '0123456789abcdef'.split('');
-  var SHAKE_PADDING = [31, 7936, 2031616, 520093696];
-  var KECCAK_PADDING = [1, 256, 65536, 16777216];
-  var PADDING = [6, 1536, 393216, 100663296];
-  var SHIFT = [0, 8, 16, 24];
-  var RC = [1, 0, 32898, 0, 32906, 2147483648, 2147516416, 2147483648, 32907, 0, 2147483649,
-            0, 2147516545, 2147483648, 32777, 2147483648, 138, 0, 136, 0, 2147516425, 0,
-            2147483658, 0, 2147516555, 0, 139, 2147483648, 32905, 2147483648, 32771,
-            2147483648, 32770, 2147483648, 128, 2147483648, 32778, 0, 2147483658, 2147483648,
-            2147516545, 2147483648, 32896, 2147483648, 2147483649, 0, 2147516424, 2147483648];
-  var BITS = [224, 256, 384, 512];
-  var SHAKE_BITS = [128, 256];
-  var OUTPUT_TYPES = ['hex', 'buffer', 'arrayBuffer', 'array'];
-
-  var createOutputMethod = function (bits, padding, outputType) {
-    return function (message) {
-      return new Keccak(bits, padding, bits).update(message)[outputType]();
-    };
-  };
-
-  var createShakeOutputMethod = function (bits, padding, outputType) {
-    return function (message, outputBits) {
-      return new Keccak(bits, padding, outputBits).update(message)[outputType]();
-    };
-  };
-
-  var createMethod = function (bits, padding) {
-    var method = createOutputMethod(bits, padding, 'hex');
-    method.create = function () {
-      return new Keccak(bits, padding, bits);
-    };
-    method.update = function (message) {
-      return method.create().update(message);
-    };
-    for (var i = 0; i < OUTPUT_TYPES.length; ++i) {
-      var type = OUTPUT_TYPES[i];
-      method[type] = createOutputMethod(bits, padding, type);
-    }
-    return method;
-  };
-
-  var createShakeMethod = function (bits, padding) {
-    var method = createShakeOutputMethod(bits, padding, 'hex');
-    method.create = function (outputBits) {
-      return new Keccak(bits, padding, outputBits);
-    };
-    method.update = function (message, outputBits) {
-      return method.create(outputBits).update(message);
-    };
-    for (var i = 0; i < OUTPUT_TYPES.length; ++i) {
-      var type = OUTPUT_TYPES[i];
-      method[type] = createShakeOutputMethod(bits, padding, type);
-    }
-    return method;
-  };
-
-  var algorithms = [
-    {name: 'keccak', padding: KECCAK_PADDING, bits: BITS, createMethod: createMethod},
-    {name: 'sha3', padding: PADDING, bits: BITS, createMethod: createMethod},
-    {name: 'shake', padding: SHAKE_PADDING, bits: SHAKE_BITS, createMethod: createShakeMethod}
-  ];
-
-  var methods = {}, methodNames = [];
-
-  for (var i = 0; i < algorithms.length; ++i) {
-    var algorithm = algorithms[i];
-    var bits  = algorithm.bits;
-    for (var j = 0; j < bits.length; ++j) {
-      var methodName = algorithm.name +'_' + bits[j];
-      methodNames.push(methodName);
-      methods[methodName] = algorithm.createMethod(bits[j], algorithm.padding);
-    }
-  }
-
-  function Keccak(bits, padding, outputBits) {
-    this.blocks = [];
-    this.s = [];
-    this.padding = padding;
-    this.outputBits = outputBits;
-    this.reset = true;
-    this.block = 0;
-    this.start = 0;
-    this.blockCount = (1600 - (bits << 1)) >> 5;
-    this.byteCount = this.blockCount << 2;
-    this.outputBlocks = outputBits >> 5;
-    this.extraBytes = (outputBits & 31) >> 3;
-
-    for (var i = 0; i < 50; ++i) {
-      this.s[i] = 0;
-    }
-  }
-
-  Keccak.prototype.update = function (message) {
-    var notString = typeof message !== 'string';
-    if (notString && message.constructor === ArrayBuffer) {
-      message = new Uint8Array(message);
-    }
-    var length = message.length, blocks = this.blocks, byteCount = this.byteCount,
-      blockCount = this.blockCount, index = 0, s = this.s, i, code;
-
-    while (index < length) {
-      if (this.reset) {
-        this.reset = false;
-        blocks[0] = this.block;
-        for (i = 1; i < blockCount + 1; ++i) {
-          blocks[i] = 0;
-        }
-      }
-      if (notString) {
-        for (i = this.start; index < length && i < byteCount; ++index) {
-          blocks[i >> 2] |= message[index] << SHIFT[i++ & 3];
-        }
-      } else {
-        for (i = this.start; index < length && i < byteCount; ++index) {
-          code = message.charCodeAt(index);
-          if (code < 0x80) {
-            blocks[i >> 2] |= code << SHIFT[i++ & 3];
-          } else if (code < 0x800) {
-            blocks[i >> 2] |= (0xc0 | (code >> 6)) << SHIFT[i++ & 3];
-            blocks[i >> 2] |= (0x80 | (code & 0x3f)) << SHIFT[i++ & 3];
-          } else if (code < 0xd800 || code >= 0xe000) {
-            blocks[i >> 2] |= (0xe0 | (code >> 12)) << SHIFT[i++ & 3];
-            blocks[i >> 2] |= (0x80 | ((code >> 6) & 0x3f)) << SHIFT[i++ & 3];
-            blocks[i >> 2] |= (0x80 | (code & 0x3f)) << SHIFT[i++ & 3];
-          } else {
-            code = 0x10000 + (((code & 0x3ff) << 10) | (message.charCodeAt(++index) & 0x3ff));
-            blocks[i >> 2] |= (0xf0 | (code >> 18)) << SHIFT[i++ & 3];
-            blocks[i >> 2] |= (0x80 | ((code >> 12) & 0x3f)) << SHIFT[i++ & 3];
-            blocks[i >> 2] |= (0x80 | ((code >> 6) & 0x3f)) << SHIFT[i++ & 3];
-            blocks[i >> 2] |= (0x80 | (code & 0x3f)) << SHIFT[i++ & 3];
-          }
-        }
-      }
-      this.lastByteIndex = i;
-      if (i >= byteCount) {
-        this.start = i - byteCount;
-        this.block = blocks[blockCount];
-        for (i = 0; i < blockCount; ++i) {
-          s[i] ^= blocks[i];
-        }
-        f(s);
-        this.reset = true;
-      } else {
-        this.start = i;
-      }
-    }
-    return this;
-  };
-
-  Keccak.prototype.finalize = function () {
-    var blocks = this.blocks, i = this.lastByteIndex, blockCount = this.blockCount, s = this.s;
-    blocks[i >> 2] |= this.padding[i & 3];
-    if (this.lastByteIndex === this.byteCount) {
-      blocks[0] = blocks[blockCount];
-      for (i = 1; i < blockCount + 1; ++i) {
-        blocks[i] = 0;
-      }
-    }
-    blocks[blockCount - 1] |= 0x80000000;
-    for (i = 0; i < blockCount; ++i) {
-      s[i] ^= blocks[i];
-    }
-    f(s);
-  };
-
-  Keccak.prototype.toString = Keccak.prototype.hex = function () {
-    this.finalize();
-
-    var blockCount = this.blockCount, s = this.s, outputBlocks = this.outputBlocks,
-        extraBytes = this.extraBytes, i = 0, j = 0;
-    var hex = '', block;
-    while (j < outputBlocks) {
-      for (i = 0; i < blockCount && j < outputBlocks; ++i, ++j) {
-        block = s[i];
-        hex += HEX_CHARS[(block >> 4) & 0x0F] + HEX_CHARS[block & 0x0F] +
-               HEX_CHARS[(block >> 12) & 0x0F] + HEX_CHARS[(block >> 8) & 0x0F] +
-               HEX_CHARS[(block >> 20) & 0x0F] + HEX_CHARS[(block >> 16) & 0x0F] +
-               HEX_CHARS[(block >> 28) & 0x0F] + HEX_CHARS[(block >> 24) & 0x0F];
-      }
-      if (j % blockCount === 0) {
-        f(s);
-        i = 0;
-      }
-    }
-    if (extraBytes) {
-      block = s[i];
-      if (extraBytes > 0) {
-        hex += HEX_CHARS[(block >> 4) & 0x0F] + HEX_CHARS[block & 0x0F];
-      }
-      if (extraBytes > 1) {
-        hex += HEX_CHARS[(block >> 12) & 0x0F] + HEX_CHARS[(block >> 8) & 0x0F];
-      }
-      if (extraBytes > 2) {
-        hex += HEX_CHARS[(block >> 20) & 0x0F] + HEX_CHARS[(block >> 16) & 0x0F];
-      }
-    }
-    return hex;
-  };
-
-  Keccak.prototype.arrayBuffer = function () {
-    this.finalize();
-
-    var blockCount = this.blockCount, s = this.s, outputBlocks = this.outputBlocks,
-        extraBytes = this.extraBytes, i = 0, j = 0;
-    var bytes = this.outputBits >> 3;
-    var buffer;
-    if (extraBytes) {
-      buffer = new ArrayBuffer((outputBlocks + 1) << 2);
-    } else {
-      buffer = new ArrayBuffer(bytes);
-    }
-    var array = new Uint32Array(buffer);
-    while (j < outputBlocks) {
-      for (i = 0; i < blockCount && j < outputBlocks; ++i, ++j) {
-        array[j] = s[i];
-      }
-      if (j % blockCount === 0) {
-        f(s);
-      }
-    }
-    if (extraBytes) {
-      array[i] = s[i];
-      buffer = buffer.slice(0, bytes);
-    }
-    return buffer;
-  };
-
-  Keccak.prototype.buffer = Keccak.prototype.arrayBuffer;
-
-  Keccak.prototype.digest = Keccak.prototype.array = function () {
-    this.finalize();
-
-    var blockCount = this.blockCount, s = this.s, outputBlocks = this.outputBlocks,
-        extraBytes = this.extraBytes, i = 0, j = 0;
-    var array = [], offset, block;
-    while (j < outputBlocks) {
-      for (i = 0; i < blockCount && j < outputBlocks; ++i, ++j) {
-        offset = j << 2;
-        block = s[i];
-        array[offset] = block & 0xFF;
-        array[offset + 1] = (block >> 8) & 0xFF;
-        array[offset + 2] = (block >> 16) & 0xFF;
-        array[offset + 3] = (block >> 24) & 0xFF;
-      }
-      if (j % blockCount === 0) {
-        f(s);
-      }
-    }
-    if (extraBytes) {
-      offset = j << 2;
-      block = s[i];
-      if (extraBytes > 0) {
-        array[offset] = block & 0xFF;
-      }
-      if (extraBytes > 1) {
-        array[offset + 1] = (block >> 8) & 0xFF;
-      }
-      if (extraBytes > 2) {
-        array[offset + 2] = (block >> 16) & 0xFF;
-      }
-    }
-    return array;
-  };
-
-  var f = function (s) {
-    var h, l, n, c0, c1, c2, c3, c4, c5, c6, c7, c8, c9,
-        b0, b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17,
-        b18, b19, b20, b21, b22, b23, b24, b25, b26, b27, b28, b29, b30, b31, b32, b33,
-        b34, b35, b36, b37, b38, b39, b40, b41, b42, b43, b44, b45, b46, b47, b48, b49;
-    for (n = 0; n < 48; n += 2) {
-      c0 = s[0] ^ s[10] ^ s[20] ^ s[30] ^ s[40];
-      c1 = s[1] ^ s[11] ^ s[21] ^ s[31] ^ s[41];
-      c2 = s[2] ^ s[12] ^ s[22] ^ s[32] ^ s[42];
-      c3 = s[3] ^ s[13] ^ s[23] ^ s[33] ^ s[43];
-      c4 = s[4] ^ s[14] ^ s[24] ^ s[34] ^ s[44];
-      c5 = s[5] ^ s[15] ^ s[25] ^ s[35] ^ s[45];
-      c6 = s[6] ^ s[16] ^ s[26] ^ s[36] ^ s[46];
-      c7 = s[7] ^ s[17] ^ s[27] ^ s[37] ^ s[47];
-      c8 = s[8] ^ s[18] ^ s[28] ^ s[38] ^ s[48];
-      c9 = s[9] ^ s[19] ^ s[29] ^ s[39] ^ s[49];
-
-      h = c8 ^ ((c2 << 1) | (c3 >>> 31));
-      l = c9 ^ ((c3 << 1) | (c2 >>> 31));
-      s[0] ^= h;
-      s[1] ^= l;
-      s[10] ^= h;
-      s[11] ^= l;
-      s[20] ^= h;
-      s[21] ^= l;
-      s[30] ^= h;
-      s[31] ^= l;
-      s[40] ^= h;
-      s[41] ^= l;
-      h = c0 ^ ((c4 << 1) | (c5 >>> 31));
-      l = c1 ^ ((c5 << 1) | (c4 >>> 31));
-      s[2] ^= h;
-      s[3] ^= l;
-      s[12] ^= h;
-      s[13] ^= l;
-      s[22] ^= h;
-      s[23] ^= l;
-      s[32] ^= h;
-      s[33] ^= l;
-      s[42] ^= h;
-      s[43] ^= l;
-      h = c2 ^ ((c6 << 1) | (c7 >>> 31));
-      l = c3 ^ ((c7 << 1) | (c6 >>> 31));
-      s[4] ^= h;
-      s[5] ^= l;
-      s[14] ^= h;
-      s[15] ^= l;
-      s[24] ^= h;
-      s[25] ^= l;
-      s[34] ^= h;
-      s[35] ^= l;
-      s[44] ^= h;
-      s[45] ^= l;
-      h = c4 ^ ((c8 << 1) | (c9 >>> 31));
-      l = c5 ^ ((c9 << 1) | (c8 >>> 31));
-      s[6] ^= h;
-      s[7] ^= l;
-      s[16] ^= h;
-      s[17] ^= l;
-      s[26] ^= h;
-      s[27] ^= l;
-      s[36] ^= h;
-      s[37] ^= l;
-      s[46] ^= h;
-      s[47] ^= l;
-      h = c6 ^ ((c0 << 1) | (c1 >>> 31));
-      l = c7 ^ ((c1 << 1) | (c0 >>> 31));
-      s[8] ^= h;
-      s[9] ^= l;
-      s[18] ^= h;
-      s[19] ^= l;
-      s[28] ^= h;
-      s[29] ^= l;
-      s[38] ^= h;
-      s[39] ^= l;
-      s[48] ^= h;
-      s[49] ^= l;
-
-      b0 = s[0];
-      b1 = s[1];
-      b32 = (s[11] << 4) | (s[10] >>> 28);
-      b33 = (s[10] << 4) | (s[11] >>> 28);
-      b14 = (s[20] << 3) | (s[21] >>> 29);
-      b15 = (s[21] << 3) | (s[20] >>> 29);
-      b46 = (s[31] << 9) | (s[30] >>> 23);
-      b47 = (s[30] << 9) | (s[31] >>> 23);
-      b28 = (s[40] << 18) | (s[41] >>> 14);
-      b29 = (s[41] << 18) | (s[40] >>> 14);
-      b20 = (s[2] << 1) | (s[3] >>> 31);
-      b21 = (s[3] << 1) | (s[2] >>> 31);
-      b2 = (s[13] << 12) | (s[12] >>> 20);
-      b3 = (s[12] << 12) | (s[13] >>> 20);
-      b34 = (s[22] << 10) | (s[23] >>> 22);
-      b35 = (s[23] << 10) | (s[22] >>> 22);
-      b16 = (s[33] << 13) | (s[32] >>> 19);
-      b17 = (s[32] << 13) | (s[33] >>> 19);
-      b48 = (s[42] << 2) | (s[43] >>> 30);
-      b49 = (s[43] << 2) | (s[42] >>> 30);
-      b40 = (s[5] << 30) | (s[4] >>> 2);
-      b41 = (s[4] << 30) | (s[5] >>> 2);
-      b22 = (s[14] << 6) | (s[15] >>> 26);
-      b23 = (s[15] << 6) | (s[14] >>> 26);
-      b4 = (s[25] << 11) | (s[24] >>> 21);
-      b5 = (s[24] << 11) | (s[25] >>> 21);
-      b36 = (s[34] << 15) | (s[35] >>> 17);
-      b37 = (s[35] << 15) | (s[34] >>> 17);
-      b18 = (s[45] << 29) | (s[44] >>> 3);
-      b19 = (s[44] << 29) | (s[45] >>> 3);
-      b10 = (s[6] << 28) | (s[7] >>> 4);
-      b11 = (s[7] << 28) | (s[6] >>> 4);
-      b42 = (s[17] << 23) | (s[16] >>> 9);
-      b43 = (s[16] << 23) | (s[17] >>> 9);
-      b24 = (s[26] << 25) | (s[27] >>> 7);
-      b25 = (s[27] << 25) | (s[26] >>> 7);
-      b6 = (s[36] << 21) | (s[37] >>> 11);
-      b7 = (s[37] << 21) | (s[36] >>> 11);
-      b38 = (s[47] << 24) | (s[46] >>> 8);
-      b39 = (s[46] << 24) | (s[47] >>> 8);
-      b30 = (s[8] << 27) | (s[9] >>> 5);
-      b31 = (s[9] << 27) | (s[8] >>> 5);
-      b12 = (s[18] << 20) | (s[19] >>> 12);
-      b13 = (s[19] << 20) | (s[18] >>> 12);
-      b44 = (s[29] << 7) | (s[28] >>> 25);
-      b45 = (s[28] << 7) | (s[29] >>> 25);
-      b26 = (s[38] << 8) | (s[39] >>> 24);
-      b27 = (s[39] << 8) | (s[38] >>> 24);
-      b8 = (s[48] << 14) | (s[49] >>> 18);
-      b9 = (s[49] << 14) | (s[48] >>> 18);
-
-      s[0] = b0 ^ (~b2 & b4);
-      s[1] = b1 ^ (~b3 & b5);
-      s[10] = b10 ^ (~b12 & b14);
-      s[11] = b11 ^ (~b13 & b15);
-      s[20] = b20 ^ (~b22 & b24);
-      s[21] = b21 ^ (~b23 & b25);
-      s[30] = b30 ^ (~b32 & b34);
-      s[31] = b31 ^ (~b33 & b35);
-      s[40] = b40 ^ (~b42 & b44);
-      s[41] = b41 ^ (~b43 & b45);
-      s[2] = b2 ^ (~b4 & b6);
-      s[3] = b3 ^ (~b5 & b7);
-      s[12] = b12 ^ (~b14 & b16);
-      s[13] = b13 ^ (~b15 & b17);
-      s[22] = b22 ^ (~b24 & b26);
-      s[23] = b23 ^ (~b25 & b27);
-      s[32] = b32 ^ (~b34 & b36);
-      s[33] = b33 ^ (~b35 & b37);
-      s[42] = b42 ^ (~b44 & b46);
-      s[43] = b43 ^ (~b45 & b47);
-      s[4] = b4 ^ (~b6 & b8);
-      s[5] = b5 ^ (~b7 & b9);
-      s[14] = b14 ^ (~b16 & b18);
-      s[15] = b15 ^ (~b17 & b19);
-      s[24] = b24 ^ (~b26 & b28);
-      s[25] = b25 ^ (~b27 & b29);
-      s[34] = b34 ^ (~b36 & b38);
-      s[35] = b35 ^ (~b37 & b39);
-      s[44] = b44 ^ (~b46 & b48);
-      s[45] = b45 ^ (~b47 & b49);
-      s[6] = b6 ^ (~b8 & b0);
-      s[7] = b7 ^ (~b9 & b1);
-      s[16] = b16 ^ (~b18 & b10);
-      s[17] = b17 ^ (~b19 & b11);
-      s[26] = b26 ^ (~b28 & b20);
-      s[27] = b27 ^ (~b29 & b21);
-      s[36] = b36 ^ (~b38 & b30);
-      s[37] = b37 ^ (~b39 & b31);
-      s[46] = b46 ^ (~b48 & b40);
-      s[47] = b47 ^ (~b49 & b41);
-      s[8] = b8 ^ (~b0 & b2);
-      s[9] = b9 ^ (~b1 & b3);
-      s[18] = b18 ^ (~b10 & b12);
-      s[19] = b19 ^ (~b11 & b13);
-      s[28] = b28 ^ (~b20 & b22);
-      s[29] = b29 ^ (~b21 & b23);
-      s[38] = b38 ^ (~b30 & b32);
-      s[39] = b39 ^ (~b31 & b33);
-      s[48] = b48 ^ (~b40 & b42);
-      s[49] = b49 ^ (~b41 & b43);
-
-      s[0] ^= RC[n];
-      s[1] ^= RC[n + 1];
-    }
-  };
-
-  if (COMMON_JS) {
-    module.exports = methods;
-  } else {
-    for (var i = 0; i < methodNames.length; ++i) {
-      root[methodNames[i]] = methods[methodNames[i]];
-    }
-  }
-})();
-
-}).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"_process":124}],339:[function(require,module,exports){
-var getNative = require('./_getNative'),
-    root = require('./_root');
-
-/* Built-in method references that are verified to be native. */
-var DataView = getNative(root, 'DataView');
-
-module.exports = DataView;
-
-},{"./_getNative":419,"./_root":462}],340:[function(require,module,exports){
-var hashClear = require('./_hashClear'),
-    hashDelete = require('./_hashDelete'),
-    hashGet = require('./_hashGet'),
-    hashHas = require('./_hashHas'),
-    hashSet = require('./_hashSet');
-
-/**
- * Creates a hash object.
- *
- * @private
- * @constructor
- * @param {Array} [entries] The key-value pairs to cache.
- */
-function Hash(entries) {
-  var index = -1,
-      length = entries == null ? 0 : entries.length;
-
-  this.clear();
-  while (++index < length) {
-    var entry = entries[index];
-    this.set(entry[0], entry[1]);
-  }
-}
-
-// Add methods to `Hash`.
-Hash.prototype.clear = hashClear;
-Hash.prototype['delete'] = hashDelete;
-Hash.prototype.get = hashGet;
-Hash.prototype.has = hashHas;
-Hash.prototype.set = hashSet;
-
-module.exports = Hash;
-
-},{"./_hashClear":427,"./_hashDelete":428,"./_hashGet":429,"./_hashHas":430,"./_hashSet":431}],341:[function(require,module,exports){
-var listCacheClear = require('./_listCacheClear'),
-    listCacheDelete = require('./_listCacheDelete'),
-    listCacheGet = require('./_listCacheGet'),
-    listCacheHas = require('./_listCacheHas'),
-    listCacheSet = require('./_listCacheSet');
-
-/**
- * Creates an list cache object.
- *
- * @private
- * @constructor
- * @param {Array} [entries] The key-value pairs to cache.
- */
-function ListCache(entries) {
-  var index = -1,
-      length = entries == null ? 0 : entries.length;
-
-  this.clear();
-  while (++index < length) {
-    var entry = entries[index];
-    this.set(entry[0], entry[1]);
-  }
-}
-
-// Add methods to `ListCache`.
-ListCache.prototype.clear = listCacheClear;
-ListCache.prototype['delete'] = listCacheDelete;
-ListCache.prototype.get = listCacheGet;
-ListCache.prototype.has = listCacheHas;
-ListCache.prototype.set = listCacheSet;
-
-module.exports = ListCache;
-
-},{"./_listCacheClear":442,"./_listCacheDelete":443,"./_listCacheGet":444,"./_listCacheHas":445,"./_listCacheSet":446}],342:[function(require,module,exports){
-var getNative = require('./_getNative'),
-    root = require('./_root');
-
-/* Built-in method references that are verified to be native. */
-var Map = getNative(root, 'Map');
-
-module.exports = Map;
-
-},{"./_getNative":419,"./_root":462}],343:[function(require,module,exports){
-var mapCacheClear = require('./_mapCacheClear'),
-    mapCacheDelete = require('./_mapCacheDelete'),
-    mapCacheGet = require('./_mapCacheGet'),
-    mapCacheHas = require('./_mapCacheHas'),
-    mapCacheSet = require('./_mapCacheSet');
-
-/**
- * Creates a map cache object to store key-value pairs.
- *
- * @private
- * @constructor
- * @param {Array} [entries] The key-value pairs to cache.
- */
-function MapCache(entries) {
-  var index = -1,
-      length = entries == null ? 0 : entries.length;
-
-  this.clear();
-  while (++index < length) {
-    var entry = entries[index];
-    this.set(entry[0], entry[1]);
-  }
-}
-
-// Add methods to `MapCache`.
-MapCache.prototype.clear = mapCacheClear;
-MapCache.prototype['delete'] = mapCacheDelete;
-MapCache.prototype.get = mapCacheGet;
-MapCache.prototype.has = mapCacheHas;
-MapCache.prototype.set = mapCacheSet;
-
-module.exports = MapCache;
-
-},{"./_mapCacheClear":447,"./_mapCacheDelete":448,"./_mapCacheGet":449,"./_mapCacheHas":450,"./_mapCacheSet":451}],344:[function(require,module,exports){
-var getNative = require('./_getNative'),
-    root = require('./_root');
-
-/* Built-in method references that are verified to be native. */
-var Promise = getNative(root, 'Promise');
-
-module.exports = Promise;
-
-},{"./_getNative":419,"./_root":462}],345:[function(require,module,exports){
-var getNative = require('./_getNative'),
-    root = require('./_root');
-
-/* Built-in method references that are verified to be native. */
-var Set = getNative(root, 'Set');
-
-module.exports = Set;
-
-},{"./_getNative":419,"./_root":462}],346:[function(require,module,exports){
-var MapCache = require('./_MapCache'),
-    setCacheAdd = require('./_setCacheAdd'),
-    setCacheHas = require('./_setCacheHas');
-
-/**
- *
- * Creates an array cache object to store unique values.
- *
- * @private
- * @constructor
- * @param {Array} [values] The values to cache.
- */
-function SetCache(values) {
-  var index = -1,
-      length = values == null ? 0 : values.length;
-
-  this.__data__ = new MapCache;
-  while (++index < length) {
-    this.add(values[index]);
-  }
-}
-
-// Add methods to `SetCache`.
-SetCache.prototype.add = SetCache.prototype.push = setCacheAdd;
-SetCache.prototype.has = setCacheHas;
-
-module.exports = SetCache;
-
-},{"./_MapCache":343,"./_setCacheAdd":463,"./_setCacheHas":464}],347:[function(require,module,exports){
-var ListCache = require('./_ListCache'),
-    stackClear = require('./_stackClear'),
-    stackDelete = require('./_stackDelete'),
-    stackGet = require('./_stackGet'),
-    stackHas = require('./_stackHas'),
-    stackSet = require('./_stackSet');
-
-/**
- * Creates a stack cache object to store key-value pairs.
- *
- * @private
- * @constructor
- * @param {Array} [entries] The key-value pairs to cache.
- */
-function Stack(entries) {
-  var data = this.__data__ = new ListCache(entries);
-  this.size = data.size;
-}
-
-// Add methods to `Stack`.
-Stack.prototype.clear = stackClear;
-Stack.prototype['delete'] = stackDelete;
-Stack.prototype.get = stackGet;
-Stack.prototype.has = stackHas;
-Stack.prototype.set = stackSet;
-
-module.exports = Stack;
-
-},{"./_ListCache":341,"./_stackClear":468,"./_stackDelete":469,"./_stackGet":470,"./_stackHas":471,"./_stackSet":472}],348:[function(require,module,exports){
-var root = require('./_root');
-
-/** Built-in value references. */
-var Symbol = root.Symbol;
-
-module.exports = Symbol;
-
-},{"./_root":462}],349:[function(require,module,exports){
-var root = require('./_root');
-
-/** Built-in value references. */
-var Uint8Array = root.Uint8Array;
-
-module.exports = Uint8Array;
-
-},{"./_root":462}],350:[function(require,module,exports){
-var getNative = require('./_getNative'),
-    root = require('./_root');
-
-/* Built-in method references that are verified to be native. */
-var WeakMap = getNative(root, 'WeakMap');
-
-module.exports = WeakMap;
-
-},{"./_getNative":419,"./_root":462}],351:[function(require,module,exports){
-/**
- * A faster alternative to `Function#apply`, this function invokes `func`
- * with the `this` binding of `thisArg` and the arguments of `args`.
- *
- * @private
- * @param {Function} func The function to invoke.
- * @param {*} thisArg The `this` binding of `func`.
- * @param {Array} args The arguments to invoke `func` with.
- * @returns {*} Returns the result of `func`.
- */
-function apply(func, thisArg, args) {
-  switch (args.length) {
-    case 0: return func.call(thisArg);
-    case 1: return func.call(thisArg, args[0]);
-    case 2: return func.call(thisArg, args[0], args[1]);
-    case 3: return func.call(thisArg, args[0], args[1], args[2]);
-  }
-  return func.apply(thisArg, args);
-}
-
-module.exports = apply;
-
-},{}],352:[function(require,module,exports){
-/**
- * A specialized version of `_.forEach` for arrays without support for
- * iteratee shorthands.
- *
- * @private
- * @param {Array} [array] The array to iterate over.
- * @param {Function} iteratee The function invoked per iteration.
- * @returns {Array} Returns `array`.
- */
-function arrayEach(array, iteratee) {
-  var index = -1,
-      length = array == null ? 0 : array.length;
-
-  while (++index < length) {
-    if (iteratee(array[index], index, array) === false) {
-      break;
-    }
-  }
-  return array;
-}
-
-module.exports = arrayEach;
-
-},{}],353:[function(require,module,exports){
-/**
- * A specialized version of `_.filter` for arrays without support for
- * iteratee shorthands.
- *
- * @private
- * @param {Array} [array] The array to iterate over.
- * @param {Function} predicate The function invoked per iteration.
- * @returns {Array} Returns the new filtered array.
- */
-function arrayFilter(array, predicate) {
-  var index = -1,
-      length = array == null ? 0 : array.length,
-      resIndex = 0,
-      result = [];
-
-  while (++index < length) {
-    var value = array[index];
-    if (predicate(value, index, array)) {
-      result[resIndex++] = value;
-    }
-  }
-  return result;
-}
-
-module.exports = arrayFilter;
-
-},{}],354:[function(require,module,exports){
-var baseTimes = require('./_baseTimes'),
-    isArguments = require('./isArguments'),
-    isArray = require('./isArray'),
-    isBuffer = require('./isBuffer'),
-    isIndex = require('./_isIndex'),
-    isTypedArray = require('./isTypedArray');
-
-/** Used for built-in method references. */
-var objectProto = Object.prototype;
-
-/** Used to check objects for own properties. */
-var hasOwnProperty = objectProto.hasOwnProperty;
-
-/**
- * Creates an array of the enumerable property names of the array-like `value`.
- *
- * @private
- * @param {*} value The value to query.
- * @param {boolean} inherited Specify returning inherited property names.
- * @returns {Array} Returns the array of property names.
- */
-function arrayLikeKeys(value, inherited) {
-  var isArr = isArray(value),
-      isArg = !isArr && isArguments(value),
-      isBuff = !isArr && !isArg && isBuffer(value),
-      isType = !isArr && !isArg && !isBuff && isTypedArray(value),
-      skipIndexes = isArr || isArg || isBuff || isType,
-      result = skipIndexes ? baseTimes(value.length, String) : [],
-      length = result.length;
-
-  for (var key in value) {
-    if ((inherited || hasOwnProperty.call(value, key)) &&
-        !(skipIndexes && (
-           // Safari 9 has enumerable `arguments.length` in strict mode.
-           key == 'length' ||
-           // Node.js 0.10 has enumerable non-index properties on buffers.
-           (isBuff && (key == 'offset' || key == 'parent')) ||
-           // PhantomJS 2 has enumerable non-index properties on typed arrays.
-           (isType && (key == 'buffer' || key == 'byteLength' || key == 'byteOffset')) ||
-           // Skip index properties.
-           isIndex(key, length)
-        ))) {
-      result.push(key);
-    }
-  }
-  return result;
-}
-
-module.exports = arrayLikeKeys;
-
-},{"./_baseTimes":391,"./_isIndex":435,"./isArguments":485,"./isArray":486,"./isBuffer":489,"./isTypedArray":500}],355:[function(require,module,exports){
-/**
- * A specialized version of `_.map` for arrays without support for iteratee
- * shorthands.
- *
- * @private
- * @param {Array} [array] The array to iterate over.
- * @param {Function} iteratee The function invoked per iteration.
- * @returns {Array} Returns the new mapped array.
- */
-function arrayMap(array, iteratee) {
-  var index = -1,
-      length = array == null ? 0 : array.length,
-      result = Array(length);
-
-  while (++index < length) {
-    result[index] = iteratee(array[index], index, array);
-  }
-  return result;
-}
-
-module.exports = arrayMap;
-
-},{}],356:[function(require,module,exports){
-/**
- * Appends the elements of `values` to `array`.
- *
- * @private
- * @param {Array} array The array to modify.
- * @param {Array} values The values to append.
- * @returns {Array} Returns `array`.
- */
-function arrayPush(array, values) {
-  var index = -1,
-      length = values.length,
-      offset = array.length;
-
-  while (++index < length) {
-    array[offset + index] = values[index];
-  }
-  return array;
-}
-
-module.exports = arrayPush;
-
-},{}],357:[function(require,module,exports){
-/**
- * A specialized version of `_.some` for arrays without support for iteratee
- * shorthands.
- *
- * @private
- * @param {Array} [array] The array to iterate over.
- * @param {Function} predicate The function invoked per iteration.
- * @returns {boolean} Returns `true` if any element passes the predicate check,
- *  else `false`.
- */
-function arraySome(array, predicate) {
-  var index = -1,
-      length = array == null ? 0 : array.length;
-
-  while (++index < length) {
-    if (predicate(array[index], index, array)) {
-      return true;
-    }
-  }
-  return false;
-}
-
-module.exports = arraySome;
-
-},{}],358:[function(require,module,exports){
-var baseAssignValue = require('./_baseAssignValue'),
-    eq = require('./eq');
-
-/** Used for built-in method references. */
-var objectProto = Object.prototype;
-
-/** Used to check objects for own properties. */
-var hasOwnProperty = objectProto.hasOwnProperty;
-
-/**
- * Assigns `value` to `key` of `object` if the existing value is not equivalent
- * using [`SameValueZero`](http://ecma-international.org/ecma-262/7.0/#sec-samevaluezero)
- * for equality comparisons.
- *
- * @private
- * @param {Object} object The object to modify.
- * @param {string} key The key of the property to assign.
- * @param {*} value The value to assign.
- */
-function assignValue(object, key, value) {
-  var objValue = object[key];
-  if (!(hasOwnProperty.call(object, key) && eq(objValue, value)) ||
-      (value === undefined && !(key in object))) {
-    baseAssignValue(object, key, value);
-  }
-}
-
-module.exports = assignValue;
-
-},{"./_baseAssignValue":362,"./eq":479}],359:[function(require,module,exports){
-var eq = require('./eq');
-
-/**
- * Gets the index at which the `key` is found in `array` of key-value pairs.
- *
- * @private
- * @param {Array} array The array to inspect.
- * @param {*} key The key to search for.
- * @returns {number} Returns the index of the matched value, else `-1`.
- */
-function assocIndexOf(array, key) {
-  var length = array.length;
-  while (length--) {
-    if (eq(array[length][0], key)) {
-      return length;
-    }
-  }
-  return -1;
-}
-
-module.exports = assocIndexOf;
-
-},{"./eq":479}],360:[function(require,module,exports){
-var copyObject = require('./_copyObject'),
-    keys = require('./keys');
-
-/**
- * The base implementation of `_.assign` without support for multiple sources
- * or `customizer` functions.
- *
- * @private
- * @param {Object} object The destination object.
- * @param {Object} source The source object.
- * @returns {Object} Returns `object`.
- */
-function baseAssign(object, source) {
-  return object && copyObject(source, keys(source), object);
-}
-
-module.exports = baseAssign;
-
-},{"./_copyObject":403,"./keys":502}],361:[function(require,module,exports){
-var copyObject = require('./_copyObject'),
-    keysIn = require('./keysIn');
-
-/**
- * The base implementation of `_.assignIn` without support for multiple sources
- * or `customizer` functions.
- *
- * @private
- * @param {Object} object The destination object.
- * @param {Object} source The source object.
- * @returns {Object} Returns `object`.
- */
-function baseAssignIn(object, source) {
-  return object && copyObject(source, keysIn(source), object);
-}
-
-module.exports = baseAssignIn;
-
-},{"./_copyObject":403,"./keysIn":503}],362:[function(require,module,exports){
-var defineProperty = require('./_defineProperty');
-
-/**
- * The base implementation of `assignValue` and `assignMergeValue` without
- * value checks.
- *
- * @private
- * @param {Object} object The object to modify.
- * @param {string} key The key of the property to assign.
- * @param {*} value The value to assign.
- */
-function baseAssignValue(object, key, value) {
-  if (key == '__proto__' && defineProperty) {
-    defineProperty(object, key, {
-      'configurable': true,
-      'enumerable': true,
-      'value': value,
-      'writable': true
-    });
-  } else {
-    object[key] = value;
-  }
-}
-
-module.exports = baseAssignValue;
-
-},{"./_defineProperty":410}],363:[function(require,module,exports){
-var Stack = require('./_Stack'),
-    arrayEach = require('./_arrayEach'),
-    assignValue = require('./_assignValue'),
-    baseAssign = require('./_baseAssign'),
-    baseAssignIn = require('./_baseAssignIn'),
-    cloneBuffer = require('./_cloneBuffer'),
-    copyArray = require('./_copyArray'),
-    copySymbols = require('./_copySymbols'),
-    copySymbolsIn = require('./_copySymbolsIn'),
-    getAllKeys = require('./_getAllKeys'),
-    getAllKeysIn = require('./_getAllKeysIn'),
-    getTag = require('./_getTag'),
-    initCloneArray = require('./_initCloneArray'),
-    initCloneByTag = require('./_initCloneByTag'),
-    initCloneObject = require('./_initCloneObject'),
-    isArray = require('./isArray'),
-    isBuffer = require('./isBuffer'),
-    isMap = require('./isMap'),
-    isObject = require('./isObject'),
-    isSet = require('./isSet'),
-    keys = require('./keys');
-
-/** Used to compose bitmasks for cloning. */
-var CLONE_DEEP_FLAG = 1,
-    CLONE_FLAT_FLAG = 2,
-    CLONE_SYMBOLS_FLAG = 4;
-
-/** `Object#toString` result references. */
-var argsTag = '[object Arguments]',
-    arrayTag = '[object Array]',
-    boolTag = '[object Boolean]',
-    dateTag = '[object Date]',
-    errorTag = '[object Error]',
-    funcTag = '[object Function]',
-    genTag = '[object GeneratorFunction]',
-    mapTag = '[object Map]',
-    numberTag = '[object Number]',
-    objectTag = '[object Object]',
-    regexpTag = '[object RegExp]',
-    setTag = '[object Set]',
-    stringTag = '[object String]',
-    symbolTag = '[object Symbol]',
-    weakMapTag = '[object WeakMap]';
-
-var arrayBufferTag = '[object ArrayBuffer]',
-    dataViewTag = '[object DataView]',
-    float32Tag = '[object Float32Array]',
-    float64Tag = '[object Float64Array]',
-    int8Tag = '[object Int8Array]',
-    int16Tag = '[object Int16Array]',
-    int32Tag = '[object Int32Array]',
-    uint8Tag = '[object Uint8Array]',
-    uint8ClampedTag = '[object Uint8ClampedArray]',
-    uint16Tag = '[object Uint16Array]',
-    uint32Tag = '[object Uint32Array]';
-
-/** Used to identify `toStringTag` values supported by `_.clone`. */
-var cloneableTags = {};
-cloneableTags[argsTag] = cloneableTags[arrayTag] =
-cloneableTags[arrayBufferTag] = cloneableTags[dataViewTag] =
-cloneableTags[boolTag] = cloneableTags[dateTag] =
-cloneableTags[float32Tag] = cloneableTags[float64Tag] =
-cloneableTags[int8Tag] = cloneableTags[int16Tag] =
-cloneableTags[int32Tag] = cloneableTags[mapTag] =
-cloneableTags[numberTag] = cloneableTags[objectTag] =
-cloneableTags[regexpTag] = cloneableTags[setTag] =
-cloneableTags[stringTag] = cloneableTags[symbolTag] =
-cloneableTags[uint8Tag] = cloneableTags[uint8ClampedTag] =
-cloneableTags[uint16Tag] = cloneableTags[uint32Tag] = true;
-cloneableTags[errorTag] = cloneableTags[funcTag] =
-cloneableTags[weakMapTag] = false;
-
-/**
- * The base implementation of `_.clone` and `_.cloneDeep` which tracks
- * traversed objects.
- *
- * @private
- * @param {*} value The value to clone.
- * @param {boolean} bitmask The bitmask flags.
- *  1 - Deep clone
- *  2 - Flatten inherited properties
- *  4 - Clone symbols
- * @param {Function} [customizer] The function to customize cloning.
- * @param {string} [key] The key of `value`.
- * @param {Object} [object] The parent object of `value`.
- * @param {Object} [stack] Tracks traversed objects and their clone counterparts.
- * @returns {*} Returns the cloned value.
- */
-function baseClone(value, bitmask, customizer, key, object, stack) {
-  var result,
-      isDeep = bitmask & CLONE_DEEP_FLAG,
-      isFlat = bitmask & CLONE_FLAT_FLAG,
-      isFull = bitmask & CLONE_SYMBOLS_FLAG;
-
-  if (customizer) {
-    result = object ? customizer(value, key, object, stack) : customizer(value);
-  }
-  if (result !== undefined) {
-    return result;
-  }
-  if (!isObject(value)) {
-    return value;
-  }
-  var isArr = isArray(value);
-  if (isArr) {
-    result = initCloneArray(value);
-    if (!isDeep) {
-      return copyArray(value, result);
-    }
-  } else {
-    var tag = getTag(value),
-        isFunc = tag == funcTag || tag == genTag;
-
-    if (isBuffer(value)) {
-      return cloneBuffer(value, isDeep);
-    }
-    if (tag == objectTag || tag == argsTag || (isFunc && !object)) {
-      result = (isFlat || isFunc) ? {} : initCloneObject(value);
-      if (!isDeep) {
-        return isFlat
-          ? copySymbolsIn(value, baseAssignIn(result, value))
-          : copySymbols(value, baseAssign(result, value));
-      }
-    } else {
-      if (!cloneableTags[tag]) {
-        return object ? value : {};
-      }
-      result = initCloneByTag(value, tag, isDeep);
-    }
-  }
-  // Check for circular references and return its corresponding clone.
-  stack || (stack = new Stack);
-  var stacked = stack.get(value);
-  if (stacked) {
-    return stacked;
-  }
-  stack.set(value, result);
-
-  if (isSet(value)) {
-    value.forEach(function(subValue) {
-      result.add(baseClone(subValue, bitmask, customizer, subValue, value, stack));
-    });
-
-    return result;
-  }
-
-  if (isMap(value)) {
-    value.forEach(function(subValue, key) {
-      result.set(key, baseClone(subValue, bitmask, customizer, key, value, stack));
-    });
-
-    return result;
-  }
-
-  var keysFunc = isFull
-    ? (isFlat ? getAllKeysIn : getAllKeys)
-    : (isFlat ? keysIn : keys);
-
-  var props = isArr ? undefined : keysFunc(value);
-  arrayEach(props || value, function(subValue, key) {
-    if (props) {
-      key = subValue;
-      subValue = value[key];
-    }
-    // Recursively populate clone (susceptible to call stack limits).
-    assignValue(result, key, baseClone(subValue, bitmask, customizer, key, value, stack));
-  });
-  return result;
-}
-
-module.exports = baseClone;
-
-},{"./_Stack":347,"./_arrayEach":352,"./_assignValue":358,"./_baseAssign":360,"./_baseAssignIn":361,"./_cloneBuffer":397,"./_copyArray":402,"./_copySymbols":404,"./_copySymbolsIn":405,"./_getAllKeys":415,"./_getAllKeysIn":416,"./_getTag":424,"./_initCloneArray":432,"./_initCloneByTag":433,"./_initCloneObject":434,"./isArray":486,"./isBuffer":489,"./isMap":492,"./isObject":495,"./isSet":497,"./keys":502}],364:[function(require,module,exports){
-var isObject = require('./isObject');
-
-/** Built-in value references. */
-var objectCreate = Object.create;
-
-/**
- * The base implementation of `_.create` without support for assigning
- * properties to the created object.
- *
- * @private
- * @param {Object} proto The object to inherit from.
- * @returns {Object} Returns the new object.
- */
-var baseCreate = (function() {
-  function object() {}
-  return function(proto) {
-    if (!isObject(proto)) {
-      return {};
-    }
-    if (objectCreate) {
-      return objectCreate(proto);
-    }
-    object.prototype = proto;
-    var result = new object;
-    object.prototype = undefined;
-    return result;
-  };
-}());
-
-module.exports = baseCreate;
-
-},{"./isObject":495}],365:[function(require,module,exports){
-var baseForOwn = require('./_baseForOwn'),
-    createBaseEach = require('./_createBaseEach');
-
-/**
- * The base implementation of `_.forEach` without support for iteratee shorthands.
- *
- * @private
- * @param {Array|Object} collection The collection to iterate over.
- * @param {Function} iteratee The function invoked per iteration.
- * @returns {Array|Object} Returns `collection`.
- */
-var baseEach = createBaseEach(baseForOwn);
-
-module.exports = baseEach;
-
-},{"./_baseForOwn":367,"./_createBaseEach":408}],366:[function(require,module,exports){
-var createBaseFor = require('./_createBaseFor');
-
-/**
- * The base implementation of `baseForOwn` which iterates over `object`
- * properties returned by `keysFunc` and invokes `iteratee` for each property.
- * Iteratee functions may exit iteration early by explicitly returning `false`.
- *
- * @private
- * @param {Object} object The object to iterate over.
- * @param {Function} iteratee The function invoked per iteration.
- * @param {Function} keysFunc The function to get the keys of `object`.
- * @returns {Object} Returns `object`.
- */
-var baseFor = createBaseFor();
-
-module.exports = baseFor;
-
-},{"./_createBaseFor":409}],367:[function(require,module,exports){
-var baseFor = require('./_baseFor'),
-    keys = require('./keys');
-
-/**
- * The base implementation of `_.forOwn` without support for iteratee shorthands.
- *
- * @private
- * @param {Object} object The object to iterate over.
- * @param {Function} iteratee The function invoked per iteration.
- * @returns {Object} Returns `object`.
- */
-function baseForOwn(object, iteratee) {
-  return object && baseFor(object, iteratee, keys);
-}
-
-module.exports = baseForOwn;
-
-},{"./_baseFor":366,"./keys":502}],368:[function(require,module,exports){
-var castPath = require('./_castPath'),
-    toKey = require('./_toKey');
-
-/**
- * The base implementation of `_.get` without support for default values.
- *
- * @private
- * @param {Object} object The object to query.
- * @param {Array|string} path The path of the property to get.
- * @returns {*} Returns the resolved value.
- */
-function baseGet(object, path) {
-  path = castPath(path, object);
-
-  var index = 0,
-      length = path.length;
-
-  while (object != null && index < length) {
-    object = object[toKey(path[index++])];
-  }
-  return (index && index == length) ? object : undefined;
-}
-
-module.exports = baseGet;
-
-},{"./_castPath":395,"./_toKey":474}],369:[function(require,module,exports){
-var arrayPush = require('./_arrayPush'),
-    isArray = require('./isArray');
-
-/**
- * The base implementation of `getAllKeys` and `getAllKeysIn` which uses
- * `keysFunc` and `symbolsFunc` to get the enumerable property names and
- * symbols of `object`.
- *
- * @private
- * @param {Object} object The object to query.
- * @param {Function} keysFunc The function to get the keys of `object`.
- * @param {Function} symbolsFunc The function to get the symbols of `object`.
- * @returns {Array} Returns the array of property names and symbols.
- */
-function baseGetAllKeys(object, keysFunc, symbolsFunc) {
-  var result = keysFunc(object);
-  return isArray(object) ? result : arrayPush(result, symbolsFunc(object));
-}
-
-module.exports = baseGetAllKeys;
-
-},{"./_arrayPush":356,"./isArray":486}],370:[function(require,module,exports){
-var Symbol = require('./_Symbol'),
-    getRawTag = require('./_getRawTag'),
-    objectToString = require('./_objectToString');
-
-/** `Object#toString` result references. */
-var nullTag = '[object Null]',
-    undefinedTag = '[object Undefined]';
-
-/** Built-in value references. */
-var symToStringTag = Symbol ? Symbol.toStringTag : undefined;
-
-/**
- * The base implementation of `getTag` without fallbacks for buggy environments.
- *
- * @private
- * @param {*} value The value to query.
- * @returns {string} Returns the `toStringTag`.
- */
-function baseGetTag(value) {
-  if (value == null) {
-    return value === undefined ? undefinedTag : nullTag;
-  }
-  return (symToStringTag && symToStringTag in Object(value))
-    ? getRawTag(value)
-    : objectToString(value);
-}
-
-module.exports = baseGetTag;
-
-},{"./_Symbol":348,"./_getRawTag":421,"./_objectToString":459}],371:[function(require,module,exports){
-/** Used for built-in method references. */
-var objectProto = Object.prototype;
-
-/** Used to check objects for own properties. */
-var hasOwnProperty = objectProto.hasOwnProperty;
-
-/**
- * The base implementation of `_.has` without support for deep paths.
- *
- * @private
- * @param {Object} [object] The object to query.
- * @param {Array|string} key The key to check.
- * @returns {boolean} Returns `true` if `key` exists, else `false`.
- */
-function baseHas(object, key) {
-  return object != null && hasOwnProperty.call(object, key);
-}
-
-module.exports = baseHas;
-
-},{}],372:[function(require,module,exports){
-/**
- * The base implementation of `_.hasIn` without support for deep paths.
- *
- * @private
- * @param {Object} [object] The object to query.
- * @param {Array|string} key The key to check.
- * @returns {boolean} Returns `true` if `key` exists, else `false`.
- */
-function baseHasIn(object, key) {
-  return object != null && key in Object(object);
-}
-
-module.exports = baseHasIn;
-
-},{}],373:[function(require,module,exports){
-var baseGetTag = require('./_baseGetTag'),
-    isObjectLike = require('./isObjectLike');
-
-/** `Object#toString` result references. */
-var argsTag = '[object Arguments]';
-
-/**
- * The base implementation of `_.isArguments`.
- *
- * @private
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is an `arguments` object,
- */
-function baseIsArguments(value) {
-  return isObjectLike(value) && baseGetTag(value) == argsTag;
-}
-
-module.exports = baseIsArguments;
-
-},{"./_baseGetTag":370,"./isObjectLike":496}],374:[function(require,module,exports){
-var baseIsEqualDeep = require('./_baseIsEqualDeep'),
-    isObjectLike = require('./isObjectLike');
-
-/**
- * The base implementation of `_.isEqual` which supports partial comparisons
- * and tracks traversed objects.
- *
- * @private
- * @param {*} value The value to compare.
- * @param {*} other The other value to compare.
- * @param {boolean} bitmask The bitmask flags.
- *  1 - Unordered comparison
- *  2 - Partial comparison
- * @param {Function} [customizer] The function to customize comparisons.
- * @param {Object} [stack] Tracks traversed `value` and `other` objects.
- * @returns {boolean} Returns `true` if the values are equivalent, else `false`.
- */
-function baseIsEqual(value, other, bitmask, customizer, stack) {
-  if (value === other) {
-    return true;
-  }
-  if (value == null || other == null || (!isObjectLike(value) && !isObjectLike(other))) {
-    return value !== value && other !== other;
-  }
-  return baseIsEqualDeep(value, other, bitmask, customizer, baseIsEqual, stack);
-}
-
-module.exports = baseIsEqual;
-
-},{"./_baseIsEqualDeep":375,"./isObjectLike":496}],375:[function(require,module,exports){
-var Stack = require('./_Stack'),
-    equalArrays = require('./_equalArrays'),
-    equalByTag = require('./_equalByTag'),
-    equalObjects = require('./_equalObjects'),
-    getTag = require('./_getTag'),
-    isArray = require('./isArray'),
-    isBuffer = require('./isBuffer'),
-    isTypedArray = require('./isTypedArray');
-
-/** Used to compose bitmasks for value comparisons. */
-var COMPARE_PARTIAL_FLAG = 1;
-
-/** `Object#toString` result references. */
-var argsTag = '[object Arguments]',
-    arrayTag = '[object Array]',
-    objectTag = '[object Object]';
-
-/** Used for built-in method references. */
-var objectProto = Object.prototype;
-
-/** Used to check objects for own properties. */
-var hasOwnProperty = objectProto.hasOwnProperty;
-
-/**
- * A specialized version of `baseIsEqual` for arrays and objects which performs
- * deep comparisons and tracks traversed objects enabling objects with circular
- * references to be compared.
- *
- * @private
- * @param {Object} object The object to compare.
- * @param {Object} other The other object to compare.
- * @param {number} bitmask The bitmask flags. See `baseIsEqual` for more details.
- * @param {Function} customizer The function to customize comparisons.
- * @param {Function} equalFunc The function to determine equivalents of values.
- * @param {Object} [stack] Tracks traversed `object` and `other` objects.
- * @returns {boolean} Returns `true` if the objects are equivalent, else `false`.
- */
-function baseIsEqualDeep(object, other, bitmask, customizer, equalFunc, stack) {
-  var objIsArr = isArray(object),
-      othIsArr = isArray(other),
-      objTag = objIsArr ? arrayTag : getTag(object),
-      othTag = othIsArr ? arrayTag : getTag(other);
-
-  objTag = objTag == argsTag ? objectTag : objTag;
-  othTag = othTag == argsTag ? objectTag : othTag;
-
-  var objIsObj = objTag == objectTag,
-      othIsObj = othTag == objectTag,
-      isSameTag = objTag == othTag;
-
-  if (isSameTag && isBuffer(object)) {
-    if (!isBuffer(other)) {
-      return false;
-    }
-    objIsArr = true;
-    objIsObj = false;
-  }
-  if (isSameTag && !objIsObj) {
-    stack || (stack = new Stack);
-    return (objIsArr || isTypedArray(object))
-      ? equalArrays(object, other, bitmask, customizer, equalFunc, stack)
-      : equalByTag(object, other, objTag, bitmask, customizer, equalFunc, stack);
-  }
-  if (!(bitmask & COMPARE_PARTIAL_FLAG)) {
-    var objIsWrapped = objIsObj && hasOwnProperty.call(object, '__wrapped__'),
-        othIsWrapped = othIsObj && hasOwnProperty.call(other, '__wrapped__');
-
-    if (objIsWrapped || othIsWrapped) {
-      var objUnwrapped = objIsWrapped ? object.value() : object,
-          othUnwrapped = othIsWrapped ? other.value() : other;
-
-      stack || (stack = new Stack);
-      return equalFunc(objUnwrapped, othUnwrapped, bitmask, customizer, stack);
-    }
-  }
-  if (!isSameTag) {
-    return false;
-  }
-  stack || (stack = new Stack);
-  return equalObjects(object, other, bitmask, customizer, equalFunc, stack);
-}
-
-module.exports = baseIsEqualDeep;
-
-},{"./_Stack":347,"./_equalArrays":411,"./_equalByTag":412,"./_equalObjects":413,"./_getTag":424,"./isArray":486,"./isBuffer":489,"./isTypedArray":500}],376:[function(require,module,exports){
-var getTag = require('./_getTag'),
-    isObjectLike = require('./isObjectLike');
-
-/** `Object#toString` result references. */
-var mapTag = '[object Map]';
-
-/**
- * The base implementation of `_.isMap` without Node.js optimizations.
- *
- * @private
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is a map, else `false`.
- */
-function baseIsMap(value) {
-  return isObjectLike(value) && getTag(value) == mapTag;
-}
-
-module.exports = baseIsMap;
-
-},{"./_getTag":424,"./isObjectLike":496}],377:[function(require,module,exports){
-var Stack = require('./_Stack'),
-    baseIsEqual = require('./_baseIsEqual');
-
-/** Used to compose bitmasks for value comparisons. */
-var COMPARE_PARTIAL_FLAG = 1,
-    COMPARE_UNORDERED_FLAG = 2;
-
-/**
- * The base implementation of `_.isMatch` without support for iteratee shorthands.
- *
- * @private
- * @param {Object} object The object to inspect.
- * @param {Object} source The object of property values to match.
- * @param {Array} matchData The property names, values, and compare flags to match.
- * @param {Function} [customizer] The function to customize comparisons.
- * @returns {boolean} Returns `true` if `object` is a match, else `false`.
- */
-function baseIsMatch(object, source, matchData, customizer) {
-  var index = matchData.length,
-      length = index,
-      noCustomizer = !customizer;
-
-  if (object == null) {
-    return !length;
-  }
-  object = Object(object);
-  while (index--) {
-    var data = matchData[index];
-    if ((noCustomizer && data[2])
-          ? data[1] !== object[data[0]]
-          : !(data[0] in object)
-        ) {
-      return false;
-    }
-  }
-  while (++index < length) {
-    data = matchData[index];
-    var key = data[0],
-        objValue = object[key],
-        srcValue = data[1];
-
-    if (noCustomizer && data[2]) {
-      if (objValue === undefined && !(key in object)) {
-        return false;
-      }
-    } else {
-      var stack = new Stack;
-      if (customizer) {
-        var result = customizer(objValue, srcValue, key, object, source, stack);
-      }
-      if (!(result === undefined
-            ? baseIsEqual(srcValue, objValue, COMPARE_PARTIAL_FLAG | COMPARE_UNORDERED_FLAG, customizer, stack)
-            : result
-          )) {
-        return false;
-      }
-    }
-  }
-  return true;
-}
-
-module.exports = baseIsMatch;
-
-},{"./_Stack":347,"./_baseIsEqual":374}],378:[function(require,module,exports){
-var isFunction = require('./isFunction'),
-    isMasked = require('./_isMasked'),
-    isObject = require('./isObject'),
-    toSource = require('./_toSource');
-
-/**
- * Used to match `RegExp`
- * [syntax characters](http://ecma-international.org/ecma-262/7.0/#sec-patterns).
- */
-var reRegExpChar = /[\\^$.*+?()[\]{}|]/g;
-
-/** Used to detect host constructors (Safari). */
-var reIsHostCtor = /^\[object .+?Constructor\]$/;
-
-/** Used for built-in method references. */
-var funcProto = Function.prototype,
-    objectProto = Object.prototype;
-
-/** Used to resolve the decompiled source of functions. */
-var funcToString = funcProto.toString;
-
-/** Used to check objects for own properties. */
-var hasOwnProperty = objectProto.hasOwnProperty;
-
-/** Used to detect if a method is native. */
-var reIsNative = RegExp('^' +
-  funcToString.call(hasOwnProperty).replace(reRegExpChar, '\\$&')
-  .replace(/hasOwnProperty|(function).*?(?=\\\()| for .+?(?=\\\])/g, '$1.*?') + '$'
-);
-
-/**
- * The base implementation of `_.isNative` without bad shim checks.
- *
- * @private
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is a native function,
- *  else `false`.
- */
-function baseIsNative(value) {
-  if (!isObject(value) || isMasked(value)) {
-    return false;
-  }
-  var pattern = isFunction(value) ? reIsNative : reIsHostCtor;
-  return pattern.test(toSource(value));
-}
-
-module.exports = baseIsNative;
-
-},{"./_isMasked":439,"./_toSource":475,"./isFunction":490,"./isObject":495}],379:[function(require,module,exports){
-var getTag = require('./_getTag'),
-    isObjectLike = require('./isObjectLike');
-
-/** `Object#toString` result references. */
-var setTag = '[object Set]';
-
-/**
- * The base implementation of `_.isSet` without Node.js optimizations.
- *
- * @private
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is a set, else `false`.
- */
-function baseIsSet(value) {
-  return isObjectLike(value) && getTag(value) == setTag;
-}
-
-module.exports = baseIsSet;
-
-},{"./_getTag":424,"./isObjectLike":496}],380:[function(require,module,exports){
-var baseGetTag = require('./_baseGetTag'),
-    isLength = require('./isLength'),
-    isObjectLike = require('./isObjectLike');
-
-/** `Object#toString` result references. */
-var argsTag = '[object Arguments]',
-    arrayTag = '[object Array]',
-    boolTag = '[object Boolean]',
-    dateTag = '[object Date]',
-    errorTag = '[object Error]',
-    funcTag = '[object Function]',
-    mapTag = '[object Map]',
-    numberTag = '[object Number]',
-    objectTag = '[object Object]',
-    regexpTag = '[object RegExp]',
-    setTag = '[object Set]',
-    stringTag = '[object String]',
-    weakMapTag = '[object WeakMap]';
-
-var arrayBufferTag = '[object ArrayBuffer]',
-    dataViewTag = '[object DataView]',
-    float32Tag = '[object Float32Array]',
-    float64Tag = '[object Float64Array]',
-    int8Tag = '[object Int8Array]',
-    int16Tag = '[object Int16Array]',
-    int32Tag = '[object Int32Array]',
-    uint8Tag = '[object Uint8Array]',
-    uint8ClampedTag = '[object Uint8ClampedArray]',
-    uint16Tag = '[object Uint16Array]',
-    uint32Tag = '[object Uint32Array]';
-
-/** Used to identify `toStringTag` values of typed arrays. */
-var typedArrayTags = {};
-typedArrayTags[float32Tag] = typedArrayTags[float64Tag] =
-typedArrayTags[int8Tag] = typedArrayTags[int16Tag] =
-typedArrayTags[int32Tag] = typedArrayTags[uint8Tag] =
-typedArrayTags[uint8ClampedTag] = typedArrayTags[uint16Tag] =
-typedArrayTags[uint32Tag] = true;
-typedArrayTags[argsTag] = typedArrayTags[arrayTag] =
-typedArrayTags[arrayBufferTag] = typedArrayTags[boolTag] =
-typedArrayTags[dataViewTag] = typedArrayTags[dateTag] =
-typedArrayTags[errorTag] = typedArrayTags[funcTag] =
-typedArrayTags[mapTag] = typedArrayTags[numberTag] =
-typedArrayTags[objectTag] = typedArrayTags[regexpTag] =
-typedArrayTags[setTag] = typedArrayTags[stringTag] =
-typedArrayTags[weakMapTag] = false;
-
-/**
- * The base implementation of `_.isTypedArray` without Node.js optimizations.
- *
- * @private
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is a typed array, else `false`.
- */
-function baseIsTypedArray(value) {
-  return isObjectLike(value) &&
-    isLength(value.length) && !!typedArrayTags[baseGetTag(value)];
-}
-
-module.exports = baseIsTypedArray;
-
-},{"./_baseGetTag":370,"./isLength":491,"./isObjectLike":496}],381:[function(require,module,exports){
-var baseMatches = require('./_baseMatches'),
-    baseMatchesProperty = require('./_baseMatchesProperty'),
-    identity = require('./identity'),
-    isArray = require('./isArray'),
-    property = require('./property');
-
-/**
- * The base implementation of `_.iteratee`.
- *
- * @private
- * @param {*} [value=_.identity] The value to convert to an iteratee.
- * @returns {Function} Returns the iteratee.
- */
-function baseIteratee(value) {
-  // Don't store the `typeof` result in a variable to avoid a JIT bug in Safari 9.
-  // See https://bugs.webkit.org/show_bug.cgi?id=156034 for more details.
-  if (typeof value == 'function') {
-    return value;
-  }
-  if (value == null) {
-    return identity;
-  }
-  if (typeof value == 'object') {
-    return isArray(value)
-      ? baseMatchesProperty(value[0], value[1])
-      : baseMatches(value);
-  }
-  return property(value);
-}
-
-module.exports = baseIteratee;
-
-},{"./_baseMatches":385,"./_baseMatchesProperty":386,"./identity":484,"./isArray":486,"./property":506}],382:[function(require,module,exports){
-var isPrototype = require('./_isPrototype'),
-    nativeKeys = require('./_nativeKeys');
-
-/** Used for built-in method references. */
-var objectProto = Object.prototype;
-
-/** Used to check objects for own properties. */
-var hasOwnProperty = objectProto.hasOwnProperty;
-
-/**
- * The base implementation of `_.keys` which doesn't treat sparse arrays as dense.
- *
- * @private
- * @param {Object} object The object to query.
- * @returns {Array} Returns the array of property names.
- */
-function baseKeys(object) {
-  if (!isPrototype(object)) {
-    return nativeKeys(object);
-  }
-  var result = [];
-  for (var key in Object(object)) {
-    if (hasOwnProperty.call(object, key) && key != 'constructor') {
-      result.push(key);
-    }
-  }
-  return result;
-}
-
-module.exports = baseKeys;
-
-},{"./_isPrototype":440,"./_nativeKeys":456}],383:[function(require,module,exports){
-var isObject = require('./isObject'),
-    isPrototype = require('./_isPrototype'),
-    nativeKeysIn = require('./_nativeKeysIn');
-
-/** Used for built-in method references. */
-var objectProto = Object.prototype;
-
-/** Used to check objects for own properties. */
-var hasOwnProperty = objectProto.hasOwnProperty;
-
-/**
- * The base implementation of `_.keysIn` which doesn't treat sparse arrays as dense.
- *
- * @private
- * @param {Object} object The object to query.
- * @returns {Array} Returns the array of property names.
- */
-function baseKeysIn(object) {
-  if (!isObject(object)) {
-    return nativeKeysIn(object);
-  }
-  var isProto = isPrototype(object),
-      result = [];
-
-  for (var key in object) {
-    if (!(key == 'constructor' && (isProto || !hasOwnProperty.call(object, key)))) {
-      result.push(key);
-    }
-  }
-  return result;
-}
-
-module.exports = baseKeysIn;
-
-},{"./_isPrototype":440,"./_nativeKeysIn":457,"./isObject":495}],384:[function(require,module,exports){
-var baseEach = require('./_baseEach'),
-    isArrayLike = require('./isArrayLike');
-
-/**
- * The base implementation of `_.map` without support for iteratee shorthands.
- *
- * @private
- * @param {Array|Object} collection The collection to iterate over.
- * @param {Function} iteratee The function invoked per iteration.
- * @returns {Array} Returns the new mapped array.
- */
-function baseMap(collection, iteratee) {
-  var index = -1,
-      result = isArrayLike(collection) ? Array(collection.length) : [];
-
-  baseEach(collection, function(value, key, collection) {
-    result[++index] = iteratee(value, key, collection);
-  });
-  return result;
-}
-
-module.exports = baseMap;
-
-},{"./_baseEach":365,"./isArrayLike":487}],385:[function(require,module,exports){
-var baseIsMatch = require('./_baseIsMatch'),
-    getMatchData = require('./_getMatchData'),
-    matchesStrictComparable = require('./_matchesStrictComparable');
-
-/**
- * The base implementation of `_.matches` which doesn't clone `source`.
- *
- * @private
- * @param {Object} source The object of property values to match.
- * @returns {Function} Returns the new spec function.
- */
-function baseMatches(source) {
-  var matchData = getMatchData(source);
-  if (matchData.length == 1 && matchData[0][2]) {
-    return matchesStrictComparable(matchData[0][0], matchData[0][1]);
-  }
-  return function(object) {
-    return object === source || baseIsMatch(object, source, matchData);
-  };
-}
-
-module.exports = baseMatches;
-
-},{"./_baseIsMatch":377,"./_getMatchData":418,"./_matchesStrictComparable":453}],386:[function(require,module,exports){
-var baseIsEqual = require('./_baseIsEqual'),
-    get = require('./get'),
-    hasIn = require('./hasIn'),
-    isKey = require('./_isKey'),
-    isStrictComparable = require('./_isStrictComparable'),
-    matchesStrictComparable = require('./_matchesStrictComparable'),
-    toKey = require('./_toKey');
-
-/** Used to compose bitmasks for value comparisons. */
-var COMPARE_PARTIAL_FLAG = 1,
-    COMPARE_UNORDERED_FLAG = 2;
-
-/**
- * The base implementation of `_.matchesProperty` which doesn't clone `srcValue`.
- *
- * @private
- * @param {string} path The path of the property to get.
- * @param {*} srcValue The value to match.
- * @returns {Function} Returns the new spec function.
- */
-function baseMatchesProperty(path, srcValue) {
-  if (isKey(path) && isStrictComparable(srcValue)) {
-    return matchesStrictComparable(toKey(path), srcValue);
-  }
-  return function(object) {
-    var objValue = get(object, path);
-    return (objValue === undefined && objValue === srcValue)
-      ? hasIn(object, path)
-      : baseIsEqual(srcValue, objValue, COMPARE_PARTIAL_FLAG | COMPARE_UNORDERED_FLAG);
-  };
-}
-
-module.exports = baseMatchesProperty;
-
-},{"./_baseIsEqual":374,"./_isKey":437,"./_isStrictComparable":441,"./_matchesStrictComparable":453,"./_toKey":474,"./get":481,"./hasIn":483}],387:[function(require,module,exports){
-/**
- * The base implementation of `_.property` without support for deep paths.
- *
- * @private
- * @param {string} key The key of the property to get.
- * @returns {Function} Returns the new accessor function.
- */
-function baseProperty(key) {
-  return function(object) {
-    return object == null ? undefined : object[key];
-  };
-}
-
-module.exports = baseProperty;
-
-},{}],388:[function(require,module,exports){
-var baseGet = require('./_baseGet');
-
-/**
- * A specialized version of `baseProperty` which supports deep paths.
- *
- * @private
- * @param {Array|string} path The path of the property to get.
- * @returns {Function} Returns the new accessor function.
- */
-function basePropertyDeep(path) {
-  return function(object) {
-    return baseGet(object, path);
-  };
-}
-
-module.exports = basePropertyDeep;
-
-},{"./_baseGet":368}],389:[function(require,module,exports){
-var identity = require('./identity'),
-    overRest = require('./_overRest'),
-    setToString = require('./_setToString');
-
-/**
- * The base implementation of `_.rest` which doesn't validate or coerce arguments.
- *
- * @private
- * @param {Function} func The function to apply a rest parameter to.
- * @param {number} [start=func.length-1] The start position of the rest parameter.
- * @returns {Function} Returns the new function.
- */
-function baseRest(func, start) {
-  return setToString(overRest(func, start, identity), func + '');
-}
-
-module.exports = baseRest;
-
-},{"./_overRest":461,"./_setToString":466,"./identity":484}],390:[function(require,module,exports){
-var constant = require('./constant'),
-    defineProperty = require('./_defineProperty'),
-    identity = require('./identity');
-
-/**
- * The base implementation of `setToString` without support for hot loop shorting.
- *
- * @private
- * @param {Function} func The function to modify.
- * @param {Function} string The `toString` result.
- * @returns {Function} Returns `func`.
- */
-var baseSetToString = !defineProperty ? identity : function(func, string) {
-  return defineProperty(func, 'toString', {
-    'configurable': true,
-    'enumerable': false,
-    'value': constant(string),
-    'writable': true
-  });
-};
-
-module.exports = baseSetToString;
-
-},{"./_defineProperty":410,"./constant":478,"./identity":484}],391:[function(require,module,exports){
-/**
- * The base implementation of `_.times` without support for iteratee shorthands
- * or max array length checks.
- *
- * @private
- * @param {number} n The number of times to invoke `iteratee`.
- * @param {Function} iteratee The function invoked per iteration.
- * @returns {Array} Returns the array of results.
- */
-function baseTimes(n, iteratee) {
-  var index = -1,
-      result = Array(n);
-
-  while (++index < n) {
-    result[index] = iteratee(index);
-  }
-  return result;
-}
-
-module.exports = baseTimes;
-
-},{}],392:[function(require,module,exports){
-var Symbol = require('./_Symbol'),
-    arrayMap = require('./_arrayMap'),
-    isArray = require('./isArray'),
-    isSymbol = require('./isSymbol');
-
-/** Used as references for various `Number` constants. */
-var INFINITY = 1 / 0;
-
-/** Used to convert symbols to primitives and strings. */
-var symbolProto = Symbol ? Symbol.prototype : undefined,
-    symbolToString = symbolProto ? symbolProto.toString : undefined;
-
-/**
- * The base implementation of `_.toString` which doesn't convert nullish
- * values to empty strings.
- *
- * @private
- * @param {*} value The value to process.
- * @returns {string} Returns the string.
- */
-function baseToString(value) {
-  // Exit early for strings to avoid a performance hit in some environments.
-  if (typeof value == 'string') {
-    return value;
-  }
-  if (isArray(value)) {
-    // Recursively convert values (susceptible to call stack limits).
-    return arrayMap(value, baseToString) + '';
-  }
-  if (isSymbol(value)) {
-    return symbolToString ? symbolToString.call(value) : '';
-  }
-  var result = (value + '');
-  return (result == '0' && (1 / value) == -INFINITY) ? '-0' : result;
-}
-
-module.exports = baseToString;
-
-},{"./_Symbol":348,"./_arrayMap":355,"./isArray":486,"./isSymbol":499}],393:[function(require,module,exports){
-/**
- * The base implementation of `_.unary` without support for storing metadata.
- *
- * @private
- * @param {Function} func The function to cap arguments for.
- * @returns {Function} Returns the new capped function.
- */
-function baseUnary(func) {
-  return function(value) {
-    return func(value);
-  };
-}
-
-module.exports = baseUnary;
-
-},{}],394:[function(require,module,exports){
-/**
- * Checks if a `cache` value for `key` exists.
- *
- * @private
- * @param {Object} cache The cache to query.
- * @param {string} key The key of the entry to check.
- * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
- */
-function cacheHas(cache, key) {
-  return cache.has(key);
-}
-
-module.exports = cacheHas;
-
-},{}],395:[function(require,module,exports){
-var isArray = require('./isArray'),
-    isKey = require('./_isKey'),
-    stringToPath = require('./_stringToPath'),
-    toString = require('./toString');
-
-/**
- * Casts `value` to a path array if it's not one.
- *
- * @private
- * @param {*} value The value to inspect.
- * @param {Object} [object] The object to query keys on.
- * @returns {Array} Returns the cast property path array.
- */
-function castPath(value, object) {
-  if (isArray(value)) {
-    return value;
-  }
-  return isKey(value, object) ? [value] : stringToPath(toString(value));
-}
-
-module.exports = castPath;
-
-},{"./_isKey":437,"./_stringToPath":473,"./isArray":486,"./toString":509}],396:[function(require,module,exports){
-var Uint8Array = require('./_Uint8Array');
-
-/**
- * Creates a clone of `arrayBuffer`.
- *
- * @private
- * @param {ArrayBuffer} arrayBuffer The array buffer to clone.
- * @returns {ArrayBuffer} Returns the cloned array buffer.
- */
-function cloneArrayBuffer(arrayBuffer) {
-  var result = new arrayBuffer.constructor(arrayBuffer.byteLength);
-  new Uint8Array(result).set(new Uint8Array(arrayBuffer));
-  return result;
-}
-
-module.exports = cloneArrayBuffer;
-
-},{"./_Uint8Array":349}],397:[function(require,module,exports){
-var root = require('./_root');
-
-/** Detect free variable `exports`. */
-var freeExports = typeof exports == 'object' && exports && !exports.nodeType && exports;
-
-/** Detect free variable `module`. */
-var freeModule = freeExports && typeof module == 'object' && module && !module.nodeType && module;
-
-/** Detect the popular CommonJS extension `module.exports`. */
-var moduleExports = freeModule && freeModule.exports === freeExports;
-
-/** Built-in value references. */
-var Buffer = moduleExports ? root.Buffer : undefined,
-    allocUnsafe = Buffer ? Buffer.allocUnsafe : undefined;
-
-/**
- * Creates a clone of  `buffer`.
- *
- * @private
- * @param {Buffer} buffer The buffer to clone.
- * @param {boolean} [isDeep] Specify a deep clone.
- * @returns {Buffer} Returns the cloned buffer.
- */
-function cloneBuffer(buffer, isDeep) {
-  if (isDeep) {
-    return buffer.slice();
-  }
-  var length = buffer.length,
-      result = allocUnsafe ? allocUnsafe(length) : new buffer.constructor(length);
-
-  buffer.copy(result);
-  return result;
-}
-
-module.exports = cloneBuffer;
-
-},{"./_root":462}],398:[function(require,module,exports){
-var cloneArrayBuffer = require('./_cloneArrayBuffer');
-
-/**
- * Creates a clone of `dataView`.
- *
- * @private
- * @param {Object} dataView The data view to clone.
- * @param {boolean} [isDeep] Specify a deep clone.
- * @returns {Object} Returns the cloned data view.
- */
-function cloneDataView(dataView, isDeep) {
-  var buffer = isDeep ? cloneArrayBuffer(dataView.buffer) : dataView.buffer;
-  return new dataView.constructor(buffer, dataView.byteOffset, dataView.byteLength);
-}
-
-module.exports = cloneDataView;
-
-},{"./_cloneArrayBuffer":396}],399:[function(require,module,exports){
-/** Used to match `RegExp` flags from their coerced string values. */
-var reFlags = /\w*$/;
-
-/**
- * Creates a clone of `regexp`.
- *
- * @private
- * @param {Object} regexp The regexp to clone.
- * @returns {Object} Returns the cloned regexp.
- */
-function cloneRegExp(regexp) {
-  var result = new regexp.constructor(regexp.source, reFlags.exec(regexp));
-  result.lastIndex = regexp.lastIndex;
-  return result;
-}
-
-module.exports = cloneRegExp;
-
-},{}],400:[function(require,module,exports){
-var Symbol = require('./_Symbol');
-
-/** Used to convert symbols to primitives and strings. */
-var symbolProto = Symbol ? Symbol.prototype : undefined,
-    symbolValueOf = symbolProto ? symbolProto.valueOf : undefined;
-
-/**
- * Creates a clone of the `symbol` object.
- *
- * @private
- * @param {Object} symbol The symbol object to clone.
- * @returns {Object} Returns the cloned symbol object.
- */
-function cloneSymbol(symbol) {
-  return symbolValueOf ? Object(symbolValueOf.call(symbol)) : {};
-}
-
-module.exports = cloneSymbol;
-
-},{"./_Symbol":348}],401:[function(require,module,exports){
-var cloneArrayBuffer = require('./_cloneArrayBuffer');
-
-/**
- * Creates a clone of `typedArray`.
- *
- * @private
- * @param {Object} typedArray The typed array to clone.
- * @param {boolean} [isDeep] Specify a deep clone.
- * @returns {Object} Returns the cloned typed array.
- */
-function cloneTypedArray(typedArray, isDeep) {
-  var buffer = isDeep ? cloneArrayBuffer(typedArray.buffer) : typedArray.buffer;
-  return new typedArray.constructor(buffer, typedArray.byteOffset, typedArray.length);
-}
-
-module.exports = cloneTypedArray;
-
-},{"./_cloneArrayBuffer":396}],402:[function(require,module,exports){
-/**
- * Copies the values of `source` to `array`.
- *
- * @private
- * @param {Array} source The array to copy values from.
- * @param {Array} [array=[]] The array to copy values to.
- * @returns {Array} Returns `array`.
- */
-function copyArray(source, array) {
-  var index = -1,
-      length = source.length;
-
-  array || (array = Array(length));
-  while (++index < length) {
-    array[index] = source[index];
-  }
-  return array;
-}
-
-module.exports = copyArray;
-
-},{}],403:[function(require,module,exports){
-var assignValue = require('./_assignValue'),
-    baseAssignValue = require('./_baseAssignValue');
-
-/**
- * Copies properties of `source` to `object`.
- *
- * @private
- * @param {Object} source The object to copy properties from.
- * @param {Array} props The property identifiers to copy.
- * @param {Object} [object={}] The object to copy properties to.
- * @param {Function} [customizer] The function to customize copied values.
- * @returns {Object} Returns `object`.
- */
-function copyObject(source, props, object, customizer) {
-  var isNew = !object;
-  object || (object = {});
-
-  var index = -1,
-      length = props.length;
-
-  while (++index < length) {
-    var key = props[index];
-
-    var newValue = customizer
-      ? customizer(object[key], source[key], key, object, source)
-      : undefined;
-
-    if (newValue === undefined) {
-      newValue = source[key];
-    }
-    if (isNew) {
-      baseAssignValue(object, key, newValue);
-    } else {
-      assignValue(object, key, newValue);
-    }
-  }
-  return object;
-}
-
-module.exports = copyObject;
-
-},{"./_assignValue":358,"./_baseAssignValue":362}],404:[function(require,module,exports){
-var copyObject = require('./_copyObject'),
-    getSymbols = require('./_getSymbols');
-
-/**
- * Copies own symbols of `source` to `object`.
- *
- * @private
- * @param {Object} source The object to copy symbols from.
- * @param {Object} [object={}] The object to copy symbols to.
- * @returns {Object} Returns `object`.
- */
-function copySymbols(source, object) {
-  return copyObject(source, getSymbols(source), object);
-}
-
-module.exports = copySymbols;
-
-},{"./_copyObject":403,"./_getSymbols":422}],405:[function(require,module,exports){
-var copyObject = require('./_copyObject'),
-    getSymbolsIn = require('./_getSymbolsIn');
-
-/**
- * Copies own and inherited symbols of `source` to `object`.
- *
- * @private
- * @param {Object} source The object to copy symbols from.
- * @param {Object} [object={}] The object to copy symbols to.
- * @returns {Object} Returns `object`.
- */
-function copySymbolsIn(source, object) {
-  return copyObject(source, getSymbolsIn(source), object);
-}
-
-module.exports = copySymbolsIn;
-
-},{"./_copyObject":403,"./_getSymbolsIn":423}],406:[function(require,module,exports){
-var root = require('./_root');
-
-/** Used to detect overreaching core-js shims. */
-var coreJsData = root['__core-js_shared__'];
-
-module.exports = coreJsData;
-
-},{"./_root":462}],407:[function(require,module,exports){
-var baseRest = require('./_baseRest'),
-    isIterateeCall = require('./_isIterateeCall');
-
-/**
- * Creates a function like `_.assign`.
- *
- * @private
- * @param {Function} assigner The function to assign values.
- * @returns {Function} Returns the new assigner function.
- */
-function createAssigner(assigner) {
-  return baseRest(function(object, sources) {
-    var index = -1,
-        length = sources.length,
-        customizer = length > 1 ? sources[length - 1] : undefined,
-        guard = length > 2 ? sources[2] : undefined;
-
-    customizer = (assigner.length > 3 && typeof customizer == 'function')
-      ? (length--, customizer)
-      : undefined;
-
-    if (guard && isIterateeCall(sources[0], sources[1], guard)) {
-      customizer = length < 3 ? undefined : customizer;
-      length = 1;
-    }
-    object = Object(object);
-    while (++index < length) {
-      var source = sources[index];
-      if (source) {
-        assigner(object, source, index, customizer);
-      }
-    }
-    return object;
-  });
-}
-
-module.exports = createAssigner;
-
-},{"./_baseRest":389,"./_isIterateeCall":436}],408:[function(require,module,exports){
-var isArrayLike = require('./isArrayLike');
-
-/**
- * Creates a `baseEach` or `baseEachRight` function.
- *
- * @private
- * @param {Function} eachFunc The function to iterate over a collection.
- * @param {boolean} [fromRight] Specify iterating from right to left.
- * @returns {Function} Returns the new base function.
- */
-function createBaseEach(eachFunc, fromRight) {
-  return function(collection, iteratee) {
-    if (collection == null) {
-      return collection;
-    }
-    if (!isArrayLike(collection)) {
-      return eachFunc(collection, iteratee);
-    }
-    var length = collection.length,
-        index = fromRight ? length : -1,
-        iterable = Object(collection);
-
-    while ((fromRight ? index-- : ++index < length)) {
-      if (iteratee(iterable[index], index, iterable) === false) {
-        break;
-      }
-    }
-    return collection;
-  };
-}
-
-module.exports = createBaseEach;
-
-},{"./isArrayLike":487}],409:[function(require,module,exports){
-/**
- * Creates a base function for methods like `_.forIn` and `_.forOwn`.
- *
- * @private
- * @param {boolean} [fromRight] Specify iterating from right to left.
- * @returns {Function} Returns the new base function.
- */
-function createBaseFor(fromRight) {
-  return function(object, iteratee, keysFunc) {
-    var index = -1,
-        iterable = Object(object),
-        props = keysFunc(object),
-        length = props.length;
-
-    while (length--) {
-      var key = props[fromRight ? length : ++index];
-      if (iteratee(iterable[key], key, iterable) === false) {
-        break;
-      }
-    }
-    return object;
-  };
-}
-
-module.exports = createBaseFor;
-
-},{}],410:[function(require,module,exports){
-var getNative = require('./_getNative');
-
-var defineProperty = (function() {
-  try {
-    var func = getNative(Object, 'defineProperty');
-    func({}, '', {});
-    return func;
-  } catch (e) {}
-}());
-
-module.exports = defineProperty;
-
-},{"./_getNative":419}],411:[function(require,module,exports){
-var SetCache = require('./_SetCache'),
-    arraySome = require('./_arraySome'),
-    cacheHas = require('./_cacheHas');
-
-/** Used to compose bitmasks for value comparisons. */
-var COMPARE_PARTIAL_FLAG = 1,
-    COMPARE_UNORDERED_FLAG = 2;
-
-/**
- * A specialized version of `baseIsEqualDeep` for arrays with support for
- * partial deep comparisons.
- *
- * @private
- * @param {Array} array The array to compare.
- * @param {Array} other The other array to compare.
- * @param {number} bitmask The bitmask flags. See `baseIsEqual` for more details.
- * @param {Function} customizer The function to customize comparisons.
- * @param {Function} equalFunc The function to determine equivalents of values.
- * @param {Object} stack Tracks traversed `array` and `other` objects.
- * @returns {boolean} Returns `true` if the arrays are equivalent, else `false`.
- */
-function equalArrays(array, other, bitmask, customizer, equalFunc, stack) {
-  var isPartial = bitmask & COMPARE_PARTIAL_FLAG,
-      arrLength = array.length,
-      othLength = other.length;
-
-  if (arrLength != othLength && !(isPartial && othLength > arrLength)) {
-    return false;
-  }
-  // Assume cyclic values are equal.
-  var stacked = stack.get(array);
-  if (stacked && stack.get(other)) {
-    return stacked == other;
-  }
-  var index = -1,
-      result = true,
-      seen = (bitmask & COMPARE_UNORDERED_FLAG) ? new SetCache : undefined;
-
-  stack.set(array, other);
-  stack.set(other, array);
-
-  // Ignore non-index properties.
-  while (++index < arrLength) {
-    var arrValue = array[index],
-        othValue = other[index];
-
-    if (customizer) {
-      var compared = isPartial
-        ? customizer(othValue, arrValue, index, other, array, stack)
-        : customizer(arrValue, othValue, index, array, other, stack);
-    }
-    if (compared !== undefined) {
-      if (compared) {
-        continue;
-      }
-      result = false;
-      break;
-    }
-    // Recursively compare arrays (susceptible to call stack limits).
-    if (seen) {
-      if (!arraySome(other, function(othValue, othIndex) {
-            if (!cacheHas(seen, othIndex) &&
-                (arrValue === othValue || equalFunc(arrValue, othValue, bitmask, customizer, stack))) {
-              return seen.push(othIndex);
-            }
-          })) {
-        result = false;
-        break;
-      }
-    } else if (!(
-          arrValue === othValue ||
-            equalFunc(arrValue, othValue, bitmask, customizer, stack)
-        )) {
-      result = false;
-      break;
-    }
-  }
-  stack['delete'](array);
-  stack['delete'](other);
-  return result;
-}
-
-module.exports = equalArrays;
-
-},{"./_SetCache":346,"./_arraySome":357,"./_cacheHas":394}],412:[function(require,module,exports){
-var Symbol = require('./_Symbol'),
-    Uint8Array = require('./_Uint8Array'),
-    eq = require('./eq'),
-    equalArrays = require('./_equalArrays'),
-    mapToArray = require('./_mapToArray'),
-    setToArray = require('./_setToArray');
-
-/** Used to compose bitmasks for value comparisons. */
-var COMPARE_PARTIAL_FLAG = 1,
-    COMPARE_UNORDERED_FLAG = 2;
-
-/** `Object#toString` result references. */
-var boolTag = '[object Boolean]',
-    dateTag = '[object Date]',
-    errorTag = '[object Error]',
-    mapTag = '[object Map]',
-    numberTag = '[object Number]',
-    regexpTag = '[object RegExp]',
-    setTag = '[object Set]',
-    stringTag = '[object String]',
-    symbolTag = '[object Symbol]';
-
-var arrayBufferTag = '[object ArrayBuffer]',
-    dataViewTag = '[object DataView]';
-
-/** Used to convert symbols to primitives and strings. */
-var symbolProto = Symbol ? Symbol.prototype : undefined,
-    symbolValueOf = symbolProto ? symbolProto.valueOf : undefined;
-
-/**
- * A specialized version of `baseIsEqualDeep` for comparing objects of
- * the same `toStringTag`.
- *
- * **Note:** This function only supports comparing values with tags of
- * `Boolean`, `Date`, `Error`, `Number`, `RegExp`, or `String`.
- *
- * @private
- * @param {Object} object The object to compare.
- * @param {Object} other The other object to compare.
- * @param {string} tag The `toStringTag` of the objects to compare.
- * @param {number} bitmask The bitmask flags. See `baseIsEqual` for more details.
- * @param {Function} customizer The function to customize comparisons.
- * @param {Function} equalFunc The function to determine equivalents of values.
- * @param {Object} stack Tracks traversed `object` and `other` objects.
- * @returns {boolean} Returns `true` if the objects are equivalent, else `false`.
- */
-function equalByTag(object, other, tag, bitmask, customizer, equalFunc, stack) {
-  switch (tag) {
-    case dataViewTag:
-      if ((object.byteLength != other.byteLength) ||
-          (object.byteOffset != other.byteOffset)) {
-        return false;
-      }
-      object = object.buffer;
-      other = other.buffer;
-
-    case arrayBufferTag:
-      if ((object.byteLength != other.byteLength) ||
-          !equalFunc(new Uint8Array(object), new Uint8Array(other))) {
-        return false;
-      }
-      return true;
-
-    case boolTag:
-    case dateTag:
-    case numberTag:
-      // Coerce booleans to `1` or `0` and dates to milliseconds.
-      // Invalid dates are coerced to `NaN`.
-      return eq(+object, +other);
-
-    case errorTag:
-      return object.name == other.name && object.message == other.message;
-
-    case regexpTag:
-    case stringTag:
-      // Coerce regexes to strings and treat strings, primitives and objects,
-      // as equal. See http://www.ecma-international.org/ecma-262/7.0/#sec-regexp.prototype.tostring
-      // for more details.
-      return object == (other + '');
-
-    case mapTag:
-      var convert = mapToArray;
-
-    case setTag:
-      var isPartial = bitmask & COMPARE_PARTIAL_FLAG;
-      convert || (convert = setToArray);
-
-      if (object.size != other.size && !isPartial) {
-        return false;
-      }
-      // Assume cyclic values are equal.
-      var stacked = stack.get(object);
-      if (stacked) {
-        return stacked == other;
-      }
-      bitmask |= COMPARE_UNORDERED_FLAG;
-
-      // Recursively compare objects (susceptible to call stack limits).
-      stack.set(object, other);
-      var result = equalArrays(convert(object), convert(other), bitmask, customizer, equalFunc, stack);
-      stack['delete'](object);
-      return result;
-
-    case symbolTag:
-      if (symbolValueOf) {
-        return symbolValueOf.call(object) == symbolValueOf.call(other);
-      }
-  }
-  return false;
-}
-
-module.exports = equalByTag;
-
-},{"./_Symbol":348,"./_Uint8Array":349,"./_equalArrays":411,"./_mapToArray":452,"./_setToArray":465,"./eq":479}],413:[function(require,module,exports){
-var getAllKeys = require('./_getAllKeys');
-
-/** Used to compose bitmasks for value comparisons. */
-var COMPARE_PARTIAL_FLAG = 1;
-
-/** Used for built-in method references. */
-var objectProto = Object.prototype;
-
-/** Used to check objects for own properties. */
-var hasOwnProperty = objectProto.hasOwnProperty;
-
-/**
- * A specialized version of `baseIsEqualDeep` for objects with support for
- * partial deep comparisons.
- *
- * @private
- * @param {Object} object The object to compare.
- * @param {Object} other The other object to compare.
- * @param {number} bitmask The bitmask flags. See `baseIsEqual` for more details.
- * @param {Function} customizer The function to customize comparisons.
- * @param {Function} equalFunc The function to determine equivalents of values.
- * @param {Object} stack Tracks traversed `object` and `other` objects.
- * @returns {boolean} Returns `true` if the objects are equivalent, else `false`.
- */
-function equalObjects(object, other, bitmask, customizer, equalFunc, stack) {
-  var isPartial = bitmask & COMPARE_PARTIAL_FLAG,
-      objProps = getAllKeys(object),
-      objLength = objProps.length,
-      othProps = getAllKeys(other),
-      othLength = othProps.length;
-
-  if (objLength != othLength && !isPartial) {
-    return false;
-  }
-  var index = objLength;
-  while (index--) {
-    var key = objProps[index];
-    if (!(isPartial ? key in other : hasOwnProperty.call(other, key))) {
-      return false;
-    }
-  }
-  // Assume cyclic values are equal.
-  var stacked = stack.get(object);
-  if (stacked && stack.get(other)) {
-    return stacked == other;
-  }
-  var result = true;
-  stack.set(object, other);
-  stack.set(other, object);
-
-  var skipCtor = isPartial;
-  while (++index < objLength) {
-    key = objProps[index];
-    var objValue = object[key],
-        othValue = other[key];
-
-    if (customizer) {
-      var compared = isPartial
-        ? customizer(othValue, objValue, key, other, object, stack)
-        : customizer(objValue, othValue, key, object, other, stack);
-    }
-    // Recursively compare objects (susceptible to call stack limits).
-    if (!(compared === undefined
-          ? (objValue === othValue || equalFunc(objValue, othValue, bitmask, customizer, stack))
-          : compared
-        )) {
-      result = false;
-      break;
-    }
-    skipCtor || (skipCtor = key == 'constructor');
-  }
-  if (result && !skipCtor) {
-    var objCtor = object.constructor,
-        othCtor = other.constructor;
-
-    // Non `Object` object instances with different constructors are not equal.
-    if (objCtor != othCtor &&
-        ('constructor' in object && 'constructor' in other) &&
-        !(typeof objCtor == 'function' && objCtor instanceof objCtor &&
-          typeof othCtor == 'function' && othCtor instanceof othCtor)) {
-      result = false;
-    }
-  }
-  stack['delete'](object);
-  stack['delete'](other);
-  return result;
-}
-
-module.exports = equalObjects;
-
-},{"./_getAllKeys":415}],414:[function(require,module,exports){
-(function (global){
-/** Detect free variable `global` from Node.js. */
-var freeGlobal = typeof global == 'object' && global && global.Object === Object && global;
-
-module.exports = freeGlobal;
-
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],415:[function(require,module,exports){
-var baseGetAllKeys = require('./_baseGetAllKeys'),
-    getSymbols = require('./_getSymbols'),
-    keys = require('./keys');
-
-/**
- * Creates an array of own enumerable property names and symbols of `object`.
- *
- * @private
- * @param {Object} object The object to query.
- * @returns {Array} Returns the array of property names and symbols.
- */
-function getAllKeys(object) {
-  return baseGetAllKeys(object, keys, getSymbols);
-}
-
-module.exports = getAllKeys;
-
-},{"./_baseGetAllKeys":369,"./_getSymbols":422,"./keys":502}],416:[function(require,module,exports){
-var baseGetAllKeys = require('./_baseGetAllKeys'),
-    getSymbolsIn = require('./_getSymbolsIn'),
-    keysIn = require('./keysIn');
-
-/**
- * Creates an array of own and inherited enumerable property names and
- * symbols of `object`.
- *
- * @private
- * @param {Object} object The object to query.
- * @returns {Array} Returns the array of property names and symbols.
- */
-function getAllKeysIn(object) {
-  return baseGetAllKeys(object, keysIn, getSymbolsIn);
-}
-
-module.exports = getAllKeysIn;
-
-},{"./_baseGetAllKeys":369,"./_getSymbolsIn":423,"./keysIn":503}],417:[function(require,module,exports){
-var isKeyable = require('./_isKeyable');
-
-/**
- * Gets the data for `map`.
- *
- * @private
- * @param {Object} map The map to query.
- * @param {string} key The reference key.
- * @returns {*} Returns the map data.
- */
-function getMapData(map, key) {
-  var data = map.__data__;
-  return isKeyable(key)
-    ? data[typeof key == 'string' ? 'string' : 'hash']
-    : data.map;
-}
-
-module.exports = getMapData;
-
-},{"./_isKeyable":438}],418:[function(require,module,exports){
-var isStrictComparable = require('./_isStrictComparable'),
-    keys = require('./keys');
-
-/**
- * Gets the property names, values, and compare flags of `object`.
- *
- * @private
- * @param {Object} object The object to query.
- * @returns {Array} Returns the match data of `object`.
- */
-function getMatchData(object) {
-  var result = keys(object),
-      length = result.length;
-
-  while (length--) {
-    var key = result[length],
-        value = object[key];
-
-    result[length] = [key, value, isStrictComparable(value)];
-  }
-  return result;
-}
-
-module.exports = getMatchData;
-
-},{"./_isStrictComparable":441,"./keys":502}],419:[function(require,module,exports){
-var baseIsNative = require('./_baseIsNative'),
-    getValue = require('./_getValue');
-
-/**
- * Gets the native function at `key` of `object`.
- *
- * @private
- * @param {Object} object The object to query.
- * @param {string} key The key of the method to get.
- * @returns {*} Returns the function if it's native, else `undefined`.
- */
-function getNative(object, key) {
-  var value = getValue(object, key);
-  return baseIsNative(value) ? value : undefined;
-}
-
-module.exports = getNative;
-
-},{"./_baseIsNative":378,"./_getValue":425}],420:[function(require,module,exports){
-var overArg = require('./_overArg');
-
-/** Built-in value references. */
-var getPrototype = overArg(Object.getPrototypeOf, Object);
-
-module.exports = getPrototype;
-
-},{"./_overArg":460}],421:[function(require,module,exports){
-var Symbol = require('./_Symbol');
-
-/** Used for built-in method references. */
-var objectProto = Object.prototype;
-
-/** Used to check objects for own properties. */
-var hasOwnProperty = objectProto.hasOwnProperty;
-
-/**
- * Used to resolve the
- * [`toStringTag`](http://ecma-international.org/ecma-262/7.0/#sec-object.prototype.tostring)
- * of values.
- */
-var nativeObjectToString = objectProto.toString;
-
-/** Built-in value references. */
-var symToStringTag = Symbol ? Symbol.toStringTag : undefined;
-
-/**
- * A specialized version of `baseGetTag` which ignores `Symbol.toStringTag` values.
- *
- * @private
- * @param {*} value The value to query.
- * @returns {string} Returns the raw `toStringTag`.
- */
-function getRawTag(value) {
-  var isOwn = hasOwnProperty.call(value, symToStringTag),
-      tag = value[symToStringTag];
-
-  try {
-    value[symToStringTag] = undefined;
-    var unmasked = true;
-  } catch (e) {}
-
-  var result = nativeObjectToString.call(value);
-  if (unmasked) {
-    if (isOwn) {
-      value[symToStringTag] = tag;
-    } else {
-      delete value[symToStringTag];
-    }
-  }
-  return result;
-}
-
-module.exports = getRawTag;
-
-},{"./_Symbol":348}],422:[function(require,module,exports){
-var arrayFilter = require('./_arrayFilter'),
-    stubArray = require('./stubArray');
-
-/** Used for built-in method references. */
-var objectProto = Object.prototype;
-
-/** Built-in value references. */
-var propertyIsEnumerable = objectProto.propertyIsEnumerable;
-
-/* Built-in method references for those with the same name as other `lodash` methods. */
-var nativeGetSymbols = Object.getOwnPropertySymbols;
-
-/**
- * Creates an array of the own enumerable symbols of `object`.
- *
- * @private
- * @param {Object} object The object to query.
- * @returns {Array} Returns the array of symbols.
- */
-var getSymbols = !nativeGetSymbols ? stubArray : function(object) {
-  if (object == null) {
-    return [];
-  }
-  object = Object(object);
-  return arrayFilter(nativeGetSymbols(object), function(symbol) {
-    return propertyIsEnumerable.call(object, symbol);
-  });
-};
-
-module.exports = getSymbols;
-
-},{"./_arrayFilter":353,"./stubArray":507}],423:[function(require,module,exports){
-var arrayPush = require('./_arrayPush'),
-    getPrototype = require('./_getPrototype'),
-    getSymbols = require('./_getSymbols'),
-    stubArray = require('./stubArray');
-
-/* Built-in method references for those with the same name as other `lodash` methods. */
-var nativeGetSymbols = Object.getOwnPropertySymbols;
-
-/**
- * Creates an array of the own and inherited enumerable symbols of `object`.
- *
- * @private
- * @param {Object} object The object to query.
- * @returns {Array} Returns the array of symbols.
- */
-var getSymbolsIn = !nativeGetSymbols ? stubArray : function(object) {
-  var result = [];
-  while (object) {
-    arrayPush(result, getSymbols(object));
-    object = getPrototype(object);
-  }
-  return result;
-};
-
-module.exports = getSymbolsIn;
-
-},{"./_arrayPush":356,"./_getPrototype":420,"./_getSymbols":422,"./stubArray":507}],424:[function(require,module,exports){
-var DataView = require('./_DataView'),
-    Map = require('./_Map'),
-    Promise = require('./_Promise'),
-    Set = require('./_Set'),
-    WeakMap = require('./_WeakMap'),
-    baseGetTag = require('./_baseGetTag'),
-    toSource = require('./_toSource');
-
-/** `Object#toString` result references. */
-var mapTag = '[object Map]',
-    objectTag = '[object Object]',
-    promiseTag = '[object Promise]',
-    setTag = '[object Set]',
-    weakMapTag = '[object WeakMap]';
-
-var dataViewTag = '[object DataView]';
-
-/** Used to detect maps, sets, and weakmaps. */
-var dataViewCtorString = toSource(DataView),
-    mapCtorString = toSource(Map),
-    promiseCtorString = toSource(Promise),
-    setCtorString = toSource(Set),
-    weakMapCtorString = toSource(WeakMap);
-
-/**
- * Gets the `toStringTag` of `value`.
- *
- * @private
- * @param {*} value The value to query.
- * @returns {string} Returns the `toStringTag`.
- */
-var getTag = baseGetTag;
-
-// Fallback for data views, maps, sets, and weak maps in IE 11 and promises in Node.js < 6.
-if ((DataView && getTag(new DataView(new ArrayBuffer(1))) != dataViewTag) ||
-    (Map && getTag(new Map) != mapTag) ||
-    (Promise && getTag(Promise.resolve()) != promiseTag) ||
-    (Set && getTag(new Set) != setTag) ||
-    (WeakMap && getTag(new WeakMap) != weakMapTag)) {
-  getTag = function(value) {
-    var result = baseGetTag(value),
-        Ctor = result == objectTag ? value.constructor : undefined,
-        ctorString = Ctor ? toSource(Ctor) : '';
-
-    if (ctorString) {
-      switch (ctorString) {
-        case dataViewCtorString: return dataViewTag;
-        case mapCtorString: return mapTag;
-        case promiseCtorString: return promiseTag;
-        case setCtorString: return setTag;
-        case weakMapCtorString: return weakMapTag;
-      }
-    }
-    return result;
-  };
-}
-
-module.exports = getTag;
-
-},{"./_DataView":339,"./_Map":342,"./_Promise":344,"./_Set":345,"./_WeakMap":350,"./_baseGetTag":370,"./_toSource":475}],425:[function(require,module,exports){
-/**
- * Gets the value at `key` of `object`.
- *
- * @private
- * @param {Object} [object] The object to query.
- * @param {string} key The key of the property to get.
- * @returns {*} Returns the property value.
- */
-function getValue(object, key) {
-  return object == null ? undefined : object[key];
-}
-
-module.exports = getValue;
-
-},{}],426:[function(require,module,exports){
-var castPath = require('./_castPath'),
-    isArguments = require('./isArguments'),
-    isArray = require('./isArray'),
-    isIndex = require('./_isIndex'),
-    isLength = require('./isLength'),
-    toKey = require('./_toKey');
-
-/**
- * Checks if `path` exists on `object`.
- *
- * @private
- * @param {Object} object The object to query.
- * @param {Array|string} path The path to check.
- * @param {Function} hasFunc The function to check properties.
- * @returns {boolean} Returns `true` if `path` exists, else `false`.
- */
-function hasPath(object, path, hasFunc) {
-  path = castPath(path, object);
-
-  var index = -1,
-      length = path.length,
-      result = false;
-
-  while (++index < length) {
-    var key = toKey(path[index]);
-    if (!(result = object != null && hasFunc(object, key))) {
-      break;
-    }
-    object = object[key];
-  }
-  if (result || ++index != length) {
-    return result;
-  }
-  length = object == null ? 0 : object.length;
-  return !!length && isLength(length) && isIndex(key, length) &&
-    (isArray(object) || isArguments(object));
-}
-
-module.exports = hasPath;
-
-},{"./_castPath":395,"./_isIndex":435,"./_toKey":474,"./isArguments":485,"./isArray":486,"./isLength":491}],427:[function(require,module,exports){
-var nativeCreate = require('./_nativeCreate');
-
-/**
- * Removes all key-value entries from the hash.
- *
- * @private
- * @name clear
- * @memberOf Hash
- */
-function hashClear() {
-  this.__data__ = nativeCreate ? nativeCreate(null) : {};
-  this.size = 0;
-}
-
-module.exports = hashClear;
-
-},{"./_nativeCreate":455}],428:[function(require,module,exports){
-/**
- * Removes `key` and its value from the hash.
- *
- * @private
- * @name delete
- * @memberOf Hash
- * @param {Object} hash The hash to modify.
- * @param {string} key The key of the value to remove.
- * @returns {boolean} Returns `true` if the entry was removed, else `false`.
- */
-function hashDelete(key) {
-  var result = this.has(key) && delete this.__data__[key];
-  this.size -= result ? 1 : 0;
-  return result;
-}
-
-module.exports = hashDelete;
-
-},{}],429:[function(require,module,exports){
-var nativeCreate = require('./_nativeCreate');
-
-/** Used to stand-in for `undefined` hash values. */
-var HASH_UNDEFINED = '__lodash_hash_undefined__';
-
-/** Used for built-in method references. */
-var objectProto = Object.prototype;
-
-/** Used to check objects for own properties. */
-var hasOwnProperty = objectProto.hasOwnProperty;
-
-/**
- * Gets the hash value for `key`.
- *
- * @private
- * @name get
- * @memberOf Hash
- * @param {string} key The key of the value to get.
- * @returns {*} Returns the entry value.
- */
-function hashGet(key) {
-  var data = this.__data__;
-  if (nativeCreate) {
-    var result = data[key];
-    return result === HASH_UNDEFINED ? undefined : result;
-  }
-  return hasOwnProperty.call(data, key) ? data[key] : undefined;
-}
-
-module.exports = hashGet;
-
-},{"./_nativeCreate":455}],430:[function(require,module,exports){
-var nativeCreate = require('./_nativeCreate');
-
-/** Used for built-in method references. */
-var objectProto = Object.prototype;
-
-/** Used to check objects for own properties. */
-var hasOwnProperty = objectProto.hasOwnProperty;
-
-/**
- * Checks if a hash value for `key` exists.
- *
- * @private
- * @name has
- * @memberOf Hash
- * @param {string} key The key of the entry to check.
- * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
- */
-function hashHas(key) {
-  var data = this.__data__;
-  return nativeCreate ? (data[key] !== undefined) : hasOwnProperty.call(data, key);
-}
-
-module.exports = hashHas;
-
-},{"./_nativeCreate":455}],431:[function(require,module,exports){
-var nativeCreate = require('./_nativeCreate');
-
-/** Used to stand-in for `undefined` hash values. */
-var HASH_UNDEFINED = '__lodash_hash_undefined__';
-
-/**
- * Sets the hash `key` to `value`.
- *
- * @private
- * @name set
- * @memberOf Hash
- * @param {string} key The key of the value to set.
- * @param {*} value The value to set.
- * @returns {Object} Returns the hash instance.
- */
-function hashSet(key, value) {
-  var data = this.__data__;
-  this.size += this.has(key) ? 0 : 1;
-  data[key] = (nativeCreate && value === undefined) ? HASH_UNDEFINED : value;
-  return this;
-}
-
-module.exports = hashSet;
-
-},{"./_nativeCreate":455}],432:[function(require,module,exports){
-/** Used for built-in method references. */
-var objectProto = Object.prototype;
-
-/** Used to check objects for own properties. */
-var hasOwnProperty = objectProto.hasOwnProperty;
-
-/**
- * Initializes an array clone.
- *
- * @private
- * @param {Array} array The array to clone.
- * @returns {Array} Returns the initialized clone.
- */
-function initCloneArray(array) {
-  var length = array.length,
-      result = new array.constructor(length);
-
-  // Add properties assigned by `RegExp#exec`.
-  if (length && typeof array[0] == 'string' && hasOwnProperty.call(array, 'index')) {
-    result.index = array.index;
-    result.input = array.input;
-  }
-  return result;
-}
-
-module.exports = initCloneArray;
-
-},{}],433:[function(require,module,exports){
-var cloneArrayBuffer = require('./_cloneArrayBuffer'),
-    cloneDataView = require('./_cloneDataView'),
-    cloneRegExp = require('./_cloneRegExp'),
-    cloneSymbol = require('./_cloneSymbol'),
-    cloneTypedArray = require('./_cloneTypedArray');
-
-/** `Object#toString` result references. */
-var boolTag = '[object Boolean]',
-    dateTag = '[object Date]',
-    mapTag = '[object Map]',
-    numberTag = '[object Number]',
-    regexpTag = '[object RegExp]',
-    setTag = '[object Set]',
-    stringTag = '[object String]',
-    symbolTag = '[object Symbol]';
-
-var arrayBufferTag = '[object ArrayBuffer]',
-    dataViewTag = '[object DataView]',
-    float32Tag = '[object Float32Array]',
-    float64Tag = '[object Float64Array]',
-    int8Tag = '[object Int8Array]',
-    int16Tag = '[object Int16Array]',
-    int32Tag = '[object Int32Array]',
-    uint8Tag = '[object Uint8Array]',
-    uint8ClampedTag = '[object Uint8ClampedArray]',
-    uint16Tag = '[object Uint16Array]',
-    uint32Tag = '[object Uint32Array]';
-
-/**
- * Initializes an object clone based on its `toStringTag`.
- *
- * **Note:** This function only supports cloning values with tags of
- * `Boolean`, `Date`, `Error`, `Map`, `Number`, `RegExp`, `Set`, or `String`.
- *
- * @private
- * @param {Object} object The object to clone.
- * @param {string} tag The `toStringTag` of the object to clone.
- * @param {boolean} [isDeep] Specify a deep clone.
- * @returns {Object} Returns the initialized clone.
- */
-function initCloneByTag(object, tag, isDeep) {
-  var Ctor = object.constructor;
-  switch (tag) {
-    case arrayBufferTag:
-      return cloneArrayBuffer(object);
-
-    case boolTag:
-    case dateTag:
-      return new Ctor(+object);
-
-    case dataViewTag:
-      return cloneDataView(object, isDeep);
-
-    case float32Tag: case float64Tag:
-    case int8Tag: case int16Tag: case int32Tag:
-    case uint8Tag: case uint8ClampedTag: case uint16Tag: case uint32Tag:
-      return cloneTypedArray(object, isDeep);
-
-    case mapTag:
-      return new Ctor;
-
-    case numberTag:
-    case stringTag:
-      return new Ctor(object);
-
-    case regexpTag:
-      return cloneRegExp(object);
-
-    case setTag:
-      return new Ctor;
-
-    case symbolTag:
-      return cloneSymbol(object);
-  }
-}
-
-module.exports = initCloneByTag;
-
-},{"./_cloneArrayBuffer":396,"./_cloneDataView":398,"./_cloneRegExp":399,"./_cloneSymbol":400,"./_cloneTypedArray":401}],434:[function(require,module,exports){
-var baseCreate = require('./_baseCreate'),
-    getPrototype = require('./_getPrototype'),
-    isPrototype = require('./_isPrototype');
-
-/**
- * Initializes an object clone.
- *
- * @private
- * @param {Object} object The object to clone.
- * @returns {Object} Returns the initialized clone.
- */
-function initCloneObject(object) {
-  return (typeof object.constructor == 'function' && !isPrototype(object))
-    ? baseCreate(getPrototype(object))
-    : {};
-}
-
-module.exports = initCloneObject;
-
-},{"./_baseCreate":364,"./_getPrototype":420,"./_isPrototype":440}],435:[function(require,module,exports){
-/** Used as references for various `Number` constants. */
-var MAX_SAFE_INTEGER = 9007199254740991;
-
-/** Used to detect unsigned integer values. */
-var reIsUint = /^(?:0|[1-9]\d*)$/;
-
-/**
- * Checks if `value` is a valid array-like index.
- *
- * @private
- * @param {*} value The value to check.
- * @param {number} [length=MAX_SAFE_INTEGER] The upper bounds of a valid index.
- * @returns {boolean} Returns `true` if `value` is a valid index, else `false`.
- */
-function isIndex(value, length) {
-  var type = typeof value;
-  length = length == null ? MAX_SAFE_INTEGER : length;
-
-  return !!length &&
-    (type == 'number' ||
-      (type != 'symbol' && reIsUint.test(value))) &&
-        (value > -1 && value % 1 == 0 && value < length);
-}
-
-module.exports = isIndex;
-
-},{}],436:[function(require,module,exports){
-var eq = require('./eq'),
-    isArrayLike = require('./isArrayLike'),
-    isIndex = require('./_isIndex'),
-    isObject = require('./isObject');
-
-/**
- * Checks if the given arguments are from an iteratee call.
- *
- * @private
- * @param {*} value The potential iteratee value argument.
- * @param {*} index The potential iteratee index or key argument.
- * @param {*} object The potential iteratee object argument.
- * @returns {boolean} Returns `true` if the arguments are from an iteratee call,
- *  else `false`.
- */
-function isIterateeCall(value, index, object) {
-  if (!isObject(object)) {
-    return false;
-  }
-  var type = typeof index;
-  if (type == 'number'
-        ? (isArrayLike(object) && isIndex(index, object.length))
-        : (type == 'string' && index in object)
-      ) {
-    return eq(object[index], value);
-  }
-  return false;
-}
-
-module.exports = isIterateeCall;
-
-},{"./_isIndex":435,"./eq":479,"./isArrayLike":487,"./isObject":495}],437:[function(require,module,exports){
-var isArray = require('./isArray'),
-    isSymbol = require('./isSymbol');
-
-/** Used to match property names within property paths. */
-var reIsDeepProp = /\.|\[(?:[^[\]]*|(["'])(?:(?!\1)[^\\]|\\.)*?\1)\]/,
-    reIsPlainProp = /^\w*$/;
-
-/**
- * Checks if `value` is a property name and not a property path.
- *
- * @private
- * @param {*} value The value to check.
- * @param {Object} [object] The object to query keys on.
- * @returns {boolean} Returns `true` if `value` is a property name, else `false`.
- */
-function isKey(value, object) {
-  if (isArray(value)) {
-    return false;
-  }
-  var type = typeof value;
-  if (type == 'number' || type == 'symbol' || type == 'boolean' ||
-      value == null || isSymbol(value)) {
-    return true;
-  }
-  return reIsPlainProp.test(value) || !reIsDeepProp.test(value) ||
-    (object != null && value in Object(object));
-}
-
-module.exports = isKey;
-
-},{"./isArray":486,"./isSymbol":499}],438:[function(require,module,exports){
-/**
- * Checks if `value` is suitable for use as unique object key.
- *
- * @private
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is suitable, else `false`.
- */
-function isKeyable(value) {
-  var type = typeof value;
-  return (type == 'string' || type == 'number' || type == 'symbol' || type == 'boolean')
-    ? (value !== '__proto__')
-    : (value === null);
-}
-
-module.exports = isKeyable;
-
-},{}],439:[function(require,module,exports){
-var coreJsData = require('./_coreJsData');
-
-/** Used to detect methods masquerading as native. */
-var maskSrcKey = (function() {
-  var uid = /[^.]+$/.exec(coreJsData && coreJsData.keys && coreJsData.keys.IE_PROTO || '');
-  return uid ? ('Symbol(src)_1.' + uid) : '';
-}());
-
-/**
- * Checks if `func` has its source masked.
- *
- * @private
- * @param {Function} func The function to check.
- * @returns {boolean} Returns `true` if `func` is masked, else `false`.
- */
-function isMasked(func) {
-  return !!maskSrcKey && (maskSrcKey in func);
-}
-
-module.exports = isMasked;
-
-},{"./_coreJsData":406}],440:[function(require,module,exports){
-/** Used for built-in method references. */
-var objectProto = Object.prototype;
-
-/**
- * Checks if `value` is likely a prototype object.
- *
- * @private
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is a prototype, else `false`.
- */
-function isPrototype(value) {
-  var Ctor = value && value.constructor,
-      proto = (typeof Ctor == 'function' && Ctor.prototype) || objectProto;
-
-  return value === proto;
-}
-
-module.exports = isPrototype;
-
-},{}],441:[function(require,module,exports){
-var isObject = require('./isObject');
-
-/**
- * Checks if `value` is suitable for strict equality comparisons, i.e. `===`.
- *
- * @private
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` if suitable for strict
- *  equality comparisons, else `false`.
- */
-function isStrictComparable(value) {
-  return value === value && !isObject(value);
-}
-
-module.exports = isStrictComparable;
-
-},{"./isObject":495}],442:[function(require,module,exports){
-/**
- * Removes all key-value entries from the list cache.
- *
- * @private
- * @name clear
- * @memberOf ListCache
- */
-function listCacheClear() {
-  this.__data__ = [];
-  this.size = 0;
-}
-
-module.exports = listCacheClear;
-
-},{}],443:[function(require,module,exports){
-var assocIndexOf = require('./_assocIndexOf');
-
-/** Used for built-in method references. */
-var arrayProto = Array.prototype;
-
-/** Built-in value references. */
-var splice = arrayProto.splice;
-
-/**
- * Removes `key` and its value from the list cache.
- *
- * @private
- * @name delete
- * @memberOf ListCache
- * @param {string} key The key of the value to remove.
- * @returns {boolean} Returns `true` if the entry was removed, else `false`.
- */
-function listCacheDelete(key) {
-  var data = this.__data__,
-      index = assocIndexOf(data, key);
-
-  if (index < 0) {
-    return false;
-  }
-  var lastIndex = data.length - 1;
-  if (index == lastIndex) {
-    data.pop();
-  } else {
-    splice.call(data, index, 1);
-  }
-  --this.size;
-  return true;
-}
-
-module.exports = listCacheDelete;
-
-},{"./_assocIndexOf":359}],444:[function(require,module,exports){
-var assocIndexOf = require('./_assocIndexOf');
-
-/**
- * Gets the list cache value for `key`.
- *
- * @private
- * @name get
- * @memberOf ListCache
- * @param {string} key The key of the value to get.
- * @returns {*} Returns the entry value.
- */
-function listCacheGet(key) {
-  var data = this.__data__,
-      index = assocIndexOf(data, key);
-
-  return index < 0 ? undefined : data[index][1];
-}
-
-module.exports = listCacheGet;
-
-},{"./_assocIndexOf":359}],445:[function(require,module,exports){
-var assocIndexOf = require('./_assocIndexOf');
-
-/**
- * Checks if a list cache value for `key` exists.
- *
- * @private
- * @name has
- * @memberOf ListCache
- * @param {string} key The key of the entry to check.
- * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
- */
-function listCacheHas(key) {
-  return assocIndexOf(this.__data__, key) > -1;
-}
-
-module.exports = listCacheHas;
-
-},{"./_assocIndexOf":359}],446:[function(require,module,exports){
-var assocIndexOf = require('./_assocIndexOf');
-
-/**
- * Sets the list cache `key` to `value`.
- *
- * @private
- * @name set
- * @memberOf ListCache
- * @param {string} key The key of the value to set.
- * @param {*} value The value to set.
- * @returns {Object} Returns the list cache instance.
- */
-function listCacheSet(key, value) {
-  var data = this.__data__,
-      index = assocIndexOf(data, key);
-
-  if (index < 0) {
-    ++this.size;
-    data.push([key, value]);
-  } else {
-    data[index][1] = value;
-  }
-  return this;
-}
-
-module.exports = listCacheSet;
-
-},{"./_assocIndexOf":359}],447:[function(require,module,exports){
-var Hash = require('./_Hash'),
-    ListCache = require('./_ListCache'),
-    Map = require('./_Map');
-
-/**
- * Removes all key-value entries from the map.
- *
- * @private
- * @name clear
- * @memberOf MapCache
- */
-function mapCacheClear() {
-  this.size = 0;
-  this.__data__ = {
-    'hash': new Hash,
-    'map': new (Map || ListCache),
-    'string': new Hash
-  };
-}
-
-module.exports = mapCacheClear;
-
-},{"./_Hash":340,"./_ListCache":341,"./_Map":342}],448:[function(require,module,exports){
-var getMapData = require('./_getMapData');
-
-/**
- * Removes `key` and its value from the map.
- *
- * @private
- * @name delete
- * @memberOf MapCache
- * @param {string} key The key of the value to remove.
- * @returns {boolean} Returns `true` if the entry was removed, else `false`.
- */
-function mapCacheDelete(key) {
-  var result = getMapData(this, key)['delete'](key);
-  this.size -= result ? 1 : 0;
-  return result;
-}
-
-module.exports = mapCacheDelete;
-
-},{"./_getMapData":417}],449:[function(require,module,exports){
-var getMapData = require('./_getMapData');
-
-/**
- * Gets the map value for `key`.
- *
- * @private
- * @name get
- * @memberOf MapCache
- * @param {string} key The key of the value to get.
- * @returns {*} Returns the entry value.
- */
-function mapCacheGet(key) {
-  return getMapData(this, key).get(key);
-}
-
-module.exports = mapCacheGet;
-
-},{"./_getMapData":417}],450:[function(require,module,exports){
-var getMapData = require('./_getMapData');
-
-/**
- * Checks if a map value for `key` exists.
- *
- * @private
- * @name has
- * @memberOf MapCache
- * @param {string} key The key of the entry to check.
- * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
- */
-function mapCacheHas(key) {
-  return getMapData(this, key).has(key);
-}
-
-module.exports = mapCacheHas;
-
-},{"./_getMapData":417}],451:[function(require,module,exports){
-var getMapData = require('./_getMapData');
-
-/**
- * Sets the map `key` to `value`.
- *
- * @private
- * @name set
- * @memberOf MapCache
- * @param {string} key The key of the value to set.
- * @param {*} value The value to set.
- * @returns {Object} Returns the map cache instance.
- */
-function mapCacheSet(key, value) {
-  var data = getMapData(this, key),
-      size = data.size;
-
-  data.set(key, value);
-  this.size += data.size == size ? 0 : 1;
-  return this;
-}
-
-module.exports = mapCacheSet;
-
-},{"./_getMapData":417}],452:[function(require,module,exports){
-/**
- * Converts `map` to its key-value pairs.
- *
- * @private
- * @param {Object} map The map to convert.
- * @returns {Array} Returns the key-value pairs.
- */
-function mapToArray(map) {
-  var index = -1,
-      result = Array(map.size);
-
-  map.forEach(function(value, key) {
-    result[++index] = [key, value];
-  });
-  return result;
-}
-
-module.exports = mapToArray;
-
-},{}],453:[function(require,module,exports){
-/**
- * A specialized version of `matchesProperty` for source values suitable
- * for strict equality comparisons, i.e. `===`.
- *
- * @private
- * @param {string} key The key of the property to get.
- * @param {*} srcValue The value to match.
- * @returns {Function} Returns the new spec function.
- */
-function matchesStrictComparable(key, srcValue) {
-  return function(object) {
-    if (object == null) {
-      return false;
-    }
-    return object[key] === srcValue &&
-      (srcValue !== undefined || (key in Object(object)));
-  };
-}
-
-module.exports = matchesStrictComparable;
-
-},{}],454:[function(require,module,exports){
-var memoize = require('./memoize');
-
-/** Used as the maximum memoize cache size. */
-var MAX_MEMOIZE_SIZE = 500;
-
-/**
- * A specialized version of `_.memoize` which clears the memoized function's
- * cache when it exceeds `MAX_MEMOIZE_SIZE`.
- *
- * @private
- * @param {Function} func The function to have its output memoized.
- * @returns {Function} Returns the new memoized function.
- */
-function memoizeCapped(func) {
-  var result = memoize(func, function(key) {
-    if (cache.size === MAX_MEMOIZE_SIZE) {
-      cache.clear();
-    }
-    return key;
-  });
-
-  var cache = result.cache;
-  return result;
-}
-
-module.exports = memoizeCapped;
-
-},{"./memoize":505}],455:[function(require,module,exports){
-var getNative = require('./_getNative');
-
-/* Built-in method references that are verified to be native. */
-var nativeCreate = getNative(Object, 'create');
-
-module.exports = nativeCreate;
-
-},{"./_getNative":419}],456:[function(require,module,exports){
-var overArg = require('./_overArg');
-
-/* Built-in method references for those with the same name as other `lodash` methods. */
-var nativeKeys = overArg(Object.keys, Object);
-
-module.exports = nativeKeys;
-
-},{"./_overArg":460}],457:[function(require,module,exports){
-/**
- * This function is like
- * [`Object.keys`](http://ecma-international.org/ecma-262/7.0/#sec-object.keys)
- * except that it includes inherited enumerable properties.
- *
- * @private
- * @param {Object} object The object to query.
- * @returns {Array} Returns the array of property names.
- */
-function nativeKeysIn(object) {
-  var result = [];
-  if (object != null) {
-    for (var key in Object(object)) {
-      result.push(key);
-    }
-  }
-  return result;
-}
-
-module.exports = nativeKeysIn;
-
-},{}],458:[function(require,module,exports){
-var freeGlobal = require('./_freeGlobal');
-
-/** Detect free variable `exports`. */
-var freeExports = typeof exports == 'object' && exports && !exports.nodeType && exports;
-
-/** Detect free variable `module`. */
-var freeModule = freeExports && typeof module == 'object' && module && !module.nodeType && module;
-
-/** Detect the popular CommonJS extension `module.exports`. */
-var moduleExports = freeModule && freeModule.exports === freeExports;
-
-/** Detect free variable `process` from Node.js. */
-var freeProcess = moduleExports && freeGlobal.process;
-
-/** Used to access faster Node.js helpers. */
-var nodeUtil = (function() {
-  try {
-    // Use `util.types` for Node.js 10+.
-    var types = freeModule && freeModule.require && freeModule.require('util').types;
-
-    if (types) {
-      return types;
-    }
-
-    // Legacy `process.binding('util')` for Node.js < 10.
-    return freeProcess && freeProcess.binding && freeProcess.binding('util');
-  } catch (e) {}
-}());
-
-module.exports = nodeUtil;
-
-},{"./_freeGlobal":414}],459:[function(require,module,exports){
-/** Used for built-in method references. */
-var objectProto = Object.prototype;
-
-/**
- * Used to resolve the
- * [`toStringTag`](http://ecma-international.org/ecma-262/7.0/#sec-object.prototype.tostring)
- * of values.
- */
-var nativeObjectToString = objectProto.toString;
-
-/**
- * Converts `value` to a string using `Object.prototype.toString`.
- *
- * @private
- * @param {*} value The value to convert.
- * @returns {string} Returns the converted string.
- */
-function objectToString(value) {
-  return nativeObjectToString.call(value);
-}
-
-module.exports = objectToString;
-
-},{}],460:[function(require,module,exports){
-/**
- * Creates a unary function that invokes `func` with its argument transformed.
- *
- * @private
- * @param {Function} func The function to wrap.
- * @param {Function} transform The argument transform.
- * @returns {Function} Returns the new function.
- */
-function overArg(func, transform) {
-  return function(arg) {
-    return func(transform(arg));
-  };
-}
-
-module.exports = overArg;
-
-},{}],461:[function(require,module,exports){
-var apply = require('./_apply');
-
-/* Built-in method references for those with the same name as other `lodash` methods. */
-var nativeMax = Math.max;
-
-/**
- * A specialized version of `baseRest` which transforms the rest array.
- *
- * @private
- * @param {Function} func The function to apply a rest parameter to.
- * @param {number} [start=func.length-1] The start position of the rest parameter.
- * @param {Function} transform The rest array transform.
- * @returns {Function} Returns the new function.
- */
-function overRest(func, start, transform) {
-  start = nativeMax(start === undefined ? (func.length - 1) : start, 0);
-  return function() {
-    var args = arguments,
-        index = -1,
-        length = nativeMax(args.length - start, 0),
-        array = Array(length);
-
-    while (++index < length) {
-      array[index] = args[start + index];
-    }
-    index = -1;
-    var otherArgs = Array(start + 1);
-    while (++index < start) {
-      otherArgs[index] = args[index];
-    }
-    otherArgs[start] = transform(array);
-    return apply(func, this, otherArgs);
-  };
-}
-
-module.exports = overRest;
-
-},{"./_apply":351}],462:[function(require,module,exports){
-var freeGlobal = require('./_freeGlobal');
-
-/** Detect free variable `self`. */
-var freeSelf = typeof self == 'object' && self && self.Object === Object && self;
-
-/** Used as a reference to the global object. */
-var root = freeGlobal || freeSelf || Function('return this')();
-
-module.exports = root;
-
-},{"./_freeGlobal":414}],463:[function(require,module,exports){
-/** Used to stand-in for `undefined` hash values. */
-var HASH_UNDEFINED = '__lodash_hash_undefined__';
-
-/**
- * Adds `value` to the array cache.
- *
- * @private
- * @name add
- * @memberOf SetCache
- * @alias push
- * @param {*} value The value to cache.
- * @returns {Object} Returns the cache instance.
- */
-function setCacheAdd(value) {
-  this.__data__.set(value, HASH_UNDEFINED);
-  return this;
-}
-
-module.exports = setCacheAdd;
-
-},{}],464:[function(require,module,exports){
-/**
- * Checks if `value` is in the array cache.
- *
- * @private
- * @name has
- * @memberOf SetCache
- * @param {*} value The value to search for.
- * @returns {number} Returns `true` if `value` is found, else `false`.
- */
-function setCacheHas(value) {
-  return this.__data__.has(value);
-}
-
-module.exports = setCacheHas;
-
-},{}],465:[function(require,module,exports){
-/**
- * Converts `set` to an array of its values.
- *
- * @private
- * @param {Object} set The set to convert.
- * @returns {Array} Returns the values.
- */
-function setToArray(set) {
-  var index = -1,
-      result = Array(set.size);
-
-  set.forEach(function(value) {
-    result[++index] = value;
-  });
-  return result;
-}
-
-module.exports = setToArray;
-
-},{}],466:[function(require,module,exports){
-var baseSetToString = require('./_baseSetToString'),
-    shortOut = require('./_shortOut');
-
-/**
- * Sets the `toString` method of `func` to return `string`.
- *
- * @private
- * @param {Function} func The function to modify.
- * @param {Function} string The `toString` result.
- * @returns {Function} Returns `func`.
- */
-var setToString = shortOut(baseSetToString);
-
-module.exports = setToString;
-
-},{"./_baseSetToString":390,"./_shortOut":467}],467:[function(require,module,exports){
-/** Used to detect hot functions by number of calls within a span of milliseconds. */
-var HOT_COUNT = 800,
-    HOT_SPAN = 16;
-
-/* Built-in method references for those with the same name as other `lodash` methods. */
-var nativeNow = Date.now;
-
-/**
- * Creates a function that'll short out and invoke `identity` instead
- * of `func` when it's called `HOT_COUNT` or more times in `HOT_SPAN`
- * milliseconds.
- *
- * @private
- * @param {Function} func The function to restrict.
- * @returns {Function} Returns the new shortable function.
- */
-function shortOut(func) {
-  var count = 0,
-      lastCalled = 0;
-
-  return function() {
-    var stamp = nativeNow(),
-        remaining = HOT_SPAN - (stamp - lastCalled);
-
-    lastCalled = stamp;
-    if (remaining > 0) {
-      if (++count >= HOT_COUNT) {
-        return arguments[0];
-      }
-    } else {
-      count = 0;
-    }
-    return func.apply(undefined, arguments);
-  };
-}
-
-module.exports = shortOut;
-
-},{}],468:[function(require,module,exports){
-var ListCache = require('./_ListCache');
-
-/**
- * Removes all key-value entries from the stack.
- *
- * @private
- * @name clear
- * @memberOf Stack
- */
-function stackClear() {
-  this.__data__ = new ListCache;
-  this.size = 0;
-}
-
-module.exports = stackClear;
-
-},{"./_ListCache":341}],469:[function(require,module,exports){
-/**
- * Removes `key` and its value from the stack.
- *
- * @private
- * @name delete
- * @memberOf Stack
- * @param {string} key The key of the value to remove.
- * @returns {boolean} Returns `true` if the entry was removed, else `false`.
- */
-function stackDelete(key) {
-  var data = this.__data__,
-      result = data['delete'](key);
-
-  this.size = data.size;
-  return result;
-}
-
-module.exports = stackDelete;
-
-},{}],470:[function(require,module,exports){
-/**
- * Gets the stack value for `key`.
- *
- * @private
- * @name get
- * @memberOf Stack
- * @param {string} key The key of the value to get.
- * @returns {*} Returns the entry value.
- */
-function stackGet(key) {
-  return this.__data__.get(key);
-}
-
-module.exports = stackGet;
-
-},{}],471:[function(require,module,exports){
-/**
- * Checks if a stack value for `key` exists.
- *
- * @private
- * @name has
- * @memberOf Stack
- * @param {string} key The key of the entry to check.
- * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
- */
-function stackHas(key) {
-  return this.__data__.has(key);
-}
-
-module.exports = stackHas;
-
-},{}],472:[function(require,module,exports){
-var ListCache = require('./_ListCache'),
-    Map = require('./_Map'),
-    MapCache = require('./_MapCache');
-
-/** Used as the size to enable large array optimizations. */
-var LARGE_ARRAY_SIZE = 200;
-
-/**
- * Sets the stack `key` to `value`.
- *
- * @private
- * @name set
- * @memberOf Stack
- * @param {string} key The key of the value to set.
- * @param {*} value The value to set.
- * @returns {Object} Returns the stack cache instance.
- */
-function stackSet(key, value) {
-  var data = this.__data__;
-  if (data instanceof ListCache) {
-    var pairs = data.__data__;
-    if (!Map || (pairs.length < LARGE_ARRAY_SIZE - 1)) {
-      pairs.push([key, value]);
-      this.size = ++data.size;
-      return this;
-    }
-    data = this.__data__ = new MapCache(pairs);
-  }
-  data.set(key, value);
-  this.size = data.size;
-  return this;
-}
-
-module.exports = stackSet;
-
-},{"./_ListCache":341,"./_Map":342,"./_MapCache":343}],473:[function(require,module,exports){
-var memoizeCapped = require('./_memoizeCapped');
-
-/** Used to match property names within property paths. */
-var rePropName = /[^.[\]]+|\[(?:(-?\d+(?:\.\d+)?)|(["'])((?:(?!\2)[^\\]|\\.)*?)\2)\]|(?=(?:\.|\[\])(?:\.|\[\]|$))/g;
-
-/** Used to match backslashes in property paths. */
-var reEscapeChar = /\\(\\)?/g;
-
-/**
- * Converts `string` to a property path array.
- *
- * @private
- * @param {string} string The string to convert.
- * @returns {Array} Returns the property path array.
- */
-var stringToPath = memoizeCapped(function(string) {
-  var result = [];
-  if (string.charCodeAt(0) === 46 /* . */) {
-    result.push('');
-  }
-  string.replace(rePropName, function(match, number, quote, subString) {
-    result.push(quote ? subString.replace(reEscapeChar, '$1') : (number || match));
-  });
-  return result;
-});
-
-module.exports = stringToPath;
-
-},{"./_memoizeCapped":454}],474:[function(require,module,exports){
-var isSymbol = require('./isSymbol');
-
-/** Used as references for various `Number` constants. */
-var INFINITY = 1 / 0;
-
-/**
- * Converts `value` to a string key if it's not a string or symbol.
- *
- * @private
- * @param {*} value The value to inspect.
- * @returns {string|symbol} Returns the key.
- */
-function toKey(value) {
-  if (typeof value == 'string' || isSymbol(value)) {
-    return value;
-  }
-  var result = (value + '');
-  return (result == '0' && (1 / value) == -INFINITY) ? '-0' : result;
-}
-
-module.exports = toKey;
-
-},{"./isSymbol":499}],475:[function(require,module,exports){
-/** Used for built-in method references. */
-var funcProto = Function.prototype;
-
-/** Used to resolve the decompiled source of functions. */
-var funcToString = funcProto.toString;
-
-/**
- * Converts `func` to its source code.
- *
- * @private
- * @param {Function} func The function to convert.
- * @returns {string} Returns the source code.
- */
-function toSource(func) {
-  if (func != null) {
-    try {
-      return funcToString.call(func);
-    } catch (e) {}
-    try {
-      return (func + '');
-    } catch (e) {}
-  }
-  return '';
-}
-
-module.exports = toSource;
-
-},{}],476:[function(require,module,exports){
-var copyObject = require('./_copyObject'),
-    createAssigner = require('./_createAssigner'),
-    keysIn = require('./keysIn');
-
-/**
- * This method is like `_.assign` except that it iterates over own and
- * inherited source properties.
- *
- * **Note:** This method mutates `object`.
- *
- * @static
- * @memberOf _
- * @since 4.0.0
- * @alias extend
- * @category Object
- * @param {Object} object The destination object.
- * @param {...Object} [sources] The source objects.
- * @returns {Object} Returns `object`.
- * @see _.assign
- * @example
- *
- * function Foo() {
- *   this.a = 1;
- * }
- *
- * function Bar() {
- *   this.c = 3;
- * }
- *
- * Foo.prototype.b = 2;
- * Bar.prototype.d = 4;
- *
- * _.assignIn({ 'a': 0 }, new Foo, new Bar);
- * // => { 'a': 1, 'b': 2, 'c': 3, 'd': 4 }
- */
-var assignIn = createAssigner(function(object, source) {
-  copyObject(source, keysIn(source), object);
-});
-
-module.exports = assignIn;
-
-},{"./_copyObject":403,"./_createAssigner":407,"./keysIn":503}],477:[function(require,module,exports){
-var baseClone = require('./_baseClone');
-
-/** Used to compose bitmasks for cloning. */
-var CLONE_DEEP_FLAG = 1,
-    CLONE_SYMBOLS_FLAG = 4;
-
-/**
- * This method is like `_.clone` except that it recursively clones `value`.
- *
- * @static
- * @memberOf _
- * @since 1.0.0
- * @category Lang
- * @param {*} value The value to recursively clone.
- * @returns {*} Returns the deep cloned value.
- * @see _.clone
- * @example
- *
- * var objects = [{ 'a': 1 }, { 'b': 2 }];
- *
- * var deep = _.cloneDeep(objects);
- * console.log(deep[0] === objects[0]);
- * // => false
- */
-function cloneDeep(value) {
-  return baseClone(value, CLONE_DEEP_FLAG | CLONE_SYMBOLS_FLAG);
-}
-
-module.exports = cloneDeep;
-
-},{"./_baseClone":363}],478:[function(require,module,exports){
-/**
- * Creates a function that returns `value`.
- *
- * @static
- * @memberOf _
- * @since 2.4.0
- * @category Util
- * @param {*} value The value to return from the new function.
- * @returns {Function} Returns the new constant function.
- * @example
- *
- * var objects = _.times(2, _.constant({ 'a': 1 }));
- *
- * console.log(objects);
- * // => [{ 'a': 1 }, { 'a': 1 }]
- *
- * console.log(objects[0] === objects[1]);
- * // => true
- */
-function constant(value) {
-  return function() {
-    return value;
-  };
-}
-
-module.exports = constant;
-
-},{}],479:[function(require,module,exports){
-/**
- * Performs a
- * [`SameValueZero`](http://ecma-international.org/ecma-262/7.0/#sec-samevaluezero)
- * comparison between two values to determine if they are equivalent.
- *
- * @static
- * @memberOf _
- * @since 4.0.0
- * @category Lang
- * @param {*} value The value to compare.
- * @param {*} other The other value to compare.
- * @returns {boolean} Returns `true` if the values are equivalent, else `false`.
- * @example
- *
- * var object = { 'a': 1 };
- * var other = { 'a': 1 };
- *
- * _.eq(object, object);
- * // => true
- *
- * _.eq(object, other);
- * // => false
- *
- * _.eq('a', 'a');
- * // => true
- *
- * _.eq('a', Object('a'));
- * // => false
- *
- * _.eq(NaN, NaN);
- * // => true
- */
-function eq(value, other) {
-  return value === other || (value !== value && other !== other);
-}
-
-module.exports = eq;
-
-},{}],480:[function(require,module,exports){
-module.exports = require('./assignIn');
-
-},{"./assignIn":476}],481:[function(require,module,exports){
-var baseGet = require('./_baseGet');
-
-/**
- * Gets the value at `path` of `object`. If the resolved value is
- * `undefined`, the `defaultValue` is returned in its place.
- *
- * @static
- * @memberOf _
- * @since 3.7.0
- * @category Object
- * @param {Object} object The object to query.
- * @param {Array|string} path The path of the property to get.
- * @param {*} [defaultValue] The value returned for `undefined` resolved values.
- * @returns {*} Returns the resolved value.
- * @example
- *
- * var object = { 'a': [{ 'b': { 'c': 3 } }] };
- *
- * _.get(object, 'a[0].b.c');
- * // => 3
- *
- * _.get(object, ['a', '0', 'b', 'c']);
- * // => 3
- *
- * _.get(object, 'a.b.c', 'default');
- * // => 'default'
- */
-function get(object, path, defaultValue) {
-  var result = object == null ? undefined : baseGet(object, path);
-  return result === undefined ? defaultValue : result;
-}
-
-module.exports = get;
-
-},{"./_baseGet":368}],482:[function(require,module,exports){
-var baseHas = require('./_baseHas'),
-    hasPath = require('./_hasPath');
-
-/**
- * Checks if `path` is a direct property of `object`.
- *
- * @static
- * @since 0.1.0
- * @memberOf _
- * @category Object
- * @param {Object} object The object to query.
- * @param {Array|string} path The path to check.
- * @returns {boolean} Returns `true` if `path` exists, else `false`.
- * @example
- *
- * var object = { 'a': { 'b': 2 } };
- * var other = _.create({ 'a': _.create({ 'b': 2 }) });
- *
- * _.has(object, 'a');
- * // => true
- *
- * _.has(object, 'a.b');
- * // => true
- *
- * _.has(object, ['a', 'b']);
- * // => true
- *
- * _.has(other, 'a');
- * // => false
- */
-function has(object, path) {
-  return object != null && hasPath(object, path, baseHas);
-}
-
-module.exports = has;
-
-},{"./_baseHas":371,"./_hasPath":426}],483:[function(require,module,exports){
-var baseHasIn = require('./_baseHasIn'),
-    hasPath = require('./_hasPath');
-
-/**
- * Checks if `path` is a direct or inherited property of `object`.
- *
- * @static
- * @memberOf _
- * @since 4.0.0
- * @category Object
- * @param {Object} object The object to query.
- * @param {Array|string} path The path to check.
- * @returns {boolean} Returns `true` if `path` exists, else `false`.
- * @example
- *
- * var object = _.create({ 'a': _.create({ 'b': 2 }) });
- *
- * _.hasIn(object, 'a');
- * // => true
- *
- * _.hasIn(object, 'a.b');
- * // => true
- *
- * _.hasIn(object, ['a', 'b']);
- * // => true
- *
- * _.hasIn(object, 'b');
- * // => false
- */
-function hasIn(object, path) {
-  return object != null && hasPath(object, path, baseHasIn);
-}
-
-module.exports = hasIn;
-
-},{"./_baseHasIn":372,"./_hasPath":426}],484:[function(require,module,exports){
-/**
- * This method returns the first argument it receives.
- *
- * @static
- * @since 0.1.0
- * @memberOf _
- * @category Util
- * @param {*} value Any value.
- * @returns {*} Returns `value`.
- * @example
- *
- * var object = { 'a': 1 };
- *
- * console.log(_.identity(object) === object);
- * // => true
- */
-function identity(value) {
-  return value;
-}
-
-module.exports = identity;
-
-},{}],485:[function(require,module,exports){
-var baseIsArguments = require('./_baseIsArguments'),
-    isObjectLike = require('./isObjectLike');
-
-/** Used for built-in method references. */
-var objectProto = Object.prototype;
-
-/** Used to check objects for own properties. */
-var hasOwnProperty = objectProto.hasOwnProperty;
-
-/** Built-in value references. */
-var propertyIsEnumerable = objectProto.propertyIsEnumerable;
-
-/**
- * Checks if `value` is likely an `arguments` object.
- *
- * @static
- * @memberOf _
- * @since 0.1.0
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is an `arguments` object,
- *  else `false`.
- * @example
- *
- * _.isArguments(function() { return arguments; }());
- * // => true
- *
- * _.isArguments([1, 2, 3]);
- * // => false
- */
-var isArguments = baseIsArguments(function() { return arguments; }()) ? baseIsArguments : function(value) {
-  return isObjectLike(value) && hasOwnProperty.call(value, 'callee') &&
-    !propertyIsEnumerable.call(value, 'callee');
-};
-
-module.exports = isArguments;
-
-},{"./_baseIsArguments":373,"./isObjectLike":496}],486:[function(require,module,exports){
-/**
- * Checks if `value` is classified as an `Array` object.
- *
- * @static
- * @memberOf _
- * @since 0.1.0
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is an array, else `false`.
- * @example
- *
- * _.isArray([1, 2, 3]);
- * // => true
- *
- * _.isArray(document.body.children);
- * // => false
- *
- * _.isArray('abc');
- * // => false
- *
- * _.isArray(_.noop);
- * // => false
- */
-var isArray = Array.isArray;
-
-module.exports = isArray;
-
-},{}],487:[function(require,module,exports){
-var isFunction = require('./isFunction'),
-    isLength = require('./isLength');
-
-/**
- * Checks if `value` is array-like. A value is considered array-like if it's
- * not a function and has a `value.length` that's an integer greater than or
- * equal to `0` and less than or equal to `Number.MAX_SAFE_INTEGER`.
- *
- * @static
- * @memberOf _
- * @since 4.0.0
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is array-like, else `false`.
- * @example
- *
- * _.isArrayLike([1, 2, 3]);
- * // => true
- *
- * _.isArrayLike(document.body.children);
- * // => true
- *
- * _.isArrayLike('abc');
- * // => true
- *
- * _.isArrayLike(_.noop);
- * // => false
- */
-function isArrayLike(value) {
-  return value != null && isLength(value.length) && !isFunction(value);
-}
-
-module.exports = isArrayLike;
-
-},{"./isFunction":490,"./isLength":491}],488:[function(require,module,exports){
-var baseGetTag = require('./_baseGetTag'),
-    isObjectLike = require('./isObjectLike');
-
-/** `Object#toString` result references. */
-var boolTag = '[object Boolean]';
-
-/**
- * Checks if `value` is classified as a boolean primitive or object.
- *
- * @static
- * @memberOf _
- * @since 0.1.0
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is a boolean, else `false`.
- * @example
- *
- * _.isBoolean(false);
- * // => true
- *
- * _.isBoolean(null);
- * // => false
- */
-function isBoolean(value) {
-  return value === true || value === false ||
-    (isObjectLike(value) && baseGetTag(value) == boolTag);
-}
-
-module.exports = isBoolean;
-
-},{"./_baseGetTag":370,"./isObjectLike":496}],489:[function(require,module,exports){
-var root = require('./_root'),
-    stubFalse = require('./stubFalse');
-
-/** Detect free variable `exports`. */
-var freeExports = typeof exports == 'object' && exports && !exports.nodeType && exports;
-
-/** Detect free variable `module`. */
-var freeModule = freeExports && typeof module == 'object' && module && !module.nodeType && module;
-
-/** Detect the popular CommonJS extension `module.exports`. */
-var moduleExports = freeModule && freeModule.exports === freeExports;
-
-/** Built-in value references. */
-var Buffer = moduleExports ? root.Buffer : undefined;
-
-/* Built-in method references for those with the same name as other `lodash` methods. */
-var nativeIsBuffer = Buffer ? Buffer.isBuffer : undefined;
-
-/**
- * Checks if `value` is a buffer.
- *
- * @static
- * @memberOf _
- * @since 4.3.0
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is a buffer, else `false`.
- * @example
- *
- * _.isBuffer(new Buffer(2));
- * // => true
- *
- * _.isBuffer(new Uint8Array(2));
- * // => false
- */
-var isBuffer = nativeIsBuffer || stubFalse;
-
-module.exports = isBuffer;
-
-},{"./_root":462,"./stubFalse":508}],490:[function(require,module,exports){
-var baseGetTag = require('./_baseGetTag'),
-    isObject = require('./isObject');
-
-/** `Object#toString` result references. */
-var asyncTag = '[object AsyncFunction]',
-    funcTag = '[object Function]',
-    genTag = '[object GeneratorFunction]',
-    proxyTag = '[object Proxy]';
-
-/**
- * Checks if `value` is classified as a `Function` object.
- *
- * @static
- * @memberOf _
- * @since 0.1.0
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is a function, else `false`.
- * @example
- *
- * _.isFunction(_);
- * // => true
- *
- * _.isFunction(/abc/);
- * // => false
- */
-function isFunction(value) {
-  if (!isObject(value)) {
-    return false;
-  }
-  // The use of `Object#toString` avoids issues with the `typeof` operator
-  // in Safari 9 which returns 'object' for typed arrays and other constructors.
-  var tag = baseGetTag(value);
-  return tag == funcTag || tag == genTag || tag == asyncTag || tag == proxyTag;
-}
-
-module.exports = isFunction;
-
-},{"./_baseGetTag":370,"./isObject":495}],491:[function(require,module,exports){
-/** Used as references for various `Number` constants. */
-var MAX_SAFE_INTEGER = 9007199254740991;
-
-/**
- * Checks if `value` is a valid array-like length.
- *
- * **Note:** This method is loosely based on
- * [`ToLength`](http://ecma-international.org/ecma-262/7.0/#sec-tolength).
- *
- * @static
- * @memberOf _
- * @since 4.0.0
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is a valid length, else `false`.
- * @example
- *
- * _.isLength(3);
- * // => true
- *
- * _.isLength(Number.MIN_VALUE);
- * // => false
- *
- * _.isLength(Infinity);
- * // => false
- *
- * _.isLength('3');
- * // => false
- */
-function isLength(value) {
-  return typeof value == 'number' &&
-    value > -1 && value % 1 == 0 && value <= MAX_SAFE_INTEGER;
-}
-
-module.exports = isLength;
-
-},{}],492:[function(require,module,exports){
-var baseIsMap = require('./_baseIsMap'),
-    baseUnary = require('./_baseUnary'),
-    nodeUtil = require('./_nodeUtil');
-
-/* Node.js helper references. */
-var nodeIsMap = nodeUtil && nodeUtil.isMap;
-
-/**
- * Checks if `value` is classified as a `Map` object.
- *
- * @static
- * @memberOf _
- * @since 4.3.0
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is a map, else `false`.
- * @example
- *
- * _.isMap(new Map);
- * // => true
- *
- * _.isMap(new WeakMap);
- * // => false
- */
-var isMap = nodeIsMap ? baseUnary(nodeIsMap) : baseIsMap;
-
-module.exports = isMap;
-
-},{"./_baseIsMap":376,"./_baseUnary":393,"./_nodeUtil":458}],493:[function(require,module,exports){
-/**
- * Checks if `value` is `null`.
- *
- * @static
- * @memberOf _
- * @since 0.1.0
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is `null`, else `false`.
- * @example
- *
- * _.isNull(null);
- * // => true
- *
- * _.isNull(void 0);
- * // => false
- */
-function isNull(value) {
-  return value === null;
-}
-
-module.exports = isNull;
-
-},{}],494:[function(require,module,exports){
-var baseGetTag = require('./_baseGetTag'),
-    isObjectLike = require('./isObjectLike');
-
-/** `Object#toString` result references. */
-var numberTag = '[object Number]';
-
-/**
- * Checks if `value` is classified as a `Number` primitive or object.
- *
- * **Note:** To exclude `Infinity`, `-Infinity`, and `NaN`, which are
- * classified as numbers, use the `_.isFinite` method.
- *
- * @static
- * @memberOf _
- * @since 0.1.0
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is a number, else `false`.
- * @example
- *
- * _.isNumber(3);
- * // => true
- *
- * _.isNumber(Number.MIN_VALUE);
- * // => true
- *
- * _.isNumber(Infinity);
- * // => true
- *
- * _.isNumber('3');
- * // => false
- */
-function isNumber(value) {
-  return typeof value == 'number' ||
-    (isObjectLike(value) && baseGetTag(value) == numberTag);
-}
-
-module.exports = isNumber;
-
-},{"./_baseGetTag":370,"./isObjectLike":496}],495:[function(require,module,exports){
-/**
- * Checks if `value` is the
- * [language type](http://www.ecma-international.org/ecma-262/7.0/#sec-ecmascript-language-types)
- * of `Object`. (e.g. arrays, functions, objects, regexes, `new Number(0)`, and `new String('')`)
- *
- * @static
- * @memberOf _
- * @since 0.1.0
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is an object, else `false`.
- * @example
- *
- * _.isObject({});
- * // => true
- *
- * _.isObject([1, 2, 3]);
- * // => true
- *
- * _.isObject(_.noop);
- * // => true
- *
- * _.isObject(null);
- * // => false
- */
-function isObject(value) {
-  var type = typeof value;
-  return value != null && (type == 'object' || type == 'function');
-}
-
-module.exports = isObject;
-
-},{}],496:[function(require,module,exports){
-/**
- * Checks if `value` is object-like. A value is object-like if it's not `null`
- * and has a `typeof` result of "object".
- *
- * @static
- * @memberOf _
- * @since 4.0.0
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is object-like, else `false`.
- * @example
- *
- * _.isObjectLike({});
- * // => true
- *
- * _.isObjectLike([1, 2, 3]);
- * // => true
- *
- * _.isObjectLike(_.noop);
- * // => false
- *
- * _.isObjectLike(null);
- * // => false
- */
-function isObjectLike(value) {
-  return value != null && typeof value == 'object';
-}
-
-module.exports = isObjectLike;
-
-},{}],497:[function(require,module,exports){
-var baseIsSet = require('./_baseIsSet'),
-    baseUnary = require('./_baseUnary'),
-    nodeUtil = require('./_nodeUtil');
-
-/* Node.js helper references. */
-var nodeIsSet = nodeUtil && nodeUtil.isSet;
-
-/**
- * Checks if `value` is classified as a `Set` object.
- *
- * @static
- * @memberOf _
- * @since 4.3.0
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is a set, else `false`.
- * @example
- *
- * _.isSet(new Set);
- * // => true
- *
- * _.isSet(new WeakSet);
- * // => false
- */
-var isSet = nodeIsSet ? baseUnary(nodeIsSet) : baseIsSet;
-
-module.exports = isSet;
-
-},{"./_baseIsSet":379,"./_baseUnary":393,"./_nodeUtil":458}],498:[function(require,module,exports){
-var baseGetTag = require('./_baseGetTag'),
-    isArray = require('./isArray'),
-    isObjectLike = require('./isObjectLike');
-
-/** `Object#toString` result references. */
-var stringTag = '[object String]';
-
-/**
- * Checks if `value` is classified as a `String` primitive or object.
- *
- * @static
- * @since 0.1.0
- * @memberOf _
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is a string, else `false`.
- * @example
- *
- * _.isString('abc');
- * // => true
- *
- * _.isString(1);
- * // => false
- */
-function isString(value) {
-  return typeof value == 'string' ||
-    (!isArray(value) && isObjectLike(value) && baseGetTag(value) == stringTag);
-}
-
-module.exports = isString;
-
-},{"./_baseGetTag":370,"./isArray":486,"./isObjectLike":496}],499:[function(require,module,exports){
-var baseGetTag = require('./_baseGetTag'),
-    isObjectLike = require('./isObjectLike');
-
-/** `Object#toString` result references. */
-var symbolTag = '[object Symbol]';
-
-/**
- * Checks if `value` is classified as a `Symbol` primitive or object.
- *
- * @static
- * @memberOf _
- * @since 4.0.0
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is a symbol, else `false`.
- * @example
- *
- * _.isSymbol(Symbol.iterator);
- * // => true
- *
- * _.isSymbol('abc');
- * // => false
- */
-function isSymbol(value) {
-  return typeof value == 'symbol' ||
-    (isObjectLike(value) && baseGetTag(value) == symbolTag);
-}
-
-module.exports = isSymbol;
-
-},{"./_baseGetTag":370,"./isObjectLike":496}],500:[function(require,module,exports){
-var baseIsTypedArray = require('./_baseIsTypedArray'),
-    baseUnary = require('./_baseUnary'),
-    nodeUtil = require('./_nodeUtil');
-
-/* Node.js helper references. */
-var nodeIsTypedArray = nodeUtil && nodeUtil.isTypedArray;
-
-/**
- * Checks if `value` is classified as a typed array.
- *
- * @static
- * @memberOf _
- * @since 3.0.0
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is a typed array, else `false`.
- * @example
- *
- * _.isTypedArray(new Uint8Array);
- * // => true
- *
- * _.isTypedArray([]);
- * // => false
- */
-var isTypedArray = nodeIsTypedArray ? baseUnary(nodeIsTypedArray) : baseIsTypedArray;
-
-module.exports = isTypedArray;
-
-},{"./_baseIsTypedArray":380,"./_baseUnary":393,"./_nodeUtil":458}],501:[function(require,module,exports){
-/**
- * Checks if `value` is `undefined`.
- *
- * @static
- * @since 0.1.0
- * @memberOf _
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is `undefined`, else `false`.
- * @example
- *
- * _.isUndefined(void 0);
- * // => true
- *
- * _.isUndefined(null);
- * // => false
- */
-function isUndefined(value) {
-  return value === undefined;
-}
-
-module.exports = isUndefined;
-
-},{}],502:[function(require,module,exports){
-var arrayLikeKeys = require('./_arrayLikeKeys'),
-    baseKeys = require('./_baseKeys'),
-    isArrayLike = require('./isArrayLike');
-
-/**
- * Creates an array of the own enumerable property names of `object`.
- *
- * **Note:** Non-object values are coerced to objects. See the
- * [ES spec](http://ecma-international.org/ecma-262/7.0/#sec-object.keys)
- * for more details.
- *
- * @static
- * @since 0.1.0
- * @memberOf _
- * @category Object
- * @param {Object} object The object to query.
- * @returns {Array} Returns the array of property names.
- * @example
- *
- * function Foo() {
- *   this.a = 1;
- *   this.b = 2;
- * }
- *
- * Foo.prototype.c = 3;
- *
- * _.keys(new Foo);
- * // => ['a', 'b'] (iteration order is not guaranteed)
- *
- * _.keys('hi');
- * // => ['0', '1']
- */
-function keys(object) {
-  return isArrayLike(object) ? arrayLikeKeys(object) : baseKeys(object);
-}
-
-module.exports = keys;
-
-},{"./_arrayLikeKeys":354,"./_baseKeys":382,"./isArrayLike":487}],503:[function(require,module,exports){
-var arrayLikeKeys = require('./_arrayLikeKeys'),
-    baseKeysIn = require('./_baseKeysIn'),
-    isArrayLike = require('./isArrayLike');
-
-/**
- * Creates an array of the own and inherited enumerable property names of `object`.
- *
- * **Note:** Non-object values are coerced to objects.
- *
- * @static
- * @memberOf _
- * @since 3.0.0
- * @category Object
- * @param {Object} object The object to query.
- * @returns {Array} Returns the array of property names.
- * @example
- *
- * function Foo() {
- *   this.a = 1;
- *   this.b = 2;
- * }
- *
- * Foo.prototype.c = 3;
- *
- * _.keysIn(new Foo);
- * // => ['a', 'b', 'c'] (iteration order is not guaranteed)
- */
-function keysIn(object) {
-  return isArrayLike(object) ? arrayLikeKeys(object, true) : baseKeysIn(object);
-}
-
-module.exports = keysIn;
-
-},{"./_arrayLikeKeys":354,"./_baseKeysIn":383,"./isArrayLike":487}],504:[function(require,module,exports){
-var arrayMap = require('./_arrayMap'),
-    baseIteratee = require('./_baseIteratee'),
-    baseMap = require('./_baseMap'),
-    isArray = require('./isArray');
-
-/**
- * Creates an array of values by running each element in `collection` thru
- * `iteratee`. The iteratee is invoked with three arguments:
- * (value, index|key, collection).
- *
- * Many lodash methods are guarded to work as iteratees for methods like
- * `_.every`, `_.filter`, `_.map`, `_.mapValues`, `_.reject`, and `_.some`.
- *
- * The guarded methods are:
- * `ary`, `chunk`, `curry`, `curryRight`, `drop`, `dropRight`, `every`,
- * `fill`, `invert`, `parseInt`, `random`, `range`, `rangeRight`, `repeat`,
- * `sampleSize`, `slice`, `some`, `sortBy`, `split`, `take`, `takeRight`,
- * `template`, `trim`, `trimEnd`, `trimStart`, and `words`
- *
- * @static
- * @memberOf _
- * @since 0.1.0
- * @category Collection
- * @param {Array|Object} collection The collection to iterate over.
- * @param {Function} [iteratee=_.identity] The function invoked per iteration.
- * @returns {Array} Returns the new mapped array.
- * @example
- *
- * function square(n) {
- *   return n * n;
- * }
- *
- * _.map([4, 8], square);
- * // => [16, 64]
- *
- * _.map({ 'a': 4, 'b': 8 }, square);
- * // => [16, 64] (iteration order is not guaranteed)
- *
- * var users = [
- *   { 'user': 'barney' },
- *   { 'user': 'fred' }
- * ];
- *
- * // The `_.property` iteratee shorthand.
- * _.map(users, 'user');
- * // => ['barney', 'fred']
- */
-function map(collection, iteratee) {
-  var func = isArray(collection) ? arrayMap : baseMap;
-  return func(collection, baseIteratee(iteratee, 3));
-}
-
-module.exports = map;
-
-},{"./_arrayMap":355,"./_baseIteratee":381,"./_baseMap":384,"./isArray":486}],505:[function(require,module,exports){
-var MapCache = require('./_MapCache');
-
-/** Error message constants. */
-var FUNC_ERROR_TEXT = 'Expected a function';
-
-/**
- * Creates a function that memoizes the result of `func`. If `resolver` is
- * provided, it determines the cache key for storing the result based on the
- * arguments provided to the memoized function. By default, the first argument
- * provided to the memoized function is used as the map cache key. The `func`
- * is invoked with the `this` binding of the memoized function.
- *
- * **Note:** The cache is exposed as the `cache` property on the memoized
- * function. Its creation may be customized by replacing the `_.memoize.Cache`
- * constructor with one whose instances implement the
- * [`Map`](http://ecma-international.org/ecma-262/7.0/#sec-properties-of-the-map-prototype-object)
- * method interface of `clear`, `delete`, `get`, `has`, and `set`.
- *
- * @static
- * @memberOf _
- * @since 0.1.0
- * @category Function
- * @param {Function} func The function to have its output memoized.
- * @param {Function} [resolver] The function to resolve the cache key.
- * @returns {Function} Returns the new memoized function.
- * @example
- *
- * var object = { 'a': 1, 'b': 2 };
- * var other = { 'c': 3, 'd': 4 };
- *
- * var values = _.memoize(_.values);
- * values(object);
- * // => [1, 2]
- *
- * values(other);
- * // => [3, 4]
- *
- * object.a = 2;
- * values(object);
- * // => [1, 2]
- *
- * // Modify the result cache.
- * values.cache.set(object, ['a', 'b']);
- * values(object);
- * // => ['a', 'b']
- *
- * // Replace `_.memoize.Cache`.
- * _.memoize.Cache = WeakMap;
- */
-function memoize(func, resolver) {
-  if (typeof func != 'function' || (resolver != null && typeof resolver != 'function')) {
-    throw new TypeError(FUNC_ERROR_TEXT);
-  }
-  var memoized = function() {
-    var args = arguments,
-        key = resolver ? resolver.apply(this, args) : args[0],
-        cache = memoized.cache;
-
-    if (cache.has(key)) {
-      return cache.get(key);
-    }
-    var result = func.apply(this, args);
-    memoized.cache = cache.set(key, result) || cache;
-    return result;
-  };
-  memoized.cache = new (memoize.Cache || MapCache);
-  return memoized;
-}
-
-// Expose `MapCache`.
-memoize.Cache = MapCache;
-
-module.exports = memoize;
-
-},{"./_MapCache":343}],506:[function(require,module,exports){
-var baseProperty = require('./_baseProperty'),
-    basePropertyDeep = require('./_basePropertyDeep'),
-    isKey = require('./_isKey'),
-    toKey = require('./_toKey');
-
-/**
- * Creates a function that returns the value at `path` of a given object.
- *
- * @static
- * @memberOf _
- * @since 2.4.0
- * @category Util
- * @param {Array|string} path The path of the property to get.
- * @returns {Function} Returns the new accessor function.
- * @example
- *
- * var objects = [
- *   { 'a': { 'b': 2 } },
- *   { 'a': { 'b': 1 } }
- * ];
- *
- * _.map(objects, _.property('a.b'));
- * // => [2, 1]
- *
- * _.map(_.sortBy(objects, _.property(['a', 'b'])), 'a.b');
- * // => [1, 2]
- */
-function property(path) {
-  return isKey(path) ? baseProperty(toKey(path)) : basePropertyDeep(path);
-}
-
-module.exports = property;
-
-},{"./_baseProperty":387,"./_basePropertyDeep":388,"./_isKey":437,"./_toKey":474}],507:[function(require,module,exports){
-/**
- * This method returns a new empty array.
- *
- * @static
- * @memberOf _
- * @since 4.13.0
- * @category Util
- * @returns {Array} Returns the new empty array.
- * @example
- *
- * var arrays = _.times(2, _.stubArray);
- *
- * console.log(arrays);
- * // => [[], []]
- *
- * console.log(arrays[0] === arrays[1]);
- * // => false
- */
-function stubArray() {
-  return [];
-}
-
-module.exports = stubArray;
-
-},{}],508:[function(require,module,exports){
-/**
- * This method returns `false`.
- *
- * @static
- * @memberOf _
- * @since 4.13.0
- * @category Util
- * @returns {boolean} Returns `false`.
- * @example
- *
- * _.times(2, _.stubFalse);
- * // => [false, false]
- */
-function stubFalse() {
-  return false;
-}
-
-module.exports = stubFalse;
-
-},{}],509:[function(require,module,exports){
-var baseToString = require('./_baseToString');
-
-/**
- * Converts `value` to a string. An empty string is returned for `null`
- * and `undefined` values. The sign of `-0` is preserved.
- *
- * @static
- * @memberOf _
- * @since 4.0.0
- * @category Lang
- * @param {*} value The value to convert.
- * @returns {string} Returns the converted string.
- * @example
- *
- * _.toString(null);
- * // => ''
- *
- * _.toString(-0);
- * // => '-0'
- *
- * _.toString([1, 2, 3]);
- * // => '1,2,3'
- */
-function toString(value) {
-  return value == null ? '' : baseToString(value);
-}
-
-module.exports = toString;
-
-},{"./_baseToString":392}],510:[function(require,module,exports){
+},{"dup":177}],318:[function(require,module,exports){
 'use strict'
 var inherits = require('inherits')
 var HashBase = require('hash-base')
@@ -48522,24 +42412,22 @@ function fnI (a, b, c, d, m, k, s) {
 
 module.exports = MD5
 
-},{"hash-base":320,"inherits":336,"safe-buffer":543}],511:[function(require,module,exports){
+},{"hash-base":300,"inherits":316,"safe-buffer":346}],319:[function(require,module,exports){
 arguments[4][109][0].apply(exports,arguments)
-},{"bn.js":234,"brorand":235,"dup":109}],512:[function(require,module,exports){
+},{"bn.js":219,"brorand":220,"dup":109}],320:[function(require,module,exports){
 arguments[4][110][0].apply(exports,arguments)
-},{"dup":110}],513:[function(require,module,exports){
+},{"dup":110}],321:[function(require,module,exports){
 arguments[4][111][0].apply(exports,arguments)
-},{"dup":111}],514:[function(require,module,exports){
-arguments[4][176][0].apply(exports,arguments)
-},{"dup":176}],515:[function(require,module,exports){
+},{"dup":111}],322:[function(require,module,exports){
 arguments[4][179][0].apply(exports,arguments)
-},{"bn.js":514,"dup":179,"strip-hex-prefix":554}],516:[function(require,module,exports){
+},{"bn.js":219,"dup":179,"strip-hex-prefix":357}],323:[function(require,module,exports){
 // This file is the concatenation of many js files.
 // See http://github.com/jimhigson/oboe.js for the raw source
 
 // having a local undefined, window, Object etc allows slightly better minification:
 (function  (window, Object, Array, Error, JSON, undefined ) {
 
-   // v2.1.3-15-g7432b49
+   // v2.1.3
 
 /*
 
@@ -49229,9 +43117,7 @@ function clarinet(eventBus) {
     c = chunk[0]; 
 
     while (c) {
-      if (i > 0) {
-        p = c;
-      }
+      p = c;
       c = chunk[i++];
       if(!c) break;
 
@@ -50514,162 +44400,161 @@ var jsonPathCompiler = jsonPathSyntax(function (pathNodeSyntax,
 
 });
 
-/**
- * A pub/sub which is responsible for a single event type. A
+/** 
+ * A pub/sub which is responsible for a single event type. A 
  * multi-event type event bus is created by pubSub by collecting
  * several of these.
- *
- * @param {String} eventType
+ * 
+ * @param {String} eventType                   
  *    the name of the events managed by this singleEventPubSub
- * @param {singleEventPubSub} [newListener]
+ * @param {singleEventPubSub} [newListener]    
  *    place to notify of new listeners
- * @param {singleEventPubSub} [removeListener]
+ * @param {singleEventPubSub} [removeListener] 
  *    place to notify of when listeners are removed
  */
 function singleEventPubSub(eventType, newListener, removeListener){
 
-  /** we are optimised for emitting events over firing them.
-   *  As well as the tuple list which stores event ids and
-   *  listeners there is a list with just the listeners which
-   *  can be iterated more quickly when we are emitting
-   */
-  var listenerTupleList,
-      listenerList;
+   /** we are optimised for emitting events over firing them.
+    *  As well as the tuple list which stores event ids and
+    *  listeners there is a list with just the listeners which 
+    *  can be iterated more quickly when we are emitting
+    */
+   var listenerTupleList,
+       listenerList;
 
-  function hasId(id){
-    return function(tuple) {
-      return tuple.id == id;
-    };
-  }
+   function hasId(id){
+      return function(tuple) {
+         return tuple.id == id;      
+      };  
+   }
+              
+   return {
 
-  return {
+      /**
+       * @param {Function} listener
+       * @param {*} listenerId 
+       *    an id that this listener can later by removed by. 
+       *    Can be of any type, to be compared to other ids using ==
+       */
+      on:function( listener, listenerId ) {
+         
+         var tuple = {
+            listener: listener
+         ,  id:       listenerId || listener // when no id is given use the
+                                             // listener function as the id
+         };
 
-    /**
-     * @param {Function} listener
-     * @param {*} listenerId
-     *    an id that this listener can later by removed by.
-     *    Can be of any type, to be compared to other ids using ==
-     */
-    on:function( listener, listenerId ) {
+         if( newListener ) {
+            newListener.emit(eventType, listener, tuple.id);
+         }
+         
+         listenerTupleList = cons( tuple,    listenerTupleList );
+         listenerList      = cons( listener, listenerList      );
 
-      var tuple = {
-        listener: listener
-        ,  id:       listenerId || listener // when no id is given use the
-        // listener function as the id
-      };
-
-      if( newListener ) {
-        newListener.emit(eventType, listener, tuple.id);
+         return this; // chaining
+      },
+     
+      emit:function () {                                                                                           
+         applyEach( listenerList, arguments );
+      },
+      
+      un: function( listenerId ) {
+             
+         var removed;             
+              
+         listenerTupleList = without(
+            listenerTupleList,
+            hasId(listenerId),
+            function(tuple){
+               removed = tuple;
+            }
+         );    
+         
+         if( removed ) {
+            listenerList = without( listenerList, function(listener){
+               return listener == removed.listener;
+            });
+         
+            if( removeListener ) {
+               removeListener.emit(eventType, removed.listener, removed.id);
+            }
+         }
+      },
+      
+      listeners: function(){
+         // differs from Node EventEmitter: returns list, not array
+         return listenerList;
+      },
+      
+      hasListener: function(listenerId){
+         var test = listenerId? hasId(listenerId) : always;
+      
+         return defined(first( test, listenerTupleList));
       }
-
-      listenerTupleList = cons( tuple,    listenerTupleList );
-      listenerList      = cons( listener, listenerList      );
-
-      return this; // chaining
-    },
-
-    emit:function () {
-      applyEach( listenerList, arguments );
-    },
-
-    un: function( listenerId ) {
-
-      var removed;
-
-      listenerTupleList = without(
-        listenerTupleList,
-        hasId(listenerId),
-        function(tuple){
-          removed = tuple;
-        }
-      );
-
-      if( removed ) {
-        listenerList = without( listenerList, function(listener){
-          return listener == removed.listener;
-        });
-
-        if( removeListener ) {
-          removeListener.emit(eventType, removed.listener, removed.id);
-        }
-      }
-    },
-
-    listeners: function(){
-      // differs from Node EventEmitter: returns list, not array
-      return listenerList;
-    },
-
-    hasListener: function(listenerId){
-      var test = listenerId? hasId(listenerId) : always;
-
-      return defined(first( test, listenerTupleList));
-    }
-  };
+   };
 }
-
 /**
  * pubSub is a curried interface for listening to and emitting
  * events.
- *
+ * 
  * If we get a bus:
- *
+ *    
  *    var bus = pubSub();
- *
+ * 
  * We can listen to event 'foo' like:
- *
+ * 
  *    bus('foo').on(myCallback)
- *
+ *    
  * And emit event foo like:
- *
+ * 
  *    bus('foo').emit()
- *
+ *    
  * or, with a parameter:
- *
+ * 
  *    bus('foo').emit('bar')
- *
- * All functions can be cached and don't need to be
+ *     
+ * All functions can be cached and don't need to be 
  * bound. Ie:
- *
+ * 
  *    var fooEmitter = bus('foo').emit
  *    fooEmitter('bar');  // emit an event
  *    fooEmitter('baz');  // emit another
- *
+ *    
  * There's also an uncurried[1] shortcut for .emit and .on:
- *
+ * 
  *    bus.on('foo', callback)
  *    bus.emit('foo', 'bar')
- *
+ * 
  * [1]: http://zvon.org/other/haskell/Outputprelude/uncurry_f.html
  */
 function pubSub(){
 
    var singles = {},
        newListener = newSingle('newListener'),
-       removeListener = newSingle('removeListener');
-
+       removeListener = newSingle('removeListener'); 
+      
    function newSingle(eventName) {
       return singles[eventName] = singleEventPubSub(
-         eventName,
-         newListener,
+         eventName, 
+         newListener, 
          removeListener
-      );
-   }
+      );   
+   }      
 
    /** pubSub instances are functions */
-   function pubSubInstance( eventName ){
-
-      return singles[eventName] || newSingle( eventName );
+   function pubSubInstance( eventName ){   
+      
+      return singles[eventName] || newSingle( eventName );   
    }
 
    // add convenience EventEmitter-style uncurried form of 'emit' and 'on'
    ['emit', 'on', 'un'].forEach(function(methodName){
-
+   
       pubSubInstance[methodName] = varArgs(function(eventName, parameters){
          apply( parameters, pubSubInstance( eventName )[methodName]);
-      });
+      });   
    });
-
+         
    return pubSubInstance;
 }
 
@@ -50841,250 +44726,250 @@ function patternAdapter(oboeBus, jsonPathCompiler) {
  */
 function instanceApi(oboeBus, contentSource){
 
-  var oboeApi,
-      fullyQualifiedNamePattern = /^(node|path):./,
-      rootNodeFinishedEvent = oboeBus(ROOT_NODE_FOUND),
-      emitNodeDrop = oboeBus(NODE_DROP).emit,
-      emitNodeSwap = oboeBus(NODE_SWAP).emit,
+   var oboeApi,
+       fullyQualifiedNamePattern = /^(node|path):./,
+       rootNodeFinishedEvent = oboeBus(ROOT_NODE_FOUND),
+       emitNodeDrop = oboeBus(NODE_DROP).emit,
+       emitNodeSwap = oboeBus(NODE_SWAP).emit,
 
-      /**
-       * Add any kind of listener that the instance api exposes
-       */
-      addListener = varArgs(function( eventId, parameters ){
+       /**
+        * Add any kind of listener that the instance api exposes
+        */
+       addListener = varArgs(function( eventId, parameters ){
 
-        if( oboeApi[eventId] ) {
+            if( oboeApi[eventId] ) {
 
-          // for events added as .on(event, callback), if there is a
-          // .event() equivalent with special behaviour , pass through
-          // to that:
-          apply(parameters, oboeApi[eventId]);
-        } else {
+               // for events added as .on(event, callback), if there is a
+               // .event() equivalent with special behaviour , pass through
+               // to that:
+               apply(parameters, oboeApi[eventId]);
+            } else {
 
-          // we have a standard Node.js EventEmitter 2-argument call.
-          // The first parameter is the listener.
-          var event = oboeBus(eventId),
-              listener = parameters[0];
+               // we have a standard Node.js EventEmitter 2-argument call.
+               // The first parameter is the listener.
+               var event = oboeBus(eventId),
+                   listener = parameters[0];
 
-          if( fullyQualifiedNamePattern.test(eventId) ) {
+               if( fullyQualifiedNamePattern.test(eventId) ) {
 
-            // allow fully-qualified node/path listeners
-            // to be added
-            addForgettableCallback(event, listener);
-          } else  {
+                  // allow fully-qualified node/path listeners
+                  // to be added
+                  addForgettableCallback(event, listener);
+               } else  {
 
-            // the event has no special handling, pass through
-            // directly onto the event bus:
-            event.on( listener);
-          }
-        }
+                  // the event has no special handling, pass through
+                  // directly onto the event bus:
+                  event.on( listener);
+               }
+            }
 
-        return oboeApi; // chaining
-      }),
+            return oboeApi; // chaining
+       }),
 
-      /**
-       * Remove any kind of listener that the instance api exposes
-       */
-      removeListener = function( eventId, p2, p3 ){
+       /**
+        * Remove any kind of listener that the instance api exposes
+        */
+       removeListener = function( eventId, p2, p3 ){
 
-        if( eventId == 'done' ) {
+            if( eventId == 'done' ) {
 
-          rootNodeFinishedEvent.un(p2);
+               rootNodeFinishedEvent.un(p2);
 
-        } else if( eventId == 'node' || eventId == 'path' ) {
+            } else if( eventId == 'node' || eventId == 'path' ) {
 
-          // allow removal of node and path
-          oboeBus.un(eventId + ':' + p2, p3);
-        } else {
+               // allow removal of node and path
+               oboeBus.un(eventId + ':' + p2, p3);
+            } else {
 
-          // we have a standard Node.js EventEmitter 2-argument call.
-          // The second parameter is the listener. This may be a call
-          // to remove a fully-qualified node/path listener but requires
-          // no special handling
-          var listener = p2;
+               // we have a standard Node.js EventEmitter 2-argument call.
+               // The second parameter is the listener. This may be a call
+               // to remove a fully-qualified node/path listener but requires
+               // no special handling
+               var listener = p2;
 
-          oboeBus(eventId).un(listener);
-        }
+               oboeBus(eventId).un(listener);
+            }
 
-        return oboeApi; // chaining
-      };
+            return oboeApi; // chaining
+       };
 
-  /**
-   * Add a callback, wrapped in a try/catch so as to not break the
-   * execution of Oboe if an exception is thrown (fail events are
-   * fired instead)
-   *
-   * The callback is used as the listener id so that it can later be
-   * removed using .un(callback)
-   */
-  function addProtectedCallback(eventName, callback) {
-    oboeBus(eventName).on(protectedCallback(callback), callback);
-    return oboeApi; // chaining
-  }
+   /**
+    * Add a callback, wrapped in a try/catch so as to not break the
+    * execution of Oboe if an exception is thrown (fail events are
+    * fired instead)
+    *
+    * The callback is used as the listener id so that it can later be
+    * removed using .un(callback)
+    */
+   function addProtectedCallback(eventName, callback) {
+      oboeBus(eventName).on(protectedCallback(callback), callback);
+      return oboeApi; // chaining
+   }
 
-  /**
-   * Add a callback where, if .forget() is called during the callback's
-   * execution, the callback will be de-registered
-   */
-  function addForgettableCallback(event, callback, listenerId) {
+   /**
+    * Add a callback where, if .forget() is called during the callback's
+    * execution, the callback will be de-registered
+    */
+   function addForgettableCallback(event, callback, listenerId) {
 
-    // listenerId is optional and if not given, the original
-    // callback will be used
-    listenerId = listenerId || callback;
+      // listenerId is optional and if not given, the original
+      // callback will be used
+      listenerId = listenerId || callback;
 
-    var safeCallback = protectedCallback(callback);
+      var safeCallback = protectedCallback(callback);
 
-    event.on( function() {
+      event.on( function() {
 
-      var discard = false;
+         var discard = false;
 
-      oboeApi.forget = function(){
-        discard = true;
-      };
+         oboeApi.forget = function(){
+            discard = true;
+         };
 
-      apply( arguments, safeCallback );
+         apply( arguments, safeCallback );
 
-      delete oboeApi.forget;
+         delete oboeApi.forget;
 
-      if( discard ) {
-        event.un(listenerId);
+         if( discard ) {
+            event.un(listenerId);
+         }
+      }, listenerId);
+
+      return oboeApi; // chaining
+   }
+
+   /**
+    *  wrap a callback so that if it throws, Oboe.js doesn't crash but instead
+    *  throw the error in another event loop
+    */
+   function protectedCallback( callback ) {
+      return function() {
+         try{
+            return callback.apply(oboeApi, arguments);
+         }catch(e)  {
+            setTimeout(function() {
+              throw e;
+            });
+         }
       }
-    }, listenerId);
+   }
 
-    return oboeApi; // chaining
-  }
+   /**
+    * Return the fully qualified event for when a pattern matches
+    * either a node or a path
+    *
+    * @param type {String} either 'node' or 'path'
+    */
+   function fullyQualifiedPatternMatchEvent(type, pattern) {
+      return oboeBus(type + ':' + pattern);
+   }
 
-  /**
-   *  wrap a callback so that if it throws, Oboe.js doesn't crash but instead
-   *  throw the error in another event loop
-   */
-  function protectedCallback( callback ) {
-    return function() {
-      try{
-        return callback.apply(oboeApi, arguments);
-      }catch(e)  {
-        setTimeout(function() {
-          throw new Error(e.message);
-        });
+   function wrapCallbackToSwapNodeIfSomethingReturned( callback ) {
+      return function() {
+         var returnValueFromCallback = callback.apply(this, arguments);
+
+         if( defined(returnValueFromCallback) ) {
+
+            if( returnValueFromCallback == oboe.drop ) {
+               emitNodeDrop();
+            } else {
+               emitNodeSwap(returnValueFromCallback);
+            }
+         }
       }
-    }
-  }
+   }
 
-  /**
-   * Return the fully qualified event for when a pattern matches
-   * either a node or a path
-   *
-   * @param type {String} either 'node' or 'path'
-   */
-  function fullyQualifiedPatternMatchEvent(type, pattern) {
-    return oboeBus(type + ':' + pattern);
-  }
+   function addSingleNodeOrPathListener(eventId, pattern, callback) {
 
-  function wrapCallbackToSwapNodeIfSomethingReturned( callback ) {
-    return function() {
-      var returnValueFromCallback = callback.apply(this, arguments);
+      var effectiveCallback;
 
-      if( defined(returnValueFromCallback) ) {
-
-        if( returnValueFromCallback == oboe.drop ) {
-          emitNodeDrop();
-        } else {
-          emitNodeSwap(returnValueFromCallback);
-        }
+      if( eventId == 'node' ) {
+         effectiveCallback = wrapCallbackToSwapNodeIfSomethingReturned(callback);
+      } else {
+         effectiveCallback = callback;
       }
-    }
-  }
 
-  function addSingleNodeOrPathListener(eventId, pattern, callback) {
+      addForgettableCallback(
+         fullyQualifiedPatternMatchEvent(eventId, pattern),
+         effectiveCallback,
+         callback
+      );
+   }
 
-    var effectiveCallback;
+   /**
+    * Add several listeners at a time, from a map
+    */
+   function addMultipleNodeOrPathListeners(eventId, listenerMap) {
 
-    if( eventId == 'node' ) {
-      effectiveCallback = wrapCallbackToSwapNodeIfSomethingReturned(callback);
-    } else {
-      effectiveCallback = callback;
-    }
+      for( var pattern in listenerMap ) {
+         addSingleNodeOrPathListener(eventId, pattern, listenerMap[pattern]);
+      }
+   }
 
-    addForgettableCallback(
-      fullyQualifiedPatternMatchEvent(eventId, pattern),
-      effectiveCallback,
-      callback
-    );
-  }
+   /**
+    * implementation behind .onPath() and .onNode()
+    */
+   function addNodeOrPathListenerApi( eventId, jsonPathOrListenerMap, callback ){
 
-  /**
-   * Add several listeners at a time, from a map
-   */
-  function addMultipleNodeOrPathListeners(eventId, listenerMap) {
+      if( isString(jsonPathOrListenerMap) ) {
+         addSingleNodeOrPathListener(eventId, jsonPathOrListenerMap, callback);
 
-    for( var pattern in listenerMap ) {
-      addSingleNodeOrPathListener(eventId, pattern, listenerMap[pattern]);
-    }
-  }
+      } else {
+         addMultipleNodeOrPathListeners(eventId, jsonPathOrListenerMap);
+      }
 
-  /**
-   * implementation behind .onPath() and .onNode()
-   */
-  function addNodeOrPathListenerApi( eventId, jsonPathOrListenerMap, callback ){
-
-    if( isString(jsonPathOrListenerMap) ) {
-      addSingleNodeOrPathListener(eventId, jsonPathOrListenerMap, callback);
-
-    } else {
-      addMultipleNodeOrPathListeners(eventId, jsonPathOrListenerMap);
-    }
-
-    return oboeApi; // chaining
-  }
+      return oboeApi; // chaining
+   }
 
 
-  // some interface methods are only filled in after we receive
-  // values and are noops before that:
-  oboeBus(ROOT_PATH_FOUND).on( function(rootNode) {
-    oboeApi.root = functor(rootNode);
-  });
+   // some interface methods are only filled in after we receive
+   // values and are noops before that:
+   oboeBus(ROOT_PATH_FOUND).on( function(rootNode) {
+      oboeApi.root = functor(rootNode);
+   });
 
-  /**
-   * When content starts make the headers readable through the
-   * instance API
-   */
-  oboeBus(HTTP_START).on( function(_statusCode, headers) {
+   /**
+    * When content starts make the headers readable through the
+    * instance API
+    */
+   oboeBus(HTTP_START).on( function(_statusCode, headers) {
 
-    oboeApi.header =  function(name) {
-      return name ? headers[name]
-        : headers
-      ;
-    }
-  });
+      oboeApi.header =  function(name) {
+                           return name ? headers[name]
+                                       : headers
+                                       ;
+                        }
+   });
 
-  /**
-   * Construct and return the public API of the Oboe instance to be
-   * returned to the calling application
-   */
-  return oboeApi = {
-    on             : addListener,
-    addListener    : addListener,
-    removeListener : removeListener,
-    emit           : oboeBus.emit,
+   /**
+    * Construct and return the public API of the Oboe instance to be
+    * returned to the calling application
+    */
+   return oboeApi = {
+      on             : addListener,
+      addListener    : addListener,
+      removeListener : removeListener,
+      emit           : oboeBus.emit,
 
-    node           : partialComplete(addNodeOrPathListenerApi, 'node'),
-    path           : partialComplete(addNodeOrPathListenerApi, 'path'),
+      node           : partialComplete(addNodeOrPathListenerApi, 'node'),
+      path           : partialComplete(addNodeOrPathListenerApi, 'path'),
 
-    done           : partialComplete(addForgettableCallback, rootNodeFinishedEvent),
-    start          : partialComplete(addProtectedCallback, HTTP_START ),
+      done           : partialComplete(addForgettableCallback, rootNodeFinishedEvent),
+      start          : partialComplete(addProtectedCallback, HTTP_START ),
 
-    // fail doesn't use protectedCallback because
-    // could lead to non-terminating loops
-    fail           : oboeBus(FAIL_EVENT).on,
+      // fail doesn't use protectedCallback because
+      // could lead to non-terminating loops
+      fail           : oboeBus(FAIL_EVENT).on,
 
-    // public api calling abort fires the ABORTING event
-    abort          : oboeBus(ABORTING).emit,
+      // public api calling abort fires the ABORTING event
+      abort          : oboeBus(ABORTING).emit,
 
-    // initially return nothing for header and root
-    header         : noop,
-    root           : noop,
+      // initially return nothing for header and root
+      header         : noop,
+      root           : noop,
 
-    source         : contentSource
-  };
+      source         : contentSource
+   };
 }
 
 /**
@@ -51141,7 +45026,6 @@ function applyDefaults( passthrough, url, httpMethodName, body, headers, withCre
          // Default Content-Type to JSON unless given otherwise.
          headers['Content-Type'] = headers['Content-Type'] || 'application/json';
       }
-      headers['Content-Length'] = headers['Content-Length'] || body.length;
    } else {
       body = null;
    }
@@ -51240,11 +45124,11 @@ oboe.drop = function() {
       }
    }()), Object, Array, Error, JSON);
 
-},{}],517:[function(require,module,exports){
+},{}],324:[function(require,module,exports){
 arguments[4][113][0].apply(exports,arguments)
-},{"dup":113}],518:[function(require,module,exports){
+},{"dup":113}],325:[function(require,module,exports){
 arguments[4][114][0].apply(exports,arguments)
-},{"./certificate":519,"asn1.js":220,"dup":114}],519:[function(require,module,exports){
+},{"./certificate":326,"asn1.js":205,"dup":114}],326:[function(require,module,exports){
 // from https://github.com/Rantanen/node-dtls/blob/25a7dc861bda38cfeac93a723500eea4f0ac2e86/Certificate.js
 // thanks to @Rantanen
 
@@ -51335,9 +45219,9 @@ var X509Certificate = asn.define('X509Certificate', function () {
 
 module.exports = X509Certificate
 
-},{"asn1.js":220}],520:[function(require,module,exports){
+},{"asn1.js":205}],327:[function(require,module,exports){
 arguments[4][116][0].apply(exports,arguments)
-},{"browserify-aes":238,"buffer":51,"dup":116,"evp_bytestokey":319}],521:[function(require,module,exports){
+},{"browserify-aes":223,"buffer":51,"dup":116,"evp_bytestokey":299}],328:[function(require,module,exports){
 var asn1 = require('./asn1')
 var aesid = require('./aesid.json')
 var fixProc = require('./fixProc')
@@ -51446,13 +45330,13 @@ function decrypt (data, password) {
   return Buffer.concat(out)
 }
 
-},{"./aesid.json":517,"./asn1":518,"./fixProc":520,"browserify-aes":238,"pbkdf2":522,"safe-buffer":543}],522:[function(require,module,exports){
+},{"./aesid.json":324,"./asn1":325,"./fixProc":327,"browserify-aes":223,"pbkdf2":329,"safe-buffer":346}],329:[function(require,module,exports){
 arguments[4][118][0].apply(exports,arguments)
-},{"./lib/async":523,"./lib/sync":526,"dup":118}],523:[function(require,module,exports){
+},{"./lib/async":330,"./lib/sync":333,"dup":118}],330:[function(require,module,exports){
 arguments[4][119][0].apply(exports,arguments)
-},{"./default-encoding":524,"./precondition":525,"./sync":526,"_process":124,"dup":119,"safe-buffer":543}],524:[function(require,module,exports){
+},{"./default-encoding":331,"./precondition":332,"./sync":333,"_process":124,"dup":119,"safe-buffer":346}],331:[function(require,module,exports){
 arguments[4][120][0].apply(exports,arguments)
-},{"_process":124,"dup":120}],525:[function(require,module,exports){
+},{"_process":124,"dup":120}],332:[function(require,module,exports){
 (function (Buffer){
 var MAX_ALLOC = Math.pow(2, 30) - 1 // default in iojs
 
@@ -51484,9 +45368,9 @@ module.exports = function (password, salt, iterations, keylen) {
 }
 
 }).call(this,{"isBuffer":require("../../../../../../../../.nvm/versions/node/v10.9.0/lib/node_modules/browserify/node_modules/is-buffer/index.js")})
-},{"../../../../../../../../.nvm/versions/node/v10.9.0/lib/node_modules/browserify/node_modules/is-buffer/index.js":106}],526:[function(require,module,exports){
+},{"../../../../../../../../.nvm/versions/node/v10.9.0/lib/node_modules/browserify/node_modules/is-buffer/index.js":106}],333:[function(require,module,exports){
 arguments[4][122][0].apply(exports,arguments)
-},{"./default-encoding":524,"./precondition":525,"create-hash/md5":268,"dup":122,"ripemd160":542,"safe-buffer":543,"sha.js":547}],527:[function(require,module,exports){
+},{"./default-encoding":331,"./precondition":332,"create-hash/md5":253,"dup":122,"ripemd160":345,"safe-buffer":346,"sha.js":350}],334:[function(require,module,exports){
 exports.publicEncrypt = require('./publicEncrypt')
 exports.privateDecrypt = require('./privateDecrypt')
 
@@ -51498,7 +45382,7 @@ exports.publicDecrypt = function publicDecrypt (key, buf) {
   return exports.privateDecrypt(key, buf, true)
 }
 
-},{"./privateDecrypt":529,"./publicEncrypt":530}],528:[function(require,module,exports){
+},{"./privateDecrypt":336,"./publicEncrypt":337}],335:[function(require,module,exports){
 var createHash = require('create-hash')
 var Buffer = require('safe-buffer').Buffer
 
@@ -51519,7 +45403,7 @@ function i2ops (c) {
   return out
 }
 
-},{"create-hash":267,"safe-buffer":543}],529:[function(require,module,exports){
+},{"create-hash":252,"safe-buffer":346}],336:[function(require,module,exports){
 var parseKeys = require('parse-asn1')
 var mgf = require('./mgf')
 var xor = require('./xor')
@@ -51626,7 +45510,7 @@ function compare (a, b) {
   return dif
 }
 
-},{"./mgf":528,"./withPublic":531,"./xor":532,"bn.js":234,"browserify-rsa":256,"create-hash":267,"parse-asn1":521,"safe-buffer":543}],530:[function(require,module,exports){
+},{"./mgf":335,"./withPublic":338,"./xor":339,"bn.js":219,"browserify-rsa":241,"create-hash":252,"parse-asn1":328,"safe-buffer":346}],337:[function(require,module,exports){
 var parseKeys = require('parse-asn1')
 var randomBytes = require('randombytes')
 var createHash = require('create-hash')
@@ -51716,7 +45600,7 @@ function nonZero (len) {
   return out
 }
 
-},{"./mgf":528,"./withPublic":531,"./xor":532,"bn.js":234,"browserify-rsa":256,"create-hash":267,"parse-asn1":521,"randombytes":534,"safe-buffer":543}],531:[function(require,module,exports){
+},{"./mgf":335,"./withPublic":338,"./xor":339,"bn.js":219,"browserify-rsa":241,"create-hash":252,"parse-asn1":328,"randombytes":340,"safe-buffer":346}],338:[function(require,module,exports){
 var BN = require('bn.js')
 var Buffer = require('safe-buffer').Buffer
 
@@ -51730,7 +45614,7 @@ function withPublic (paddedMsg, key) {
 
 module.exports = withPublic
 
-},{"bn.js":234,"safe-buffer":543}],532:[function(require,module,exports){
+},{"bn.js":219,"safe-buffer":346}],339:[function(require,module,exports){
 module.exports = function xor (a, b) {
   var len = a.length
   var i = -1
@@ -51740,916 +45624,24 @@ module.exports = function xor (a, b) {
   return a
 }
 
-},{}],533:[function(require,module,exports){
-'use strict';
-
-var has = Object.prototype.hasOwnProperty
-  , undef;
-
-/**
- * Decode a URI encoded string.
- *
- * @param {String} input The URI encoded string.
- * @returns {String} The decoded string.
- * @api private
- */
-function decode(input) {
-  return decodeURIComponent(input.replace(/\+/g, ' '));
-}
-
-/**
- * Simple query string parser.
- *
- * @param {String} query The query string that needs to be parsed.
- * @returns {Object}
- * @api public
- */
-function querystring(query) {
-  var parser = /([^=?&]+)=?([^&]*)/g
-    , result = {}
-    , part;
-
-  while (part = parser.exec(query)) {
-    var key = decode(part[1])
-      , value = decode(part[2]);
-
-    //
-    // Prevent overriding of existing properties. This ensures that build-in
-    // methods like `toString` or __proto__ are not overriden by malicious
-    // querystrings.
-    //
-    if (key in result) continue;
-    result[key] = value;
-  }
-
-  return result;
-}
-
-/**
- * Transform a query string to an object.
- *
- * @param {Object} obj Object that should be transformed.
- * @param {String} prefix Optional prefix.
- * @returns {String}
- * @api public
- */
-function querystringify(obj, prefix) {
-  prefix = prefix || '';
-
-  var pairs = []
-    , value
-    , key;
-
-  //
-  // Optionally prefix with a '?' if needed
-  //
-  if ('string' !== typeof prefix) prefix = '?';
-
-  for (key in obj) {
-    if (has.call(obj, key)) {
-      value = obj[key];
-
-      //
-      // Edge cases where we actually want to encode the value to an empty
-      // string instead of the stringified value.
-      //
-      if (!value && (value === null || value === undef || isNaN(value))) {
-        value = '';
-      }
-
-      pairs.push(encodeURIComponent(key) +'='+ encodeURIComponent(value));
-    }
-  }
-
-  return pairs.length ? prefix + pairs.join('&') : '';
-}
-
-//
-// Expose the module.
-//
-exports.stringify = querystringify;
-exports.parse = querystring;
-
-},{}],534:[function(require,module,exports){
+},{}],340:[function(require,module,exports){
 arguments[4][135][0].apply(exports,arguments)
-},{"_process":124,"dup":135,"safe-buffer":543}],535:[function(require,module,exports){
+},{"_process":124,"dup":135,"safe-buffer":346}],341:[function(require,module,exports){
 arguments[4][136][0].apply(exports,arguments)
-},{"_process":124,"dup":136,"randombytes":534,"safe-buffer":543}],536:[function(require,module,exports){
+},{"_process":124,"dup":136,"randombytes":340,"safe-buffer":346}],342:[function(require,module,exports){
 arguments[4][180][0].apply(exports,arguments)
-},{"dup":180}],537:[function(require,module,exports){
+},{"dup":180}],343:[function(require,module,exports){
 arguments[4][181][0].apply(exports,arguments)
-},{"crypto":536,"dup":181}],538:[function(require,module,exports){
+},{"crypto":342,"dup":181}],344:[function(require,module,exports){
 arguments[4][182][0].apply(exports,arguments)
-},{"./crypto.js":537,"dup":182}],539:[function(require,module,exports){
-/**
- * Copyright (c) 2014-present, Facebook, Inc.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
-
-// This method of obtaining a reference to the global object needs to be
-// kept identical to the way it is obtained in runtime.js
-var g = (function() {
-  return this || (typeof self === "object" && self);
-})() || Function("return this")();
-
-// Use `getOwnPropertyNames` because not all browsers support calling
-// `hasOwnProperty` on the global `self` object in a worker. See #183.
-var hadRuntime = g.regeneratorRuntime &&
-  Object.getOwnPropertyNames(g).indexOf("regeneratorRuntime") >= 0;
-
-// Save the old regeneratorRuntime in case it needs to be restored later.
-var oldRuntime = hadRuntime && g.regeneratorRuntime;
-
-// Force reevalutation of runtime.js.
-g.regeneratorRuntime = undefined;
-
-module.exports = require("./runtime");
-
-if (hadRuntime) {
-  // Restore the original runtime.
-  g.regeneratorRuntime = oldRuntime;
-} else {
-  // Remove the global property added by runtime.js.
-  try {
-    delete g.regeneratorRuntime;
-  } catch(e) {
-    g.regeneratorRuntime = undefined;
-  }
-}
-
-},{"./runtime":540}],540:[function(require,module,exports){
-/**
- * Copyright (c) 2014-present, Facebook, Inc.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
-
-!(function(global) {
-  "use strict";
-
-  var Op = Object.prototype;
-  var hasOwn = Op.hasOwnProperty;
-  var undefined; // More compressible than void 0.
-  var $Symbol = typeof Symbol === "function" ? Symbol : {};
-  var iteratorSymbol = $Symbol.iterator || "@@iterator";
-  var asyncIteratorSymbol = $Symbol.asyncIterator || "@@asyncIterator";
-  var toStringTagSymbol = $Symbol.toStringTag || "@@toStringTag";
-
-  var inModule = typeof module === "object";
-  var runtime = global.regeneratorRuntime;
-  if (runtime) {
-    if (inModule) {
-      // If regeneratorRuntime is defined globally and we're in a module,
-      // make the exports object identical to regeneratorRuntime.
-      module.exports = runtime;
-    }
-    // Don't bother evaluating the rest of this file if the runtime was
-    // already defined globally.
-    return;
-  }
-
-  // Define the runtime globally (as expected by generated code) as either
-  // module.exports (if we're in a module) or a new, empty object.
-  runtime = global.regeneratorRuntime = inModule ? module.exports : {};
-
-  function wrap(innerFn, outerFn, self, tryLocsList) {
-    // If outerFn provided and outerFn.prototype is a Generator, then outerFn.prototype instanceof Generator.
-    var protoGenerator = outerFn && outerFn.prototype instanceof Generator ? outerFn : Generator;
-    var generator = Object.create(protoGenerator.prototype);
-    var context = new Context(tryLocsList || []);
-
-    // The ._invoke method unifies the implementations of the .next,
-    // .throw, and .return methods.
-    generator._invoke = makeInvokeMethod(innerFn, self, context);
-
-    return generator;
-  }
-  runtime.wrap = wrap;
-
-  // Try/catch helper to minimize deoptimizations. Returns a completion
-  // record like context.tryEntries[i].completion. This interface could
-  // have been (and was previously) designed to take a closure to be
-  // invoked without arguments, but in all the cases we care about we
-  // already have an existing method we want to call, so there's no need
-  // to create a new function object. We can even get away with assuming
-  // the method takes exactly one argument, since that happens to be true
-  // in every case, so we don't have to touch the arguments object. The
-  // only additional allocation required is the completion record, which
-  // has a stable shape and so hopefully should be cheap to allocate.
-  function tryCatch(fn, obj, arg) {
-    try {
-      return { type: "normal", arg: fn.call(obj, arg) };
-    } catch (err) {
-      return { type: "throw", arg: err };
-    }
-  }
-
-  var GenStateSuspendedStart = "suspendedStart";
-  var GenStateSuspendedYield = "suspendedYield";
-  var GenStateExecuting = "executing";
-  var GenStateCompleted = "completed";
-
-  // Returning this object from the innerFn has the same effect as
-  // breaking out of the dispatch switch statement.
-  var ContinueSentinel = {};
-
-  // Dummy constructor functions that we use as the .constructor and
-  // .constructor.prototype properties for functions that return Generator
-  // objects. For full spec compliance, you may wish to configure your
-  // minifier not to mangle the names of these two functions.
-  function Generator() {}
-  function GeneratorFunction() {}
-  function GeneratorFunctionPrototype() {}
-
-  // This is a polyfill for %IteratorPrototype% for environments that
-  // don't natively support it.
-  var IteratorPrototype = {};
-  IteratorPrototype[iteratorSymbol] = function () {
-    return this;
-  };
-
-  var getProto = Object.getPrototypeOf;
-  var NativeIteratorPrototype = getProto && getProto(getProto(values([])));
-  if (NativeIteratorPrototype &&
-      NativeIteratorPrototype !== Op &&
-      hasOwn.call(NativeIteratorPrototype, iteratorSymbol)) {
-    // This environment has a native %IteratorPrototype%; use it instead
-    // of the polyfill.
-    IteratorPrototype = NativeIteratorPrototype;
-  }
-
-  var Gp = GeneratorFunctionPrototype.prototype =
-    Generator.prototype = Object.create(IteratorPrototype);
-  GeneratorFunction.prototype = Gp.constructor = GeneratorFunctionPrototype;
-  GeneratorFunctionPrototype.constructor = GeneratorFunction;
-  GeneratorFunctionPrototype[toStringTagSymbol] =
-    GeneratorFunction.displayName = "GeneratorFunction";
-
-  // Helper for defining the .next, .throw, and .return methods of the
-  // Iterator interface in terms of a single ._invoke method.
-  function defineIteratorMethods(prototype) {
-    ["next", "throw", "return"].forEach(function(method) {
-      prototype[method] = function(arg) {
-        return this._invoke(method, arg);
-      };
-    });
-  }
-
-  runtime.isGeneratorFunction = function(genFun) {
-    var ctor = typeof genFun === "function" && genFun.constructor;
-    return ctor
-      ? ctor === GeneratorFunction ||
-        // For the native GeneratorFunction constructor, the best we can
-        // do is to check its .name property.
-        (ctor.displayName || ctor.name) === "GeneratorFunction"
-      : false;
-  };
-
-  runtime.mark = function(genFun) {
-    if (Object.setPrototypeOf) {
-      Object.setPrototypeOf(genFun, GeneratorFunctionPrototype);
-    } else {
-      genFun.__proto__ = GeneratorFunctionPrototype;
-      if (!(toStringTagSymbol in genFun)) {
-        genFun[toStringTagSymbol] = "GeneratorFunction";
-      }
-    }
-    genFun.prototype = Object.create(Gp);
-    return genFun;
-  };
-
-  // Within the body of any async function, `await x` is transformed to
-  // `yield regeneratorRuntime.awrap(x)`, so that the runtime can test
-  // `hasOwn.call(value, "__await")` to determine if the yielded value is
-  // meant to be awaited.
-  runtime.awrap = function(arg) {
-    return { __await: arg };
-  };
-
-  function AsyncIterator(generator) {
-    function invoke(method, arg, resolve, reject) {
-      var record = tryCatch(generator[method], generator, arg);
-      if (record.type === "throw") {
-        reject(record.arg);
-      } else {
-        var result = record.arg;
-        var value = result.value;
-        if (value &&
-            typeof value === "object" &&
-            hasOwn.call(value, "__await")) {
-          return Promise.resolve(value.__await).then(function(value) {
-            invoke("next", value, resolve, reject);
-          }, function(err) {
-            invoke("throw", err, resolve, reject);
-          });
-        }
-
-        return Promise.resolve(value).then(function(unwrapped) {
-          // When a yielded Promise is resolved, its final value becomes
-          // the .value of the Promise<{value,done}> result for the
-          // current iteration.
-          result.value = unwrapped;
-          resolve(result);
-        }, function(error) {
-          // If a rejected Promise was yielded, throw the rejection back
-          // into the async generator function so it can be handled there.
-          return invoke("throw", error, resolve, reject);
-        });
-      }
-    }
-
-    var previousPromise;
-
-    function enqueue(method, arg) {
-      function callInvokeWithMethodAndArg() {
-        return new Promise(function(resolve, reject) {
-          invoke(method, arg, resolve, reject);
-        });
-      }
-
-      return previousPromise =
-        // If enqueue has been called before, then we want to wait until
-        // all previous Promises have been resolved before calling invoke,
-        // so that results are always delivered in the correct order. If
-        // enqueue has not been called before, then it is important to
-        // call invoke immediately, without waiting on a callback to fire,
-        // so that the async generator function has the opportunity to do
-        // any necessary setup in a predictable way. This predictability
-        // is why the Promise constructor synchronously invokes its
-        // executor callback, and why async functions synchronously
-        // execute code before the first await. Since we implement simple
-        // async functions in terms of async generators, it is especially
-        // important to get this right, even though it requires care.
-        previousPromise ? previousPromise.then(
-          callInvokeWithMethodAndArg,
-          // Avoid propagating failures to Promises returned by later
-          // invocations of the iterator.
-          callInvokeWithMethodAndArg
-        ) : callInvokeWithMethodAndArg();
-    }
-
-    // Define the unified helper method that is used to implement .next,
-    // .throw, and .return (see defineIteratorMethods).
-    this._invoke = enqueue;
-  }
-
-  defineIteratorMethods(AsyncIterator.prototype);
-  AsyncIterator.prototype[asyncIteratorSymbol] = function () {
-    return this;
-  };
-  runtime.AsyncIterator = AsyncIterator;
-
-  // Note that simple async functions are implemented on top of
-  // AsyncIterator objects; they just return a Promise for the value of
-  // the final result produced by the iterator.
-  runtime.async = function(innerFn, outerFn, self, tryLocsList) {
-    var iter = new AsyncIterator(
-      wrap(innerFn, outerFn, self, tryLocsList)
-    );
-
-    return runtime.isGeneratorFunction(outerFn)
-      ? iter // If outerFn is a generator, return the full iterator.
-      : iter.next().then(function(result) {
-          return result.done ? result.value : iter.next();
-        });
-  };
-
-  function makeInvokeMethod(innerFn, self, context) {
-    var state = GenStateSuspendedStart;
-
-    return function invoke(method, arg) {
-      if (state === GenStateExecuting) {
-        throw new Error("Generator is already running");
-      }
-
-      if (state === GenStateCompleted) {
-        if (method === "throw") {
-          throw arg;
-        }
-
-        // Be forgiving, per 25.3.3.3.3 of the spec:
-        // https://people.mozilla.org/~jorendorff/es6-draft.html#sec-generatorresume
-        return doneResult();
-      }
-
-      context.method = method;
-      context.arg = arg;
-
-      while (true) {
-        var delegate = context.delegate;
-        if (delegate) {
-          var delegateResult = maybeInvokeDelegate(delegate, context);
-          if (delegateResult) {
-            if (delegateResult === ContinueSentinel) continue;
-            return delegateResult;
-          }
-        }
-
-        if (context.method === "next") {
-          // Setting context._sent for legacy support of Babel's
-          // function.sent implementation.
-          context.sent = context._sent = context.arg;
-
-        } else if (context.method === "throw") {
-          if (state === GenStateSuspendedStart) {
-            state = GenStateCompleted;
-            throw context.arg;
-          }
-
-          context.dispatchException(context.arg);
-
-        } else if (context.method === "return") {
-          context.abrupt("return", context.arg);
-        }
-
-        state = GenStateExecuting;
-
-        var record = tryCatch(innerFn, self, context);
-        if (record.type === "normal") {
-          // If an exception is thrown from innerFn, we leave state ===
-          // GenStateExecuting and loop back for another invocation.
-          state = context.done
-            ? GenStateCompleted
-            : GenStateSuspendedYield;
-
-          if (record.arg === ContinueSentinel) {
-            continue;
-          }
-
-          return {
-            value: record.arg,
-            done: context.done
-          };
-
-        } else if (record.type === "throw") {
-          state = GenStateCompleted;
-          // Dispatch the exception by looping back around to the
-          // context.dispatchException(context.arg) call above.
-          context.method = "throw";
-          context.arg = record.arg;
-        }
-      }
-    };
-  }
-
-  // Call delegate.iterator[context.method](context.arg) and handle the
-  // result, either by returning a { value, done } result from the
-  // delegate iterator, or by modifying context.method and context.arg,
-  // setting context.delegate to null, and returning the ContinueSentinel.
-  function maybeInvokeDelegate(delegate, context) {
-    var method = delegate.iterator[context.method];
-    if (method === undefined) {
-      // A .throw or .return when the delegate iterator has no .throw
-      // method always terminates the yield* loop.
-      context.delegate = null;
-
-      if (context.method === "throw") {
-        if (delegate.iterator.return) {
-          // If the delegate iterator has a return method, give it a
-          // chance to clean up.
-          context.method = "return";
-          context.arg = undefined;
-          maybeInvokeDelegate(delegate, context);
-
-          if (context.method === "throw") {
-            // If maybeInvokeDelegate(context) changed context.method from
-            // "return" to "throw", let that override the TypeError below.
-            return ContinueSentinel;
-          }
-        }
-
-        context.method = "throw";
-        context.arg = new TypeError(
-          "The iterator does not provide a 'throw' method");
-      }
-
-      return ContinueSentinel;
-    }
-
-    var record = tryCatch(method, delegate.iterator, context.arg);
-
-    if (record.type === "throw") {
-      context.method = "throw";
-      context.arg = record.arg;
-      context.delegate = null;
-      return ContinueSentinel;
-    }
-
-    var info = record.arg;
-
-    if (! info) {
-      context.method = "throw";
-      context.arg = new TypeError("iterator result is not an object");
-      context.delegate = null;
-      return ContinueSentinel;
-    }
-
-    if (info.done) {
-      // Assign the result of the finished delegate to the temporary
-      // variable specified by delegate.resultName (see delegateYield).
-      context[delegate.resultName] = info.value;
-
-      // Resume execution at the desired location (see delegateYield).
-      context.next = delegate.nextLoc;
-
-      // If context.method was "throw" but the delegate handled the
-      // exception, let the outer generator proceed normally. If
-      // context.method was "next", forget context.arg since it has been
-      // "consumed" by the delegate iterator. If context.method was
-      // "return", allow the original .return call to continue in the
-      // outer generator.
-      if (context.method !== "return") {
-        context.method = "next";
-        context.arg = undefined;
-      }
-
-    } else {
-      // Re-yield the result returned by the delegate method.
-      return info;
-    }
-
-    // The delegate iterator is finished, so forget it and continue with
-    // the outer generator.
-    context.delegate = null;
-    return ContinueSentinel;
-  }
-
-  // Define Generator.prototype.{next,throw,return} in terms of the
-  // unified ._invoke helper method.
-  defineIteratorMethods(Gp);
-
-  Gp[toStringTagSymbol] = "Generator";
-
-  // A Generator should always return itself as the iterator object when the
-  // @@iterator function is called on it. Some browsers' implementations of the
-  // iterator prototype chain incorrectly implement this, causing the Generator
-  // object to not be returned from this call. This ensures that doesn't happen.
-  // See https://github.com/facebook/regenerator/issues/274 for more details.
-  Gp[iteratorSymbol] = function() {
-    return this;
-  };
-
-  Gp.toString = function() {
-    return "[object Generator]";
-  };
-
-  function pushTryEntry(locs) {
-    var entry = { tryLoc: locs[0] };
-
-    if (1 in locs) {
-      entry.catchLoc = locs[1];
-    }
-
-    if (2 in locs) {
-      entry.finallyLoc = locs[2];
-      entry.afterLoc = locs[3];
-    }
-
-    this.tryEntries.push(entry);
-  }
-
-  function resetTryEntry(entry) {
-    var record = entry.completion || {};
-    record.type = "normal";
-    delete record.arg;
-    entry.completion = record;
-  }
-
-  function Context(tryLocsList) {
-    // The root entry object (effectively a try statement without a catch
-    // or a finally block) gives us a place to store values thrown from
-    // locations where there is no enclosing try statement.
-    this.tryEntries = [{ tryLoc: "root" }];
-    tryLocsList.forEach(pushTryEntry, this);
-    this.reset(true);
-  }
-
-  runtime.keys = function(object) {
-    var keys = [];
-    for (var key in object) {
-      keys.push(key);
-    }
-    keys.reverse();
-
-    // Rather than returning an object with a next method, we keep
-    // things simple and return the next function itself.
-    return function next() {
-      while (keys.length) {
-        var key = keys.pop();
-        if (key in object) {
-          next.value = key;
-          next.done = false;
-          return next;
-        }
-      }
-
-      // To avoid creating an additional object, we just hang the .value
-      // and .done properties off the next function object itself. This
-      // also ensures that the minifier will not anonymize the function.
-      next.done = true;
-      return next;
-    };
-  };
-
-  function values(iterable) {
-    if (iterable) {
-      var iteratorMethod = iterable[iteratorSymbol];
-      if (iteratorMethod) {
-        return iteratorMethod.call(iterable);
-      }
-
-      if (typeof iterable.next === "function") {
-        return iterable;
-      }
-
-      if (!isNaN(iterable.length)) {
-        var i = -1, next = function next() {
-          while (++i < iterable.length) {
-            if (hasOwn.call(iterable, i)) {
-              next.value = iterable[i];
-              next.done = false;
-              return next;
-            }
-          }
-
-          next.value = undefined;
-          next.done = true;
-
-          return next;
-        };
-
-        return next.next = next;
-      }
-    }
-
-    // Return an iterator with no values.
-    return { next: doneResult };
-  }
-  runtime.values = values;
-
-  function doneResult() {
-    return { value: undefined, done: true };
-  }
-
-  Context.prototype = {
-    constructor: Context,
-
-    reset: function(skipTempReset) {
-      this.prev = 0;
-      this.next = 0;
-      // Resetting context._sent for legacy support of Babel's
-      // function.sent implementation.
-      this.sent = this._sent = undefined;
-      this.done = false;
-      this.delegate = null;
-
-      this.method = "next";
-      this.arg = undefined;
-
-      this.tryEntries.forEach(resetTryEntry);
-
-      if (!skipTempReset) {
-        for (var name in this) {
-          // Not sure about the optimal order of these conditions:
-          if (name.charAt(0) === "t" &&
-              hasOwn.call(this, name) &&
-              !isNaN(+name.slice(1))) {
-            this[name] = undefined;
-          }
-        }
-      }
-    },
-
-    stop: function() {
-      this.done = true;
-
-      var rootEntry = this.tryEntries[0];
-      var rootRecord = rootEntry.completion;
-      if (rootRecord.type === "throw") {
-        throw rootRecord.arg;
-      }
-
-      return this.rval;
-    },
-
-    dispatchException: function(exception) {
-      if (this.done) {
-        throw exception;
-      }
-
-      var context = this;
-      function handle(loc, caught) {
-        record.type = "throw";
-        record.arg = exception;
-        context.next = loc;
-
-        if (caught) {
-          // If the dispatched exception was caught by a catch block,
-          // then let that catch block handle the exception normally.
-          context.method = "next";
-          context.arg = undefined;
-        }
-
-        return !! caught;
-      }
-
-      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
-        var entry = this.tryEntries[i];
-        var record = entry.completion;
-
-        if (entry.tryLoc === "root") {
-          // Exception thrown outside of any try block that could handle
-          // it, so set the completion value of the entire function to
-          // throw the exception.
-          return handle("end");
-        }
-
-        if (entry.tryLoc <= this.prev) {
-          var hasCatch = hasOwn.call(entry, "catchLoc");
-          var hasFinally = hasOwn.call(entry, "finallyLoc");
-
-          if (hasCatch && hasFinally) {
-            if (this.prev < entry.catchLoc) {
-              return handle(entry.catchLoc, true);
-            } else if (this.prev < entry.finallyLoc) {
-              return handle(entry.finallyLoc);
-            }
-
-          } else if (hasCatch) {
-            if (this.prev < entry.catchLoc) {
-              return handle(entry.catchLoc, true);
-            }
-
-          } else if (hasFinally) {
-            if (this.prev < entry.finallyLoc) {
-              return handle(entry.finallyLoc);
-            }
-
-          } else {
-            throw new Error("try statement without catch or finally");
-          }
-        }
-      }
-    },
-
-    abrupt: function(type, arg) {
-      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
-        var entry = this.tryEntries[i];
-        if (entry.tryLoc <= this.prev &&
-            hasOwn.call(entry, "finallyLoc") &&
-            this.prev < entry.finallyLoc) {
-          var finallyEntry = entry;
-          break;
-        }
-      }
-
-      if (finallyEntry &&
-          (type === "break" ||
-           type === "continue") &&
-          finallyEntry.tryLoc <= arg &&
-          arg <= finallyEntry.finallyLoc) {
-        // Ignore the finally entry if control is not jumping to a
-        // location outside the try/catch block.
-        finallyEntry = null;
-      }
-
-      var record = finallyEntry ? finallyEntry.completion : {};
-      record.type = type;
-      record.arg = arg;
-
-      if (finallyEntry) {
-        this.method = "next";
-        this.next = finallyEntry.finallyLoc;
-        return ContinueSentinel;
-      }
-
-      return this.complete(record);
-    },
-
-    complete: function(record, afterLoc) {
-      if (record.type === "throw") {
-        throw record.arg;
-      }
-
-      if (record.type === "break" ||
-          record.type === "continue") {
-        this.next = record.arg;
-      } else if (record.type === "return") {
-        this.rval = this.arg = record.arg;
-        this.method = "return";
-        this.next = "end";
-      } else if (record.type === "normal" && afterLoc) {
-        this.next = afterLoc;
-      }
-
-      return ContinueSentinel;
-    },
-
-    finish: function(finallyLoc) {
-      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
-        var entry = this.tryEntries[i];
-        if (entry.finallyLoc === finallyLoc) {
-          this.complete(entry.completion, entry.afterLoc);
-          resetTryEntry(entry);
-          return ContinueSentinel;
-        }
-      }
-    },
-
-    "catch": function(tryLoc) {
-      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
-        var entry = this.tryEntries[i];
-        if (entry.tryLoc === tryLoc) {
-          var record = entry.completion;
-          if (record.type === "throw") {
-            var thrown = record.arg;
-            resetTryEntry(entry);
-          }
-          return thrown;
-        }
-      }
-
-      // The context.catch method must only be called with a location
-      // argument that corresponds to a known catch block.
-      throw new Error("illegal catch attempt");
-    },
-
-    delegateYield: function(iterable, resultName, nextLoc) {
-      this.delegate = {
-        iterator: values(iterable),
-        resultName: resultName,
-        nextLoc: nextLoc
-      };
-
-      if (this.method === "next") {
-        // Deliberately forget the last sent value so that we don't
-        // accidentally pass it on to the delegate.
-        this.arg = undefined;
-      }
-
-      return ContinueSentinel;
-    }
-  };
-})(
-  // In sloppy mode, unbound `this` refers to the global object, fallback to
-  // Function constructor if we're in global strict mode. That is sadly a form
-  // of indirect eval which violates Content Security Policy.
-  (function() {
-    return this || (typeof self === "object" && self);
-  })() || Function("return this")()
-);
-
-},{}],541:[function(require,module,exports){
-'use strict';
-
-/**
- * Check if we're required to add a port number.
- *
- * @see https://url.spec.whatwg.org/#default-port
- * @param {Number|String} port Port number we need to check
- * @param {String} protocol Protocol we need to check against.
- * @returns {Boolean} Is it a default port for the given protocol
- * @api private
- */
-module.exports = function required(port, protocol) {
-  protocol = protocol.split(':')[0];
-  port = +port;
-
-  if (!port) return false;
-
-  switch (protocol) {
-    case 'http':
-    case 'ws':
-    return port !== 80;
-
-    case 'https':
-    case 'wss':
-    return port !== 443;
-
-    case 'ftp':
-    return port !== 21;
-
-    case 'gopher':
-    return port !== 70;
-
-    case 'file':
-    return false;
-  }
-
-  return port !== 0;
-};
-
-},{}],542:[function(require,module,exports){
+},{"./crypto.js":343,"dup":182}],345:[function(require,module,exports){
 arguments[4][150][0].apply(exports,arguments)
-},{"buffer":51,"dup":150,"hash-base":320,"inherits":336}],543:[function(require,module,exports){
+},{"buffer":51,"dup":150,"hash-base":300,"inherits":316}],346:[function(require,module,exports){
 arguments[4][151][0].apply(exports,arguments)
-},{"buffer":51,"dup":151}],544:[function(require,module,exports){
+},{"buffer":51,"dup":151}],347:[function(require,module,exports){
 module.exports = require('scryptsy')
 
-},{"scryptsy":545}],545:[function(require,module,exports){
+},{"scryptsy":348}],348:[function(require,module,exports){
 (function (Buffer){
 var pbkdf2Sync = require('pbkdf2').pbkdf2Sync
 
@@ -52832,3733 +45824,3164 @@ function arraycopy (src, srcPos, dest, destPos, length) {
 module.exports = scrypt
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":51,"pbkdf2":522}],546:[function(require,module,exports){
+},{"buffer":51,"pbkdf2":329}],349:[function(require,module,exports){
 arguments[4][152][0].apply(exports,arguments)
-},{"dup":152,"safe-buffer":543}],547:[function(require,module,exports){
+},{"dup":152,"safe-buffer":346}],350:[function(require,module,exports){
 arguments[4][153][0].apply(exports,arguments)
-},{"./sha":548,"./sha1":549,"./sha224":550,"./sha256":551,"./sha384":552,"./sha512":553,"dup":153}],548:[function(require,module,exports){
+},{"./sha":351,"./sha1":352,"./sha224":353,"./sha256":354,"./sha384":355,"./sha512":356,"dup":153}],351:[function(require,module,exports){
 arguments[4][154][0].apply(exports,arguments)
-},{"./hash":546,"dup":154,"inherits":336,"safe-buffer":543}],549:[function(require,module,exports){
+},{"./hash":349,"dup":154,"inherits":316,"safe-buffer":346}],352:[function(require,module,exports){
 arguments[4][155][0].apply(exports,arguments)
-},{"./hash":546,"dup":155,"inherits":336,"safe-buffer":543}],550:[function(require,module,exports){
+},{"./hash":349,"dup":155,"inherits":316,"safe-buffer":346}],353:[function(require,module,exports){
 arguments[4][156][0].apply(exports,arguments)
-},{"./hash":546,"./sha256":551,"dup":156,"inherits":336,"safe-buffer":543}],551:[function(require,module,exports){
+},{"./hash":349,"./sha256":354,"dup":156,"inherits":316,"safe-buffer":346}],354:[function(require,module,exports){
 arguments[4][157][0].apply(exports,arguments)
-},{"./hash":546,"dup":157,"inherits":336,"safe-buffer":543}],552:[function(require,module,exports){
+},{"./hash":349,"dup":157,"inherits":316,"safe-buffer":346}],355:[function(require,module,exports){
 arguments[4][158][0].apply(exports,arguments)
-},{"./hash":546,"./sha512":553,"dup":158,"inherits":336,"safe-buffer":543}],553:[function(require,module,exports){
+},{"./hash":349,"./sha512":356,"dup":158,"inherits":316,"safe-buffer":346}],356:[function(require,module,exports){
 arguments[4][159][0].apply(exports,arguments)
-},{"./hash":546,"dup":159,"inherits":336,"safe-buffer":543}],554:[function(require,module,exports){
+},{"./hash":349,"dup":159,"inherits":316,"safe-buffer":346}],357:[function(require,module,exports){
 arguments[4][183][0].apply(exports,arguments)
-},{"dup":183,"is-hex-prefixed":337}],555:[function(require,module,exports){
-(function (global){
-'use strict';
-
-var required = require('requires-port')
-  , qs = require('querystringify')
-  , protocolre = /^([a-z][a-z0-9.+-]*:)?(\/\/)?([\S\s]*)/i
-  , slashes = /^[A-Za-z][A-Za-z0-9+-.]*:\/\//;
-
-/**
- * These are the parse rules for the URL parser, it informs the parser
- * about:
- *
- * 0. The char it Needs to parse, if it's a string it should be done using
- *    indexOf, RegExp using exec and NaN means set as current value.
- * 1. The property we should set when parsing this value.
- * 2. Indication if it's backwards or forward parsing, when set as number it's
- *    the value of extra chars that should be split off.
- * 3. Inherit from location if non existing in the parser.
- * 4. `toLowerCase` the resulting value.
- */
-var rules = [
-  ['#', 'hash'],                        // Extract from the back.
-  ['?', 'query'],                       // Extract from the back.
-  function sanitize(address) {          // Sanitize what is left of the address
-    return address.replace('\\', '/');
-  },
-  ['/', 'pathname'],                    // Extract from the back.
-  ['@', 'auth', 1],                     // Extract from the front.
-  [NaN, 'host', undefined, 1, 1],       // Set left over value.
-  [/:(\d+)$/, 'port', undefined, 1],    // RegExp the back.
-  [NaN, 'hostname', undefined, 1, 1]    // Set left over.
-];
-
-/**
- * These properties should not be copied or inherited from. This is only needed
- * for all non blob URL's as a blob URL does not include a hash, only the
- * origin.
- *
- * @type {Object}
- * @private
- */
-var ignore = { hash: 1, query: 1 };
-
-/**
- * The location object differs when your code is loaded through a normal page,
- * Worker or through a worker using a blob. And with the blobble begins the
- * trouble as the location object will contain the URL of the blob, not the
- * location of the page where our code is loaded in. The actual origin is
- * encoded in the `pathname` so we can thankfully generate a good "default"
- * location from it so we can generate proper relative URL's again.
- *
- * @param {Object|String} loc Optional default location object.
- * @returns {Object} lolcation object.
- * @public
- */
-function lolcation(loc) {
-  var globalVar;
-
-  if (typeof window !== 'undefined') globalVar = window;
-  else if (typeof global !== 'undefined') globalVar = global;
-  else if (typeof self !== 'undefined') globalVar = self;
-  else globalVar = {};
-
-  var location = globalVar.location || {};
-  loc = loc || location;
-
-  var finaldestination = {}
-    , type = typeof loc
-    , key;
-
-  if ('blob:' === loc.protocol) {
-    finaldestination = new Url(unescape(loc.pathname), {});
-  } else if ('string' === type) {
-    finaldestination = new Url(loc, {});
-    for (key in ignore) delete finaldestination[key];
-  } else if ('object' === type) {
-    for (key in loc) {
-      if (key in ignore) continue;
-      finaldestination[key] = loc[key];
-    }
-
-    if (finaldestination.slashes === undefined) {
-      finaldestination.slashes = slashes.test(loc.href);
-    }
-  }
-
-  return finaldestination;
-}
-
-/**
- * @typedef ProtocolExtract
- * @type Object
- * @property {String} protocol Protocol matched in the URL, in lowercase.
- * @property {Boolean} slashes `true` if protocol is followed by "//", else `false`.
- * @property {String} rest Rest of the URL that is not part of the protocol.
- */
-
-/**
- * Extract protocol information from a URL with/without double slash ("//").
- *
- * @param {String} address URL we want to extract from.
- * @return {ProtocolExtract} Extracted information.
- * @private
- */
-function extractProtocol(address) {
-  var match = protocolre.exec(address);
-
-  return {
-    protocol: match[1] ? match[1].toLowerCase() : '',
-    slashes: !!match[2],
-    rest: match[3]
-  };
-}
-
-/**
- * Resolve a relative URL pathname against a base URL pathname.
- *
- * @param {String} relative Pathname of the relative URL.
- * @param {String} base Pathname of the base URL.
- * @return {String} Resolved pathname.
- * @private
- */
-function resolve(relative, base) {
-  var path = (base || '/').split('/').slice(0, -1).concat(relative.split('/'))
-    , i = path.length
-    , last = path[i - 1]
-    , unshift = false
-    , up = 0;
-
-  while (i--) {
-    if (path[i] === '.') {
-      path.splice(i, 1);
-    } else if (path[i] === '..') {
-      path.splice(i, 1);
-      up++;
-    } else if (up) {
-      if (i === 0) unshift = true;
-      path.splice(i, 1);
-      up--;
-    }
-  }
-
-  if (unshift) path.unshift('');
-  if (last === '.' || last === '..') path.push('');
-
-  return path.join('/');
-}
-
-/**
- * The actual URL instance. Instead of returning an object we've opted-in to
- * create an actual constructor as it's much more memory efficient and
- * faster and it pleases my OCD.
- *
- * It is worth noting that we should not use `URL` as class name to prevent
- * clashes with the global URL instance that got introduced in browsers.
- *
- * @constructor
- * @param {String} address URL we want to parse.
- * @param {Object|String} [location] Location defaults for relative paths.
- * @param {Boolean|Function} [parser] Parser for the query string.
- * @private
- */
-function Url(address, location, parser) {
-  if (!(this instanceof Url)) {
-    return new Url(address, location, parser);
-  }
-
-  var relative, extracted, parse, instruction, index, key
-    , instructions = rules.slice()
-    , type = typeof location
-    , url = this
-    , i = 0;
-
-  //
-  // The following if statements allows this module two have compatibility with
-  // 2 different API:
-  //
-  // 1. Node.js's `url.parse` api which accepts a URL, boolean as arguments
-  //    where the boolean indicates that the query string should also be parsed.
-  //
-  // 2. The `URL` interface of the browser which accepts a URL, object as
-  //    arguments. The supplied object will be used as default values / fall-back
-  //    for relative paths.
-  //
-  if ('object' !== type && 'string' !== type) {
-    parser = location;
-    location = null;
-  }
-
-  if (parser && 'function' !== typeof parser) parser = qs.parse;
-
-  location = lolcation(location);
-
-  //
-  // Extract protocol information before running the instructions.
-  //
-  extracted = extractProtocol(address || '');
-  relative = !extracted.protocol && !extracted.slashes;
-  url.slashes = extracted.slashes || relative && location.slashes;
-  url.protocol = extracted.protocol || location.protocol || '';
-  address = extracted.rest;
-
-  //
-  // When the authority component is absent the URL starts with a path
-  // component.
-  //
-  if (!extracted.slashes) instructions[3] = [/(.*)/, 'pathname'];
-
-  for (; i < instructions.length; i++) {
-    instruction = instructions[i];
-
-    if (typeof instruction === 'function') {
-      address = instruction(address);
-      continue;
-    }
-
-    parse = instruction[0];
-    key = instruction[1];
-
-    if (parse !== parse) {
-      url[key] = address;
-    } else if ('string' === typeof parse) {
-      if (~(index = address.indexOf(parse))) {
-        if ('number' === typeof instruction[2]) {
-          url[key] = address.slice(0, index);
-          address = address.slice(index + instruction[2]);
-        } else {
-          url[key] = address.slice(index);
-          address = address.slice(0, index);
-        }
-      }
-    } else if ((index = parse.exec(address))) {
-      url[key] = index[1];
-      address = address.slice(0, index.index);
-    }
-
-    url[key] = url[key] || (
-      relative && instruction[3] ? location[key] || '' : ''
-    );
-
-    //
-    // Hostname, host and protocol should be lowercased so they can be used to
-    // create a proper `origin`.
-    //
-    if (instruction[4]) url[key] = url[key].toLowerCase();
-  }
-
-  //
-  // Also parse the supplied query string in to an object. If we're supplied
-  // with a custom parser as function use that instead of the default build-in
-  // parser.
-  //
-  if (parser) url.query = parser(url.query);
-
-  //
-  // If the URL is relative, resolve the pathname against the base URL.
-  //
-  if (
-      relative
-    && location.slashes
-    && url.pathname.charAt(0) !== '/'
-    && (url.pathname !== '' || location.pathname !== '')
-  ) {
-    url.pathname = resolve(url.pathname, location.pathname);
-  }
-
-  //
-  // We should not add port numbers if they are already the default port number
-  // for a given protocol. As the host also contains the port number we're going
-  // override it with the hostname which contains no port number.
-  //
-  if (!required(url.port, url.protocol)) {
-    url.host = url.hostname;
-    url.port = '';
-  }
-
-  //
-  // Parse down the `auth` for the username and password.
-  //
-  url.username = url.password = '';
-  if (url.auth) {
-    instruction = url.auth.split(':');
-    url.username = instruction[0] || '';
-    url.password = instruction[1] || '';
-  }
-
-  url.origin = url.protocol && url.host && url.protocol !== 'file:'
-    ? url.protocol +'//'+ url.host
-    : 'null';
-
-  //
-  // The href is just the compiled result.
-  //
-  url.href = url.toString();
-}
-
-/**
- * This is convenience method for changing properties in the URL instance to
- * insure that they all propagate correctly.
- *
- * @param {String} part          Property we need to adjust.
- * @param {Mixed} value          The newly assigned value.
- * @param {Boolean|Function} fn  When setting the query, it will be the function
- *                               used to parse the query.
- *                               When setting the protocol, double slash will be
- *                               removed from the final url if it is true.
- * @returns {URL} URL instance for chaining.
- * @public
- */
-function set(part, value, fn) {
-  var url = this;
-
-  switch (part) {
-    case 'query':
-      if ('string' === typeof value && value.length) {
-        value = (fn || qs.parse)(value);
-      }
-
-      url[part] = value;
-      break;
-
-    case 'port':
-      url[part] = value;
-
-      if (!required(value, url.protocol)) {
-        url.host = url.hostname;
-        url[part] = '';
-      } else if (value) {
-        url.host = url.hostname +':'+ value;
-      }
-
-      break;
-
-    case 'hostname':
-      url[part] = value;
-
-      if (url.port) value += ':'+ url.port;
-      url.host = value;
-      break;
-
-    case 'host':
-      url[part] = value;
-
-      if (/:\d+$/.test(value)) {
-        value = value.split(':');
-        url.port = value.pop();
-        url.hostname = value.join(':');
-      } else {
-        url.hostname = value;
-        url.port = '';
-      }
-
-      break;
-
-    case 'protocol':
-      url.protocol = value.toLowerCase();
-      url.slashes = !fn;
-      break;
-
-    case 'pathname':
-    case 'hash':
-      if (value) {
-        var char = part === 'pathname' ? '/' : '#';
-        url[part] = value.charAt(0) !== char ? char + value : value;
-      } else {
-        url[part] = value;
-      }
-      break;
-
-    default:
-      url[part] = value;
-  }
-
-  for (var i = 0; i < rules.length; i++) {
-    var ins = rules[i];
-
-    if (ins[4]) url[ins[1]] = url[ins[1]].toLowerCase();
-  }
-
-  url.origin = url.protocol && url.host && url.protocol !== 'file:'
-    ? url.protocol +'//'+ url.host
-    : 'null';
-
-  url.href = url.toString();
-
-  return url;
-}
-
-/**
- * Transform the properties back in to a valid and full URL string.
- *
- * @param {Function} stringify Optional query stringify function.
- * @returns {String} Compiled version of the URL.
- * @public
- */
-function toString(stringify) {
-  if (!stringify || 'function' !== typeof stringify) stringify = qs.stringify;
-
-  var query
-    , url = this
-    , protocol = url.protocol;
-
-  if (protocol && protocol.charAt(protocol.length - 1) !== ':') protocol += ':';
-
-  var result = protocol + (url.slashes ? '//' : '');
-
-  if (url.username) {
-    result += url.username;
-    if (url.password) result += ':'+ url.password;
-    result += '@';
-  }
-
-  result += url.host + url.pathname;
-
-  query = 'object' === typeof url.query ? stringify(url.query) : url.query;
-  if (query) result += '?' !== query.charAt(0) ? '?'+ query : query;
-
-  if (url.hash) result += url.hash;
-
-  return result;
-}
-
-Url.prototype = { set: set, toString: toString };
-
-//
-// Expose the URL parser and some additional properties that might be useful for
-// others or testing.
-//
-Url.extractProtocol = extractProtocol;
-Url.location = lolcation;
-Url.qs = qs;
-
-module.exports = Url;
-
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"querystringify":533,"requires-port":541}],556:[function(require,module,exports){
+},{"dup":183,"is-hex-prefixed":317}],358:[function(require,module,exports){
+arguments[4][184][0].apply(exports,arguments)
+},{"dup":184}],359:[function(require,module,exports){
 arguments[4][185][0].apply(exports,arguments)
-},{"dup":185}],557:[function(require,module,exports){
-(function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@babel/runtime/helpers/typeof'), require('lodash/isString'), require('lodash/isArray'), require('lodash/isObject'), require('lodash/isNumber'), require('web3-utils'), require('web3-eth-iban')) :
-    typeof define === 'function' && define.amd ? define(['exports', '@babel/runtime/helpers/typeof', 'lodash/isString', 'lodash/isArray', 'lodash/isObject', 'lodash/isNumber', 'web3-utils', 'web3-eth-iban'], factory) :
-    (factory((global.Web3CoreHelpers = {}),global._typeof,global.isString,global.isArray,global.isObject,global.isNumber,global.Utils,global.web3EthIban));
-}(this, (function (exports,_typeof,isString,isArray,isObject,isNumber,Utils,web3EthIban) { 'use strict';
+},{"dup":185}],360:[function(require,module,exports){
+/*
+    This file is part of web3.js.
 
-    _typeof = _typeof && _typeof.hasOwnProperty('default') ? _typeof['default'] : _typeof;
-    isString = isString && isString.hasOwnProperty('default') ? isString['default'] : isString;
-    isArray = isArray && isArray.hasOwnProperty('default') ? isArray['default'] : isArray;
-    isObject = isObject && isObject.hasOwnProperty('default') ? isObject['default'] : isObject;
-    isNumber = isNumber && isNumber.hasOwnProperty('default') ? isNumber['default'] : isNumber;
+    web3.js is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
 
-    var outputBigNumberFormatter = function outputBigNumberFormatter(number) {
-      return Utils.toBN(number).toString(10);
-    };
-    var isPredefinedBlockNumber = function isPredefinedBlockNumber(blockNumber) {
-      return blockNumber === 'latest' || blockNumber === 'pending' || blockNumber === 'earliest';
-    };
-    var inputDefaultBlockNumberFormatter = function inputDefaultBlockNumberFormatter(blockNumber, moduleInstance) {
-      if (blockNumber === undefined || blockNumber === null) {
-        return moduleInstance.defaultBlock;
-      }
-      return inputBlockNumberFormatter(blockNumber);
-    };
-    var inputBlockNumberFormatter = function inputBlockNumberFormatter(blockNumber) {
-      if (blockNumber === undefined || blockNumber === null || isPredefinedBlockNumber(blockNumber)) {
+    web3.js is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public License
+    along with web3.js.  If not, see <http://www.gnu.org/licenses/>.
+*/
+/**
+ * @file errors.js
+ * @author Fabian Vogelsteller <fabian@ethereum.org>
+ * @author Marek Kotewicz <marek@parity.io>
+ * @date 2017
+ */
+
+"use strict";
+
+module.exports = {
+    ErrorResponse: function (result) {
+        var message = !!result && !!result.error && !!result.error.message ? result.error.message : JSON.stringify(result);
+        return new Error('Returned error: ' + message);
+    },
+    InvalidNumberOfParams: function (got, expected, method) {
+        return new Error('Invalid number of parameters for "'+ method +'". Got '+ got +' expected '+ expected +'!');
+    },
+    InvalidConnection: function (host){
+        return new Error('CONNECTION ERROR: Couldn\'t connect to node '+ host +'.');
+    },
+    InvalidProvider: function () {
+        return new Error('Provider not set or invalid');
+    },
+    InvalidResponse: function (result){
+        var message = !!result && !!result.error && !!result.error.message ? result.error.message : 'Invalid JSON RPC response: ' + JSON.stringify(result);
+        return new Error(message);
+    },
+    ConnectionTimeout: function (ms){
+        return new Error('CONNECTION TIMEOUT: timeout of ' + ms + ' ms achived');
+    }
+};
+
+},{}],361:[function(require,module,exports){
+/*
+    This file is part of web3.js.
+
+    web3.js is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    web3.js is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public License
+    along with web3.js.  If not, see <http://www.gnu.org/licenses/>.
+*/
+/**
+ * @file formatters.js
+ * @author Fabian Vogelsteller <fabian@ethereum.org>
+ * @author Marek Kotewicz <marek@parity.io>
+ * @date 2017
+ */
+
+"use strict";
+
+
+var _ = require('underscore');
+var utils = require('web3-utils');
+var Iban = require('web3-eth-iban');
+
+/**
+ * Should the format output to a big number
+ *
+ * @method outputBigNumberFormatter
+ * @param {String|Number|BigNumber} number
+ * @returns {BigNumber} object
+ */
+var outputBigNumberFormatter = function (number) {
+    return utils.toBN(number).toString(10);
+};
+
+var isPredefinedBlockNumber = function (blockNumber) {
+    return blockNumber === 'latest' || blockNumber === 'pending' || blockNumber === 'earliest';
+};
+
+var inputDefaultBlockNumberFormatter = function (blockNumber) {
+    if (this && (blockNumber === undefined || blockNumber === null)) {
+        return this.defaultBlock;
+    }
+    if (blockNumber === 'genesis' || blockNumber === 'earliest') {
+        return '0x0';
+    }
+    return inputBlockNumberFormatter(blockNumber);
+};
+
+var inputBlockNumberFormatter = function (blockNumber) {
+    if (blockNumber === undefined) {
+        return undefined;
+    } else if (isPredefinedBlockNumber(blockNumber)) {
         return blockNumber;
-      }
-      if (Utils.isHexStrict(blockNumber)) {
-        if (isString(blockNumber)) {
-          return blockNumber.toLowerCase();
-        }
-        return blockNumber;
-      }
-      return Utils.numberToHex(blockNumber);
-    };
-    var txInputFormatter = function txInputFormatter(txObject) {
-      if (txObject.to) {
-        txObject.to = inputAddressFormatter(txObject.to);
-      }
-      if (txObject.data && txObject.input) {
+    }
+    return (utils.isHexStrict(blockNumber)) ? ((_.isString(blockNumber)) ? blockNumber.toLowerCase() : blockNumber) : utils.numberToHex(blockNumber);
+};
+
+/**
+ * Formats the input of a transaction and converts all values to HEX
+ *
+ * @method _txInputFormatter
+ * @param {Object} transaction options
+ * @returns object
+ */
+var _txInputFormatter = function (options){
+
+    if (options.to) { // it might be contract creation
+        options.to = inputAddressFormatter(options.to);
+    }
+
+    if (options.data && options.input) {
         throw new Error('You can\'t have "data" and "input" as properties of transactions at the same time, please use either "data" or "input" instead.');
-      }
-      if (!txObject.data && txObject.input) {
-        txObject.data = txObject.input;
-        delete txObject.input;
-      }
-      if (txObject.data && !Utils.isHex(txObject.data)) {
-        throw new Error('The data field must be HEX encoded data.');
-      }
-      if (txObject.gas || txObject.gasLimit) {
-        txObject.gas = txObject.gas || txObject.gasLimit;
-      }
-      ['gasPrice', 'gas', 'value', 'nonce'].filter(function (key) {
-        return txObject[key] !== undefined;
-      }).forEach(function (key) {
-        txObject[key] = Utils.numberToHex(txObject[key]);
-      });
-      return txObject;
-    };
-    var inputCallFormatter = function inputCallFormatter(txObject, moduleInstance) {
-      txObject = txInputFormatter(txObject);
-      var from = moduleInstance.defaultAccount;
-      if (txObject.from) {
-        from = txObject.from;
-      }
-      if (from) {
-        txObject.from = inputAddressFormatter(from);
-      }
-      return txObject;
-    };
-    var inputTransactionFormatter = function inputTransactionFormatter(txObject, moduleInstance) {
-      txObject = txInputFormatter(txObject);
-      if (!isNumber(txObject.from) && !isObject(txObject.from)) {
-        if (!txObject.from) {
-          txObject.from = moduleInstance.defaultAccount;
-        }
-        if (!txObject.from && !isNumber(txObject.from)) {
-          throw new Error('The send transactions "from" field must be defined!');
-        }
-        txObject.from = inputAddressFormatter(txObject.from);
-      }
-      return txObject;
-    };
-    var inputSignFormatter = function inputSignFormatter(data) {
-      return Utils.isHexStrict(data) ? data : Utils.utf8ToHex(data);
-    };
-    var outputTransactionFormatter = function outputTransactionFormatter(receipt) {
-      if (receipt.blockNumber !== null) {
-        receipt.blockNumber = Utils.hexToNumber(receipt.blockNumber);
-      }
-      if (receipt.transactionIndex !== null) {
-        receipt.transactionIndex = Utils.hexToNumber(receipt.transactionIndex);
-      }
-      if (receipt.gasPrice) {
-        receipt.gasPrice = outputBigNumberFormatter(receipt.gasPrice);
-      }
-      if (receipt.value) {
-        receipt.value = outputBigNumberFormatter(receipt.value);
-      }
-      receipt.nonce = Utils.hexToNumber(receipt.nonce);
-      receipt.gas = Utils.hexToNumber(receipt.gas);
-      if (receipt.to && Utils.isAddress(receipt.to)) {
-        receipt.to = Utils.toChecksumAddress(receipt.to);
-      } else {
-        receipt.to = null;
-      }
-      if (receipt.from) {
-        receipt.from = Utils.toChecksumAddress(receipt.from);
-      }
-      return receipt;
-    };
-    var outputTransactionReceiptFormatter = function outputTransactionReceiptFormatter(receipt) {
-      if (_typeof(receipt) !== 'object') {
-        throw new TypeError("Received receipt is invalid: ".concat(receipt));
-      }
-      if (receipt.blockNumber !== null) {
-        receipt.blockNumber = Utils.hexToNumber(receipt.blockNumber);
-      }
-      if (receipt.transactionIndex !== null) {
-        receipt.transactionIndex = Utils.hexToNumber(receipt.transactionIndex);
-      }
-      receipt.cumulativeGasUsed = Utils.hexToNumber(receipt.cumulativeGasUsed);
-      receipt.gasUsed = Utils.hexToNumber(receipt.gasUsed);
-      if (isArray(receipt.logs)) {
-        receipt.logs = receipt.logs.map(outputLogFormatter);
-      }
-      if (receipt.contractAddress) {
-        receipt.contractAddress = Utils.toChecksumAddress(receipt.contractAddress);
-      }
-      if (typeof receipt.status !== 'undefined') {
-        receipt.status = Boolean(parseInt(receipt.status));
-      }
-      return receipt;
-    };
-    var outputBlockFormatter = function outputBlockFormatter(block) {
-      block.gasLimit = Utils.hexToNumber(block.gasLimit);
-      block.gasUsed = Utils.hexToNumber(block.gasUsed);
-      block.size = Utils.hexToNumber(block.size);
-      block.timestamp = Utils.hexToNumber(block.timestamp);
-      if (block.number !== null) {
-        block.number = Utils.hexToNumber(block.number);
-      }
-      if (block.difficulty) {
-        block.difficulty = outputBigNumberFormatter(block.difficulty);
-      }
-      if (block.totalDifficulty) {
-        block.totalDifficulty = outputBigNumberFormatter(block.totalDifficulty);
-      }
-      if (isArray(block.transactions)) {
-        block.transactions.forEach(function (item) {
-          if (!isString(item)) return outputTransactionFormatter(item);
-        });
-      }
-      if (block.miner) {
-        block.miner = Utils.toChecksumAddress(block.miner);
-      }
-      return block;
-    };
-    var inputLogFormatter = function inputLogFormatter(options) {
-      var toTopic = function toTopic(value) {
-        if (value === null || typeof value === 'undefined') {
-          return null;
-        }
-        value = String(value);
-        if (value.indexOf('0x') === 0) {
-          return value;
-        }
-        return Utils.fromUtf8(value);
-      };
-      if (options.fromBlock) {
-        options.fromBlock = inputBlockNumberFormatter(options.fromBlock);
-      }
-      if (options.toBlock) {
-        options.toBlock = inputBlockNumberFormatter(options.toBlock);
-      }
-      options.topics = options.topics || [];
-      options.topics = options.topics.map(function (topic) {
-        return isArray(topic) ? topic.map(toTopic) : toTopic(topic);
-      });
-      toTopic = null;
-      if (options.address) {
-        if (isArray(options.address)) {
-          options.address = options.address.map(function (addr) {
-            return inputAddressFormatter(addr);
-          });
-        } else {
-          options.address = inputAddressFormatter(options.address);
-        }
-      }
-      return options;
-    };
-    var outputLogFormatter = function outputLogFormatter(log) {
-      if (typeof log.blockHash === 'string' && typeof log.transactionHash === 'string' && typeof log.logIndex === 'string') {
-        var shaId = Utils.sha3(log.blockHash.replace('0x', '') + log.transactionHash.replace('0x', '') + log.logIndex.replace('0x', ''));
-        shaId.replace('0x', '').substr(0, 8);
-        log.id = "log_".concat(shaId);
-      } else if (!log.id) {
-        log.id = null;
-      }
-      if (log.blockNumber !== null) {
-        log.blockNumber = Utils.hexToNumber(log.blockNumber);
-      }
-      if (log.transactionIndex !== null) {
-        log.transactionIndex = Utils.hexToNumber(log.transactionIndex);
-      }
-      if (log.logIndex !== null) {
-        log.logIndex = Utils.hexToNumber(log.logIndex);
-      }
-      if (log.address) {
-        log.address = Utils.toChecksumAddress(log.address);
-      }
-      return log;
-    };
-    var inputPostFormatter = function inputPostFormatter(post) {
-      if (post.ttl) {
-        post.ttl = Utils.numberToHex(post.ttl);
-      }
-      if (post.workToProve) {
-        post.workToProve = Utils.numberToHex(post.workToProve);
-      }
-      if (post.priority) {
-        post.priority = Utils.numberToHex(post.priority);
-      }
-      if (!isArray(post.topics)) {
-        post.topics = post.topics ? [post.topics] : [];
-      }
-      post.topics = post.topics.map(function (topic) {
-        return topic.indexOf('0x') === 0 ? topic : Utils.fromUtf8(topic);
-      });
-      return post;
-    };
-    var outputPostFormatter = function outputPostFormatter(post) {
-      post.expiry = Utils.hexToNumber(post.expiry);
-      post.sent = Utils.hexToNumber(post.sent);
-      post.ttl = Utils.hexToNumber(post.ttl);
-      post.workProved = Utils.hexToNumber(post.workProved);
-      if (!post.topics) {
-        post.topics = [];
-      }
-      post.topics = post.topics.map(function (topic) {
-        return Utils.toUtf8(topic);
-      });
-      return post;
-    };
-    var inputAddressFormatter = function inputAddressFormatter(address) {
-      var iban = new web3EthIban.Iban(address);
-      if (iban.isValid() && iban.isDirect()) {
-        return iban.toAddress().toLowerCase();
-      }
-      if (Utils.isAddress(address)) {
-        return "0x".concat(address.toLowerCase().replace('0x', ''));
-      }
-      throw new Error("Provided address \"".concat(address, "\" is invalid, the capitalization checksum test failed, or its an indrect IBAN address which can't be converted."));
-    };
-    var outputSyncingFormatter = function outputSyncingFormatter(result) {
-      result.startingBlock = Utils.hexToNumber(result.startingBlock);
-      result.currentBlock = Utils.hexToNumber(result.currentBlock);
-      result.highestBlock = Utils.hexToNumber(result.highestBlock);
-      if (result.knownStates) {
-        result.knownStates = Utils.hexToNumber(result.knownStates);
-        result.pulledStates = Utils.hexToNumber(result.pulledStates);
-      }
-      return result;
-    };
+    }
 
-    var Formatters = /*#__PURE__*/Object.freeze({
-        outputBigNumberFormatter: outputBigNumberFormatter,
-        isPredefinedBlockNumber: isPredefinedBlockNumber,
-        inputDefaultBlockNumberFormatter: inputDefaultBlockNumberFormatter,
-        inputBlockNumberFormatter: inputBlockNumberFormatter,
-        txInputFormatter: txInputFormatter,
-        inputCallFormatter: inputCallFormatter,
-        inputTransactionFormatter: inputTransactionFormatter,
-        inputSignFormatter: inputSignFormatter,
-        outputTransactionFormatter: outputTransactionFormatter,
-        outputTransactionReceiptFormatter: outputTransactionReceiptFormatter,
-        outputBlockFormatter: outputBlockFormatter,
-        inputLogFormatter: inputLogFormatter,
-        outputLogFormatter: outputLogFormatter,
-        inputPostFormatter: inputPostFormatter,
-        outputPostFormatter: outputPostFormatter,
-        inputAddressFormatter: inputAddressFormatter,
-        outputSyncingFormatter: outputSyncingFormatter
+    if (!options.data && options.input) {
+        options.data = options.input;
+        delete options.input;
+    }
+
+    if(options.data && !utils.isHex(options.data)) {
+        throw new Error('The data field must be HEX encoded data.');
+    }
+
+    // allow both
+    if (options.gas || options.gasLimit) {
+        options.gas = options.gas || options.gasLimit;
+    }
+
+    ['gasPrice', 'gas', 'value', 'nonce'].filter(function (key) {
+        return options[key] !== undefined;
+    }).forEach(function(key){
+        options[key] = utils.numberToHex(options[key]);
     });
 
-    exports.formatters = Formatters;
-
-    Object.defineProperty(exports, '__esModule', { value: true });
-
-})));
-
-},{"@babel/runtime/helpers/typeof":218,"lodash/isArray":486,"lodash/isNumber":494,"lodash/isObject":495,"lodash/isString":498,"web3-eth-iban":571,"web3-utils":576}],558:[function(require,module,exports){
-(function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('web3-providers'), require('eventemitter3'), require('@babel/runtime/regenerator'), require('@babel/runtime/helpers/asyncToGenerator'), require('@babel/runtime/helpers/toConsumableArray'), require('lodash/isString'), require('lodash/cloneDeep'), require('web3-core-promievent'), require('web3-core-subscriptions'), require('web3-core-helpers'), require('web3-utils'), require('lodash/isObject'), require('@babel/runtime/helpers/get'), require('lodash/isFunction'), require('@babel/runtime/helpers/createClass'), require('@babel/runtime/helpers/classCallCheck'), require('@babel/runtime/helpers/possibleConstructorReturn'), require('@babel/runtime/helpers/getPrototypeOf'), require('@babel/runtime/helpers/inherits')) :
-    typeof define === 'function' && define.amd ? define(['exports', 'web3-providers', 'eventemitter3', '@babel/runtime/regenerator', '@babel/runtime/helpers/asyncToGenerator', '@babel/runtime/helpers/toConsumableArray', 'lodash/isString', 'lodash/cloneDeep', 'web3-core-promievent', 'web3-core-subscriptions', 'web3-core-helpers', 'web3-utils', 'lodash/isObject', '@babel/runtime/helpers/get', 'lodash/isFunction', '@babel/runtime/helpers/createClass', '@babel/runtime/helpers/classCallCheck', '@babel/runtime/helpers/possibleConstructorReturn', '@babel/runtime/helpers/getPrototypeOf', '@babel/runtime/helpers/inherits'], factory) :
-    (factory((global.Web3CoreMethod = {}),global.web3Providers,global.EventEmitter,global._regeneratorRuntime,global._asyncToGenerator,global._toConsumableArray,global.isString,global.cloneDeep,global.web3CorePromievent,global.web3CoreSubscriptions,global.web3CoreHelpers,global.Utils,global.isObject,global._get,global.isFunction,global._createClass,global._classCallCheck,global._possibleConstructorReturn,global._getPrototypeOf,global._inherits));
-}(this, (function (exports,web3Providers,EventEmitter,_regeneratorRuntime,_asyncToGenerator,_toConsumableArray,isString,cloneDeep,web3CorePromievent,web3CoreSubscriptions,web3CoreHelpers,Utils,isObject,_get,isFunction,_createClass,_classCallCheck,_possibleConstructorReturn,_getPrototypeOf,_inherits) { 'use strict';
-
-    EventEmitter = EventEmitter && EventEmitter.hasOwnProperty('default') ? EventEmitter['default'] : EventEmitter;
-    _regeneratorRuntime = _regeneratorRuntime && _regeneratorRuntime.hasOwnProperty('default') ? _regeneratorRuntime['default'] : _regeneratorRuntime;
-    _asyncToGenerator = _asyncToGenerator && _asyncToGenerator.hasOwnProperty('default') ? _asyncToGenerator['default'] : _asyncToGenerator;
-    _toConsumableArray = _toConsumableArray && _toConsumableArray.hasOwnProperty('default') ? _toConsumableArray['default'] : _toConsumableArray;
-    isString = isString && isString.hasOwnProperty('default') ? isString['default'] : isString;
-    cloneDeep = cloneDeep && cloneDeep.hasOwnProperty('default') ? cloneDeep['default'] : cloneDeep;
-    isObject = isObject && isObject.hasOwnProperty('default') ? isObject['default'] : isObject;
-    _get = _get && _get.hasOwnProperty('default') ? _get['default'] : _get;
-    isFunction = isFunction && isFunction.hasOwnProperty('default') ? isFunction['default'] : isFunction;
-    _createClass = _createClass && _createClass.hasOwnProperty('default') ? _createClass['default'] : _createClass;
-    _classCallCheck = _classCallCheck && _classCallCheck.hasOwnProperty('default') ? _classCallCheck['default'] : _classCallCheck;
-    _possibleConstructorReturn = _possibleConstructorReturn && _possibleConstructorReturn.hasOwnProperty('default') ? _possibleConstructorReturn['default'] : _possibleConstructorReturn;
-    _getPrototypeOf = _getPrototypeOf && _getPrototypeOf.hasOwnProperty('default') ? _getPrototypeOf['default'] : _getPrototypeOf;
-    _inherits = _inherits && _inherits.hasOwnProperty('default') ? _inherits['default'] : _inherits;
-
-    var TransactionConfirmationWorkflow =
-    function () {
-      function TransactionConfirmationWorkflow(transactionReceiptValidator, newHeadsWatcher, getTransactionReceiptMethod) {
-        _classCallCheck(this, TransactionConfirmationWorkflow);
-        this.transactionReceiptValidator = transactionReceiptValidator;
-        this.newHeadsWatcher = newHeadsWatcher;
-        this.timeoutCounter = 0;
-        this.confirmationsCounter = 0;
-        this.getTransactionReceiptMethod = getTransactionReceiptMethod;
-      }
-      _createClass(TransactionConfirmationWorkflow, [{
-        key: "execute",
-        value: function execute(method, moduleInstance, transactionHash, promiEvent) {
-          var _this = this;
-          this.getTransactionReceiptMethod.parameters = [transactionHash];
-          this.getTransactionReceiptMethod.execute(moduleInstance).then(function (receipt) {
-            if (receipt && receipt.blockHash) {
-              var validationResult = _this.transactionReceiptValidator.validate(receipt, method.parameters);
-              if (validationResult === true) {
-                _this.handleSuccessState(receipt, method, promiEvent);
-                return;
-              }
-              _this.handleErrorState(validationResult, method, promiEvent);
-              return;
-            }
-            _this.newHeadsWatcher.watch(moduleInstance).on('newHead', function () {
-              _this.timeoutCounter++;
-              if (!_this.isTimeoutTimeExceeded(moduleInstance, _this.newHeadsWatcher.isPolling)) {
-                _this.getTransactionReceiptMethod.execute(moduleInstance).then(function (receipt) {
-                  if (receipt && receipt.blockHash) {
-                    var _validationResult = _this.transactionReceiptValidator.validate(receipt, method.parameters);
-                    if (_validationResult === true) {
-                      _this.confirmationsCounter++;
-                      promiEvent.emit('confirmation', _this.confirmationsCounter, receipt);
-                      if (_this.isConfirmed(moduleInstance)) {
-                        _this.handleSuccessState(receipt, method, promiEvent);
-                      }
-                      return;
-                    }
-                    _this.handleErrorState(_validationResult, method, promiEvent);
-                  }
-                });
-                return;
-              }
-              var error = new Error("Transaction was not mined within ".concat(moduleInstance.transactionBlockTimeout, " blocks, please make sure your transaction was properly sent. Be aware that it might still be mined!"));
-              if (_this.newHeadsWatcher.isPolling) {
-                error = new Error("Transaction was not mined within ".concat(moduleInstance.transactionPollingTimeout, " seconds, please make sure your transaction was properly sent. Be aware that it might still be mined!"));
-              }
-              _this.handleErrorState(error, method, promiEvent);
-            });
-          });
-        }
-      }, {
-        key: "isConfirmed",
-        value: function isConfirmed(moduleInstance) {
-          return this.confirmationsCounter === moduleInstance.transactionConfirmationBlocks;
-        }
-      }, {
-        key: "isTimeoutTimeExceeded",
-        value: function isTimeoutTimeExceeded(moduleInstance, watcherIsPolling) {
-          var timeout = moduleInstance.transactionBlockTimeout;
-          if (watcherIsPolling) {
-            timeout = moduleInstance.transactionPollingTimeout;
-          }
-          return this.timeoutCounter > timeout;
-        }
-      }, {
-        key: "handleSuccessState",
-        value: function handleSuccessState(receipt, method, promiEvent) {
-          this.timeoutCounter = 0;
-          this.confirmationsCounter = 0;
-          this.newHeadsWatcher.stop();
-          if (method.constructor.name === 'ContractDeployMethod') {
-            if (method.callback) {
-              method.callback(false, receipt);
-            }
-            promiEvent.resolve(method.afterExecution(receipt));
-            promiEvent.emit('receipt', receipt);
-            promiEvent.removeAllListeners();
-            return;
-          }
-          var mappedReceipt = method.afterExecution(receipt);
-          if (method.callback) {
-            method.callback(false, mappedReceipt);
-          }
-          promiEvent.resolve(mappedReceipt);
-          promiEvent.emit('receipt', mappedReceipt);
-          promiEvent.removeAllListeners();
-        }
-      }, {
-        key: "handleErrorState",
-        value: function handleErrorState(error, method, promiEvent) {
-          this.timeoutCounter = 0;
-          this.confirmationsCounter = 0;
-          this.newHeadsWatcher.stop();
-          if (method.callback) {
-            method.callback(error, null);
-          }
-          promiEvent.reject(error);
-          promiEvent.emit('error', error);
-          promiEvent.removeAllListeners();
-        }
-      }]);
-      return TransactionConfirmationWorkflow;
-    }();
-
-    var TransactionReceiptValidator =
-    function () {
-      function TransactionReceiptValidator() {
-        _classCallCheck(this, TransactionReceiptValidator);
-      }
-      _createClass(TransactionReceiptValidator, [{
-        key: "validate",
-        value: function validate(receipt, methodParameters) {
-          var receiptJSON = JSON.stringify(receipt, null, 2);
-          if (!this.isValidGasUsage(receipt, methodParameters)) {
-            return new Error("Transaction ran out of gas. Please provide more gas:\n".concat(receiptJSON));
-          }
-          if (!this.isValidReceiptStatus(receipt)) {
-            return new Error("Transaction has been reverted by the EVM:\n".concat(receiptJSON));
-          }
-          return true;
-        }
-      }, {
-        key: "isValidReceiptStatus",
-        value: function isValidReceiptStatus(receipt) {
-          return receipt.status === true || receipt.status === '0x1' || typeof receipt.status === 'undefined';
-        }
-      }, {
-        key: "isValidGasUsage",
-        value: function isValidGasUsage(receipt, methodParameters) {
-          var gasProvided = null;
-          if (isObject(methodParameters[0]) && methodParameters[0].gas) {
-            gasProvided = methodParameters[0].gas;
-          }
-          return !receipt.outOfGas && (!gasProvided || gasProvided !== receipt.gasUsed);
-        }
-      }]);
-      return TransactionReceiptValidator;
-    }();
-
-    var NewHeadsWatcher =
-    function (_EventEmitter) {
-      _inherits(NewHeadsWatcher, _EventEmitter);
-      function NewHeadsWatcher(subscriptionsFactory) {
-        var _this;
-        _classCallCheck(this, NewHeadsWatcher);
-        _this = _possibleConstructorReturn(this, _getPrototypeOf(NewHeadsWatcher).call(this));
-        _this.subscriptionsFactory = subscriptionsFactory;
-        _this.confirmationInterval = null;
-        _this.confirmationSubscription = null;
-        _this.isPolling = false;
-        return _this;
-      }
-      _createClass(NewHeadsWatcher, [{
-        key: "watch",
-        value: function watch(moduleInstance) {
-          var _this2 = this;
-          if (this.isSocketConnection(moduleInstance.currentProvider)) {
-            this.confirmationSubscription = this.subscriptionsFactory.createNewHeadsSubscription(moduleInstance).subscribe(function () {
-              _this2.emit('newHead');
-            });
-            return this;
-          }
-          this.isPolling = true;
-          this.confirmationInterval = setInterval(function () {
-            _this2.emit('newHead');
-          }, 1000);
-          return this;
-        }
-      }, {
-        key: "stop",
-        value: function stop() {
-          if (this.confirmationSubscription) {
-            this.confirmationSubscription.unsubscribe();
-          }
-          if (this.confirmationInterval) {
-            clearInterval(this.confirmationInterval);
-          }
-          this.removeAllListeners('newHead');
-        }
-      }, {
-        key: "isSocketConnection",
-        value: function isSocketConnection(provider) {
-          return provider instanceof web3Providers.WebsocketProvider || provider instanceof web3Providers.IpcProvider || provider instanceof web3Providers.EthereumProvider;
-        }
-      }]);
-      return NewHeadsWatcher;
-    }(EventEmitter);
-
-    var MethodProxy =
-    function MethodProxy(target, methodFactory) {
-      _classCallCheck(this, MethodProxy);
-      return new Proxy(target, {
-        get: function get(target, name) {
-          if (methodFactory.hasMethod(name)) {
-            var anonymousFunction = function anonymousFunction() {
-              method.arguments = arguments;
-              if (method.Type === 'CALL') {
-                return method.execute(target);
-              }
-              return method.execute(target, new web3CorePromievent.PromiEvent());
-            };
-            if (typeof target[name] !== 'undefined') {
-              throw new TypeError("Duplicated method ".concat(name, ". This method is defined as RPC call and as Object method."));
-            }
-            var method = methodFactory.createMethod(name);
-            anonymousFunction.method = method;
-            anonymousFunction.request = function () {
-              method.arguments = arguments;
-              return method;
-            };
-            return anonymousFunction;
-          }
-          return target[name];
-        }
-      });
-    };
-
-    var AbstractSigner =
-    function () {
-      function AbstractSigner(accounts) {
-        _classCallCheck(this, AbstractSigner);
-        this.accounts = accounts;
-      }
-      _createClass(AbstractSigner, [{
-        key: "getWallet",
-        value: function getWallet(from) {
-          var account = this.accounts.wallet[from];
-          if (account) {
-            return account;
-          }
-          return null;
-        }
-      }]);
-      return AbstractSigner;
-    }();
-
-    var MessageSigner =
-    function (_AbstractSigner) {
-      _inherits(MessageSigner, _AbstractSigner);
-      function MessageSigner(accounts) {
-        _classCallCheck(this, MessageSigner);
-        return _possibleConstructorReturn(this, _getPrototypeOf(MessageSigner).call(this, accounts));
-      }
-      _createClass(MessageSigner, [{
-        key: "sign",
-        value: function sign(data, address) {
-          var wallet = this.getWallet(address);
-          if (wallet && wallet.privateKey) {
-            return this.accounts.sign(data, wallet.privateKey).signature;
-          }
-          throw new Error('Wallet or privateKey in wallet is not set!');
-        }
-      }]);
-      return MessageSigner;
-    }(AbstractSigner);
-
-    var TransactionSigner =
-    function (_AbstractSigner) {
-      _inherits(TransactionSigner, _AbstractSigner);
-      function TransactionSigner(accounts) {
-        _classCallCheck(this, TransactionSigner);
-        return _possibleConstructorReturn(this, _getPrototypeOf(TransactionSigner).call(this, accounts));
-      }
-      _createClass(TransactionSigner, [{
-        key: "sign",
-        value: function () {
-          var _sign = _asyncToGenerator(
-          _regeneratorRuntime.mark(function _callee(transaction) {
-            var wallet;
-            return _regeneratorRuntime.wrap(function _callee$(_context) {
-              while (1) {
-                switch (_context.prev = _context.next) {
-                  case 0:
-                    wallet = this.getWallet(transaction.from);
-                    if (!(wallet && wallet.privateKey)) {
-                      _context.next = 12;
-                      break;
-                    }
-                    delete transaction.from;
-                    _context.prev = 3;
-                    _context.next = 6;
-                    return this.accounts.signTransaction(transaction, wallet.privateKey);
-                  case 6:
-                    return _context.abrupt("return", _context.sent);
-                  case 9:
-                    _context.prev = 9;
-                    _context.t0 = _context["catch"](3);
-                    throw _context.t0;
-                  case 12:
-                    throw new Error('Wallet or privateKey in wallet is not set!');
-                  case 13:
-                  case "end":
-                    return _context.stop();
-                }
-              }
-            }, _callee, this, [[3, 9]]);
-          }));
-          return function sign(_x) {
-            return _sign.apply(this, arguments);
-          };
-        }()
-      }]);
-      return TransactionSigner;
-    }(AbstractSigner);
-
-    var AbstractMethod =
-    function () {
-      function AbstractMethod(rpcMethod, parametersAmount, utils, formatters) {
-        _classCallCheck(this, AbstractMethod);
-        this.utils = utils;
-        this.formatters = formatters;
-        this.promiEvent = new web3CorePromievent.PromiEvent();
-        this._arguments = {
-          parameters: []
-        };
-        this._rpcMethod = rpcMethod;
-        this._parametersAmount = parametersAmount;
-      }
-      _createClass(AbstractMethod, [{
-        key: "beforeExecution",
-        value: function beforeExecution(moduleInstance) {}
-      }, {
-        key: "afterExecution",
-        value: function afterExecution(response) {
-          return response;
-        }
-      }, {
-        key: "execute",
-        value: function execute(moduleInstance) {}
-      }, {
-        key: "isHash",
-        value: function isHash(parameter) {
-          return isString(parameter) && parameter.indexOf('0x') === 0;
-        }
-      }, {
-        key: "hasWallets",
-        value: function hasWallets() {
-          return this.accounts && this.accounts.wallet.length > 0;
-        }
-      }, {
-        key: "rpcMethod",
-        set: function set(value) {
-          this._rpcMethod = value;
-        }
-        ,
-        get: function get() {
-          return this._rpcMethod;
-        }
-      }, {
-        key: "parametersAmount",
-        set: function set(value) {
-          this._parametersAmount = value;
-        }
-        ,
-        get: function get() {
-          return this._parametersAmount;
-        }
-      }, {
-        key: "parameters",
-        get: function get() {
-          return this._arguments.parameters;
-        }
-        ,
-        set: function set(value) {
-          this._arguments.parameters = value;
-        }
-      }, {
-        key: "callback",
-        get: function get() {
-          return this._arguments.callback;
-        }
-        ,
-        set: function set(value) {
-          this._arguments.callback = value;
-        }
-      }, {
-        key: "arguments",
-        set: function set(args) {
-          var parameters = cloneDeep(_toConsumableArray(args));
-          var callback = null;
-          if (parameters.length > this.parametersAmount) {
-            if (!isFunction(parameters[parameters.length - 1])) {
-              throw new TypeError("The latest parameter should be a function otherwise it can't be used as callback");
-            }
-            callback = parameters.pop();
-          }
-          this._arguments = {
-            callback: callback,
-            parameters: parameters
-          };
-        }
-        ,
-        get: function get() {
-          return this._arguments;
-        }
-      }]);
-      return AbstractMethod;
-    }();
-
-    var AbstractCallMethod =
-    function (_AbstractMethod) {
-      _inherits(AbstractCallMethod, _AbstractMethod);
-      function AbstractCallMethod(rpcMethod, parametersAmount, utils, formatters) {
-        _classCallCheck(this, AbstractCallMethod);
-        return _possibleConstructorReturn(this, _getPrototypeOf(AbstractCallMethod).call(this, rpcMethod, parametersAmount, utils, formatters));
-      }
-      _createClass(AbstractCallMethod, [{
-        key: "execute",
-        value: function () {
-          var _execute = _asyncToGenerator(
-          _regeneratorRuntime.mark(function _callee(moduleInstance) {
-            var response, mappedResponse;
-            return _regeneratorRuntime.wrap(function _callee$(_context) {
-              while (1) {
-                switch (_context.prev = _context.next) {
-                  case 0:
-                    this.beforeExecution(moduleInstance);
-                    if (!(this.parameters.length !== this.parametersAmount)) {
-                      _context.next = 3;
-                      break;
-                    }
-                    throw new Error("Invalid Arguments length: expected: ".concat(this.parametersAmount, ", given: ").concat(this.parameters.length));
-                  case 3:
-                    _context.prev = 3;
-                    _context.next = 6;
-                    return moduleInstance.currentProvider.send(this.rpcMethod, this.parameters);
-                  case 6:
-                    response = _context.sent;
-                    mappedResponse = this.afterExecution(response);
-                    if (this.callback) {
-                      this.callback(false, mappedResponse);
-                    }
-                    return _context.abrupt("return", mappedResponse);
-                  case 12:
-                    _context.prev = 12;
-                    _context.t0 = _context["catch"](3);
-                    if (this.callback) {
-                      this.callback(_context.t0, null);
-                    }
-                    throw _context.t0;
-                  case 16:
-                  case "end":
-                    return _context.stop();
-                }
-              }
-            }, _callee, this, [[3, 12]]);
-          }));
-          return function execute(_x) {
-            return _execute.apply(this, arguments);
-          };
-        }()
-      }], [{
-        key: "Type",
-        get: function get() {
-          return 'CALL';
-        }
-      }]);
-      return AbstractCallMethod;
-    }(AbstractMethod);
-
-    var GetTransactionReceiptMethod =
-    function (_AbstractCallMethod) {
-      _inherits(GetTransactionReceiptMethod, _AbstractCallMethod);
-      function GetTransactionReceiptMethod(utils, formatters) {
-        _classCallCheck(this, GetTransactionReceiptMethod);
-        return _possibleConstructorReturn(this, _getPrototypeOf(GetTransactionReceiptMethod).call(this, 'eth_getTransactionReceipt', 1, utils, formatters));
-      }
-      _createClass(GetTransactionReceiptMethod, [{
-        key: "afterExecution",
-        value: function afterExecution(response) {
-          if (response !== null) {
-            return this.formatters.outputTransactionFormatter(response);
-          }
-          return response;
-        }
-      }]);
-      return GetTransactionReceiptMethod;
-    }(AbstractCallMethod);
-
-    var ModuleFactory =
-    function () {
-      function ModuleFactory(accounts, subscriptionsFactory, utils, formatters) {
-        _classCallCheck(this, ModuleFactory);
-        this.accounts = accounts || {};
-        this.subscriptionsFactory = subscriptionsFactory;
-        this.formatters = formatters;
-        this.utils = utils;
-      }
-      _createClass(ModuleFactory, [{
-        key: "createMethodProxy",
-        value: function createMethodProxy(target, methodFactory) {
-          return new MethodProxy(target, methodFactory);
-        }
-      }, {
-        key: "createTransactionSigner",
-        value: function createTransactionSigner() {
-          return new TransactionSigner(this.accounts);
-        }
-      }, {
-        key: "createMessageSigner",
-        value: function createMessageSigner() {
-          return new MessageSigner(this.accounts);
-        }
-      }, {
-        key: "createTransactionConfirmationWorkflow",
-        value: function createTransactionConfirmationWorkflow() {
-          return new TransactionConfirmationWorkflow(this.createTransactionReceiptValidator(), this.createNewHeadsWatcher(), new GetTransactionReceiptMethod(this.utils, this.formatters));
-        }
-      }, {
-        key: "createTransactionReceiptValidator",
-        value: function createTransactionReceiptValidator() {
-          return new TransactionReceiptValidator();
-        }
-      }, {
-        key: "createNewHeadsWatcher",
-        value: function createNewHeadsWatcher() {
-          return new NewHeadsWatcher(this.subscriptionsFactory);
-        }
-      }]);
-      return ModuleFactory;
-    }();
-
-    var AbstractMethodFactory =
-    function () {
-      function AbstractMethodFactory(methodModuleFactory, utils, formatters) {
-        _classCallCheck(this, AbstractMethodFactory);
-        this.methodModuleFactory = methodModuleFactory;
-        this.utils = utils;
-        this.formatters = formatters;
-        this._methods = null;
-      }
-      _createClass(AbstractMethodFactory, [{
-        key: "hasMethod",
-        value: function hasMethod(name) {
-          return typeof this.methods[name] !== 'undefined';
-        }
-      }, {
-        key: "createMethod",
-        value: function createMethod(name) {
-          var method = this.methods[name];
-          switch (method.Type) {
-            case 'CALL':
-              if (method.name === 'SignMethod') {
-                return new method(this.utils, this.formatters, this.methodModuleFactory.accounts, this.methodModuleFactory.createMessageSigner());
-              }
-              return new method(this.utils, this.formatters);
-            case 'SEND':
-              if (method.name === 'SendTransactionMethod') {
-                return new method(this.utils, this.formatters, this.methodModuleFactory.createTransactionConfirmationWorkflow(), this.methodModuleFactory.accounts, this.methodModuleFactory.createTransactionSigner());
-              }
-              return new method(this.utils, this.formatters, this.methodModuleFactory.createTransactionConfirmationWorkflow());
-          }
-        }
-      }, {
-        key: "methods",
-        get: function get() {
-          if (this._methods) {
-            return this._methods;
-          }
-          throw new Error('No methods defined for MethodFactory!');
-        }
-        ,
-        set: function set(value) {
-          this._methods = value;
-        }
-      }]);
-      return AbstractMethodFactory;
-    }();
-
-    var GetProtocolVersionMethod =
-    function (_AbstractCallMethod) {
-      _inherits(GetProtocolVersionMethod, _AbstractCallMethod);
-      function GetProtocolVersionMethod(utils, formatters) {
-        _classCallCheck(this, GetProtocolVersionMethod);
-        return _possibleConstructorReturn(this, _getPrototypeOf(GetProtocolVersionMethod).call(this, 'eth_protocolVersion', 0, utils, formatters));
-      }
-      return GetProtocolVersionMethod;
-    }(AbstractCallMethod);
-
-    var VersionMethod =
-    function (_AbstractCallMethod) {
-      _inherits(VersionMethod, _AbstractCallMethod);
-      function VersionMethod(utils, formatters) {
-        _classCallCheck(this, VersionMethod);
-        return _possibleConstructorReturn(this, _getPrototypeOf(VersionMethod).call(this, 'net_version', 0, utils, formatters));
-      }
-      _createClass(VersionMethod, [{
-        key: "afterExecution",
-        value: function afterExecution(response) {
-          return this.utils.hexToNumber(response);
-        }
-      }]);
-      return VersionMethod;
-    }(AbstractCallMethod);
-
-    var ListeningMethod =
-    function (_AbstractCallMethod) {
-      _inherits(ListeningMethod, _AbstractCallMethod);
-      function ListeningMethod(utils, formatters) {
-        _classCallCheck(this, ListeningMethod);
-        return _possibleConstructorReturn(this, _getPrototypeOf(ListeningMethod).call(this, 'net_listening', 0, utils, formatters));
-      }
-      return ListeningMethod;
-    }(AbstractCallMethod);
-
-    var PeerCountMethod =
-    function (_AbstractCallMethod) {
-      _inherits(PeerCountMethod, _AbstractCallMethod);
-      function PeerCountMethod(utils, formatters) {
-        _classCallCheck(this, PeerCountMethod);
-        return _possibleConstructorReturn(this, _getPrototypeOf(PeerCountMethod).call(this, 'net_peerCount', 0, utils, formatters));
-      }
-      _createClass(PeerCountMethod, [{
-        key: "afterExecution",
-        value: function afterExecution(response) {
-          return this.utils.hexToNumber(response);
-        }
-      }]);
-      return PeerCountMethod;
-    }(AbstractCallMethod);
-
-    var GetNodeInfoMethod =
-    function (_AbstractCallMethod) {
-      _inherits(GetNodeInfoMethod, _AbstractCallMethod);
-      function GetNodeInfoMethod(utils, formatters) {
-        _classCallCheck(this, GetNodeInfoMethod);
-        return _possibleConstructorReturn(this, _getPrototypeOf(GetNodeInfoMethod).call(this, 'web3_clientVersion', 0, utils, formatters));
-      }
-      return GetNodeInfoMethod;
-    }(AbstractCallMethod);
-
-    var GetCoinbaseMethod =
-    function (_AbstractCallMethod) {
-      _inherits(GetCoinbaseMethod, _AbstractCallMethod);
-      function GetCoinbaseMethod(utils, formatters) {
-        _classCallCheck(this, GetCoinbaseMethod);
-        return _possibleConstructorReturn(this, _getPrototypeOf(GetCoinbaseMethod).call(this, 'eth_coinbase', 0, utils, formatters));
-      }
-      return GetCoinbaseMethod;
-    }(AbstractCallMethod);
-
-    var IsMiningMethod =
-    function (_AbstractCallMethod) {
-      _inherits(IsMiningMethod, _AbstractCallMethod);
-      function IsMiningMethod(utils, formatters) {
-        _classCallCheck(this, IsMiningMethod);
-        return _possibleConstructorReturn(this, _getPrototypeOf(IsMiningMethod).call(this, 'eth_mining', 0, utils, formatters));
-      }
-      return IsMiningMethod;
-    }(AbstractCallMethod);
-
-    var GetHashrateMethod =
-    function (_AbstractCallMethod) {
-      _inherits(GetHashrateMethod, _AbstractCallMethod);
-      function GetHashrateMethod(utils, formatters) {
-        _classCallCheck(this, GetHashrateMethod);
-        return _possibleConstructorReturn(this, _getPrototypeOf(GetHashrateMethod).call(this, 'eth_hashrate', 0, utils, formatters));
-      }
-      _createClass(GetHashrateMethod, [{
-        key: "afterExecution",
-        value: function afterExecution(response) {
-          return this.utils.hexToNumber(response);
-        }
-      }]);
-      return GetHashrateMethod;
-    }(AbstractCallMethod);
-
-    var IsSyncingMethod =
-    function (_AbstractCallMethod) {
-      _inherits(IsSyncingMethod, _AbstractCallMethod);
-      function IsSyncingMethod(utils, formatters) {
-        _classCallCheck(this, IsSyncingMethod);
-        return _possibleConstructorReturn(this, _getPrototypeOf(IsSyncingMethod).call(this, 'eth_syncing', 0, utils, formatters));
-      }
-      _createClass(IsSyncingMethod, [{
-        key: "afterExecution",
-        value: function afterExecution(response) {
-          if (typeof response !== 'boolean') {
-            return this.formatters.outputSyncingFormatter(response);
-          }
-          return response;
-        }
-      }]);
-      return IsSyncingMethod;
-    }(AbstractCallMethod);
-
-    var GetGasPriceMethod =
-    function (_AbstractCallMethod) {
-      _inherits(GetGasPriceMethod, _AbstractCallMethod);
-      function GetGasPriceMethod(utils, formatters) {
-        _classCallCheck(this, GetGasPriceMethod);
-        return _possibleConstructorReturn(this, _getPrototypeOf(GetGasPriceMethod).call(this, 'eth_gasPrice', 0, utils, formatters));
-      }
-      _createClass(GetGasPriceMethod, [{
-        key: "afterExecution",
-        value: function afterExecution(response) {
-          return this.formatters.outputBigNumberFormatter(response);
-        }
-      }]);
-      return GetGasPriceMethod;
-    }(AbstractCallMethod);
-
-    var SubmitWorkMethod =
-    function (_AbstractCallMethod) {
-      _inherits(SubmitWorkMethod, _AbstractCallMethod);
-      function SubmitWorkMethod(utils, formatters) {
-        _classCallCheck(this, SubmitWorkMethod);
-        return _possibleConstructorReturn(this, _getPrototypeOf(SubmitWorkMethod).call(this, 'eth_submitWork', 3, utils, formatters));
-      }
-      return SubmitWorkMethod;
-    }(AbstractCallMethod);
-
-    var GetWorkMethod =
-    function (_AbstractCallMethod) {
-      _inherits(GetWorkMethod, _AbstractCallMethod);
-      function GetWorkMethod(utils, formatters) {
-        _classCallCheck(this, GetWorkMethod);
-        return _possibleConstructorReturn(this, _getPrototypeOf(GetWorkMethod).call(this, 'eth_getWork', 0, utils, formatters));
-      }
-      return GetWorkMethod;
-    }(AbstractCallMethod);
-
-    var GetAccountsMethod =
-    function (_AbstractCallMethod) {
-      _inherits(GetAccountsMethod, _AbstractCallMethod);
-      function GetAccountsMethod(utils, formatters) {
-        _classCallCheck(this, GetAccountsMethod);
-        return _possibleConstructorReturn(this, _getPrototypeOf(GetAccountsMethod).call(this, 'eth_accounts', 0, utils, formatters));
-      }
-      _createClass(GetAccountsMethod, [{
-        key: "afterExecution",
-        value: function afterExecution(response) {
-          var _this = this;
-          return response.map(function (responseItem) {
-            return _this.utils.toChecksumAddress(responseItem);
-          });
-        }
-      }]);
-      return GetAccountsMethod;
-    }(AbstractCallMethod);
-
-    var GetBalanceMethod =
-    function (_AbstractCallMethod) {
-      _inherits(GetBalanceMethod, _AbstractCallMethod);
-      function GetBalanceMethod(utils, formatters) {
-        _classCallCheck(this, GetBalanceMethod);
-        return _possibleConstructorReturn(this, _getPrototypeOf(GetBalanceMethod).call(this, 'eth_getBalance', 2, utils, formatters));
-      }
-      _createClass(GetBalanceMethod, [{
-        key: "beforeExecution",
-        value: function beforeExecution(moduleInstance) {
-          this.parameters[0] = this.formatters.inputAddressFormatter(this.parameters[0]);
-          if (isFunction(this.parameters[1])) {
-            this.callback = this.parameters[1];
-            this.parameters[1] = moduleInstance.defaultBlock;
-          }
-          this.parameters[1] = this.formatters.inputDefaultBlockNumberFormatter(this.parameters[1], moduleInstance);
-        }
-      }, {
-        key: "afterExecution",
-        value: function afterExecution(response) {
-          return this.formatters.outputBigNumberFormatter(response);
-        }
-      }]);
-      return GetBalanceMethod;
-    }(AbstractCallMethod);
-
-    var GetTransactionCountMethod =
-    function (_AbstractCallMethod) {
-      _inherits(GetTransactionCountMethod, _AbstractCallMethod);
-      function GetTransactionCountMethod(utils, formatters) {
-        _classCallCheck(this, GetTransactionCountMethod);
-        return _possibleConstructorReturn(this, _getPrototypeOf(GetTransactionCountMethod).call(this, 'eth_getTransactionCount', 2, utils, formatters));
-      }
-      _createClass(GetTransactionCountMethod, [{
-        key: "beforeExecution",
-        value: function beforeExecution(moduleInstance) {
-          this.parameters[0] = this.formatters.inputAddressFormatter(this.parameters[0]);
-          if (isFunction(this.parameters[1])) {
-            this.callback = this.parameters[1];
-            this.parameters[1] = moduleInstance.defaultBlock;
-          }
-          this.parameters[1] = this.formatters.inputDefaultBlockNumberFormatter(this.parameters[1], moduleInstance);
-        }
-      }, {
-        key: "afterExecution",
-        value: function afterExecution(response) {
-          return this.utils.hexToNumber(response);
-        }
-      }]);
-      return GetTransactionCountMethod;
-    }(AbstractCallMethod);
-
-    var RequestAccountsMethod =
-    function (_AbstractCallMethod) {
-      _inherits(RequestAccountsMethod, _AbstractCallMethod);
-      function RequestAccountsMethod() {
-        _classCallCheck(this, RequestAccountsMethod);
-        return _possibleConstructorReturn(this, _getPrototypeOf(RequestAccountsMethod).call(this, 'eth_requestAccounts', 0, null, null));
-      }
-      return RequestAccountsMethod;
-    }(AbstractCallMethod);
-
-    var GetBlockNumberMethod =
-    function (_AbstractCallMethod) {
-      _inherits(GetBlockNumberMethod, _AbstractCallMethod);
-      function GetBlockNumberMethod(utils, formatters) {
-        _classCallCheck(this, GetBlockNumberMethod);
-        return _possibleConstructorReturn(this, _getPrototypeOf(GetBlockNumberMethod).call(this, 'eth_blockNumber', 0, utils, formatters));
-      }
-      _createClass(GetBlockNumberMethod, [{
-        key: "afterExecution",
-        value: function afterExecution(response) {
-          return this.utils.hexToNumber(response);
-        }
-      }]);
-      return GetBlockNumberMethod;
-    }(AbstractCallMethod);
-
-    var GetBlockMethod =
-    function (_AbstractCallMethod) {
-      _inherits(GetBlockMethod, _AbstractCallMethod);
-      function GetBlockMethod(utils, formatters) {
-        _classCallCheck(this, GetBlockMethod);
-        return _possibleConstructorReturn(this, _getPrototypeOf(GetBlockMethod).call(this, 'eth_getBlockByNumber', 2, utils, formatters));
-      }
-      _createClass(GetBlockMethod, [{
-        key: "beforeExecution",
-        value: function beforeExecution(moduleInstance) {
-          if (this.isHash(this.parameters[0])) {
-            this.rpcMethod = 'eth_getBlockByHash';
-          }
-          this.parameters[0] = this.formatters.inputBlockNumberFormatter(this.parameters[0]);
-          if (isFunction(this.parameters[1])) {
-            this.callback = this.parameters[1];
-            this.parameters[1] = false;
-          } else {
-            this.parameters[1] = !!this.parameters[1];
-          }
-        }
-      }, {
-        key: "afterExecution",
-        value: function afterExecution(response) {
-          return this.formatters.outputBlockFormatter(response);
-        }
-      }]);
-      return GetBlockMethod;
-    }(AbstractCallMethod);
-
-    var GetUncleMethod =
-    function (_AbstractCallMethod) {
-      _inherits(GetUncleMethod, _AbstractCallMethod);
-      function GetUncleMethod(utils, formatters) {
-        _classCallCheck(this, GetUncleMethod);
-        return _possibleConstructorReturn(this, _getPrototypeOf(GetUncleMethod).call(this, 'eth_getUncleByBlockNumberAndIndex', 2, utils, formatters));
-      }
-      _createClass(GetUncleMethod, [{
-        key: "beforeExecution",
-        value: function beforeExecution(moduleInstance) {
-          if (this.isHash(this.parameters[0])) {
-            this.rpcMethod = 'eth_getUncleByBlockHashAndIndex';
-          }
-          this.parameters[0] = this.formatters.inputBlockNumberFormatter(this.parameters[0]);
-          this.parameters[1] = this.utils.numberToHex(this.parameters[1]);
-        }
-      }, {
-        key: "afterExecution",
-        value: function afterExecution(response) {
-          return this.formatters.outputBlockFormatter(response);
-        }
-      }]);
-      return GetUncleMethod;
-    }(AbstractCallMethod);
-
-    var GetBlockTransactionCountMethod =
-    function (_AbstractCallMethod) {
-      _inherits(GetBlockTransactionCountMethod, _AbstractCallMethod);
-      function GetBlockTransactionCountMethod(utils, formatters) {
-        _classCallCheck(this, GetBlockTransactionCountMethod);
-        return _possibleConstructorReturn(this, _getPrototypeOf(GetBlockTransactionCountMethod).call(this, 'eth_getTransactionByBlockNumberAndIndex', 1, utils, formatters));
-      }
-      _createClass(GetBlockTransactionCountMethod, [{
-        key: "beforeExecution",
-        value: function beforeExecution(moduleInstance) {
-          if (this.isHash(this.parameters[0])) {
-            this.rpcMethod = 'eth_getTransactionByBlockHashAndIndex';
-          }
-          this.parameters[0] = this.formatters.inputBlockNumberFormatter(this.parameters[0]);
-        }
-      }, {
-        key: "afterExecution",
-        value: function afterExecution(response) {
-          return this.utils.hexToNumber(response);
-        }
-      }]);
-      return GetBlockTransactionCountMethod;
-    }(AbstractCallMethod);
-
-    var GetBlockUncleCountMethod =
-    function (_AbstractCallMethod) {
-      _inherits(GetBlockUncleCountMethod, _AbstractCallMethod);
-      function GetBlockUncleCountMethod(utils, formatters) {
-        _classCallCheck(this, GetBlockUncleCountMethod);
-        return _possibleConstructorReturn(this, _getPrototypeOf(GetBlockUncleCountMethod).call(this, 'eth_getUncleCountByBlockNumber', 1, utils, formatters));
-      }
-      _createClass(GetBlockUncleCountMethod, [{
-        key: "beforeExecution",
-        value: function beforeExecution(moduleInstance) {
-          if (this.isHash(this.parameters[0])) {
-            this.rpcMethod = 'eth_getUncleCountByBlockHash';
-          }
-          this.parameters[0] = this.formatters.inputBlockNumberFormatter(this.parameters[0]);
-        }
-      }, {
-        key: "afterExecution",
-        value: function afterExecution(response) {
-          return this.utils.hexToNumber(response);
-        }
-      }]);
-      return GetBlockUncleCountMethod;
-    }(AbstractCallMethod);
-
-    var GetTransactionMethod =
-    function (_AbstractCallMethod) {
-      _inherits(GetTransactionMethod, _AbstractCallMethod);
-      function GetTransactionMethod(utils, formatters) {
-        _classCallCheck(this, GetTransactionMethod);
-        return _possibleConstructorReturn(this, _getPrototypeOf(GetTransactionMethod).call(this, 'eth_getTransactionByHash', 1, utils, formatters));
-      }
-      _createClass(GetTransactionMethod, [{
-        key: "afterExecution",
-        value: function afterExecution(response) {
-          return this.formatters.outputTransactionFormatter(response);
-        }
-      }]);
-      return GetTransactionMethod;
-    }(AbstractCallMethod);
-
-    var GetTransactionFromBlockMethod =
-    function (_AbstractCallMethod) {
-      _inherits(GetTransactionFromBlockMethod, _AbstractCallMethod);
-      function GetTransactionFromBlockMethod(utils, formatters) {
-        _classCallCheck(this, GetTransactionFromBlockMethod);
-        return _possibleConstructorReturn(this, _getPrototypeOf(GetTransactionFromBlockMethod).call(this, 'eth_getTransactionByBlockNumberAndIndex', 2, utils, formatters));
-      }
-      _createClass(GetTransactionFromBlockMethod, [{
-        key: "beforeExecution",
-        value: function beforeExecution(moduleInstance) {
-          if (this.isHash(this.parameters[0])) {
-            this.rpcMethod = 'eth_getTransactionByBlockHashAndIndex';
-          }
-          this.parameters[0] = this.formatters.inputBlockNumberFormatter(this.parameters[0]);
-          this.parameters[1] = this.utils.numberToHex(this.parameters[1]);
-        }
-      }, {
-        key: "afterExecution",
-        value: function afterExecution(response) {
-          return this.formatters.outputTransactionFormatter(response);
-        }
-      }]);
-      return GetTransactionFromBlockMethod;
-    }(AbstractCallMethod);
-
-    var AbstractSendMethod =
-    function (_AbstractMethod) {
-      _inherits(AbstractSendMethod, _AbstractMethod);
-      function AbstractSendMethod(rpcMethod, parametersAmount, utils, formatters, transactionConfirmationWorkflow) {
-        var _this;
-        _classCallCheck(this, AbstractSendMethod);
-        _this = _possibleConstructorReturn(this, _getPrototypeOf(AbstractSendMethod).call(this, rpcMethod, parametersAmount, utils, formatters));
-        _this.transactionConfirmationWorkflow = transactionConfirmationWorkflow;
-        return _this;
-      }
-      _createClass(AbstractSendMethod, [{
-        key: "execute",
-        value: function execute(moduleInstance, promiEvent) {
-          var _this2 = this;
-          this.beforeExecution(moduleInstance);
-          if (this.parameters.length !== this.parametersAmount) {
-            throw new Error("Invalid Arguments length: expected: ".concat(this.parametersAmount, ", given: ").concat(this.parameters.length));
-          }
-          moduleInstance.currentProvider.send(this.rpcMethod, this.parameters).then(function (response) {
-            _this2.transactionConfirmationWorkflow.execute(_this2, moduleInstance, response, promiEvent);
-            if (_this2.callback) {
-              _this2.callback(false, response);
-            }
-            promiEvent.emit('transactionHash', response);
-          }).catch(function (error) {
-            if (_this2.callback) {
-              _this2.callback(error, null);
-            }
-            promiEvent.reject(error);
-            promiEvent.emit('error', error);
-            promiEvent.removeAllListeners();
-          });
-          return promiEvent;
-        }
-      }], [{
-        key: "Type",
-        get: function get() {
-          return 'SEND';
-        }
-      }]);
-      return AbstractSendMethod;
-    }(AbstractMethod);
-
-    var SendRawTransactionMethod =
-    function (_AbstractSendMethod) {
-      _inherits(SendRawTransactionMethod, _AbstractSendMethod);
-      function SendRawTransactionMethod(utils, formatters, transactionConfirmationWorkflow) {
-        _classCallCheck(this, SendRawTransactionMethod);
-        return _possibleConstructorReturn(this, _getPrototypeOf(SendRawTransactionMethod).call(this, 'eth_sendRawTransaction', 1, utils, formatters, transactionConfirmationWorkflow));
-      }
-      return SendRawTransactionMethod;
-    }(AbstractSendMethod);
-
-    var SignTransactionMethod =
-    function (_AbstractCallMethod) {
-      _inherits(SignTransactionMethod, _AbstractCallMethod);
-      function SignTransactionMethod(utils, formatters) {
-        _classCallCheck(this, SignTransactionMethod);
-        return _possibleConstructorReturn(this, _getPrototypeOf(SignTransactionMethod).call(this, 'eth_signTransaction', 1, utils, formatters));
-      }
-      _createClass(SignTransactionMethod, [{
-        key: "beforeExecution",
-        value: function beforeExecution(moduleInstance) {
-          this.parameters[0] = this.formatters.inputTransactionFormatter(this.parameters[0], moduleInstance);
-        }
-      }]);
-      return SignTransactionMethod;
-    }(AbstractCallMethod);
-
-    var SendTransactionMethod =
-    function (_AbstractSendMethod) {
-      _inherits(SendTransactionMethod, _AbstractSendMethod);
-      function SendTransactionMethod(utils, formatters, transactionConfirmationWorkflow, accounts, transactionSigner) {
-        var _this;
-        _classCallCheck(this, SendTransactionMethod);
-        _this = _possibleConstructorReturn(this, _getPrototypeOf(SendTransactionMethod).call(this, 'eth_sendTransaction', 1, utils, formatters, transactionConfirmationWorkflow));
-        _this.accounts = accounts;
-        _this.transactionSigner = transactionSigner;
-        return _this;
-      }
-      _createClass(SendTransactionMethod, [{
-        key: "beforeExecution",
-        value: function beforeExecution(moduleInstance) {
-          this.parameters[0] = this.formatters.inputTransactionFormatter(this.parameters[0], moduleInstance);
-        }
-      }, {
-        key: "execute",
-        value: function execute(moduleInstance, promiEvent) {
-          var _this2 = this;
-          if (!this.isGasLimitDefined()) {
-            if (this.hasDefaultGasLimit(moduleInstance)) {
-              this.parameters[0]['gas'] = moduleInstance.defaultGas;
-            }
-          }
-          if (!this.isGasPriceDefined() && this.hasDefaultGasPrice(moduleInstance)) {
-            this.parameters[0]['gasPrice'] = moduleInstance.defaultGasPrice;
-          }
-          if (!this.isGasPriceDefined() && !this.hasDefaultGasPrice(moduleInstance)) {
-            moduleInstance.currentProvider.send('eth_gasPrice', []).then(function (gasPrice) {
-              _this2.parameters[0]['gasPrice'] = gasPrice;
-              _this2.execute(moduleInstance, promiEvent);
-            });
-            return promiEvent;
-          }
-          if (this.hasWallets()) {
-            this.rpcMethod = 'eth_sendRawTransaction';
-            this.transactionSigner.sign(this.parameters[0]).then(function (response) {
-              _this2.parameters = [response.rawTransaction];
-              _get(_getPrototypeOf(SendTransactionMethod.prototype), "execute", _this2).call(_this2, moduleInstance, promiEvent);
-            }).catch(function (error) {
-              if (_this2.callback) {
-                _this2.callback(error, null);
-              }
-              promiEvent.reject(error);
-              promiEvent.emit('error', error);
-              promiEvent.removeAllListeners();
-            });
-            return promiEvent;
-          }
-          _get(_getPrototypeOf(SendTransactionMethod.prototype), "execute", this).call(this, moduleInstance, promiEvent);
-          return promiEvent;
-        }
-      }, {
-        key: "hasDefaultGasPrice",
-        value: function hasDefaultGasPrice(moduleInstance) {
-          return moduleInstance.defaultGasPrice !== null && typeof moduleInstance.defaultGasPrice !== 'undefined';
-        }
-      }, {
-        key: "isGasPriceDefined",
-        value: function isGasPriceDefined() {
-          return isObject(this.parameters[0]) && typeof this.parameters[0].gasPrice !== 'undefined';
-        }
-      }, {
-        key: "hasDefaultGasLimit",
-        value: function hasDefaultGasLimit(moduleInstance) {
-          return moduleInstance.defaultGas !== null && typeof moduleInstance.defaultGas !== 'undefined';
-        }
-      }, {
-        key: "isGasLimitDefined",
-        value: function isGasLimitDefined() {
-          return isObject(this.parameters[0]) && typeof this.parameters[0].gas !== 'undefined';
-        }
-      }]);
-      return SendTransactionMethod;
-    }(AbstractSendMethod);
-
-    var GetCodeMethod =
-    function (_AbstractCallMethod) {
-      _inherits(GetCodeMethod, _AbstractCallMethod);
-      function GetCodeMethod(utils, formatters) {
-        _classCallCheck(this, GetCodeMethod);
-        return _possibleConstructorReturn(this, _getPrototypeOf(GetCodeMethod).call(this, 'eth_getCode', 2, utils, formatters));
-      }
-      _createClass(GetCodeMethod, [{
-        key: "beforeExecution",
-        value: function beforeExecution(moduleInstance) {
-          this.parameters[0] = this.formatters.inputAddressFormatter(this.parameters[0]);
-          if (isFunction(this.parameters[1])) {
-            this.callback = this.parameters[1];
-            this.parameters[1] = moduleInstance.defaultBlock;
-          }
-          this.parameters[1] = this.formatters.inputDefaultBlockNumberFormatter(this.parameters[1], moduleInstance);
-        }
-      }]);
-      return GetCodeMethod;
-    }(AbstractCallMethod);
-
-    var SignMethod =
-    function (_AbstractCallMethod) {
-      _inherits(SignMethod, _AbstractCallMethod);
-      function SignMethod(utils, formatters, accounts, messageSigner) {
-        var _this;
-        _classCallCheck(this, SignMethod);
-        _this = _possibleConstructorReturn(this, _getPrototypeOf(SignMethod).call(this, 'eth_sign', 2, utils, formatters));
-        _this.accounts = accounts;
-        _this.messageSigner = messageSigner;
-        return _this;
-      }
-      _createClass(SignMethod, [{
-        key: "execute",
-        value: function execute(moduleInstance) {
-          if (this.hasWallets()) {
-            this.beforeExecution(moduleInstance);
-            return this.signOnClient();
-          }
-          return _get(_getPrototypeOf(SignMethod.prototype), "execute", this).call(this, moduleInstance);
-        }
-      }, {
-        key: "signOnClient",
-        value: function signOnClient() {
-          var signedMessage;
-          try {
-            signedMessage = this.afterExecution(this.messageSigner.sign(this.parameters[0], this.parameters[1]));
-          } catch (error) {
-            if (this.callback) {
-              this.callback(error, null);
-            }
-            throw error;
-          }
-          if (this.callback) {
-            this.callback(false, signedMessage);
-          }
-          return Promise.resolve(signedMessage);
-        }
-      }, {
-        key: "beforeExecution",
-        value: function beforeExecution(moduleInstance) {
-          this.parameters[0] = this.formatters.inputSignFormatter(this.parameters[0]);
-          this.parameters[1] = this.formatters.inputAddressFormatter(this.parameters[1]);
-        }
-      }]);
-      return SignMethod;
-    }(AbstractCallMethod);
-
-    var CallMethod =
-    function (_AbstractCallMethod) {
-      _inherits(CallMethod, _AbstractCallMethod);
-      function CallMethod(utils, formatters) {
-        _classCallCheck(this, CallMethod);
-        return _possibleConstructorReturn(this, _getPrototypeOf(CallMethod).call(this, 'eth_call', 2, utils, formatters));
-      }
-      _createClass(CallMethod, [{
-        key: "beforeExecution",
-        value: function beforeExecution(moduleInstance) {
-          this.parameters[0] = this.formatters.inputCallFormatter(this.parameters[0], moduleInstance);
-          if (isFunction(this.parameters[1])) {
-            this.callback = this.parameters[1];
-            this.parameters[1] = moduleInstance.defaultBlock;
-          }
-          this.parameters[1] = this.formatters.inputDefaultBlockNumberFormatter(this.parameters[1], moduleInstance);
-        }
-      }]);
-      return CallMethod;
-    }(AbstractCallMethod);
-
-    var GetStorageAtMethod =
-    function (_AbstractCallMethod) {
-      _inherits(GetStorageAtMethod, _AbstractCallMethod);
-      function GetStorageAtMethod(utils, formatters) {
-        _classCallCheck(this, GetStorageAtMethod);
-        return _possibleConstructorReturn(this, _getPrototypeOf(GetStorageAtMethod).call(this, 'eth_getStorageAt', 3, utils, formatters));
-      }
-      _createClass(GetStorageAtMethod, [{
-        key: "beforeExecution",
-        value: function beforeExecution(moduleInstance) {
-          this.parameters[0] = this.formatters.inputAddressFormatter(this.parameters[0]);
-          this.parameters[1] = this.utils.numberToHex(this.parameters[1]);
-          if (isFunction(this.parameters[2])) {
-            this.callback = this.parameters[2];
-            this.parameters[2] = moduleInstance.defaultBlock;
-          }
-          this.parameters[2] = this.formatters.inputDefaultBlockNumberFormatter(this.parameters[2], moduleInstance);
-        }
-      }]);
-      return GetStorageAtMethod;
-    }(AbstractCallMethod);
-
-    var EstimateGasMethod =
-    function (_AbstractCallMethod) {
-      _inherits(EstimateGasMethod, _AbstractCallMethod);
-      function EstimateGasMethod(utils, formatters) {
-        _classCallCheck(this, EstimateGasMethod);
-        return _possibleConstructorReturn(this, _getPrototypeOf(EstimateGasMethod).call(this, 'eth_estimateGas', 1, utils, formatters));
-      }
-      _createClass(EstimateGasMethod, [{
-        key: "beforeExecution",
-        value: function beforeExecution(moduleInstance) {
-          this.parameters[0] = this.formatters.inputCallFormatter(this.parameters[0], moduleInstance);
-        }
-      }, {
-        key: "afterExecution",
-        value: function afterExecution(response) {
-          return this.utils.hexToNumber(response);
-        }
-      }]);
-      return EstimateGasMethod;
-    }(AbstractCallMethod);
-
-    var GetPastLogsMethod =
-    function (_AbstractCallMethod) {
-      _inherits(GetPastLogsMethod, _AbstractCallMethod);
-      function GetPastLogsMethod(utils, formatters) {
-        _classCallCheck(this, GetPastLogsMethod);
-        return _possibleConstructorReturn(this, _getPrototypeOf(GetPastLogsMethod).call(this, 'eth_getLogs', 1, utils, formatters));
-      }
-      _createClass(GetPastLogsMethod, [{
-        key: "beforeExecution",
-        value: function beforeExecution(moduleInstance) {
-          this.parameters[0] = this.formatters.inputLogFormatter(this.parameters[0]);
-        }
-      }, {
-        key: "afterExecution",
-        value: function afterExecution(response) {
-          var _this = this;
-          return response.map(function (responseItem) {
-            return _this.formatters.outputLogFormatter(responseItem);
-          });
-        }
-      }]);
-      return GetPastLogsMethod;
-    }(AbstractCallMethod);
-
-    var EcRecoverMethod =
-    function (_AbstractCallMethod) {
-      _inherits(EcRecoverMethod, _AbstractCallMethod);
-      function EcRecoverMethod(utils, formatters) {
-        _classCallCheck(this, EcRecoverMethod);
-        return _possibleConstructorReturn(this, _getPrototypeOf(EcRecoverMethod).call(this, 'personal_ecRecover', 3, utils, formatters));
-      }
-      _createClass(EcRecoverMethod, [{
-        key: "beforeExecution",
-        value: function beforeExecution(moduleInstance) {
-          this.parameters[0] = this.formatters.inputSignFormatter(this.parameters[0]);
-          this.parameters[1] = this.formatters.inputAddressFormatter(this.parameters[1]);
-        }
-      }]);
-      return EcRecoverMethod;
-    }(AbstractCallMethod);
-
-    var ImportRawKeyMethod =
-    function (_AbstractCallMethod) {
-      _inherits(ImportRawKeyMethod, _AbstractCallMethod);
-      function ImportRawKeyMethod(utils, formatters) {
-        _classCallCheck(this, ImportRawKeyMethod);
-        return _possibleConstructorReturn(this, _getPrototypeOf(ImportRawKeyMethod).call(this, 'personal_importRawKey', 2, utils, formatters));
-      }
-      return ImportRawKeyMethod;
-    }(AbstractCallMethod);
-
-    var ListAccountsMethod =
-    function (_AbstractCallMethod) {
-      _inherits(ListAccountsMethod, _AbstractCallMethod);
-      function ListAccountsMethod(utils, formatters) {
-        _classCallCheck(this, ListAccountsMethod);
-        return _possibleConstructorReturn(this, _getPrototypeOf(ListAccountsMethod).call(this, 'personal_listAccounts', 0, utils, formatters));
-      }
-      _createClass(ListAccountsMethod, [{
-        key: "afterExecution",
-        value: function afterExecution(response) {
-          var _this = this;
-          return response.map(function (responseItem) {
-            return _this.utils.toChecksumAddress(responseItem);
-          });
-        }
-      }]);
-      return ListAccountsMethod;
-    }(AbstractCallMethod);
-
-    var LockAccountMethod =
-    function (_AbstractCallMethod) {
-      _inherits(LockAccountMethod, _AbstractCallMethod);
-      function LockAccountMethod(utils, formatters) {
-        _classCallCheck(this, LockAccountMethod);
-        return _possibleConstructorReturn(this, _getPrototypeOf(LockAccountMethod).call(this, 'personal_lockAccount', 1, utils, formatters));
-      }
-      _createClass(LockAccountMethod, [{
-        key: "beforeExecution",
-        value: function beforeExecution(moduleInstance) {
-          this.parameters[0] = this.formatters.inputAddressFormatter(this.parameters[0]);
-        }
-      }]);
-      return LockAccountMethod;
-    }(AbstractCallMethod);
-
-    var NewAccountMethod =
-    function (_AbstractCallMethod) {
-      _inherits(NewAccountMethod, _AbstractCallMethod);
-      function NewAccountMethod(utils, formatters) {
-        _classCallCheck(this, NewAccountMethod);
-        return _possibleConstructorReturn(this, _getPrototypeOf(NewAccountMethod).call(this, 'personal_newAccount', 1, utils, formatters));
-      }
-      _createClass(NewAccountMethod, [{
-        key: "afterExecution",
-        value: function afterExecution(response) {
-          return this.utils.toChecksumAddress(response);
-        }
-      }]);
-      return NewAccountMethod;
-    }(AbstractCallMethod);
-
-    var PersonalSendTransactionMethod =
-    function (_AbstractCallMethod) {
-      _inherits(PersonalSendTransactionMethod, _AbstractCallMethod);
-      function PersonalSendTransactionMethod(utils, formatters) {
-        _classCallCheck(this, PersonalSendTransactionMethod);
-        return _possibleConstructorReturn(this, _getPrototypeOf(PersonalSendTransactionMethod).call(this, 'personal_sendTransaction', 2, utils, formatters));
-      }
-      _createClass(PersonalSendTransactionMethod, [{
-        key: "beforeExecution",
-        value: function beforeExecution(moduleInstance) {
-          this.parameters[0] = this.formatters.inputTransactionFormatter(this.parameters[0], moduleInstance);
-        }
-      }]);
-      return PersonalSendTransactionMethod;
-    }(AbstractCallMethod);
-
-    var PersonalSignMethod =
-    function (_AbstractCallMethod) {
-      _inherits(PersonalSignMethod, _AbstractCallMethod);
-      function PersonalSignMethod(utils, formatters) {
-        _classCallCheck(this, PersonalSignMethod);
-        return _possibleConstructorReturn(this, _getPrototypeOf(PersonalSignMethod).call(this, 'personal_sign', 3, utils, formatters));
-      }
-      _createClass(PersonalSignMethod, [{
-        key: "beforeExecution",
-        value: function beforeExecution(moduleInstance) {
-          this.parameters[0] = this.formatters.inputSignFormatter(this.parameters[0]);
-          this.parameters[1] = this.formatters.inputAddressFormatter(this.parameters[1]);
-        }
-      }]);
-      return PersonalSignMethod;
-    }(AbstractCallMethod);
-
-    var PersonalSignTransactionMethod =
-    function (_AbstractCallMethod) {
-      _inherits(PersonalSignTransactionMethod, _AbstractCallMethod);
-      function PersonalSignTransactionMethod(utils, formatters) {
-        _classCallCheck(this, PersonalSignTransactionMethod);
-        return _possibleConstructorReturn(this, _getPrototypeOf(PersonalSignTransactionMethod).call(this, 'personal_signTransaction', 2, utils, formatters));
-      }
-      _createClass(PersonalSignTransactionMethod, [{
-        key: "beforeExecution",
-        value: function beforeExecution(moduleInstance) {
-          this.parameters[0] = this.formatters.inputTransactionFormatter(this.parameters[0], moduleInstance);
-        }
-      }]);
-      return PersonalSignTransactionMethod;
-    }(AbstractCallMethod);
-
-    var UnlockAccountMethod =
-    function (_AbstractCallMethod) {
-      _inherits(UnlockAccountMethod, _AbstractCallMethod);
-      function UnlockAccountMethod(utils, formatters) {
-        _classCallCheck(this, UnlockAccountMethod);
-        return _possibleConstructorReturn(this, _getPrototypeOf(UnlockAccountMethod).call(this, 'personal_unlockAccount', 3, utils, formatters));
-      }
-      _createClass(UnlockAccountMethod, [{
-        key: "beforeExecution",
-        value: function beforeExecution(moduleInstance) {
-          this.parameters[0] = this.formatters.inputAddressFormatter(this.parameters[0]);
-        }
-      }]);
-      return UnlockAccountMethod;
-    }(AbstractCallMethod);
-
-    var AddPrivateKeyMethod =
-    function (_AbstractCallMethod) {
-      _inherits(AddPrivateKeyMethod, _AbstractCallMethod);
-      function AddPrivateKeyMethod(utils, formatters) {
-        _classCallCheck(this, AddPrivateKeyMethod);
-        return _possibleConstructorReturn(this, _getPrototypeOf(AddPrivateKeyMethod).call(this, 'shh_addPrivateKey', 1, utils, formatters));
-      }
-      return AddPrivateKeyMethod;
-    }(AbstractCallMethod);
-
-    var AddSymKeyMethod =
-    function (_AbstractCallMethod) {
-      _inherits(AddSymKeyMethod, _AbstractCallMethod);
-      function AddSymKeyMethod(utils, formatters) {
-        _classCallCheck(this, AddSymKeyMethod);
-        return _possibleConstructorReturn(this, _getPrototypeOf(AddSymKeyMethod).call(this, 'shh_addSymKey', 1, utils, formatters));
-      }
-      return AddSymKeyMethod;
-    }(AbstractCallMethod);
-
-    var DeleteKeyPairMethod =
-    function (_AbstractCallMethod) {
-      _inherits(DeleteKeyPairMethod, _AbstractCallMethod);
-      function DeleteKeyPairMethod(utils, formatters) {
-        _classCallCheck(this, DeleteKeyPairMethod);
-        return _possibleConstructorReturn(this, _getPrototypeOf(DeleteKeyPairMethod).call(this, 'shh_deleteKeyPair', 1, utils, formatters));
-      }
-      return DeleteKeyPairMethod;
-    }(AbstractCallMethod);
-
-    var DeleteMessageFilterMethod =
-    function (_AbstractCallMethod) {
-      _inherits(DeleteMessageFilterMethod, _AbstractCallMethod);
-      function DeleteMessageFilterMethod(utils, formatters) {
-        _classCallCheck(this, DeleteMessageFilterMethod);
-        return _possibleConstructorReturn(this, _getPrototypeOf(DeleteMessageFilterMethod).call(this, 'shh_deleteMessageFilter', 1, utils, formatters));
-      }
-      return DeleteMessageFilterMethod;
-    }(AbstractCallMethod);
-
-    var DeleteSymKeyMethod =
-    function (_AbstractCallMethod) {
-      _inherits(DeleteSymKeyMethod, _AbstractCallMethod);
-      function DeleteSymKeyMethod(utils, formatters) {
-        _classCallCheck(this, DeleteSymKeyMethod);
-        return _possibleConstructorReturn(this, _getPrototypeOf(DeleteSymKeyMethod).call(this, 'shh_deleteSymKey', 1, utils, formatters));
-      }
-      return DeleteSymKeyMethod;
-    }(AbstractCallMethod);
-
-    var GenerateSymKeyFromPasswordMethod =
-    function (_AbstractCallMethod) {
-      _inherits(GenerateSymKeyFromPasswordMethod, _AbstractCallMethod);
-      function GenerateSymKeyFromPasswordMethod(utils, formatters) {
-        _classCallCheck(this, GenerateSymKeyFromPasswordMethod);
-        return _possibleConstructorReturn(this, _getPrototypeOf(GenerateSymKeyFromPasswordMethod).call(this, 'shh_generateSymKeyFromPassword', 1, utils, formatters));
-      }
-      return GenerateSymKeyFromPasswordMethod;
-    }(AbstractCallMethod);
-
-    var GetFilterMessagesMethod =
-    function (_AbstractCallMethod) {
-      _inherits(GetFilterMessagesMethod, _AbstractCallMethod);
-      function GetFilterMessagesMethod(utils, formatters) {
-        _classCallCheck(this, GetFilterMessagesMethod);
-        return _possibleConstructorReturn(this, _getPrototypeOf(GetFilterMessagesMethod).call(this, 'shh_getFilterMessages', 1, utils, formatters));
-      }
-      return GetFilterMessagesMethod;
-    }(AbstractCallMethod);
-
-    var GetInfoMethod =
-    function (_AbstractCallMethod) {
-      _inherits(GetInfoMethod, _AbstractCallMethod);
-      function GetInfoMethod(utils, formatters) {
-        _classCallCheck(this, GetInfoMethod);
-        return _possibleConstructorReturn(this, _getPrototypeOf(GetInfoMethod).call(this, 'shh_info', 0, utils, formatters));
-      }
-      return GetInfoMethod;
-    }(AbstractCallMethod);
-
-    var GetPrivateKeyMethod =
-    function (_AbstractCallMethod) {
-      _inherits(GetPrivateKeyMethod, _AbstractCallMethod);
-      function GetPrivateKeyMethod(utils, formatters) {
-        _classCallCheck(this, GetPrivateKeyMethod);
-        return _possibleConstructorReturn(this, _getPrototypeOf(GetPrivateKeyMethod).call(this, 'shh_getPrivateKey', 1, utils, formatters));
-      }
-      return GetPrivateKeyMethod;
-    }(AbstractCallMethod);
-
-    var GetPublicKeyMethod =
-    function (_AbstractCallMethod) {
-      _inherits(GetPublicKeyMethod, _AbstractCallMethod);
-      function GetPublicKeyMethod(utils, formatters) {
-        _classCallCheck(this, GetPublicKeyMethod);
-        return _possibleConstructorReturn(this, _getPrototypeOf(GetPublicKeyMethod).call(this, 'shh_getPublicKey', 1, utils, formatters));
-      }
-      return GetPublicKeyMethod;
-    }(AbstractCallMethod);
-
-    var GetSymKeyMethod =
-    function (_AbstractCallMethod) {
-      _inherits(GetSymKeyMethod, _AbstractCallMethod);
-      function GetSymKeyMethod(utils, formatters) {
-        _classCallCheck(this, GetSymKeyMethod);
-        return _possibleConstructorReturn(this, _getPrototypeOf(GetSymKeyMethod).call(this, 'shh_getSymKey', 1, utils, formatters));
-      }
-      return GetSymKeyMethod;
-    }(AbstractCallMethod);
-
-    var HasKeyPairMethod =
-    function (_AbstractCallMethod) {
-      _inherits(HasKeyPairMethod, _AbstractCallMethod);
-      function HasKeyPairMethod(utils, formatters) {
-        _classCallCheck(this, HasKeyPairMethod);
-        return _possibleConstructorReturn(this, _getPrototypeOf(HasKeyPairMethod).call(this, 'shh_hasKeyPair', 1, utils, formatters));
-      }
-      return HasKeyPairMethod;
-    }(AbstractCallMethod);
-
-    var HasSymKeyMethod =
-    function (_AbstractCallMethod) {
-      _inherits(HasSymKeyMethod, _AbstractCallMethod);
-      function HasSymKeyMethod(utils, formatters) {
-        _classCallCheck(this, HasSymKeyMethod);
-        return _possibleConstructorReturn(this, _getPrototypeOf(HasSymKeyMethod).call(this, 'shh_hasSymKey', 1, utils, formatters));
-      }
-      return HasSymKeyMethod;
-    }(AbstractCallMethod);
-
-    var MarkTrustedPeerMethod =
-    function (_AbstractCallMethod) {
-      _inherits(MarkTrustedPeerMethod, _AbstractCallMethod);
-      function MarkTrustedPeerMethod(utils, formatters) {
-        _classCallCheck(this, MarkTrustedPeerMethod);
-        return _possibleConstructorReturn(this, _getPrototypeOf(MarkTrustedPeerMethod).call(this, 'shh_markTrustedPeer', 1, utils, formatters));
-      }
-      return MarkTrustedPeerMethod;
-    }(AbstractCallMethod);
-
-    var NewKeyPairMethod =
-    function (_AbstractCallMethod) {
-      _inherits(NewKeyPairMethod, _AbstractCallMethod);
-      function NewKeyPairMethod(utils, formatters) {
-        _classCallCheck(this, NewKeyPairMethod);
-        return _possibleConstructorReturn(this, _getPrototypeOf(NewKeyPairMethod).call(this, 'shh_newKeyPair', 1, utils, formatters));
-      }
-      return NewKeyPairMethod;
-    }(AbstractCallMethod);
-
-    var NewMessageFilterMethod =
-    function (_AbstractCallMethod) {
-      _inherits(NewMessageFilterMethod, _AbstractCallMethod);
-      function NewMessageFilterMethod(utils, formatters) {
-        _classCallCheck(this, NewMessageFilterMethod);
-        return _possibleConstructorReturn(this, _getPrototypeOf(NewMessageFilterMethod).call(this, 'shh_newMessageFilter', 1, utils, formatters));
-      }
-      return NewMessageFilterMethod;
-    }(AbstractCallMethod);
-
-    var NewSymKeyMethod =
-    function (_AbstractCallMethod) {
-      _inherits(NewSymKeyMethod, _AbstractCallMethod);
-      function NewSymKeyMethod(utils, formatters) {
-        _classCallCheck(this, NewSymKeyMethod);
-        return _possibleConstructorReturn(this, _getPrototypeOf(NewSymKeyMethod).call(this, 'shh_newSymKey', 0, utils, formatters));
-      }
-      return NewSymKeyMethod;
-    }(AbstractCallMethod);
-
-    var PostMethod =
-    function (_AbstractCallMethod) {
-      _inherits(PostMethod, _AbstractCallMethod);
-      function PostMethod(utils, formatters) {
-        _classCallCheck(this, PostMethod);
-        return _possibleConstructorReturn(this, _getPrototypeOf(PostMethod).call(this, 'shh_post', 1, utils, formatters));
-      }
-      return PostMethod;
-    }(AbstractCallMethod);
-
-    var SetMaxMessageSizeMethod =
-    function (_AbstractCallMethod) {
-      _inherits(SetMaxMessageSizeMethod, _AbstractCallMethod);
-      function SetMaxMessageSizeMethod(utils, formatters) {
-        _classCallCheck(this, SetMaxMessageSizeMethod);
-        return _possibleConstructorReturn(this, _getPrototypeOf(SetMaxMessageSizeMethod).call(this, 'shh_setMaxMessageSize', 1, utils, formatters));
-      }
-      return SetMaxMessageSizeMethod;
-    }(AbstractCallMethod);
-
-    var SetMinPoWMethod =
-    function (_AbstractCallMethod) {
-      _inherits(SetMinPoWMethod, _AbstractCallMethod);
-      function SetMinPoWMethod(utils, formatters) {
-        _classCallCheck(this, SetMinPoWMethod);
-        return _possibleConstructorReturn(this, _getPrototypeOf(SetMinPoWMethod).call(this, 'shh_setMinPoW', 1, utils, formatters));
-      }
-      return SetMinPoWMethod;
-    }(AbstractCallMethod);
-
-    var ShhVersionMethod =
-    function (_AbstractCallMethod) {
-      _inherits(ShhVersionMethod, _AbstractCallMethod);
-      function ShhVersionMethod(utils, formatters) {
-        _classCallCheck(this, ShhVersionMethod);
-        return _possibleConstructorReturn(this, _getPrototypeOf(ShhVersionMethod).call(this, 'shh_version', 0, utils, formatters));
-      }
-      return ShhVersionMethod;
-    }(AbstractCallMethod);
-
-    var MethodModuleFactory = function MethodModuleFactory(accounts) {
-      return new ModuleFactory(accounts, new web3CoreSubscriptions.SubscriptionsFactory(), Utils, web3CoreHelpers.formatters);
-    };
-
-    exports.MethodModuleFactory = MethodModuleFactory;
-    exports.AbstractMethod = AbstractMethod;
-    exports.AbstractMethodFactory = AbstractMethodFactory;
-    exports.GetProtocolVersionMethod = GetProtocolVersionMethod;
-    exports.VersionMethod = VersionMethod;
-    exports.ListeningMethod = ListeningMethod;
-    exports.PeerCountMethod = PeerCountMethod;
-    exports.GetNodeInfoMethod = GetNodeInfoMethod;
-    exports.GetCoinbaseMethod = GetCoinbaseMethod;
-    exports.IsMiningMethod = IsMiningMethod;
-    exports.GetHashrateMethod = GetHashrateMethod;
-    exports.IsSyncingMethod = IsSyncingMethod;
-    exports.GetGasPriceMethod = GetGasPriceMethod;
-    exports.SubmitWorkMethod = SubmitWorkMethod;
-    exports.GetWorkMethod = GetWorkMethod;
-    exports.GetAccountsMethod = GetAccountsMethod;
-    exports.GetBalanceMethod = GetBalanceMethod;
-    exports.GetTransactionCountMethod = GetTransactionCountMethod;
-    exports.RequestAccountsMethod = RequestAccountsMethod;
-    exports.GetBlockNumberMethod = GetBlockNumberMethod;
-    exports.GetBlockMethod = GetBlockMethod;
-    exports.GetUncleMethod = GetUncleMethod;
-    exports.GetBlockTransactionCountMethod = GetBlockTransactionCountMethod;
-    exports.GetBlockUncleCountMethod = GetBlockUncleCountMethod;
-    exports.GetTransactionMethod = GetTransactionMethod;
-    exports.GetTransactionFromBlockMethod = GetTransactionFromBlockMethod;
-    exports.GetTransactionReceipt = GetTransactionReceiptMethod;
-    exports.SendRawTransactionMethod = SendRawTransactionMethod;
-    exports.SignTransactionMethod = SignTransactionMethod;
-    exports.SendTransactionMethod = SendTransactionMethod;
-    exports.GetCodeMethod = GetCodeMethod;
-    exports.SignMethod = SignMethod;
-    exports.CallMethod = CallMethod;
-    exports.GetStorageAtMethod = GetStorageAtMethod;
-    exports.EstimateGasMethod = EstimateGasMethod;
-    exports.GetPastLogsMethod = GetPastLogsMethod;
-    exports.EcRecoverMethod = EcRecoverMethod;
-    exports.ImportRawKeyMethod = ImportRawKeyMethod;
-    exports.ListAccountsMethod = ListAccountsMethod;
-    exports.LockAccountMethod = LockAccountMethod;
-    exports.NewAccountMethod = NewAccountMethod;
-    exports.PersonalSendTransactionMethod = PersonalSendTransactionMethod;
-    exports.PersonalSignMethod = PersonalSignMethod;
-    exports.PersonalSignTransactionMethod = PersonalSignTransactionMethod;
-    exports.UnlockAccountMethod = UnlockAccountMethod;
-    exports.AddPrivateKeyMethod = AddPrivateKeyMethod;
-    exports.AddSymKeyMethod = AddSymKeyMethod;
-    exports.DeleteKeyPairMethod = DeleteKeyPairMethod;
-    exports.DeleteMessageFilterMethod = DeleteMessageFilterMethod;
-    exports.DeleteSymKeyMethod = DeleteSymKeyMethod;
-    exports.GenerateSymKeyFromPasswordMethod = GenerateSymKeyFromPasswordMethod;
-    exports.GetFilterMessagesMethod = GetFilterMessagesMethod;
-    exports.GetInfoMethod = GetInfoMethod;
-    exports.GetPrivateKeyMethod = GetPrivateKeyMethod;
-    exports.GetPublicKeyMethod = GetPublicKeyMethod;
-    exports.GetSymKeyMethod = GetSymKeyMethod;
-    exports.HasKeyPairMethod = HasKeyPairMethod;
-    exports.HasSymKeyMethod = HasSymKeyMethod;
-    exports.MarkTrustedPeerMethod = MarkTrustedPeerMethod;
-    exports.NewKeyPairMethod = NewKeyPairMethod;
-    exports.NewMessageFilterMethod = NewMessageFilterMethod;
-    exports.NewSymKeyMethod = NewSymKeyMethod;
-    exports.PostMethod = PostMethod;
-    exports.SetMaxMessageSizeMethod = SetMaxMessageSizeMethod;
-    exports.SetMinPoWMethod = SetMinPoWMethod;
-    exports.ShhVersionMethod = ShhVersionMethod;
-
-    Object.defineProperty(exports, '__esModule', { value: true });
-
-})));
-
-},{"@babel/runtime/helpers/asyncToGenerator":204,"@babel/runtime/helpers/classCallCheck":205,"@babel/runtime/helpers/createClass":206,"@babel/runtime/helpers/get":208,"@babel/runtime/helpers/getPrototypeOf":209,"@babel/runtime/helpers/inherits":210,"@babel/runtime/helpers/possibleConstructorReturn":213,"@babel/runtime/helpers/toConsumableArray":217,"@babel/runtime/regenerator":219,"eventemitter3":318,"lodash/cloneDeep":477,"lodash/isFunction":490,"lodash/isObject":495,"lodash/isString":498,"web3-core-helpers":557,"web3-core-promievent":559,"web3-core-subscriptions":560,"web3-providers":575,"web3-utils":576}],559:[function(require,module,exports){
-(function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@babel/runtime/helpers/classCallCheck'), require('@babel/runtime/helpers/createClass'), require('eventemitter3')) :
-    typeof define === 'function' && define.amd ? define(['exports', '@babel/runtime/helpers/classCallCheck', '@babel/runtime/helpers/createClass', 'eventemitter3'], factory) :
-    (factory((global.Web3CorePromiEvent = {}),global._classCallCheck,global._createClass,global.EventEmitter));
-}(this, (function (exports,_classCallCheck,_createClass,EventEmitter) { 'use strict';
-
-    _classCallCheck = _classCallCheck && _classCallCheck.hasOwnProperty('default') ? _classCallCheck['default'] : _classCallCheck;
-    _createClass = _createClass && _createClass.hasOwnProperty('default') ? _createClass['default'] : _createClass;
-    EventEmitter = EventEmitter && EventEmitter.hasOwnProperty('default') ? EventEmitter['default'] : EventEmitter;
-
-    var PromiEvent =
-    function () {
-      function PromiEvent() {
-        var _this = this;
-        _classCallCheck(this, PromiEvent);
-        this.promise = new Promise(function (resolve, reject) {
-          _this.resolve = resolve;
-          _this.reject = reject;
-        });
-        this.eventEmitter = new EventEmitter();
-        return new Proxy(this, {
-          get: this.proxyHandler
-        });
-      }
-      _createClass(PromiEvent, [{
-        key: "proxyHandler",
-        value: function proxyHandler(target, name) {
-          if (name === 'resolve' || name === 'reject') {
-            return target[name];
-          }
-          if (name === 'then') {
-            return target.promise.then.bind(target.promise);
-          }
-          if (name === 'catch') {
-            return target.promise.catch.bind(target.promise);
-          }
-          if (target.eventEmitter[name]) {
-            return target.eventEmitter[name];
-          }
-        }
-      }]);
-      return PromiEvent;
-    }();
-
-    exports.PromiEvent = PromiEvent;
-
-    Object.defineProperty(exports, '__esModule', { value: true });
-
-})));
-
-},{"@babel/runtime/helpers/classCallCheck":205,"@babel/runtime/helpers/createClass":206,"eventemitter3":318}],560:[function(require,module,exports){
-(function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('web3-utils'), require('web3-core-helpers'), require('lodash/cloneDeep'), require('@babel/runtime/helpers/get'), require('lodash/isFunction'), require('eventemitter3'), require('@babel/runtime/helpers/createClass'), require('@babel/runtime/helpers/classCallCheck'), require('@babel/runtime/helpers/possibleConstructorReturn'), require('@babel/runtime/helpers/getPrototypeOf'), require('@babel/runtime/helpers/inherits')) :
-    typeof define === 'function' && define.amd ? define(['exports', 'web3-utils', 'web3-core-helpers', 'lodash/cloneDeep', '@babel/runtime/helpers/get', 'lodash/isFunction', 'eventemitter3', '@babel/runtime/helpers/createClass', '@babel/runtime/helpers/classCallCheck', '@babel/runtime/helpers/possibleConstructorReturn', '@babel/runtime/helpers/getPrototypeOf', '@babel/runtime/helpers/inherits'], factory) :
-    (factory((global.Web3CoreSubscriptions = {}),global.Utils,global.web3CoreHelpers,global.cloneDeep,global._get,global.isFunction,global.EventEmitter,global._createClass,global._classCallCheck,global._possibleConstructorReturn,global._getPrototypeOf,global._inherits));
-}(this, (function (exports,Utils,web3CoreHelpers,cloneDeep,_get,isFunction,EventEmitter,_createClass,_classCallCheck,_possibleConstructorReturn,_getPrototypeOf,_inherits) { 'use strict';
-
-    cloneDeep = cloneDeep && cloneDeep.hasOwnProperty('default') ? cloneDeep['default'] : cloneDeep;
-    _get = _get && _get.hasOwnProperty('default') ? _get['default'] : _get;
-    isFunction = isFunction && isFunction.hasOwnProperty('default') ? isFunction['default'] : isFunction;
-    EventEmitter = EventEmitter && EventEmitter.hasOwnProperty('default') ? EventEmitter['default'] : EventEmitter;
-    _createClass = _createClass && _createClass.hasOwnProperty('default') ? _createClass['default'] : _createClass;
-    _classCallCheck = _classCallCheck && _classCallCheck.hasOwnProperty('default') ? _classCallCheck['default'] : _classCallCheck;
-    _possibleConstructorReturn = _possibleConstructorReturn && _possibleConstructorReturn.hasOwnProperty('default') ? _possibleConstructorReturn['default'] : _possibleConstructorReturn;
-    _getPrototypeOf = _getPrototypeOf && _getPrototypeOf.hasOwnProperty('default') ? _getPrototypeOf['default'] : _getPrototypeOf;
-    _inherits = _inherits && _inherits.hasOwnProperty('default') ? _inherits['default'] : _inherits;
-
-    var AbstractSubscription =
-    function (_EventEmitter) {
-      _inherits(AbstractSubscription, _EventEmitter);
-      function AbstractSubscription(type, method, options, utils, formatters, moduleInstance) {
-        var _this;
-        _classCallCheck(this, AbstractSubscription);
-        _this = _possibleConstructorReturn(this, _getPrototypeOf(AbstractSubscription).call(this));
-        _this.type = type;
-        _this.method = method;
-        _this.options = options || null;
-        _this.utils = utils;
-        _this.formatters = formatters;
-        _this.moduleInstance = moduleInstance;
-        _this.id = null;
-        return _this;
-      }
-      _createClass(AbstractSubscription, [{
-        key: "beforeSubscription",
-        value: function beforeSubscription(moduleInstance) {}
-      }, {
-        key: "onNewSubscriptionItem",
-        value: function onNewSubscriptionItem(subscriptionItem) {
-          return subscriptionItem;
-        }
-      }, {
-        key: "subscribe",
-        value: function subscribe(callback) {
-          var _this2 = this;
-          this.beforeSubscription(this.moduleInstance);
-          var subscriptionParameters = [];
-          if (this.options !== null) {
-            subscriptionParameters = [this.options];
-          }
-          this.moduleInstance.currentProvider.subscribe(this.type, this.method, subscriptionParameters).then(function (subscriptionId) {
-            _this2.id = subscriptionId;
-            _this2.moduleInstance.currentProvider.on(_this2.id, function (response) {
-              var formattedOutput = _this2.onNewSubscriptionItem(response.result);
-              _this2.emit('data', formattedOutput);
-              if (isFunction(callback)) {
-                callback(false, formattedOutput);
-              }
-            });
-          }).catch(function (error) {
-            _this2.emit('error', error);
-            if (isFunction(callback)) {
-              callback(error, null);
-            }
-          });
-          return this;
-        }
-      }, {
-        key: "unsubscribe",
-        value: function unsubscribe(callback) {
-          var _this3 = this;
-          return this.moduleInstance.currentProvider.unsubscribe(this.id, this.type.slice(0, 3) + '_unsubscribe').then(function (response) {
-            if (!response) {
-              var error = new Error('Error on unsubscribe!');
-              if (isFunction(callback)) {
-                callback(error, null);
-              }
-              throw error;
-            }
-            _this3.id = null;
-            _this3.removeAllListeners('data');
-            if (isFunction(callback)) {
-              callback(false, true);
-            }
-            return true;
-          });
-        }
-      }]);
-      return AbstractSubscription;
-    }(EventEmitter);
-
-    var LogSubscription =
-    function (_AbstractSubscription) {
-      _inherits(LogSubscription, _AbstractSubscription);
-      function LogSubscription(options, utils, formatters, moduleInstance, getPastLogsMethod) {
-        var _this;
-        _classCallCheck(this, LogSubscription);
-        _this = _possibleConstructorReturn(this, _getPrototypeOf(LogSubscription).call(this, 'eth_subscribe', 'logs', options, utils, formatters, moduleInstance));
-        _this.getPastLogsMethod = getPastLogsMethod;
-        return _this;
-      }
-      _createClass(LogSubscription, [{
-        key: "subscribe",
-        value: function subscribe(callback) {
-          var _this2 = this;
-          if (this.options.fromBlock && this.options.fromBlock !== 'latest' || this.options.fromBlock === 0) {
-            this.getPastLogsMethod.parameters = [this.formatters.inputLogFormatter(this.options)];
-            this.getPastLogsMethod.execute(this.moduleInstance).then(function (logs) {
-              logs.forEach(function (log) {
-                var formattedLog = _this2.onNewSubscriptionItem(log);
-                callback(false, formattedLog);
-                _this2.emit('data', formattedLog);
-              });
-              delete _this2.options.fromBlock;
-              _get(_getPrototypeOf(LogSubscription.prototype), "subscribe", _this2).call(_this2, callback);
-            }).catch(function (error) {
-              _this2.emit('error', error);
-              callback(error, null);
-            });
-            return this;
-          }
-          _get(_getPrototypeOf(LogSubscription.prototype), "subscribe", this).call(this, callback);
-          return this;
-        }
-      }, {
-        key: "onNewSubscriptionItem",
-        value: function onNewSubscriptionItem(subscriptionItem) {
-          return this.formatters.outputLogFormatter(subscriptionItem);
-        }
-      }]);
-      return LogSubscription;
-    }(AbstractSubscription);
-
-    var NewHeadsSubscription =
-    function (_AbstractSubscription) {
-      _inherits(NewHeadsSubscription, _AbstractSubscription);
-      function NewHeadsSubscription(utils, formatters, moduleInstance) {
-        _classCallCheck(this, NewHeadsSubscription);
-        return _possibleConstructorReturn(this, _getPrototypeOf(NewHeadsSubscription).call(this, 'eth_subscribe', 'newHeads', null, utils, formatters, moduleInstance));
-      }
-      _createClass(NewHeadsSubscription, [{
-        key: "onNewSubscriptionItem",
-        value: function onNewSubscriptionItem(subscriptionItem) {
-          return this.formatters.outputBlockFormatter(subscriptionItem);
-        }
-      }]);
-      return NewHeadsSubscription;
-    }(AbstractSubscription);
-
-    var NewPendingTransactionsSubscription =
-    function (_AbstractSubscription) {
-      _inherits(NewPendingTransactionsSubscription, _AbstractSubscription);
-      function NewPendingTransactionsSubscription(utils, formatters, moduleInstance) {
-        _classCallCheck(this, NewPendingTransactionsSubscription);
-        return _possibleConstructorReturn(this, _getPrototypeOf(NewPendingTransactionsSubscription).call(this, 'eth_subscribe', 'newPendingTransactions', null, utils, formatters, moduleInstance));
-      }
-      return NewPendingTransactionsSubscription;
-    }(AbstractSubscription);
-
-    var SyncingSubscription =
-    function (_AbstractSubscription) {
-      _inherits(SyncingSubscription, _AbstractSubscription);
-      function SyncingSubscription(utils, formatters, moduleInstance) {
-        var _this;
-        _classCallCheck(this, SyncingSubscription);
-        _this = _possibleConstructorReturn(this, _getPrototypeOf(SyncingSubscription).call(this, 'eth_subscribe', 'syncing', null, utils, formatters, moduleInstance));
-        _this.isSyncing = null;
-        return _this;
-      }
-      _createClass(SyncingSubscription, [{
-        key: "onNewSubscriptionItem",
-        value: function onNewSubscriptionItem(subscriptionItem) {
-          var isSyncing = subscriptionItem.result.syncing;
-          if (this.isSyncing === null) {
-            this.isSyncing = isSyncing;
-            this.emit('changed', this.isSyncing);
-          }
-          if (this.isSyncing === true && isSyncing === false) {
-            this.isSyncing = isSyncing;
-            this.emit('changed', this.isSyncing);
-          }
-          if (this.isSyncing === false && isSyncing === true) {
-            this.isSyncing = isSyncing;
-            this.emit('changed', this.isSyncing);
-          }
-          return this.formatters.outputSyncingFormatter(subscriptionItem);
-        }
-      }]);
-      return SyncingSubscription;
-    }(AbstractSubscription);
-
-    var MessagesSubscription =
-    function (_AbstractSubscription) {
-      _inherits(MessagesSubscription, _AbstractSubscription);
-      function MessagesSubscription(options, utils, formatters, moduleInstance) {
-        _classCallCheck(this, MessagesSubscription);
-        return _possibleConstructorReturn(this, _getPrototypeOf(MessagesSubscription).call(this, 'shh_subscribe', 'messages', options, utils, formatters, moduleInstance));
-      }
-      return MessagesSubscription;
-    }(AbstractSubscription);
-
-    var SubscriptionsFactory =
-    function () {
-      function SubscriptionsFactory(utils, formatters) {
-        _classCallCheck(this, SubscriptionsFactory);
-        this.utils = utils;
-        this.formatters = formatters;
-      }
-      _createClass(SubscriptionsFactory, [{
-        key: "createLogSubscription",
-        value: function createLogSubscription(options, moduleInstance, getPastLogsMethod) {
-          return new LogSubscription(cloneDeep(options), this.utils, this.formatters, moduleInstance, getPastLogsMethod);
-        }
-      }, {
-        key: "createNewHeadsSubscription",
-        value: function createNewHeadsSubscription(moduleInstance) {
-          return new NewHeadsSubscription(this.utils, this.formatters, moduleInstance);
-        }
-      }, {
-        key: "createNewPendingTransactionsSubscription",
-        value: function createNewPendingTransactionsSubscription(moduleInstance) {
-          return new NewPendingTransactionsSubscription(this.utils, this.formatters, moduleInstance);
-        }
-      }, {
-        key: "createSyncingSubscription",
-        value: function createSyncingSubscription(moduleInstance) {
-          return new SyncingSubscription(this.utils, this.formatters, moduleInstance);
-        }
-      }, {
-        key: "createShhMessagesSubscription",
-        value: function createShhMessagesSubscription(options, moduleInstance) {
-          return new MessagesSubscription(options, this.utils, this.formatters, moduleInstance);
-        }
-      }]);
-      return SubscriptionsFactory;
-    }();
-
-    var SubscriptionsModuleFactory =
-    function () {
-      function SubscriptionsModuleFactory() {
-        _classCallCheck(this, SubscriptionsModuleFactory);
-      }
-      _createClass(SubscriptionsModuleFactory, [{
-        key: "createSubscriptionsFactory",
-        value: function createSubscriptionsFactory(utils, formatters) {
-          return new SubscriptionsFactory(utils, formatters);
-        }
-      }]);
-      return SubscriptionsModuleFactory;
-    }();
-
-    var SubscriptionsFactory$1 = function SubscriptionsFactory() {
-      return new SubscriptionsModuleFactory().createSubscriptionsFactory(Utils, web3CoreHelpers.formatters);
-    };
-
-    exports.SubscriptionsFactory = SubscriptionsFactory$1;
-    exports.LogSubscription = LogSubscription;
-    exports.AbstractSubscription = AbstractSubscription;
-
-    Object.defineProperty(exports, '__esModule', { value: true });
-
-})));
-
-},{"@babel/runtime/helpers/classCallCheck":205,"@babel/runtime/helpers/createClass":206,"@babel/runtime/helpers/get":208,"@babel/runtime/helpers/getPrototypeOf":209,"@babel/runtime/helpers/inherits":210,"@babel/runtime/helpers/possibleConstructorReturn":213,"eventemitter3":318,"lodash/cloneDeep":477,"lodash/isFunction":490,"web3-core-helpers":557,"web3-utils":576}],561:[function(require,module,exports){
-(function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@babel/runtime/helpers/classCallCheck'), require('@babel/runtime/helpers/createClass'), require('lodash/isObject'), require('web3-providers'), require('web3-utils')) :
-    typeof define === 'function' && define.amd ? define(['exports', '@babel/runtime/helpers/classCallCheck', '@babel/runtime/helpers/createClass', 'lodash/isObject', 'web3-providers', 'web3-utils'], factory) :
-    (factory((global.Web3Core = {}),global._classCallCheck,global._createClass,global.isObject,global.web3Providers,global.web3Utils));
-}(this, (function (exports,_classCallCheck,_createClass,isObject,web3Providers,web3Utils) { 'use strict';
-
-    _classCallCheck = _classCallCheck && _classCallCheck.hasOwnProperty('default') ? _classCallCheck['default'] : _classCallCheck;
-    _createClass = _createClass && _createClass.hasOwnProperty('default') ? _createClass['default'] : _createClass;
-    isObject = isObject && isObject.hasOwnProperty('default') ? isObject['default'] : isObject;
-
-    var AbstractWeb3Module =
-    function () {
-      function AbstractWeb3Module() {
-        var _this = this;
-        var provider = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : AbstractWeb3Module.throwIfMissing('provider');
-        var providersModuleFactory = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : AbstractWeb3Module.throwIfMissing('ProvidersModuleFactory');
-        var methodModuleFactory = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
-        var methodFactory = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
-        var options = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : {};
-        _classCallCheck(this, AbstractWeb3Module);
-        this.providersModuleFactory = providersModuleFactory;
-        this.providerDetector = providersModuleFactory.createProviderDetector();
-        this.providerResolver = providersModuleFactory.createProviderResolver();
-        this.givenProvider = this.providerDetector.detect();
-        this._currentProvider = this.providerResolver.resolve(provider);
-        this._defaultAccount = options.defaultAccount ? web3Utils.toChecksumAddress(options.defaultAccount) : undefined;
-        this._defaultBlock = options.defaultBlock || 'latest';
-        this._transactionBlockTimeout = options.transactionBlockTimeout || 50;
-        this._transactionConfirmationBlocks = options.transactionConfirmationBlocks || 24;
-        this._transactionPollingTimeout = options.transactionPollingTimeout || 750;
-        this._defaultGasPrice = options.defaultGasPrice;
-        this._defaultGas = options.defaultGas;
-        this.BatchRequest = function () {
-          return _this.providersModuleFactory.createBatchRequest(_this);
-        };
-        if (methodFactory !== null && methodModuleFactory !== null) {
-          this.methodFactory = methodFactory;
-          return methodModuleFactory.createMethodProxy(this, this.methodFactory);
-        }
-      }
-      _createClass(AbstractWeb3Module, [{
-        key: "setProvider",
-        value: function setProvider(provider, net) {
-          if (!this.isSameProvider(provider)) {
-            var resolvedProvider = this.providerResolver.resolve(provider, net);
-            this.clearSubscriptions();
-            this._currentProvider = resolvedProvider;
-            return true;
-          }
-          return false;
-        }
-      }, {
-        key: "isSameProvider",
-        value: function isSameProvider(provider) {
-          if (isObject(provider)) {
-            if (this.currentProvider.constructor.name === provider.constructor.name) {
-              return this.currentProvider.host === provider.host;
-            }
-            return false;
-          }
-          return this.currentProvider.host === provider;
-        }
-      }, {
-        key: "clearSubscriptions",
-        value: function clearSubscriptions(unsubscribeMethod) {
-          if (typeof this.currentProvider.clearSubscriptions !== 'undefined' && this.currentProvider.subscriptions.length > 0) {
-            return this.currentProvider.clearSubscriptions(unsubscribeMethod);
-          }
-          return Promise.resolve(true);
-        }
-      }, {
-        key: "defaultBlock",
-        get: function get() {
-          return this._defaultBlock;
-        }
-        ,
-        set: function set(value) {
-          this._defaultBlock = value;
-        }
-      }, {
-        key: "transactionBlockTimeout",
-        get: function get() {
-          return this._transactionBlockTimeout;
-        }
-        ,
-        set: function set(value) {
-          this._transactionBlockTimeout = value;
-        }
-      }, {
-        key: "transactionConfirmationBlocks",
-        get: function get() {
-          return this._transactionConfirmationBlocks;
-        }
-        ,
-        set: function set(value) {
-          this._transactionConfirmationBlocks = value;
-        }
-      }, {
-        key: "transactionPollingTimeout",
-        get: function get() {
-          return this._transactionPollingTimeout;
-        }
-        ,
-        set: function set(value) {
-          this._transactionPollingTimeout = value;
-        }
-      }, {
-        key: "defaultGasPrice",
-        get: function get() {
-          return this._defaultGasPrice;
-        }
-        ,
-        set: function set(value) {
-          this._defaultGasPrice = value;
-        }
-      }, {
-        key: "defaultGas",
-        get: function get() {
-          return this._defaultGas;
-        }
-        ,
-        set: function set(value) {
-          this._defaultGas = value;
-        }
-      }, {
-        key: "defaultAccount",
-        get: function get() {
-          return this._defaultAccount;
-        }
-        ,
-        set: function set(value) {
-          this._defaultAccount = web3Utils.toChecksumAddress(value);
-        }
-      }, {
-        key: "currentProvider",
-        get: function get() {
-          return this._currentProvider;
-        }
-        ,
-        set: function set(value) {
-          throw new Error('The property currentProvider is read-only!');
-        }
-      }], [{
-        key: "throwIfMissing",
-        value: function throwIfMissing(name) {
-          throw new Error("Missing parameter: ".concat(name));
-        }
-      }, {
-        key: "providers",
-        get: function get() {
-          return {
-            HttpProvider: web3Providers.HttpProvider,
-            WebsocketProvider: web3Providers.WebsocketProvider,
-            IpcProvider: web3Providers.IpcProvider
-          };
-        }
-      }]);
-      return AbstractWeb3Module;
-    }();
-
-    exports.AbstractWeb3Module = AbstractWeb3Module;
-
-    Object.defineProperty(exports, '__esModule', { value: true });
-
-})));
-
-},{"@babel/runtime/helpers/classCallCheck":205,"@babel/runtime/helpers/createClass":206,"lodash/isObject":495,"web3-providers":575,"web3-utils":576}],562:[function(require,module,exports){
-(function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('web3-utils'), require('ethers/utils/abi-coder'), require('@babel/runtime/helpers/typeof'), require('@babel/runtime/helpers/classCallCheck'), require('@babel/runtime/helpers/createClass'), require('lodash/isArray'), require('lodash/isObject')) :
-    typeof define === 'function' && define.amd ? define(['exports', 'web3-utils', 'ethers/utils/abi-coder', '@babel/runtime/helpers/typeof', '@babel/runtime/helpers/classCallCheck', '@babel/runtime/helpers/createClass', 'lodash/isArray', 'lodash/isObject'], factory) :
-    (factory((global.Web3EthAbi = {}),global.Utils,global.abiCoder,global._typeof,global._classCallCheck,global._createClass,global.isArray,global.isObject));
-}(this, (function (exports,Utils,abiCoder,_typeof,_classCallCheck,_createClass,isArray,isObject) { 'use strict';
-
-    _typeof = _typeof && _typeof.hasOwnProperty('default') ? _typeof['default'] : _typeof;
-    _classCallCheck = _classCallCheck && _classCallCheck.hasOwnProperty('default') ? _classCallCheck['default'] : _classCallCheck;
-    _createClass = _createClass && _createClass.hasOwnProperty('default') ? _createClass['default'] : _createClass;
-    isArray = isArray && isArray.hasOwnProperty('default') ? isArray['default'] : isArray;
-    isObject = isObject && isObject.hasOwnProperty('default') ? isObject['default'] : isObject;
-
-    var AbiCoder =
-    function () {
-      function AbiCoder(utils, ethersAbiCoder) {
-        _classCallCheck(this, AbiCoder);
-        this.utils = utils;
-        this.ethersAbiCoder = ethersAbiCoder;
-      }
-      _createClass(AbiCoder, [{
-        key: "encodeFunctionSignature",
-        value: function encodeFunctionSignature(functionName) {
-          if (isObject(functionName)) {
-            functionName = this.utils.jsonInterfaceMethodToString(functionName);
-          }
-          return this.utils.sha3(functionName).slice(0, 10);
-        }
-      }, {
-        key: "encodeEventSignature",
-        value: function encodeEventSignature(functionName) {
-          if (isObject(functionName)) {
-            functionName = this.utils.jsonInterfaceMethodToString(functionName);
-          }
-          return this.utils.sha3(functionName);
-        }
-      }, {
-        key: "encodeParameter",
-        value: function encodeParameter(type, param) {
-          return this.encodeParameters([type], [param]);
-        }
-      }, {
-        key: "encodeParameters",
-        value: function encodeParameters(types, params) {
-          return this.ethersAbiCoder.encode(this._mapTypes(types), params);
-        }
-      }, {
-        key: "_mapTypes",
-        value: function _mapTypes(types) {
-          var _this = this;
-          var mappedTypes = [];
-          types.forEach(function (type) {
-            if (_this._isSimplifiedStructFormat(type)) {
-              var structName = Object.keys(type)[0];
-              mappedTypes.push(Object.assign(_this._mapStructNameAndType(structName), {
-                components: _this._mapStructToCoderFormat(type[structName])
-              }));
-              return;
-            }
-            mappedTypes.push(type);
-          });
-          return mappedTypes;
-        }
-      }, {
-        key: "_isSimplifiedStructFormat",
-        value: function _isSimplifiedStructFormat(type) {
-          return _typeof(type) === 'object' && typeof type.components === 'undefined' && typeof type.name === 'undefined';
-        }
-      }, {
-        key: "_mapStructNameAndType",
-        value: function _mapStructNameAndType(structName) {
-          var type = 'tuple';
-          if (structName.indexOf('[]') > -1) {
-            type = 'tuple[]';
-            structName = structName.slice(0, -2);
-          }
-          return {
-            type: type,
-            name: structName
-          };
-        }
-      }, {
-        key: "_mapStructToCoderFormat",
-        value: function _mapStructToCoderFormat(struct) {
-          var _this2 = this;
-          var components = [];
-          Object.keys(struct).forEach(function (key) {
-            if (_typeof(struct[key]) === 'object') {
-              components.push(Object.assign(_this2._mapStructNameAndType(key), {
-                components: _this2._mapStructToCoderFormat(struct[key])
-              }));
-              return;
-            }
-            components.push({
-              name: key,
-              type: struct[key]
-            });
-          });
-          return components;
-        }
-      }, {
-        key: "encodeFunctionCall",
-        value: function encodeFunctionCall(jsonInterface, params) {
-          return this.encodeFunctionSignature(jsonInterface) + this.encodeParameters(jsonInterface.inputs, params).replace('0x', '');
-        }
-      }, {
-        key: "decodeParameter",
-        value: function decodeParameter(type, bytes) {
-          return this.decodeParameters([type], bytes)[0];
-        }
-      }, {
-        key: "decodeParameters",
-        value: function decodeParameters(outputs, bytes) {
-          if (outputs.length > 0 && (!bytes || bytes === '0x' || bytes === '0X')) {
-            throw new Error("Returned values aren't valid, did it run Out of Gas?");
-          }
-          var res = this.ethersAbiCoder.decode(this._mapTypes(outputs), "0x".concat(bytes.replace(/0x/i, '')));
-          var returnValues = {};
-          var decodedValue;
-          outputs.forEach(function (output, i) {
-            decodedValue = res[i];
-            decodedValue = decodedValue === '0x' ? null : decodedValue;
-            returnValues[i] = decodedValue;
-            if (isObject(output) && output.name) {
-              returnValues[output.name] = decodedValue;
-            }
-          });
-          return returnValues;
-        }
-      }, {
-        key: "decodeLog",
-        value: function decodeLog(inputs) {
-          var _this3 = this;
-          var data = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
-          var topics = arguments.length > 2 ? arguments[2] : undefined;
-          var topicCount = 0;
-          if (!isArray(topics)) {
-            topics = [topics];
-          }
-          var notIndexedInputs = [];
-          var indexedParams = [];
-          inputs.forEach(function (input, i) {
-            if (input.indexed) {
-              indexedParams[i] = ['bool', 'int', 'uint', 'address', 'fixed', 'ufixed'].find(function (staticType) {
-                return input.type.indexOf(staticType) !== -1;
-              }) ? _this3.decodeParameter(input.type, topics[topicCount]) : topics[topicCount];
-              topicCount++;
-            } else {
-              notIndexedInputs[i] = input;
-            }
-          });
-          var nonIndexedData = data;
-          var notIndexedParams = nonIndexedData ? this.decodeParameters(notIndexedInputs.filter(Boolean), nonIndexedData) : [];
-          var notIndexedOffset = 0;
-          var returnValues = {};
-          inputs.forEach(function (res, i) {
-            if (res.indexed) notIndexedOffset++;
-            returnValues[i] = res.type === 'string' ? '' : null;
-            if (!res.indexed && typeof notIndexedParams[i - notIndexedOffset] !== 'undefined') {
-              returnValues[i] = notIndexedParams[i - notIndexedOffset];
-            }
-            if (typeof indexedParams[i] !== 'undefined') {
-              returnValues[i] = indexedParams[i];
-            }
-            if (res.name) {
-              returnValues[res.name] = returnValues[i];
-            }
-          });
-          return returnValues;
-        }
-      }]);
-      return AbiCoder;
-    }();
-
-    var AbiModuleFactory =
-    function () {
-      function AbiModuleFactory() {
-        _classCallCheck(this, AbiModuleFactory);
-      }
-      _createClass(AbiModuleFactory, [{
-        key: "createAbiCoder",
-        value: function createAbiCoder(utils) {
-          return new AbiCoder(utils, new abiCoder.AbiCoder(function (type, value) {
-            if (type.match(/^u?int/) && !isArray(value) && (!isObject(value) || value.constructor.name !== 'BN')) {
-              return value.toString();
-            }
-            return value;
-          }));
-        }
-      }]);
-      return AbiModuleFactory;
-    }();
-
-    var AbiCoder$1 = function AbiCoder() {
-      return new AbiModuleFactory().createAbiCoder(Utils);
-    };
-
-    exports.AbiCoder = AbiCoder$1;
-
-    Object.defineProperty(exports, '__esModule', { value: true });
-
-})));
-
-},{"@babel/runtime/helpers/classCallCheck":205,"@babel/runtime/helpers/createClass":206,"@babel/runtime/helpers/typeof":218,"ethers/utils/abi-coder":308,"lodash/isArray":486,"lodash/isObject":495,"web3-utils":576}],563:[function(require,module,exports){
-(function (global,Buffer){
-(function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('web3-providers'), require('web3-utils'), require('web3-core-helpers'), require('web3-core-method'), require('@babel/runtime/helpers/classCallCheck'), require('@babel/runtime/helpers/createClass'), require('@babel/runtime/helpers/possibleConstructorReturn'), require('@babel/runtime/helpers/getPrototypeOf'), require('@babel/runtime/helpers/inherits'), require('@babel/runtime/helpers/assertThisInitialized'), require('lodash/isUndefined'), require('lodash/isNull'), require('lodash/isObject'), require('lodash/isBoolean'), require('lodash/isString'), require('lodash/has'), require('lodash/extend'), require('eth-lib/lib/account'), require('eth-lib/lib/hash'), require('eth-lib/lib/rlp'), require('eth-lib/lib/nat'), require('eth-lib/lib/bytes'), require('scrypt.js'), require('uuid'), require('web3-core')) :
-    typeof define === 'function' && define.amd ? define(['exports', 'web3-providers', 'web3-utils', 'web3-core-helpers', 'web3-core-method', '@babel/runtime/helpers/classCallCheck', '@babel/runtime/helpers/createClass', '@babel/runtime/helpers/possibleConstructorReturn', '@babel/runtime/helpers/getPrototypeOf', '@babel/runtime/helpers/inherits', '@babel/runtime/helpers/assertThisInitialized', 'lodash/isUndefined', 'lodash/isNull', 'lodash/isObject', 'lodash/isBoolean', 'lodash/isString', 'lodash/has', 'lodash/extend', 'eth-lib/lib/account', 'eth-lib/lib/hash', 'eth-lib/lib/rlp', 'eth-lib/lib/nat', 'eth-lib/lib/bytes', 'scrypt.js', 'uuid', 'web3-core'], factory) :
-    (factory((global.Web3EthAccounts = {}),global.web3Providers,global.Utils,global.web3CoreHelpers,global.web3CoreMethod,global._classCallCheck,global._createClass,global._possibleConstructorReturn,global._getPrototypeOf,global._inherits,global._assertThisInitialized,global.isUndefined,global.isNull,global.isObject,global.isBoolean,global.isString,global.has,global.extend,global.Account,global.Hash,global.RLP,global.Nat,global.Bytes,global.scryptsy,global.uuid,global.web3Core));
-}(this, (function (exports,web3Providers,Utils,web3CoreHelpers,web3CoreMethod,_classCallCheck,_createClass,_possibleConstructorReturn,_getPrototypeOf,_inherits,_assertThisInitialized,isUndefined,isNull,isObject,isBoolean,isString,has,extend,Account,Hash,RLP,Nat,Bytes,scryptsy,uuid,web3Core) { 'use strict';
-
-    _classCallCheck = _classCallCheck && _classCallCheck.hasOwnProperty('default') ? _classCallCheck['default'] : _classCallCheck;
-    _createClass = _createClass && _createClass.hasOwnProperty('default') ? _createClass['default'] : _createClass;
-    _possibleConstructorReturn = _possibleConstructorReturn && _possibleConstructorReturn.hasOwnProperty('default') ? _possibleConstructorReturn['default'] : _possibleConstructorReturn;
-    _getPrototypeOf = _getPrototypeOf && _getPrototypeOf.hasOwnProperty('default') ? _getPrototypeOf['default'] : _getPrototypeOf;
-    _inherits = _inherits && _inherits.hasOwnProperty('default') ? _inherits['default'] : _inherits;
-    _assertThisInitialized = _assertThisInitialized && _assertThisInitialized.hasOwnProperty('default') ? _assertThisInitialized['default'] : _assertThisInitialized;
-    isUndefined = isUndefined && isUndefined.hasOwnProperty('default') ? isUndefined['default'] : isUndefined;
-    isNull = isNull && isNull.hasOwnProperty('default') ? isNull['default'] : isNull;
-    isObject = isObject && isObject.hasOwnProperty('default') ? isObject['default'] : isObject;
-    isBoolean = isBoolean && isBoolean.hasOwnProperty('default') ? isBoolean['default'] : isBoolean;
-    isString = isString && isString.hasOwnProperty('default') ? isString['default'] : isString;
-    has = has && has.hasOwnProperty('default') ? has['default'] : has;
-    extend = extend && extend.hasOwnProperty('default') ? extend['default'] : extend;
-    Account = Account && Account.hasOwnProperty('default') ? Account['default'] : Account;
-    Hash = Hash && Hash.hasOwnProperty('default') ? Hash['default'] : Hash;
-    RLP = RLP && RLP.hasOwnProperty('default') ? RLP['default'] : RLP;
-    Nat = Nat && Nat.hasOwnProperty('default') ? Nat['default'] : Nat;
-    Bytes = Bytes && Bytes.hasOwnProperty('default') ? Bytes['default'] : Bytes;
-    scryptsy = scryptsy && scryptsy.hasOwnProperty('default') ? scryptsy['default'] : scryptsy;
-    uuid = uuid && uuid.hasOwnProperty('default') ? uuid['default'] : uuid;
-
-    var MethodFactory =
-    function (_AbstractMethodFactor) {
-      _inherits(MethodFactory, _AbstractMethodFactor);
-      function MethodFactory(methodModuleFactory, utils, formatters) {
-        var _this;
-        _classCallCheck(this, MethodFactory);
-        _this = _possibleConstructorReturn(this, _getPrototypeOf(MethodFactory).call(this, methodModuleFactory, utils, formatters));
-        _this.methods = {
-          getGasPrice: web3CoreMethod.GetGasPriceMethod,
-          getTransactionCount: web3CoreMethod.GetTransactionCountMethod,
-          getId: web3CoreMethod.VersionMethod
-        };
-        return _this;
-      }
-      return MethodFactory;
-    }(web3CoreMethod.AbstractMethodFactory);
-
-    var cryp = typeof global === 'undefined' ? require('crypto-browserify') : require('crypto');
-    var isNot = function isNot(value) {
-      return isUndefined(value) || isNull(value);
-    };
-    var trimLeadingZero = function trimLeadingZero(hex) {
-      while (hex && hex.startsWith('0x0')) {
-        hex = "0x".concat(hex.slice(3));
-      }
-      return hex;
-    };
-    var makeEven = function makeEven(hex) {
-      if (hex.length % 2 === 1) {
-        hex = hex.replace('0x', '0x0');
-      }
-      return hex;
-    };
-    var Accounts =
-    function (_AbstractWeb3Module) {
-      _inherits(Accounts, _AbstractWeb3Module);
-      function Accounts(provider, providersModuleFactory, methodModuleFactory, methodFactory, utils, formatters, options) {
-        var _this2;
-        _classCallCheck(this, Accounts);
-        _this2 = _possibleConstructorReturn(this, _getPrototypeOf(Accounts).call(this, provider, providersModuleFactory, methodModuleFactory, methodFactory, options));
-        _this2.utils = utils;
-        _this2.formatters = formatters;
-        _this2.wallet = new Wallet(_assertThisInitialized(_assertThisInitialized(_this2)));
-        return _this2;
-      }
-      _createClass(Accounts, [{
-        key: "_addAccountFunctions",
-        value: function _addAccountFunctions(account) {
-          var _this3 = this;
-          account.signTransaction = function (tx, callback) {
-            return _this3.signTransaction(tx, account.privateKey, callback).bind(_this3);
-          };
-          account.sign = function (data) {
-            return _this3.sign(data, account.privateKey);
-          };
-          account.encrypt = function (password, options) {
-            return _this3.encrypt(account.privateKey, password, options);
-          };
-          return account;
-        }
-      }, {
-        key: "create",
-        value: function create(entropy) {
-          return this._addAccountFunctions(Account.create(entropy || this.utils.randomHex(32)));
-        }
-      }, {
-        key: "privateKeyToAccount",
-        value: function privateKeyToAccount(privateKey) {
-          return this._addAccountFunctions(Account.fromPrivate(privateKey));
-        }
-      }, {
-        key: "signTransaction",
-        value: function signTransaction(tx, privateKey, callback) {
-          var _this = this;
-          var error = false;
-          var result;
-          callback = callback || function () {};
-          if (!tx) {
-            error = new Error('No transaction object given!');
-            callback(error);
-            return Promise.reject(error);
-          }
-          function signed(tx) {
-            if (!tx.gas && !tx.gasLimit) {
-              error = new Error('gas is missing');
-            }
-            if (tx.nonce < 0 || tx.gas < 0 || tx.gasPrice < 0 || tx.chainId < 0) {
-              error = new Error('Gas, gasPrice, nonce or chainId is lower than 0');
-            }
-            if (error) {
-              callback(error);
-              return Promise.reject(error);
-            }
-            try {
-              tx = _this.formatters.inputCallFormatter(tx, _this);
-              var transaction = tx;
-              transaction.to = tx.to || '0x';
-              transaction.data = tx.data || '0x';
-              transaction.value = tx.value || '0x';
-              transaction.chainId = _this.utils.numberToHex(tx.chainId);
-              var rlpEncoded = RLP.encode([Bytes.fromNat(transaction.nonce), Bytes.fromNat(transaction.gasPrice), Bytes.fromNat(transaction.gas), transaction.to.toLowerCase(), Bytes.fromNat(transaction.value), transaction.data, Bytes.fromNat(transaction.chainId || '0x1'), '0x', '0x']);
-              var hash = Hash.keccak256(rlpEncoded);
-              var signature = Account.makeSigner(Nat.toNumber(transaction.chainId || '0x1') * 2 + 35)(Hash.keccak256(rlpEncoded), privateKey);
-              var rawTx = RLP.decode(rlpEncoded).slice(0, 6).concat(Account.decodeSignature(signature));
-              rawTx[6] = makeEven(trimLeadingZero(rawTx[6]));
-              rawTx[7] = makeEven(trimLeadingZero(rawTx[7]));
-              rawTx[8] = makeEven(trimLeadingZero(rawTx[8]));
-              var rawTransaction = RLP.encode(rawTx);
-              var values = RLP.decode(rawTransaction);
-              result = {
-                messageHash: hash,
-                v: trimLeadingZero(values[6]),
-                r: trimLeadingZero(values[7]),
-                s: trimLeadingZero(values[8]),
-                rawTransaction: rawTransaction
-              };
-            } catch (error) {
-              callback(error);
-              return Promise.reject(error);
-            }
-            callback(null, result);
-            return result;
-          }
-          if (tx.nonce !== undefined && tx.chainId !== undefined && tx.gasPrice !== undefined) {
-            return Promise.resolve(signed(tx));
-          }
-          return Promise.all([isNot(tx.chainId) ? _this.getId() : tx.chainId, isNot(tx.gasPrice) ? _this.getGasPrice() : tx.gasPrice, isNot(tx.nonce) ? _this.getTransactionCount(_this.privateKeyToAccount(privateKey).address) : tx.nonce]).then(function (args) {
-            if (isNot(args[0]) || isNot(args[1]) || isNot(args[2])) {
-              throw new Error("One of the values 'chainId', 'gasPrice', or 'nonce' couldn't be fetched: ".concat(JSON.stringify(args)));
-            }
-            return signed(extend(tx, {
-              chainId: args[0],
-              gasPrice: args[1],
-              nonce: args[2]
-            }));
-          });
-        }
-      }, {
-        key: "recoverTransaction",
-        value: function recoverTransaction(rawTx) {
-          var values = RLP.decode(rawTx);
-          var signature = Account.encodeSignature(values.slice(6, 9));
-          var recovery = Bytes.toNumber(values[6]);
-          var extraData = recovery < 35 ? [] : [Bytes.fromNumber(recovery - 35 >> 1), '0x', '0x'];
-          var signingData = values.slice(0, 6).concat(extraData);
-          var signingDataHex = RLP.encode(signingData);
-          return Account.recover(Hash.keccak256(signingDataHex), signature);
-        }
-      }, {
-        key: "hashMessage",
-        value: function hashMessage(data) {
-          var message = this.utils.isHexStrict(data) ? this.utils.hexToBytes(data) : data;
-          var messageBuffer = Buffer.from(message);
-          var preamble = "\x19Ethereum Signed Message:\n".concat(message.length);
-          var preambleBuffer = Buffer.from(preamble);
-          var ethMessage = Buffer.concat([preambleBuffer, messageBuffer]);
-          return Hash.keccak256s(ethMessage);
-        }
-      }, {
-        key: "sign",
-        value: function sign(data, privateKey) {
-          var hash = this.hashMessage(data);
-          var signature = Account.sign(hash, privateKey);
-          var vrs = Account.decodeSignature(signature);
-          return {
-            message: data,
-            messageHash: hash,
-            v: vrs[0],
-            r: vrs[1],
-            s: vrs[2],
-            signature: signature
-          };
-        }
-      }, {
-        key: "recover",
-        value: function recover(message, signature, preFixed) {
-          var args = [].slice.apply(arguments);
-          if (isObject(message)) {
-            return this.recover(message.messageHash, Account.encodeSignature([message.v, message.r, message.s]), true);
-          }
-          if (!preFixed) {
-            message = this.hashMessage(message);
-          }
-          if (args.length >= 4) {
-            preFixed = args.slice(-1)[0];
-            preFixed = isBoolean(preFixed) ? preFixed : false;
-            return this.recover(message, Account.encodeSignature(args.slice(1, 4)), preFixed);
-          }
-          return Account.recover(message, signature);
-        }
-      }, {
-        key: "decrypt",
-        value: function decrypt(v3Keystore, password, nonStrict) {
-          if (!isString(password)) {
-            throw new Error('No password given.');
-          }
-          var json = isObject(v3Keystore) ? v3Keystore : JSON.parse(nonStrict ? v3Keystore.toLowerCase() : v3Keystore);
-          if (json.version !== 3) {
-            throw new Error('Not a valid V3 wallet');
-          }
-          var derivedKey;
-          var kdfparams;
-          if (json.crypto.kdf === 'scrypt') {
-            kdfparams = json.crypto.kdfparams;
-            derivedKey = scryptsy(Buffer.from(password), Buffer.from(kdfparams.salt, 'hex'), kdfparams.n, kdfparams.r, kdfparams.p, kdfparams.dklen);
-          } else if (json.crypto.kdf === 'pbkdf2') {
-            kdfparams = json.crypto.kdfparams;
-            if (kdfparams.prf !== 'hmac-sha256') {
-              throw new Error('Unsupported parameters to PBKDF2');
-            }
-            derivedKey = cryp.pbkdf2Sync(Buffer.from(password), Buffer.from(kdfparams.salt, 'hex'), kdfparams.c, kdfparams.dklen, 'sha256');
-          } else {
-            throw new Error('Unsupported key derivation scheme');
-          }
-          var ciphertext = Buffer.from(json.crypto.ciphertext, 'hex');
-          var mac = this.utils.sha3(Buffer.concat([derivedKey.slice(16, 32), ciphertext])).replace('0x', '');
-          if (mac !== json.crypto.mac) {
-            throw new Error('Key derivation failed - possibly wrong password');
-          }
-          var decipher = cryp.createDecipheriv(json.crypto.cipher, derivedKey.slice(0, 16), Buffer.from(json.crypto.cipherparams.iv, 'hex'));
-          var seed = "0x".concat(Buffer.concat([decipher.update(ciphertext), decipher.final()]).toString('hex'));
-          return this.privateKeyToAccount(seed);
-        }
-      }, {
-        key: "encrypt",
-        value: function encrypt(privateKey, password, options) {
-          var account = this.privateKeyToAccount(privateKey);
-          options = options || {};
-          var salt = options.salt || cryp.randomBytes(32);
-          var iv = options.iv || cryp.randomBytes(16);
-          var derivedKey;
-          var kdf = options.kdf || 'scrypt';
-          var kdfparams = {
-            dklen: options.dklen || 32,
-            salt: salt.toString('hex')
-          };
-          if (kdf === 'pbkdf2') {
-            kdfparams.c = options.c || 262144;
-            kdfparams.prf = 'hmac-sha256';
-            derivedKey = cryp.pbkdf2Sync(Buffer.from(password), salt, kdfparams.c, kdfparams.dklen, 'sha256');
-          } else if (kdf === 'scrypt') {
-            kdfparams.n = options.n || 8192;
-            kdfparams.r = options.r || 8;
-            kdfparams.p = options.p || 1;
-            derivedKey = scryptsy(Buffer.from(password), salt, kdfparams.n, kdfparams.r, kdfparams.p, kdfparams.dklen);
-          } else {
-            throw new Error('Unsupported kdf');
-          }
-          var cipher = cryp.createCipheriv(options.cipher || 'aes-128-ctr', derivedKey.slice(0, 16), iv);
-          if (!cipher) {
-            throw new Error('Unsupported cipher');
-          }
-          var ciphertext = Buffer.concat([cipher.update(Buffer.from(account.privateKey.replace('0x', ''), 'hex')), cipher.final()]);
-          var mac = this.utils.sha3(Buffer.concat([derivedKey.slice(16, 32), Buffer.from(ciphertext, 'hex')])).replace('0x', '');
-          return {
-            version: 3,
-            id: uuid.v4({
-              random: options.uuid || cryp.randomBytes(16)
-            }),
-            address: account.address.toLowerCase().replace('0x', ''),
-            crypto: {
-              ciphertext: ciphertext.toString('hex'),
-              cipherparams: {
-                iv: iv.toString('hex')
-              },
-              cipher: options.cipher || 'aes-128-ctr',
-              kdf: kdf,
-              kdfparams: kdfparams,
-              mac: mac.toString('hex')
-            }
-          };
-        }
-      }]);
-      return Accounts;
-    }(web3Core.AbstractWeb3Module);
-    var Wallet =
-    function () {
-      function Wallet(accounts) {
-        _classCallCheck(this, Wallet);
-        this._accounts = accounts;
-        this.length = 0;
-        this.defaultKeyName = 'web3js_wallet';
-      }
-      _createClass(Wallet, [{
-        key: "_findSafeIndex",
-        value: function _findSafeIndex() {
-          var pointer = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
-          if (has(this, pointer)) {
-            return this._findSafeIndex(pointer + 1);
-          } else {
-            return pointer;
-          }
-        }
-      }, {
-        key: "_currentIndexes",
-        value: function _currentIndexes() {
-          var keys = Object.keys(this);
-          var indexes = keys.map(function (key) {
-            return parseInt(key);
-          }).filter(function (n) {
-            return n < 9e20;
-          });
-          return indexes;
-        }
-      }, {
-        key: "create",
-        value: function create(numberOfAccounts, entropy) {
-          for (var i = 0; i < numberOfAccounts; ++i) {
-            this.add(this._accounts.create(entropy).privateKey);
-          }
-          return this;
-        }
-      }, {
-        key: "add",
-        value: function add(account) {
-          if (isString(account)) {
-            account = this._accounts.privateKeyToAccount(account);
-          }
-          if (!this[account.address]) {
-            account = this._accounts.privateKeyToAccount(account.privateKey);
-            account.index = this._findSafeIndex();
-            this[account.index] = account;
-            this[account.address] = account;
-            this[account.address.toLowerCase()] = account;
-            this.length++;
-            return account;
-          } else {
-            return this[account.address];
-          }
-        }
-      }, {
-        key: "remove",
-        value: function remove(addressOrIndex) {
-          var account = this[addressOrIndex];
-          if (account && account.address) {
-            this[account.address].privateKey = null;
-            delete this[account.address];
-            this[account.address.toLowerCase()].privateKey = null;
-            delete this[account.address.toLowerCase()];
-            this[account.index].privateKey = null;
-            delete this[account.index];
-            this.length--;
-            return true;
-          } else {
-            return false;
-          }
-        }
-      }, {
-        key: "clear",
-        value: function clear() {
-          var _this = this;
-          var indexes = this._currentIndexes();
-          indexes.forEach(function (index) {
-            _this.remove(index);
-          });
-          return this;
-        }
-      }, {
-        key: "encrypt",
-        value: function encrypt(password, options) {
-          var _this = this;
-          var indexes = this._currentIndexes();
-          var accounts = indexes.map(function (index) {
-            return _this[index].encrypt(password, options);
-          });
-          return accounts;
-        }
-      }, {
-        key: "decrypt",
-        value: function decrypt(encryptedWallet, password) {
-          var _this = this;
-          encryptedWallet.forEach(function (keystore) {
-            var account = _this._accounts.decrypt(keystore, password);
-            if (account) {
-              _this.add(account);
-            } else {
-              throw new Error("Couldn't decrypt accounts. Password wrong?");
-            }
-          });
-          return this;
-        }
-      }, {
-        key: "save",
-        value: function save(password, keyName) {
-          try {
-            localStorage.setItem(keyName || this.defaultKeyName, JSON.stringify(this.encrypt(password)));
-          } catch (error) {
-            if (error.code === 18) {
-              return true;
-            } else {
-              throw new Error(error);
-            }
-          }
-          return true;
-        }
-      }, {
-        key: "load",
-        value: function load(password, keyName) {
-          var keystore;
-          try {
-            keystore = localStorage.getItem(keyName || this.defaultKeyName);
-            if (keystore) {
-              try {
-                keystore = JSON.parse(keystore);
-              } catch (error) {}
-            }
-          } catch (error) {
-            if (error.code === 18) {
-              keystore = this.defaultKeyName;
-            } else {
-              throw new Error(error);
-            }
-          }
-          return this.decrypt(keystore || [], password);
-        }
-      }]);
-      return Wallet;
-    }();
-    try {
-      if (typeof localStorage === 'undefined') {
-        delete Wallet.prototype.save;
-        delete Wallet.prototype.load;
-      }
-    } catch (error) {
-      if (error.code !== 18) {
-        throw new Error(error);
-      }
+    return options;
+};
+
+/**
+ * Formats the input of a transaction and converts all values to HEX
+ *
+ * @method inputCallFormatter
+ * @param {Object} transaction options
+ * @returns object
+*/
+var inputCallFormatter = function (options){
+
+    options = _txInputFormatter(options);
+
+    var from = options.from || (this ? this.defaultAccount : null);
+
+    if (from) {
+        options.from = inputAddressFormatter(from);
     }
 
-    var AccountsModuleFactory =
-    function () {
-      function AccountsModuleFactory(utils, formatters) {
-        _classCallCheck(this, AccountsModuleFactory);
-        this.utils = utils;
-        this.formatters = formatters;
-      }
-      _createClass(AccountsModuleFactory, [{
-        key: "createAccounts",
-        value: function createAccounts(provider, providersModuleFactory, methodModuleFactory, options) {
-          return new Accounts(provider, providersModuleFactory, methodModuleFactory, this.createMethodFactory(methodModuleFactory), this.utils, this.formatters, options);
-        }
-      }, {
-        key: "createMethodFactory",
-        value: function createMethodFactory(methodModuleFactory) {
-          return new MethodFactory(methodModuleFactory, this.utils, this.formatters);
-        }
-      }]);
-      return AccountsModuleFactory;
-    }();
 
-    var Accounts$1 = function Accounts(provider, options) {
-      return new AccountsModuleFactory(Utils, web3CoreHelpers.formatters).createAccounts(provider, new web3Providers.ProvidersModuleFactory(), new web3CoreMethod.MethodModuleFactory(), options);
+    return options;
+};
+
+/**
+ * Formats the input of a transaction and converts all values to HEX
+ *
+ * @method inputTransactionFormatter
+ * @param {Object} options
+ * @returns object
+*/
+var inputTransactionFormatter = function (options) {
+
+    options = _txInputFormatter(options);
+
+    // check from, only if not number, or object
+    if (!_.isNumber(options.from) && !_.isObject(options.from)) {
+        options.from = options.from || (this ? this.defaultAccount : null);
+
+        if (!options.from && !_.isNumber(options.from)) {
+            throw new Error('The send transactions "from" field must be defined!');
+        }
+
+        options.from = inputAddressFormatter(options.from);
+    }
+
+    return options;
+};
+
+/**
+ * Hex encodes the data passed to eth_sign and personal_sign
+ *
+ * @method inputSignFormatter
+ * @param {String} data
+ * @returns {String}
+ */
+var inputSignFormatter = function (data) {
+    return (utils.isHexStrict(data)) ? data : utils.utf8ToHex(data);
+};
+
+/**
+ * Formats the output of a transaction to its proper values
+ *
+ * @method outputTransactionFormatter
+ * @param {Object} tx
+ * @returns {Object}
+*/
+var outputTransactionFormatter = function (tx){
+    if(tx.blockNumber !== null)
+        tx.blockNumber = utils.hexToNumber(tx.blockNumber);
+    if(tx.transactionIndex !== null)
+        tx.transactionIndex = utils.hexToNumber(tx.transactionIndex);
+    tx.nonce = utils.hexToNumber(tx.nonce);
+    tx.gas = utils.hexToNumber(tx.gas);
+    tx.gasPrice = outputBigNumberFormatter(tx.gasPrice);
+    tx.value = outputBigNumberFormatter(tx.value);
+
+    if(tx.to && utils.isAddress(tx.to)) { // tx.to could be `0x0` or `null` while contract creation
+        tx.to = utils.toChecksumAddress(tx.to);
+    } else {
+        tx.to = null; // set to `null` if invalid address
+    }
+
+    if(tx.from) {
+        tx.from = utils.toChecksumAddress(tx.from);
+    }
+
+    return tx;
+};
+
+/**
+ * Formats the output of a transaction receipt to its proper values
+ *
+ * @method outputTransactionReceiptFormatter
+ * @param {Object} receipt
+ * @returns {Object}
+*/
+var outputTransactionReceiptFormatter = function (receipt){
+    if(typeof receipt !== 'object') {
+        throw new Error('Received receipt is invalid: '+ receipt);
+    }
+
+    if(receipt.blockNumber !== null)
+        receipt.blockNumber = utils.hexToNumber(receipt.blockNumber);
+    if(receipt.transactionIndex !== null)
+        receipt.transactionIndex = utils.hexToNumber(receipt.transactionIndex);
+    receipt.cumulativeGasUsed = utils.hexToNumber(receipt.cumulativeGasUsed);
+    receipt.gasUsed = utils.hexToNumber(receipt.gasUsed);
+
+    if(_.isArray(receipt.logs)) {
+        receipt.logs = receipt.logs.map(outputLogFormatter);
+    }
+
+    if(receipt.contractAddress) {
+        receipt.contractAddress = utils.toChecksumAddress(receipt.contractAddress);
+    }
+
+    if(typeof receipt.status !== 'undefined') {
+        receipt.status = Boolean(parseInt(receipt.status));
+    }
+
+    return receipt;
+};
+
+/**
+ * Formats the output of a block to its proper values
+ *
+ * @method outputBlockFormatter
+ * @param {Object} block
+ * @returns {Object}
+*/
+var outputBlockFormatter = function(block) {
+
+    // transform to number
+    block.gasLimit = utils.hexToNumber(block.gasLimit);
+    block.gasUsed = utils.hexToNumber(block.gasUsed);
+    block.size = utils.hexToNumber(block.size);
+    block.timestamp = utils.hexToNumber(block.timestamp);
+    if (block.number !== null)
+        block.number = utils.hexToNumber(block.number);
+
+    if(block.difficulty)
+        block.difficulty = outputBigNumberFormatter(block.difficulty);
+    if(block.totalDifficulty)
+        block.totalDifficulty = outputBigNumberFormatter(block.totalDifficulty);
+
+    if (_.isArray(block.transactions)) {
+        block.transactions.forEach(function(item){
+            if(!_.isString(item))
+                return outputTransactionFormatter(item);
+        });
+    }
+
+    if (block.miner)
+        block.miner = utils.toChecksumAddress(block.miner);
+
+    return block;
+};
+
+/**
+ * Formats the input of a log
+ *
+ * @method inputLogFormatter
+ * @param {Object} log object
+ * @returns {Object} log
+*/
+var inputLogFormatter = function(options) {
+    var toTopic = function(value){
+
+        if(value === null || typeof value === 'undefined')
+            return null;
+
+        value = String(value);
+
+        if(value.indexOf('0x') === 0)
+            return value;
+        else
+            return utils.fromUtf8(value);
     };
 
-    exports.Accounts = Accounts$1;
+    if (options.fromBlock)
+        options.fromBlock = inputBlockNumberFormatter(options.fromBlock);
 
-    Object.defineProperty(exports, '__esModule', { value: true });
+    if (options.toBlock)
+        options.toBlock = inputBlockNumberFormatter(options.toBlock);
 
-})));
 
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer)
-},{"@babel/runtime/helpers/assertThisInitialized":203,"@babel/runtime/helpers/classCallCheck":205,"@babel/runtime/helpers/createClass":206,"@babel/runtime/helpers/getPrototypeOf":209,"@babel/runtime/helpers/inherits":210,"@babel/runtime/helpers/possibleConstructorReturn":213,"buffer":51,"crypto":60,"crypto-browserify":271,"eth-lib/lib/account":299,"eth-lib/lib/bytes":301,"eth-lib/lib/hash":302,"eth-lib/lib/nat":303,"eth-lib/lib/rlp":304,"lodash/extend":480,"lodash/has":482,"lodash/isBoolean":488,"lodash/isNull":493,"lodash/isObject":495,"lodash/isString":498,"lodash/isUndefined":501,"scrypt.js":544,"uuid":564,"web3-core":561,"web3-core-helpers":557,"web3-core-method":558,"web3-providers":575,"web3-utils":576}],564:[function(require,module,exports){
-var v1 = require('./v1');
-var v4 = require('./v4');
+    // make sure topics, get converted to hex
+    options.topics = options.topics || [];
+    options.topics = options.topics.map(function(topic){
+        return (_.isArray(topic)) ? topic.map(toTopic) : toTopic(topic);
+    });
 
-var uuid = v4;
-uuid.v1 = v1;
-uuid.v4 = v4;
+    toTopic = null;
 
-module.exports = uuid;
+    if (options.address) {
+        options.address = (_.isArray(options.address)) ? options.address.map(function (addr) {
+            return inputAddressFormatter(addr);
+        }) : inputAddressFormatter(options.address);
+    }
 
-},{"./v1":567,"./v4":568}],565:[function(require,module,exports){
+    return options;
+};
+
 /**
- * Convert array of 16 byte values to UUID string format of the form:
- * XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
+ * Formats the output of a log
+ *
+ * @method outputLogFormatter
+ * @param {Object} log object
+ * @returns {Object} log
+*/
+var outputLogFormatter = function(log) {
+
+    // generate a custom log id
+    if(typeof log.blockHash === 'string' &&
+       typeof log.transactionHash === 'string' &&
+       typeof log.logIndex === 'string') {
+        var shaId = utils.sha3(log.blockHash.replace('0x','') + log.transactionHash.replace('0x','') + log.logIndex.replace('0x',''));
+        log.id = 'log_'+ shaId.replace('0x','').substr(0,8);
+    } else if(!log.id) {
+        log.id = null;
+    }
+
+    if (log.blockNumber !== null)
+        log.blockNumber = utils.hexToNumber(log.blockNumber);
+    if (log.transactionIndex !== null)
+        log.transactionIndex = utils.hexToNumber(log.transactionIndex);
+    if (log.logIndex !== null)
+        log.logIndex = utils.hexToNumber(log.logIndex);
+
+    if (log.address) {
+        log.address = utils.toChecksumAddress(log.address);
+    }
+
+    return log;
+};
+
+/**
+ * Formats the input of a whisper post and converts all values to HEX
+ *
+ * @method inputPostFormatter
+ * @param {Object} transaction object
+ * @returns {Object}
+*/
+var inputPostFormatter = function(post) {
+
+    // post.payload = utils.toHex(post.payload);
+
+    if (post.ttl)
+        post.ttl = utils.numberToHex(post.ttl);
+    if (post.workToProve)
+        post.workToProve = utils.numberToHex(post.workToProve);
+    if (post.priority)
+        post.priority = utils.numberToHex(post.priority);
+
+    // fallback
+    if (!_.isArray(post.topics)) {
+        post.topics = post.topics ? [post.topics] : [];
+    }
+
+    // format the following options
+    post.topics = post.topics.map(function(topic){
+        // convert only if not hex
+        return (topic.indexOf('0x') === 0) ? topic : utils.fromUtf8(topic);
+    });
+
+    return post;
+};
+
+/**
+ * Formats the output of a received post message
+ *
+ * @method outputPostFormatter
+ * @param {Object}
+ * @returns {Object}
  */
-var byteToHex = [];
-for (var i = 0; i < 256; ++i) {
-  byteToHex[i] = (i + 0x100).toString(16).substr(1);
+var outputPostFormatter = function(post){
+
+    post.expiry = utils.hexToNumber(post.expiry);
+    post.sent = utils.hexToNumber(post.sent);
+    post.ttl = utils.hexToNumber(post.ttl);
+    post.workProved = utils.hexToNumber(post.workProved);
+    // post.payloadRaw = post.payload;
+    // post.payload = utils.hexToAscii(post.payload);
+
+    // if (utils.isJson(post.payload)) {
+    //     post.payload = JSON.parse(post.payload);
+    // }
+
+    // format the following options
+    if (!post.topics) {
+        post.topics = [];
+    }
+    post.topics = post.topics.map(function(topic){
+        return utils.toUtf8(topic);
+    });
+
+    return post;
+};
+
+var inputAddressFormatter = function (address) {
+    var iban = new Iban(address);
+    if (iban.isValid() && iban.isDirect()) {
+        return iban.toAddress().toLowerCase();
+    } else if (utils.isAddress(address)) {
+        return '0x' + address.toLowerCase().replace('0x','');
+    }
+    throw new Error('Provided address "'+ address +'" is invalid, the capitalization checksum test failed, or its an indrect IBAN address which can\'t be converted.');
+};
+
+
+var outputSyncingFormatter = function(result) {
+
+    result.startingBlock = utils.hexToNumber(result.startingBlock);
+    result.currentBlock = utils.hexToNumber(result.currentBlock);
+    result.highestBlock = utils.hexToNumber(result.highestBlock);
+    if (result.knownStates) {
+        result.knownStates = utils.hexToNumber(result.knownStates);
+        result.pulledStates = utils.hexToNumber(result.pulledStates);
+    }
+
+    return result;
+};
+
+module.exports = {
+    inputDefaultBlockNumberFormatter: inputDefaultBlockNumberFormatter,
+    inputBlockNumberFormatter: inputBlockNumberFormatter,
+    inputCallFormatter: inputCallFormatter,
+    inputTransactionFormatter: inputTransactionFormatter,
+    inputAddressFormatter: inputAddressFormatter,
+    inputPostFormatter: inputPostFormatter,
+    inputLogFormatter: inputLogFormatter,
+    inputSignFormatter: inputSignFormatter,
+    outputBigNumberFormatter: outputBigNumberFormatter,
+    outputTransactionFormatter: outputTransactionFormatter,
+    outputTransactionReceiptFormatter: outputTransactionReceiptFormatter,
+    outputBlockFormatter: outputBlockFormatter,
+    outputLogFormatter: outputLogFormatter,
+    outputPostFormatter: outputPostFormatter,
+    outputSyncingFormatter: outputSyncingFormatter
+};
+
+
+},{"underscore":358,"web3-eth-iban":391,"web3-utils":399}],362:[function(require,module,exports){
+/*
+    This file is part of web3.js.
+
+    web3.js is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    web3.js is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public License
+    along with web3.js.  If not, see <http://www.gnu.org/licenses/>.
+*/
+/**
+ * @file index.js
+ * @author Fabian Vogelsteller <fabian@ethereum.org>
+ * @date 2017
+ */
+
+"use strict";
+
+var errors = require('./errors');
+var formatters = require('./formatters');
+
+module.exports = {
+    errors: errors,
+    formatters: formatters
+};
+
+
+},{"./errors":360,"./formatters":361}],363:[function(require,module,exports){
+/*
+    This file is part of web3.js.
+
+    web3.js is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    web3.js is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public License
+    along with web3.js.  If not, see <http://www.gnu.org/licenses/>.
+*/
+/**
+ * @file index.js
+ * @author Fabian Vogelsteller <fabian@ethereum.org>
+ * @author Marek Kotewicz <marek@parity.io>
+ * @date 2017
+ */
+
+"use strict";
+
+var _ = require('underscore');
+var errors = require('web3-core-helpers').errors;
+var formatters = require('web3-core-helpers').formatters;
+var utils = require('web3-utils');
+var promiEvent = require('web3-core-promievent');
+var Subscriptions = require('web3-core-subscriptions').subscriptions;
+
+var TIMEOUTBLOCK = 50;
+var POLLINGTIMEOUT = 15 * TIMEOUTBLOCK; // ~average block time (seconds) * TIMEOUTBLOCK
+var CONFIRMATIONBLOCKS = 24;
+
+var Method = function Method(options) {
+
+    if(!options.call || !options.name) {
+        throw new Error('When creating a method you need to provide at least the "name" and "call" property.');
+    }
+
+    this.name = options.name;
+    this.call = options.call;
+    this.params = options.params || 0;
+    this.inputFormatter = options.inputFormatter;
+    this.outputFormatter = options.outputFormatter;
+    this.transformPayload = options.transformPayload;
+    this.extraFormatters = options.extraFormatters;
+
+    this.requestManager = options.requestManager;
+
+    // reference to eth.accounts
+    this.accounts = options.accounts;
+
+    this.defaultBlock = options.defaultBlock || 'latest';
+    this.defaultAccount = options.defaultAccount || null;
+};
+
+Method.prototype.setRequestManager = function (requestManager, accounts) {
+    this.requestManager = requestManager;
+
+    // reference to eth.accounts
+    if (accounts) {
+        this.accounts = accounts;
+    }
+
+};
+
+Method.prototype.createFunction = function (requestManager, accounts) {
+    var func = this.buildCall();
+    func.call = this.call;
+
+    this.setRequestManager(requestManager || this.requestManager, accounts || this.accounts);
+
+    return func;
+};
+
+Method.prototype.attachToObject = function (obj) {
+    var func = this.buildCall();
+    func.call = this.call;
+    var name = this.name.split('.');
+    if (name.length > 1) {
+        obj[name[0]] = obj[name[0]] || {};
+        obj[name[0]][name[1]] = func;
+    } else {
+        obj[name[0]] = func;
+    }
+};
+
+/**
+ * Should be used to determine name of the jsonrpc method based on arguments
+ *
+ * @method getCall
+ * @param {Array} arguments
+ * @return {String} name of jsonrpc method
+ */
+Method.prototype.getCall = function (args) {
+    return _.isFunction(this.call) ? this.call(args) : this.call;
+};
+
+/**
+ * Should be used to extract callback from array of arguments. Modifies input param
+ *
+ * @method extractCallback
+ * @param {Array} arguments
+ * @return {Function|Null} callback, if exists
+ */
+Method.prototype.extractCallback = function (args) {
+    if (_.isFunction(args[args.length - 1])) {
+        return args.pop(); // modify the args array!
+    }
+};
+
+/**
+ * Should be called to check if the number of arguments is correct
+ *
+ * @method validateArgs
+ * @param {Array} arguments
+ * @throws {Error} if it is not
+ */
+Method.prototype.validateArgs = function (args) {
+    if (args.length !== this.params) {
+        throw errors.InvalidNumberOfParams(args.length, this.params, this.name);
+    }
+};
+
+/**
+ * Should be called to format input args of method
+ *
+ * @method formatInput
+ * @param {Array}
+ * @return {Array}
+ */
+Method.prototype.formatInput = function (args) {
+    var _this = this;
+
+    if (!this.inputFormatter) {
+        return args;
+    }
+
+    return this.inputFormatter.map(function (formatter, index) {
+        // bind this for defaultBlock, and defaultAccount
+        return formatter ? formatter.call(_this, args[index]) : args[index];
+    });
+};
+
+/**
+ * Should be called to format output(result) of method
+ *
+ * @method formatOutput
+ * @param {Object}
+ * @return {Object}
+ */
+Method.prototype.formatOutput = function (result) {
+    var _this = this;
+
+    if(_.isArray(result)) {
+        return result.map(function(res){
+            return _this.outputFormatter && res ? _this.outputFormatter(res) : res;
+        });
+    } else {
+        return this.outputFormatter && result ? this.outputFormatter(result) : result;
+    }
+};
+
+/**
+ * Should create payload from given input args
+ *
+ * @method toPayload
+ * @param {Array} args
+ * @return {Object}
+ */
+Method.prototype.toPayload = function (args) {
+    var call = this.getCall(args);
+    var callback = this.extractCallback(args);
+    var params = this.formatInput(args);
+    this.validateArgs(params);
+
+    var payload = {
+        method: call,
+        params: params,
+        callback: callback
+    };
+
+    if (this.transformPayload) {
+        payload = this.transformPayload(payload);
+    }
+
+    return payload;
+};
+
+
+Method.prototype._confirmTransaction = function (defer, result, payload) {
+    var method = this,
+        promiseResolved = false,
+        canUnsubscribe = true,
+        timeoutCount = 0,
+        confirmationCount = 0,
+        intervalId = null,
+        receiptJSON = '',
+        gasProvided = (_.isObject(payload.params[0]) && payload.params[0].gas) ? payload.params[0].gas : null,
+        isContractDeployment = _.isObject(payload.params[0]) &&
+            payload.params[0].data &&
+            payload.params[0].from &&
+            !payload.params[0].to;
+
+    // add custom send Methods
+    var _ethereumCalls = [
+        new Method({
+            name: 'getTransactionReceipt',
+            call: 'eth_getTransactionReceipt',
+            params: 1,
+            inputFormatter: [null],
+            outputFormatter: formatters.outputTransactionReceiptFormatter
+        }),
+        new Method({
+            name: 'getCode',
+            call: 'eth_getCode',
+            params: 2,
+            inputFormatter: [formatters.inputAddressFormatter, formatters.inputDefaultBlockNumberFormatter]
+        }),
+        new Subscriptions({
+            name: 'subscribe',
+            type: 'eth',
+            subscriptions: {
+                'newBlockHeaders': {
+                    subscriptionName: 'newHeads', // replace subscription with this name
+                    params: 0,
+                    outputFormatter: formatters.outputBlockFormatter
+                }
+            }
+        })
+    ];
+    // attach methods to this._ethereumCall
+    var _ethereumCall = {};
+    _.each(_ethereumCalls, function (mthd) {
+        mthd.attachToObject(_ethereumCall);
+        mthd.requestManager = method.requestManager; // assign rather than call setRequestManager()
+    });
+
+
+    // fire "receipt" and confirmation events and resolve after
+    var checkConfirmation = function (existingReceipt, isPolling, err, blockHeader, sub) {
+        if (!err) {
+            // create fake unsubscribe
+            if (!sub) {
+                sub = {
+                    unsubscribe: function () {
+                        clearInterval(intervalId);
+                    }
+                };
+            }
+            // if we have a valid receipt we don't need to send a request
+            return (existingReceipt ? promiEvent.resolve(existingReceipt) : _ethereumCall.getTransactionReceipt(result))
+            // catch error from requesting receipt
+            .catch(function (err) {
+                sub.unsubscribe();
+                promiseResolved = true;
+                utils._fireError({message: 'Failed to check for transaction receipt:', data: err}, defer.eventEmitter, defer.reject);
+            })
+            // if CONFIRMATION listener exists check for confirmations, by setting canUnsubscribe = false
+            .then(function(receipt) {
+                if (!receipt || !receipt.blockHash) {
+                    throw new Error('Receipt missing or blockHash null');
+                }
+
+                // apply extra formatters
+                if (method.extraFormatters && method.extraFormatters.receiptFormatter) {
+                    receipt = method.extraFormatters.receiptFormatter(receipt);
+                }
+
+                // check if confirmation listener exists
+                if (defer.eventEmitter.listeners('confirmation').length > 0) {
+
+                    // If there was an immediately retrieved receipt, it's already
+                    // been confirmed by the direct call to checkConfirmation needed
+                    // for parity instant-seal
+                    if (existingReceipt === undefined || confirmationCount !== 0){
+                        defer.eventEmitter.emit('confirmation', confirmationCount, receipt);
+                    }
+
+                    canUnsubscribe = false;
+                    confirmationCount++;
+
+                    if (confirmationCount === CONFIRMATIONBLOCKS + 1) { // add 1 so we account for conf 0
+                        sub.unsubscribe();
+                        defer.eventEmitter.removeAllListeners();
+                    }
+                }
+
+                return receipt;
+            })
+            // CHECK for CONTRACT DEPLOYMENT
+            .then(function(receipt) {
+
+                if (isContractDeployment && !promiseResolved) {
+
+                    if (!receipt.contractAddress) {
+
+                        if (canUnsubscribe) {
+                            sub.unsubscribe();
+                            promiseResolved = true;
+                        }
+
+                        utils._fireError(new Error('The transaction receipt didn\'t contain a contract address.'), defer.eventEmitter, defer.reject);
+                        return;
+                    }
+
+                    _ethereumCall.getCode(receipt.contractAddress, function (e, code) {
+
+                        if (!code) {
+                            return;
+                        }
+
+
+                        if (code.length > 2) {
+                            defer.eventEmitter.emit('receipt', receipt);
+
+                            // if contract, return instance instead of receipt
+                            if (method.extraFormatters && method.extraFormatters.contractDeployFormatter) {
+                                defer.resolve(method.extraFormatters.contractDeployFormatter(receipt));
+                            } else {
+                                defer.resolve(receipt);
+                            }
+
+                            // need to remove listeners, as they aren't removed automatically when succesfull
+                            if (canUnsubscribe) {
+                                defer.eventEmitter.removeAllListeners();
+                            }
+
+                        } else {
+                            utils._fireError(new Error('The contract code couldn\'t be stored, please check your gas limit.'), defer.eventEmitter, defer.reject);
+                        }
+
+                        if (canUnsubscribe) {
+                            sub.unsubscribe();
+                        }
+                        promiseResolved = true;
+                    });
+                }
+
+                return receipt;
+            })
+            // CHECK for normal tx check for receipt only
+            .then(function(receipt) {
+
+                if (!isContractDeployment && !promiseResolved) {
+
+                    if(!receipt.outOfGas &&
+                        (!gasProvided || gasProvided !== receipt.gasUsed) &&
+                        (receipt.status === true || receipt.status === '0x1' || typeof receipt.status === 'undefined')) {
+                        defer.eventEmitter.emit('receipt', receipt);
+                        defer.resolve(receipt);
+
+                        // need to remove listeners, as they aren't removed automatically when succesfull
+                        if (canUnsubscribe) {
+                            defer.eventEmitter.removeAllListeners();
+                        }
+
+                    } else {
+                        receiptJSON = JSON.stringify(receipt, null, 2);
+                        if (receipt.status === false || receipt.status === '0x0') {
+                            utils._fireError(new Error("Transaction has been reverted by the EVM:\n" + receiptJSON),
+                                defer.eventEmitter, defer.reject);
+                        } else {
+                            utils._fireError(
+                                new Error("Transaction ran out of gas. Please provide more gas:\n" + receiptJSON),
+                                defer.eventEmitter, defer.reject);
+                        }
+                    }
+
+                    if (canUnsubscribe) {
+                        sub.unsubscribe();
+                    }
+                    promiseResolved = true;
+                }
+
+            })
+            // time out the transaction if not mined after 50 blocks
+            .catch(function () {
+                timeoutCount++;
+
+                // check to see if we are http polling
+                if(!!isPolling) {
+                    // polling timeout is different than TIMEOUTBLOCK blocks since we are triggering every second
+                    if (timeoutCount - 1 >= POLLINGTIMEOUT) {
+                        sub.unsubscribe();
+                        promiseResolved = true;
+                        utils._fireError(new Error('Transaction was not mined within' + POLLINGTIMEOUT + ' seconds, please make sure your transaction was properly sent. Be aware that it might still be mined!'), defer.eventEmitter, defer.reject);
+                    }
+                } else {
+                    if (timeoutCount - 1 >= TIMEOUTBLOCK) {
+                        sub.unsubscribe();
+                        promiseResolved = true;
+                        utils._fireError(new Error('Transaction was not mined within 50 blocks, please make sure your transaction was properly sent. Be aware that it might still be mined!'), defer.eventEmitter, defer.reject);
+                    }
+                }
+            });
+
+
+        } else {
+            sub.unsubscribe();
+            promiseResolved = true;
+            utils._fireError({message: 'Failed to subscribe to new newBlockHeaders to confirm the transaction receipts.', data: err}, defer.eventEmitter, defer.reject);
+        }
+    };
+
+    // start watching for confirmation depending on the support features of the provider
+    var startWatching = function(existingReceipt) {
+        // if provider allows PUB/SUB
+        if (_.isFunction(this.requestManager.provider.on)) {
+            _ethereumCall.subscribe('newBlockHeaders', checkConfirmation.bind(null, existingReceipt, false));
+        } else {
+            intervalId = setInterval(checkConfirmation.bind(null, existingReceipt, true), 1000);
+        }
+    }.bind(this);
+
+
+    // first check if we already have a confirmed transaction
+    _ethereumCall.getTransactionReceipt(result)
+    .then(function(receipt) {
+        if (receipt && receipt.blockHash) {
+            if (defer.eventEmitter.listeners('confirmation').length > 0) {
+                // We must keep on watching for new Blocks, if a confirmation listener is present
+                startWatching(receipt);
+            }
+            checkConfirmation(receipt, false);
+
+        } else if (!promiseResolved) {
+            startWatching();
+        }
+    })
+    .catch(function(){
+        if (!promiseResolved) startWatching();
+    });
+
+};
+
+
+var getWallet = function(from, accounts) {
+    var wallet = null;
+
+    // is index given
+    if (_.isNumber(from)) {
+        wallet = accounts.wallet[from];
+
+        // is account given
+    } else if (_.isObject(from) && from.address && from.privateKey) {
+        wallet = from;
+
+        // search in wallet for address
+    } else {
+        wallet = accounts.wallet[from.toLowerCase()];
+    }
+
+    return wallet;
+};
+
+Method.prototype.buildCall = function() {
+    var method = this,
+        isSendTx = (method.call === 'eth_sendTransaction' || method.call === 'eth_sendRawTransaction'); // || method.call === 'personal_sendTransaction'
+
+    // actual send function
+    var send = function () {
+        var defer = promiEvent(!isSendTx),
+            payload = method.toPayload(Array.prototype.slice.call(arguments));
+
+
+        // CALLBACK function
+        var sendTxCallback = function (err, result) {
+            try {
+                result = method.formatOutput(result);
+            } catch(e) {
+                err = e;
+            }
+
+            if (result instanceof Error) {
+                err = result;
+            }
+
+            if (!err) {
+                if (payload.callback) {
+                    payload.callback(null, result);
+                }
+            } else {
+                if(err.error) {
+                    err = err.error;
+                }
+
+                return utils._fireError(err, defer.eventEmitter, defer.reject, payload.callback);
+            }
+
+            // return PROMISE
+            if (!isSendTx) {
+
+                if (!err) {
+                    defer.resolve(result);
+
+                }
+
+                // return PROMIEVENT
+            } else {
+                defer.eventEmitter.emit('transactionHash', result);
+
+                method._confirmTransaction(defer, result, payload);
+            }
+
+        };
+
+        // SENDS the SIGNED SIGNATURE
+        var sendSignedTx = function(sign){
+
+            var signedPayload = _.extend({}, payload, {
+                method: 'eth_sendRawTransaction',
+                params: [sign.rawTransaction]
+            });
+
+            method.requestManager.send(signedPayload, sendTxCallback);
+        };
+
+
+        var sendRequest = function(payload, method) {
+
+            if (method && method.accounts && method.accounts.wallet && method.accounts.wallet.length) {
+                var wallet;
+
+                // ETH_SENDTRANSACTION
+                if (payload.method === 'eth_sendTransaction') {
+                    var tx = payload.params[0];
+                    wallet = getWallet((_.isObject(tx)) ? tx.from : null, method.accounts);
+
+
+                    // If wallet was found, sign tx, and send using sendRawTransaction
+                    if (wallet && wallet.privateKey) {
+                        return method.accounts.signTransaction(_.omit(tx, 'from'), wallet.privateKey).then(sendSignedTx);
+                    }
+
+                    // ETH_SIGN
+                } else if (payload.method === 'eth_sign') {
+                    var data = payload.params[1];
+                    wallet = getWallet(payload.params[0], method.accounts);
+
+                    // If wallet was found, sign tx, and send using sendRawTransaction
+                    if (wallet && wallet.privateKey) {
+                        var sign = method.accounts.sign(data, wallet.privateKey);
+
+                        if (payload.callback) {
+                            payload.callback(null, sign.signature);
+                        }
+
+                        defer.resolve(sign.signature);
+                        return;
+                    }
+
+
+                }
+            }
+
+            return method.requestManager.send(payload, sendTxCallback);
+        };
+
+        // Send the actual transaction
+        if(isSendTx && _.isObject(payload.params[0]) && typeof payload.params[0].gasPrice === 'undefined') {
+
+            var getGasPrice = (new Method({
+                name: 'getGasPrice',
+                call: 'eth_gasPrice',
+                params: 0
+            })).createFunction(method.requestManager);
+
+            getGasPrice(function (err, gasPrice) {
+
+                if (gasPrice) {
+                    payload.params[0].gasPrice = gasPrice;
+                }
+                sendRequest(payload, method);
+            });
+
+        } else {
+            sendRequest(payload, method);
+        }
+
+
+        return defer.eventEmitter;
+    };
+
+    // necessary to attach things to the method
+    send.method = method;
+    // necessary for batch requests
+    send.request = this.request.bind(this);
+    return send;
+};
+
+/**
+ * Should be called to create the pure JSONRPC request which can be used in a batch request
+ *
+ * @method request
+ * @return {Object} jsonrpc request
+ */
+Method.prototype.request = function () {
+    var payload = this.toPayload(Array.prototype.slice.call(arguments));
+    payload.format = this.formatOutput.bind(this);
+    return payload;
+};
+
+module.exports = Method;
+
+},{"underscore":358,"web3-core-helpers":362,"web3-core-promievent":364,"web3-core-subscriptions":369,"web3-utils":399}],364:[function(require,module,exports){
+/*
+ This file is part of web3.js.
+
+ web3.js is free software: you can redistribute it and/or modify
+ it under the terms of the GNU Lesser General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ web3.js is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public License
+ along with web3.js.  If not, see <http://www.gnu.org/licenses/>.
+ */
+/**
+ * @file index.js
+ * @author Fabian Vogelsteller <fabian@ethereum.org>
+ * @date 2016
+ */
+
+"use strict";
+
+var EventEmitter = require('eventemitter3');
+var Promise = require("any-promise");
+
+/**
+ * This function generates a defer promise and adds eventEmitter functionality to it
+ *
+ * @method eventifiedPromise
+ */
+var PromiEvent = function PromiEvent(justPromise) {
+    var resolve, reject,
+        eventEmitter = new Promise(function() {
+            resolve = arguments[0];
+            reject = arguments[1];
+        });
+
+    if(justPromise) {
+        return {
+            resolve: resolve,
+            reject: reject,
+            eventEmitter: eventEmitter
+        };
+    }
+
+    // get eventEmitter
+    var emitter = new EventEmitter();
+
+    // add eventEmitter to the promise
+    eventEmitter._events = emitter._events;
+    eventEmitter.emit = emitter.emit;
+    eventEmitter.on = emitter.on;
+    eventEmitter.once = emitter.once;
+    eventEmitter.off = emitter.off;
+    eventEmitter.listeners = emitter.listeners;
+    eventEmitter.addListener = emitter.addListener;
+    eventEmitter.removeListener = emitter.removeListener;
+    eventEmitter.removeAllListeners = emitter.removeAllListeners;
+
+    return {
+        resolve: resolve,
+        reject: reject,
+        eventEmitter: eventEmitter
+    };
+};
+
+PromiEvent.resolve = function(value) {
+    var promise = PromiEvent(true);
+    promise.resolve(value);
+    return promise.eventEmitter;
+};
+
+module.exports = PromiEvent;
+
+},{"any-promise":202,"eventemitter3":298}],365:[function(require,module,exports){
+/*
+    This file is part of web3.js.
+
+    web3.js is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    web3.js is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public License
+    along with web3.js.  If not, see <http://www.gnu.org/licenses/>.
+*/
+/**
+ * @file batch.js
+ * @author Marek Kotewicz <marek@ethdev.com>
+ * @date 2015
+ */
+
+"use strict";
+
+var Jsonrpc = require('./jsonrpc');
+var errors = require('web3-core-helpers').errors;
+
+var Batch = function (requestManager) {
+    this.requestManager = requestManager;
+    this.requests = [];
+};
+
+/**
+ * Should be called to add create new request to batch request
+ *
+ * @method add
+ * @param {Object} jsonrpc requet object
+ */
+Batch.prototype.add = function (request) {
+    this.requests.push(request);
+};
+
+/**
+ * Should be called to execute batch request
+ *
+ * @method execute
+ */
+Batch.prototype.execute = function () {
+    var requests = this.requests;
+    this.requestManager.sendBatch(requests, function (err, results) {
+        results = results || [];
+        requests.map(function (request, index) {
+            return results[index] || {};
+        }).forEach(function (result, index) {
+            if (requests[index].callback) {
+                if (result && result.error) {
+                    return requests[index].callback(errors.ErrorResponse(result));
+                }
+
+                if (!Jsonrpc.isValidResponse(result)) {
+                    return requests[index].callback(errors.InvalidResponse(result));
+                }
+
+                try {
+                    requests[index].callback(null, requests[index].format ? requests[index].format(result.result) : result.result);
+                } catch (err) {
+                    requests[index].callback(err);
+                }
+            }
+        });
+    });
+};
+
+module.exports = Batch;
+
+
+},{"./jsonrpc":368,"web3-core-helpers":362}],366:[function(require,module,exports){
+/*
+ This file is part of web3.js.
+
+ web3.js is free software: you can redistribute it and/or modify
+ it under the terms of the GNU Lesser General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ web3.js is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public License
+ along with web3.js.  If not, see <http://www.gnu.org/licenses/>.
+ */
+/**
+ * @file givenProvider.js
+ * @author Fabian Vogelsteller <fabian@ethereum.org>
+ * @date 2017
+ */
+
+"use strict";
+
+var givenProvider = null;
+
+// ADD GIVEN PROVIDER
+/* jshint ignore:start */
+var global = Function('return this')();
+
+// EthereumProvider
+if(typeof global.ethereumProvider !== 'undefined') {
+    givenProvider = global.ethereumProvider;
+
+// Legacy web3.currentProvider
+} else if(typeof global.web3 !== 'undefined' && global.web3.currentProvider) {
+
+    if(global.web3.currentProvider.sendAsync) {
+        global.web3.currentProvider.send = global.web3.currentProvider.sendAsync;
+        delete global.web3.currentProvider.sendAsync;
+    }
+
+    // if connection is 'ipcProviderWrapper', add subscription support
+    if(!global.web3.currentProvider.on &&
+        global.web3.currentProvider.connection &&
+        global.web3.currentProvider.connection.constructor.name === 'ipcProviderWrapper') {
+
+        global.web3.currentProvider.on = function (type, callback) {
+
+            if(typeof callback !== 'function')
+                throw new Error('The second parameter callback must be a function.');
+
+            switch(type){
+                case 'data':
+                    this.connection.on('data', function(data) {
+                        var result = '';
+
+                        data = data.toString();
+
+                        try {
+                            result = JSON.parse(data);
+                        } catch(e) {
+                            return callback(new Error('Couldn\'t parse response data'+ data));
+                        }
+
+                        // notification
+                        if(!result.id && result.method.indexOf('_subscription') !== -1) {
+                            callback(null, result);
+                        }
+
+                    });
+                    break;
+
+                default:
+                    this.connection.on(type, callback);
+                    break;
+            }
+        };
+    }
+
+    givenProvider = global.web3.currentProvider;
+}
+/* jshint ignore:end */
+
+
+module.exports = givenProvider;
+
+},{}],367:[function(require,module,exports){
+/*
+    This file is part of web3.js.
+
+    web3.js is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    web3.js is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public License
+    along with web3.js.  If not, see <http://www.gnu.org/licenses/>.
+*/
+/**
+ * @file index.js
+ * @author Fabian Vogelsteller <fabian@ethereum.org>
+ * @date 2017
+ */
+
+"use strict";
+
+
+var _ = require('underscore');
+var errors = require('web3-core-helpers').errors;
+var Jsonrpc = require('./jsonrpc.js');
+var BatchManager = require('./batch.js');
+var givenProvider = require('./givenProvider.js');
+
+
+
+    /**
+ * It's responsible for passing messages to providers
+ * It's also responsible for polling the ethereum node for incoming messages
+ * Default poll timeout is 1 second
+ * Singleton
+ */
+var RequestManager = function RequestManager(provider) {
+    this.provider = null;
+    this.providers = RequestManager.providers;
+
+    this.setProvider(provider);
+    this.subscriptions = {};
+};
+
+
+
+RequestManager.givenProvider = givenProvider;
+
+RequestManager.providers = {
+    WebsocketProvider: require('web3-providers-ws'),
+    HttpProvider: require('web3-providers-http'),
+    IpcProvider: require('web3-providers-ipc')
+};
+
+
+
+/**
+ * Should be used to set provider of request manager
+ *
+ * @method setProvider
+ * @param {Object} p
+ */
+RequestManager.prototype.setProvider = function (p, net) {
+    var _this = this;
+
+    // autodetect provider
+    if(p && typeof p === 'string' && this.providers) {
+
+        // HTTP
+        if(/^http(s)?:\/\//i.test(p)) {
+            p = new this.providers.HttpProvider(p);
+
+            // WS
+        } else if(/^ws(s)?:\/\//i.test(p)) {
+            p = new this.providers.WebsocketProvider(p);
+
+            // IPC
+        } else if(p && typeof net === 'object'  && typeof net.connect === 'function') {
+            p = new this.providers.IpcProvider(p, net);
+
+        } else if(p) {
+            throw new Error('Can\'t autodetect provider for "'+ p +'"');
+        }
+    }
+
+    // reset the old one before changing, if still connected
+    if(this.provider && this.provider.connected)
+        this.clearSubscriptions();
+
+
+    this.provider = p || null;
+
+    // listen to incoming notifications
+    if(this.provider && this.provider.on) {
+        this.provider.on('data', function requestManagerNotification(result, deprecatedResult){
+            result = result || deprecatedResult; // this is for possible old providers, which may had the error first handler
+
+            // check for result.method, to prevent old providers errors to pass as result
+            if(result.method && _this.subscriptions[result.params.subscription] && _this.subscriptions[result.params.subscription].callback) {
+                _this.subscriptions[result.params.subscription].callback(null, result.params.result);
+            }
+        });
+        // TODO add error, end, timeout, connect??
+        // this.provider.on('error', function requestManagerNotification(result){
+        //     Object.keys(_this.subscriptions).forEach(function(id){
+        //         if(_this.subscriptions[id].callback)
+        //             _this.subscriptions[id].callback(err);
+        //     });
+        // }
+    }
+};
+
+
+/**
+ * Should be used to asynchronously send request
+ *
+ * @method sendAsync
+ * @param {Object} data
+ * @param {Function} callback
+ */
+RequestManager.prototype.send = function (data, callback) {
+    callback = callback || function(){};
+
+    if (!this.provider) {
+        return callback(errors.InvalidProvider());
+    }
+
+    var payload = Jsonrpc.toPayload(data.method, data.params);
+    this.provider[this.provider.sendAsync ? 'sendAsync' : 'send'](payload, function (err, result) {
+        if(result && result.id && payload.id !== result.id) return callback(new Error('Wrong response id "'+ result.id +'" (expected: "'+ payload.id +'") in '+ JSON.stringify(payload)));
+
+        if (err) {
+            return callback(err);
+        }
+
+        if (result && result.error) {
+            return callback(errors.ErrorResponse(result));
+        }
+
+        if (!Jsonrpc.isValidResponse(result)) {
+            return callback(errors.InvalidResponse(result));
+        }
+
+        callback(null, result.result);
+    });
+};
+
+/**
+ * Should be called to asynchronously send batch request
+ *
+ * @method sendBatch
+ * @param {Array} batch data
+ * @param {Function} callback
+ */
+RequestManager.prototype.sendBatch = function (data, callback) {
+    if (!this.provider) {
+        return callback(errors.InvalidProvider());
+    }
+
+    var payload = Jsonrpc.toBatchPayload(data);
+    this.provider[this.provider.sendAsync ? 'sendAsync' : 'send'](payload, function (err, results) {
+        if (err) {
+            return callback(err);
+        }
+
+        if (!_.isArray(results)) {
+            return callback(errors.InvalidResponse(results));
+        }
+
+        callback(null, results);
+    });
+};
+
+
+/**
+ * Waits for notifications
+ *
+ * @method addSubscription
+ * @param {String} id           the subscription id
+ * @param {String} name         the subscription name
+ * @param {String} type         the subscription namespace (eth, personal, etc)
+ * @param {Function} callback   the callback to call for incoming notifications
+ */
+RequestManager.prototype.addSubscription = function (id, name, type, callback) {
+    if(this.provider.on) {
+        this.subscriptions[id] = {
+            callback: callback,
+            type: type,
+            name: name
+        };
+
+    } else {
+        throw new Error('The provider doesn\'t support subscriptions: '+ this.provider.constructor.name);
+    }
+};
+
+/**
+ * Waits for notifications
+ *
+ * @method removeSubscription
+ * @param {String} id           the subscription id
+ * @param {Function} callback   fired once the subscription is removed
+ */
+RequestManager.prototype.removeSubscription = function (id, callback) {
+    var _this = this;
+
+    if(this.subscriptions[id]) {
+
+        this.send({
+            method: this.subscriptions[id].type + '_unsubscribe',
+            params: [id]
+        }, callback);
+
+        // remove subscription
+        delete _this.subscriptions[id];
+    }
+};
+
+/**
+ * Should be called to reset the subscriptions
+ *
+ * @method reset
+ */
+RequestManager.prototype.clearSubscriptions = function (keepIsSyncing) {
+    var _this = this;
+
+
+    // uninstall all subscriptions
+    Object.keys(this.subscriptions).forEach(function(id){
+        if(!keepIsSyncing || _this.subscriptions[id].name !== 'syncing')
+            _this.removeSubscription(id);
+    });
+
+
+    //  reset notification callbacks etc.
+    if(this.provider.reset)
+        this.provider.reset();
+};
+
+module.exports = {
+    Manager: RequestManager,
+    BatchManager: BatchManager
+};
+
+},{"./batch.js":365,"./givenProvider.js":366,"./jsonrpc.js":368,"underscore":358,"web3-core-helpers":362,"web3-providers-http":396,"web3-providers-ipc":397,"web3-providers-ws":398}],368:[function(require,module,exports){
+/*
+    This file is part of web3.js.
+
+    web3.js is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    web3.js is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public License
+    along with web3.js.  If not, see <http://www.gnu.org/licenses/>.
+*/
+/** @file jsonrpc.js
+ * @authors:
+ *   Fabian Vogelsteller <fabian@ethereum.org>
+ *   Marek Kotewicz <marek@ethdev.com>
+ *   Aaron Kumavis <aaron@kumavis.me>
+ * @date 2015
+ */
+
+"use strict";
+
+// Initialize Jsonrpc as a simple object with utility functions.
+var Jsonrpc = {
+    messageId: 0
+};
+
+/**
+ * Should be called to valid json create payload object
+ *
+ * @method toPayload
+ * @param {Function} method of jsonrpc call, required
+ * @param {Array} params, an array of method params, optional
+ * @returns {Object} valid jsonrpc payload object
+ */
+Jsonrpc.toPayload = function (method, params) {
+    if (!method) {
+        throw new Error('JSONRPC method should be specified for params: "'+ JSON.stringify(params) +'"!');
+    }
+
+    // advance message ID
+    Jsonrpc.messageId++;
+
+    return {
+        jsonrpc: '2.0',
+        id: Jsonrpc.messageId,
+        method: method,
+        params: params || []
+    };
+};
+
+/**
+ * Should be called to check if jsonrpc response is valid
+ *
+ * @method isValidResponse
+ * @param {Object}
+ * @returns {Boolean} true if response is valid, otherwise false
+ */
+Jsonrpc.isValidResponse = function (response) {
+    return Array.isArray(response) ? response.every(validateSingleMessage) : validateSingleMessage(response);
+
+    function validateSingleMessage(message){
+      return !!message &&
+        !message.error &&
+        message.jsonrpc === '2.0' &&
+        (typeof message.id === 'number' || typeof message.id === 'string') &&
+        message.result !== undefined; // only undefined is not valid json object
+    }
+};
+
+/**
+ * Should be called to create batch payload object
+ *
+ * @method toBatchPayload
+ * @param {Array} messages, an array of objects with method (required) and params (optional) fields
+ * @returns {Array} batch payload
+ */
+Jsonrpc.toBatchPayload = function (messages) {
+    return messages.map(function (message) {
+        return Jsonrpc.toPayload(message.method, message.params);
+    });
+};
+
+module.exports = Jsonrpc;
+
+
+},{}],369:[function(require,module,exports){
+/*
+    This file is part of web3.js.
+
+    web3.js is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    web3.js is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public License
+    along with web3.js.  If not, see <http://www.gnu.org/licenses/>.
+*/
+/**
+ * @file index.js
+ * @author Fabian Vogelsteller <fabian@ethereum.org>
+ * @date 2017
+ */
+
+"use strict";
+
+var Subscription = require('./subscription.js');
+
+
+var Subscriptions = function Subscriptions(options) {
+    this.name = options.name;
+    this.type = options.type;
+    this.subscriptions = options.subscriptions || {};
+    this.requestManager = null;
+};
+
+
+Subscriptions.prototype.setRequestManager = function (rm) {
+    this.requestManager = rm;
+};
+
+
+Subscriptions.prototype.attachToObject = function (obj) {
+    var func = this.buildCall();
+    var name = this.name.split('.');
+    if (name.length > 1) {
+        obj[name[0]] = obj[name[0]] || {};
+        obj[name[0]][name[1]] = func;
+    } else {
+        obj[name[0]] = func;
+    }
+};
+
+
+Subscriptions.prototype.buildCall = function() {
+    var _this = this;
+
+    return function(){
+        if(!_this.subscriptions[arguments[0]]) {
+            console.warn('Subscription '+ JSON.stringify(arguments[0]) +' doesn\'t exist. Subscribing anyway.');
+        }
+
+        var subscription = new Subscription({
+            subscription: _this.subscriptions[arguments[0]],
+            requestManager: _this.requestManager,
+            type: _this.type
+        });
+
+        return subscription.subscribe.apply(subscription, arguments);
+    };
+};
+
+
+module.exports = {
+    subscriptions: Subscriptions,
+    subscription: Subscription
+};
+
+},{"./subscription.js":370}],370:[function(require,module,exports){
+/*
+    This file is part of web3.js.
+
+    web3.js is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    web3.js is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public License
+    along with web3.js.  If not, see <http://www.gnu.org/licenses/>.
+*/
+/**
+ * @file subscription.js
+ * @author Fabian Vogelsteller <fabian@ethereum.org>
+ * @date 2017
+ */
+
+"use strict";
+
+var _ = require('underscore');
+var errors = require('web3-core-helpers').errors;
+var EventEmitter = require('eventemitter3');
+
+function Subscription(options) {
+    EventEmitter.call(this);
+
+    this.id = null;
+    this.callback = _.identity;
+    this.arguments = null;
+    this._reconnectIntervalId = null;
+
+    this.options = {
+        subscription: options.subscription,
+        type: options.type,
+        requestManager: options.requestManager
+    };
 }
 
-function bytesToUuid(buf, offset) {
-  var i = offset || 0;
-  var bth = byteToHex;
-  // join used to fix memory issue caused by concatenation: https://bugs.chromium.org/p/v8/issues/detail?id=3175#c4
-  return ([bth[buf[i++]], bth[buf[i++]], 
-	bth[buf[i++]], bth[buf[i++]], '-',
-	bth[buf[i++]], bth[buf[i++]], '-',
-	bth[buf[i++]], bth[buf[i++]], '-',
-	bth[buf[i++]], bth[buf[i++]], '-',
-	bth[buf[i++]], bth[buf[i++]],
-	bth[buf[i++]], bth[buf[i++]],
-	bth[buf[i++]], bth[buf[i++]]]).join('');
+// INHERIT
+Subscription.prototype = Object.create(EventEmitter.prototype);
+Subscription.prototype.constructor = Subscription;
+
+
+/**
+ * Should be used to extract callback from array of arguments. Modifies input param
+ *
+ * @method extractCallback
+ * @param {Array} arguments
+ * @return {Function|Null} callback, if exists
+ */
+
+Subscription.prototype._extractCallback = function (args) {
+    if (_.isFunction(args[args.length - 1])) {
+        return args.pop(); // modify the args array!
+    }
+};
+
+/**
+ * Should be called to check if the number of arguments is correct
+ *
+ * @method validateArgs
+ * @param {Array} arguments
+ * @throws {Error} if it is not
+ */
+
+Subscription.prototype._validateArgs = function (args) {
+    var subscription = this.options.subscription;
+
+    if(!subscription)
+        subscription = {};
+
+    if(!subscription.params)
+        subscription.params = 0;
+
+    if (args.length !== subscription.params) {
+        throw errors.InvalidNumberOfParams(args.length, subscription.params + 1, args[0]);
+    }
+};
+
+/**
+ * Should be called to format input args of method
+ *
+ * @method formatInput
+ * @param {Array}
+ * @return {Array}
+ */
+
+Subscription.prototype._formatInput = function (args) {
+    var subscription = this.options.subscription;
+
+    if (!subscription) {
+        return args;
+    }
+
+    if (!subscription.inputFormatter) {
+        return args;
+    }
+
+    var formattedArgs = subscription.inputFormatter.map(function (formatter, index) {
+        return formatter ? formatter(args[index]) : args[index];
+    });
+
+    return formattedArgs;
+};
+
+/**
+ * Should be called to format output(result) of method
+ *
+ * @method formatOutput
+ * @param {Object}
+ * @return {Object}
+ */
+
+Subscription.prototype._formatOutput = function (result) {
+    var subscription = this.options.subscription;
+
+    return (subscription && subscription.outputFormatter && result) ? subscription.outputFormatter(result) : result;
+};
+
+/**
+ * Should create payload from given input args
+ *
+ * @method toPayload
+ * @param {Array} args
+ * @return {Object}
+ */
+Subscription.prototype._toPayload = function (args) {
+    var params = [];
+    this.callback = this._extractCallback(args) || _.identity;
+
+    if (!this.subscriptionMethod) {
+        this.subscriptionMethod = args.shift();
+
+        // replace subscription with given name
+        if (this.options.subscription.subscriptionName) {
+            this.subscriptionMethod = this.options.subscription.subscriptionName;
+        }
+    }
+
+    if (!this.arguments) {
+        this.arguments = this._formatInput(args);
+        this._validateArgs(this.arguments);
+        args = []; // make empty after validation
+
+    }
+
+    // re-add subscriptionName
+    params.push(this.subscriptionMethod);
+    params = params.concat(this.arguments);
+
+
+    if (args.length) {
+        throw new Error('Only a callback is allowed as parameter on an already instantiated subscription.');
+    }
+
+    return {
+        method: this.options.type + '_subscribe',
+        params: params
+    };
+};
+
+/**
+ * Unsubscribes and clears callbacks
+ *
+ * @method unsubscribe
+ * @return {Object}
+ */
+Subscription.prototype.unsubscribe = function(callback) {
+    this.options.requestManager.removeSubscription(this.id, callback);
+    this.id = null;
+    this.removeAllListeners();
+    clearInterval(this._reconnectIntervalId);
+};
+
+/**
+ * Subscribes and watches for changes
+ *
+ * @method subscribe
+ * @param {String} subscription the subscription
+ * @param {Object} options the options object with address topics and fromBlock
+ * @return {Object}
+ */
+Subscription.prototype.subscribe = function() {
+    var _this = this;
+    var args = Array.prototype.slice.call(arguments);
+    var payload = this._toPayload(args);
+
+    if(!payload) {
+        return this;
+    }
+
+    if(!this.options.requestManager.provider) {
+        var err1 = new Error('No provider set.');
+        this.callback(err1, null, this);
+        this.emit('error', err1);
+        return this;
+    }
+
+    // throw error, if provider doesnt support subscriptions
+    if(!this.options.requestManager.provider.on) {
+        var err2 = new Error('The current provider doesn\'t support subscriptions: '+ this.options.requestManager.provider.constructor.name);
+        this.callback(err2, null, this);
+        this.emit('error', err2);
+        return this;
+    }
+
+    // if id is there unsubscribe first
+    if (this.id) {
+        this.unsubscribe();
+    }
+
+    // store the params in the options object
+    this.options.params = payload.params[1];
+
+    // get past logs, if fromBlock is available
+    if(payload.params[0] === 'logs' && _.isObject(payload.params[1]) && payload.params[1].hasOwnProperty('fromBlock') && isFinite(payload.params[1].fromBlock)) {
+        // send the subscription request
+        this.options.requestManager.send({
+            method: 'eth_getLogs',
+            params: [payload.params[1]]
+        }, function (err, logs) {
+            if(!err) {
+                logs.forEach(function(log){
+                    var output = _this._formatOutput(log);
+                    _this.callback(null, output, _this);
+                    _this.emit('data', output);
+                });
+
+                // TODO subscribe here? after the past logs?
+
+            } else {
+                _this.callback(err, null, _this);
+                _this.emit('error', err);
+            }
+        });
+    }
+
+    // create subscription
+    // TODO move to separate function? so that past logs can go first?
+
+    if(typeof payload.params[1] === 'object')
+        delete payload.params[1].fromBlock;
+
+    this.options.requestManager.send(payload, function (err, result) {
+        if(!err && result) {
+            _this.id = result;
+
+            // call callback on notifications
+            _this.options.requestManager.addSubscription(_this.id, payload.params[0] , _this.options.type, function(err, result) {
+
+                if (!err) {
+                    if (!_.isArray(result)) {
+                        result = [result];
+                    }
+
+                    result.forEach(function(resultItem) {
+                        var output = _this._formatOutput(resultItem);
+
+                        if (_.isFunction(_this.options.subscription.subscriptionHandler)) {
+                            return _this.options.subscription.subscriptionHandler.call(_this, output);
+                        } else {
+                            _this.emit('data', output);
+                        }
+
+                        // call the callback, last so that unsubscribe there won't affect the emit above
+                        _this.callback(null, output, _this);
+                    });
+                } else {
+                    // unsubscribe, but keep listeners
+                    _this.options.requestManager.removeSubscription(_this.id);
+
+                    // re-subscribe, if connection fails
+                    if(_this.options.requestManager.provider.once) {
+                        _this._reconnectIntervalId = setInterval(function () {
+                            // TODO check if that makes sense!
+                            if (_this.options.requestManager.provider.reconnect) {
+                                _this.options.requestManager.provider.reconnect();
+                            }
+                        }, 500);
+
+                        _this.options.requestManager.provider.once('connect', function () {
+                            clearInterval(_this._reconnectIntervalId);
+                            _this.subscribe(_this.callback);
+                        });
+                    }
+                    _this.emit('error', err);
+
+                     // call the callback, last so that unsubscribe there won't affect the emit above
+                    _this.callback(err, null, _this);
+                }
+            });
+        } else {
+          _this.callback(err, null, _this);
+          _this.emit('error', err);
+        }
+    });
+
+    // return an object to cancel the subscription
+    return this;
+};
+
+module.exports = Subscription;
+
+},{"eventemitter3":298,"underscore":358,"web3-core-helpers":362}],371:[function(require,module,exports){
+/*
+ This file is part of web3.js.
+
+ web3.js is free software: you can redistribute it and/or modify
+ it under the terms of the GNU Lesser General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ web3.js is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public License
+ along with web3.js.  If not, see <http://www.gnu.org/licenses/>.
+ */
+/**
+ * @file extend.js
+ * @author Fabian Vogelsteller <fabian@ethereum.org>
+ * @date 2017
+ */
+
+"use strict";
+
+
+var formatters = require('web3-core-helpers').formatters;
+var Method = require('web3-core-method');
+var utils = require('web3-utils');
+
+
+var extend = function (pckg) {
+    /* jshint maxcomplexity:5 */
+    var ex = function (extension) {
+
+        var extendedObject;
+        if (extension.property) {
+            if (!pckg[extension.property]) {
+                pckg[extension.property] = {};
+            }
+            extendedObject = pckg[extension.property];
+        } else {
+            extendedObject = pckg;
+        }
+
+        if (extension.methods) {
+            extension.methods.forEach(function (method) {
+                if(!(method instanceof Method)) {
+                    method = new Method(method);
+                }
+
+                method.attachToObject(extendedObject);
+                method.setRequestManager(pckg._requestManager);
+            });
+        }
+
+        return pckg;
+    };
+
+    ex.formatters = formatters;
+    ex.utils = utils;
+    ex.Method = Method;
+
+    return ex;
+};
+
+
+
+module.exports = extend;
+
+
+},{"web3-core-helpers":362,"web3-core-method":363,"web3-utils":399}],372:[function(require,module,exports){
+/*
+    This file is part of web3.js.
+
+    web3.js is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    web3.js is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public License
+    along with web3.js.  If not, see <http://www.gnu.org/licenses/>.
+*/
+/**
+ * @file index.js
+ * @author Fabian Vogelsteller <fabian@ethereum.org>
+ * @date 2017
+ */
+
+"use strict";
+
+
+var requestManager = require('web3-core-requestmanager');
+var extend = require('./extend.js');
+
+module.exports = {
+    packageInit: function (pkg, args) {
+        args = Array.prototype.slice.call(args);
+
+        if (!pkg) {
+            throw new Error('You need to instantiate using the "new" keyword.');
+        }
+
+
+        // make property of pkg._provider, which can properly set providers
+        Object.defineProperty(pkg, 'currentProvider', {
+            get: function () {
+                return pkg._provider;
+            },
+            set: function (value) {
+                return pkg.setProvider(value);
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+        // inherit from web3 umbrella package
+        if (args[0] && args[0]._requestManager) {
+            pkg._requestManager = new requestManager.Manager(args[0].currentProvider);
+
+        // set requestmanager on package
+        } else {
+            pkg._requestManager = new requestManager.Manager();
+            pkg._requestManager.setProvider(args[0], args[1]);
+        }
+
+        // add givenProvider
+        pkg.givenProvider = requestManager.Manager.givenProvider;
+        pkg.providers = requestManager.Manager.providers;
+
+         pkg._provider =  pkg._requestManager.provider;
+
+        // add SETPROVIDER function (don't overwrite if already existing)
+        if (!pkg.setProvider) {
+            pkg.setProvider = function (provider, net) {
+                pkg._requestManager.setProvider(provider, net);
+                pkg._provider = pkg._requestManager.provider;
+                return true;
+            };
+        }
+
+        // attach batch request creation
+        pkg.BatchRequest = requestManager.BatchManager.bind(null, pkg._requestManager);
+
+        // attach extend function
+        pkg.extend = extend(pkg);
+    },
+    addProviders: function (pkg) {
+        pkg.givenProvider = requestManager.Manager.givenProvider;
+        pkg.providers = requestManager.Manager.providers;
+    }
+};
+
+
+},{"./extend.js":371,"web3-core-requestmanager":367}],373:[function(require,module,exports){
+/*
+ This file is part of web3.js.
+
+ web3.js is free software: you can redistribute it and/or modify
+ it under the terms of the GNU Lesser General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ web3.js is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public License
+ along with web3.js.  If not, see <http://www.gnu.org/licenses/>.
+ */
+/**
+ * @file index.js
+ * @author Marek Kotewicz <marek@parity.io>
+ * @author Fabian Vogelsteller <fabian@frozeman.de>
+ * @date 2018
+ */
+
+var _ = require('underscore');
+var utils = require('web3-utils');
+
+var EthersAbi = require('ethers/utils/abi-coder').AbiCoder;
+var ethersAbiCoder = new EthersAbi(function (type, value) {
+    if (type.match(/^u?int/) && !_.isArray(value) && (!_.isObject(value) || value.constructor.name !== 'BN')) {
+        return value.toString();
+    }
+    return value;
+});
+
+// result method
+function Result() {
 }
 
-module.exports = bytesToUuid;
+/**
+ * ABICoder prototype should be used to encode/decode solidity params of any type
+ */
+var ABICoder = function () {
+};
 
-},{}],566:[function(require,module,exports){
-// Unique ID creation requires a high quality random # generator.  In the
-// browser this is a little complicated due to unknown quality of Math.random()
-// and inconsistent support for the `crypto` API.  We do the best we can via
-// feature-detection
+/**
+ * Encodes the function name to its ABI representation, which are the first 4 bytes of the sha3 of the function name including  types.
+ *
+ * @method encodeFunctionSignature
+ * @param {String|Object} functionName
+ * @return {String} encoded function name
+ */
+ABICoder.prototype.encodeFunctionSignature = function (functionName) {
+    if (_.isObject(functionName)) {
+        functionName = utils._jsonInterfaceMethodToString(functionName);
+    }
 
-// getRandomValues needs to be invoked in a context where "this" is a Crypto
-// implementation. Also, find the complete implementation of crypto on IE11.
-var getRandomValues = (typeof(crypto) != 'undefined' && crypto.getRandomValues && crypto.getRandomValues.bind(crypto)) ||
-                      (typeof(msCrypto) != 'undefined' && typeof window.msCrypto.getRandomValues == 'function' && msCrypto.getRandomValues.bind(msCrypto));
+    return utils.sha3(functionName).slice(0, 10);
+};
 
-if (getRandomValues) {
-  // WHATWG crypto RNG - http://wiki.whatwg.org/wiki/Crypto
-  var rnds8 = new Uint8Array(16); // eslint-disable-line no-undef
+/**
+ * Encodes the function name to its ABI representation, which are the first 4 bytes of the sha3 of the function name including  types.
+ *
+ * @method encodeEventSignature
+ * @param {String|Object} functionName
+ * @return {String} encoded function name
+ */
+ABICoder.prototype.encodeEventSignature = function (functionName) {
+    if (_.isObject(functionName)) {
+        functionName = utils._jsonInterfaceMethodToString(functionName);
+    }
 
-  module.exports = function whatwgRNG() {
-    getRandomValues(rnds8);
-    return rnds8;
+    return utils.sha3(functionName);
+};
+
+/**
+ * Should be used to encode plain param
+ *
+ * @method encodeParameter
+ * @param {String} type
+ * @param {Object} param
+ * @return {String} encoded plain param
+ */
+ABICoder.prototype.encodeParameter = function (type, param) {
+    return this.encodeParameters([type], [param]);
+};
+
+/**
+ * Should be used to encode list of params
+ *
+ * @method encodeParameters
+ * @param {Array} types
+ * @param {Array} params
+ * @return {String} encoded list of params
+ */
+ABICoder.prototype.encodeParameters = function (types, params) {
+    return ethersAbiCoder.encode(this.mapTypes(types), params);
+};
+
+/**
+ * Map types if simplified format is used
+ *
+ * @method mapTypes
+ * @param {Array} types
+ * @return {Array}
+ */
+ABICoder.prototype.mapTypes = function (types) {
+    var self = this;
+    var mappedTypes = [];
+    types.forEach(function (type) {
+        if (self.isSimplifiedStructFormat(type)) {
+            var structName = Object.keys(type)[0];
+            mappedTypes.push(
+                Object.assign(
+                    self.mapStructNameAndType(structName),
+                    {
+                        components: self.mapStructToCoderFormat(type[structName])
+                    }
+                )
+            );
+
+            return;
+        }
+
+        mappedTypes.push(type);
+    });
+
+    return mappedTypes;
+};
+
+/**
+ * Check if type is simplified struct format
+ *
+ * @method isSimplifiedStructFormat
+ * @param {string | Object} type
+ * @returns {boolean}
+ */
+ABICoder.prototype.isSimplifiedStructFormat = function (type) {
+    return typeof type === 'object' && typeof type.components === 'undefined' && typeof type.name === 'undefined';
+};
+
+/**
+ * Maps the correct tuple type and name when the simplified format in encode/decodeParameter is used
+ *
+ * @method mapStructNameAndType
+ * @param {string} structName
+ * @return {{type: string, name: *}}
+ */
+ABICoder.prototype.mapStructNameAndType = function (structName) {
+    var type = 'tuple';
+
+    if (structName.indexOf('[]') > -1) {
+        type = 'tuple[]';
+        structName = structName.slice(0, -2);
+    }
+
+    return {type: type, name: structName};
+};
+
+/**
+ * Maps the simplified format in to the expected format of the ABICoder
+ *
+ * @method mapStructToCoderFormat
+ * @param {Object} struct
+ * @return {Array}
+ */
+ABICoder.prototype.mapStructToCoderFormat = function (struct) {
+    var self = this;
+    var components = [];
+    Object.keys(struct).forEach(function (key) {
+        if (typeof struct[key] === 'object') {
+            components.push(
+                Object.assign(
+                    self.mapStructNameAndType(key),
+                    {
+                        components: self.mapStructToCoderFormat(struct[key])
+                    }
+                )
+            );
+
+            return;
+        }
+
+        components.push({
+            name: key,
+            type: struct[key]
+        });
+    });
+
+    return components;
+};
+
+/**
+ * Encodes a function call from its json interface and parameters.
+ *
+ * @method encodeFunctionCall
+ * @param {Array} jsonInterface
+ * @param {Array} params
+ * @return {String} The encoded ABI for this function call
+ */
+ABICoder.prototype.encodeFunctionCall = function (jsonInterface, params) {
+    return this.encodeFunctionSignature(jsonInterface) + this.encodeParameters(jsonInterface.inputs, params).replace('0x', '');
+};
+
+/**
+ * Should be used to decode bytes to plain param
+ *
+ * @method decodeParameter
+ * @param {String} type
+ * @param {String} bytes
+ * @return {Object} plain param
+ */
+ABICoder.prototype.decodeParameter = function (type, bytes) {
+    return this.decodeParameters([type], bytes)[0];
+};
+
+/**
+ * Should be used to decode list of params
+ *
+ * @method decodeParameter
+ * @param {Array} outputs
+ * @param {String} bytes
+ * @return {Array} array of plain params
+ */
+ABICoder.prototype.decodeParameters = function (outputs, bytes) {
+    if (!bytes || bytes === '0x' || bytes === '0X') {
+        throw new Error('Returned values aren\'t valid, did it run Out of Gas?');
+    }
+
+    var res = ethersAbiCoder.decode(this.mapTypes(outputs), '0x' + bytes.replace(/0x/i, ''));
+    var returnValue = new Result();
+    returnValue.__length__ = 0;
+
+    outputs.forEach(function (output, i) {
+        var decodedValue = res[returnValue.__length__];
+        decodedValue = (decodedValue === '0x') ? null : decodedValue;
+
+        returnValue[i] = decodedValue;
+
+        if (_.isObject(output) && output.name) {
+            returnValue[output.name] = decodedValue;
+        }
+
+        returnValue.__length__++;
+    });
+
+    return returnValue;
+};
+
+/**
+ * Decodes events non- and indexed parameters.
+ *
+ * @method decodeLog
+ * @param {Object} inputs
+ * @param {String} data
+ * @param {Array} topics
+ * @return {Array} array of plain params
+ */
+ABICoder.prototype.decodeLog = function (inputs, data, topics) {
+    var _this = this;
+    topics = _.isArray(topics) ? topics : [topics];
+
+    data = data || '';
+
+    var notIndexedInputs = [];
+    var indexedParams = [];
+    var topicCount = 0;
+
+    // TODO check for anonymous logs?
+
+    inputs.forEach(function (input, i) {
+        if (input.indexed) {
+            indexedParams[i] = (['bool', 'int', 'uint', 'address', 'fixed', 'ufixed'].find(function (staticType) {
+                return input.type.indexOf(staticType) !== -1;
+            })) ? _this.decodeParameter(input.type, topics[topicCount]) : topics[topicCount];
+            topicCount++;
+        } else {
+            notIndexedInputs[i] = input;
+        }
+    });
+
+
+    var nonIndexedData = data;
+    var notIndexedParams = (nonIndexedData) ? this.decodeParameters(notIndexedInputs, nonIndexedData) : [];
+
+    var returnValue = new Result();
+    returnValue.__length__ = 0;
+
+
+    inputs.forEach(function (res, i) {
+        returnValue[i] = (res.type === 'string') ? '' : null;
+
+        if (typeof notIndexedParams[i] !== 'undefined') {
+            returnValue[i] = notIndexedParams[i];
+        }
+        if (typeof indexedParams[i] !== 'undefined') {
+            returnValue[i] = indexedParams[i];
+        }
+
+        if (res.name) {
+            returnValue[res.name] = returnValue[i];
+        }
+
+        returnValue.__length__++;
+    });
+
+    return returnValue;
+};
+
+var coder = new ABICoder();
+
+module.exports = coder;
+
+},{"ethers/utils/abi-coder":287,"underscore":358,"web3-utils":399}],374:[function(require,module,exports){
+(function (Buffer){
+var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+
+var Bytes = require("./bytes");
+var Nat = require("./nat");
+var elliptic = require("elliptic");
+var rlp = require("./rlp");
+var secp256k1 = new elliptic.ec("secp256k1"); // eslint-disable-line
+
+var _require = require("./hash"),
+    keccak256 = _require.keccak256,
+    keccak256s = _require.keccak256s;
+
+var create = function create(entropy) {
+  var innerHex = keccak256(Bytes.concat(Bytes.random(32), entropy || Bytes.random(32)));
+  var middleHex = Bytes.concat(Bytes.concat(Bytes.random(32), innerHex), Bytes.random(32));
+  var outerHex = keccak256(middleHex);
+  return fromPrivate(outerHex);
+};
+
+var toChecksum = function toChecksum(address) {
+  var addressHash = keccak256s(address.slice(2));
+  var checksumAddress = "0x";
+  for (var i = 0; i < 40; i++) {
+    checksumAddress += parseInt(addressHash[i + 2], 16) > 7 ? address[i + 2].toUpperCase() : address[i + 2];
+  }return checksumAddress;
+};
+
+var fromPrivate = function fromPrivate(privateKey) {
+  var buffer = new Buffer(privateKey.slice(2), "hex");
+  var ecKey = secp256k1.keyFromPrivate(buffer);
+  var publicKey = "0x" + ecKey.getPublic(false, 'hex').slice(2);
+  var publicHash = keccak256(publicKey);
+  var address = toChecksum("0x" + publicHash.slice(-40));
+  return {
+    address: address,
+    privateKey: privateKey
   };
-} else {
+};
+
+var encodeSignature = function encodeSignature(_ref) {
+  var _ref2 = _slicedToArray(_ref, 3),
+      v = _ref2[0],
+      r = Bytes.pad(32, _ref2[1]),
+      s = Bytes.pad(32, _ref2[2]);
+
+  return Bytes.flatten([r, s, v]);
+};
+
+var decodeSignature = function decodeSignature(hex) {
+  return [Bytes.slice(64, Bytes.length(hex), hex), Bytes.slice(0, 32, hex), Bytes.slice(32, 64, hex)];
+};
+
+var makeSigner = function makeSigner(addToV) {
+  return function (hash, privateKey) {
+    var signature = secp256k1.keyFromPrivate(new Buffer(privateKey.slice(2), "hex")).sign(new Buffer(hash.slice(2), "hex"), { canonical: true });
+    return encodeSignature([Nat.fromString(Bytes.fromNumber(addToV + signature.recoveryParam)), Bytes.pad(32, Bytes.fromNat("0x" + signature.r.toString(16))), Bytes.pad(32, Bytes.fromNat("0x" + signature.s.toString(16)))]);
+  };
+};
+
+var sign = makeSigner(27); // v=27|28 instead of 0|1...
+
+var recover = function recover(hash, signature) {
+  var vals = decodeSignature(signature);
+  var vrs = { v: Bytes.toNumber(vals[0]), r: vals[1].slice(2), s: vals[2].slice(2) };
+  var ecPublicKey = secp256k1.recoverPubKey(new Buffer(hash.slice(2), "hex"), vrs, vrs.v < 2 ? vrs.v : 1 - vrs.v % 2); // because odd vals mean v=0... sadly that means v=0 means v=1... I hate that
+  var publicKey = "0x" + ecPublicKey.encode("hex", false).slice(2);
+  var publicHash = keccak256(publicKey);
+  var address = toChecksum("0x" + publicHash.slice(-40));
+  return address;
+};
+
+module.exports = {
+  create: create,
+  toChecksum: toChecksum,
+  fromPrivate: fromPrivate,
+  sign: sign,
+  makeSigner: makeSigner,
+  recover: recover,
+  encodeSignature: encodeSignature,
+  decodeSignature: decodeSignature
+};
+}).call(this,require("buffer").Buffer)
+},{"./bytes":376,"./hash":377,"./nat":378,"./rlp":379,"buffer":51,"elliptic":267}],375:[function(require,module,exports){
+var generate = function generate(num, fn) {
+  var a = [];
+  for (var i = 0; i < num; ++i) {
+    a.push(fn(i));
+  }return a;
+};
+
+var replicate = function replicate(num, val) {
+  return generate(num, function () {
+    return val;
+  });
+};
+
+var concat = function concat(a, b) {
+  return a.concat(b);
+};
+
+var flatten = function flatten(a) {
+  var r = [];
+  for (var j = 0, J = a.length; j < J; ++j) {
+    for (var i = 0, I = a[j].length; i < I; ++i) {
+      r.push(a[j][i]);
+    }
+  }return r;
+};
+
+var chunksOf = function chunksOf(n, a) {
+  var b = [];
+  for (var i = 0, l = a.length; i < l; i += n) {
+    b.push(a.slice(i, i + n));
+  }return b;
+};
+
+module.exports = {
+  generate: generate,
+  replicate: replicate,
+  concat: concat,
+  flatten: flatten,
+  chunksOf: chunksOf
+};
+},{}],376:[function(require,module,exports){
+var A = require("./array.js");
+
+var at = function at(bytes, index) {
+  return parseInt(bytes.slice(index * 2 + 2, index * 2 + 4), 16);
+};
+
+var random = function random(bytes) {
+  var rnd = void 0;
+  if (typeof window !== "undefined" && window.crypto && window.crypto.getRandomValues) rnd = window.crypto.getRandomValues(new Uint8Array(bytes));else if (typeof require !== "undefined") rnd = require("c" + "rypto").randomBytes(bytes);else throw "Safe random numbers not available.";
+  var hex = "0x";
+  for (var i = 0; i < bytes; ++i) {
+    hex += ("00" + rnd[i].toString(16)).slice(-2);
+  }return hex;
+};
+
+var length = function length(a) {
+  return (a.length - 2) / 2;
+};
+
+var flatten = function flatten(a) {
+  return "0x" + a.reduce(function (r, s) {
+    return r + s.slice(2);
+  }, "");
+};
+
+var slice = function slice(i, j, bs) {
+  return "0x" + bs.slice(i * 2 + 2, j * 2 + 2);
+};
+
+var reverse = function reverse(hex) {
+  var rev = "0x";
+  for (var i = 0, l = length(hex); i < l; ++i) {
+    rev += hex.slice((l - i) * 2, (l - i + 1) * 2);
+  }
+  return rev;
+};
+
+var pad = function pad(l, hex) {
+  return hex.length === l * 2 + 2 ? hex : pad(l, "0x" + "0" + hex.slice(2));
+};
+
+var padRight = function padRight(l, hex) {
+  return hex.length === l * 2 + 2 ? hex : padRight(l, hex + "0");
+};
+
+var toArray = function toArray(hex) {
+  var arr = [];
+  for (var i = 2, l = hex.length; i < l; i += 2) {
+    arr.push(parseInt(hex.slice(i, i + 2), 16));
+  }return arr;
+};
+
+var fromArray = function fromArray(arr) {
+  var hex = "0x";
+  for (var i = 0, l = arr.length; i < l; ++i) {
+    var b = arr[i];
+    hex += (b < 16 ? "0" : "") + b.toString(16);
+  }
+  return hex;
+};
+
+var toUint8Array = function toUint8Array(hex) {
+  return new Uint8Array(toArray(hex));
+};
+
+var fromUint8Array = function fromUint8Array(arr) {
+  return fromArray([].slice.call(arr, 0));
+};
+
+var fromNumber = function fromNumber(num) {
+  var hex = num.toString(16);
+  return hex.length % 2 === 0 ? "0x" + hex : "0x0" + hex;
+};
+
+var toNumber = function toNumber(hex) {
+  return parseInt(hex.slice(2), 16);
+};
+
+var concat = function concat(a, b) {
+  return a.concat(b.slice(2));
+};
+
+var fromNat = function fromNat(bn) {
+  return bn === "0x0" ? "0x" : bn.length % 2 === 0 ? bn : "0x0" + bn.slice(2);
+};
+
+var toNat = function toNat(bn) {
+  return bn[2] === "0" ? "0x" + bn.slice(3) : bn;
+};
+
+var fromAscii = function fromAscii(ascii) {
+  var hex = "0x";
+  for (var i = 0; i < ascii.length; ++i) {
+    hex += ("00" + ascii.charCodeAt(i).toString(16)).slice(-2);
+  }return hex;
+};
+
+var toAscii = function toAscii(hex) {
+  var ascii = "";
+  for (var i = 2; i < hex.length; i += 2) {
+    ascii += String.fromCharCode(parseInt(hex.slice(i, i + 2), 16));
+  }return ascii;
+};
+
+// From https://gist.github.com/pascaldekloe/62546103a1576803dade9269ccf76330
+var fromString = function fromString(s) {
+  var makeByte = function makeByte(uint8) {
+    var b = uint8.toString(16);
+    return b.length < 2 ? "0" + b : b;
+  };
+  var bytes = "0x";
+  for (var ci = 0; ci != s.length; ci++) {
+    var c = s.charCodeAt(ci);
+    if (c < 128) {
+      bytes += makeByte(c);
+      continue;
+    }
+    if (c < 2048) {
+      bytes += makeByte(c >> 6 | 192);
+    } else {
+      if (c > 0xd7ff && c < 0xdc00) {
+        if (++ci == s.length) return null;
+        var c2 = s.charCodeAt(ci);
+        if (c2 < 0xdc00 || c2 > 0xdfff) return null;
+        c = 0x10000 + ((c & 0x03ff) << 10) + (c2 & 0x03ff);
+        bytes += makeByte(c >> 18 | 240);
+        bytes += makeByte(c >> 12 & 63 | 128);
+      } else {
+        // c <= 0xffff
+        bytes += makeByte(c >> 12 | 224);
+      }
+      bytes += makeByte(c >> 6 & 63 | 128);
+    }
+    bytes += makeByte(c & 63 | 128);
+  }
+  return bytes;
+};
+
+var toString = function toString(bytes) {
+  var s = '';
+  var i = 0;
+  var l = length(bytes);
+  while (i < l) {
+    var c = at(bytes, i++);
+    if (c > 127) {
+      if (c > 191 && c < 224) {
+        if (i >= l) return null;
+        c = (c & 31) << 6 | at(bytes, i) & 63;
+      } else if (c > 223 && c < 240) {
+        if (i + 1 >= l) return null;
+        c = (c & 15) << 12 | (at(bytes, i) & 63) << 6 | at(bytes, ++i) & 63;
+      } else if (c > 239 && c < 248) {
+        if (i + 2 >= l) return null;
+        c = (c & 7) << 18 | (at(bytes, i) & 63) << 12 | (at(bytes, ++i) & 63) << 6 | at(bytes, ++i) & 63;
+      } else return null;
+      ++i;
+    }
+    if (c <= 0xffff) s += String.fromCharCode(c);else if (c <= 0x10ffff) {
+      c -= 0x10000;
+      s += String.fromCharCode(c >> 10 | 0xd800);
+      s += String.fromCharCode(c & 0x3FF | 0xdc00);
+    } else return null;
+  }
+  return s;
+};
+
+module.exports = {
+  random: random,
+  length: length,
+  concat: concat,
+  flatten: flatten,
+  slice: slice,
+  reverse: reverse,
+  pad: pad,
+  padRight: padRight,
+  fromAscii: fromAscii,
+  toAscii: toAscii,
+  fromString: fromString,
+  toString: toString,
+  fromNumber: fromNumber,
+  toNumber: toNumber,
+  fromNat: fromNat,
+  toNat: toNat,
+  fromArray: fromArray,
+  toArray: toArray,
+  fromUint8Array: fromUint8Array,
+  toUint8Array: toUint8Array
+};
+},{"./array.js":375}],377:[function(require,module,exports){
+arguments[4][174][0].apply(exports,arguments)
+},{"dup":174}],378:[function(require,module,exports){
+var BN = require("bn.js");
+var Bytes = require("./bytes");
+
+var fromBN = function fromBN(bn) {
+  return "0x" + bn.toString("hex");
+};
+
+var toBN = function toBN(str) {
+  return new BN(str.slice(2), 16);
+};
+
+var fromString = function fromString(str) {
+  var bn = "0x" + (str.slice(0, 2) === "0x" ? new BN(str.slice(2), 16) : new BN(str, 10)).toString("hex");
+  return bn === "0x0" ? "0x" : bn;
+};
+
+var toEther = function toEther(wei) {
+  return toNumber(div(wei, fromString("10000000000"))) / 100000000;
+};
+
+var fromEther = function fromEther(eth) {
+  return mul(fromNumber(Math.floor(eth * 100000000)), fromString("10000000000"));
+};
+
+var toString = function toString(a) {
+  return toBN(a).toString(10);
+};
+
+var fromNumber = function fromNumber(a) {
+  return typeof a === "string" ? /^0x/.test(a) ? a : "0x" + a : "0x" + new BN(a).toString("hex");
+};
+
+var toNumber = function toNumber(a) {
+  return toBN(a).toNumber();
+};
+
+var toUint256 = function toUint256(a) {
+  return Bytes.pad(32, a);
+};
+
+var bin = function bin(method) {
+  return function (a, b) {
+    return fromBN(toBN(a)[method](toBN(b)));
+  };
+};
+
+var add = bin("add");
+var mul = bin("mul");
+var div = bin("div");
+var sub = bin("sub");
+
+module.exports = {
+  toString: toString,
+  fromString: fromString,
+  toNumber: toNumber,
+  fromNumber: fromNumber,
+  toEther: toEther,
+  fromEther: fromEther,
+  toUint256: toUint256,
+  add: add,
+  mul: mul,
+  div: div,
+  sub: sub
+};
+},{"./bytes":376,"bn.js":219}],379:[function(require,module,exports){
+// The RLP format
+// Serialization and deserialization for the BytesTree type, under the following grammar:
+// | First byte | Meaning                                                                    |
+// | ---------- | -------------------------------------------------------------------------- |
+// | 0   to 127 | HEX(leaf)                                                                  |
+// | 128 to 183 | HEX(length_of_leaf + 128) + HEX(leaf)                                      |
+// | 184 to 191 | HEX(length_of_length_of_leaf + 128 + 55) + HEX(length_of_leaf) + HEX(leaf) |
+// | 192 to 247 | HEX(length_of_node + 192) + HEX(node)                                      |
+// | 248 to 255 | HEX(length_of_length_of_node + 128 + 55) + HEX(length_of_node) + HEX(node) |
+
+var encode = function encode(tree) {
+  var padEven = function padEven(str) {
+    return str.length % 2 === 0 ? str : "0" + str;
+  };
+
+  var uint = function uint(num) {
+    return padEven(num.toString(16));
+  };
+
+  var length = function length(len, add) {
+    return len < 56 ? uint(add + len) : uint(add + uint(len).length / 2 + 55) + uint(len);
+  };
+
+  var dataTree = function dataTree(tree) {
+    if (typeof tree === "string") {
+      var hex = tree.slice(2);
+      var pre = hex.length != 2 || hex >= "80" ? length(hex.length / 2, 128) : "";
+      return pre + hex;
+    } else {
+      var _hex = tree.map(dataTree).join("");
+      var _pre = length(_hex.length / 2, 192);
+      return _pre + _hex;
+    }
+  };
+
+  return "0x" + dataTree(tree);
+};
+
+var decode = function decode(hex) {
+  var i = 2;
+
+  var parseTree = function parseTree() {
+    if (i >= hex.length) throw "";
+    var head = hex.slice(i, i + 2);
+    return head < "80" ? (i += 2, "0x" + head) : head < "c0" ? parseHex() : parseList();
+  };
+
+  var parseLength = function parseLength() {
+    var len = parseInt(hex.slice(i, i += 2), 16) % 64;
+    return len < 56 ? len : parseInt(hex.slice(i, i += (len - 55) * 2), 16);
+  };
+
+  var parseHex = function parseHex() {
+    var len = parseLength();
+    return "0x" + hex.slice(i, i += len * 2);
+  };
+
+  var parseList = function parseList() {
+    var lim = parseLength() * 2 + i;
+    var list = [];
+    while (i < lim) {
+      list.push(parseTree());
+    }return list;
+  };
+
+  try {
+    return parseTree();
+  } catch (e) {
+    return [];
+  }
+};
+
+module.exports = { encode: encode, decode: decode };
+},{}],380:[function(require,module,exports){
+(function (global){
+
+var rng;
+
+if (global.crypto && crypto.getRandomValues) {
+  // WHATWG crypto-based RNG - http://wiki.whatwg.org/wiki/Crypto
+  // Moderately fast, high quality
+  var _rnds8 = new Uint8Array(16);
+  rng = function whatwgRNG() {
+    crypto.getRandomValues(_rnds8);
+    return _rnds8;
+  };
+}
+
+if (!rng) {
   // Math.random()-based (RNG)
   //
   // If all else fails, use Math.random().  It's fast, but is of unspecified
   // quality.
-  var rnds = new Array(16);
-
-  module.exports = function mathRNG() {
+  var  _rnds = new Array(16);
+  rng = function() {
     for (var i = 0, r; i < 16; i++) {
       if ((i & 0x03) === 0) r = Math.random() * 0x100000000;
-      rnds[i] = r >>> ((i & 0x03) << 3) & 0xff;
+      _rnds[i] = r >>> ((i & 0x03) << 3) & 0xff;
     }
 
-    return rnds;
+    return _rnds;
   };
 }
 
-},{}],567:[function(require,module,exports){
-var rng = require('./lib/rng');
-var bytesToUuid = require('./lib/bytesToUuid');
+module.exports = rng;
+
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}],381:[function(require,module,exports){
+//     uuid.js
+//
+//     Copyright (c) 2010-2012 Robert Kieffer
+//     MIT License - http://opensource.org/licenses/mit-license.php
+
+// Unique ID creation requires a high quality random # generator.  We feature
+// detect to determine the best RNG source, normalizing to a function that
+// returns 128-bits of randomness, since that's what's usually required
+var _rng = require('./rng');
+
+// Maps for number <-> hex string conversion
+var _byteToHex = [];
+var _hexToByte = {};
+for (var i = 0; i < 256; i++) {
+  _byteToHex[i] = (i + 0x100).toString(16).substr(1);
+  _hexToByte[_byteToHex[i]] = i;
+}
+
+// **`parse()` - Parse a UUID into it's component bytes**
+function parse(s, buf, offset) {
+  var i = (buf && offset) || 0, ii = 0;
+
+  buf = buf || [];
+  s.toLowerCase().replace(/[0-9a-f]{2}/g, function(oct) {
+    if (ii < 16) { // Don't overflow!
+      buf[i + ii++] = _hexToByte[oct];
+    }
+  });
+
+  // Zero out remaining bytes if string was short
+  while (ii < 16) {
+    buf[i + ii++] = 0;
+  }
+
+  return buf;
+}
+
+// **`unparse()` - Convert UUID byte array (ala parse()) into a string**
+function unparse(buf, offset) {
+  var i = offset || 0, bth = _byteToHex;
+  return  bth[buf[i++]] + bth[buf[i++]] +
+          bth[buf[i++]] + bth[buf[i++]] + '-' +
+          bth[buf[i++]] + bth[buf[i++]] + '-' +
+          bth[buf[i++]] + bth[buf[i++]] + '-' +
+          bth[buf[i++]] + bth[buf[i++]] + '-' +
+          bth[buf[i++]] + bth[buf[i++]] +
+          bth[buf[i++]] + bth[buf[i++]] +
+          bth[buf[i++]] + bth[buf[i++]];
+}
 
 // **`v1()` - Generate time-based UUID**
 //
 // Inspired by https://github.com/LiosK/UUID.js
 // and http://docs.python.org/library/uuid.html
 
-var _nodeId;
-var _clockseq;
+// random #'s we need to init node and clockseq
+var _seedBytes = _rng();
+
+// Per 4.5, create and 48-bit node id, (47 random bits + multicast bit = 1)
+var _nodeId = [
+  _seedBytes[0] | 0x01,
+  _seedBytes[1], _seedBytes[2], _seedBytes[3], _seedBytes[4], _seedBytes[5]
+];
+
+// Per 4.2.2, randomize (14 bit) clockseq
+var _clockseq = (_seedBytes[6] << 8 | _seedBytes[7]) & 0x3fff;
 
 // Previous uuid creation time
-var _lastMSecs = 0;
-var _lastNSecs = 0;
+var _lastMSecs = 0, _lastNSecs = 0;
 
 // See https://github.com/broofa/node-uuid for API details
 function v1(options, buf, offset) {
@@ -56566,26 +48989,8 @@ function v1(options, buf, offset) {
   var b = buf || [];
 
   options = options || {};
-  var node = options.node || _nodeId;
-  var clockseq = options.clockseq !== undefined ? options.clockseq : _clockseq;
 
-  // node and clockseq need to be initialized to random values if they're not
-  // specified.  We do this lazily to minimize issues related to insufficient
-  // system entropy.  See #189
-  if (node == null || clockseq == null) {
-    var seedBytes = rng();
-    if (node == null) {
-      // Per 4.5, create and 48-bit node id, (47 random bits + multicast bit = 1)
-      node = _nodeId = [
-        seedBytes[0] | 0x01,
-        seedBytes[1], seedBytes[2], seedBytes[3], seedBytes[4], seedBytes[5]
-      ];
-    }
-    if (clockseq == null) {
-      // Per 4.2.2, randomize (14 bit) clockseq
-      clockseq = _clockseq = (seedBytes[6] << 8 | seedBytes[7]) & 0x3fff;
-    }
-  }
+  var clockseq = options.clockseq !== undefined ? options.clockseq : _clockseq;
 
   // UUID timestamps are 100 nano-second units since the Gregorian epoch,
   // (1582-10-15 00:00).  JSNumbers aren't precise enough for this, so
@@ -56646,29 +49051,28 @@ function v1(options, buf, offset) {
   b[i++] = clockseq & 0xff;
 
   // `node`
-  for (var n = 0; n < 6; ++n) {
+  var node = options.node || _nodeId;
+  for (var n = 0; n < 6; n++) {
     b[i + n] = node[n];
   }
 
-  return buf ? buf : bytesToUuid(b);
+  return buf ? buf : unparse(b);
 }
 
-module.exports = v1;
+// **`v4()` - Generate random UUID**
 
-},{"./lib/bytesToUuid":565,"./lib/rng":566}],568:[function(require,module,exports){
-var rng = require('./lib/rng');
-var bytesToUuid = require('./lib/bytesToUuid');
-
+// See https://github.com/broofa/node-uuid for API details
 function v4(options, buf, offset) {
+  // Deprecated - 'format' argument, as supported in v1.2
   var i = buf && offset || 0;
 
   if (typeof(options) == 'string') {
-    buf = options === 'binary' ? new Array(16) : null;
+    buf = options == 'binary' ? new Array(16) : null;
     options = null;
   }
   options = options || {};
 
-  var rnds = options.random || (options.rng || rng)();
+  var rnds = options.random || (options.rng || _rng)();
 
   // Per 4.4, set bits for version and `clock_seq_hi_and_reserved`
   rnds[6] = (rnds[6] & 0x0f) | 0x40;
@@ -56676,4737 +49080,4439 @@ function v4(options, buf, offset) {
 
   // Copy bytes to buffer, if provided
   if (buf) {
-    for (var ii = 0; ii < 16; ++ii) {
+    for (var ii = 0; ii < 16; ii++) {
       buf[i + ii] = rnds[ii];
     }
   }
 
-  return buf || bytesToUuid(rnds);
+  return buf || unparse(rnds);
 }
 
-module.exports = v4;
+// Export public API
+var uuid = v4;
+uuid.v1 = v1;
+uuid.v4 = v4;
+uuid.parse = parse;
+uuid.unparse = unparse;
 
-},{"./lib/bytesToUuid":565,"./lib/rng":566}],569:[function(require,module,exports){
-(function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('web3-utils'), require('web3-providers'), require('web3-core-helpers'), require('web3-eth-abi'), require('web3-core-promievent'), require('lodash/isFunction'), require('lodash/isUndefined'), require('lodash/cloneDeep'), require('lodash/isArray'), require('@babel/runtime/helpers/get'), require('web3-core-method'), require('web3-core-subscriptions'), require('@babel/runtime/regenerator'), require('@babel/runtime/helpers/asyncToGenerator'), require('@babel/runtime/helpers/classCallCheck'), require('@babel/runtime/helpers/createClass'), require('@babel/runtime/helpers/possibleConstructorReturn'), require('@babel/runtime/helpers/getPrototypeOf'), require('@babel/runtime/helpers/inherits'), require('@babel/runtime/helpers/assertThisInitialized'), require('web3-core')) :
-    typeof define === 'function' && define.amd ? define(['exports', 'web3-utils', 'web3-providers', 'web3-core-helpers', 'web3-eth-abi', 'web3-core-promievent', 'lodash/isFunction', 'lodash/isUndefined', 'lodash/cloneDeep', 'lodash/isArray', '@babel/runtime/helpers/get', 'web3-core-method', 'web3-core-subscriptions', '@babel/runtime/regenerator', '@babel/runtime/helpers/asyncToGenerator', '@babel/runtime/helpers/classCallCheck', '@babel/runtime/helpers/createClass', '@babel/runtime/helpers/possibleConstructorReturn', '@babel/runtime/helpers/getPrototypeOf', '@babel/runtime/helpers/inherits', '@babel/runtime/helpers/assertThisInitialized', 'web3-core'], factory) :
-    (factory((global.Web3EthContract = {}),global.Utils,global.web3Providers,global.web3CoreHelpers,global.web3EthAbi,global.web3CorePromievent,global.isFunction,global.isUndefined,global.cloneDeep,global.isArray,global._get,global.web3CoreMethod,global.web3CoreSubscriptions,global._regeneratorRuntime,global._asyncToGenerator,global._classCallCheck,global._createClass,global._possibleConstructorReturn,global._getPrototypeOf,global._inherits,global._assertThisInitialized,global.web3Core));
-}(this, (function (exports,Utils,web3Providers,web3CoreHelpers,web3EthAbi,web3CorePromievent,isFunction,isUndefined,cloneDeep,isArray,_get,web3CoreMethod,web3CoreSubscriptions,_regeneratorRuntime,_asyncToGenerator,_classCallCheck,_createClass,_possibleConstructorReturn,_getPrototypeOf,_inherits,_assertThisInitialized,web3Core) { 'use strict';
+module.exports = uuid;
 
-    isFunction = isFunction && isFunction.hasOwnProperty('default') ? isFunction['default'] : isFunction;
-    isUndefined = isUndefined && isUndefined.hasOwnProperty('default') ? isUndefined['default'] : isUndefined;
-    cloneDeep = cloneDeep && cloneDeep.hasOwnProperty('default') ? cloneDeep['default'] : cloneDeep;
-    isArray = isArray && isArray.hasOwnProperty('default') ? isArray['default'] : isArray;
-    _get = _get && _get.hasOwnProperty('default') ? _get['default'] : _get;
-    _regeneratorRuntime = _regeneratorRuntime && _regeneratorRuntime.hasOwnProperty('default') ? _regeneratorRuntime['default'] : _regeneratorRuntime;
-    _asyncToGenerator = _asyncToGenerator && _asyncToGenerator.hasOwnProperty('default') ? _asyncToGenerator['default'] : _asyncToGenerator;
-    _classCallCheck = _classCallCheck && _classCallCheck.hasOwnProperty('default') ? _classCallCheck['default'] : _classCallCheck;
-    _createClass = _createClass && _createClass.hasOwnProperty('default') ? _createClass['default'] : _createClass;
-    _possibleConstructorReturn = _possibleConstructorReturn && _possibleConstructorReturn.hasOwnProperty('default') ? _possibleConstructorReturn['default'] : _possibleConstructorReturn;
-    _getPrototypeOf = _getPrototypeOf && _getPrototypeOf.hasOwnProperty('default') ? _getPrototypeOf['default'] : _getPrototypeOf;
-    _inherits = _inherits && _inherits.hasOwnProperty('default') ? _inherits['default'] : _inherits;
-    _assertThisInitialized = _assertThisInitialized && _assertThisInitialized.hasOwnProperty('default') ? _assertThisInitialized['default'] : _assertThisInitialized;
+},{"./rng":380}],382:[function(require,module,exports){
+(function (global,Buffer){
+/*
+ This file is part of web3.js.
 
-    var AbiModel =
-    function () {
-      function AbiModel(mappedAbi) {
-        _classCallCheck(this, AbiModel);
-        this.abi = mappedAbi;
-      }
-      _createClass(AbiModel, [{
-        key: "getMethod",
-        value: function getMethod(name) {
-          if (this.hasMethod(name)) {
-            return this.abi.methods[name];
-          }
-          return false;
-        }
-      }, {
-        key: "getEvent",
-        value: function getEvent(name) {
-          if (this.hasEvent(name)) {
-            return this.abi.events[name];
-          }
-          return false;
-        }
-      }, {
-        key: "getEvents",
-        value: function getEvents() {
-          return this.abi.events;
-        }
-      }, {
-        key: "getEventBySignature",
-        value: function getEventBySignature(signature) {
-          var _this = this;
-          var event;
-          Object.keys(this.abi.events).forEach(function (key) {
-            if (_this.abi.events[key].signature === signature) {
-              event = _this.abi.events[key];
-            }
-          });
-          return event;
-        }
-      }, {
-        key: "hasMethod",
-        value: function hasMethod(name) {
-          return typeof this.abi.methods[name] !== 'undefined';
-        }
-      }, {
-        key: "hasEvent",
-        value: function hasEvent(name) {
-          return typeof this.abi.events[name] !== 'undefined';
-        }
-      }]);
-      return AbiModel;
-    }();
+ web3.js is free software: you can redistribute it and/or modify
+ it under the terms of the GNU Lesser General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
 
-    var AbiItemModel =
-    function () {
-      function AbiItemModel(abiItem) {
-        _classCallCheck(this, AbiItemModel);
-        this.abiItem = abiItem;
-        this.signature = this.abiItem.signature;
-        this.name = this.abiItem.name;
-        this.payable = this.abiItem.payable;
-        this.anonymous = this.abiItem.anonymous;
-        this.contractMethodParameters = [];
-      }
-      _createClass(AbiItemModel, [{
-        key: "getInputLength",
-        value: function getInputLength() {
-          if (isArray(this.abiItem.inputs)) {
-            return this.abiItem.inputs.length;
-          }
-          return 0;
-        }
-      }, {
-        key: "getInputs",
-        value: function getInputs() {
-          if (isArray(this.abiItem.inputs)) {
-            return this.abiItem.inputs;
-          }
-          return [];
-        }
-      }, {
-        key: "getOutputs",
-        value: function getOutputs() {
-          if (isArray(this.abiItem.outputs)) {
-            return this.abiItem.outputs;
-          }
-          return [];
-        }
-      }, {
-        key: "givenParametersLengthIsValid",
-        value: function givenParametersLengthIsValid() {
-          var inputLength = this.getInputLength();
-          if (this.contractMethodParameters.length === inputLength) {
-            return true;
-          }
-          throw new Error("The number of arguments is not matching the methods required number. You need to pass ".concat(inputLength, " arguments."));
-        }
-      }, {
-        key: "getIndexedInputs",
-        value: function getIndexedInputs() {
-          return this.getInputs().filter(function (input) {
-            return input.indexed === true;
-          });
-        }
-      }, {
-        key: "isOfType",
-        value: function isOfType(type) {
-          return this.abiItem.type === type;
-        }
-      }, {
-        key: "requestType",
-        get: function get() {
-          if (this.abiItem.type === 'function' || this.abiItem.type === 'constructor') {
-            if (this.abiItem.constant === true) {
-              return 'call';
-            }
-            return 'send';
-          }
-        }
-      }]);
-      return AbiItemModel;
-    }();
+ web3.js is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU Lesser General Public License for more details.
 
-    var MethodEncoder =
-    function () {
-      function MethodEncoder(abiCoder) {
-        _classCallCheck(this, MethodEncoder);
-        this.abiCoder = abiCoder;
-      }
-      _createClass(MethodEncoder, [{
-        key: "encode",
-        value: function encode(abiItemModel, deployData) {
-          var encodedParameters = this.abiCoder.encodeParameters(abiItemModel.getInputs(), abiItemModel.contractMethodParameters).replace('0x', '');
-          if (abiItemModel.signature === 'constructor') {
-            if (!deployData) {
-              throw new Error('The contract has no contract data option set. This is necessary to append the constructor parameters.');
-            }
-            return deployData + encodedParameters;
-          }
-          if (abiItemModel.isOfType('function')) {
-            return abiItemModel.signature + encodedParameters;
-          }
-          return encodedParameters;
-        }
-      }]);
-      return MethodEncoder;
-    }();
+ You should have received a copy of the GNU Lesser General Public License
+ along with web3.js.  If not, see <http://www.gnu.org/licenses/>.
+ */
+/**
+ * @file accounts.js
+ * @author Fabian Vogelsteller <fabian@ethereum.org>
+ * @date 2017
+ */
 
-    var EventFilterEncoder =
-    function () {
-      function EventFilterEncoder(abiCoder) {
-        _classCallCheck(this, EventFilterEncoder);
-        this.abiCoder = abiCoder;
-      }
-      _createClass(EventFilterEncoder, [{
-        key: "encode",
-        value: function encode(abiItemModel, filter) {
-          var _this = this;
-          var indexedInputs = abiItemModel.getIndexedInputs();
-          var topics = [];
-          indexedInputs.forEach(function (indexedInput) {
-            if (filter[indexedInput.name]) {
-              var filterItem = filter[indexedInput.name];
-              if (isArray(filterItem)) {
-                filterItem = filterItem.map(function (item) {
-                  return _this.abiCoder.encodeParameter(indexedInput.type, item);
-                });
-                topics.push(filterItem);
-                return;
-              }
-              topics.push(_this.abiCoder.encodeParameter(indexedInput.type, filterItem));
-            }
-          });
-          return topics;
-        }
-      }]);
-      return EventFilterEncoder;
-    }();
+"use strict";
 
-    var AllEventsFilterEncoder =
-    function (_EventFilterEncoder) {
-      _inherits(AllEventsFilterEncoder, _EventFilterEncoder);
-      function AllEventsFilterEncoder() {
-        _classCallCheck(this, AllEventsFilterEncoder);
-        return _possibleConstructorReturn(this, _getPrototypeOf(AllEventsFilterEncoder).apply(this, arguments));
-      }
-      _createClass(AllEventsFilterEncoder, [{
-        key: "encode",
-        value: function encode(abiModel, filter) {
-          var _this = this;
-          var events = abiModel.getEvents();
-          var topics = [];
-          Object.keys(events).forEach(function (key) {
-            topics.push(_get(_getPrototypeOf(AllEventsFilterEncoder.prototype), "encode", _this).call(_this, events[key], filter));
-          });
-          return topics;
-        }
-      }]);
-      return AllEventsFilterEncoder;
-    }(EventFilterEncoder);
+var _ = require("underscore");
+var core = require('web3-core');
+var Method = require('web3-core-method');
+var Promise = require('any-promise');
+var Account = require("eth-lib/lib/account");
+var Hash = require("eth-lib/lib/hash");
+var RLP = require("eth-lib/lib/rlp");
+var Nat = require("eth-lib/lib/nat");
+var Bytes = require("eth-lib/lib/bytes");
+var cryp = (typeof global === 'undefined') ? require('crypto-browserify') : require('crypto');
+var scryptsy = require('scrypt.js');
+var uuid = require('uuid');
+var utils = require('web3-utils');
+var helpers = require('web3-core-helpers');
 
-    var EventLogDecoder =
-    function () {
-      function EventLogDecoder(abiCoder) {
-        _classCallCheck(this, EventLogDecoder);
-        this.abiCoder = abiCoder;
-      }
-      _createClass(EventLogDecoder, [{
-        key: "decode",
-        value: function decode(abiItemModel, response) {
-          var argTopics = response.topics;
-          if (abiItemModel.anonymous) {
-            argTopics = response.topics.slice(1);
-          }
-          response.returnValues = this.abiCoder.decodeLog(abiItemModel.getInputs(), response.data, argTopics);
-          response.event = abiItemModel.name;
-          response.signature = abiItemModel.signature;
-          response.raw = {
-            data: response.data,
-            topics: response.topics
-          };
-          if (abiItemModel.anonymous || !response.topics[0]) {
-            response.signature = null;
-          }
-          delete response.data;
-          delete response.topics;
-          return response;
-        }
-      }]);
-      return EventLogDecoder;
-    }();
+var isNot = function(value) {
+    return (_.isUndefined(value) || _.isNull(value));
+};
 
-    var AllEventsLogDecoder =
-    function (_EventLogDecoder) {
-      _inherits(AllEventsLogDecoder, _EventLogDecoder);
-      function AllEventsLogDecoder(abiCoder) {
-        _classCallCheck(this, AllEventsLogDecoder);
-        return _possibleConstructorReturn(this, _getPrototypeOf(AllEventsLogDecoder).call(this, abiCoder));
-      }
-      _createClass(AllEventsLogDecoder, [{
-        key: "decode",
-        value: function decode(abiModel, response) {
-          return _get(_getPrototypeOf(AllEventsLogDecoder.prototype), "decode", this).call(this, abiModel.getEventBySignature(response.topics[0]), response);
-        }
-      }]);
-      return AllEventsLogDecoder;
-    }(EventLogDecoder);
+var trimLeadingZero = function (hex) {
+    while (hex && hex.startsWith('0x0')) {
+        hex = '0x' + hex.slice(3);
+    }
+    return hex;
+};
 
-    var AbiMapper =
-    function () {
-      function AbiMapper(contractModuleFactory, abiCoder, utils) {
-        _classCallCheck(this, AbiMapper);
-        this.utils = utils;
-        this.abiCoder = abiCoder;
-        this.contractModuleFactory = contractModuleFactory;
-      }
-      _createClass(AbiMapper, [{
-        key: "map",
-        value: function map(abi) {
-          var _this = this;
-          var mappedAbiItems = {
-            methods: {},
-            events: {}
-          };
-          abi.forEach(function (abiItem) {
-            abiItem.constant = _this.isConstant(abiItem);
-            abiItem.payable = _this.isPayable(abiItem);
-            if (abiItem.name) {
-              abiItem.funcName = _this.utils.jsonInterfaceMethodToString(abiItem);
-            }
-            var abiItemModel;
-            if (abiItem.type === 'function') {
-              abiItem.signature = _this.abiCoder.encodeFunctionSignature(abiItem.funcName);
-              abiItemModel = _this.contractModuleFactory.createAbiItemModel(abiItem);
-              if (!mappedAbiItems.methods[abiItem.name]) {
-                mappedAbiItems.methods[abiItem.name] = abiItemModel;
-              } else {
-                if (isArray(mappedAbiItems.methods[abiItem.name])) {
-                  mappedAbiItems.methods[abiItem.name].push(abiItemModel);
+var makeEven = function (hex) {
+    if(hex.length % 2 === 1) {
+        hex = hex.replace('0x', '0x0');
+    }
+    return hex;
+};
+
+
+var Accounts = function Accounts() {
+    var _this = this;
+
+    // sets _requestmanager
+    core.packageInit(this, arguments);
+
+    // remove unecessary core functions
+    delete this.BatchRequest;
+    delete this.extend;
+
+    var _ethereumCall = [
+        new Method({
+            name: 'getId',
+            call: 'net_version',
+            params: 0,
+            outputFormatter: utils.hexToNumber
+        }),
+        new Method({
+            name: 'getGasPrice',
+            call: 'eth_gasPrice',
+            params: 0
+        }),
+        new Method({
+            name: 'getTransactionCount',
+            call: 'eth_getTransactionCount',
+            params: 2,
+            inputFormatter: [function (address) {
+                if (utils.isAddress(address)) {
+                    return address;
                 } else {
-                  mappedAbiItems.methods[abiItem.name] = [mappedAbiItems.methods[abiItem.name], abiItemModel];
+                    throw new Error('Address '+ address +' is not a valid address to get the "transactionCount".');
                 }
-              }
-              mappedAbiItems.methods[abiItem.signature] = abiItemModel;
-              mappedAbiItems.methods[abiItem.funcName] = abiItemModel;
-              return;
-            }
-            if (abiItem.type === 'event') {
-              abiItem.signature = _this.abiCoder.encodeEventSignature(abiItem.funcName);
-              abiItemModel = _this.contractModuleFactory.createAbiItemModel(abiItem);
-              if (!mappedAbiItems.events[abiItem.name] || mappedAbiItems.events[abiItem.name].name === 'bound ') {
-                mappedAbiItems.events[abiItem.name] = abiItemModel;
-              }
-              mappedAbiItems.events[abiItem.signature] = abiItemModel;
-              mappedAbiItems.events[abiItem.funcName] = abiItemModel;
-            }
-            if (abiItem.type === 'constructor') {
-              abiItem.signature = abiItem.type;
-              mappedAbiItems.methods['contractConstructor'] = _this.contractModuleFactory.createAbiItemModel(abiItem);
-            }
-          });
-          return this.contractModuleFactory.createAbiModel(mappedAbiItems);
-        }
-      }, {
-        key: "isConstant",
-        value: function isConstant(abiItem) {
-          return abiItem.stateMutability === 'view' || abiItem.stateMutability === 'pure' || abiItem.constant;
-        }
-      }, {
-        key: "isPayable",
-        value: function isPayable(abiItem) {
-          return abiItem.stateMutability === 'payable' || abiItem.payable;
-        }
-      }]);
-      return AbiMapper;
-    }();
+            }, function () { return 'latest'; }]
+        })
+    ];
+    // attach methods to this._ethereumCall
+    this._ethereumCall = {};
+    _.each(_ethereumCall, function (method) {
+        method.attachToObject(_this._ethereumCall);
+        method.setRequestManager(_this._requestManager);
+    });
 
-    var MethodOptionsMapper =
-    function () {
-      function MethodOptionsMapper(utils, formatters) {
-        _classCallCheck(this, MethodOptionsMapper);
-        this.utils = utils;
-        this.formatters = formatters;
-      }
-      _createClass(MethodOptionsMapper, [{
-        key: "map",
-        value: function map(contract, options) {
-          var from = null;
-          if (options.from) {
-            from = this.utils.toChecksumAddress(this.formatters.inputAddressFormatter(options.from));
-          }
-          options.to = contract.address;
-          options.from = from || contract.defaultAccount;
-          options.gasPrice = options.gasPrice || contract.defaultGasPrice;
-          options.gas = options.gas || options.gasLimit || contract.defaultGas;
-          delete options.gasLimit;
-          return options;
-        }
-      }]);
-      return MethodOptionsMapper;
-    }();
 
-    var EventOptionsMapper =
-    function () {
-      function EventOptionsMapper(formatters, eventFilterEncoder) {
-        _classCallCheck(this, EventOptionsMapper);
-        this.formatters = formatters;
-        this.eventFilterEncoder = eventFilterEncoder;
-      }
-      _createClass(EventOptionsMapper, [{
-        key: "map",
-        value: function map(abiItemModel, contract, options) {
-          if (!options) {
-            options = {};
-          }
-          if (!isArray(options.topics)) {
-            options.topics = [];
-          }
-          if (typeof options.fromBlock !== 'undefined') {
-            options.fromBlock = this.formatters.inputBlockNumberFormatter(options.fromBlock);
-          } else if (contract.defaultBlock !== null) {
-            options.fromBlock = contract.defaultBlock;
-          }
-          if (typeof options.toBlock !== 'undefined') {
-            options.toBlock = this.formatters.inputBlockNumberFormatter(options.toBlock);
-          }
-          if (!abiItemModel.anonymous) {
-            options.topics.unshift(abiItemModel.signature);
-          }
-          if (typeof options.filter !== 'undefined') {
-            options.topics = options.topics.concat(this.eventFilterEncoder.encode(abiItemModel, options.filter));
-          }
-          if (!options.address) {
-            options.address = contract.address;
-          }
-          return options;
-        }
-      }]);
-      return EventOptionsMapper;
-    }();
+    this.wallet = new Wallet(this);
+};
 
-    var AllEventsOptionsMapper =
-    function () {
-      function AllEventsOptionsMapper(formatters, allEventsFilterEncoder) {
-        _classCallCheck(this, AllEventsOptionsMapper);
-        this.formatters = formatters;
-        this.allEventsFilterEncoder = allEventsFilterEncoder;
-      }
-      _createClass(AllEventsOptionsMapper, [{
-        key: "map",
-        value: function map(abiModel, contract, options) {
-          if (!options) {
-            options = {};
-          }
-          options.topics = [];
-          if (typeof options.fromBlock !== 'undefined') {
-            options.fromBlock = this.formatters.inputBlockNumberFormatter(options.fromBlock);
-          } else if (contract.defaultBlock !== null) {
-            options.fromBlock = contract.defaultBlock;
-          }
-          if (typeof options.toBlock !== 'undefined') {
-            options.toBlock = this.formatters.inputBlockNumberFormatter(options.toBlock);
-          }
-          if (typeof options.filter !== 'undefined') {
-            options.topics = options.topics.concat(this.allEventsFilterEncoder.encode(abiModel, options.filter));
-          }
-          if (!options.address) {
-            options.address = contract.address;
-          }
-          return options;
-        }
-      }]);
-      return AllEventsOptionsMapper;
-    }();
+Accounts.prototype._addAccountFunctions = function (account) {
+    var _this = this;
 
-    var MethodsProxy =
-    function () {
-      function MethodsProxy(contract, abiModel, methodFactory, methodEncoder, methodOptionsValidator, methodOptionsMapper, PromiEvent) {
-        var _this = this;
-        _classCallCheck(this, MethodsProxy);
-        this.contract = contract;
-        this.abiModel = abiModel;
-        this.methodFactory = methodFactory;
-        this.methodEncoder = methodEncoder;
-        this.methodOptionsValidator = methodOptionsValidator;
-        this.methodOptionsMapper = methodOptionsMapper;
-        this.PromiEvent = PromiEvent;
-        return new Proxy(this, {
-          get: function get(target, name) {
-            if (_this.abiModel.hasMethod(name)) {
-              var anonymousFunction = function anonymousFunction() {
-                var methodArguments = Array.prototype.slice.call(arguments);
-                if (!isArray(abiItemModel) && abiItemModel.isOfType('constructor')) {
-                  if (methodArguments[0]['data']) {
-                    target.contract.options.data = methodArguments[0]['data'];
-                  }
-                  if (methodArguments[0]['arguments']) {
-                    abiItemModel.contractMethodParameters = methodArguments[0]['arguments'];
-                  }
-                  return anonymousFunction;
-                }
-                if (isArray(abiItemModel)) {
-                  var abiItemModelFound = abiItemModel.some(function (model) {
-                    model.contractMethodParameters = methodArguments;
-                    try {
-                      model.givenParametersLengthIsValid();
-                    } catch (error) {
-                      return false;
-                    }
-                    abiItemModel = model;
-                    return true;
-                  });
-                  if (!abiItemModelFound) {
-                    throw new Error("Methods with name \"".concat(name, "\" found but the given parameters are wrong"));
-                  }
-                  return anonymousFunction;
-                }
-                abiItemModel.contractMethodParameters = methodArguments;
-                return anonymousFunction;
-              };
-              var abiItemModel = _this.abiModel.getMethod(name);
-              var requestType = abiItemModel.requestType;
-              if (isArray(abiItemModel)) {
-                requestType = abiItemModel[0].requestType;
-              }
-              anonymousFunction[requestType] = function () {
-                if (abiItemModel.isOfType('constructor')) {
-                  return target.executeMethod(abiItemModel, arguments, 'contract-deployment');
-                }
-                return target.executeMethod(abiItemModel, arguments, requestType);
-              };
-              anonymousFunction[requestType].request = function () {
-                return target.createMethod(abiItemModel, arguments, requestType);
-              };
-              anonymousFunction.estimateGas = function () {
-                return target.executeMethod(abiItemModel, arguments, 'estimate');
-              };
-              anonymousFunction.encodeABI = function () {
-                return target.methodEncoder.encode(abiItemModel, target.contract.options.data);
-              };
-              return anonymousFunction;
-            }
-            if (target[name]) {
-              return target[name];
-            }
-          }
-        });
-      }
-      _createClass(MethodsProxy, [{
-        key: "executeMethod",
-        value: function executeMethod(abiItemModel, methodArguments, requestType) {
-          var method;
-          try {
-            method = this.createMethod(abiItemModel, methodArguments, requestType);
-          } catch (error) {
-            var promiEvent = new this.PromiEvent();
-            method = this.methodFactory.createMethodByRequestType(abiItemModel, this.contract, requestType);
-            method.arguments = methodArguments;
-            promiEvent.reject(error);
-            promiEvent.emit('error', error);
-            if (isFunction(method.callback)) {
-              method.callback(error, null);
-            }
-            return promiEvent;
-          }
-          if (requestType === 'call' || requestType === 'estimate') {
-            return method.execute(this.contract);
-          }
-          return method.execute(this.contract, new this.PromiEvent());
-        }
-      }, {
-        key: "createMethod",
-        value: function createMethod(abiItemModel, methodArguments, requestType) {
-          abiItemModel.givenParametersLengthIsValid();
-          var method = this.methodFactory.createMethodByRequestType(abiItemModel, this.contract, requestType);
-          method.arguments = methodArguments;
-          if (typeof method.parameters[0] === 'undefined') {
-            method.parameters[0] = {};
-          }
-          method.parameters[0]['data'] = this.methodEncoder.encode(abiItemModel, this.contract.options.data);
-          method.parameters[0] = this.methodOptionsMapper.map(this.contract, method.parameters[0]);
-          this.methodOptionsValidator.validate(abiItemModel, method);
-          return method;
-        }
-      }]);
-      return MethodsProxy;
-    }();
-
-    var EventSubscriptionsProxy =
-    function () {
-      function EventSubscriptionsProxy(contract, abiModel, eventSubscriptionFactory, eventOptionsMapper, eventLogDecoder, allEventsLogDecoder, allEventsOptionsMapper, PromiEvent) {
-        var _this = this;
-        _classCallCheck(this, EventSubscriptionsProxy);
-        this.contract = contract;
-        this.eventSubscriptionFactory = eventSubscriptionFactory;
-        this.abiModel = abiModel;
-        this.eventOptionsMapper = eventOptionsMapper;
-        this.eventLogDecoder = eventLogDecoder;
-        this.allEventsLogDecoder = allEventsLogDecoder;
-        this.allEventsOptionsMapper = allEventsOptionsMapper;
-        this.PromiEvent = PromiEvent;
-        return new Proxy(this, {
-          get: function get(target, name) {
-            if (_this.abiModel.hasEvent(name)) {
-              return function (options, callback) {
-                return target.subscribe(target.abiModel.getEvent(name), cloneDeep(options), callback);
-              };
-            }
-            if (name === 'allEvents') {
-              return function (options, callback) {
-                return target.subscribeAll(cloneDeep(options), callback);
-              };
-            }
-            return target[name];
-          }
-        });
-      }
-      _createClass(EventSubscriptionsProxy, [{
-        key: "subscribe",
-        value: function subscribe(abiItemModel, options, callback) {
-          if (options && !isUndefined(options.filter) && !isUndefined(options.topics)) {
-            this.handleValidationError('Invalid subscription options: Only filter or topics are allowed and not both', callback);
-            return;
-          }
-          return this.eventSubscriptionFactory.createEventLogSubscription(this.eventLogDecoder, this.contract, this.eventOptionsMapper.map(abiItemModel, this.contract, options), abiItemModel).subscribe(callback);
-        }
-      }, {
-        key: "subscribeAll",
-        value: function subscribeAll(options, callback) {
-          if (options && !isUndefined(options.filter) && !isUndefined(options.topics)) {
-            this.handleValidationError('Invalid subscription options: Only filter or topics are allowed and not both', callback);
-            return;
-          }
-          return this.eventSubscriptionFactory.createAllEventsLogSubscription(this.allEventsLogDecoder, this.contract, this.allEventsOptionsMapper.map(this.abiModel, this.contract, options)).subscribe(callback);
-        }
-      }, {
-        key: "handleValidationError",
-        value: function handleValidationError(errorMessage, callback) {
-          var error = new Error(errorMessage);
-          if (isFunction(callback)) {
-            callback(error, null);
-          }
-          throw error;
-        }
-      }]);
-      return EventSubscriptionsProxy;
-    }();
-
-    var SendContractMethod =
-    function (_SendTransactionMetho) {
-      _inherits(SendContractMethod, _SendTransactionMetho);
-      function SendContractMethod(utils, formatters, transactionConfirmationWorkflow, accounts, transactionSigner, allEventsLogDecoder, abiModel) {
-        var _this;
-        _classCallCheck(this, SendContractMethod);
-        _this = _possibleConstructorReturn(this, _getPrototypeOf(SendContractMethod).call(this, utils, formatters, transactionConfirmationWorkflow, accounts, transactionSigner));
-        _this.allEventsLogDecoder = allEventsLogDecoder;
-        _this.abiModel = abiModel;
-        return _this;
-      }
-      _createClass(SendContractMethod, [{
-        key: "afterExecution",
-        value: function afterExecution(response) {
-          var _this2 = this;
-          if (isArray(response.logs)) {
-            response.events = {};
-            response.logs.forEach(function (log, index) {
-              log = _this2.allEventsLogDecoder.decode(_this2.abiModel, log);
-              if (log.event) {
-                if (response.events[log.event]) {
-                  if (isArray(response.events[log.event])) {
-                    response.events[log.event].push(log);
-                    return;
-                  }
-                  response.events[log.event] = [response.events[log.event], log];
-                  return;
-                }
-                response.events[log.event] = log;
-                return;
-              }
-              response.events[index] = log;
-            });
-            delete response.logs;
-          }
-          return response;
-        }
-      }]);
-      return SendContractMethod;
-    }(web3CoreMethod.SendTransactionMethod);
-
-    var MethodOptionsValidator =
-    function () {
-      function MethodOptionsValidator(utils) {
-        _classCallCheck(this, MethodOptionsValidator);
-        this.utils = utils;
-      }
-      _createClass(MethodOptionsValidator, [{
-        key: "validate",
-        value: function validate(abiItemModel, method) {
-          if (!this.isToSet(abiItemModel, method)) {
-            throw new Error("This contract object doesn't have address set yet, please set an address first.");
-          }
-          if (!this.isFromSet(method) && method instanceof SendContractMethod) {
-            throw new Error('No valid "from" address specified in neither the given options, nor the default options.');
-          }
-          if (!this.isValueValid(abiItemModel, method)) {
-            throw new Error('Can not send value to non-payable contract method or constructor');
-          }
-          return true;
-        }
-      }, {
-        key: "isToSet",
-        value: function isToSet(abiItemModel, method) {
-          if (abiItemModel.signature === 'constructor') {
-            return true;
-          }
-          return this.utils.isAddress(method.parameters[0].to);
-        }
-      }, {
-        key: "isFromSet",
-        value: function isFromSet(method) {
-          return this.utils.isAddress(method.parameters[0].from);
-        }
-      }, {
-        key: "isValueValid",
-        value: function isValueValid(abiItemModel, method) {
-          return !(!abiItemModel.payable && method.parameters[0].value && method.parameters[0].value > 0);
-        }
-      }]);
-      return MethodOptionsValidator;
-    }();
-
-    var CallContractMethod =
-    function (_CallMethod) {
-      _inherits(CallContractMethod, _CallMethod);
-      function CallContractMethod(utils, formatters, abiCoder, abiItemModel) {
-        var _this;
-        _classCallCheck(this, CallContractMethod);
-        _this = _possibleConstructorReturn(this, _getPrototypeOf(CallContractMethod).call(this, utils, formatters));
-        _this.abiCoder = abiCoder;
-        _this.abiItemModel = abiItemModel;
-        return _this;
-      }
-      _createClass(CallContractMethod, [{
-        key: "afterExecution",
-        value: function afterExecution(response) {
-          if (!response) {
-            return null;
-          }
-          if (response.length >= 2) {
-            response = response.slice(2);
-          }
-          var result = this.abiCoder.decodeParameters(this.abiItemModel.getOutputs(), response);
-          if (Object.keys(result).length === 1) {
-            return result[0];
-          }
-          return result;
-        }
-      }]);
-      return CallContractMethod;
-    }(web3CoreMethod.CallMethod);
-
-    var ContractDeployMethod =
-    function (_SendTransactionMetho) {
-      _inherits(ContractDeployMethod, _SendTransactionMetho);
-      function ContractDeployMethod(utils, formatters, transactionConfirmationWorkflow, accounts, transactionSigner, contract) {
-        var _this;
-        _classCallCheck(this, ContractDeployMethod);
-        _this = _possibleConstructorReturn(this, _getPrototypeOf(ContractDeployMethod).call(this, utils, formatters, transactionConfirmationWorkflow, accounts, transactionSigner));
-        _this.contract = contract;
-        return _this;
-      }
-      _createClass(ContractDeployMethod, [{
-        key: "beforeExecution",
-        value: function beforeExecution(moduleInstance) {
-          _get(_getPrototypeOf(ContractDeployMethod.prototype), "beforeExecution", this).call(this, moduleInstance);
-          delete this.parameters[0].to;
-        }
-      }, {
-        key: "afterExecution",
-        value: function afterExecution(response) {
-          var clonedContract = this.contract.clone();
-          clonedContract.options.address = response.contractAddress;
-          return clonedContract;
-        }
-      }]);
-      return ContractDeployMethod;
-    }(web3CoreMethod.SendTransactionMethod);
-
-    var PastEventLogsMethod =
-    function (_GetPastLogsMethod) {
-      _inherits(PastEventLogsMethod, _GetPastLogsMethod);
-      function PastEventLogsMethod(utils, formatters, eventLogDecoder, abiItemModel, eventOptionsMapper) {
-        var _this;
-        _classCallCheck(this, PastEventLogsMethod);
-        _this = _possibleConstructorReturn(this, _getPrototypeOf(PastEventLogsMethod).call(this, utils, formatters));
-        _this.abiItemModel = abiItemModel;
-        _this.eventLogDecoder = eventLogDecoder;
-        _this.eventOptionsMapper = eventOptionsMapper;
-        return _this;
-      }
-      _createClass(PastEventLogsMethod, [{
-        key: "beforeExecution",
-        value: function beforeExecution(moduleInstance) {
-          _get(_getPrototypeOf(PastEventLogsMethod.prototype), "beforeExecution", this).call(this, moduleInstance);
-          this.parameters[0] = this.eventOptionsMapper.map(this.abiItemModel, moduleInstance, this.parameters[0]);
-        }
-      }, {
-        key: "afterExecution",
-        value: function afterExecution(response) {
-          var _this2 = this;
-          var formattedLogs = _get(_getPrototypeOf(PastEventLogsMethod.prototype), "afterExecution", this).call(this, response);
-          return formattedLogs.map(function (logItem) {
-            return _this2.eventLogDecoder.decode(_this2.abiItemModel, logItem);
-          });
-        }
-      }]);
-      return PastEventLogsMethod;
-    }(web3CoreMethod.GetPastLogsMethod);
-
-    var AllPastEventLogsMethod =
-    function (_GetPastLogsMethod) {
-      _inherits(AllPastEventLogsMethod, _GetPastLogsMethod);
-      function AllPastEventLogsMethod(utils, formatters, allEventsLogDecoder, abiModel, allEventsOptionsMapper) {
-        var _this;
-        _classCallCheck(this, AllPastEventLogsMethod);
-        _this = _possibleConstructorReturn(this, _getPrototypeOf(AllPastEventLogsMethod).call(this, utils, formatters));
-        _this.abiModel = abiModel;
-        _this.allEventsLogDecoder = allEventsLogDecoder;
-        _this.allEventsOptionsMapper = allEventsOptionsMapper;
-        return _this;
-      }
-      _createClass(AllPastEventLogsMethod, [{
-        key: "beforeExecution",
-        value: function beforeExecution(moduleInstance) {
-          _get(_getPrototypeOf(AllPastEventLogsMethod.prototype), "beforeExecution", this).call(this, moduleInstance);
-          this.parameters[0] = this.allEventsOptionsMapper.map(this.abiModel, moduleInstance, this.parameters[0]);
-        }
-      }, {
-        key: "afterExecution",
-        value: function afterExecution(response) {
-          var _this2 = this;
-          var formattedLogs = _get(_getPrototypeOf(AllPastEventLogsMethod.prototype), "afterExecution", this).call(this, response);
-          return formattedLogs.map(function (logItem) {
-            return _this2.allEventsLogDecoder.decode(_this2.abiModel, logItem);
-          });
-        }
-      }]);
-      return AllPastEventLogsMethod;
-    }(web3CoreMethod.GetPastLogsMethod);
-
-    var MethodFactory =
-    function () {
-      function MethodFactory(accounts, utils, formatters, contractModuleFactory, methodModuleFactory, abiCoder) {
-        _classCallCheck(this, MethodFactory);
-        this.accounts = accounts;
-        this.utils = utils;
-        this.formatters = formatters;
-        this.contractModuleFactory = contractModuleFactory;
-        this.methodModuleFactory = methodModuleFactory;
-        this.abiCoder = abiCoder;
-      }
-      _createClass(MethodFactory, [{
-        key: "createMethodByRequestType",
-        value: function createMethodByRequestType(abiItem, contract, requestType) {
-          var rpcMethod;
-          switch (requestType) {
-            case 'call':
-              rpcMethod = this.createCallContractMethod(abiItem);
-              break;
-            case 'send':
-              rpcMethod = this.createSendContractMethod(abiItem, contract.abiModel);
-              break;
-            case 'estimate':
-              rpcMethod = this.createEstimateGasMethod();
-              break;
-            case 'contract-deployment':
-              rpcMethod = this.createContractDeployMethod(contract);
-              break;
-          }
-          if (typeof rpcMethod === 'undefined') {
-            throw new TypeError("RPC call not found with requestType: \"".concat(requestType, "\""));
-          }
-          return rpcMethod;
-        }
-      }, {
-        key: "createPastEventLogsMethod",
-        value: function createPastEventLogsMethod(abiItem) {
-          return new PastEventLogsMethod(this.utils, this.formatters, this.contractModuleFactory.createEventLogDecoder(), abiItem, this.contractModuleFactory.createEventOptionsMapper());
-        }
-      }, {
-        key: "createAllPastEventLogsMethod",
-        value: function createAllPastEventLogsMethod(abiModel) {
-          return new AllPastEventLogsMethod(this.utils, this.formatters, this.contractModuleFactory.createAllEventsLogDecoder(), abiModel, this.contractModuleFactory.createAllEventsOptionsMapper());
-        }
-      }, {
-        key: "createCallContractMethod",
-        value: function createCallContractMethod(abiItem) {
-          return new CallContractMethod(this.utils, this.formatters, this.abiCoder, abiItem);
-        }
-      }, {
-        key: "createSendContractMethod",
-        value: function createSendContractMethod(abiItem, abiModel) {
-          return new SendContractMethod(this.utils, this.formatters, this.methodModuleFactory.createTransactionConfirmationWorkflow(), this.accounts, this.methodModuleFactory.createTransactionSigner(), this.contractModuleFactory.createAllEventsLogDecoder(), abiModel);
-        }
-      }, {
-        key: "createContractDeployMethod",
-        value: function createContractDeployMethod(contract) {
-          return new ContractDeployMethod(this.utils, this.formatters, this.methodModuleFactory.createTransactionConfirmationWorkflow(), this.accounts, this.methodModuleFactory.createTransactionSigner(), contract);
-        }
-      }, {
-        key: "createEstimateGasMethod",
-        value: function createEstimateGasMethod() {
-          return new web3CoreMethod.EstimateGasMethod(this.utils, this.formatters);
-        }
-      }]);
-      return MethodFactory;
-    }();
-
-    var EventLogSubscription =
-    function (_LogSubscription) {
-      _inherits(EventLogSubscription, _LogSubscription);
-      function EventLogSubscription(options, utils, formatters, contract, getPastLogsMethod, eventLogDecoder, abiItemModel) {
-        var _this;
-        _classCallCheck(this, EventLogSubscription);
-        _this = _possibleConstructorReturn(this, _getPrototypeOf(EventLogSubscription).call(this, options, utils, formatters, contract, getPastLogsMethod));
-        _this.eventLogDecoder = eventLogDecoder;
-        _this.abiItemModel = abiItemModel;
-        return _this;
-      }
-      _createClass(EventLogSubscription, [{
-        key: "onNewSubscriptionItem",
-        value: function onNewSubscriptionItem(subscriptionItem) {
-          return this.eventLogDecoder.decode(this.abiItemModel, this.formatters.outputLogFormatter(subscriptionItem));
-        }
-      }]);
-      return EventLogSubscription;
-    }(web3CoreSubscriptions.LogSubscription);
-
-    var AllEventsLogSubscription =
-    function (_LogSubscription) {
-      _inherits(AllEventsLogSubscription, _LogSubscription);
-      function AllEventsLogSubscription(options, utils, formatters, contract, getPastLogsMethod, allEventsLogDecoder, abiModel) {
-        var _this;
-        _classCallCheck(this, AllEventsLogSubscription);
-        _this = _possibleConstructorReturn(this, _getPrototypeOf(AllEventsLogSubscription).call(this, options, utils, formatters, contract, getPastLogsMethod));
-        _this.allEventsLogDecoder = allEventsLogDecoder;
-        _this.abiModel = abiModel;
-        return _this;
-      }
-      _createClass(AllEventsLogSubscription, [{
-        key: "onNewSubscriptionItem",
-        value: function onNewSubscriptionItem(subscriptionItem) {
-          return this.allEventsLogDecoder.decode(this.abiModel, this.formatters.outputLogFormatter(subscriptionItem));
-        }
-      }]);
-      return AllEventsLogSubscription;
-    }(web3CoreSubscriptions.LogSubscription);
-
-    var EventSubscriptionFactory =
-    function () {
-      function EventSubscriptionFactory(utils, formatters) {
-        _classCallCheck(this, EventSubscriptionFactory);
-        this.utils = utils;
-        this.formatters = formatters;
-      }
-      _createClass(EventSubscriptionFactory, [{
-        key: "createEventLogSubscription",
-        value: function createEventLogSubscription(eventLogDecoder, contract, options, abiItemModel) {
-          return new EventLogSubscription(options, this.utils, this.formatters, contract, new web3CoreMethod.GetPastLogsMethod(this.utils, this.formatters), eventLogDecoder, abiItemModel);
-        }
-      }, {
-        key: "createAllEventsLogSubscription",
-        value: function createAllEventsLogSubscription(allEventsLogDecoder, contract, options) {
-          return new AllEventsLogSubscription(options, this.utils, this.formatters, contract, new web3CoreMethod.GetPastLogsMethod(this.utils, this.formatters), allEventsLogDecoder, contract.abiModel);
-        }
-      }]);
-      return EventSubscriptionFactory;
-    }();
-
-    var AbstractContract =
-    function (_AbstractWeb3Module) {
-      _inherits(AbstractContract, _AbstractWeb3Module);
-      function AbstractContract(provider, providersModuleFactory, methodModuleFactory, contractModuleFactory, PromiEvent, abiCoder, utils, formatters) {
-        var _this;
-        var abi = arguments.length > 8 && arguments[8] !== undefined ? arguments[8] : web3Core.AbstractWeb3Module.throwIfMissing('abi');
-        var address = arguments.length > 9 ? arguments[9] : undefined;
-        var options = arguments.length > 10 && arguments[10] !== undefined ? arguments[10] : {};
-        _classCallCheck(this, AbstractContract);
-        _this = _possibleConstructorReturn(this, _getPrototypeOf(AbstractContract).call(this, provider, providersModuleFactory, methodModuleFactory, null, options));
-        _this.contractModuleFactory = contractModuleFactory;
-        _this.abiCoder = abiCoder;
-        _this.utils = utils;
-        _this.formatters = formatters;
-        _this.abiMapper = _this.contractModuleFactory.createAbiMapper();
-        _this.options = options;
-        _this.PromiEvent = PromiEvent;
-        _this.methodFactory = _this.contractModuleFactory.createMethodFactory();
-        _this.abiModel = _this.abiMapper.map(abi);
-        _this.options = options;
-        if (address) {
-          _this.address = address;
-        }
-        _this.methods = _this.contractModuleFactory.createMethodsProxy(_assertThisInitialized(_assertThisInitialized(_this)), _this.abiModel, _this.PromiEvent);
-        _this.events = _this.contractModuleFactory.createEventSubscriptionsProxy(_assertThisInitialized(_assertThisInitialized(_this)), _this.abiModel, _this.PromiEvent);
-        return _this;
-      }
-      _createClass(AbstractContract, [{
-        key: "once",
-        value: function once(eventName, options, callback) {
-          if (!callback) {
-            throw new Error('Once requires a callback function.');
-          }
-          if (options) {
-            delete options.fromBlock;
-          }
-          var eventSubscription = this.events[eventName](options, callback);
-          eventSubscription.on('data', function () {
-            eventSubscription.unsubscribe();
-          });
-        }
-      }, {
-        key: "getPastEvents",
-        value: function () {
-          var _getPastEvents = _asyncToGenerator(
-          _regeneratorRuntime.mark(function _callee(eventName, options, callback) {
-            var method, response;
-            return _regeneratorRuntime.wrap(function _callee$(_context) {
-              while (1) {
-                switch (_context.prev = _context.next) {
-                  case 0:
-                    if (!(eventName !== 'allEvents')) {
-                      _context.next = 6;
-                      break;
-                    }
-                    if (this.abiModel.hasEvent(eventName)) {
-                      _context.next = 3;
-                      break;
-                    }
-                    throw new Error("Event with name \"".concat(eventName, "\" does not exists."));
-                  case 3:
-                    method = this.methodFactory.createPastEventLogsMethod(this.abiModel.getEvent(eventName));
-                    _context.next = 7;
-                    break;
-                  case 6:
-                    method = this.methodFactory.createAllPastEventLogsMethod(this.abiModel);
-                  case 7:
-                    method.parameters = [options];
-                    method.callback = callback;
-                    _context.next = 11;
-                    return method.execute(this);
-                  case 11:
-                    response = _context.sent;
-                    return _context.abrupt("return", response);
-                  case 13:
-                  case "end":
-                    return _context.stop();
-                }
-              }
-            }, _callee, this);
-          }));
-          return function getPastEvents(_x, _x2, _x3) {
-            return _getPastEvents.apply(this, arguments);
-          };
-        }()
-      }, {
-        key: "deploy",
-        value: function deploy(options) {
-          return this.methods.contractConstructor(options);
-        }
-      }, {
-        key: "clone",
-        value: function clone() {
-          var contract = new this.constructor(this.currentProvider, this.providersModuleFactory, this.methodModuleFactory, this.contractModuleFactory, this.PromiEvent, this.abiCoder, this.utils, this.formatters, [], this.address, this.options);
-          contract.abiModel = this.abiModel;
-          contract.methods.abiModel = this.abiModel;
-          contract.events.abiModel = this.abiModel;
-          return contract;
-        }
-      }, {
-        key: "jsonInterface",
-        get: function get() {
-          return this.abiModel;
-        }
-        ,
-        set: function set(value) {
-          this.abiModel = this.abiMapper.map(value);
-          this.methods.abiModel = this.abiModel;
-          this.events.abiModel = this.abiModel;
-        }
-      }, {
-        key: "address",
-        get: function get() {
-          return this.options.address;
-        }
-        ,
-        set: function set(value) {
-          this.options.address = value;
-        }
-      }]);
-      return AbstractContract;
-    }(web3Core.AbstractWeb3Module);
-
-    var ContractModuleFactory =
-    function () {
-      function ContractModuleFactory(utils, formatters, abiCoder, accounts, methodModuleFactory) {
-        _classCallCheck(this, ContractModuleFactory);
-        this.utils = utils;
-        this.formatters = formatters;
-        this.abiCoder = abiCoder;
-        this.accounts = accounts;
-        this.methodModuleFactory = methodModuleFactory;
-      }
-      _createClass(ContractModuleFactory, [{
-        key: "createContract",
-        value: function createContract(provider, providersModuleFactory, PromiEvent, abi, address, options) {
-          return new AbstractContract(provider, providersModuleFactory, this.methodModuleFactory, this, PromiEvent, this.abiCoder, this.utils, this.formatters, abi, address, options);
-        }
-      }, {
-        key: "createAbiModel",
-        value: function createAbiModel(mappedAbi) {
-          return new AbiModel(mappedAbi);
-        }
-      }, {
-        key: "createAbiItemModel",
-        value: function createAbiItemModel(abiItem) {
-          return new AbiItemModel(abiItem);
-        }
-      }, {
-        key: "createMethodEncoder",
-        value: function createMethodEncoder() {
-          return new MethodEncoder(this.abiCoder);
-        }
-      }, {
-        key: "createEventFilterEncoder",
-        value: function createEventFilterEncoder() {
-          return new EventFilterEncoder(this.abiCoder);
-        }
-      }, {
-        key: "createAllEventsFilterEncoder",
-        value: function createAllEventsFilterEncoder() {
-          return new AllEventsFilterEncoder(this.abiCoder);
-        }
-      }, {
-        key: "createAbiMapper",
-        value: function createAbiMapper() {
-          return new AbiMapper(this, this.abiCoder, this.utils);
-        }
-      }, {
-        key: "createEventLogDecoder",
-        value: function createEventLogDecoder() {
-          return new EventLogDecoder(this.abiCoder);
-        }
-      }, {
-        key: "createAllEventsLogDecoder",
-        value: function createAllEventsLogDecoder() {
-          return new AllEventsLogDecoder(this.abiCoder);
-        }
-      }, {
-        key: "createMethodOptionsValidator",
-        value: function createMethodOptionsValidator() {
-          return new MethodOptionsValidator(this.utils);
-        }
-      }, {
-        key: "createMethodOptionsMapper",
-        value: function createMethodOptionsMapper() {
-          return new MethodOptionsMapper(this.utils, this.formatters);
-        }
-      }, {
-        key: "createEventOptionsMapper",
-        value: function createEventOptionsMapper() {
-          return new EventOptionsMapper(this.formatters, this.createEventFilterEncoder());
-        }
-      }, {
-        key: "createAllEventsOptionsMapper",
-        value: function createAllEventsOptionsMapper() {
-          return new AllEventsOptionsMapper(this.formatters, this.createAllEventsFilterEncoder());
-        }
-      }, {
-        key: "createMethodFactory",
-        value: function createMethodFactory() {
-          return new MethodFactory(this.accounts, this.utils, this.formatters, this, this.methodModuleFactory, this.abiCoder);
-        }
-      }, {
-        key: "createMethodsProxy",
-        value: function createMethodsProxy(target, abiModel, PromiEvent) {
-          return new MethodsProxy(target, abiModel, this.createMethodFactory(), this.createMethodEncoder(), this.createMethodOptionsValidator(), this.createMethodOptionsMapper(), PromiEvent);
-        }
-      }, {
-        key: "createEventSubscriptionsProxy",
-        value: function createEventSubscriptionsProxy(contract, abiModel, PromiEvent) {
-          return new EventSubscriptionsProxy(contract, abiModel, this.createEventSubscriptionFactory(), this.createEventOptionsMapper(), this.createEventLogDecoder(), this.createAllEventsLogDecoder(), this.createAllEventsOptionsMapper(), PromiEvent);
-        }
-      }, {
-        key: "createEventSubscriptionFactory",
-        value: function createEventSubscriptionFactory() {
-          return new EventSubscriptionFactory(this.utils, this.formatters);
-        }
-      }]);
-      return ContractModuleFactory;
-    }();
-
-    var Contract = function Contract(provider, accounts, abi, address, options) {
-      return new ContractModuleFactory(Utils, web3CoreHelpers.formatters, new web3EthAbi.AbiCoder(), accounts, new web3CoreMethod.MethodModuleFactory(accounts)).createContract(provider, new web3Providers.ProvidersModuleFactory(), web3CorePromievent.PromiEvent, abi, address, options);
+    // add sign functions
+    account.signTransaction = function signTransaction(tx, callback) {
+        return _this.signTransaction(tx, account.privateKey, callback);
+    };
+    account.sign = function sign(data) {
+        return _this.sign(data, account.privateKey);
     };
 
-    exports.AbstractContract = AbstractContract;
-    exports.ContractModuleFactory = ContractModuleFactory;
-    exports.Contract = Contract;
-
-    Object.defineProperty(exports, '__esModule', { value: true });
-
-})));
-
-},{"@babel/runtime/helpers/assertThisInitialized":203,"@babel/runtime/helpers/asyncToGenerator":204,"@babel/runtime/helpers/classCallCheck":205,"@babel/runtime/helpers/createClass":206,"@babel/runtime/helpers/get":208,"@babel/runtime/helpers/getPrototypeOf":209,"@babel/runtime/helpers/inherits":210,"@babel/runtime/helpers/possibleConstructorReturn":213,"@babel/runtime/regenerator":219,"lodash/cloneDeep":477,"lodash/isArray":486,"lodash/isFunction":490,"lodash/isUndefined":501,"web3-core":561,"web3-core-helpers":557,"web3-core-method":558,"web3-core-promievent":559,"web3-core-subscriptions":560,"web3-eth-abi":562,"web3-providers":575,"web3-utils":576}],570:[function(require,module,exports){
-(function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('web3-core-promievent'), require('web3-providers'), require('web3-utils'), require('web3-core-helpers'), require('web3-core-method'), require('web3-eth-abi'), require('web3-net'), require('web3-core'), require('@babel/runtime/regenerator'), require('@babel/runtime/helpers/asyncToGenerator'), require('@babel/runtime/helpers/classCallCheck'), require('@babel/runtime/helpers/createClass'), require('@babel/runtime/helpers/possibleConstructorReturn'), require('@babel/runtime/helpers/getPrototypeOf'), require('@babel/runtime/helpers/get'), require('@babel/runtime/helpers/inherits'), require('lodash/isFunction'), require('eth-ens-namehash'), require('web3-eth-contract')) :
-    typeof define === 'function' && define.amd ? define(['exports', 'web3-core-promievent', 'web3-providers', 'web3-utils', 'web3-core-helpers', 'web3-core-method', 'web3-eth-abi', 'web3-net', 'web3-core', '@babel/runtime/regenerator', '@babel/runtime/helpers/asyncToGenerator', '@babel/runtime/helpers/classCallCheck', '@babel/runtime/helpers/createClass', '@babel/runtime/helpers/possibleConstructorReturn', '@babel/runtime/helpers/getPrototypeOf', '@babel/runtime/helpers/get', '@babel/runtime/helpers/inherits', 'lodash/isFunction', 'eth-ens-namehash', 'web3-eth-contract'], factory) :
-    (factory((global.Web3EthEns = {}),global['web3-core-promievent'],global.web3Providers,global.Utils,global.web3CoreHelpers,global.web3CoreMethod,global.web3EthAbi,global.web3Net,global.web3Core,global._regeneratorRuntime,global._asyncToGenerator,global._classCallCheck,global._createClass,global._possibleConstructorReturn,global._getPrototypeOf,global._get,global._inherits,global.isFunction,global['eth-ens-namehash'],global['web3-eth-contract']));
-}(this, (function (exports,web3CorePromievent,web3Providers,Utils,web3CoreHelpers,web3CoreMethod,web3EthAbi,web3Net,web3Core,_regeneratorRuntime,_asyncToGenerator,_classCallCheck,_createClass,_possibleConstructorReturn,_getPrototypeOf,_get,_inherits,isFunction,namehash,web3EthContract) { 'use strict';
-
-    _regeneratorRuntime = _regeneratorRuntime && _regeneratorRuntime.hasOwnProperty('default') ? _regeneratorRuntime['default'] : _regeneratorRuntime;
-    _asyncToGenerator = _asyncToGenerator && _asyncToGenerator.hasOwnProperty('default') ? _asyncToGenerator['default'] : _asyncToGenerator;
-    _classCallCheck = _classCallCheck && _classCallCheck.hasOwnProperty('default') ? _classCallCheck['default'] : _classCallCheck;
-    _createClass = _createClass && _createClass.hasOwnProperty('default') ? _createClass['default'] : _createClass;
-    _possibleConstructorReturn = _possibleConstructorReturn && _possibleConstructorReturn.hasOwnProperty('default') ? _possibleConstructorReturn['default'] : _possibleConstructorReturn;
-    _getPrototypeOf = _getPrototypeOf && _getPrototypeOf.hasOwnProperty('default') ? _getPrototypeOf['default'] : _getPrototypeOf;
-    _get = _get && _get.hasOwnProperty('default') ? _get['default'] : _get;
-    _inherits = _inherits && _inherits.hasOwnProperty('default') ? _inherits['default'] : _inherits;
-    isFunction = isFunction && isFunction.hasOwnProperty('default') ? isFunction['default'] : isFunction;
-    namehash = namehash && namehash.hasOwnProperty('default') ? namehash['default'] : namehash;
-
-    var Ens =
-    function (_AbstractWeb3Module) {
-      _inherits(Ens, _AbstractWeb3Module);
-      function Ens(provider, providersModuleFactory, methodModuleFactory, options, ensModuleFactory, promiEvent, abiCoder, utils, formatters, registryOptions, net) {
-        var _this;
-        _classCallCheck(this, Ens);
-        _this = _possibleConstructorReturn(this, _getPrototypeOf(Ens).call(this, provider, providersModuleFactory, methodModuleFactory, null, options));
-        _this.ensModuleFactory = ensModuleFactory;
-        _this.promiEvent = promiEvent;
-        _this.abiCoder = abiCoder;
-        _this.utils = utils;
-        _this.formatters = formatters;
-        _this.registryOptions = registryOptions;
-        _this.net = net;
-        _this._registry = false;
-        return _this;
-      }
-      _createClass(Ens, [{
-        key: "setProvider",
-        value: function setProvider(provider, net) {
-          return !!(_get(_getPrototypeOf(Ens.prototype), "setProvider", this).call(this, provider, net) && this.registry.setProvider(provider, net));
-        }
-      }, {
-        key: "resolver",
-        value: function resolver(name) {
-          return this.registry.resolver(name);
-        }
-      }, {
-        key: "supportsInterface",
-        value: function () {
-          var _supportsInterface = _asyncToGenerator(
-          _regeneratorRuntime.mark(function _callee(name, interfaceId) {
-            var callback,
-                resolver,
-                _args = arguments;
-            return _regeneratorRuntime.wrap(function _callee$(_context) {
-              while (1) {
-                switch (_context.prev = _context.next) {
-                  case 0:
-                    callback = _args.length > 2 && _args[2] !== undefined ? _args[2] : null;
-                    _context.next = 3;
-                    return this.registry.resolver(name);
-                  case 3:
-                    resolver = _context.sent;
-                    return _context.abrupt("return", resolver.methods.supportsInterface(interfaceId).call(callback));
-                  case 5:
-                  case "end":
-                    return _context.stop();
-                }
-              }
-            }, _callee, this);
-          }));
-          return function supportsInterface(_x, _x2) {
-            return _supportsInterface.apply(this, arguments);
-          };
-        }()
-      }, {
-        key: "getAddress",
-        value: function () {
-          var _getAddress = _asyncToGenerator(
-          _regeneratorRuntime.mark(function _callee2(name) {
-            var callback,
-                resolver,
-                _args2 = arguments;
-            return _regeneratorRuntime.wrap(function _callee2$(_context2) {
-              while (1) {
-                switch (_context2.prev = _context2.next) {
-                  case 0:
-                    callback = _args2.length > 1 && _args2[1] !== undefined ? _args2[1] : null;
-                    _context2.next = 3;
-                    return this.registry.resolver(name);
-                  case 3:
-                    resolver = _context2.sent;
-                    return _context2.abrupt("return", resolver.methods.addr(namehash.hash(name)).call(callback));
-                  case 5:
-                  case "end":
-                    return _context2.stop();
-                }
-              }
-            }, _callee2, this);
-          }));
-          return function getAddress(_x3) {
-            return _getAddress.apply(this, arguments);
-          };
-        }()
-      }, {
-        key: "setAddress",
-        value: function setAddress(name, address, sendOptions) {
-          var callback = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
-          var promiEvent = new this.registry.PromiEvent();
-          this.registry.resolver(name).then(function (resolver) {
-            resolver.methods.setAddr(namehash.hash(name), address).send(sendOptions, callback).on('transactionHash', function (transactionHash) {
-              promiEvent.emit('transactionHash', transactionHash);
-            }).on('confirmation', function (confirmationNumber, receipt) {
-              promiEvent.emit('confirmation', confirmationNumber, receipt);
-            }).on('receipt', function (receipt) {
-              if (isFunction(callback)) {
-                callback(receipt);
-              }
-              promiEvent.emit('receipt', receipt);
-              promiEvent.resolve(receipt);
-            }).on('error', function (error) {
-              if (isFunction(callback)) {
-                callback(error);
-              }
-              promiEvent.emit('error', error);
-              promiEvent.reject(error);
-            });
-          });
-          return promiEvent;
-        }
-      }, {
-        key: "getPubkey",
-        value: function () {
-          var _getPubkey = _asyncToGenerator(
-          _regeneratorRuntime.mark(function _callee3(name) {
-            var callback,
-                resolver,
-                _args3 = arguments;
-            return _regeneratorRuntime.wrap(function _callee3$(_context3) {
-              while (1) {
-                switch (_context3.prev = _context3.next) {
-                  case 0:
-                    callback = _args3.length > 1 && _args3[1] !== undefined ? _args3[1] : null;
-                    _context3.next = 3;
-                    return this.registry.resolver(name);
-                  case 3:
-                    resolver = _context3.sent;
-                    return _context3.abrupt("return", resolver.methods.pubkey(namehash.hash(name)).call(callback));
-                  case 5:
-                  case "end":
-                    return _context3.stop();
-                }
-              }
-            }, _callee3, this);
-          }));
-          return function getPubkey(_x4) {
-            return _getPubkey.apply(this, arguments);
-          };
-        }()
-      }, {
-        key: "setPubkey",
-        value: function setPubkey(name, x, y, sendOptions) {
-          var callback = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : null;
-          var promiEvent = new this.registry.PromiEvent();
-          this.registry.resolver(name).then(function (resolver) {
-            resolver.methods.setPubkey(namehash.hash(name), x, y).send(sendOptions, callback).on('transactionHash', function (transactionHash) {
-              promiEvent.emit('transactionHash', transactionHash);
-            }).on('confirmation', function (confirmationNumber, receipt) {
-              promiEvent.emit('confirmation', confirmationNumber, receipt);
-            }).on('receipt', function (receipt) {
-              if (isFunction(callback)) {
-                callback(receipt);
-              }
-              promiEvent.emit('receipt', receipt);
-              promiEvent.resolve(receipt);
-            }).on('error', function (error) {
-              if (isFunction(callback)) {
-                callback(error);
-              }
-              promiEvent.emit('error', error);
-              promiEvent.reject(error);
-            });
-          });
-          return promiEvent;
-        }
-      }, {
-        key: "getText",
-        value: function () {
-          var _getText = _asyncToGenerator(
-          _regeneratorRuntime.mark(function _callee4(name, key) {
-            var callback,
-                resolver,
-                _args4 = arguments;
-            return _regeneratorRuntime.wrap(function _callee4$(_context4) {
-              while (1) {
-                switch (_context4.prev = _context4.next) {
-                  case 0:
-                    callback = _args4.length > 2 && _args4[2] !== undefined ? _args4[2] : null;
-                    _context4.next = 3;
-                    return this.registry.resolver(name);
-                  case 3:
-                    resolver = _context4.sent;
-                    return _context4.abrupt("return", resolver.methods.text(namehash.hash(name), key).call(callback));
-                  case 5:
-                  case "end":
-                    return _context4.stop();
-                }
-              }
-            }, _callee4, this);
-          }));
-          return function getText(_x5, _x6) {
-            return _getText.apply(this, arguments);
-          };
-        }()
-      }, {
-        key: "setText",
-        value: function setText(name, key, value, sendOptions) {
-          var callback = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : null;
-          var promiEvent = new this.registry.PromiEvent();
-          this.registry.resolver(name).then(function (resolver) {
-            resolver.methods.setText(namehash.hash(name), key, value).send(sendOptions, callback).on('transactionHash', function (transactionHash) {
-              promiEvent.emit('transactionHash', transactionHash);
-            }).on('confirmation', function (confirmationNumber, receipt) {
-              promiEvent.emit('confirmation', confirmationNumber, receipt);
-            }).on('receipt', function (receipt) {
-              if (isFunction(callback)) {
-                callback(receipt);
-              }
-              promiEvent.emit('receipt', receipt);
-              promiEvent.resolve(receipt);
-            }).on('error', function (error) {
-              if (isFunction(callback)) {
-                callback(error);
-              }
-              promiEvent.emit('error', error);
-              promiEvent.reject(error);
-            });
-          });
-          return promiEvent;
-        }
-      }, {
-        key: "getContent",
-        value: function () {
-          var _getContent = _asyncToGenerator(
-          _regeneratorRuntime.mark(function _callee5(name) {
-            var callback,
-                resolver,
-                _args5 = arguments;
-            return _regeneratorRuntime.wrap(function _callee5$(_context5) {
-              while (1) {
-                switch (_context5.prev = _context5.next) {
-                  case 0:
-                    callback = _args5.length > 1 && _args5[1] !== undefined ? _args5[1] : null;
-                    _context5.next = 3;
-                    return this.registry.resolver(name);
-                  case 3:
-                    resolver = _context5.sent;
-                    return _context5.abrupt("return", resolver.methods.content(namehash.hash(name)).call(callback));
-                  case 5:
-                  case "end":
-                    return _context5.stop();
-                }
-              }
-            }, _callee5, this);
-          }));
-          return function getContent(_x7) {
-            return _getContent.apply(this, arguments);
-          };
-        }()
-      }, {
-        key: "setContent",
-        value: function setContent(name, hash, sendOptions) {
-          var callback = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
-          var promiEvent = new this.registry.PromiEvent();
-          this.registry.resolver(name).then(function (resolver) {
-            resolver.methods.setContent(namehash.hash(name), hash).send(sendOptions, callback).on('transactionHash', function (transactionHash) {
-              promiEvent.emit('transactionHash', transactionHash);
-            }).on('confirmation', function (confirmationNumber, receipt) {
-              promiEvent.emit('confirmation', confirmationNumber, receipt);
-            }).on('receipt', function (receipt) {
-              if (isFunction(callback)) {
-                callback(receipt);
-              }
-              promiEvent.emit('receipt', receipt);
-              promiEvent.resolve(receipt);
-            }).on('error', function (error) {
-              if (isFunction(callback)) {
-                callback(error);
-              }
-              promiEvent.emit('error', error);
-              promiEvent.reject(error);
-            });
-          });
-          return promiEvent;
-        }
-      }, {
-        key: "getMultihash",
-        value: function () {
-          var _getMultihash = _asyncToGenerator(
-          _regeneratorRuntime.mark(function _callee6(name) {
-            var callback,
-                resolver,
-                _args6 = arguments;
-            return _regeneratorRuntime.wrap(function _callee6$(_context6) {
-              while (1) {
-                switch (_context6.prev = _context6.next) {
-                  case 0:
-                    callback = _args6.length > 1 && _args6[1] !== undefined ? _args6[1] : null;
-                    _context6.next = 3;
-                    return this.registry.resolver(name);
-                  case 3:
-                    resolver = _context6.sent;
-                    return _context6.abrupt("return", resolver.methods.multihash(namehash.hash(name)).call(callback));
-                  case 5:
-                  case "end":
-                    return _context6.stop();
-                }
-              }
-            }, _callee6, this);
-          }));
-          return function getMultihash(_x8) {
-            return _getMultihash.apply(this, arguments);
-          };
-        }()
-      }, {
-        key: "setMultihash",
-        value: function setMultihash(name, hash, sendOptions) {
-          var callback = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
-          var promiEvent = new this.registry.PromiEvent();
-          this.registry.resolver(name).then(function (resolver) {
-            resolver.methods.setMultihash(namehash.hash(name), hash).send(sendOptions, callback).on('transactionHash', function (transactionHash) {
-              promiEvent.emit('transactionHash', transactionHash);
-            }).on('confirmation', function (confirmationNumber, receipt) {
-              promiEvent.emit('confirmation', confirmationNumber, receipt);
-            }).on('receipt', function (receipt) {
-              if (isFunction(callback)) {
-                callback(receipt);
-              }
-              promiEvent.emit('receipt', receipt);
-              promiEvent.resolve(receipt);
-            }).on('error', function (error) {
-              if (isFunction(callback)) {
-                callback(error);
-              }
-              promiEvent.emit('error', error);
-              promiEvent.reject(error);
-            });
-          });
-          return promiEvent;
-        }
-      }, {
-        key: "getContenthash",
-        value: function () {
-          var _getContenthash = _asyncToGenerator(
-          _regeneratorRuntime.mark(function _callee7(name) {
-            var callback,
-                resolver,
-                _args7 = arguments;
-            return _regeneratorRuntime.wrap(function _callee7$(_context7) {
-              while (1) {
-                switch (_context7.prev = _context7.next) {
-                  case 0:
-                    callback = _args7.length > 1 && _args7[1] !== undefined ? _args7[1] : null;
-                    _context7.next = 3;
-                    return this.registry.resolver(name);
-                  case 3:
-                    resolver = _context7.sent;
-                    return _context7.abrupt("return", resolver.methods.contenthash(namehash.hash(name)).call(callback));
-                  case 5:
-                  case "end":
-                    return _context7.stop();
-                }
-              }
-            }, _callee7, this);
-          }));
-          return function getContenthash(_x9) {
-            return _getContenthash.apply(this, arguments);
-          };
-        }()
-      }, {
-        key: "setContenthash",
-        value: function setContenthash(name, hash, sendOptions) {
-          var callback = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
-          var promiEvent = new this.registry.PromiEvent();
-          this.registry.resolver(name).then(function (resolver) {
-            resolver.methods.setContenthash(namehash.hash(name), hash).send(sendOptions, callback).on('transactionHash', function (transactionHash) {
-              promiEvent.emit('transactionHash', transactionHash);
-            }).on('confirmation', function (confirmationNumber, receipt) {
-              promiEvent.emit('confirmation', confirmationNumber, receipt);
-            }).on('receipt', function (receipt) {
-              if (isFunction(callback)) {
-                callback(receipt);
-              }
-              promiEvent.emit('receipt', receipt);
-              promiEvent.resolve(receipt);
-            }).on('error', function (error) {
-              if (isFunction(callback)) {
-                callback(error);
-              }
-              promiEvent.emit('error', error);
-              promiEvent.reject(error);
-            });
-          });
-          return promiEvent;
-        }
-      }, {
-        key: "registry",
-        get: function get() {
-          if (!this._registry) {
-            this._registry = this.ensModuleFactory.createRegistry(this.currentProvider, this.providersModuleFactory, this.methodModuleFactory, this.contractModuleFactory, this.promiEvent, this.abiCoder, this.utils, this.formatters, this.registryOptions, this.net);
-          }
-          return this._registry;
-        }
-      }]);
-      return Ens;
-    }(web3Core.AbstractWeb3Module);
-
-    var REGISTRY_ABI = [{
-      constant: true,
-      inputs: [{
-        name: 'node',
-        type: 'bytes32'
-      }],
-      name: 'resolver',
-      outputs: [{
-        name: '',
-        type: 'address'
-      }],
-      payable: false,
-      type: 'function'
-    }, {
-      constant: true,
-      inputs: [{
-        name: 'node',
-        type: 'bytes32'
-      }],
-      name: 'owner',
-      outputs: [{
-        name: '',
-        type: 'address'
-      }],
-      payable: false,
-      type: 'function'
-    }, {
-      constant: false,
-      inputs: [{
-        name: 'node',
-        type: 'bytes32'
-      }, {
-        name: 'label',
-        type: 'bytes32'
-      }, {
-        name: 'owner',
-        type: 'address'
-      }],
-      name: 'setSubnodeOwner',
-      outputs: [],
-      payable: false,
-      type: 'function'
-    }, {
-      constant: false,
-      inputs: [{
-        name: 'node',
-        type: 'bytes32'
-      }, {
-        name: 'ttl',
-        type: 'uint64'
-      }],
-      name: 'setTTL',
-      outputs: [],
-      payable: false,
-      type: 'function'
-    }, {
-      constant: true,
-      inputs: [{
-        name: 'node',
-        type: 'bytes32'
-      }],
-      name: 'ttl',
-      outputs: [{
-        name: '',
-        type: 'uint64'
-      }],
-      payable: false,
-      type: 'function'
-    }, {
-      constant: false,
-      inputs: [{
-        name: 'node',
-        type: 'bytes32'
-      }, {
-        name: 'resolver',
-        type: 'address'
-      }],
-      name: 'setResolver',
-      outputs: [],
-      payable: false,
-      type: 'function'
-    }, {
-      constant: false,
-      inputs: [{
-        name: 'node',
-        type: 'bytes32'
-      }, {
-        name: 'owner',
-        type: 'address'
-      }],
-      name: 'setOwner',
-      outputs: [],
-      payable: false,
-      type: 'function'
-    }, {
-      anonymous: false,
-      inputs: [{
-        indexed: true,
-        name: 'node',
-        type: 'bytes32'
-      }, {
-        indexed: false,
-        name: 'owner',
-        type: 'address'
-      }],
-      name: 'Transfer',
-      type: 'event'
-    }, {
-      anonymous: false,
-      inputs: [{
-        indexed: true,
-        name: 'node',
-        type: 'bytes32'
-      }, {
-        indexed: true,
-        name: 'label',
-        type: 'bytes32'
-      }, {
-        indexed: false,
-        name: 'owner',
-        type: 'address'
-      }],
-      name: 'NewOwner',
-      type: 'event'
-    }, {
-      anonymous: false,
-      inputs: [{
-        indexed: true,
-        name: 'node',
-        type: 'bytes32'
-      }, {
-        indexed: false,
-        name: 'resolver',
-        type: 'address'
-      }],
-      name: 'NewResolver',
-      type: 'event'
-    }, {
-      anonymous: false,
-      inputs: [{
-        indexed: true,
-        name: 'node',
-        type: 'bytes32'
-      }, {
-        indexed: false,
-        name: 'ttl',
-        type: 'uint64'
-      }],
-      name: 'NewTTL',
-      type: 'event'
-    }];
-
-    var RESOLVER_ABI = [{
-      constant: true,
-      inputs: [{
-        name: 'node',
-        type: 'bytes32'
-      }, {
-        name: 'key',
-        type: 'string'
-      }],
-      name: 'text',
-      outputs: [{
-        name: '',
-        type: 'string'
-      }],
-      payable: false,
-      stateMutability: 'view',
-      type: 'function'
-    }, {
-      constant: false,
-      inputs: [{
-        name: 'node',
-        type: 'bytes32'
-      }, {
-        name: 'key',
-        type: 'string'
-      }, {
-        name: 'value',
-        type: 'string'
-      }],
-      name: 'setText',
-      outputs: [],
-      payable: false,
-      stateMutability: 'nonpayable',
-      type: 'function'
-    }, {
-      constant: true,
-      inputs: [{
-        name: 'interfaceID',
-        type: 'bytes4'
-      }],
-      name: 'supportsInterface',
-      outputs: [{
-        name: '',
-        type: 'bool'
-      }],
-      payable: false,
-      stateMutability: 'pure',
-      type: 'function'
-    }, {
-      constant: true,
-      inputs: [{
-        name: 'node',
-        type: 'bytes32'
-      }, {
-        name: 'contentTypes',
-        type: 'uint256'
-      }],
-      name: 'ABI',
-      outputs: [{
-        name: 'contentType',
-        type: 'uint256'
-      }, {
-        name: 'data',
-        type: 'bytes'
-      }],
-      payable: false,
-      type: 'function'
-    }, {
-      constant: false,
-      inputs: [{
-        name: 'node',
-        type: 'bytes32'
-      }, {
-        name: 'hash',
-        type: 'bytes'
-      }],
-      name: 'setMultihash',
-      outputs: [],
-      payable: false,
-      stateMutability: 'nonpayable',
-      type: 'function'
-    }, {
-      constant: true,
-      inputs: [{
-        name: 'node',
-        type: 'bytes32'
-      }],
-      name: 'multihash',
-      outputs: [{
-        name: '',
-        type: 'bytes'
-      }],
-      payable: false,
-      stateMutability: 'view',
-      type: 'function'
-    }, {
-      constant: false,
-      inputs: [{
-        name: 'node',
-        type: 'bytes32'
-      }, {
-        name: 'hash',
-        type: 'bytes'
-      }],
-      name: 'setContenthash',
-      outputs: [],
-      payable: false,
-      stateMutability: 'nonpayable',
-      type: 'function'
-    }, {
-      constant: true,
-      inputs: [{
-        name: 'node',
-        type: 'bytes32'
-      }],
-      name: 'contenthash',
-      outputs: [{
-        name: '',
-        type: 'bytes'
-      }],
-      payable: false,
-      stateMutability: 'view',
-      type: 'function'
-    }, {
-      constant: false,
-      inputs: [{
-        name: 'node',
-        type: 'bytes32'
-      }, {
-        name: 'x',
-        type: 'bytes32'
-      }, {
-        name: 'y',
-        type: 'bytes32'
-      }],
-      name: 'setPubkey',
-      outputs: [],
-      payable: false,
-      type: 'function'
-    }, {
-      constant: true,
-      inputs: [{
-        name: 'node',
-        type: 'bytes32'
-      }],
-      name: 'content',
-      outputs: [{
-        name: 'ret',
-        type: 'bytes32'
-      }],
-      payable: false,
-      type: 'function'
-    }, {
-      constant: true,
-      inputs: [{
-        name: 'node',
-        type: 'bytes32'
-      }],
-      name: 'addr',
-      outputs: [{
-        name: 'ret',
-        type: 'address'
-      }],
-      payable: false,
-      type: 'function'
-    }, {
-      constant: false,
-      inputs: [{
-        name: 'node',
-        type: 'bytes32'
-      }, {
-        name: 'contentType',
-        type: 'uint256'
-      }, {
-        name: 'data',
-        type: 'bytes'
-      }],
-      name: 'setABI',
-      outputs: [],
-      payable: false,
-      type: 'function'
-    }, {
-      constant: true,
-      inputs: [{
-        name: 'node',
-        type: 'bytes32'
-      }],
-      name: 'name',
-      outputs: [{
-        name: 'ret',
-        type: 'string'
-      }],
-      payable: false,
-      type: 'function'
-    }, {
-      constant: false,
-      inputs: [{
-        name: 'node',
-        type: 'bytes32'
-      }, {
-        name: 'name',
-        type: 'string'
-      }],
-      name: 'setName',
-      outputs: [],
-      payable: false,
-      type: 'function'
-    }, {
-      constant: false,
-      inputs: [{
-        name: 'node',
-        type: 'bytes32'
-      }, {
-        name: 'hash',
-        type: 'bytes32'
-      }],
-      name: 'setContent',
-      outputs: [],
-      payable: false,
-      type: 'function'
-    }, {
-      constant: true,
-      inputs: [{
-        name: 'node',
-        type: 'bytes32'
-      }],
-      name: 'pubkey',
-      outputs: [{
-        name: 'x',
-        type: 'bytes32'
-      }, {
-        name: 'y',
-        type: 'bytes32'
-      }],
-      payable: false,
-      type: 'function'
-    }, {
-      constant: false,
-      inputs: [{
-        name: 'node',
-        type: 'bytes32'
-      }, {
-        name: 'addr',
-        type: 'address'
-      }],
-      name: 'setAddr',
-      outputs: [],
-      payable: false,
-      type: 'function'
-    }, {
-      inputs: [{
-        name: 'ensAddr',
-        type: 'address'
-      }],
-      payable: false,
-      type: 'constructor'
-    }, {
-      anonymous: false,
-      inputs: [{
-        indexed: true,
-        name: 'node',
-        type: 'bytes32'
-      }, {
-        indexed: false,
-        name: 'a',
-        type: 'address'
-      }],
-      name: 'AddrChanged',
-      type: 'event'
-    }, {
-      anonymous: false,
-      inputs: [{
-        indexed: true,
-        name: 'node',
-        type: 'bytes32'
-      }, {
-        indexed: false,
-        name: 'hash',
-        type: 'bytes32'
-      }],
-      name: 'ContentChanged',
-      type: 'event'
-    }, {
-      anonymous: false,
-      inputs: [{
-        indexed: true,
-        name: 'node',
-        type: 'bytes32'
-      }, {
-        indexed: false,
-        name: 'indexedKey',
-        type: 'string'
-      }, {
-        indexed: false,
-        name: 'key',
-        type: 'string'
-      }],
-      name: 'TextChanged',
-      type: 'event'
-    }, {
-      anonymous: false,
-      inputs: [{
-        indexed: true,
-        name: 'node',
-        type: 'bytes32'
-      }, {
-        indexed: false,
-        name: 'hash',
-        type: 'bytes'
-      }],
-      name: 'ContenthashChanged',
-      type: 'event'
-    }, {
-      anonymous: false,
-      inputs: [{
-        indexed: true,
-        name: 'node',
-        type: 'bytes32'
-      }, {
-        indexed: false,
-        name: 'name',
-        type: 'string'
-      }],
-      name: 'NameChanged',
-      type: 'event'
-    }, {
-      anonymous: false,
-      inputs: [{
-        indexed: true,
-        name: 'node',
-        type: 'bytes32'
-      }, {
-        indexed: true,
-        name: 'contentType',
-        type: 'uint256'
-      }],
-      name: 'ABIChanged',
-      type: 'event'
-    }, {
-      anonymous: false,
-      inputs: [{
-        indexed: true,
-        name: 'node',
-        type: 'bytes32'
-      }, {
-        indexed: false,
-        name: 'x',
-        type: 'bytes32'
-      }, {
-        indexed: false,
-        name: 'y',
-        type: 'bytes32'
-      }],
-      name: 'PubkeyChanged',
-      type: 'event'
-    }];
-
-    var Registry =
-    function (_AbstractContract) {
-      _inherits(Registry, _AbstractContract);
-      function Registry(provider, providersModuleFactory, methodModuleFactory, contractModuleFactory, promiEvent, abiCoder, utils, formatters, options, net) {
-        var _this;
-        _classCallCheck(this, Registry);
-        _this = _possibleConstructorReturn(this, _getPrototypeOf(Registry).call(this, provider, providersModuleFactory, methodModuleFactory, contractModuleFactory, promiEvent, abiCoder, utils, formatters, REGISTRY_ABI, '', options));
-        _this.net = net;
-        _this.resolverContract = null;
-        _this.resolverName = null;
-        _this.checkNetwork().then(function (address) {
-          _this.address = address;
-        });
-        return _this;
-      }
-      _createClass(Registry, [{
-        key: "owner",
-        value: function owner(name) {
-          var _this2 = this;
-          var callback = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
-          return new Promise(function (resolve, reject) {
-            _this2.methods.owner(namehash.hash(name)).call().then(function (receipt) {
-              resolve(receipt);
-              if (isFunction(callback)) {
-                callback(false, receipt);
-              }
-            }).catch(function (error) {
-              reject(error);
-              if (isFunction(callback)) {
-                callback(error, null);
-              }
-            });
-          });
-        }
-      }, {
-        key: "setProvider",
-        value: function setProvider(provider, net) {
-          if (this.resolverContract) {
-            return !!(_get(_getPrototypeOf(Registry.prototype), "setProvider", this).call(this, provider, net) && this.resolverContract.setProvider(provider, net));
-          }
-          return _get(_getPrototypeOf(Registry.prototype), "setProvider", this).call(this, provider, net);
-        }
-      }, {
-        key: "resolver",
-        value: function () {
-          var _resolver = _asyncToGenerator(
-          _regeneratorRuntime.mark(function _callee(name) {
-            var address, clone;
-            return _regeneratorRuntime.wrap(function _callee$(_context) {
-              while (1) {
-                switch (_context.prev = _context.next) {
-                  case 0:
-                    if (!(this.resolverName === name && this.resolverContract)) {
-                      _context.next = 2;
-                      break;
-                    }
-                    return _context.abrupt("return", this.resolverContract);
-                  case 2:
-                    _context.next = 4;
-                    return this.methods.resolver(namehash.hash(name)).call();
-                  case 4:
-                    address = _context.sent;
-                    clone = this.clone();
-                    clone.jsonInterface = RESOLVER_ABI;
-                    clone.address = address;
-                    this.resolverName = name;
-                    this.resolverContract = clone;
-                    return _context.abrupt("return", clone);
-                  case 11:
-                  case "end":
-                    return _context.stop();
-                }
-              }
-            }, _callee, this);
-          }));
-          return function resolver(_x) {
-            return _resolver.apply(this, arguments);
-          };
-        }()
-      }, {
-        key: "checkNetwork",
-        value: function () {
-          var _checkNetwork = _asyncToGenerator(
-          _regeneratorRuntime.mark(function _callee2() {
-            var ensAddresses, block, headAge, networkType, address;
-            return _regeneratorRuntime.wrap(function _callee2$(_context2) {
-              while (1) {
-                switch (_context2.prev = _context2.next) {
-                  case 0:
-                    ensAddresses = {
-                      main: '0x314159265dD8dbb310642f98f50C066173C1259b',
-                      ropsten: '0x112234455c3a32fd11230c42e7bccd4a84e02010',
-                      rinkeby: '0xe7410170f87102df0055eb195163a03b7f2bff4a'
-                    };
-                    _context2.next = 3;
-                    return this.net.getBlock('latest', false);
-                  case 3:
-                    block = _context2.sent;
-                    headAge = new Date() / 1000 - block.timestamp;
-                    if (!(headAge > 3600)) {
-                      _context2.next = 7;
-                      break;
-                    }
-                    throw new Error("Network not synced; last block was ".concat(headAge, " seconds ago"));
-                  case 7:
-                    _context2.next = 9;
-                    return this.net.getNetworkType();
-                  case 9:
-                    networkType = _context2.sent;
-                    address = ensAddresses[networkType];
-                    if (!(typeof address === 'undefined')) {
-                      _context2.next = 13;
-                      break;
-                    }
-                    throw new TypeError("ENS is not supported on network: \"".concat(networkType, "\""));
-                  case 13:
-                    return _context2.abrupt("return", address);
-                  case 14:
-                  case "end":
-                    return _context2.stop();
-                }
-              }
-            }, _callee2, this);
-          }));
-          return function checkNetwork() {
-            return _checkNetwork.apply(this, arguments);
-          };
-        }()
-      }]);
-      return Registry;
-    }(web3EthContract.AbstractContract);
-
-    var EnsModuleFactory =
-    function () {
-      function EnsModuleFactory() {
-        _classCallCheck(this, EnsModuleFactory);
-      }
-      _createClass(EnsModuleFactory, [{
-        key: "createENS",
-        value: function createENS(provider, providersModuleFactory, methodModuleFactory, contractModuleFactory, promiEvent, abiCoder, utils, formatters, net, registryOptions, ensModuleOptions) {
-          return new Ens(provider, providersModuleFactory, methodModuleFactory, ensModuleOptions, this, promiEvent, abiCoder, utils, formatters, registryOptions, net);
-        }
-      }, {
-        key: "createRegistry",
-        value: function createRegistry(provider, providersModuleFactory, methodModuleFactory, contractModuleFactory, promiEvent, abiCoder, utils, formatters, options, net) {
-          return new Registry(provider, providersModuleFactory, methodModuleFactory, contractModuleFactory, promiEvent, abiCoder, utils, formatters, options, net);
-        }
-      }]);
-      return EnsModuleFactory;
-    }();
-
-    var Ens$1 = function Ens(provider, accounts, options) {
-      var abiCoder = new web3EthAbi.AbiCoder();
-      var methodModuleFactory = new web3CoreMethod.MethodModuleFactory();
-      return new EnsModuleFactory().createENS(provider, new web3Providers.ProvidersModuleFactory(), new web3CoreMethod.MethodModuleFactory(accounts), new web3EthContract.ContractModuleFactory(Utils, web3CoreHelpers.formatters, abiCoder, accounts, methodModuleFactory), web3CorePromievent.PromiEvent, abiCoder, Utils, web3CoreHelpers.formatters, new web3Net.Network(provider), {}, options);
+    account.encrypt = function encrypt(password, options) {
+        return _this.encrypt(account.privateKey, password, options);
     };
 
-    exports.Ens = Ens$1;
 
-    Object.defineProperty(exports, '__esModule', { value: true });
+    return account;
+};
 
-})));
+Accounts.prototype.create = function create(entropy) {
+    return this._addAccountFunctions(Account.create(entropy || utils.randomHex(32)));
+};
 
-},{"@babel/runtime/helpers/asyncToGenerator":204,"@babel/runtime/helpers/classCallCheck":205,"@babel/runtime/helpers/createClass":206,"@babel/runtime/helpers/get":208,"@babel/runtime/helpers/getPrototypeOf":209,"@babel/runtime/helpers/inherits":210,"@babel/runtime/helpers/possibleConstructorReturn":213,"@babel/runtime/regenerator":219,"eth-ens-namehash":298,"lodash/isFunction":490,"web3-core":561,"web3-core-helpers":557,"web3-core-method":558,"web3-core-promievent":559,"web3-eth-abi":562,"web3-eth-contract":569,"web3-net":574,"web3-providers":575,"web3-utils":576}],571:[function(require,module,exports){
-(function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@babel/runtime/helpers/classCallCheck'), require('@babel/runtime/helpers/createClass'), require('web3-utils'), require('bn.js')) :
-    typeof define === 'function' && define.amd ? define(['exports', '@babel/runtime/helpers/classCallCheck', '@babel/runtime/helpers/createClass', 'web3-utils', 'bn.js'], factory) :
-    (factory((global.Web3EthIban = {}),global._classCallCheck,global._createClass,global.Utils,global.BigNumber));
-}(this, (function (exports,_classCallCheck,_createClass,Utils,BigNumber) { 'use strict';
+Accounts.prototype.privateKeyToAccount = function privateKeyToAccount(privateKey) {
+    return this._addAccountFunctions(Account.fromPrivate(privateKey));
+};
 
-    _classCallCheck = _classCallCheck && _classCallCheck.hasOwnProperty('default') ? _classCallCheck['default'] : _classCallCheck;
-    _createClass = _createClass && _createClass.hasOwnProperty('default') ? _createClass['default'] : _createClass;
-    BigNumber = BigNumber && BigNumber.hasOwnProperty('default') ? BigNumber['default'] : BigNumber;
+Accounts.prototype.signTransaction = function signTransaction(tx, privateKey, callback) {
+    var _this = this,
+        error = false,
+        result;
 
-    var leftPad = function leftPad(string, bytes) {
-      var result = string;
-      while (result.length < bytes * 2) {
-        result = "0".concat(result);
-      }
-      return result;
+    callback = callback || function () {};
+
+    if (!tx) {
+        error = new Error('No transaction object given!');
+
+        callback(error);
+        return Promise.reject(error);
+    }
+
+    function signed (tx) {
+
+        if (!tx.gas && !tx.gasLimit) {
+            error = new Error('"gas" is missing');
+        }
+
+        if (tx.nonce  < 0 ||
+            tx.gas  < 0 ||
+            tx.gasPrice  < 0 ||
+            tx.chainId  < 0) {
+            error = new Error('Gas, gasPrice, nonce or chainId is lower than 0');
+        }
+
+        if (error) {
+            callback(error);
+            return Promise.reject(error);
+        }
+
+        try {
+            tx = helpers.formatters.inputCallFormatter(tx);
+
+            var transaction = tx;
+            transaction.to = tx.to || '0x';
+            transaction.data = tx.data || '0x';
+            transaction.value = tx.value || '0x';
+            transaction.chainId = utils.numberToHex(tx.chainId);
+
+            var rlpEncoded = RLP.encode([
+                Bytes.fromNat(transaction.nonce),
+                Bytes.fromNat(transaction.gasPrice),
+                Bytes.fromNat(transaction.gas),
+                transaction.to.toLowerCase(),
+                Bytes.fromNat(transaction.value),
+                transaction.data,
+                Bytes.fromNat(transaction.chainId || "0x1"),
+                "0x",
+                "0x"]);
+
+
+            var hash = Hash.keccak256(rlpEncoded);
+
+            var signature = Account.makeSigner(Nat.toNumber(transaction.chainId || "0x1") * 2 + 35)(Hash.keccak256(rlpEncoded), privateKey);
+
+            var rawTx = RLP.decode(rlpEncoded).slice(0, 6).concat(Account.decodeSignature(signature));
+
+            rawTx[6] = makeEven(trimLeadingZero(rawTx[6]));
+            rawTx[7] = makeEven(trimLeadingZero(rawTx[7]));
+            rawTx[8] = makeEven(trimLeadingZero(rawTx[8]));
+
+            var rawTransaction = RLP.encode(rawTx);
+
+            var values = RLP.decode(rawTransaction);
+            result = {
+                messageHash: hash,
+                v: trimLeadingZero(values[6]),
+                r: trimLeadingZero(values[7]),
+                s: trimLeadingZero(values[8]),
+                rawTransaction: rawTransaction
+            };
+
+        } catch(e) {
+            callback(e);
+            return Promise.reject(e);
+        }
+
+        callback(null, result);
+        return result;
+    }
+
+    // Resolve immediately if nonce, chainId and price are provided
+    if (tx.nonce !== undefined && tx.chainId !== undefined && tx.gasPrice !== undefined) {
+        return Promise.resolve(signed(tx));
+    }
+
+
+    // Otherwise, get the missing info from the Ethereum Node
+    return Promise.all([
+        isNot(tx.chainId) ? _this._ethereumCall.getId() : tx.chainId,
+        isNot(tx.gasPrice) ? _this._ethereumCall.getGasPrice() : tx.gasPrice,
+        isNot(tx.nonce) ? _this._ethereumCall.getTransactionCount(_this.privateKeyToAccount(privateKey).address) : tx.nonce
+    ]).then(function (args) {
+        if (isNot(args[0]) || isNot(args[1]) || isNot(args[2])) {
+            throw new Error('One of the values "chainId", "gasPrice", or "nonce" couldn\'t be fetched: '+ JSON.stringify(args));
+        }
+        return signed(_.extend(tx, {chainId: args[0], gasPrice: args[1], nonce: args[2]}));
+    });
+};
+
+/* jshint ignore:start */
+Accounts.prototype.recoverTransaction = function recoverTransaction(rawTx) {
+    var values = RLP.decode(rawTx);
+    var signature = Account.encodeSignature(values.slice(6,9));
+    var recovery = Bytes.toNumber(values[6]);
+    var extraData = recovery < 35 ? [] : [Bytes.fromNumber((recovery - 35) >> 1), "0x", "0x"];
+    var signingData = values.slice(0,6).concat(extraData);
+    var signingDataHex = RLP.encode(signingData);
+    return Account.recover(Hash.keccak256(signingDataHex), signature);
+};
+/* jshint ignore:end */
+
+Accounts.prototype.hashMessage = function hashMessage(data) {
+    var message = utils.isHexStrict(data) ? utils.hexToBytes(data) : data;
+    var messageBuffer = Buffer.from(message);
+    var preamble = "\x19Ethereum Signed Message:\n" + message.length;
+    var preambleBuffer = Buffer.from(preamble);
+    var ethMessage = Buffer.concat([preambleBuffer, messageBuffer]);
+    return Hash.keccak256s(ethMessage);
+};
+
+Accounts.prototype.sign = function sign(data, privateKey) {
+    var hash = this.hashMessage(data);
+    var signature = Account.sign(hash, privateKey);
+    var vrs = Account.decodeSignature(signature);
+    return {
+        message: data,
+        messageHash: hash,
+        v: vrs[0],
+        r: vrs[1],
+        s: vrs[2],
+        signature: signature
     };
-    var iso13616Prepare = function iso13616Prepare(iban) {
-      var A = 'A'.charCodeAt(0);
-      var Z = 'Z'.charCodeAt(0);
-      iban = iban.toUpperCase();
-      iban = iban.substr(4) + iban.substr(0, 4);
-      return iban.split('').map(function (n) {
-        var code = n.charCodeAt(0);
-        if (code >= A && code <= Z) {
-          return code - A + 10;
+};
+
+Accounts.prototype.recover = function recover(message, signature, preFixed) {
+    var args = [].slice.apply(arguments);
+
+
+    if (_.isObject(message)) {
+        return this.recover(message.messageHash, Account.encodeSignature([message.v, message.r, message.s]), true);
+    }
+
+    if (!preFixed) {
+        message = this.hashMessage(message);
+    }
+
+    if (args.length >= 4) {
+        preFixed = args.slice(-1)[0];
+        preFixed = _.isBoolean(preFixed) ? !!preFixed : false;
+
+        return this.recover(message, Account.encodeSignature(args.slice(1, 4)), preFixed); // v, r, s
+    }
+    return Account.recover(message, signature);
+};
+
+// Taken from https://github.com/ethereumjs/ethereumjs-wallet
+Accounts.prototype.decrypt = function (v3Keystore, password, nonStrict) {
+    /* jshint maxcomplexity: 10 */
+
+    if(!_.isString(password)) {
+        throw new Error('No password given.');
+    }
+
+    var json = (_.isObject(v3Keystore)) ? v3Keystore : JSON.parse(nonStrict ? v3Keystore.toLowerCase() : v3Keystore);
+
+    if (json.version !== 3) {
+        throw new Error('Not a valid V3 wallet');
+    }
+
+    var derivedKey;
+    var kdfparams;
+    if (json.crypto.kdf === 'scrypt') {
+        kdfparams = json.crypto.kdfparams;
+
+        // FIXME: support progress reporting callback
+        derivedKey = scryptsy(new Buffer(password), new Buffer(kdfparams.salt, 'hex'), kdfparams.n, kdfparams.r, kdfparams.p, kdfparams.dklen);
+    } else if (json.crypto.kdf === 'pbkdf2') {
+        kdfparams = json.crypto.kdfparams;
+
+        if (kdfparams.prf !== 'hmac-sha256') {
+            throw new Error('Unsupported parameters to PBKDF2');
+        }
+
+        derivedKey = cryp.pbkdf2Sync(new Buffer(password), new Buffer(kdfparams.salt, 'hex'), kdfparams.c, kdfparams.dklen, 'sha256');
+    } else {
+        throw new Error('Unsupported key derivation scheme');
+    }
+
+    var ciphertext = new Buffer(json.crypto.ciphertext, 'hex');
+
+    var mac = utils.sha3(Buffer.concat([ derivedKey.slice(16, 32), ciphertext ])).replace('0x','');
+    if (mac !== json.crypto.mac) {
+        throw new Error('Key derivation failed - possibly wrong password');
+    }
+
+    var decipher = cryp.createDecipheriv(json.crypto.cipher, derivedKey.slice(0, 16), new Buffer(json.crypto.cipherparams.iv, 'hex'));
+    var seed = '0x'+ Buffer.concat([ decipher.update(ciphertext), decipher.final() ]).toString('hex');
+
+    return this.privateKeyToAccount(seed);
+};
+
+Accounts.prototype.encrypt = function (privateKey, password, options) {
+    /* jshint maxcomplexity: 20 */
+    var account = this.privateKeyToAccount(privateKey);
+
+    options = options || {};
+    var salt = options.salt || cryp.randomBytes(32);
+    var iv = options.iv || cryp.randomBytes(16);
+
+    var derivedKey;
+    var kdf = options.kdf || 'scrypt';
+    var kdfparams = {
+        dklen: options.dklen || 32,
+        salt: salt.toString('hex')
+    };
+
+    if (kdf === 'pbkdf2') {
+        kdfparams.c = options.c || 262144;
+        kdfparams.prf = 'hmac-sha256';
+        derivedKey = cryp.pbkdf2Sync(new Buffer(password), salt, kdfparams.c, kdfparams.dklen, 'sha256');
+    } else if (kdf === 'scrypt') {
+        // FIXME: support progress reporting callback
+        kdfparams.n = options.n || 8192; // 2048 4096 8192 16384
+        kdfparams.r = options.r || 8;
+        kdfparams.p = options.p || 1;
+        derivedKey = scryptsy(new Buffer(password), salt, kdfparams.n, kdfparams.r, kdfparams.p, kdfparams.dklen);
+    } else {
+        throw new Error('Unsupported kdf');
+    }
+
+    var cipher = cryp.createCipheriv(options.cipher || 'aes-128-ctr', derivedKey.slice(0, 16), iv);
+    if (!cipher) {
+        throw new Error('Unsupported cipher');
+    }
+
+    var ciphertext = Buffer.concat([ cipher.update(new Buffer(account.privateKey.replace('0x',''), 'hex')), cipher.final() ]);
+
+    var mac = utils.sha3(Buffer.concat([ derivedKey.slice(16, 32), new Buffer(ciphertext, 'hex') ])).replace('0x','');
+
+    return {
+        version: 3,
+        id: uuid.v4({ random: options.uuid || cryp.randomBytes(16) }),
+        address: account.address.toLowerCase().replace('0x',''),
+        crypto: {
+            ciphertext: ciphertext.toString('hex'),
+            cipherparams: {
+                iv: iv.toString('hex')
+            },
+            cipher: options.cipher || 'aes-128-ctr',
+            kdf: kdf,
+            kdfparams: kdfparams,
+            mac: mac.toString('hex')
+        }
+    };
+};
+
+
+// Note: this is trying to follow closely the specs on
+// http://web3js.readthedocs.io/en/1.0/web3-eth-accounts.html
+
+function Wallet(accounts) {
+    this._accounts = accounts;
+    this.length = 0;
+    this.defaultKeyName = "web3js_wallet";
+}
+
+Wallet.prototype._findSafeIndex = function (pointer) {
+    pointer = pointer || 0;
+    if (_.has(this, pointer)) {
+        return this._findSafeIndex(pointer + 1);
+    } else {
+        return pointer;
+    }
+};
+
+Wallet.prototype._currentIndexes = function () {
+    var keys = Object.keys(this);
+    var indexes = keys
+        .map(function(key) { return parseInt(key); })
+        .filter(function(n) { return (n < 9e20); });
+
+    return indexes;
+};
+
+Wallet.prototype.create = function (numberOfAccounts, entropy) {
+    for (var i = 0; i < numberOfAccounts; ++i) {
+        this.add(this._accounts.create(entropy).privateKey);
+    }
+    return this;
+};
+
+Wallet.prototype.add = function (account) {
+
+    if (_.isString(account)) {
+        account = this._accounts.privateKeyToAccount(account);
+    }
+    if (!this[account.address]) {
+        account = this._accounts.privateKeyToAccount(account.privateKey);
+        account.index = this._findSafeIndex();
+
+        this[account.index] = account;
+        this[account.address] = account;
+        this[account.address.toLowerCase()] = account;
+
+        this.length++;
+
+        return account;
+    } else {
+        return this[account.address];
+    }
+};
+
+Wallet.prototype.remove = function (addressOrIndex) {
+    var account = this[addressOrIndex];
+
+    if (account && account.address) {
+        // address
+        this[account.address].privateKey = null;
+        delete this[account.address];
+        // address lowercase
+        this[account.address.toLowerCase()].privateKey = null;
+        delete this[account.address.toLowerCase()];
+        // index
+        this[account.index].privateKey = null;
+        delete this[account.index];
+
+        this.length--;
+
+        return true;
+    } else {
+        return false;
+    }
+};
+
+Wallet.prototype.clear = function () {
+    var _this = this;
+    var indexes = this._currentIndexes();
+
+    indexes.forEach(function(index) {
+        _this.remove(index);
+    });
+
+    return this;
+};
+
+Wallet.prototype.encrypt = function (password, options) {
+    var _this = this;
+    var indexes = this._currentIndexes();
+
+    var accounts = indexes.map(function(index) {
+        return _this[index].encrypt(password, options);
+    });
+
+    return accounts;
+};
+
+
+Wallet.prototype.decrypt = function (encryptedWallet, password) {
+    var _this = this;
+
+    encryptedWallet.forEach(function (keystore) {
+        var account = _this._accounts.decrypt(keystore, password);
+
+        if (account) {
+            _this.add(account);
         } else {
-          return n;
+            throw new Error('Couldn\'t decrypt accounts. Password wrong?');
         }
-      }).join('');
+    });
+
+    return this;
+};
+
+Wallet.prototype.save = function (password, keyName) {
+    localStorage.setItem(keyName || this.defaultKeyName, JSON.stringify(this.encrypt(password)));
+
+    return true;
+};
+
+Wallet.prototype.load = function (password, keyName) {
+    var keystore = localStorage.getItem(keyName || this.defaultKeyName);
+
+    if (keystore) {
+        try {
+            keystore = JSON.parse(keystore);
+        } catch(e) {
+
+        }
+    }
+
+    return this.decrypt(keystore || [], password);
+};
+
+if (typeof localStorage === 'undefined') {
+    delete Wallet.prototype.save;
+    delete Wallet.prototype.load;
+}
+
+
+module.exports = Accounts;
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer)
+},{"any-promise":202,"buffer":51,"crypto":60,"crypto-browserify":256,"eth-lib/lib/account":374,"eth-lib/lib/bytes":376,"eth-lib/lib/hash":377,"eth-lib/lib/nat":378,"eth-lib/lib/rlp":379,"scrypt.js":347,"underscore":358,"uuid":381,"web3-core":372,"web3-core-helpers":362,"web3-core-method":363,"web3-utils":399}],383:[function(require,module,exports){
+/*
+    This file is part of web3.js.
+
+    web3.js is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    web3.js is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public License
+    along with web3.js.  If not, see <http://www.gnu.org/licenses/>.
+*/
+/**
+ * @file contract.js
+ *
+ * To initialize a contract use:
+ *
+ *  var Contract = require('web3-eth-contract');
+ *  Contract.setProvider('ws://localhost:8546');
+ *  var contract = new Contract(abi, address, ...);
+ *
+ * @author Fabian Vogelsteller <fabian@ethereum.org>
+ * @date 2017
+ */
+
+
+"use strict";
+
+
+var _ = require('underscore');
+var core = require('web3-core');
+var Method = require('web3-core-method');
+var utils = require('web3-utils');
+var Subscription = require('web3-core-subscriptions').subscription;
+var formatters = require('web3-core-helpers').formatters;
+var errors = require('web3-core-helpers').errors;
+var promiEvent = require('web3-core-promievent');
+var abi = require('web3-eth-abi');
+
+
+/**
+ * Should be called to create new contract instance
+ *
+ * @method Contract
+ * @constructor
+ * @param {Array} jsonInterface
+ * @param {String} address
+ * @param {Object} options
+ */
+var Contract = function Contract(jsonInterface, address, options) {
+    var _this = this,
+        args = Array.prototype.slice.call(arguments);
+
+    if(!(this instanceof Contract)) {
+        throw new Error('Please use the "new" keyword to instantiate a web3.eth.contract() object!');
+    }
+
+    // sets _requestmanager
+    core.packageInit(this, [this.constructor.currentProvider]);
+
+    this.clearSubscriptions = this._requestManager.clearSubscriptions;
+
+
+
+    if(!jsonInterface || !(Array.isArray(jsonInterface))) {
+        throw new Error('You must provide the json interface of the contract when instantiating a contract object.');
+    }
+
+
+
+    // create the options object
+    this.options = {};
+
+    var lastArg = args[args.length - 1];
+    if(_.isObject(lastArg) && !_.isArray(lastArg)) {
+        options = lastArg;
+
+        this.options = _.extend(this.options, this._getOrSetDefaultOptions(options));
+        if(_.isObject(address)) {
+            address = null;
+        }
+    }
+
+    // set address
+    Object.defineProperty(this.options, 'address', {
+        set: function(value){
+            if(value) {
+                _this._address = utils.toChecksumAddress(formatters.inputAddressFormatter(value));
+            }
+        },
+        get: function(){
+            return _this._address;
+        },
+        enumerable: true
+    });
+
+    // add method and event signatures, when the jsonInterface gets set
+    Object.defineProperty(this.options, 'jsonInterface', {
+        set: function(value){
+            _this.methods = {};
+            _this.events = {};
+
+            _this._jsonInterface = value.map(function(method) {
+                var func,
+                    funcName;
+
+                // make constant and payable backwards compatible
+                method.constant = (method.stateMutability === "view" || method.stateMutability === "pure" || method.constant);
+                method.payable = (method.stateMutability === "payable" || method.payable);
+
+
+                if (method.name) {
+                    funcName = utils._jsonInterfaceMethodToString(method);
+                }
+
+
+                // function
+                if (method.type === 'function') {
+                    method.signature = abi.encodeFunctionSignature(funcName);
+                    func = _this._createTxObject.bind({
+                        method: method,
+                        parent: _this
+                    });
+
+
+                    // add method only if not one already exists
+                    if(!_this.methods[method.name]) {
+                        _this.methods[method.name] = func;
+                    } else {
+                        var cascadeFunc = _this._createTxObject.bind({
+                            method: method,
+                            parent: _this,
+                            nextMethod: _this.methods[method.name]
+                        });
+                        _this.methods[method.name] = cascadeFunc;
+                    }
+
+                    // definitely add the method based on its signature
+                    _this.methods[method.signature] = func;
+
+                    // add method by name
+                    _this.methods[funcName] = func;
+
+
+                // event
+                } else if (method.type === 'event') {
+                    method.signature = abi.encodeEventSignature(funcName);
+                    var event = _this._on.bind(_this, method.signature);
+
+                    // add method only if not already exists
+                    if(!_this.events[method.name] || _this.events[method.name].name === 'bound ')
+                        _this.events[method.name] = event;
+
+                    // definitely add the method based on its signature
+                    _this.events[method.signature] = event;
+
+                    // add event by name
+                    _this.events[funcName] = event;
+                }
+
+
+                return method;
+            });
+
+            // add allEvents
+            _this.events.allEvents = _this._on.bind(_this, 'allevents');
+
+            return _this._jsonInterface;
+        },
+        get: function(){
+            return _this._jsonInterface;
+        },
+        enumerable: true
+    });
+
+    // get default account from the Class
+    var defaultAccount = this.constructor.defaultAccount;
+    var defaultBlock = this.constructor.defaultBlock || 'latest';
+
+    Object.defineProperty(this, 'defaultAccount', {
+        get: function () {
+            return defaultAccount;
+        },
+        set: function (val) {
+            if(val) {
+                defaultAccount = utils.toChecksumAddress(formatters.inputAddressFormatter(val));
+            }
+
+            return val;
+        },
+        enumerable: true
+    });
+    Object.defineProperty(this, 'defaultBlock', {
+        get: function () {
+            return defaultBlock;
+        },
+        set: function (val) {
+            defaultBlock = val;
+
+            return val;
+        },
+        enumerable: true
+    });
+
+    // properties
+    this.methods = {};
+    this.events = {};
+
+    this._address = null;
+    this._jsonInterface = [];
+
+    // set getter/setter properties
+    this.options.address = address;
+    this.options.jsonInterface = jsonInterface;
+
+};
+
+Contract.setProvider = function(provider, accounts) {
+    // Contract.currentProvider = provider;
+    core.packageInit(this, [provider]);
+
+    this._ethAccounts = accounts;
+};
+
+
+/**
+ * Get the callback and modiufy the array if necessary
+ *
+ * @method _getCallback
+ * @param {Array} args
+ * @return {Function} the callback
+ */
+Contract.prototype._getCallback = function getCallback(args) {
+    if (args && _.isFunction(args[args.length - 1])) {
+        return args.pop(); // modify the args array!
+    }
+};
+
+/**
+ * Checks that no listener with name "newListener" or "removeListener" is added.
+ *
+ * @method _checkListener
+ * @param {String} type
+ * @param {String} event
+ * @return {Object} the contract instance
+ */
+Contract.prototype._checkListener = function(type, event){
+    if(event === type) {
+        throw new Error('The event "'+ type +'" is a reserved event name, you can\'t use it.');
+    }
+};
+
+
+/**
+ * Use default values, if options are not available
+ *
+ * @method _getOrSetDefaultOptions
+ * @param {Object} options the options gived by the user
+ * @return {Object} the options with gaps filled by defaults
+ */
+Contract.prototype._getOrSetDefaultOptions = function getOrSetDefaultOptions(options) {
+    var gasPrice = options.gasPrice ? String(options.gasPrice): null;
+    var from = options.from ? utils.toChecksumAddress(formatters.inputAddressFormatter(options.from)) : null;
+
+    options.data = options.data || this.options.data;
+
+    options.from = from || this.options.from;
+    options.gasPrice = gasPrice || this.options.gasPrice;
+    options.gas = options.gas || options.gasLimit || this.options.gas;
+
+    // TODO replace with only gasLimit?
+    delete options.gasLimit;
+
+    return options;
+};
+
+
+/**
+ * Should be used to encode indexed params and options to one final object
+ *
+ * @method _encodeEventABI
+ * @param {Object} event
+ * @param {Object} options
+ * @return {Object} everything combined together and encoded
+ */
+Contract.prototype._encodeEventABI = function (event, options) {
+    options = options || {};
+    var filter = options.filter || {},
+        result = {};
+
+    ['fromBlock', 'toBlock'].filter(function (f) {
+        return options[f] !== undefined;
+    }).forEach(function (f) {
+        result[f] = formatters.inputBlockNumberFormatter(options[f]);
+    });
+
+    // use given topics
+    if(_.isArray(options.topics)) {
+        result.topics = options.topics;
+
+    // create topics based on filter
+    } else {
+
+        result.topics = [];
+
+        // add event signature
+        if (event && !event.anonymous && event.name !== 'ALLEVENTS') {
+            result.topics.push(event.signature);
+        }
+
+        // add event topics (indexed arguments)
+        if (event.name !== 'ALLEVENTS') {
+            var indexedTopics = event.inputs.filter(function (i) {
+                return i.indexed === true;
+            }).map(function (i) {
+                var value = filter[i.name];
+                if (!value) {
+                    return null;
+                }
+
+                // TODO: https://github.com/ethereum/web3.js/issues/344
+                // TODO: deal properly with components
+
+                if (_.isArray(value)) {
+                    return value.map(function (v) {
+                        return abi.encodeParameter(i.type, v);
+                    });
+                }
+                return abi.encodeParameter(i.type, value);
+            });
+
+            result.topics = result.topics.concat(indexedTopics);
+        }
+
+        if(!result.topics.length)
+            delete result.topics;
+    }
+
+    if(this.options.address) {
+        result.address = this.options.address.toLowerCase();
+    }
+
+    return result;
+};
+
+/**
+ * Should be used to decode indexed params and options
+ *
+ * @method _decodeEventABI
+ * @param {Object} data
+ * @return {Object} result object with decoded indexed && not indexed params
+ */
+Contract.prototype._decodeEventABI = function (data) {
+    var event = this;
+
+    data.data = data.data || '';
+    data.topics = data.topics || [];
+    var result = formatters.outputLogFormatter(data);
+
+    // if allEvents get the right event
+    if(event.name === 'ALLEVENTS') {
+        event = event.jsonInterface.find(function (intf) {
+            return (intf.signature === data.topics[0]);
+        }) || {anonymous: true};
+    }
+
+    // create empty inputs if none are present (e.g. anonymous events on allEvents)
+    event.inputs = event.inputs || [];
+
+
+    var argTopics = event.anonymous ? data.topics : data.topics.slice(1);
+
+    result.returnValues = abi.decodeLog(event.inputs, data.data, argTopics);
+    delete result.returnValues.__length__;
+
+    // add name
+    result.event = event.name;
+
+    // add signature
+    result.signature = (event.anonymous || !data.topics[0]) ? null : data.topics[0];
+
+    // move the data and topics to "raw"
+    result.raw = {
+        data: result.data,
+        topics: result.topics
     };
-    var mod9710 = function mod9710(iban) {
-      var remainder = iban;
-      var block;
-      while (remainder.length > 2) {
+    delete result.data;
+    delete result.topics;
+
+
+    return result;
+};
+
+/**
+ * Encodes an ABI for a method, including signature or the method.
+ * Or when constructor encodes only the constructor parameters.
+ *
+ * @method _encodeMethodABI
+ * @param {Mixed} args the arguments to encode
+ * @param {String} the encoded ABI
+ */
+Contract.prototype._encodeMethodABI = function _encodeMethodABI() {
+    var methodSignature = this._method.signature,
+        args = this.arguments || [];
+
+    var signature = false,
+        paramsABI = this._parent.options.jsonInterface.filter(function (json) {
+            return ((methodSignature === 'constructor' && json.type === methodSignature) ||
+                ((json.signature === methodSignature || json.signature === methodSignature.replace('0x','') || json.name === methodSignature) && json.type === 'function'));
+        }).map(function (json) {
+            var inputLength = (_.isArray(json.inputs)) ? json.inputs.length : 0;
+
+            if (inputLength !== args.length) {
+                throw new Error('The number of arguments is not matching the methods required number. You need to pass '+ inputLength +' arguments.');
+            }
+
+            if (json.type === 'function') {
+                signature = json.signature;
+            }
+            return _.isArray(json.inputs) ? json.inputs : [];
+        }).map(function (inputs) {
+            return abi.encodeParameters(inputs, args).replace('0x','');
+        })[0] || '';
+
+    // return constructor
+    if(methodSignature === 'constructor') {
+        if(!this._deployData)
+            throw new Error('The contract has no contract data option set. This is necessary to append the constructor parameters.');
+
+        return this._deployData + paramsABI;
+
+    // return method
+    } else {
+
+        var returnValue = (signature) ? signature + paramsABI : paramsABI;
+
+        if(!returnValue) {
+            throw new Error('Couldn\'t find a matching contract method named "'+ this._method.name +'".');
+        } else {
+            return returnValue;
+        }
+    }
+
+};
+
+
+/**
+ * Decode method return values
+ *
+ * @method _decodeMethodReturn
+ * @param {Array} outputs
+ * @param {String} returnValues
+ * @return {Object} decoded output return values
+ */
+Contract.prototype._decodeMethodReturn = function (outputs, returnValues) {
+    if (!returnValues) {
+        return null;
+    }
+
+    returnValues = returnValues.length >= 2 ? returnValues.slice(2) : returnValues;
+    var result = abi.decodeParameters(outputs, returnValues);
+
+    if (result.__length__ === 1) {
+        return result[0];
+    } else {
+        delete result.__length__;
+        return result;
+    }
+};
+
+
+/**
+ * Deploys a contract and fire events based on its state: transactionHash, receipt
+ *
+ * All event listeners will be removed, once the last possible event is fired ("error", or "receipt")
+ *
+ * @method deploy
+ * @param {Object} options
+ * @param {Function} callback
+ * @return {Object} EventEmitter possible events are "error", "transactionHash" and "receipt"
+ */
+Contract.prototype.deploy = function(options, callback){
+
+    options = options || {};
+
+    options.arguments = options.arguments || [];
+    options = this._getOrSetDefaultOptions(options);
+
+
+    // return error, if no "data" is specified
+    if(!options.data) {
+        return utils._fireError(new Error('No "data" specified in neither the given options, nor the default options.'), null, null, callback);
+    }
+
+    var constructor = _.find(this.options.jsonInterface, function (method) {
+        return (method.type === 'constructor');
+    }) || {};
+    constructor.signature = 'constructor';
+
+    return this._createTxObject.apply({
+        method: constructor,
+        parent: this,
+        deployData: options.data,
+        _ethAccounts: this.constructor._ethAccounts
+    }, options.arguments);
+
+};
+
+/**
+ * Gets the event signature and outputformatters
+ *
+ * @method _generateEventOptions
+ * @param {Object} event
+ * @param {Object} options
+ * @param {Function} callback
+ * @return {Object} the event options object
+ */
+Contract.prototype._generateEventOptions = function() {
+    var args = Array.prototype.slice.call(arguments);
+
+    // get the callback
+    var callback = this._getCallback(args);
+
+    // get the options
+    var options = (_.isObject(args[args.length - 1])) ? args.pop() : {};
+
+    var event = (_.isString(args[0])) ? args[0] : 'allevents';
+    event = (event.toLowerCase() === 'allevents') ? {
+            name: 'ALLEVENTS',
+            jsonInterface: this.options.jsonInterface
+        } : this.options.jsonInterface.find(function (json) {
+            return (json.type === 'event' && (json.name === event || json.signature === '0x'+ event.replace('0x','')));
+        });
+
+    if (!event) {
+        throw new Error('Event "' + event.name + '" doesn\'t exist in this contract.');
+    }
+
+    if (!utils.isAddress(this.options.address)) {
+        throw new Error('This contract object doesn\'t have address set yet, please set an address first.');
+    }
+
+    return {
+        params: this._encodeEventABI(event, options),
+        event: event,
+        callback: callback
+    };
+};
+
+/**
+ * Adds event listeners and creates a subscription, and remove it once its fired.
+ *
+ * @method clone
+ * @return {Object} the event subscription
+ */
+Contract.prototype.clone = function() {
+    return new this.constructor(this.options.jsonInterface, this.options.address, this.options);
+};
+
+
+/**
+ * Adds event listeners and creates a subscription, and remove it once its fired.
+ *
+ * @method once
+ * @param {String} event
+ * @param {Object} options
+ * @param {Function} callback
+ * @return {Object} the event subscription
+ */
+Contract.prototype.once = function(event, options, callback) {
+    var args = Array.prototype.slice.call(arguments);
+
+    // get the callback
+    callback = this._getCallback(args);
+
+    if (!callback) {
+        throw new Error('Once requires a callback as the second parameter.');
+    }
+
+    // don't allow fromBlock
+    if (options)
+        delete options.fromBlock;
+
+    // don't return as once shouldn't provide "on"
+    this._on(event, options, function (err, res, sub) {
+        sub.unsubscribe();
+        if(_.isFunction(callback)){
+            callback(err, res, sub);
+        }
+    });
+
+    return undefined;
+};
+
+/**
+ * Adds event listeners and creates a subscription.
+ *
+ * @method _on
+ * @param {String} event
+ * @param {Object} options
+ * @param {Function} callback
+ * @return {Object} the event subscription
+ */
+Contract.prototype._on = function(){
+    var subOptions = this._generateEventOptions.apply(this, arguments);
+
+
+    // prevent the event "newListener" and "removeListener" from being overwritten
+    this._checkListener('newListener', subOptions.event.name, subOptions.callback);
+    this._checkListener('removeListener', subOptions.event.name, subOptions.callback);
+
+    // TODO check if listener already exists? and reuse subscription if options are the same.
+
+    // create new subscription
+    var subscription = new Subscription({
+        subscription: {
+            params: 1,
+            inputFormatter: [formatters.inputLogFormatter],
+            outputFormatter: this._decodeEventABI.bind(subOptions.event),
+            // DUBLICATE, also in web3-eth
+            subscriptionHandler: function (output) {
+                if(output.removed) {
+                    this.emit('changed', output);
+                } else {
+                    this.emit('data', output);
+                }
+
+                if (_.isFunction(this.callback)) {
+                    this.callback(null, output, this);
+                }
+            }
+        },
+        type: 'eth',
+        requestManager: this._requestManager
+    });
+    subscription.subscribe('logs', subOptions.params, subOptions.callback || function () {});
+
+    return subscription;
+};
+
+/**
+ * Get past events from contracts
+ *
+ * @method getPastEvents
+ * @param {String} event
+ * @param {Object} options
+ * @param {Function} callback
+ * @return {Object} the promievent
+ */
+Contract.prototype.getPastEvents = function(){
+    var subOptions = this._generateEventOptions.apply(this, arguments);
+
+    var getPastLogs = new Method({
+        name: 'getPastLogs',
+        call: 'eth_getLogs',
+        params: 1,
+        inputFormatter: [formatters.inputLogFormatter],
+        outputFormatter: this._decodeEventABI.bind(subOptions.event)
+    });
+    getPastLogs.setRequestManager(this._requestManager);
+    var call = getPastLogs.buildCall();
+
+    getPastLogs = null;
+
+    return call(subOptions.params, subOptions.callback);
+};
+
+
+/**
+ * returns the an object with call, send, estimate functions
+ *
+ * @method _createTxObject
+ * @returns {Object} an object with functions to call the methods
+ */
+Contract.prototype._createTxObject =  function _createTxObject(){
+    var args = Array.prototype.slice.call(arguments);
+    var txObject = {};
+
+    if(this.method.type === 'function') {
+
+        txObject.call = this.parent._executeMethod.bind(txObject, 'call');
+        txObject.call.request = this.parent._executeMethod.bind(txObject, 'call', true); // to make batch requests
+
+    }
+
+    txObject.send = this.parent._executeMethod.bind(txObject, 'send');
+    txObject.send.request = this.parent._executeMethod.bind(txObject, 'send', true); // to make batch requests
+    txObject.encodeABI = this.parent._encodeMethodABI.bind(txObject);
+    txObject.estimateGas = this.parent._executeMethod.bind(txObject, 'estimate');
+
+    if (args && this.method.inputs && args.length !== this.method.inputs.length) {
+        if (this.nextMethod) {
+            return this.nextMethod.apply(null, args);
+        }
+        throw errors.InvalidNumberOfParams(args.length, this.method.inputs.length, this.method.name);
+    }
+
+    txObject.arguments = args || [];
+    txObject._method = this.method;
+    txObject._parent = this.parent;
+    txObject._ethAccounts = this.parent.constructor._ethAccounts || this._ethAccounts;
+
+    if(this.deployData) {
+        txObject._deployData = this.deployData;
+    }
+
+    return txObject;
+};
+
+
+/**
+ * Generates the options for the execute call
+ *
+ * @method _processExecuteArguments
+ * @param {Array} args
+ * @param {Promise} defer
+ */
+Contract.prototype._processExecuteArguments = function _processExecuteArguments(args, defer) {
+    var processedArgs = {};
+
+    processedArgs.type = args.shift();
+
+    // get the callback
+    processedArgs.callback = this._parent._getCallback(args);
+
+    // get block number to use for call
+    if(processedArgs.type === 'call' && args[args.length - 1] !== true && (_.isString(args[args.length - 1]) || isFinite(args[args.length - 1])))
+        processedArgs.defaultBlock = args.pop();
+
+    // get the options
+    processedArgs.options = (_.isObject(args[args.length - 1])) ? args.pop() : {};
+
+    // get the generateRequest argument for batch requests
+    processedArgs.generateRequest = (args[args.length - 1] === true)? args.pop() : false;
+
+    processedArgs.options = this._parent._getOrSetDefaultOptions(processedArgs.options);
+    processedArgs.options.data = this.encodeABI();
+
+    // add contract address
+    if(!this._deployData && !utils.isAddress(this._parent.options.address))
+        throw new Error('This contract object doesn\'t have address set yet, please set an address first.');
+
+    if(!this._deployData)
+        processedArgs.options.to = this._parent.options.address;
+
+    // return error, if no "data" is specified
+    if(!processedArgs.options.data)
+        return utils._fireError(new Error('Couldn\'t find a matching contract method, or the number of parameters is wrong.'), defer.eventEmitter, defer.reject, processedArgs.callback);
+
+    return processedArgs;
+};
+
+/**
+ * Executes a call, transact or estimateGas on a contract function
+ *
+ * @method _executeMethod
+ * @param {String} type the type this execute function should execute
+ * @param {Boolean} makeRequest if true, it simply returns the request parameters, rather than executing it
+ */
+Contract.prototype._executeMethod = function _executeMethod(){
+    var _this = this,
+        args = this._parent._processExecuteArguments.call(this, Array.prototype.slice.call(arguments), defer),
+        defer = promiEvent((args.type !== 'send')),
+        ethAccounts = _this.constructor._ethAccounts || _this._ethAccounts;
+
+    // simple return request for batch requests
+    if(args.generateRequest) {
+
+        var payload = {
+            params: [formatters.inputCallFormatter.call(this._parent, args.options)],
+            callback: args.callback
+        };
+
+        if(args.type === 'call') {
+            payload.params.push(formatters.inputDefaultBlockNumberFormatter.call(this._parent, args.defaultBlock));
+            payload.method = 'eth_call';
+            payload.format = this._parent._decodeMethodReturn.bind(null, this._method.outputs);
+        } else {
+            payload.method = 'eth_sendTransaction';
+        }
+
+        return payload;
+
+    } else {
+
+        switch (args.type) {
+            case 'estimate':
+
+                var estimateGas = (new Method({
+                    name: 'estimateGas',
+                    call: 'eth_estimateGas',
+                    params: 1,
+                    inputFormatter: [formatters.inputCallFormatter],
+                    outputFormatter: utils.hexToNumber,
+                    requestManager: _this._parent._requestManager,
+                    accounts: ethAccounts, // is eth.accounts (necessary for wallet signing)
+                    defaultAccount: _this._parent.defaultAccount,
+                    defaultBlock: _this._parent.defaultBlock
+                })).createFunction();
+
+                return estimateGas(args.options, args.callback);
+
+            case 'call':
+
+                // TODO check errors: missing "from" should give error on deploy and send, call ?
+
+                var call = (new Method({
+                    name: 'call',
+                    call: 'eth_call',
+                    params: 2,
+                    inputFormatter: [formatters.inputCallFormatter, formatters.inputDefaultBlockNumberFormatter],
+                    // add output formatter for decoding
+                    outputFormatter: function (result) {
+                        return _this._parent._decodeMethodReturn(_this._method.outputs, result);
+                    },
+                    requestManager: _this._parent._requestManager,
+                    accounts: ethAccounts, // is eth.accounts (necessary for wallet signing)
+                    defaultAccount: _this._parent.defaultAccount,
+                    defaultBlock: _this._parent.defaultBlock
+                })).createFunction();
+
+                return call(args.options, args.defaultBlock, args.callback);
+
+            case 'send':
+
+                // return error, if no "from" is specified
+                if(!utils.isAddress(args.options.from)) {
+                    return utils._fireError(new Error('No "from" address specified in neither the given options, nor the default options.'), defer.eventEmitter, defer.reject, args.callback);
+                }
+
+                if (_.isBoolean(this._method.payable) && !this._method.payable && args.options.value && args.options.value > 0) {
+                    return utils._fireError(new Error('Can not send value to non-payable contract method or constructor'), defer.eventEmitter, defer.reject, args.callback);
+                }
+
+
+                // make sure receipt logs are decoded
+                var extraFormatters = {
+                    receiptFormatter: function (receipt) {
+                        if (_.isArray(receipt.logs)) {
+
+                            // decode logs
+                            var events = _.map(receipt.logs, function(log) {
+                                return _this._parent._decodeEventABI.call({
+                                    name: 'ALLEVENTS',
+                                    jsonInterface: _this._parent.options.jsonInterface
+                                }, log);
+                            });
+
+                            // make log names keys
+                            receipt.events = {};
+                            var count = 0;
+                            events.forEach(function (ev) {
+                                if (ev.event) {
+                                    // if > 1 of the same event, don't overwrite any existing events
+                                    if (receipt.events[ev.event]) {
+                                        if (Array.isArray(receipt.events[ ev.event ])) {
+                                            receipt.events[ ev.event ].push(ev);
+                                        } else {
+                                            receipt.events[ev.event] = [receipt.events[ev.event], ev];
+                                        }
+                                    } else {
+                                        receipt.events[ ev.event ] = ev;
+                                    }
+                                } else {
+                                    receipt.events[count] = ev;
+                                    count++;
+                                }
+                            });
+
+                            delete receipt.logs;
+                        }
+                        return receipt;
+                    },
+                    contractDeployFormatter: function (receipt) {
+                        var newContract = _this._parent.clone();
+                        newContract.options.address = receipt.contractAddress;
+                        return newContract;
+                    }
+                };
+
+                var sendTransaction = (new Method({
+                    name: 'sendTransaction',
+                    call: 'eth_sendTransaction',
+                    params: 1,
+                    inputFormatter: [formatters.inputTransactionFormatter],
+                    requestManager: _this._parent._requestManager,
+                    accounts: _this.constructor._ethAccounts || _this._ethAccounts, // is eth.accounts (necessary for wallet signing)
+                    defaultAccount: _this._parent.defaultAccount,
+                    defaultBlock: _this._parent.defaultBlock,
+                    extraFormatters: extraFormatters
+                })).createFunction();
+
+                return sendTransaction(args.options, args.callback);
+
+        }
+
+    }
+
+};
+
+module.exports = Contract;
+
+},{"underscore":358,"web3-core":372,"web3-core-helpers":362,"web3-core-method":363,"web3-core-promievent":364,"web3-core-subscriptions":369,"web3-eth-abi":373,"web3-utils":399}],384:[function(require,module,exports){
+/*
+    This file is part of web3.js.
+    web3.js is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+    web3.js is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser General Public License for more details.
+    You should have received a copy of the GNU Lesser General Public License
+    along with web3.js.  If not, see <http://www.gnu.org/licenses/>.
+*/
+/**
+ * @file ENS.js
+ *
+ * @author Samuel Furter <samuel@ethereum.org>
+ * @date 2018
+ */
+
+"use strict";
+
+var config = require('./config');
+var Registry = require('./contracts/Registry');
+var ResolverMethodHandler = require('./lib/ResolverMethodHandler');
+
+/**
+ * Constructs a new instance of ENS
+ *
+ * @method ENS
+ * @param {Object} eth
+ * @constructor
+ */
+function ENS(eth) {
+    this.eth = eth;
+}
+
+Object.defineProperty(ENS.prototype, 'registry', {
+    get: function () {
+        return new Registry(this);
+    },
+    enumerable: true
+});
+
+Object.defineProperty(ENS.prototype, 'resolverMethodHandler', {
+    get: function () {
+        return new ResolverMethodHandler(this.registry);
+    },
+    enumerable: true
+});
+
+/**
+ * @param {string} name
+ * @returns {Promise<Contract>}
+ */
+ENS.prototype.resolver = function (name) {
+    return this.registry.resolver(name);
+};
+
+/**
+ * Returns the address record associated with a name.
+ *
+ * @method getAddress
+ * @param {string} name
+ * @param {function} callback
+ * @return {eventifiedPromise}
+ */
+ENS.prototype.getAddress = function (name, callback) {
+    return this.resolverMethodHandler.method(name, 'addr', []).call(callback);
+};
+
+/**
+ * Sets a new address
+ *
+ * @method setAddress
+ * @param {string} name
+ * @param {string} address
+ * @param {Object} sendOptions
+ * @param {function} callback
+ * @returns {eventifiedPromise}
+ */
+ENS.prototype.setAddress = function (name, address, sendOptions, callback) {
+    return this.resolverMethodHandler.method(name, 'setAddr', [address]).send(sendOptions, callback);
+};
+
+/**
+ * Returns the public key
+ *
+ * @method getPubkey
+ * @param {string} name
+ * @param {function} callback
+ * @returns {eventifiedPromise}
+ */
+ENS.prototype.getPubkey = function (name, callback) {
+    return this.resolverMethodHandler.method(name, 'pubkey', [], callback).call(callback);
+};
+
+/**
+ * Set the new public key
+ *
+ * @method setPubkey
+ * @param {string} name
+ * @param {string} x
+ * @param {string} y
+ * @param {Object} sendOptions
+ * @param {function} callback
+ * @returns {eventifiedPromise}
+ */
+ENS.prototype.setPubkey = function (name, x, y, sendOptions, callback) {
+    return this.resolverMethodHandler.method(name, 'setPubkey', [x, y]).send(sendOptions, callback);
+};
+
+/**
+ * Returns the content
+ *
+ * @method getContent
+ * @param {string} name
+ * @param {function} callback
+ * @returns {eventifiedPromise}
+ */
+ENS.prototype.getContent = function (name, callback) {
+    return this.resolverMethodHandler.method(name, 'content', []).call(callback);
+};
+
+/**
+ * Set the content
+ *
+ * @method setContent
+ * @param {string} name
+ * @param {string} hash
+ * @param {function} callback
+ * @param {Object} sendOptions
+ * @returns {eventifiedPromise}
+ */
+ENS.prototype.setContent = function (name, hash, sendOptions, callback) {
+    return this.resolverMethodHandler.method(name, 'setContent', [hash]).send(sendOptions, callback);
+};
+
+/**
+ * Get the multihash
+ *
+ * @method getMultihash
+ * @param {string} name
+ * @param {function} callback
+ * @returns {eventifiedPromise}
+ */
+ENS.prototype.getMultihash = function (name, callback) {
+    return this.resolverMethodHandler.method(name, 'multihash', []).call(callback);
+};
+
+/**
+ * Set the multihash
+ *
+ * @method setMultihash
+ * @param {string} name
+ * @param {string} hash
+ * @param {Object} sendOptions
+ * @param {function} callback
+ * @returns {eventifiedPromise}
+ */
+ENS.prototype.setMultihash = function (name, hash, sendOptions, callback) {
+    return this.resolverMethodHandler.method(name, 'multihash', [hash]).send(sendOptions, callback);
+};
+
+/**
+ * Checks if the current used network is synced and looks for ENS support there.
+ * Throws an error if not.
+ *
+ * @returns {Promise<Block>}
+ */
+ENS.prototype.checkNetwork = function () {
+    var self = this;
+    return self.eth.getBlock('latest').then(function (block) {
+        var headAge = new Date() / 1000 - block.timestamp;
+        if (headAge > 3600) {
+            throw new Error("Network not synced; last block was " + headAge + " seconds ago");
+        }
+        return self.eth.net.getNetworkType();
+    }).then(function (networkType) {
+        var addr = config.addresses[networkType];
+        if (typeof addr === 'undefined') {
+            throw new Error("ENS is not supported on network " + networkType);
+        }
+
+        return addr;
+    });
+};
+
+module.exports = ENS;
+
+},{"./config":385,"./contracts/Registry":386,"./lib/ResolverMethodHandler":388}],385:[function(require,module,exports){
+"use strict";
+
+var config = {
+    addresses: {
+        main: "0x314159265dD8dbb310642f98f50C066173C1259b",
+        ropsten: "0x112234455c3a32fd11230c42e7bccd4a84e02010",
+        rinkeby: "0xe7410170f87102df0055eb195163a03b7f2bff4a"
+    },
+};
+
+module.exports = config;
+
+},{}],386:[function(require,module,exports){
+/*
+    This file is part of web3.js.
+    web3.js is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+    web3.js is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser General Public License for more details.
+    You should have received a copy of the GNU Lesser General Public License
+    along with web3.js.  If not, see <http://www.gnu.org/licenses/>.
+*/
+/**
+ * @file Registry.js
+ *
+ * @author Samuel Furter <samuel@ethereum.org>
+ * @date 2018
+ */
+
+"use strict";
+
+var _ = require('underscore');
+var Contract = require('web3-eth-contract');
+var namehash = require('eth-ens-namehash');
+var PromiEvent = require('web3-core-promievent');
+var REGISTRY_ABI = require('../ressources/ABI/Registry');
+var RESOLVER_ABI = require('../ressources/ABI/Resolver');
+
+
+/**
+ * A wrapper around the ENS registry contract.
+ *
+ * @method Registry
+ * @param {Ens} ens
+ * @constructor
+ */
+function Registry(ens) {
+    var self = this;
+    this.ens = ens;
+    this.contract = ens.checkNetwork().then(function (address) {
+        var contract = new Contract(REGISTRY_ABI, address);
+        contract.setProvider(self.ens.eth.currentProvider);
+
+        return contract;
+    });
+}
+
+/**
+ * Returns the address of the owner of an ENS name.
+ *
+ * @method owner
+ * @param {string} name
+ * @param {function} callback
+ * @return {Promise<any>}
+ */
+Registry.prototype.owner = function (name, callback) {
+    var promiEvent = new PromiEvent(true);
+
+    this.contract.then(function (contract) {
+        contract.methods.owner(namehash.hash(name)).call()
+            .then(function (receipt) {
+                promiEvent.resolve(receipt);
+
+                if (_.isFunction(callback)) {
+                    callback(receipt);
+                }
+            })
+            .catch(function (error) {
+                promiEvent.reject(error);
+
+                if (_.isFunction(callback)) {
+                    callback(error);
+                }
+            });
+    });
+
+    return promiEvent.eventEmitter;
+};
+
+/**
+ * Returns the resolver contract associated with a name.
+ *
+ * @method resolver
+ * @param {string} name
+ * @return {Promise<Contract>}
+ */
+Registry.prototype.resolver = function (name) {
+    var self = this;
+
+    return this.contract.then(function (contract) {
+        return contract.methods.resolver(namehash.hash(name)).call();
+    }).then(function (address) {
+        var contract = new Contract(RESOLVER_ABI, address);
+        contract.setProvider(self.ens.eth.currentProvider);
+        return contract;
+    });
+};
+
+module.exports = Registry;
+
+},{"../ressources/ABI/Registry":389,"../ressources/ABI/Resolver":390,"eth-ens-namehash":283,"underscore":358,"web3-core-promievent":364,"web3-eth-contract":383}],387:[function(require,module,exports){
+/*
+    This file is part of web3.js.
+    web3.js is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+    web3.js is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser General Public License for more details.
+    You should have received a copy of the GNU Lesser General Public License
+    along with web3.js.  If not, see <http://www.gnu.org/licenses/>.
+*/
+/**
+ * @file index.js
+ *
+ * @author Samuel Furter <samuel@ethereum.org>
+ * @date 2018
+ */
+
+"use strict";
+
+var ENS = require('./ENS');
+
+module.exports = ENS;
+
+},{"./ENS":384}],388:[function(require,module,exports){
+/*
+    This file is part of web3.js.
+    web3.js is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+    web3.js is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser General Public License for more details.
+    You should have received a copy of the GNU Lesser General Public License
+    along with web3.js.  If not, see <http://www.gnu.org/licenses/>.
+*/
+/**
+ * @file ResolverMethodHandler.js
+ *
+ * @author Samuel Furter <samuel@ethereum.org>
+ * @date 2018
+ */
+
+"use strict";
+
+var PromiEvent = require('web3-core-promievent');
+var namehash = require('eth-ens-namehash');
+var _ = require('underscore');
+
+/**
+ * @param {Registry} registry
+ * @constructor
+ */
+function ResolverMethodHandler(registry) {
+    this.registry = registry;
+}
+
+/**
+ * Executes an resolver method and returns an eventifiedPromise
+ *
+ * @param {string} ensName
+ * @param {string} methodName
+ * @param {array} methodArguments
+ * @param {function} callback
+ * @returns {Object}
+ */
+ResolverMethodHandler.prototype.method = function (ensName, methodName, methodArguments, callback) {
+    return {
+        call: this.call.bind({
+            ensName: ensName,
+            methodName: methodName,
+            methodArguments: methodArguments,
+            callback: callback,
+            parent: this
+        }),
+        send: this.send.bind({
+            ensName: ensName,
+            methodName: methodName,
+            methodArguments: methodArguments,
+            callback: callback,
+            parent: this
+        })
+    };
+};
+
+/**
+ * Executes call
+ *
+ * @returns {eventifiedPromise}
+ */
+ResolverMethodHandler.prototype.call = function (callback) {
+    var self = this;
+    var promiEvent = new PromiEvent();
+    var preparedArguments = this.parent.prepareArguments(this.ensName, this.methodArguments);
+
+    this.parent.registry.resolver(this.ensName).then(function (resolver) {
+        self.parent.handleCall(promiEvent, resolver.methods[self.methodName], preparedArguments, callback);
+    }).catch(function (error) {
+        promiEvent.reject(error);
+    });
+
+    return promiEvent.eventEmitter;
+};
+
+
+/**
+ * Executes send
+ *
+ * @param {Object} sendOptions
+ * @param {function} callback
+ * @returns {eventifiedPromise}
+ */
+ResolverMethodHandler.prototype.send = function (sendOptions, callback) {
+    var self = this;
+    var promiEvent = new PromiEvent();
+    var preparedArguments = this.parent.prepareArguments(this.ensName, this.methodArguments);
+
+    this.parent.registry.resolver(this.ensName).then(function (resolver) {
+        self.parent.handleSend(promiEvent, resolver.methods[self.methodName], preparedArguments, sendOptions, callback);
+    }).catch(function (error) {
+        promiEvent.reject(error);
+    });
+
+    return promiEvent.eventEmitter;
+};
+
+/**
+ * Handles a call method
+ *
+ * @param {eventifiedPromise} promiEvent
+ * @param {function} method
+ * @param {array} preparedArguments
+ * @param {function} callback
+ * @returns {eventifiedPromise}
+ */
+ResolverMethodHandler.prototype.handleCall = function (promiEvent, method, preparedArguments, callback) {
+    method.apply(this, preparedArguments).call()
+        .then(function (receipt) {
+            promiEvent.resolve(receipt);
+
+            if (_.isFunction(callback)) {
+                callback(receipt);
+            }
+        }).catch(function (error) {
+            promiEvent.reject(error);
+
+            if (_.isFunction(callback)) {
+                callback(error);
+            }
+        });
+
+    return promiEvent;
+};
+
+/**
+ * Handles a send method
+ *
+ * @param {eventifiedPromise} promiEvent
+ * @param {function} method
+ * @param {array} preparedArguments
+ * @param {Object} sendOptions
+ * @param {function} callback
+ * @returns {eventifiedPromise}
+ */
+ResolverMethodHandler.prototype.handleSend = function (promiEvent, method, preparedArguments, sendOptions, callback) {
+    method.apply(this, preparedArguments).send(sendOptions)
+        .on('transactionHash', function (hash) {
+            promiEvent.eventEmitter.emit('transactionHash', hash);
+        })
+        .on('confirmation', function (confirmationNumber, receipt) {
+            promiEvent.eventEmitter.emit('confirmation', confirmationNumber, receipt);
+        })
+        .on('receipt', function (receipt) {
+            promiEvent.eventEmitter.emit('receipt', receipt);
+            promiEvent.resolve(receipt);
+
+            if (_.isFunction(callback)) {
+                callback(receipt);
+            }
+        })
+        .on('error', function (error) {
+            promiEvent.eventEmitter.emit('error', error);
+            promiEvent.reject(error);
+
+            if (_.isFunction(callback)) {
+                callback(error);
+            }
+        });
+
+    return promiEvent;
+};
+
+/**
+ * Adds the ENS node to the arguments
+ *
+ * @param {string} name
+ * @param {array} methodArguments
+ * @returns {array}
+ */
+ResolverMethodHandler.prototype.prepareArguments = function (name, methodArguments) {
+    var node = namehash.hash(name);
+
+    if (methodArguments.length > 0) {
+        methodArguments.unshift(node);
+
+        return methodArguments;
+    }
+
+    return [node];
+};
+
+module.exports = ResolverMethodHandler;
+
+},{"eth-ens-namehash":283,"underscore":358,"web3-core-promievent":364}],389:[function(require,module,exports){
+"use strict";
+
+var REGISTRY = [
+    {
+        "constant": true,
+        "inputs": [
+            {
+                "name": "node",
+                "type": "bytes32"
+            }
+        ],
+        "name": "resolver",
+        "outputs": [
+            {
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "payable": false,
+        "type": "function"
+    },
+    {
+        "constant": true,
+        "inputs": [
+            {
+                "name": "node",
+                "type": "bytes32"
+            }
+        ],
+        "name": "owner",
+        "outputs": [
+            {
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "payable": false,
+        "type": "function"
+    },
+    {
+        "constant": false,
+        "inputs": [
+            {
+                "name": "node",
+                "type": "bytes32"
+            },
+            {
+                "name": "label",
+                "type": "bytes32"
+            },
+            {
+                "name": "owner",
+                "type": "address"
+            }
+        ],
+        "name": "setSubnodeOwner",
+        "outputs": [],
+        "payable": false,
+        "type": "function"
+    },
+    {
+        "constant": false,
+        "inputs": [
+            {
+                "name": "node",
+                "type": "bytes32"
+            },
+            {
+                "name": "ttl",
+                "type": "uint64"
+            }
+        ],
+        "name": "setTTL",
+        "outputs": [],
+        "payable": false,
+        "type": "function"
+    },
+    {
+        "constant": true,
+        "inputs": [
+            {
+                "name": "node",
+                "type": "bytes32"
+            }
+        ],
+        "name": "ttl",
+        "outputs": [
+            {
+                "name": "",
+                "type": "uint64"
+            }
+        ],
+        "payable": false,
+        "type": "function"
+    },
+    {
+        "constant": false,
+        "inputs": [
+            {
+                "name": "node",
+                "type": "bytes32"
+            },
+            {
+                "name": "resolver",
+                "type": "address"
+            }
+        ],
+        "name": "setResolver",
+        "outputs": [],
+        "payable": false,
+        "type": "function"
+    },
+    {
+        "constant": false,
+        "inputs": [
+            {
+                "name": "node",
+                "type": "bytes32"
+            },
+            {
+                "name": "owner",
+                "type": "address"
+            }
+        ],
+        "name": "setOwner",
+        "outputs": [],
+        "payable": false,
+        "type": "function"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "name": "node",
+                "type": "bytes32"
+            },
+            {
+                "indexed": false,
+                "name": "owner",
+                "type": "address"
+            }
+        ],
+        "name": "Transfer",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "name": "node",
+                "type": "bytes32"
+            },
+            {
+                "indexed": true,
+                "name": "label",
+                "type": "bytes32"
+            },
+            {
+                "indexed": false,
+                "name": "owner",
+                "type": "address"
+            }
+        ],
+        "name": "NewOwner",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "name": "node",
+                "type": "bytes32"
+            },
+            {
+                "indexed": false,
+                "name": "resolver",
+                "type": "address"
+            }
+        ],
+        "name": "NewResolver",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "name": "node",
+                "type": "bytes32"
+            },
+            {
+                "indexed": false,
+                "name": "ttl",
+                "type": "uint64"
+            }
+        ],
+        "name": "NewTTL",
+        "type": "event"
+    }
+];
+
+module.exports = REGISTRY;
+
+},{}],390:[function(require,module,exports){
+"use strict";
+
+var RESOLVER = [
+    {
+        "constant": true,
+        "inputs": [
+            {
+                "name": "interfaceID",
+                "type": "bytes4"
+            }
+        ],
+        "name": "supportsInterface",
+        "outputs": [
+            {
+                "name": "",
+                "type": "bool"
+            }
+        ],
+        "payable": false,
+        "type": "function"
+    },
+    {
+        "constant": true,
+        "inputs": [
+            {
+                "name": "node",
+                "type": "bytes32"
+            },
+            {
+                "name": "contentTypes",
+                "type": "uint256"
+            }
+        ],
+        "name": "ABI",
+        "outputs": [
+            {
+                "name": "contentType",
+                "type": "uint256"
+            },
+            {
+                "name": "data",
+                "type": "bytes"
+            }
+        ],
+        "payable": false,
+        "type": "function"
+    },
+    {
+        "constant": false,
+        "inputs": [
+            {
+                "name": "node",
+                "type": "bytes32"
+            },
+            {
+                "name": "hash",
+                "type": "bytes"
+            }
+        ],
+        "name": "setMultihash",
+        "outputs": [],
+        "payable": false,
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "constant": true,
+        "inputs": [
+            {
+                "name": "node",
+                "type": "bytes32"
+            }
+        ],
+        "name": "multihash",
+        "outputs": [
+            {
+                "name": "",
+                "type": "bytes"
+            }
+        ],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "constant": false,
+        "inputs": [
+            {
+                "name": "node",
+                "type": "bytes32"
+            },
+            {
+                "name": "x",
+                "type": "bytes32"
+            },
+            {
+                "name": "y",
+                "type": "bytes32"
+            }
+        ],
+        "name": "setPubkey",
+        "outputs": [],
+        "payable": false,
+        "type": "function"
+    },
+    {
+        "constant": true,
+        "inputs": [
+            {
+                "name": "node",
+                "type": "bytes32"
+            }
+        ],
+        "name": "content",
+        "outputs": [
+            {
+                "name": "ret",
+                "type": "bytes32"
+            }
+        ],
+        "payable": false,
+        "type": "function"
+    },
+    {
+        "constant": true,
+        "inputs": [
+            {
+                "name": "node",
+                "type": "bytes32"
+            }
+        ],
+        "name": "addr",
+        "outputs": [
+            {
+                "name": "ret",
+                "type": "address"
+            }
+        ],
+        "payable": false,
+        "type": "function"
+    },
+    {
+        "constant": false,
+        "inputs": [
+            {
+                "name": "node",
+                "type": "bytes32"
+            },
+            {
+                "name": "contentType",
+                "type": "uint256"
+            },
+            {
+                "name": "data",
+                "type": "bytes"
+            }
+        ],
+        "name": "setABI",
+        "outputs": [],
+        "payable": false,
+        "type": "function"
+    },
+    {
+        "constant": true,
+        "inputs": [
+            {
+                "name": "node",
+                "type": "bytes32"
+            }
+        ],
+        "name": "name",
+        "outputs": [
+            {
+                "name": "ret",
+                "type": "string"
+            }
+        ],
+        "payable": false,
+        "type": "function"
+    },
+    {
+        "constant": false,
+        "inputs": [
+            {
+                "name": "node",
+                "type": "bytes32"
+            },
+            {
+                "name": "name",
+                "type": "string"
+            }
+        ],
+        "name": "setName",
+        "outputs": [],
+        "payable": false,
+        "type": "function"
+    },
+    {
+        "constant": false,
+        "inputs": [
+            {
+                "name": "node",
+                "type": "bytes32"
+            },
+            {
+                "name": "hash",
+                "type": "bytes32"
+            }
+        ],
+        "name": "setContent",
+        "outputs": [],
+        "payable": false,
+        "type": "function"
+    },
+    {
+        "constant": true,
+        "inputs": [
+            {
+                "name": "node",
+                "type": "bytes32"
+            }
+        ],
+        "name": "pubkey",
+        "outputs": [
+            {
+                "name": "x",
+                "type": "bytes32"
+            },
+            {
+                "name": "y",
+                "type": "bytes32"
+            }
+        ],
+        "payable": false,
+        "type": "function"
+    },
+    {
+        "constant": false,
+        "inputs": [
+            {
+                "name": "node",
+                "type": "bytes32"
+            },
+            {
+                "name": "addr",
+                "type": "address"
+            }
+        ],
+        "name": "setAddr",
+        "outputs": [],
+        "payable": false,
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "name": "ensAddr",
+                "type": "address"
+            }
+        ],
+        "payable": false,
+        "type": "constructor"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "name": "node",
+                "type": "bytes32"
+            },
+            {
+                "indexed": false,
+                "name": "a",
+                "type": "address"
+            }
+        ],
+        "name": "AddrChanged",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "name": "node",
+                "type": "bytes32"
+            },
+            {
+                "indexed": false,
+                "name": "hash",
+                "type": "bytes32"
+            }
+        ],
+        "name": "ContentChanged",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "name": "node",
+                "type": "bytes32"
+            },
+            {
+                "indexed": false,
+                "name": "name",
+                "type": "string"
+            }
+        ],
+        "name": "NameChanged",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "name": "node",
+                "type": "bytes32"
+            },
+            {
+                "indexed": true,
+                "name": "contentType",
+                "type": "uint256"
+            }
+        ],
+        "name": "ABIChanged",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "name": "node",
+                "type": "bytes32"
+            },
+            {
+                "indexed": false,
+                "name": "x",
+                "type": "bytes32"
+            },
+            {
+                "indexed": false,
+                "name": "y",
+                "type": "bytes32"
+            }
+        ],
+        "name": "PubkeyChanged",
+        "type": "event"
+    }
+];
+
+module.exports = RESOLVER;
+
+},{}],391:[function(require,module,exports){
+/*
+    This file is part of web3.js.
+
+    web3.js is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    web3.js is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public License
+    along with web3.js.  If not, see <http://www.gnu.org/licenses/>.
+*/
+/**
+ * @file iban.js
+ *
+ * Details: https://github.com/ethereum/wiki/wiki/ICAP:-Inter-exchange-Client-Address-Protocol
+ *
+ * @author Marek Kotewicz <marek@parity.io>
+ * @date 2015
+ */
+
+"use strict";
+
+var utils = require('web3-utils');
+var BigNumber = require('bn.js');
+
+
+var leftPad = function (string, bytes) {
+    var result = string;
+    while (result.length < bytes * 2) {
+        result = '0' + result;
+    }
+    return result;
+};
+
+/**
+ * Prepare an IBAN for mod 97 computation by moving the first 4 chars to the end and transforming the letters to
+ * numbers (A = 10, B = 11, ..., Z = 35), as specified in ISO13616.
+ *
+ * @method iso13616Prepare
+ * @param {String} iban the IBAN
+ * @returns {String} the prepared IBAN
+ */
+var iso13616Prepare = function (iban) {
+    var A = 'A'.charCodeAt(0);
+    var Z = 'Z'.charCodeAt(0);
+
+    iban = iban.toUpperCase();
+    iban = iban.substr(4) + iban.substr(0,4);
+
+    return iban.split('').map(function(n){
+        var code = n.charCodeAt(0);
+        if (code >= A && code <= Z){
+            // A = 10, B = 11, ... Z = 35
+            return code - A + 10;
+        } else {
+            return n;
+        }
+    }).join('');
+};
+
+/**
+ * Calculates the MOD 97 10 of the passed IBAN as specified in ISO7064.
+ *
+ * @method mod9710
+ * @param {String} iban
+ * @returns {Number}
+ */
+var mod9710 = function (iban) {
+    var remainder = iban,
+        block;
+
+    while (remainder.length > 2){
         block = remainder.slice(0, 9);
         remainder = parseInt(block, 10) % 97 + remainder.slice(block.length);
-      }
-      return parseInt(remainder, 10) % 97;
-    };
-    var Iban =
-    function () {
-      function Iban(iban) {
-        _classCallCheck(this, Iban);
-        this._iban = iban;
-      }
-      _createClass(Iban, [{
-        key: "isValid",
-        value: function isValid() {
-          return /^XE\d{2}(ETH[0-9A-Z]{13}|[0-9A-Z]{30,31})$/.test(this._iban) && mod9710(iso13616Prepare(this._iban)) === 1;
-        }
-      }, {
-        key: "isDirect",
-        value: function isDirect() {
-          return this._iban.length === 34 || this._iban.length === 35;
-        }
-      }, {
-        key: "isIndirect",
-        value: function isIndirect() {
-          return this._iban.length === 20;
-        }
-      }, {
-        key: "checksum",
-        value: function checksum() {
-          return this._iban.substr(2, 2);
-        }
-      }, {
-        key: "institution",
-        value: function institution() {
-          return this.isIndirect() ? this._iban.substr(7, 4) : '';
-        }
-      }, {
-        key: "client",
-        value: function client() {
-          return this.isIndirect() ? this._iban.substr(11) : '';
-        }
-      }, {
-        key: "toAddress",
-        value: function toAddress() {
-          if (this.isDirect()) {
-            var base36 = this._iban.substr(4);
-            var asBn = new BigNumber(base36, 36);
-            return Utils.toChecksumAddress(asBn.toString(16, 20));
-          }
-          return '';
-        }
-      }, {
-        key: "toString",
-        value: function toString() {
-          return this._iban;
-        }
-      }], [{
-        key: "toAddress",
-        value: function toAddress(iban) {
-          iban = new Iban(iban);
-          if (!iban.isDirect()) {
-            throw new Error("IBAN is indirect and can't be converted");
-          }
-          return iban.toAddress();
-        }
-      }, {
-        key: "toIban",
-        value: function toIban(address) {
-          return Iban.fromAddress(address).toString();
-        }
-      }, {
-        key: "fromAddress",
-        value: function fromAddress(address) {
-          if (!Utils.isAddress(address)) {
-            throw new Error("Provided address is not a valid address: ".concat(address));
-          }
-          address = address.replace('0x', '').replace('0X', '');
-          var asBn = new BigNumber(address, 16);
-          var base36 = asBn.toString(36);
-          var padded = leftPad(base36, 15);
-          return Iban.fromBban(padded.toUpperCase());
-        }
-      }, {
-        key: "fromBban",
-        value: function fromBban(bban) {
-          var countryCode = 'XE';
-          var remainder = mod9710(iso13616Prepare("".concat(countryCode, "00").concat(bban)));
-          var checkDigit = "0".concat(98 - remainder).slice(-2);
-          return new Iban(countryCode + checkDigit + bban);
-        }
-      }, {
-        key: "createIndirect",
-        value: function createIndirect(options) {
-          return Iban.fromBban("ETH".concat(options.institution).concat(options.identifier));
-        }
-      }, {
-        key: "isValid",
-        value: function isValid(iban) {
-          var i = new Iban(iban);
-          return i.isValid();
-        }
-      }]);
-      return Iban;
-    }();
-
-    exports.Iban = Iban;
-
-    Object.defineProperty(exports, '__esModule', { value: true });
-
-})));
-
-},{"@babel/runtime/helpers/classCallCheck":205,"@babel/runtime/helpers/createClass":206,"bn.js":234,"web3-utils":576}],572:[function(require,module,exports){
-(function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('web3-net'), require('web3-providers'), require('web3-utils'), require('web3-core-helpers'), require('@babel/runtime/helpers/createClass'), require('@babel/runtime/helpers/set'), require('@babel/runtime/helpers/get'), require('web3-core'), require('@babel/runtime/helpers/classCallCheck'), require('@babel/runtime/helpers/possibleConstructorReturn'), require('@babel/runtime/helpers/getPrototypeOf'), require('@babel/runtime/helpers/inherits'), require('web3-core-method')) :
-    typeof define === 'function' && define.amd ? define(['exports', 'web3-net', 'web3-providers', 'web3-utils', 'web3-core-helpers', '@babel/runtime/helpers/createClass', '@babel/runtime/helpers/set', '@babel/runtime/helpers/get', 'web3-core', '@babel/runtime/helpers/classCallCheck', '@babel/runtime/helpers/possibleConstructorReturn', '@babel/runtime/helpers/getPrototypeOf', '@babel/runtime/helpers/inherits', 'web3-core-method'], factory) :
-    (factory((global.Web3EthPersonal = {}),global.web3Net,global.web3Providers,global.Utils,global.web3CoreHelpers,global._createClass,global._set,global._get,global.web3Core,global._classCallCheck,global._possibleConstructorReturn,global._getPrototypeOf,global._inherits,global.web3CoreMethod));
-}(this, (function (exports,web3Net,web3Providers,Utils,web3CoreHelpers,_createClass,_set,_get,web3Core,_classCallCheck,_possibleConstructorReturn,_getPrototypeOf,_inherits,web3CoreMethod) { 'use strict';
-
-    _createClass = _createClass && _createClass.hasOwnProperty('default') ? _createClass['default'] : _createClass;
-    _set = _set && _set.hasOwnProperty('default') ? _set['default'] : _set;
-    _get = _get && _get.hasOwnProperty('default') ? _get['default'] : _get;
-    _classCallCheck = _classCallCheck && _classCallCheck.hasOwnProperty('default') ? _classCallCheck['default'] : _classCallCheck;
-    _possibleConstructorReturn = _possibleConstructorReturn && _possibleConstructorReturn.hasOwnProperty('default') ? _possibleConstructorReturn['default'] : _possibleConstructorReturn;
-    _getPrototypeOf = _getPrototypeOf && _getPrototypeOf.hasOwnProperty('default') ? _getPrototypeOf['default'] : _getPrototypeOf;
-    _inherits = _inherits && _inherits.hasOwnProperty('default') ? _inherits['default'] : _inherits;
-
-    var Personal =
-    function (_AbstractWeb3Module) {
-      _inherits(Personal, _AbstractWeb3Module);
-      function Personal(provider, providersModuleFactory, methodModuleFactory, methodFactory, net, utils, formatters, options) {
-        var _this;
-        _classCallCheck(this, Personal);
-        _this = _possibleConstructorReturn(this, _getPrototypeOf(Personal).call(this, provider, providersModuleFactory, methodModuleFactory, methodFactory, options));
-        _this.utils = utils;
-        _this.formatters = formatters;
-        _this.net = net;
-        return _this;
-      }
-      _createClass(Personal, [{
-        key: "setProvider",
-        value: function setProvider(provider, net) {
-          return !!(_get(_getPrototypeOf(Personal.prototype), "setProvider", this).call(this, provider, net) && this.net.setProvider(provider, net));
-        }
-      }, {
-        key: "defaultGasPrice",
-        set: function set(value) {
-          _set(_getPrototypeOf(Personal.prototype), "defaultGasPrice", value, this, true);
-          this.net.defaultGasPrice = value;
-        }
-        ,
-        get: function get() {
-          return _get(_getPrototypeOf(Personal.prototype), "defaultGasPrice", this);
-        }
-      }, {
-        key: "defaultGas",
-        set: function set(value) {
-          _set(_getPrototypeOf(Personal.prototype), "defaultGas", value, this, true);
-          this.net.defaultGas = value;
-        }
-        ,
-        get: function get() {
-          return _get(_getPrototypeOf(Personal.prototype), "defaultGas", this);
-        }
-      }, {
-        key: "transactionBlockTimeout",
-        set: function set(value) {
-          _set(_getPrototypeOf(Personal.prototype), "transactionBlockTimeout", value, this, true);
-          this.net.transactionBlockTimeout = value;
-        }
-        ,
-        get: function get() {
-          return _get(_getPrototypeOf(Personal.prototype), "transactionBlockTimeout", this);
-        }
-      }, {
-        key: "transactionConfirmationBlocks",
-        set: function set(value) {
-          _set(_getPrototypeOf(Personal.prototype), "transactionConfirmationBlocks", value, this, true);
-          this.net.transactionConfirmationBlocks = value;
-        }
-        ,
-        get: function get() {
-          return _get(_getPrototypeOf(Personal.prototype), "transactionConfirmationBlocks", this);
-        }
-      }, {
-        key: "transactionPollingTimeout",
-        set: function set(value) {
-          _set(_getPrototypeOf(Personal.prototype), "transactionPollingTimeout", value, this, true);
-          this.net.transactionPollingTimeout = value;
-        }
-        ,
-        get: function get() {
-          return _get(_getPrototypeOf(Personal.prototype), "transactionPollingTimeout", this);
-        }
-      }, {
-        key: "defaultAccount",
-        set: function set(value) {
-          _set(_getPrototypeOf(Personal.prototype), "defaultAccount", value, this, true);
-          this.net.defaultAccount = value;
-        }
-        ,
-        get: function get() {
-          return _get(_getPrototypeOf(Personal.prototype), "defaultAccount", this);
-        }
-      }, {
-        key: "defaultBlock",
-        set: function set(value) {
-          _set(_getPrototypeOf(Personal.prototype), "defaultBlock", value, this, true);
-          this.net.defaultBlock = value;
-        }
-        ,
-        get: function get() {
-          return _get(_getPrototypeOf(Personal.prototype), "defaultBlock", this);
-        }
-      }]);
-      return Personal;
-    }(web3Core.AbstractWeb3Module);
-
-    var MethodFactory =
-    function (_AbstractMethodFactor) {
-      _inherits(MethodFactory, _AbstractMethodFactor);
-      function MethodFactory(methodModuleFactory, utils, formatters) {
-        var _this;
-        _classCallCheck(this, MethodFactory);
-        _this = _possibleConstructorReturn(this, _getPrototypeOf(MethodFactory).call(this, methodModuleFactory, utils, formatters));
-        _this.methods = {
-          getAccounts: web3CoreMethod.GetAccountsMethod,
-          newAccount: web3CoreMethod.NewAccountMethod,
-          unlockAccount: web3CoreMethod.UnlockAccountMethod,
-          lockAccount: web3CoreMethod.LockAccountMethod,
-          importRawKey: web3CoreMethod.ImportRawKeyMethod,
-          sendTransaction: web3CoreMethod.PersonalSendTransactionMethod,
-          signTransaction: web3CoreMethod.PersonalSignTransactionMethod,
-          sign: web3CoreMethod.PersonalSignMethod,
-          ecRecover: web3CoreMethod.EcRecoverMethod
-        };
-        return _this;
-      }
-      return MethodFactory;
-    }(web3CoreMethod.AbstractMethodFactory);
-
-    var PersonalModuleFactory =
-    function () {
-      function PersonalModuleFactory(utils, formatters) {
-        _classCallCheck(this, PersonalModuleFactory);
-        this.utils = utils;
-        this.formatters = formatters;
-      }
-      _createClass(PersonalModuleFactory, [{
-        key: "createPersonalModule",
-        value: function createPersonalModule(provider, providersModuleFactory, methodModuleFactory, net, options) {
-          return new Personal(provider, providersModuleFactory, methodModuleFactory, this.createMethodFactory(methodModuleFactory), net, this.utils, this.formatters, options);
-        }
-      }, {
-        key: "createMethodFactory",
-        value: function createMethodFactory(methodModuleFactory) {
-          return new MethodFactory(methodModuleFactory, this.utils, this.formatters);
-        }
-      }]);
-      return PersonalModuleFactory;
-    }();
-
-    var Personal$1 = function Personal(provider, accounts, options) {
-      return new PersonalModuleFactory(Utils, web3CoreHelpers.formatters).createPersonalModule(provider, new web3Providers.ProvidersModuleFactory(), new web3CoreMethod.MethodModuleFactory(accounts), new web3Net.Network(provider, options), options);
-    };
-
-    exports.Personal = Personal$1;
-
-    Object.defineProperty(exports, '__esModule', { value: true });
-
-})));
-
-},{"@babel/runtime/helpers/classCallCheck":205,"@babel/runtime/helpers/createClass":206,"@babel/runtime/helpers/get":208,"@babel/runtime/helpers/getPrototypeOf":209,"@babel/runtime/helpers/inherits":210,"@babel/runtime/helpers/possibleConstructorReturn":213,"@babel/runtime/helpers/set":214,"web3-core":561,"web3-core-helpers":557,"web3-core-method":558,"web3-net":574,"web3-providers":575,"web3-utils":576}],573:[function(require,module,exports){
-(function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('web3-core-helpers'), require('web3-core-subscriptions'), require('web3-eth-accounts'), require('web3-eth-ens'), require('web3-eth-contract'), require('web3-eth-personal'), require('web3-eth-abi'), require('web3-eth-iban'), require('web3-providers'), require('web3-net'), require('web3-utils'), require('web3-core-method'), require('@babel/runtime/helpers/classCallCheck'), require('@babel/runtime/helpers/createClass'), require('@babel/runtime/helpers/possibleConstructorReturn'), require('@babel/runtime/helpers/set'), require('@babel/runtime/helpers/getPrototypeOf'), require('@babel/runtime/helpers/get'), require('@babel/runtime/helpers/inherits'), require('web3-core-promievent'), require('web3-core')) :
-    typeof define === 'function' && define.amd ? define(['exports', 'web3-core-helpers', 'web3-core-subscriptions', 'web3-eth-accounts', 'web3-eth-ens', 'web3-eth-contract', 'web3-eth-personal', 'web3-eth-abi', 'web3-eth-iban', 'web3-providers', 'web3-net', 'web3-utils', 'web3-core-method', '@babel/runtime/helpers/classCallCheck', '@babel/runtime/helpers/createClass', '@babel/runtime/helpers/possibleConstructorReturn', '@babel/runtime/helpers/set', '@babel/runtime/helpers/getPrototypeOf', '@babel/runtime/helpers/get', '@babel/runtime/helpers/inherits', 'web3-core-promievent', 'web3-core'], factory) :
-    (factory((global.Web3Eth = {}),global.web3CoreHelpers,global.web3CoreSubscriptions,global.web3EthAccounts,global.web3EthEns,global.web3EthContract,global.web3EthPersonal,global.web3EthAbi,global.web3EthIban,global.web3Providers,global.web3Net,global.Utils,global.web3CoreMethod,global._classCallCheck,global._createClass,global._possibleConstructorReturn,global._set,global._getPrototypeOf,global._get,global._inherits,global.web3CorePromievent,global.web3Core));
-}(this, (function (exports,web3CoreHelpers,web3CoreSubscriptions,web3EthAccounts,web3EthEns,web3EthContract,web3EthPersonal,web3EthAbi,web3EthIban,web3Providers,web3Net,Utils,web3CoreMethod,_classCallCheck,_createClass,_possibleConstructorReturn,_set,_getPrototypeOf,_get,_inherits,web3CorePromievent,web3Core) { 'use strict';
-
-    _classCallCheck = _classCallCheck && _classCallCheck.hasOwnProperty('default') ? _classCallCheck['default'] : _classCallCheck;
-    _createClass = _createClass && _createClass.hasOwnProperty('default') ? _createClass['default'] : _createClass;
-    _possibleConstructorReturn = _possibleConstructorReturn && _possibleConstructorReturn.hasOwnProperty('default') ? _possibleConstructorReturn['default'] : _possibleConstructorReturn;
-    _set = _set && _set.hasOwnProperty('default') ? _set['default'] : _set;
-    _getPrototypeOf = _getPrototypeOf && _getPrototypeOf.hasOwnProperty('default') ? _getPrototypeOf['default'] : _getPrototypeOf;
-    _get = _get && _get.hasOwnProperty('default') ? _get['default'] : _get;
-    _inherits = _inherits && _inherits.hasOwnProperty('default') ? _inherits['default'] : _inherits;
-
-    var MethodFactory =
-    function (_AbstractMethodFactor) {
-      _inherits(MethodFactory, _AbstractMethodFactor);
-      function MethodFactory(methodModuleFactory, utils, formatters) {
-        var _this;
-        _classCallCheck(this, MethodFactory);
-        _this = _possibleConstructorReturn(this, _getPrototypeOf(MethodFactory).call(this, methodModuleFactory, utils, formatters));
-        _this.methods = {
-          getNodeInfo: web3CoreMethod.GetNodeInfoMethod,
-          getProtocolVersion: web3CoreMethod.GetProtocolVersionMethod,
-          getCoinbase: web3CoreMethod.GetCoinbaseMethod,
-          isMining: web3CoreMethod.IsMiningMethod,
-          getHashrate: web3CoreMethod.GetHashrateMethod,
-          isSyncing: web3CoreMethod.IsSyncingMethod,
-          getGasPrice: web3CoreMethod.GetGasPriceMethod,
-          getAccounts: web3CoreMethod.GetAccountsMethod,
-          getBlockNumber: web3CoreMethod.GetBlockNumberMethod,
-          getBalance: web3CoreMethod.GetBalanceMethod,
-          getStorageAt: web3CoreMethod.GetStorageAtMethod,
-          getCode: web3CoreMethod.GetCodeMethod,
-          getBlock: web3CoreMethod.GetBlockMethod,
-          getUncle: web3CoreMethod.GetUncleMethod,
-          getBlockTransactionCount: web3CoreMethod.GetBlockTransactionCountMethod,
-          getBlockUncleCount: web3CoreMethod.GetBlockUncleCountMethod,
-          getTransaction: web3CoreMethod.GetTransactionMethod,
-          getTransactionFromBlock: web3CoreMethod.GetTransactionFromBlockMethod,
-          getTransactionReceipt: web3CoreMethod.GetTransactionReceipt,
-          getTransactionCount: web3CoreMethod.GetTransactionCountMethod,
-          sendSignedTransaction: web3CoreMethod.SendRawTransactionMethod,
-          signTransaction: web3CoreMethod.SignTransactionMethod,
-          sendTransaction: web3CoreMethod.SendTransactionMethod,
-          sign: web3CoreMethod.SignMethod,
-          call: web3CoreMethod.CallMethod,
-          estimateGas: web3CoreMethod.EstimateGasMethod,
-          submitWork: web3CoreMethod.SubmitWorkMethod,
-          getWork: web3CoreMethod.GetWorkMethod,
-          getPastLogs: web3CoreMethod.GetPastLogsMethod,
-          requestAccounts: web3CoreMethod.RequestAccountsMethod
-        };
-        return _this;
-      }
-      return MethodFactory;
-    }(web3CoreMethod.AbstractMethodFactory);
-
-    var Eth =
-    function (_AbstractWeb3Module) {
-      _inherits(Eth, _AbstractWeb3Module);
-      function Eth(provider, providersModuleFactory, methodModuleFactory, methodFactory, net, accounts, personal, Iban, abiCoder, ens, utils, formatters, subscriptionsFactory, contractModuleFactory, options) {
-        var _this;
-        _classCallCheck(this, Eth);
-        _this = _possibleConstructorReturn(this, _getPrototypeOf(Eth).call(this, provider, providersModuleFactory, methodModuleFactory, methodFactory, options));
-        _this.net = net;
-        _this.accounts = accounts;
-        _this.personal = personal;
-        _this.Iban = Iban;
-        _this.abi = abiCoder;
-        _this.ens = ens;
-        _this.utils = utils;
-        _this.formatters = formatters;
-        _this.subscriptionsFactory = subscriptionsFactory;
-        _this.contractModuleFactory = contractModuleFactory;
-        _this.initiatedContracts = [];
-        _this.Contract = function (abi, address, options) {
-          var contract = _this.contractModuleFactory.createContract(_this.currentProvider, _this.providersModuleFactory, web3CorePromievent.PromiEvent, abi, address, options);
-          _this.initiatedContracts.push(contract);
-          return contract;
-        };
-        return _this;
-      }
-      _createClass(Eth, [{
-        key: "clearSubscriptions",
-        value: function clearSubscriptions() {
-          return _get(_getPrototypeOf(Eth.prototype), "clearSubscriptions", this).call(this, 'eth_unsubscribe');
-        }
-      }, {
-        key: "subscribe",
-        value: function subscribe(type, options, callback) {
-          switch (type) {
-            case 'logs':
-              return this.subscriptionsFactory.createLogSubscription(options, this, this.methodFactory.createMethod('getPastLogs')).subscribe(callback);
-            case 'newBlockHeaders':
-              return this.subscriptionsFactory.createNewHeadsSubscription(this).subscribe(callback);
-            case 'pendingTransactions':
-              return this.subscriptionsFactory.createNewPendingTransactionsSubscription(this).subscribe(callback);
-            case 'syncing':
-              return this.subscriptionsFactory.createSyncingSubscription(this).subscribe(callback);
-            default:
-              throw new Error("Unknown subscription: ".concat(type));
-          }
-        }
-      }, {
-        key: "setProvider",
-        value: function setProvider(provider, net) {
-          var setContractProviders = this.initiatedContracts.every(function (contract) {
-            return contract.setProvider(provider, net);
-          });
-          return this.net.setProvider(provider, net) && this.personal.setProvider(provider, net) && this.accounts.setProvider(provider, net) && _get(_getPrototypeOf(Eth.prototype), "setProvider", this).call(this, provider, net) && setContractProviders;
-        }
-      }, {
-        key: "defaultGasPrice",
-        set: function set(value) {
-          this.initiatedContracts.forEach(function (contract) {
-            contract.defaultGasPrice = value;
-          });
-          this.net.defaultGasPrice = value;
-          this.personal.defaultGasPrice = value;
-          _set(_getPrototypeOf(Eth.prototype), "defaultGasPrice", value, this, true);
-        }
-        ,
-        get: function get() {
-          return _get(_getPrototypeOf(Eth.prototype), "defaultGasPrice", this);
-        }
-      }, {
-        key: "defaultGas",
-        set: function set(value) {
-          this.initiatedContracts.forEach(function (contract) {
-            contract.defaultGas = value;
-          });
-          this.net.defaultGas = value;
-          this.personal.defaultGas = value;
-          _set(_getPrototypeOf(Eth.prototype), "defaultGas", value, this, true);
-        }
-        ,
-        get: function get() {
-          return _get(_getPrototypeOf(Eth.prototype), "defaultGas", this);
-        }
-      }, {
-        key: "transactionBlockTimeout",
-        set: function set(value) {
-          this.initiatedContracts.forEach(function (contract) {
-            contract.transactionBlockTimeout = value;
-          });
-          this.net.transactionBlockTimeout = value;
-          this.personal.transactionBlockTimeout = value;
-          _set(_getPrototypeOf(Eth.prototype), "transactionBlockTimeout", value, this, true);
-        }
-        ,
-        get: function get() {
-          return _get(_getPrototypeOf(Eth.prototype), "transactionBlockTimeout", this);
-        }
-      }, {
-        key: "transactionConfirmationBlocks",
-        set: function set(value) {
-          this.initiatedContracts.forEach(function (contract) {
-            contract.transactionConfirmationBlocks = value;
-          });
-          this.net.transactionConfirmationBlocks = value;
-          this.personal.transactionConfirmationBlocks = value;
-          _set(_getPrototypeOf(Eth.prototype), "transactionConfirmationBlocks", value, this, true);
-        }
-        ,
-        get: function get() {
-          return _get(_getPrototypeOf(Eth.prototype), "transactionConfirmationBlocks", this);
-        }
-      }, {
-        key: "transactionPollingTimeout",
-        set: function set(value) {
-          this.initiatedContracts.forEach(function (contract) {
-            contract.transactionPollingTimeout = value;
-          });
-          this.net.transactionPollingTimeout = value;
-          this.personal.transactionPollingTimeout = value;
-          _set(_getPrototypeOf(Eth.prototype), "transactionPollingTimeout", value, this, true);
-        }
-        ,
-        get: function get() {
-          return _get(_getPrototypeOf(Eth.prototype), "transactionPollingTimeout", this);
-        }
-      }, {
-        key: "defaultAccount",
-        set: function set(value) {
-          var _this2 = this;
-          this.initiatedContracts.forEach(function (contract) {
-            contract.defaultAccount = _this2.utils.toChecksumAddress(value);
-          });
-          this.net.defaultAccount = value;
-          this.personal.defaultAccount = value;
-          _set(_getPrototypeOf(Eth.prototype), "defaultAccount", value, this, true);
-        }
-        ,
-        get: function get() {
-          return _get(_getPrototypeOf(Eth.prototype), "defaultAccount", this);
-        }
-      }, {
-        key: "defaultBlock",
-        set: function set(value) {
-          this.initiatedContracts.forEach(function (contract) {
-            contract.defaultBlock = value;
-          });
-          this.net.defaultBlock = value;
-          this.personal.defaultBlock = value;
-          _set(_getPrototypeOf(Eth.prototype), "defaultBlock", value, this, true);
-        }
-        ,
-        get: function get() {
-          return _get(_getPrototypeOf(Eth.prototype), "defaultBlock", this);
-        }
-      }]);
-      return Eth;
-    }(web3Core.AbstractWeb3Module);
-
-    var EthModuleFactory =
-    function () {
-      function EthModuleFactory(provider, providersModuleFactory, methodModuleFactory, accounts, PromiEvent, utils, formatters, contractModuleFactory, abiCoder) {
-        _classCallCheck(this, EthModuleFactory);
-        this.provider = provider;
-        this.providersModuleFactory = providersModuleFactory;
-        this.methodModuleFactory = methodModuleFactory;
-        this.accounts = accounts;
-        this.utils = utils;
-        this.formatters = formatters;
-        this.contractModuleFactory = contractModuleFactory;
-        this.PromiEvent = PromiEvent;
-        this.abiCoder = abiCoder;
-      }
-      _createClass(EthModuleFactory, [{
-        key: "createEthModule",
-        value: function createEthModule(net, personal, iban, ens, subscriptionsFactory, options) {
-          return new Eth(this.provider, this.providersModuleFactory, this.methodModuleFactory, this.createMethodFactory(), net, this.accounts, personal, iban, this.abiCoder, ens, this.utils, this.formatters, subscriptionsFactory, this.contractModuleFactory, options);
-        }
-      }, {
-        key: "createMethodFactory",
-        value: function createMethodFactory() {
-          return new MethodFactory(this.methodModuleFactory, this.utils, this.formatters);
-        }
-      }]);
-      return EthModuleFactory;
-    }();
-
-    var Eth$1 = function Eth(provider, options) {
-      var accounts = new web3EthAccounts.Accounts(provider, options);
-      var abiCoder = new web3EthAbi.AbiCoder();
-      var methodModuleFactory = new web3CoreMethod.MethodModuleFactory(accounts);
-      return new EthModuleFactory(provider, new web3Providers.ProvidersModuleFactory(), methodModuleFactory, accounts, web3CorePromievent.PromiEvent, Utils, web3CoreHelpers.formatters, new web3EthContract.ContractModuleFactory(Utils, web3CoreHelpers.formatters, abiCoder, accounts, methodModuleFactory), abiCoder).createEthModule(new web3Net.Network(provider, options), new web3EthPersonal.Personal(provider, accounts, options), web3EthIban.Iban, new web3EthEns.Ens(provider, accounts), new web3CoreSubscriptions.SubscriptionsFactory(), options);
-    };
-
-    exports.Eth = Eth$1;
-
-    Object.defineProperty(exports, '__esModule', { value: true });
-
-})));
-
-},{"@babel/runtime/helpers/classCallCheck":205,"@babel/runtime/helpers/createClass":206,"@babel/runtime/helpers/get":208,"@babel/runtime/helpers/getPrototypeOf":209,"@babel/runtime/helpers/inherits":210,"@babel/runtime/helpers/possibleConstructorReturn":213,"@babel/runtime/helpers/set":214,"web3-core":561,"web3-core-helpers":557,"web3-core-method":558,"web3-core-promievent":559,"web3-core-subscriptions":560,"web3-eth-abi":562,"web3-eth-accounts":563,"web3-eth-contract":569,"web3-eth-ens":570,"web3-eth-iban":571,"web3-eth-personal":572,"web3-net":574,"web3-providers":575,"web3-utils":576}],574:[function(require,module,exports){
-(function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('web3-providers'), require('web3-core-helpers'), require('web3-utils'), require('@babel/runtime/regenerator'), require('@babel/runtime/helpers/asyncToGenerator'), require('@babel/runtime/helpers/createClass'), require('web3-core'), require('lodash/isFunction'), require('@babel/runtime/helpers/classCallCheck'), require('@babel/runtime/helpers/possibleConstructorReturn'), require('@babel/runtime/helpers/getPrototypeOf'), require('@babel/runtime/helpers/inherits'), require('web3-core-method')) :
-    typeof define === 'function' && define.amd ? define(['exports', 'web3-providers', 'web3-core-helpers', 'web3-utils', '@babel/runtime/regenerator', '@babel/runtime/helpers/asyncToGenerator', '@babel/runtime/helpers/createClass', 'web3-core', 'lodash/isFunction', '@babel/runtime/helpers/classCallCheck', '@babel/runtime/helpers/possibleConstructorReturn', '@babel/runtime/helpers/getPrototypeOf', '@babel/runtime/helpers/inherits', 'web3-core-method'], factory) :
-    (factory((global.Web3Net = {}),global.web3Providers,global.web3CoreHelpers,global.Utils,global._regeneratorRuntime,global._asyncToGenerator,global._createClass,global.web3Core,global.isFunction,global._classCallCheck,global._possibleConstructorReturn,global._getPrototypeOf,global._inherits,global.web3CoreMethod));
-}(this, (function (exports,web3Providers,web3CoreHelpers,Utils,_regeneratorRuntime,_asyncToGenerator,_createClass,web3Core,isFunction,_classCallCheck,_possibleConstructorReturn,_getPrototypeOf,_inherits,web3CoreMethod) { 'use strict';
-
-    _regeneratorRuntime = _regeneratorRuntime && _regeneratorRuntime.hasOwnProperty('default') ? _regeneratorRuntime['default'] : _regeneratorRuntime;
-    _asyncToGenerator = _asyncToGenerator && _asyncToGenerator.hasOwnProperty('default') ? _asyncToGenerator['default'] : _asyncToGenerator;
-    _createClass = _createClass && _createClass.hasOwnProperty('default') ? _createClass['default'] : _createClass;
-    isFunction = isFunction && isFunction.hasOwnProperty('default') ? isFunction['default'] : isFunction;
-    _classCallCheck = _classCallCheck && _classCallCheck.hasOwnProperty('default') ? _classCallCheck['default'] : _classCallCheck;
-    _possibleConstructorReturn = _possibleConstructorReturn && _possibleConstructorReturn.hasOwnProperty('default') ? _possibleConstructorReturn['default'] : _possibleConstructorReturn;
-    _getPrototypeOf = _getPrototypeOf && _getPrototypeOf.hasOwnProperty('default') ? _getPrototypeOf['default'] : _getPrototypeOf;
-    _inherits = _inherits && _inherits.hasOwnProperty('default') ? _inherits['default'] : _inherits;
-
-    var Network =
-    function (_AbstractWeb3Module) {
-      _inherits(Network, _AbstractWeb3Module);
-      function Network(provider, providersModuleFactory, methodModuleFactory, methodFactory, utils, formatters, options) {
-        var _this;
-        _classCallCheck(this, Network);
-        _this = _possibleConstructorReturn(this, _getPrototypeOf(Network).call(this, provider, providersModuleFactory, methodModuleFactory, methodFactory, options));
-        _this.utils = utils;
-        _this.formatters = formatters;
-        return _this;
-      }
-      _createClass(Network, [{
-        key: "getNetworkType",
-        value: function () {
-          var _getNetworkType = _asyncToGenerator(
-          _regeneratorRuntime.mark(function _callee(callback) {
-            var id, genesisBlock, returnValue;
-            return _regeneratorRuntime.wrap(function _callee$(_context) {
-              while (1) {
-                switch (_context.prev = _context.next) {
-                  case 0:
-                    _context.prev = 0;
-                    _context.next = 3;
-                    return this.getId();
-                  case 3:
-                    id = _context.sent;
-                    _context.next = 6;
-                    return this.getBlock(0, false);
-                  case 6:
-                    genesisBlock = _context.sent;
-                    returnValue = 'private';
-                    if (genesisBlock.hash === '0xd4e56740f876aef8c010b86a40d5f56745a118d0906a34e69aec8c0db1cb8fa3' && id === 1) {
-                      returnValue = 'main';
-                    }
-                    if (genesisBlock.hash === '0cd786a2425d16f152c658316c423e6ce1181e15c3295826d7c9904cba9ce303' && id === 2) {
-                      returnValue = 'morden';
-                    }
-                    if (genesisBlock.hash === '0x41941023680923e0fe4d74a34bdac8141f2540e3ae90623718e47d66d1ca4a2d' && id === 3) {
-                      returnValue = 'ropsten';
-                    }
-                    if (genesisBlock.hash === '0x6341fd3daf94b748c72ced5a5b26028f2474f5f00d824504e4fa37a75767e177' && id === 4) {
-                      returnValue = 'rinkeby';
-                    }
-                    if (genesisBlock.hash === '0xa3c565fc15c7478862d50ccd6561e3c06b24cc509bf388941c25ea985ce32cb9' && id === 42) {
-                      returnValue = 'kovan';
-                    }
-                    if (isFunction(callback)) {
-                      callback(null, returnValue);
-                    }
-                    return _context.abrupt("return", returnValue);
-                  case 17:
-                    _context.prev = 17;
-                    _context.t0 = _context["catch"](0);
-                    if (isFunction(callback)) {
-                      callback(_context.t0, null);
-                    }
-                    throw _context.t0;
-                  case 21:
-                  case "end":
-                    return _context.stop();
-                }
-              }
-            }, _callee, this, [[0, 17]]);
-          }));
-          return function getNetworkType(_x) {
-            return _getNetworkType.apply(this, arguments);
-          };
-        }()
-      }]);
-      return Network;
-    }(web3Core.AbstractWeb3Module);
-
-    var MethodFactory =
-    function (_AbstractMethodFactor) {
-      _inherits(MethodFactory, _AbstractMethodFactor);
-      function MethodFactory(methodModuleFactory, utils, formatters) {
-        var _this;
-        _classCallCheck(this, MethodFactory);
-        _this = _possibleConstructorReturn(this, _getPrototypeOf(MethodFactory).call(this, methodModuleFactory, utils, formatters));
-        _this.methods = {
-          getId: web3CoreMethod.VersionMethod,
-          getBlock: web3CoreMethod.GetBlockMethod,
-          isListening: web3CoreMethod.ListeningMethod,
-          getPeerCount: web3CoreMethod.PeerCountMethod
-        };
-        return _this;
-      }
-      return MethodFactory;
-    }(web3CoreMethod.AbstractMethodFactory);
-
-    var NetworkModuleFactory =
-    function () {
-      function NetworkModuleFactory(utils, formatters) {
-        _classCallCheck(this, NetworkModuleFactory);
-        this.utils = utils;
-        this.formatters = formatters;
-      }
-      _createClass(NetworkModuleFactory, [{
-        key: "createNetworkModule",
-        value: function createNetworkModule(provider, providersModuleFactory, methodModuleFactory, options) {
-          return new Network(provider, providersModuleFactory, methodModuleFactory, this.createMethodFactory(methodModuleFactory), this.utils, this.formatters, options);
-        }
-      }, {
-        key: "createMethodFactory",
-        value: function createMethodFactory(methodModuleFactory) {
-          return new MethodFactory(methodModuleFactory, this.utils, this.formatters);
-        }
-      }]);
-      return NetworkModuleFactory;
-    }();
-
-    var Network$1 = function Network(provider, options) {
-      return new NetworkModuleFactory(Utils, web3CoreHelpers.formatters).createNetworkModule(provider, new web3Providers.ProvidersModuleFactory(), new web3CoreMethod.MethodModuleFactory(), options);
-    };
-
-    exports.Network = Network$1;
-
-    Object.defineProperty(exports, '__esModule', { value: true });
-
-})));
-
-},{"@babel/runtime/helpers/asyncToGenerator":204,"@babel/runtime/helpers/classCallCheck":205,"@babel/runtime/helpers/createClass":206,"@babel/runtime/helpers/getPrototypeOf":209,"@babel/runtime/helpers/inherits":210,"@babel/runtime/helpers/possibleConstructorReturn":213,"@babel/runtime/regenerator":219,"lodash/isFunction":490,"web3-core":561,"web3-core-helpers":557,"web3-core-method":558,"web3-providers":575,"web3-utils":576}],575:[function(require,module,exports){
-(function (process,Buffer){
-(function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('websocket'), require('xhr2-cookies'), require('url-parse'), require('lodash/isFunction'), require('@babel/runtime/regenerator'), require('@babel/runtime/helpers/asyncToGenerator'), require('eventemitter3'), require('oboe'), require('http'), require('https'), require('@babel/runtime/helpers/typeof'), require('lodash/isArray'), require('lodash/isObject'), require('@babel/runtime/helpers/classCallCheck'), require('@babel/runtime/helpers/createClass'), require('@babel/runtime/helpers/possibleConstructorReturn'), require('@babel/runtime/helpers/getPrototypeOf'), require('@babel/runtime/helpers/get'), require('@babel/runtime/helpers/inherits')) :
-    typeof define === 'function' && define.amd ? define(['exports', 'websocket', 'xhr2-cookies', 'url-parse', 'lodash/isFunction', '@babel/runtime/regenerator', '@babel/runtime/helpers/asyncToGenerator', 'eventemitter3', 'oboe', 'http', 'https', '@babel/runtime/helpers/typeof', 'lodash/isArray', 'lodash/isObject', '@babel/runtime/helpers/classCallCheck', '@babel/runtime/helpers/createClass', '@babel/runtime/helpers/possibleConstructorReturn', '@babel/runtime/helpers/getPrototypeOf', '@babel/runtime/helpers/get', '@babel/runtime/helpers/inherits'], factory) :
-    (factory((global.Web3Providers = {}),global.websocket,global.xhr2Cookies,global.URL,global.isFunction,global._regeneratorRuntime,global._asyncToGenerator,global.EventEmitter,global.oboe,global.http,global.https,global._typeof,global.isArray,global.isObject,global._classCallCheck,global._createClass,global._possibleConstructorReturn,global._getPrototypeOf,global._get,global._inherits));
-}(this, (function (exports,websocket,xhr2Cookies,URL,isFunction,_regeneratorRuntime,_asyncToGenerator,EventEmitter,oboe,http,https,_typeof,isArray,isObject,_classCallCheck,_createClass,_possibleConstructorReturn,_getPrototypeOf,_get,_inherits) { 'use strict';
-
-    URL = URL && URL.hasOwnProperty('default') ? URL['default'] : URL;
-    isFunction = isFunction && isFunction.hasOwnProperty('default') ? isFunction['default'] : isFunction;
-    _regeneratorRuntime = _regeneratorRuntime && _regeneratorRuntime.hasOwnProperty('default') ? _regeneratorRuntime['default'] : _regeneratorRuntime;
-    _asyncToGenerator = _asyncToGenerator && _asyncToGenerator.hasOwnProperty('default') ? _asyncToGenerator['default'] : _asyncToGenerator;
-    EventEmitter = EventEmitter && EventEmitter.hasOwnProperty('default') ? EventEmitter['default'] : EventEmitter;
-    oboe = oboe && oboe.hasOwnProperty('default') ? oboe['default'] : oboe;
-    http = http && http.hasOwnProperty('default') ? http['default'] : http;
-    https = https && https.hasOwnProperty('default') ? https['default'] : https;
-    _typeof = _typeof && _typeof.hasOwnProperty('default') ? _typeof['default'] : _typeof;
-    isArray = isArray && isArray.hasOwnProperty('default') ? isArray['default'] : isArray;
-    isObject = isObject && isObject.hasOwnProperty('default') ? isObject['default'] : isObject;
-    _classCallCheck = _classCallCheck && _classCallCheck.hasOwnProperty('default') ? _classCallCheck['default'] : _classCallCheck;
-    _createClass = _createClass && _createClass.hasOwnProperty('default') ? _createClass['default'] : _createClass;
-    _possibleConstructorReturn = _possibleConstructorReturn && _possibleConstructorReturn.hasOwnProperty('default') ? _possibleConstructorReturn['default'] : _possibleConstructorReturn;
-    _getPrototypeOf = _getPrototypeOf && _getPrototypeOf.hasOwnProperty('default') ? _getPrototypeOf['default'] : _getPrototypeOf;
-    _get = _get && _get.hasOwnProperty('default') ? _get['default'] : _get;
-    _inherits = _inherits && _inherits.hasOwnProperty('default') ? _inherits['default'] : _inherits;
-
-    var global;
-    try {
-      global = new Function('return this')();
-    } catch (error) {
-      global = window;
     }
-    var ProviderResolver =
-    function () {
-      function ProviderResolver(providersModuleFactory) {
-        _classCallCheck(this, ProviderResolver);
-        this.providersModuleFactory = providersModuleFactory;
-      }
-      _createClass(ProviderResolver, [{
-        key: "resolve",
-        value: function resolve(provider, net) {
-          if (typeof provider === 'string') {
-            if (/^http(s)?:\/\//i.test(provider)) {
-              return this.providersModuleFactory.createHttpProvider(provider);
-            }
-            if (/^ws(s)?:\/\//i.test(provider)) {
-              return this.providersModuleFactory.createWebsocketProvider(provider);
-            }
-            if (provider && isObject(net) && isFunction(net.connect)) {
-              return this.providersModuleFactory.createIpcProvider(provider, net);
-            }
-          }
-          if (typeof global.mist !== 'undefined' && provider.constructor.name === 'EthereumProvider') {
-            return this.providersModuleFactory.createMistEthereumProvider(provider);
-          }
-          if (provider.constructor.name === 'MetamaskInpageProvider') {
-            return this.providersModuleFactory.createMetamaskProvider(provider);
-          }
-          if (provider.isEIP1193) {
-            return this.providersModuleFactory.createEthereumProvider(provider);
-          }
-          return provider;
-        }
-      }]);
-      return ProviderResolver;
-    }();
 
-    var global$1;
-    try {
-      global$1 = new Function('return this')();
-    } catch (error) {
-      global$1 = window;
+    return parseInt(remainder, 10) % 97;
+};
+
+/**
+ * This prototype should be used to create iban object from iban correct string
+ *
+ * @param {String} iban
+ */
+var Iban = function Iban(iban) {
+    this._iban = iban;
+};
+
+/**
+ * This method should be used to create an ethereum address from a direct iban address
+ *
+ * @method toAddress
+ * @param {String} iban address
+ * @return {String} the ethereum address
+ */
+Iban.toAddress = function (ib) {
+    ib = new Iban(ib);
+
+    if(!ib.isDirect()) {
+        throw new Error('IBAN is indirect and can\'t be converted');
     }
-    var ProviderDetector =
-    function () {
-      function ProviderDetector() {
-        _classCallCheck(this, ProviderDetector);
-      }
-      _createClass(ProviderDetector, [{
-        key: "detect",
-        value: function detect() {
-          if (typeof global$1.ethereumProvider !== 'undefined' && global$1.ethereumProvider.constructor.name === 'EthereumProvider') {
-            return global$1.ethereumProvider;
-          }
-          if (typeof global$1.web3 !== 'undefined' && global$1.web3.currentProvider) {
-            return global$1.web3.currentProvider;
-          }
-          return null;
-        }
-      }]);
-      return ProviderDetector;
-    }();
 
-    var messageId = 0;
-    var JsonRpcMapper =
-    function () {
-      function JsonRpcMapper() {
-        _classCallCheck(this, JsonRpcMapper);
-      }
-      _createClass(JsonRpcMapper, null, [{
-        key: "toPayload",
-        value: function toPayload(method, params) {
-          if (!method) {
-            throw new Error("JSONRPC method should be specified for params: \"".concat(JSON.stringify(params), "\"!"));
-          }
-          var id = messageId;
-          messageId++;
-          return {
-            jsonrpc: '2.0',
-            id: id,
-            method: method,
-            params: params || []
-          };
-        }
-      }]);
-      return JsonRpcMapper;
-    }();
+    return ib.toAddress();
+};
 
-    var AbstractSocketProvider =
-    function (_EventEmitter) {
-      _inherits(AbstractSocketProvider, _EventEmitter);
-      function AbstractSocketProvider(connection, timeout) {
-        var _this;
-        _classCallCheck(this, AbstractSocketProvider);
-        _this = _possibleConstructorReturn(this, _getPrototypeOf(AbstractSocketProvider).call(this));
-        _this.connection = connection;
-        _this.timeout = timeout;
-        _this.subscriptions = {};
-        _this.registerEventListeners();
-        _this.READY = 'ready';
-        _this.CONNECT = 'connect';
-        _this.ERROR = 'error';
-        _this.CLOSE = 'close';
-        _this.SOCKET_MESSAGE = 'socket_message';
-        _this.SOCKET_READY = 'socket_ready';
-        _this.SOCKET_CLOSE = 'socket_close';
-        _this.SOCKET_ERROR = 'socket_error';
-        _this.SOCKET_CONNECT = 'socket_connect';
-        _this.SOCKET_NETWORK_CHANGED = 'socket_networkChanged';
-        _this.SOCKET_ACCOUNTS_CHANGED = 'socket_accountsChanged';
-        return _this;
-      }
-      _createClass(AbstractSocketProvider, [{
-        key: "registerEventListeners",
-        value: function registerEventListeners() {}
-      }, {
-        key: "removeAllSocketListeners",
-        value: function removeAllSocketListeners() {
-          this.removeAllListeners(this.SOCKET_MESSAGE);
-          this.removeAllListeners(this.SOCKET_READY);
-          this.removeAllListeners(this.SOCKET_CLOSE);
-          this.removeAllListeners(this.SOCKET_ERROR);
-          this.removeAllListeners(this.SOCKET_CONNECT);
-        }
-      }, {
-        key: "disconnect",
-        value: function disconnect(code, reason) {}
-      }, {
-        key: "send",
-        value: function send(method, parameters) {}
-      }, {
-        key: "sendBatch",
-        value: function sendBatch(methods, moduleInstance) {}
-      }, {
-        key: "onReady",
-        value: function onReady(event) {
-          this.emit(this.READY, event);
-          this.emit(this.SOCKET_READY, event);
-        }
-      }, {
-        key: "onError",
-        value: function onError(error) {
-          this.emit(this.ERROR, error);
-          this.emit(this.SOCKET_ERROR, error);
-          this.removeAllSocketListeners();
-          this.removeAllListeners();
-        }
-      }, {
-        key: "onClose",
-        value: function onClose() {
-          var error = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
-          this.emit(this.CLOSE, error);
-          this.emit(this.SOCKET_CLOSE, error);
-          this.removeAllSocketListeners();
-          this.removeAllListeners();
-        }
-      }, {
-        key: "onConnect",
-        value: function () {
-          var _onConnect = _asyncToGenerator(
-          _regeneratorRuntime.mark(function _callee() {
-            var subscriptionKeys, subscriptionId, _i, key;
-            return _regeneratorRuntime.wrap(function _callee$(_context) {
-              while (1) {
-                switch (_context.prev = _context.next) {
-                  case 0:
-                    subscriptionKeys = Object.keys(this.subscriptions);
-                    if (!(subscriptionKeys.length > 0)) {
-                      _context.next = 13;
-                      break;
-                    }
-                    _i = 0;
-                  case 3:
-                    if (!(_i < subscriptionKeys.length)) {
-                      _context.next = 13;
-                      break;
-                    }
-                    key = subscriptionKeys[_i];
-                    _context.next = 7;
-                    return this.subscribe(this.subscriptions[key].subscribeMethod, this.subscriptions[key].parameters[0], this.subscriptions[key].parameters.slice(1));
-                  case 7:
-                    subscriptionId = _context.sent;
-                    delete this.subscriptions[subscriptionId];
-                    this.subscriptions[this.getSubscriptionEvent(this.subscriptions[key].id)].id = subscriptionId;
-                  case 10:
-                    _i++;
-                    _context.next = 3;
-                    break;
-                  case 13:
-                    this.emit(this.CONNECT);
-                  case 14:
-                  case "end":
-                    return _context.stop();
-                }
-              }
-            }, _callee, this);
-          }));
-          return function onConnect() {
-            return _onConnect.apply(this, arguments);
-          };
-        }()
-      }, {
-        key: "onMessage",
-        value: function onMessage(response) {
-          var event;
-          if (!isObject(response)) {
-            response = JSON.parse(response);
-          }
-          if (isArray(response)) {
-            event = response[0].id;
-          } else if (typeof response.id === 'undefined') {
-            event = this.getSubscriptionEvent(response.params.subscription);
-            response = response.params;
-          } else {
-            event = response.id;
-          }
-          this.emit(this.SOCKET_MESSAGE, response);
-          this.emit(event, response);
-        }
-      }, {
-        key: "reset",
-        value: function reset() {
-          this.removeAllListeners();
-          this.registerEventListeners();
-        }
-      }, {
-        key: "subscribe",
-        value: function subscribe() {
-          var _this2 = this;
-          var subscribeMethod = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'eth_subscribe';
-          var subscriptionMethod = arguments.length > 1 ? arguments[1] : undefined;
-          var parameters = arguments.length > 2 ? arguments[2] : undefined;
-          parameters.unshift(subscriptionMethod);
-          return this.send(subscribeMethod, parameters).then(function (subscriptionId) {
-            _this2.subscriptions[subscriptionId] = {
-              id: subscriptionId,
-              subscribeMethod: subscribeMethod,
-              parameters: parameters
-            };
-            return subscriptionId;
-          }).catch(function (error) {
-            throw new Error("Provider error: ".concat(error));
-          });
-        }
-      }, {
-        key: "unsubscribe",
-        value: function unsubscribe(subscriptionId) {
-          var _this3 = this;
-          var unsubscribeMethod = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'eth_unsubscribe';
-          if (this.hasSubscription(subscriptionId)) {
-            return this.send(unsubscribeMethod, [subscriptionId]).then(function (response) {
-              if (response) {
-                _this3.removeAllListeners(_this3.getSubscriptionEvent(subscriptionId));
-                delete _this3.subscriptions[subscriptionId];
-              }
-              return response;
+/**
+ * This method should be used to create iban address from an ethereum address
+ *
+ * @method toIban
+ * @param {String} address
+ * @return {String} the IBAN address
+ */
+Iban.toIban = function (address) {
+    return Iban.fromAddress(address).toString();
+};
+
+/**
+ * This method should be used to create iban object from an ethereum address
+ *
+ * @method fromAddress
+ * @param {String} address
+ * @return {Iban} the IBAN object
+ */
+Iban.fromAddress = function (address) {
+    if(!utils.isAddress(address)){
+        throw new Error('Provided address is not a valid address: '+ address);
+    }
+
+    address = address.replace('0x','').replace('0X','');
+
+    var asBn = new BigNumber(address, 16);
+    var base36 = asBn.toString(36);
+    var padded = leftPad(base36, 15);
+    return Iban.fromBban(padded.toUpperCase());
+};
+
+/**
+ * Convert the passed BBAN to an IBAN for this country specification.
+ * Please note that <i>"generation of the IBAN shall be the exclusive responsibility of the bank/branch servicing the account"</i>.
+ * This method implements the preferred algorithm described in http://en.wikipedia.org/wiki/International_Bank_Account_Number#Generating_IBAN_check_digits
+ *
+ * @method fromBban
+ * @param {String} bban the BBAN to convert to IBAN
+ * @returns {Iban} the IBAN object
+ */
+Iban.fromBban = function (bban) {
+    var countryCode = 'XE';
+
+    var remainder = mod9710(iso13616Prepare(countryCode + '00' + bban));
+    var checkDigit = ('0' + (98 - remainder)).slice(-2);
+
+    return new Iban(countryCode + checkDigit + bban);
+};
+
+/**
+ * Should be used to create IBAN object for given institution and identifier
+ *
+ * @method createIndirect
+ * @param {Object} options, required options are "institution" and "identifier"
+ * @return {Iban} the IBAN object
+ */
+Iban.createIndirect = function (options) {
+    return Iban.fromBban('ETH' + options.institution + options.identifier);
+};
+
+/**
+ * This method should be used to check if given string is valid iban object
+ *
+ * @method isValid
+ * @param {String} iban string
+ * @return {Boolean} true if it is valid IBAN
+ */
+Iban.isValid = function (iban) {
+    var i = new Iban(iban);
+    return i.isValid();
+};
+
+/**
+ * Should be called to check if iban is correct
+ *
+ * @method isValid
+ * @returns {Boolean} true if it is, otherwise false
+ */
+Iban.prototype.isValid = function () {
+    return /^XE[0-9]{2}(ETH[0-9A-Z]{13}|[0-9A-Z]{30,31})$/.test(this._iban) &&
+        mod9710(iso13616Prepare(this._iban)) === 1;
+};
+
+/**
+ * Should be called to check if iban number is direct
+ *
+ * @method isDirect
+ * @returns {Boolean} true if it is, otherwise false
+ */
+Iban.prototype.isDirect = function () {
+    return this._iban.length === 34 || this._iban.length === 35;
+};
+
+/**
+ * Should be called to check if iban number if indirect
+ *
+ * @method isIndirect
+ * @returns {Boolean} true if it is, otherwise false
+ */
+Iban.prototype.isIndirect = function () {
+    return this._iban.length === 20;
+};
+
+/**
+ * Should be called to get iban checksum
+ * Uses the mod-97-10 checksumming protocol (ISO/IEC 7064:2003)
+ *
+ * @method checksum
+ * @returns {String} checksum
+ */
+Iban.prototype.checksum = function () {
+    return this._iban.substr(2, 2);
+};
+
+/**
+ * Should be called to get institution identifier
+ * eg. XREG
+ *
+ * @method institution
+ * @returns {String} institution identifier
+ */
+Iban.prototype.institution = function () {
+    return this.isIndirect() ? this._iban.substr(7, 4) : '';
+};
+
+/**
+ * Should be called to get client identifier within institution
+ * eg. GAVOFYORK
+ *
+ * @method client
+ * @returns {String} client identifier
+ */
+Iban.prototype.client = function () {
+    return this.isIndirect() ? this._iban.substr(11) : '';
+};
+
+/**
+ * Should be called to get client direct address
+ *
+ * @method toAddress
+ * @returns {String} ethereum address
+ */
+Iban.prototype.toAddress = function () {
+    if (this.isDirect()) {
+        var base36 = this._iban.substr(4);
+        var asBn = new BigNumber(base36, 36);
+        return utils.toChecksumAddress(asBn.toString(16, 20));
+    }
+
+    return '';
+};
+
+Iban.prototype.toString = function () {
+    return this._iban;
+};
+
+module.exports = Iban;
+
+},{"bn.js":219,"web3-utils":399}],392:[function(require,module,exports){
+/*
+    This file is part of web3.js.
+
+    web3.js is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    web3.js is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public License
+    along with web3.js.  If not, see <http://www.gnu.org/licenses/>.
+*/
+/**
+ * @file index.js
+ * @author Fabian Vogelsteller <fabian@ethereum.org>
+ * @date 2017
+ */
+
+"use strict";
+
+var core = require('web3-core');
+var Method = require('web3-core-method');
+var utils = require('web3-utils');
+var Net = require('web3-net');
+
+var formatters = require('web3-core-helpers').formatters;
+
+
+var Personal = function Personal() {
+    var _this = this;
+
+    // sets _requestmanager
+    core.packageInit(this, arguments);
+
+    this.net = new Net(this.currentProvider);
+
+    var defaultAccount = null;
+    var defaultBlock = 'latest';
+
+    Object.defineProperty(this, 'defaultAccount', {
+        get: function () {
+            return defaultAccount;
+        },
+        set: function (val) {
+            if(val) {
+                defaultAccount = utils.toChecksumAddress(formatters.inputAddressFormatter(val));
+            }
+
+            // update defaultBlock
+            methods.forEach(function(method) {
+                method.defaultAccount = defaultAccount;
             });
-          }
-          return Promise.reject(new Error("Provider error: Subscription with ID ".concat(subscriptionId, " does not exist.")));
-        }
-      }, {
-        key: "clearSubscriptions",
-        value: function clearSubscriptions() {
-          var _this4 = this;
-          var unsubscribeMethod = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'eth_unsubscribe';
-          var unsubscribePromises = [];
-          Object.keys(this.subscriptions).forEach(function (key) {
-            _this4.removeAllListeners(key);
-            unsubscribePromises.push(_this4.unsubscribe(_this4.subscriptions[key].id, unsubscribeMethod));
-          });
-          return Promise.all(unsubscribePromises).then(function (results) {
-            if (results.includes(false)) {
-              throw new Error("Could not unsubscribe all subscriptions: ".concat(JSON.stringify(results)));
-            }
-            return true;
-          });
-        }
-      }, {
-        key: "hasSubscription",
-        value: function hasSubscription(subscriptionId) {
-          return typeof this.getSubscriptionEvent(subscriptionId) !== 'undefined';
-        }
-      }, {
-        key: "getSubscriptionEvent",
-        value: function getSubscriptionEvent(subscriptionId) {
-          var _this5 = this;
-          if (this.subscriptions[subscriptionId]) {
-            return subscriptionId;
-          }
-          var event;
-          Object.keys(this.subscriptions).forEach(function (key) {
-            if (_this5.subscriptions[key].id === subscriptionId) {
-              event = key;
-            }
-          });
-          return event;
-        }
-      }, {
-        key: "connected",
-        get: function get() {}
-      }]);
-      return AbstractSocketProvider;
-    }(EventEmitter);
 
-    var JsonRpcResponseValidator =
-    function () {
-      function JsonRpcResponseValidator() {
-        _classCallCheck(this, JsonRpcResponseValidator);
-      }
-      _createClass(JsonRpcResponseValidator, null, [{
-        key: "validate",
-        value: function validate(response) {
-          var payload = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
-          if (isObject(response)) {
-            if (response.error) {
-              if (response.error instanceof Error) {
-                return new Error("Node error: ".concat(response.error.message));
-              }
-              return new Error("Node error: ".concat(JSON.stringify(response.error)));
-            }
-            if (payload && response.id !== payload.id) {
-              return new Error("Validation error: Invalid JSON-RPC response ID (request: ".concat(payload.id, " / response: ").concat(response.id, ")"));
-            }
-            if (response.result === undefined) {
-              return new Error('Validation error: Undefined JSON-RPC result');
-            }
-            return true;
-          }
-          return new Error('Validation error: Response should be of type Object');
-        }
-      }]);
-      return JsonRpcResponseValidator;
-    }();
+            return val;
+        },
+        enumerable: true
+    });
+    Object.defineProperty(this, 'defaultBlock', {
+        get: function () {
+            return defaultBlock;
+        },
+        set: function (val) {
+            defaultBlock = val;
 
-    var WebsocketProvider =
-    function (_AbstractSocketProvid) {
-      _inherits(WebsocketProvider, _AbstractSocketProvid);
-      function WebsocketProvider(connection, timeout) {
-        var _this;
-        _classCallCheck(this, WebsocketProvider);
-        _this = _possibleConstructorReturn(this, _getPrototypeOf(WebsocketProvider).call(this, connection, timeout));
-        _this.host = _this.connection.url;
-        return _this;
-      }
-      _createClass(WebsocketProvider, [{
-        key: "onMessage",
-        value: function onMessage(messageEvent) {
-          _get(_getPrototypeOf(WebsocketProvider.prototype), "onMessage", this).call(this, messageEvent.data);
-        }
-      }, {
-        key: "onError",
-        value: function onError(event) {
-          if (event.code === 'ECONNREFUSED') {
-            this.reconnect();
-            return;
-          }
-          _get(_getPrototypeOf(WebsocketProvider.prototype), "onError", this).call(this, event);
-        }
-      }, {
-        key: "onClose",
-        value: function onClose(closeEvent) {
-          if (closeEvent.code !== 1000) {
-            this.reconnect();
-            return;
-          }
-          _get(_getPrototypeOf(WebsocketProvider.prototype), "onClose", this).call(this);
-        }
-      }, {
-        key: "reconnect",
-        value: function reconnect() {
-          var _this2 = this;
-          setTimeout(function () {
-            _this2.removeAllSocketListeners();
-            var connection = [];
-            if (_this2.connection.constructor.name === 'W3CWebsocket') {
-              connection = new _this2.connection.constructor(_this2.host, _this2.connection._client.protocol, null, _this2.connection._client.headers, _this2.connection._client.requestOptions, _this2.connection._client.config);
+            // update defaultBlock
+            methods.forEach(function(method) {
+                method.defaultBlock = defaultBlock;
+            });
+
+            return val;
+        },
+        enumerable: true
+    });
+
+
+    var methods = [
+        new Method({
+            name: 'getAccounts',
+            call: 'personal_listAccounts',
+            params: 0,
+            outputFormatter: utils.toChecksumAddress
+        }),
+        new Method({
+            name: 'newAccount',
+            call: 'personal_newAccount',
+            params: 1,
+            inputFormatter: [null],
+            outputFormatter: utils.toChecksumAddress
+        }),
+        new Method({
+            name: 'unlockAccount',
+            call: 'personal_unlockAccount',
+            params: 3,
+            inputFormatter: [formatters.inputAddressFormatter, null, null]
+        }),
+        new Method({
+            name: 'lockAccount',
+            call: 'personal_lockAccount',
+            params: 1,
+            inputFormatter: [formatters.inputAddressFormatter]
+        }),
+        new Method({
+            name: 'importRawKey',
+            call: 'personal_importRawKey',
+            params: 2
+        }),
+        new Method({
+            name: 'sendTransaction',
+            call: 'personal_sendTransaction',
+            params: 2,
+            inputFormatter: [formatters.inputTransactionFormatter, null]
+        }),
+        new Method({
+            name: 'signTransaction',
+            call: 'personal_signTransaction',
+            params: 2,
+            inputFormatter: [formatters.inputTransactionFormatter, null]
+        }),
+        new Method({
+            name: 'sign',
+            call: 'personal_sign',
+            params: 3,
+            inputFormatter: [formatters.inputSignFormatter, formatters.inputAddressFormatter, null]
+        }),
+        new Method({
+            name: 'ecRecover',
+            call: 'personal_ecRecover',
+            params: 2,
+            inputFormatter: [formatters.inputSignFormatter, null]
+        })
+    ];
+    methods.forEach(function(method) {
+        method.attachToObject(_this);
+        method.setRequestManager(_this._requestManager);
+        method.defaultBlock = _this.defaultBlock;
+        method.defaultAccount = _this.defaultAccount;
+    });
+};
+
+core.addProviders(Personal);
+
+
+
+module.exports = Personal;
+
+
+
+},{"web3-core":372,"web3-core-helpers":362,"web3-core-method":363,"web3-net":395,"web3-utils":399}],393:[function(require,module,exports){
+/*
+ This file is part of web3.js.
+
+ web3.js is free software: you can redistribute it and/or modify
+ it under the terms of the GNU Lesser General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ web3.js is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public License
+ along with web3.js.  If not, see <http://www.gnu.org/licenses/>.
+ */
+/**
+ * @file getNetworkType.js
+ * @author Fabian Vogelsteller <fabian@ethereum.org>
+ * @date 2017
+ */
+
+"use strict";
+
+var _ = require('underscore');
+
+var getNetworkType = function (callback) {
+    var _this = this,
+        id;
+
+
+    return this.net.getId()
+        .then(function (givenId) {
+
+            id = givenId;
+
+            return _this.getBlock(0);
+        })
+        .then(function (genesis) {
+            var returnValue = 'private';
+
+            if (genesis.hash === '0xd4e56740f876aef8c010b86a40d5f56745a118d0906a34e69aec8c0db1cb8fa3' &&
+                id === 1) {
+                returnValue = 'main';
+            }
+            if (genesis.hash === '0cd786a2425d16f152c658316c423e6ce1181e15c3295826d7c9904cba9ce303' &&
+                id === 2) {
+                returnValue = 'morden';
+            }
+            if (genesis.hash === '0x41941023680923e0fe4d74a34bdac8141f2540e3ae90623718e47d66d1ca4a2d' &&
+                id === 3) {
+                returnValue = 'ropsten';
+            }
+            if (genesis.hash === '0x6341fd3daf94b748c72ced5a5b26028f2474f5f00d824504e4fa37a75767e177' &&
+                id === 4) {
+                returnValue = 'rinkeby';
+            }
+            if (genesis.hash === '0xa3c565fc15c7478862d50ccd6561e3c06b24cc509bf388941c25ea985ce32cb9' &&
+                id === 42) {
+                returnValue = 'kovan';
+            }
+
+            if (_.isFunction(callback)) {
+                callback(null, returnValue);
+            }
+
+            return returnValue;
+        })
+        .catch(function (err) {
+            if (_.isFunction(callback)) {
+                callback(err);
             } else {
-              var protocol = _this2.connection.protocol || undefined;
-              connection = new _this2.connection.constructor(_this2.host, protocol);
+                throw err;
             }
-            _this2.connection = connection;
-            _this2.registerEventListeners();
-          }, 5000);
-        }
-      }, {
-        key: "disconnect",
-        value: function disconnect() {
-          var code = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
-          var reason = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
-          this.connection.close(code, reason);
-        }
-      }, {
-        key: "registerEventListeners",
-        value: function registerEventListeners() {
-          this.connection.addEventListener('message', this.onMessage.bind(this));
-          this.connection.addEventListener('open', this.onReady.bind(this));
-          this.connection.addEventListener('open', this.onConnect.bind(this));
-          this.connection.addEventListener('close', this.onClose.bind(this));
-          this.connection.addEventListener('error', this.onError.bind(this));
-        }
-      }, {
-        key: "removeAllListeners",
-        value: function removeAllListeners(event) {
-          switch (event) {
-            case this.SOCKET_MESSAGE:
-              this.connection.removeEventListener('message', this.onMessage);
-              break;
-            case this.SOCKET_READY:
-              this.connection.removeEventListener('open', this.onReady);
-              break;
-            case this.SOCKET_CLOSE:
-              this.connection.removeEventListener('close', this.onClose);
-              break;
-            case this.SOCKET_ERROR:
-              this.connection.removeEventListener('error', this.onError);
-              break;
-            case this.SOCKET_CONNECT:
-              this.connection.removeEventListener('connect', this.onConnect);
-              break;
-          }
-          _get(_getPrototypeOf(WebsocketProvider.prototype), "removeAllListeners", this).call(this, event);
-        }
-      }, {
-        key: "isConnecting",
-        value: function isConnecting() {
-          return this.connection.readyState === this.connection.CONNECTING;
-        }
-      }, {
-        key: "send",
-        value: function send(method, parameters) {
-          return this.sendPayload(JsonRpcMapper.toPayload(method, parameters)).then(function (response) {
-            var validationResult = JsonRpcResponseValidator.validate(response);
-            if (validationResult instanceof Error) {
-              throw validationResult;
-            }
-            return response.result;
-          });
-        }
-      }, {
-        key: "sendBatch",
-        value: function sendBatch(methods, moduleInstance) {
-          var payload = [];
-          methods.forEach(function (method) {
-            method.beforeExecution(moduleInstance);
-            payload.push(JsonRpcMapper.toPayload(method.rpcMethod, method.parameters));
-          });
-          return this.sendPayload(payload);
-        }
-      }, {
-        key: "sendPayload",
-        value: function sendPayload(payload) {
-          var _this3 = this;
-          return new Promise(function (resolve, reject) {
-            if (!_this3.isConnecting()) {
-              var timeout, id;
-              if (_this3.connection.readyState !== _this3.connection.OPEN) {
-                return reject(new Error('Connection error: Connection is not open on send()'));
-              }
-              _this3.connection.send(JSON.stringify(payload));
-              if (_this3.timeout) {
-                timeout = setTimeout(function () {
-                  reject(new Error('Connection error: Timeout exceeded'));
-                }, _this3.timeout);
-              }
-              if (isArray(payload)) {
-                id = payload[0].id;
-              } else {
-                id = payload.id;
-              }
-              _this3.once(id, function (response) {
-                if (timeout) {
-                  clearTimeout(timeout);
-                }
-                return resolve(response);
-              });
-              return;
-            }
-            _this3.on('connect', function () {
-              _this3.sendPayload(payload).then(resolve).catch(reject);
-              _this3.removeAllListeners('connect');
-            });
-          });
-        }
-      }, {
-        key: "connected",
-        get: function get() {
-          return this.connection.readyState === this.connection.OPEN;
-        }
-      }]);
-      return WebsocketProvider;
-    }(AbstractSocketProvider);
-
-    var IpcProvider =
-    function (_AbstractSocketProvid) {
-      _inherits(IpcProvider, _AbstractSocketProvid);
-      function IpcProvider(connection, path) {
-        var _this;
-        _classCallCheck(this, IpcProvider);
-        _this = _possibleConstructorReturn(this, _getPrototypeOf(IpcProvider).call(this, connection, null));
-        _this.host = path;
-        return _this;
-      }
-      _createClass(IpcProvider, [{
-        key: "disconnect",
-        value: function disconnect() {
-          this.connection.destroy();
-        }
-      }, {
-        key: "reconnect",
-        value: function reconnect() {
-          this.connection.connect({
-            path: this.path
-          });
-        }
-      }, {
-        key: "onMessage",
-        value: function onMessage(message) {
-          _get(_getPrototypeOf(IpcProvider.prototype), "onMessage", this).call(this, message.toString());
-        }
-      }, {
-        key: "registerEventListeners",
-        value: function registerEventListeners() {
-          if (this.connection.constructor.name === 'Socket') {
-            oboe(this.connection).done(this.onMessage);
-          } else {
-            this.connection.addListener('data', this.onMessage.bind(this));
-          }
-          this.connection.addListener('connect', this.onConnect.bind(this));
-          this.connection.addListener('error', this.onError.bind(this));
-          this.connection.addListener('end', this.onError.bind(this));
-          this.connection.addListener('close', this.onClose.bind(this));
-          this.connection.addListener('timeout', this.onClose.bind(this));
-          this.connection.addListener('ready', this.onReady.bind(this));
-        }
-      }, {
-        key: "removeAllListeners",
-        value: function removeAllListeners(event) {
-          switch (event) {
-            case this.SOCKET_MESSAGE:
-              this.connection.removeEventListener('data', this.onMessage);
-              break;
-            case this.SOCKET_READY:
-              this.connection.removeEventListener('ready', this.onReady);
-              break;
-            case this.SOCKET_CLOSE:
-              this.connection.removeEventListener('close', this.onClose);
-              break;
-            case this.SOCKET_ERROR:
-              this.connection.removeEventListener('error', this.onError);
-              break;
-            case this.SOCKET_CONNECT:
-              this.connection.removeEventListener('connect', this.onConnect);
-              break;
-          }
-          _get(_getPrototypeOf(IpcProvider.prototype), "removeAllListeners", this).call(this, event);
-        }
-      }, {
-        key: "send",
-        value: function send(method, parameters) {
-          return this.sendPayload(JsonRpcMapper.toPayload(method, parameters)).then(function (response) {
-            var validationResult = JsonRpcResponseValidator.validate(response);
-            if (validationResult instanceof Error) {
-              throw validationResult;
-            }
-            return response.result;
-          });
-        }
-      }, {
-        key: "sendBatch",
-        value: function sendBatch(methods, moduleInstance) {
-          var payload = [];
-          methods.forEach(function (method) {
-            method.beforeExecution(moduleInstance);
-            payload.push(JsonRpcMapper.toPayload(method.rpcMethod, method.parameters));
-          });
-          return this.sendPayload(payload);
-        }
-      }, {
-        key: "sendPayload",
-        value: function sendPayload(payload) {
-          var _this2 = this;
-          return new Promise(function (resolve, reject) {
-            if (_this2.connection.pending) {
-              return reject(new Error('Connection error: The socket is still trying to connect'));
-            }
-            if (!_this2.connection.writable) {
-              _this2.connection.connect({
-                path: _this2.path
-              });
-            }
-            if (_this2.connection.write(JSON.stringify(payload))) {
-              var id;
-              if (isArray(payload)) {
-                id = payload[0].id;
-              } else {
-                id = payload.id;
-              }
-              _this2.on(id, function (response) {
-                resolve(response);
-                _this2.removeAllListeners(id);
-              });
-              return;
-            }
-            return reject(new Error("Connection error: Couldn't write on the socket with Socket.write(payload)"));
-          });
-        }
-      }, {
-        key: "connected",
-        get: function get() {
-          return !this.connection.pending;
-        }
-      }]);
-      return IpcProvider;
-    }(AbstractSocketProvider);
-
-    var HttpProvider =
-    function () {
-      function HttpProvider() {
-        var host = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'http://localhost:8545';
-        var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-        var providersModuleFactory = arguments.length > 2 ? arguments[2] : undefined;
-        _classCallCheck(this, HttpProvider);
-        this.host = host;
-        this.timeout = options.timeout || 0;
-        this.headers = options.headers;
-        this.connected = true;
-        this.providersModuleFactory = providersModuleFactory;
-        this.agent = {};
-        var keepAlive = false;
-        if (options.keepAlive === true || options.keepAlive !== false) {
-          keepAlive = true;
-        }
-        if (host.substring(0, 5) === 'https') {
-          this.agent['httpsAgent'] = new https.Agent({
-            keepAlive: keepAlive
-          });
-        } else {
-          this.agent['httpAgent'] = new http.Agent({
-            keepAlive: keepAlive
-          });
-        }
-      }
-      _createClass(HttpProvider, [{
-        key: "subscribe",
-        value: function subscribe() {
-          throw new Error('Subscriptions are not supported with the HttpProvider.');
-        }
-      }, {
-        key: "unsubscribe",
-        value: function unsubscribe() {
-          throw new Error('Subscriptions are not supported with the HttpProvider.');
-        }
-      }, {
-        key: "disconnect",
-        value: function disconnect() {
-          return true;
-        }
-      }, {
-        key: "send",
-        value: function send(method, parameters) {
-          return this.sendPayload(JsonRpcMapper.toPayload(method, parameters)).then(function (response) {
-            var validationResult = JsonRpcResponseValidator.validate(response);
-            if (validationResult instanceof Error) {
-              throw validationResult;
-            }
-            return response.result;
-          });
-        }
-      }, {
-        key: "sendBatch",
-        value: function sendBatch(methods, moduleInstance) {
-          var payload = [];
-          methods.forEach(function (method) {
-            method.beforeExecution(moduleInstance);
-            payload.push(JsonRpcMapper.toPayload(method.rpcMethod, method.parameters));
-          });
-          return this.sendPayload(payload);
-        }
-      }, {
-        key: "sendPayload",
-        value: function sendPayload(payload) {
-          var _this = this;
-          return new Promise(function (resolve, reject) {
-            var request = _this.providersModuleFactory.createXMLHttpRequest(_this.host, _this.timeout, _this.headers, _this.agent);
-            request.onreadystatechange = function () {
-              if (request.readyState !== 0 && request.readyState !== 1) {
-                _this.connected = true;
-              }
-              if (request.readyState === 4 && request.status === 200) {
-                try {
-                  return resolve(JSON.parse(request.responseText));
-                } catch (error) {
-                  reject(new Error("Invalid JSON as response: ".concat(request.responseText)));
-                }
-              }
-            };
-            request.ontimeout = function () {
-              _this.connected = false;
-              reject(new Error("Connection error: Timeout exceeded after ".concat(_this.timeout, "ms")));
-            };
-            try {
-              request.send(JSON.stringify(payload));
-            } catch (error) {
-              if (error.constructor.name === 'NetworkError') {
-                _this.connected = false;
-              }
-              reject(error);
-            }
-          });
-        }
-      }]);
-      return HttpProvider;
-    }();
-
-    var BatchRequest =
-    function () {
-      function BatchRequest(moduleInstance) {
-        _classCallCheck(this, BatchRequest);
-        this.moduleInstance = moduleInstance;
-        this.methods = [];
-      }
-      _createClass(BatchRequest, [{
-        key: "add",
-        value: function add(method) {
-          if (!isObject(method) && method) {
-            throw new Error('Please provide a object of type AbstractMethod.');
-          }
-          this.methods.push(method);
-        }
-      }, {
-        key: "execute",
-        value: function execute() {
-          var _this = this;
-          return this.moduleInstance.currentProvider.sendBatch(this.methods, this.moduleInstance).then(function (response) {
-            var errors = [];
-            _this.methods.forEach(function (method, index) {
-              if (!isArray(response)) {
-                method.callback(new Error("BatchRequest error: Response should be of type Array but is: ".concat(_typeof(response))), null);
-                errors.push("Response should be of type Array but is: ".concat(_typeof(response)));
-                return;
-              }
-              var responseItem = response[index] || null;
-              var validationResult = JsonRpcResponseValidator.validate(responseItem);
-              if (validationResult) {
-                try {
-                  var mappedResult = method.afterExecution(responseItem.result);
-                  response[index] = mappedResult;
-                  method.callback(false, mappedResult);
-                } catch (error) {
-                  errors.push(error);
-                  method.callback(error, null);
-                }
-                return;
-              }
-              errors.push(validationResult);
-              method.callback(validationResult, null);
-            });
-            if (errors.length > 0) {
-              throw new Error("BatchRequest error: ".concat(JSON.stringify(errors)));
-            }
-            return {
-              methods: _this.methods,
-              response: response
-            };
-          });
-        }
-      }]);
-      return BatchRequest;
-    }();
-
-    var EthereumProvider =
-    function (_AbstractSocketProvid) {
-      _inherits(EthereumProvider, _AbstractSocketProvid);
-      function EthereumProvider(connection) {
-        var _this;
-        _classCallCheck(this, EthereumProvider);
-        _this = _possibleConstructorReturn(this, _getPrototypeOf(EthereumProvider).call(this, connection, null));
-        _this.host = 'EthereumProvider';
-        return _this;
-      }
-      _createClass(EthereumProvider, [{
-        key: "registerEventListeners",
-        value: function registerEventListeners() {
-          this.connection.on('notification', this.onMessage.bind(this));
-          this.connection.on('connect', this.onConnect.bind(this));
-          this.connection.on('connect', this.onReady.bind(this));
-          this.connection.on('close', this.onClose.bind(this));
-          this.connection.on('networkChanged', this.onNetworkChanged.bind(this));
-          this.connection.on('accountsChanged', this.onAccountsChanged.bind(this));
-        }
-      }, {
-        key: "removeAllListeners",
-        value: function removeAllListeners(event) {
-          switch (event) {
-            case this.SOCKET_NETWORK_CHANGED:
-              this.connection.removeListener('networkChanged', this.onNetworkChanged);
-              break;
-            case this.SOCKET_ACCOUNTS_CHANGED:
-              this.connection.removeListener('accountsChanged', this.onAccountsChanged);
-              break;
-            case this.SOCKET_MESSAGE:
-              this.connection.removeListener('notification', this.onMessage);
-              break;
-            case this.SOCKET_READY:
-              this.connection.removeListener('connect', this.onReady);
-              break;
-            case this.SOCKET_CLOSE:
-              this.connection.removeListener('close', this.onClose);
-              break;
-            case this.SOCKET_ERROR:
-              this.connection.removeListener('close', this.onError);
-              break;
-            case this.SOCKET_CONNECT:
-              this.connection.removeListener('connect', this.onConnect);
-              break;
-          }
-          _get(_getPrototypeOf(EthereumProvider.prototype), "removeAllListeners", this).call(this, event);
-        }
-      }, {
-        key: "removeAllSocketListeners",
-        value: function removeAllSocketListeners() {
-          this.connection.removeAllListeners();
-        }
-      }, {
-        key: "onNetworkChanged",
-        value: function onNetworkChanged(networkId) {
-          this.emit('networkChanged', networkId);
-        }
-      }, {
-        key: "onAccountsChanged",
-        value: function onAccountsChanged(accounts) {
-          this.emit('accountsChanged', accounts);
-        }
-      }, {
-        key: "onMessage",
-        value: function onMessage(response) {
-          this.emit(this.getSubscriptionEvent(response.subscription), response);
-        }
-      }, {
-        key: "send",
-        value: function send(method, parameters) {
-          return this.connection.send(method, parameters).then(function (response) {
-            var validationResult = JsonRpcResponseValidator.validate(response);
-            if (validationResult instanceof Error) {
-              throw validationResult;
-            }
-            return response;
-          });
-        }
-      }, {
-        key: "sendBatch",
-        value: function sendBatch(methods, moduleInstance) {
-          var _this2 = this;
-          var methodCalls = [];
-          methods.forEach(function (method) {
-            method.beforeExecution(moduleInstance);
-            methodCalls.push(_this2.connection.send(method.rpcMethod, method.parameters));
-          });
-          return Promise.all(methodCalls);
-        }
-      }]);
-      return EthereumProvider;
-    }(AbstractSocketProvider);
-
-    var MetamaskProvider =
-    function (_AbstractSocketProvid) {
-      _inherits(MetamaskProvider, _AbstractSocketProvid);
-      function MetamaskProvider(inpageProvider) {
-        var _this;
-        _classCallCheck(this, MetamaskProvider);
-        _this = _possibleConstructorReturn(this, _getPrototypeOf(MetamaskProvider).call(this, inpageProvider, null));
-        _this.host = 'metamask';
-        return _this;
-      }
-      _createClass(MetamaskProvider, [{
-        key: "registerEventListeners",
-        value: function registerEventListeners() {
-          this.connection.on('accountsChanged', this.onAccountsChanged.bind(this));
-          this.connection.on('networkChanged', this.onReady.bind(this));
-          this.connection.on('networkChanged', this.onNetworkChanged.bind(this));
-          this.connection.on('data', this.onMessage.bind(this));
-          this.connection.on('error', this.onError.bind(this));
-        }
-      }, {
-        key: "onMessage",
-        value: function onMessage(metamaskParam, payload) {
-          _get(_getPrototypeOf(MetamaskProvider.prototype), "onMessage", this).call(this, payload);
-        }
-      }, {
-        key: "removeAllListeners",
-        value: function removeAllListeners(event) {
-          switch (event) {
-            case this.SOCKET_NETWORK_CHANGED:
-              this.connection.removeListener('networkChanged', this.onNetworkChanged);
-              break;
-            case this.SOCKET_ACCOUNTS_CHANGED:
-              this.connection.removeListener('accountsChanged', this.onAccountsChanged);
-              break;
-            case this.SOCKET_MESSAGE:
-              this.connection.removeListener('data', this.onMessage);
-              break;
-            case this.SOCKET_ERROR:
-              this.connection.removeListener('error', this.onError);
-              break;
-          }
-          _get(_getPrototypeOf(MetamaskProvider.prototype), "removeAllListeners", this).call(this, event);
-        }
-      }, {
-        key: "removeAllSocketListeners",
-        value: function removeAllSocketListeners() {
-          this.connection.removeListener(this.SOCKET_NETWORK_CHANGED, this.onNetworkChanged);
-          this.connection.removeListener(this.SOCKET_ACCOUNTS_CHANGED, this.onAccountsChanged);
-          _get(_getPrototypeOf(MetamaskProvider.prototype), "removeAllSocketListeners", this).call(this);
-        }
-      }, {
-        key: "onNetworkChanged",
-        value: function onNetworkChanged(networkId) {
-          this.emit('networkChanged', networkId);
-        }
-      }, {
-        key: "onAccountsChanged",
-        value: function onAccountsChanged(accounts) {
-          this.emit('accountsChanged', accounts);
-        }
-      }, {
-        key: "disconnect",
-        value: function disconnect() {
-          return true;
-        }
-      }, {
-        key: "send",
-        value: function send(method, parameters) {
-          return this.sendPayload(JsonRpcMapper.toPayload(method, parameters)).then(function (response) {
-            var validationResult = JsonRpcResponseValidator.validate(response);
-            if (validationResult instanceof Error) {
-              throw validationResult;
-            }
-            return response.result;
-          });
-        }
-      }, {
-        key: "sendBatch",
-        value: function sendBatch(methods, moduleInstance) {
-          var payload = [];
-          methods.forEach(function (method) {
-            method.beforeExecution(moduleInstance);
-            payload.push(JsonRpcMapper.toPayload(method.rpcMethod, method.parameters));
-          });
-          return this.sendPayload(payload);
-        }
-      }, {
-        key: "sendPayload",
-        value: function sendPayload(payload) {
-          var _this2 = this;
-          return new Promise(function (resolve, reject) {
-            _this2.connection.send(payload, function (error, response) {
-              _this2.removeAllListeners(payload.id);
-              if (!error) {
-                return resolve(response);
-              }
-              reject(error);
-            });
-          });
-        }
-      }, {
-        key: "connected",
-        get: function get() {
-          return this.connection.isConnected();
-        }
-      }]);
-      return MetamaskProvider;
-    }(AbstractSocketProvider);
-
-    var MistEthereumProvider =
-    function (_AbstractSocketProvid) {
-      _inherits(MistEthereumProvider, _AbstractSocketProvid);
-      function MistEthereumProvider(connection) {
-        var _this;
-        _classCallCheck(this, MistEthereumProvider);
-        _this = _possibleConstructorReturn(this, _getPrototypeOf(MistEthereumProvider).call(this, connection, null));
-        _this.host = 'mist';
-        return _this;
-      }
-      _createClass(MistEthereumProvider, [{
-        key: "registerEventListeners",
-        value: function registerEventListeners() {
-          this.connection.on('data', this.onMessage.bind(this));
-          this.connection.on('error', this.onError.bind(this));
-          this.connection.on('connect', this.onConnect.bind(this));
-          this.connection.on('connect', this.onReady.bind(this));
-          this.connection.on('end', this.onClose.bind(this));
-        }
-      }, {
-        key: "removeAllListeners",
-        value: function removeAllListeners(event) {
-          switch (event) {
-            case this.SOCKET_MESSAGE:
-              this.connection.removeListener('data', this.onMessage);
-              break;
-            case this.SOCKET_ERROR:
-              this.connection.removeListener('error', this.onError);
-              break;
-            case this.SOCKET_CONNECT:
-              this.connection.removeListener('connect', this.onConnect);
-              break;
-            case this.SOCKET_READY:
-              this.connection.removeListener('connect', this.onConnect);
-              break;
-            case this.SOCKET_CLOSE:
-              this.connection.removeListener('end', this.onClose);
-              break;
-          }
-          _get(_getPrototypeOf(MistEthereumProvider.prototype), "removeAllListeners", this).call(this, event);
-        }
-      }, {
-        key: "disconnect",
-        value: function disconnect() {
-          return true;
-        }
-      }, {
-        key: "send",
-        value: function send(method, parameters) {
-          return this.sendPayload(JsonRpcMapper.toPayload(method, parameters)).then(function (response) {
-            var validationResult = JsonRpcResponseValidator.validate(response);
-            if (validationResult instanceof Error) {
-              throw validationResult;
-            }
-            return response.result;
-          });
-        }
-      }, {
-        key: "sendBatch",
-        value: function sendBatch(methods, moduleInstance) {
-          var payload = [];
-          methods.forEach(function (method) {
-            method.beforeExecution(moduleInstance);
-            payload.push(JsonRpcMapper.toPayload(method.rpcMethod, method.parameters));
-          });
-          return this.sendPayload(payload);
-        }
-      }, {
-        key: "sendPayload",
-        value: function sendPayload(payload) {
-          var _this2 = this;
-          return new Promise(function (resolve, reject) {
-            _this2.connection.send(payload, function (error, response) {
-              _this2.removeAllListeners(payload.id);
-              if (!error) {
-                return resolve(response);
-              }
-              reject(error);
-            });
-          });
-        }
-      }, {
-        key: "connected",
-        get: function get() {
-          return this.connection.isConnected();
-        }
-      }]);
-      return MistEthereumProvider;
-    }(AbstractSocketProvider);
-
-    var ProvidersModuleFactory =
-    function () {
-      function ProvidersModuleFactory() {
-        _classCallCheck(this, ProvidersModuleFactory);
-      }
-      _createClass(ProvidersModuleFactory, [{
-        key: "createBatchRequest",
-        value: function createBatchRequest(moduleInstance) {
-          return new BatchRequest(moduleInstance);
-        }
-      }, {
-        key: "createProviderResolver",
-        value: function createProviderResolver() {
-          return new ProviderResolver(this);
-        }
-      }, {
-        key: "createProviderDetector",
-        value: function createProviderDetector() {
-          return new ProviderDetector();
-        }
-      }, {
-        key: "createHttpProvider",
-        value: function createHttpProvider(url) {
-          var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-          return new HttpProvider(url, options, this);
-        }
-      }, {
-        key: "createXMLHttpRequest",
-        value: function createXMLHttpRequest(host) {
-          var timeout = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
-          var headers = arguments.length > 2 ? arguments[2] : undefined;
-          var agent = arguments.length > 3 ? arguments[3] : undefined;
-          var request = new xhr2Cookies.XMLHttpRequest();
-          request.nodejsSet(agent);
-          request.open('POST', host, true);
-          request.setRequestHeader('Content-Type', 'application/json');
-          request.timeout = timeout;
-          request.withCredentials = true;
-          if (headers) {
-            headers.forEach(function (header) {
-              request.setRequestHeader(header.name, header.value);
-            });
-          }
-          return request;
-        }
-      }, {
-        key: "createWebsocketProvider",
-        value: function createWebsocketProvider(url) {
-          var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-          var connection = '';
-          if (typeof process !== 'undefined' && process.versions != null && process.versions.node != null) {
-            var authToken;
-            var headers = options.headers || {};
-            var urlObject = new URL(url);
-            if (urlObject.username && urlObject.password) {
-              authToken = Buffer.from("".concat(urlObject.username, ":").concat(urlObject.password), 'base64');
-              headers.authorization = "Basic ".concat(authToken);
-            }
-            if (urlObject.auth) {
-              headers.authorization = Buffer.from(urlObject.auth, 'base64');
-            }
-            connection = new websocket.w3cwebsocket(url, options.protocol, null, headers, null, options.clientConfig);
-          } else {
-            connection = new window.WebSocket(url, options.protocol);
-          }
-          return new WebsocketProvider(connection, options.timeout);
-        }
-      }, {
-        key: "createIpcProvider",
-        value: function createIpcProvider(path, net) {
-          return new IpcProvider(net.connect({
-            path: path
-          }), path);
-        }
-      }, {
-        key: "createEthereumProvider",
-        value: function createEthereumProvider(connection) {
-          return new EthereumProvider(connection);
-        }
-      }, {
-        key: "createMetamaskProvider",
-        value: function createMetamaskProvider(inpageProvider) {
-          return new MetamaskProvider(inpageProvider);
-        }
-      }, {
-        key: "createMistEthereumProvider",
-        value: function createMistEthereumProvider(mistEthereumProvider) {
-          return new MistEthereumProvider(mistEthereumProvider);
-        }
-      }]);
-      return ProvidersModuleFactory;
-    }();
-
-    var HttpProvider$1 = function HttpProvider(url, options) {
-      return new ProvidersModuleFactory().createHttpProvider(url, options);
-    };
-    var WebsocketProvider$1 = function WebsocketProvider(url, options) {
-      return new ProvidersModuleFactory().createWebsocketProvider(url, options);
-    };
-    var IpcProvider$1 = function IpcProvider(path, net) {
-      return new ProvidersModuleFactory().createIpcProvider(path, net);
-    };
-    var BatchRequest$1 = function BatchRequest(moduleInstance) {
-      return new ProvidersModuleFactory().createBatchRequest(moduleInstance);
-    };
-    var ProviderResolver$1 = function ProviderResolver() {
-      return new ProvidersModuleFactory().createProviderResolver();
-    };
-    var ProviderDetector$1 = function ProviderDetector() {
-      return new ProvidersModuleFactory().createProviderDetector();
-    };
-
-    exports.HttpProvider = HttpProvider$1;
-    exports.WebsocketProvider = WebsocketProvider$1;
-    exports.IpcProvider = IpcProvider$1;
-    exports.BatchRequest = BatchRequest$1;
-    exports.ProviderResolver = ProviderResolver$1;
-    exports.ProviderDetector = ProviderDetector$1;
-    exports.ProvidersModuleFactory = ProvidersModuleFactory;
-    exports.EthereumProvider = EthereumProvider;
-
-    Object.defineProperty(exports, '__esModule', { value: true });
-
-})));
-
-}).call(this,require('_process'),require("buffer").Buffer)
-},{"@babel/runtime/helpers/asyncToGenerator":204,"@babel/runtime/helpers/classCallCheck":205,"@babel/runtime/helpers/createClass":206,"@babel/runtime/helpers/get":208,"@babel/runtime/helpers/getPrototypeOf":209,"@babel/runtime/helpers/inherits":210,"@babel/runtime/helpers/possibleConstructorReturn":213,"@babel/runtime/helpers/typeof":218,"@babel/runtime/regenerator":219,"_process":124,"buffer":51,"eventemitter3":318,"http":161,"https":103,"lodash/isArray":486,"lodash/isFunction":490,"lodash/isObject":495,"oboe":516,"url-parse":555,"websocket":577,"xhr2-cookies":581}],576:[function(require,module,exports){
-(function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('lodash/isBoolean'), require('lodash/isString'), require('lodash/isNumber'), require('lodash/isNull'), require('number-to-bn'), require('utf8'), require('eth-lib/lib/hash'), require('ethjs-unit'), require('@babel/runtime/helpers/typeof'), require('lodash/isArray'), require('lodash/isObject'), require('lodash/map'), require('bn.js'), require('randomhex')) :
-    typeof define === 'function' && define.amd ? define(['exports', 'lodash/isBoolean', 'lodash/isString', 'lodash/isNumber', 'lodash/isNull', 'number-to-bn', 'utf8', 'eth-lib/lib/hash', 'ethjs-unit', '@babel/runtime/helpers/typeof', 'lodash/isArray', 'lodash/isObject', 'lodash/map', 'bn.js', 'randomhex'], factory) :
-    (factory((global.Web3Utils = {}),global.isBoolean,global.isString,global.isNumber,global.isNull,global.numberToBN,global.utf8,global.Hash,global.ethjsUnit,global._typeof,global.isArray,global.isObject,global.map,global.BN,global.randomhex));
-}(this, (function (exports,isBoolean,isString,isNumber,isNull,numberToBN,utf8,Hash,ethjsUnit,_typeof,isArray,isObject,map,BN,randomhex) { 'use strict';
-
-    isBoolean = isBoolean && isBoolean.hasOwnProperty('default') ? isBoolean['default'] : isBoolean;
-    isString = isString && isString.hasOwnProperty('default') ? isString['default'] : isString;
-    isNumber = isNumber && isNumber.hasOwnProperty('default') ? isNumber['default'] : isNumber;
-    isNull = isNull && isNull.hasOwnProperty('default') ? isNull['default'] : isNull;
-    numberToBN = numberToBN && numberToBN.hasOwnProperty('default') ? numberToBN['default'] : numberToBN;
-    utf8 = utf8 && utf8.hasOwnProperty('default') ? utf8['default'] : utf8;
-    Hash = Hash && Hash.hasOwnProperty('default') ? Hash['default'] : Hash;
-    _typeof = _typeof && _typeof.hasOwnProperty('default') ? _typeof['default'] : _typeof;
-    isArray = isArray && isArray.hasOwnProperty('default') ? isArray['default'] : isArray;
-    isObject = isObject && isObject.hasOwnProperty('default') ? isObject['default'] : isObject;
-    map = map && map.hasOwnProperty('default') ? map['default'] : map;
-    BN = BN && BN.hasOwnProperty('default') ? BN['default'] : BN;
-    randomhex = randomhex && randomhex.hasOwnProperty('default') ? randomhex['default'] : randomhex;
-
-    var isBN = function isBN(object) {
-      return object instanceof BN || object && object.constructor && object.constructor.name === 'BN';
-    };
-    var isBigNumber = function isBigNumber(object) {
-      return object && object.constructor && object.constructor.name === 'BigNumber';
-    };
-    var toBN = function toBN(number) {
-      try {
-        return numberToBN(number);
-      } catch (error) {
-        throw new Error("".concat(error, " Given value: \"").concat(number, "\""));
-      }
-    };
-    var toTwosComplement = function toTwosComplement(number) {
-      return "0x".concat(toBN(number).toTwos(256).toString(16, 64));
-    };
-    var isAddress = function isAddress(address) {
-      if (!/^(0x)?[0-9a-f]{40}$/i.test(address)) {
-        return false;
-      } else if (/^(0x|0X)?[0-9a-f]{40}$/.test(address) || /^(0x|0X)?[0-9A-F]{40}$/.test(address)) {
-        return true;
-      } else {
-        return checkAddressChecksum(address);
-      }
-    };
-    var checkAddressChecksum = function checkAddressChecksum(address) {
-      address = address.replace(/^0x/i, '');
-      var addressHash = sha3(address.toLowerCase()).replace(/^0x/i, '');
-      for (var i = 0; i < 40; i++) {
-        if (parseInt(addressHash[i], 16) > 7 && address[i].toUpperCase() !== address[i] || parseInt(addressHash[i], 16) <= 7 && address[i].toLowerCase() !== address[i]) {
-          return false;
-        }
-      }
-      return true;
-    };
-    var leftPad = function leftPad(string, chars, sign) {
-      var hasPrefix = /^0x/i.test(string) || typeof string === 'number';
-      string = string.toString(16).replace(/^0x/i, '');
-      var padding = chars - string.length + 1 >= 0 ? chars - string.length + 1 : 0;
-      return (hasPrefix ? '0x' : '') + new Array(padding).join(sign || '0') + string;
-    };
-    var rightPad = function rightPad(string, chars, sign) {
-      var hasPrefix = /^0x/i.test(string) || typeof string === 'number';
-      string = string.toString(16).replace(/^0x/i, '');
-      var padding = chars - string.length + 1 >= 0 ? chars - string.length + 1 : 0;
-      return (hasPrefix ? '0x' : '') + string + new Array(padding).join(sign || '0');
-    };
-    var utf8ToHex = function utf8ToHex(str) {
-      str = utf8.encode(str);
-      var hex = '';
-      str = str.replace(/^(?:\u0000)*/, '');
-      str = str.split('').reverse().join('');
-      str = str.replace(/^(?:\u0000)*/, '');
-      str = str.split('').reverse().join('');
-      for (var i = 0; i < str.length; i++) {
-        var code = str.charCodeAt(i);
-        var n = code.toString(16);
-        hex += n.length < 2 ? "0".concat(n) : n;
-      }
-      return "0x".concat(hex);
-    };
-    var hexToUtf8 = function hexToUtf8(hex) {
-      if (!isHexStrict(hex)) throw new Error("The parameter \"".concat(hex, "\" must be a valid HEX string."));
-      var str = '';
-      var code = 0;
-      hex = hex.replace(/^0x/i, '');
-      hex = hex.replace(/^(?:00)*/, '');
-      hex = hex.split('').reverse().join('');
-      hex = hex.replace(/^(?:00)*/, '');
-      hex = hex.split('').reverse().join('');
-      var l = hex.length;
-      for (var i = 0; i < l; i += 2) {
-        code = parseInt(hex.substr(i, 2), 16);
-        str += String.fromCharCode(code);
-      }
-      return utf8.decode(str);
-    };
-    var hexToNumber = function hexToNumber(value) {
-      if (!value) {
-        return value;
-      }
-      return toBN(value).toNumber();
-    };
-    var hexToNumberString = function hexToNumberString(value) {
-      if (!value) return value;
-      return toBN(value).toString(10);
-    };
-    var numberToHex = function numberToHex(value) {
-      if (isNull(value) || typeof value === 'undefined') {
-        return value;
-      }
-      if (!isFinite(value) && !isHexStrict(value)) {
-        throw new Error("Given input \"".concat(value, "\" is not a number."));
-      }
-      var number = toBN(value);
-      var result = number.toString(16);
-      return number.lt(new BN(0)) ? "-0x".concat(result.substr(1)) : "0x".concat(result);
-    };
-    var bytesToHex = function bytesToHex(bytes) {
-      var hex = [];
-      for (var i = 0; i < bytes.length; i++) {
-        hex.push((bytes[i] >>> 4).toString(16));
-        hex.push((bytes[i] & 0xf).toString(16));
-      }
-      return "0x".concat(hex.join('').replace(/^0+/, ''));
-    };
-    var hexToBytes = function hexToBytes(hex) {
-      hex = hex.toString(16);
-      if (!isHexStrict(hex)) {
-        throw new Error("Given value \"".concat(hex, "\" is not a valid hex string."));
-      }
-      hex = hex.replace(/^0x/i, '');
-      hex = hex.length % 2 ? '0' + hex : hex;
-      var bytes = [];
-      for (var c = 0; c < hex.length; c += 2) {
-        bytes.push(parseInt(hex.substr(c, 2), 16));
-      }
-      return bytes;
-    };
-    var toHex = function toHex(value, returnType) {
-      if (isAddress(value)) {
-        return returnType ? 'address' : "0x".concat(value.toLowerCase().replace(/^0x/i, ''));
-      }
-      if (isBoolean(value)) {
-        return returnType ? 'bool' : value ? '0x01' : '0x00';
-      }
-      if (isObject(value) && !isBigNumber(value) && !isBN(value)) {
-        return returnType ? 'string' : utf8ToHex(JSON.stringify(value));
-      }
-      if (isString(value)) {
-        if (value.indexOf('-0x') === 0 || value.indexOf('-0X') === 0) {
-          return returnType ? 'int256' : numberToHex(value);
-        } else if (value.indexOf('0x') === 0 || value.indexOf('0X') === 0) {
-          return returnType ? 'bytes' : value;
-        } else if (!isFinite(value)) {
-          return returnType ? 'string' : utf8ToHex(value);
-        }
-      }
-      return returnType ? value < 0 ? 'int256' : 'uint256' : numberToHex(value);
-    };
-    var isHexStrict = function isHexStrict(hex) {
-      return (isString(hex) || isNumber(hex)) && /^(-)?0x[0-9a-f]*$/i.test(hex);
-    };
-    var isHex = function isHex(hex) {
-      return (isString(hex) || isNumber(hex)) && /^(-0x|0x)?[0-9a-f]*$/i.test(hex);
-    };
-    var isBloom = function isBloom(bloom) {
-      if (!/^(0x)?[0-9a-f]{512}$/i.test(bloom)) {
-        return false;
-      } else if (/^(0x)?[0-9a-f]{512}$/.test(bloom) || /^(0x)?[0-9A-F]{512}$/.test(bloom)) {
-        return true;
-      }
-      return false;
-    };
-    var isTopic = function isTopic(topic) {
-      if (!/^(0x)?[0-9a-f]{64}$/i.test(topic)) {
-        return false;
-      } else if (/^(0x)?[0-9a-f]{64}$/.test(topic) || /^(0x)?[0-9A-F]{64}$/.test(topic)) {
-        return true;
-      }
-      return false;
-    };
-    var SHA3_NULL_S = '0xc5d2460186f7233c927e7db2dcc703c0e500b653ca82273b7bfad8045d85a470';
-    var sha3 = function sha3(value) {
-      if (isHexStrict(value) && /^0x/i.test(value.toString())) {
-        value = hexToBytes(value);
-      }
-      var returnValue = Hash.keccak256(value);
-      if (returnValue === SHA3_NULL_S) {
-        return null;
-      } else {
-        return returnValue;
-      }
-    };
-    sha3._Hash = Hash;
-    var getSignatureParameters = function getSignatureParameters(signature) {
-      if (!isHexStrict(signature)) {
-        throw new Error("Given value \"".concat(signature, "\" is not a valid hex string."));
-      }
-      var r = signature.slice(0, 66);
-      var s = "0x".concat(signature.slice(66, 130));
-      var v = "0x".concat(signature.slice(130, 132));
-      v = hexToNumber(v);
-      if (![27, 28].includes(v)) v += 27;
-      return {
-        r: r,
-        s: s,
-        v: v
-      };
-    };
-
-    var _elementaryName = function _elementaryName(name) {
-      if (name.startsWith('int[')) {
-        return "int256".concat(name.slice(3));
-      }
-      if (name === 'int') {
-        return 'int256';
-      }
-      if (name.startsWith('uint[')) {
-        return "uint256".concat(name.slice(4));
-      }
-      if (name === 'uint') {
-        return 'uint256';
-      }
-      if (name.startsWith('fixed[')) {
-        return "fixed128x128".concat(name.slice(5));
-      }
-      if (name === 'fixed') {
-        return 'fixed128x128';
-      }
-      if (name.startsWith('ufixed[')) {
-        return "ufixed128x128".concat(name.slice(6));
-      }
-      if (name === 'ufixed') {
-        return 'ufixed128x128';
-      }
-      return name;
-    };
-    var _parseTypeN = function _parseTypeN(type) {
-      var typesize = /^\D+(\d+).*$/.exec(type);
-      return typesize ? parseInt(typesize[1], 10) : null;
-    };
-    var _parseTypeNArray = function _parseTypeNArray(type) {
-      var arraySize = /^\D+\d*\[(\d+)\]$/.exec(type);
-      return arraySize ? parseInt(arraySize[1], 10) : null;
-    };
-    var _parseNumber = function _parseNumber(arg) {
-      var type = _typeof(arg);
-      if (type === 'string') {
-        if (isHexStrict(arg)) {
-          return new BN(arg.replace(/0x/i, ''), 16);
-        } else {
-          return new BN(arg, 10);
-        }
-      } else if (type === 'number') {
-        return new BN(arg);
-      } else if (isBigNumber(arg)) {
-        return new BN(arg.toString(10));
-      } else if (isBN(arg)) {
-        return arg;
-      } else {
-        throw new Error("".concat(arg, " is not a number"));
-      }
-    };
-    var _solidityPack = function _solidityPack(type, value, arraySize) {
-      var size, num;
-      type = _elementaryName(type);
-      if (type === 'bytes') {
-        if (value.replace(/^0x/i, '').length % 2 !== 0) {
-          throw new Error("Invalid bytes characters ".concat(value.length));
-        }
-        return value;
-      } else if (type === 'string') {
-        return utf8ToHex(value);
-      } else if (type === 'bool') {
-        return value ? '01' : '00';
-      } else if (type.startsWith('address')) {
-        if (arraySize) {
-          size = 64;
-        } else {
-          size = 40;
-        }
-        if (!isAddress(value)) {
-          throw new Error("".concat(value, " is not a valid address, or the checksum is invalid."));
-        }
-        return leftPad(value.toLowerCase(), size);
-      }
-      size = _parseTypeN(type);
-      if (type.startsWith('bytes')) {
-        if (!size) {
-          throw new Error('bytes[] not yet supported in solidity');
-        }
-        if (arraySize) {
-          size = 32;
-        }
-        if (size < 1 || size > 32 || size < value.replace(/^0x/i, '').length / 2) {
-          throw new Error("Invalid bytes".concat(size, " for ").concat(value));
-        }
-        return rightPad(value, size * 2);
-      } else if (type.startsWith('uint')) {
-        if (size % 8 || size < 8 || size > 256) {
-          throw new Error("Invalid uint".concat(size, " size"));
-        }
-        num = _parseNumber(value);
-        if (num.bitLength() > size) {
-          throw new Error("Supplied uint exceeds width: ".concat(size, " vs ").concat(num.bitLength()));
-        }
-        if (num.lt(new BN(0))) {
-          throw new Error("Supplied uint ".concat(num.toString(), " is negative"));
-        }
-        return size ? leftPad(num.toString('hex'), size / 8 * 2) : num;
-      } else if (type.startsWith('int')) {
-        if (size % 8 || size < 8 || size > 256) {
-          throw new Error("Invalid int".concat(size, " size"));
-        }
-        num = _parseNumber(value);
-        if (num.bitLength() > size) {
-          throw new Error("Supplied int exceeds width: ".concat(size, " vs ").concat(num.bitLength()));
-        }
-        if (num.lt(new BN(0))) {
-          return num.toTwos(size).toString('hex');
-        } else {
-          return size ? leftPad(num.toString('hex'), size / 8 * 2) : num;
-        }
-      } else {
-        throw new Error("Unsupported or invalid type: ".concat(type));
-      }
-    };
-    var _processSoliditySha3Args = function _processSoliditySha3Args(arg) {
-      if (isArray(arg)) {
-        throw new Error('Autodetection of array types is not supported.');
-      }
-      var type;
-      var value = '';
-      var hexArg, arraySize;
-      if (isObject(arg) && (arg.hasOwnProperty('v') || arg.hasOwnProperty('t') || arg.hasOwnProperty('value') || arg.hasOwnProperty('type'))) {
-        type = arg.hasOwnProperty('t') ? arg.t : arg.type;
-        value = arg.hasOwnProperty('v') ? arg.v : arg.value;
-      } else {
-        type = toHex(arg, true);
-        value = toHex(arg);
-        if (!type.startsWith('int') && !type.startsWith('uint')) {
-          type = 'bytes';
-        }
-      }
-      if ((type.startsWith('int') || type.startsWith('uint')) && typeof value === 'string' && !/^(-)?0x/i.test(value)) {
-        value = new BN(value);
-      }
-      if (isArray(value)) {
-        arraySize = _parseTypeNArray(type);
-        if (arraySize && value.length !== arraySize) {
-          throw new Error("".concat(type, " is not matching the given array ").concat(JSON.stringify(value)));
-        } else {
-          arraySize = value.length;
-        }
-      }
-      if (isArray(value)) {
-        hexArg = value.map(function (val) {
-          return _solidityPack(type, val, arraySize).toString('hex').replace('0x', '');
         });
-        return hexArg.join('');
-      } else {
-        hexArg = _solidityPack(type, value, arraySize);
-        return hexArg.toString('hex').replace('0x', '');
-      }
-    };
-    var soliditySha3 = function soliditySha3() {
-      var args = Array.prototype.slice.call(arguments);
-      var hexArgs = map(args, _processSoliditySha3Args);
-      return sha3("0x".concat(hexArgs.join('')));
+};
+
+module.exports = getNetworkType;
+
+},{"underscore":358}],394:[function(require,module,exports){
+/*
+ This file is part of web3.js.
+
+ web3.js is free software: you can redistribute it and/or modify
+ it under the terms of the GNU Lesser General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ web3.js is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public License
+ along with web3.js.  If not, see <http://www.gnu.org/licenses/>.
+ */
+/**
+ * @file index.js
+ * @author Fabian Vogelsteller <fabian@ethereum.org>
+ * @date 2017
+ */
+
+"use strict";
+
+var _ = require('underscore');
+var core = require('web3-core');
+var helpers = require('web3-core-helpers');
+var Subscriptions = require('web3-core-subscriptions').subscriptions;
+var Method = require('web3-core-method');
+var utils = require('web3-utils');
+var Net = require('web3-net');
+
+var ENS = require('web3-eth-ens');
+var Personal = require('web3-eth-personal');
+var BaseContract = require('web3-eth-contract');
+var Iban = require('web3-eth-iban');
+var Accounts = require('web3-eth-accounts');
+var abi = require('web3-eth-abi');
+
+var getNetworkType = require('./getNetworkType.js');
+var formatter = helpers.formatters;
+
+
+var blockCall = function (args) {
+    return (_.isString(args[0]) && args[0].indexOf('0x') === 0) ? "eth_getBlockByHash" : "eth_getBlockByNumber";
+};
+
+var transactionFromBlockCall = function (args) {
+    return (_.isString(args[0]) && args[0].indexOf('0x') === 0) ? 'eth_getTransactionByBlockHashAndIndex' : 'eth_getTransactionByBlockNumberAndIndex';
+};
+
+var uncleCall = function (args) {
+    return (_.isString(args[0]) && args[0].indexOf('0x') === 0) ? 'eth_getUncleByBlockHashAndIndex' : 'eth_getUncleByBlockNumberAndIndex';
+};
+
+var getBlockTransactionCountCall = function (args) {
+    return (_.isString(args[0]) && args[0].indexOf('0x') === 0) ? 'eth_getBlockTransactionCountByHash' : 'eth_getBlockTransactionCountByNumber';
+};
+
+var uncleCountCall = function (args) {
+    return (_.isString(args[0]) && args[0].indexOf('0x') === 0) ? 'eth_getUncleCountByBlockHash' : 'eth_getUncleCountByBlockNumber';
+};
+
+
+var Eth = function Eth() {
+    var _this = this;
+
+    // sets _requestmanager
+    core.packageInit(this, arguments);
+
+    // overwrite setProvider
+    var setProvider = this.setProvider;
+    this.setProvider = function () {
+        setProvider.apply(_this, arguments);
+        _this.net.setProvider.apply(_this, arguments);
+        _this.personal.setProvider.apply(_this, arguments);
+        _this.accounts.setProvider.apply(_this, arguments);
+        _this.Contract.setProvider(_this.currentProvider, _this.accounts);
     };
 
-    var jsonInterfaceMethodToString = function jsonInterfaceMethodToString(json) {
-      if (isObject(json) && json.name && json.name.indexOf('(') !== -1) {
-        return json.name;
-      }
-      return "".concat(json.name, "(").concat(_flattenTypes(false, json.inputs).join(','), ")");
+
+    var defaultAccount = null;
+    var defaultBlock = 'latest';
+
+    Object.defineProperty(this, 'defaultAccount', {
+        get: function () {
+            return defaultAccount;
+        },
+        set: function (val) {
+            if(val) {
+                defaultAccount = utils.toChecksumAddress(formatter.inputAddressFormatter(val));
+            }
+
+            // also set on the Contract object
+            _this.Contract.defaultAccount = defaultAccount;
+            _this.personal.defaultAccount = defaultAccount;
+
+            // update defaultBlock
+            methods.forEach(function(method) {
+                method.defaultAccount = defaultAccount;
+            });
+
+            return val;
+        },
+        enumerable: true
+    });
+    Object.defineProperty(this, 'defaultBlock', {
+        get: function () {
+            return defaultBlock;
+        },
+        set: function (val) {
+            defaultBlock = val;
+            // also set on the Contract object
+            _this.Contract.defaultBlock = defaultBlock;
+            _this.personal.defaultBlock = defaultBlock;
+
+            // update defaultBlock
+            methods.forEach(function(method) {
+                method.defaultBlock = defaultBlock;
+            });
+
+            return val;
+        },
+        enumerable: true
+    });
+
+
+    this.clearSubscriptions = _this._requestManager.clearSubscriptions;
+
+    // add net
+    this.net = new Net(this.currentProvider);
+    // add chain detection
+    this.net.getNetworkType = getNetworkType.bind(this);
+
+    // add accounts
+    this.accounts = new Accounts(this.currentProvider);
+
+    // add personal
+    this.personal = new Personal(this.currentProvider);
+    this.personal.defaultAccount = this.defaultAccount;
+
+    // create a proxy Contract type for this instance, as a Contract's provider
+    // is stored as a class member rather than an instance variable. If we do
+    // not create this proxy type, changing the provider in one instance of
+    // web3-eth would subsequently change the provider for _all_ contract
+    // instances!
+    var self = this;
+    var Contract = function Contract() {
+        BaseContract.apply(this, arguments);
+
+        // when Eth.setProvider is called, call packageInit
+        // on all contract instances instantiated via this Eth
+        // instances. This will update the currentProvider for
+        // the contract instances
+        var _this = this;
+        var setProvider = self.setProvider;
+        self.setProvider = function() {
+          setProvider.apply(self, arguments);
+          core.packageInit(_this, [self.currentProvider]);
+        };
     };
-    var _flattenTypes = function _flattenTypes(includeTuple, puts) {
-      var types = [];
-      puts.forEach(function (param) {
-        if (_typeof(param.components) === 'object') {
-          if (param.type.substring(0, 5) !== 'tuple') {
-            throw new Error('components found but type is not tuple; report on GitHub');
-          }
-          var suffix = '';
-          var arrayBracket = param.type.indexOf('[');
-          if (arrayBracket >= 0) {
-            suffix = param.type.substring(arrayBracket);
-          }
-          var result = _flattenTypes(includeTuple, param.components);
-          if (isArray(result) && includeTuple) {
-            types.push("tuple(".concat(result.join(','), ")").concat(suffix));
-          } else if (!includeTuple) {
-            types.push("(".concat(result.join(','), ")").concat(suffix));
-          } else {
-            types.push("(".concat(result, ")"));
-          }
-        } else {
-          types.push(param.type);
+
+    Contract.setProvider = function() {
+        BaseContract.setProvider.apply(this, arguments);
+    };
+
+    // make our proxy Contract inherit from web3-eth-contract so that it has all
+    // the right functionality and so that instanceof and friends work properly
+    Contract.prototype = Object.create(BaseContract.prototype);
+    Contract.prototype.constructor = Contract;
+
+    // add contract
+    this.Contract = Contract;
+    this.Contract.defaultAccount = this.defaultAccount;
+    this.Contract.defaultBlock = this.defaultBlock;
+    this.Contract.setProvider(this.currentProvider, this.accounts);
+
+    // add IBAN
+    this.Iban = Iban;
+
+    // add ABI
+    this.abi = abi;
+
+    // add ENS
+    this.ens = new ENS(this);
+
+    var methods = [
+        new Method({
+            name: 'getNodeInfo',
+            call: 'web3_clientVersion'
+        }),
+        new Method({
+            name: 'getProtocolVersion',
+            call: 'eth_protocolVersion',
+            params: 0
+        }),
+        new Method({
+            name: 'getCoinbase',
+            call: 'eth_coinbase',
+            params: 0
+        }),
+        new Method({
+            name: 'isMining',
+            call: 'eth_mining',
+            params: 0
+        }),
+        new Method({
+            name: 'getHashrate',
+            call: 'eth_hashrate',
+            params: 0,
+            outputFormatter: utils.hexToNumber
+        }),
+        new Method({
+            name: 'isSyncing',
+            call: 'eth_syncing',
+            params: 0,
+            outputFormatter: formatter.outputSyncingFormatter
+        }),
+        new Method({
+            name: 'getGasPrice',
+            call: 'eth_gasPrice',
+            params: 0,
+            outputFormatter: formatter.outputBigNumberFormatter
+        }),
+        new Method({
+            name: 'getAccounts',
+            call: 'eth_accounts',
+            params: 0,
+            outputFormatter: utils.toChecksumAddress
+        }),
+        new Method({
+            name: 'getBlockNumber',
+            call: 'eth_blockNumber',
+            params: 0,
+            outputFormatter: utils.hexToNumber
+        }),
+        new Method({
+            name: 'getBalance',
+            call: 'eth_getBalance',
+            params: 2,
+            inputFormatter: [formatter.inputAddressFormatter, formatter.inputDefaultBlockNumberFormatter],
+            outputFormatter: formatter.outputBigNumberFormatter
+        }),
+        new Method({
+            name: 'getStorageAt',
+            call: 'eth_getStorageAt',
+            params: 3,
+            inputFormatter: [formatter.inputAddressFormatter, utils.numberToHex, formatter.inputDefaultBlockNumberFormatter]
+        }),
+        new Method({
+            name: 'getCode',
+            call: 'eth_getCode',
+            params: 2,
+            inputFormatter: [formatter.inputAddressFormatter, formatter.inputDefaultBlockNumberFormatter]
+        }),
+        new Method({
+            name: 'getBlock',
+            call: blockCall,
+            params: 2,
+            inputFormatter: [formatter.inputBlockNumberFormatter, function (val) { return !!val; }],
+            outputFormatter: formatter.outputBlockFormatter
+        }),
+        new Method({
+            name: 'getUncle',
+            call: uncleCall,
+            params: 2,
+            inputFormatter: [formatter.inputBlockNumberFormatter, utils.numberToHex],
+            outputFormatter: formatter.outputBlockFormatter,
+
+        }),
+        new Method({
+            name: 'getBlockTransactionCount',
+            call: getBlockTransactionCountCall,
+            params: 1,
+            inputFormatter: [formatter.inputBlockNumberFormatter],
+            outputFormatter: utils.hexToNumber
+        }),
+        new Method({
+            name: 'getBlockUncleCount',
+            call: uncleCountCall,
+            params: 1,
+            inputFormatter: [formatter.inputBlockNumberFormatter],
+            outputFormatter: utils.hexToNumber
+        }),
+        new Method({
+            name: 'getTransaction',
+            call: 'eth_getTransactionByHash',
+            params: 1,
+            inputFormatter: [null],
+            outputFormatter: formatter.outputTransactionFormatter
+        }),
+        new Method({
+            name: 'getTransactionFromBlock',
+            call: transactionFromBlockCall,
+            params: 2,
+            inputFormatter: [formatter.inputBlockNumberFormatter, utils.numberToHex],
+            outputFormatter: formatter.outputTransactionFormatter
+        }),
+        new Method({
+            name: 'getTransactionReceipt',
+            call: 'eth_getTransactionReceipt',
+            params: 1,
+            inputFormatter: [null],
+            outputFormatter: formatter.outputTransactionReceiptFormatter
+        }),
+        new Method({
+            name: 'getTransactionCount',
+            call: 'eth_getTransactionCount',
+            params: 2,
+            inputFormatter: [formatter.inputAddressFormatter, formatter.inputDefaultBlockNumberFormatter],
+            outputFormatter: utils.hexToNumber
+        }),
+        new Method({
+            name: 'sendSignedTransaction',
+            call: 'eth_sendRawTransaction',
+            params: 1,
+            inputFormatter: [null]
+        }),
+        new Method({
+            name: 'signTransaction',
+            call: 'eth_signTransaction',
+            params: 1,
+            inputFormatter: [formatter.inputTransactionFormatter]
+        }),
+        new Method({
+            name: 'sendTransaction',
+            call: 'eth_sendTransaction',
+            params: 1,
+            inputFormatter: [formatter.inputTransactionFormatter]
+        }),
+        new Method({
+            name: 'sign',
+            call: 'eth_sign',
+            params: 2,
+            inputFormatter: [formatter.inputSignFormatter, formatter.inputAddressFormatter],
+            transformPayload: function (payload) {
+                payload.params.reverse();
+                return payload;
+            }
+        }),
+        new Method({
+            name: 'call',
+            call: 'eth_call',
+            params: 2,
+            inputFormatter: [formatter.inputCallFormatter, formatter.inputDefaultBlockNumberFormatter]
+        }),
+        new Method({
+            name: 'estimateGas',
+            call: 'eth_estimateGas',
+            params: 1,
+            inputFormatter: [formatter.inputCallFormatter],
+            outputFormatter: utils.hexToNumber
+        }),
+        new Method({
+            name: 'submitWork',
+            call: 'eth_submitWork',
+            params: 3
+        }),
+        new Method({
+            name: 'getWork',
+            call: 'eth_getWork',
+            params: 0
+        }),
+        new Method({
+            name: 'getPastLogs',
+            call: 'eth_getLogs',
+            params: 1,
+            inputFormatter: [formatter.inputLogFormatter],
+            outputFormatter: formatter.outputLogFormatter
+        }),
+
+        // subscriptions
+        new Subscriptions({
+            name: 'subscribe',
+            type: 'eth',
+            subscriptions: {
+                'newBlockHeaders': {
+                    // TODO rename on RPC side?
+                    subscriptionName: 'newHeads', // replace subscription with this name
+                    params: 0,
+                    outputFormatter: formatter.outputBlockFormatter
+                },
+                'pendingTransactions': {
+                    subscriptionName: 'newPendingTransactions', // replace subscription with this name
+                    params: 0
+                },
+                'logs': {
+                    params: 1,
+                    inputFormatter: [formatter.inputLogFormatter],
+                    outputFormatter: formatter.outputLogFormatter,
+                    // DUBLICATE, also in web3-eth-contract
+                    subscriptionHandler: function (output) {
+                        if(output.removed) {
+                            this.emit('changed', output);
+                        } else {
+                            this.emit('data', output);
+                        }
+
+                        if (_.isFunction(this.callback)) {
+                            this.callback(null, output, this);
+                        }
+                    }
+                },
+                'syncing': {
+                    params: 0,
+                    outputFormatter: formatter.outputSyncingFormatter,
+                    subscriptionHandler: function (output) {
+                        var _this = this;
+
+                        // fire TRUE at start
+                        if(this._isSyncing !== true) {
+                            this._isSyncing = true;
+                            this.emit('changed', _this._isSyncing);
+
+                            if (_.isFunction(this.callback)) {
+                                this.callback(null, _this._isSyncing, this);
+                            }
+
+                            setTimeout(function () {
+                                _this.emit('data', output);
+
+                                if (_.isFunction(_this.callback)) {
+                                    _this.callback(null, output, _this);
+                                }
+                            }, 0);
+
+                            // fire sync status
+                        } else {
+                            this.emit('data', output);
+                            if (_.isFunction(_this.callback)) {
+                                this.callback(null, output, this);
+                            }
+
+                            // wait for some time before fireing the FALSE
+                            clearTimeout(this._isSyncingTimeout);
+                            this._isSyncingTimeout = setTimeout(function () {
+                                if(output.currentBlock > output.highestBlock - 200) {
+                                    _this._isSyncing = false;
+                                    _this.emit('changed', _this._isSyncing);
+
+                                    if (_.isFunction(_this.callback)) {
+                                        _this.callback(null, _this._isSyncing, _this);
+                                    }
+                                }
+                            }, 500);
+                        }
+                    }
+                }
+            }
+        })
+    ];
+
+    methods.forEach(function(method) {
+        method.attachToObject(_this);
+        method.setRequestManager(_this._requestManager, _this.accounts); // second param means is eth.accounts (necessary for wallet signing)
+        method.defaultBlock = _this.defaultBlock;
+        method.defaultAccount = _this.defaultAccount;
+    });
+
+};
+
+core.addProviders(Eth);
+
+
+module.exports = Eth;
+
+
+},{"./getNetworkType.js":393,"underscore":358,"web3-core":372,"web3-core-helpers":362,"web3-core-method":363,"web3-core-subscriptions":369,"web3-eth-abi":373,"web3-eth-accounts":382,"web3-eth-contract":383,"web3-eth-ens":387,"web3-eth-iban":391,"web3-eth-personal":392,"web3-net":395,"web3-utils":399}],395:[function(require,module,exports){
+/*
+    This file is part of web3.js.
+
+    web3.js is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    web3.js is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public License
+    along with web3.js.  If not, see <http://www.gnu.org/licenses/>.
+*/
+/**
+ * @file index.js
+ * @author Fabian Vogelsteller <fabian@ethereum.org>
+ * @date 2017
+ */
+
+"use strict";
+
+var core = require('web3-core');
+var Method = require('web3-core-method');
+var utils = require('web3-utils');
+
+
+var Net = function () {
+    var _this = this;
+
+    // sets _requestmanager
+    core.packageInit(this, arguments);
+
+
+    [
+        new Method({
+            name: 'getId',
+            call: 'net_version',
+            params: 0,
+            outputFormatter: utils.hexToNumber
+        }),
+        new Method({
+            name: 'isListening',
+            call: 'net_listening',
+            params: 0
+        }),
+        new Method({
+            name: 'getPeerCount',
+            call: 'net_peerCount',
+            params: 0,
+            outputFormatter: utils.hexToNumber
+        })
+    ].forEach(function(method) {
+        method.attachToObject(_this);
+        method.setRequestManager(_this._requestManager);
+    });
+
+};
+
+core.addProviders(Net);
+
+
+module.exports = Net;
+
+
+
+},{"web3-core":372,"web3-core-method":363,"web3-utils":399}],396:[function(require,module,exports){
+/*
+    This file is part of web3.js.
+
+    web3.js is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    web3.js is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public License
+    along with web3.js.  If not, see <http://www.gnu.org/licenses/>.
+*/
+/** @file httpprovider.js
+ * @authors:
+ *   Marek Kotewicz <marek@parity.io>
+ *   Marian Oancea
+ *   Fabian Vogelsteller <fabian@ethereum.org>
+ * @date 2015
+ */
+
+var errors = require('web3-core-helpers').errors;
+var XHR2 = require('xhr2-cookies').XMLHttpRequest // jshint ignore: line
+var http = require('http');
+var https = require('https');
+
+
+/**
+ * HttpProvider should be used to send rpc calls over http
+ */
+var HttpProvider = function HttpProvider(host, options) {
+    options = options || {};
+    this.host = host || 'http://localhost:8545';
+    if (this.host.substring(0,5) === "https"){
+        this.httpsAgent = new https.Agent({ keepAlive: true });
+    }else{
+        this.httpAgent = new http.Agent({ keepAlive: true });
+    }
+    this.timeout = options.timeout || 0;
+    this.headers = options.headers;
+    this.connected = false;
+};
+
+HttpProvider.prototype._prepareRequest = function(){
+    var request = new XHR2();
+    request.nodejsSet({
+        httpsAgent:this.httpsAgent,
+        httpAgent:this.httpAgent
+    });
+
+    request.open('POST', this.host, true);
+    request.setRequestHeader('Content-Type','application/json');
+    request.timeout = this.timeout && this.timeout !== 1 ? this.timeout : 0;
+    request.withCredentials = true;
+
+    if(this.headers) {
+        this.headers.forEach(function(header) {
+            request.setRequestHeader(header.name, header.value);
+        });
+    }
+
+    return request;
+};
+
+/**
+ * Should be used to make async request
+ *
+ * @method send
+ * @param {Object} payload
+ * @param {Function} callback triggered on end with (err, result)
+ */
+HttpProvider.prototype.send = function (payload, callback) {
+    var _this = this;
+    var request = this._prepareRequest();
+
+    request.onreadystatechange = function() {
+        if (request.readyState === 4 && request.timeout !== 1) {
+            var result = request.responseText;
+            var error = null;
+
+            try {
+                result = JSON.parse(result);
+            } catch(e) {
+                error = errors.InvalidResponse(request.responseText);
+            }
+
+            _this.connected = true;
+            callback(error, result);
         }
-      });
-      return types;
     };
-    var hexToAscii = function hexToAscii(hex) {
-      if (!isHexStrict(hex)) throw new Error('The parameter must be a valid HEX string.');
-      var str = '';
-      var i = 0;
-      var l = hex.length;
-      if (hex.substring(0, 2) === '0x') {
-        i = 2;
-      }
-      for (; i < l; i += 2) {
-        var code = parseInt(hex.substr(i, 2), 16);
-        str += String.fromCharCode(code);
-      }
-      return str;
+
+    request.ontimeout = function() {
+        _this.connected = false;
+        callback(errors.ConnectionTimeout(this.timeout));
     };
-    var asciiToHex = function asciiToHex(str) {
-      var length = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 32;
-      var hex = '';
-      for (var i = 0; i < str.length; i++) {
-        var code = str.charCodeAt(i);
-        var n = code.toString(16);
-        hex += n.length < 2 ? "0".concat(n) : n;
-      }
-      return '0x' + rightPad(hex, length * 2);
-    };
-    var getUnitValue = function getUnitValue(unit) {
-      unit = unit ? unit.toLowerCase() : 'ether';
-      if (!ethjsUnit.unitMap[unit]) {
-        throw new Error("This unit \"".concat(unit, "\" doesn't exist, please use the one of the following units").concat(JSON.stringify(ethjsUnit.unitMap, null, 2)));
-      }
-      return unit;
-    };
-    var fromWei = function fromWei(number, unit) {
-      unit = getUnitValue(unit);
-      if (!isBN(number) && !isString(number)) {
-        throw new Error('Please pass numbers as strings or BigNumber objects to avoid precision errors.');
-      }
-      return isBN(number) ? ethjsUnit.fromWei(number, unit) : ethjsUnit.fromWei(number, unit).toString(10);
-    };
-    var toWei = function toWei(number, unit) {
-      unit = getUnitValue(unit);
-      if (!isBN(number) && !isString(number)) {
-        throw new Error('Please pass numbers as strings or BigNumber objects to avoid precision errors.');
-      }
-      return isBN(number) ? ethjsUnit.toWei(number, unit) : ethjsUnit.toWei(number, unit).toString(10);
-    };
-    var toChecksumAddress = function toChecksumAddress(address) {
-      if (typeof address === 'undefined') return '';
-      if (!/^(0x)?[0-9a-f]{40}$/i.test(address)) throw new Error("Given address \"".concat(address, "\" is not a valid Ethereum address."));
-      address = address.toLowerCase().replace(/^0x/i, '');
-      var addressHash = sha3(address).replace(/^0x/i, '');
-      var checksumAddress = '0x';
-      for (var i = 0; i < address.length; i++) {
-        if (parseInt(addressHash[i], 16) > 7) {
-          checksumAddress += address[i].toUpperCase();
+
+    try {
+        request.send(JSON.stringify(payload));
+    } catch(error) {
+        this.connected = false;
+        callback(errors.InvalidConnection(this.host));
+    }
+};
+
+HttpProvider.prototype.disconnect = function () {
+    //NO OP
+};
+
+
+module.exports = HttpProvider;
+
+},{"http":161,"https":103,"web3-core-helpers":362,"xhr2-cookies":406}],397:[function(require,module,exports){
+/*
+    This file is part of web3.js.
+
+    web3.js is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    web3.js is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public License
+    along with web3.js.  If not, see <http://www.gnu.org/licenses/>.
+*/
+/** @file index.js
+ * @authors:
+ *   Fabian Vogelsteller <fabian@ethereum.org>
+ * @date 2017
+ */
+
+"use strict";
+
+var _ = require('underscore');
+var errors = require('web3-core-helpers').errors;
+var oboe = require('oboe');
+
+
+var IpcProvider = function IpcProvider(path, net) {
+    var _this = this;
+    this.responseCallbacks = {};
+    this.notificationCallbacks = [];
+    this.path = path;
+    this.connected = false;
+
+    this.connection = net.connect({path: this.path});
+
+    this.addDefaultEvents();
+
+    // LISTEN FOR CONNECTION RESPONSES
+    var callback = function(result) {
+        /*jshint maxcomplexity: 6 */
+
+        var id = null;
+
+        // get the id which matches the returned id
+        if(_.isArray(result)) {
+            result.forEach(function(load){
+                if(_this.responseCallbacks[load.id])
+                    id = load.id;
+            });
         } else {
-          checksumAddress += address[i];
+            id = result.id;
         }
-      }
-      return checksumAddress;
+
+        // notification
+        if(!id && result.method.indexOf('_subscription') !== -1) {
+            _this.notificationCallbacks.forEach(function(callback){
+                if(_.isFunction(callback))
+                    callback(result);
+            });
+
+            // fire the callback
+        } else if(_this.responseCallbacks[id]) {
+            _this.responseCallbacks[id](null, result);
+            delete _this.responseCallbacks[id];
+        }
     };
-    var keccak256 = sha3;
-    var sha3$1 = sha3;
-    var toDecimal = hexToNumber;
-    var hexToNumber$1 = hexToNumber;
-    var fromDecimal = numberToHex;
-    var numberToHex$1 = numberToHex;
-    var hexToString = hexToUtf8;
-    var toUtf8 = hexToUtf8;
-    var stringToHex = utf8ToHex;
-    var fromUtf8 = utf8ToHex;
-    var utf8ToHex$1 = utf8ToHex;
-    var toAscii = hexToAscii;
-    var fromAscii = asciiToHex;
-    var padLeft = leftPad;
-    var padRight = rightPad;
-    var getSignatureParameters$1 = getSignatureParameters;
-    var isAddress$1 = isAddress;
-    var isBN$1 = isBN;
-    var checkAddressChecksum$1 = checkAddressChecksum;
-    var toBN$1 = toBN;
-    var toHex$1 = toHex;
-    var hexToNumberString$1 = hexToNumberString;
-    var toTwosComplement$1 = toTwosComplement;
-    var isHex$1 = isHex;
-    var isHexStrict$1 = isHexStrict;
-    var isBloom$1 = isBloom;
-    var isTopic$1 = isTopic;
-    var bytesToHex$1 = bytesToHex;
-    var hexToBytes$1 = hexToBytes;
 
-    exports.randomHex = randomhex;
-    exports.jsonInterfaceMethodToString = jsonInterfaceMethodToString;
-    exports.hexToAscii = hexToAscii;
-    exports.asciiToHex = asciiToHex;
-    exports.getUnitValue = getUnitValue;
-    exports.fromWei = fromWei;
-    exports.toWei = toWei;
-    exports.toChecksumAddress = toChecksumAddress;
-    exports.keccak256 = keccak256;
-    exports.sha3 = sha3$1;
-    exports.toDecimal = toDecimal;
-    exports.hexToNumber = hexToNumber$1;
-    exports.fromDecimal = fromDecimal;
-    exports.numberToHex = numberToHex$1;
-    exports.hexToString = hexToString;
-    exports.toUtf8 = toUtf8;
-    exports.stringToHex = stringToHex;
-    exports.fromUtf8 = fromUtf8;
-    exports.utf8ToHex = utf8ToHex$1;
-    exports.toAscii = toAscii;
-    exports.fromAscii = fromAscii;
-    exports.padLeft = padLeft;
-    exports.padRight = padRight;
-    exports.getSignatureParameters = getSignatureParameters$1;
-    exports.isAddress = isAddress$1;
-    exports.isBN = isBN$1;
-    exports.checkAddressChecksum = checkAddressChecksum$1;
-    exports.toBN = toBN$1;
-    exports.toHex = toHex$1;
-    exports.hexToNumberString = hexToNumberString$1;
-    exports.toTwosComplement = toTwosComplement$1;
-    exports.isHex = isHex$1;
-    exports.isHexStrict = isHexStrict$1;
-    exports.isBloom = isBloom$1;
-    exports.isTopic = isTopic$1;
-    exports.bytesToHex = bytesToHex$1;
-    exports.hexToBytes = hexToBytes$1;
-    exports.soliditySha3 = soliditySha3;
+    // use oboe.js for Sockets
+    if (net.constructor.name === 'Socket') {
+        oboe(this.connection)
+        .done(callback);
+    } else {
+        this.connection.on('data', function(data){
+            _this._parseResponse(data.toString()).forEach(callback);
+        });
+    }
+};
 
-    Object.defineProperty(exports, '__esModule', { value: true });
+/**
+Will add the error and end event to timeout existing calls
 
-})));
+@method addDefaultEvents
+*/
+IpcProvider.prototype.addDefaultEvents = function(){
+    var _this = this;
 
-},{"@babel/runtime/helpers/typeof":218,"bn.js":234,"eth-lib/lib/hash":302,"ethjs-unit":316,"lodash/isArray":486,"lodash/isBoolean":488,"lodash/isNull":493,"lodash/isNumber":494,"lodash/isObject":495,"lodash/isString":498,"lodash/map":504,"number-to-bn":515,"randomhex":538,"utf8":556}],577:[function(require,module,exports){
+    this.connection.on('connect', function(){
+        _this.connected = true;
+    });
+
+    this.connection.on('close', function(){
+        _this.connected = false;
+    });
+
+    this.connection.on('error', function(){
+        _this._timeout();
+    });
+
+    this.connection.on('end', function(){
+        _this._timeout();
+    });
+
+    this.connection.on('timeout', function(){
+        _this._timeout();
+    });
+};
+
+
+/**
+ Will parse the response and make an array out of it.
+
+ NOTE, this exists for backwards compatibility reasons.
+
+ @method _parseResponse
+ @param {String} data
+ */
+IpcProvider.prototype._parseResponse = function(data) {
+    var _this = this,
+        returnValues = [];
+
+    // DE-CHUNKER
+    var dechunkedData = data
+        .replace(/\}[\n\r]?\{/g,'}|--|{') // }{
+        .replace(/\}\][\n\r]?\[\{/g,'}]|--|[{') // }][{
+        .replace(/\}[\n\r]?\[\{/g,'}|--|[{') // }[{
+        .replace(/\}\][\n\r]?\{/g,'}]|--|{') // }]{
+        .split('|--|');
+
+    dechunkedData.forEach(function(data){
+
+        // prepend the last chunk
+        if(_this.lastChunk)
+            data = _this.lastChunk + data;
+
+        var result = null;
+
+        try {
+            result = JSON.parse(data);
+
+        } catch(e) {
+
+            _this.lastChunk = data;
+
+            // start timeout to cancel all requests
+            clearTimeout(_this.lastChunkTimeout);
+            _this.lastChunkTimeout = setTimeout(function(){
+                _this._timeout();
+                throw errors.InvalidResponse(data);
+            }, 1000 * 15);
+
+            return;
+        }
+
+        // cancel timeout and set chunk to null
+        clearTimeout(_this.lastChunkTimeout);
+        _this.lastChunk = null;
+
+        if(result)
+            returnValues.push(result);
+    });
+
+    return returnValues;
+};
+
+
+/**
+Get the adds a callback to the responseCallbacks object,
+which will be called if a response matching the response Id will arrive.
+
+@method _addResponseCallback
+*/
+IpcProvider.prototype._addResponseCallback = function(payload, callback) {
+    var id = payload.id || payload[0].id;
+    var method = payload.method || payload[0].method;
+
+    this.responseCallbacks[id] = callback;
+    this.responseCallbacks[id].method = method;
+};
+
+/**
+Timeout all requests when the end/error event is fired
+
+@method _timeout
+*/
+IpcProvider.prototype._timeout = function() {
+    for(var key in this.responseCallbacks) {
+        if(this.responseCallbacks.hasOwnProperty(key)){
+            this.responseCallbacks[key](errors.InvalidConnection('on IPC'));
+            delete this.responseCallbacks[key];
+        }
+    }
+};
+
+/**
+ Try to reconnect
+
+ @method reconnect
+ */
+IpcProvider.prototype.reconnect = function() {
+    this.connection.connect({path: this.path});
+};
+
+
+IpcProvider.prototype.send = function (payload, callback) {
+    // try reconnect, when connection is gone
+    if(!this.connection.writable)
+        this.connection.connect({path: this.path});
+
+
+    this.connection.write(JSON.stringify(payload));
+    this._addResponseCallback(payload, callback);
+};
+
+/**
+Subscribes to provider events.provider
+
+@method on
+@param {String} type    'notification', 'connect', 'error', 'end' or 'data'
+@param {Function} callback   the callback to call
+*/
+IpcProvider.prototype.on = function (type, callback) {
+
+    if(typeof callback !== 'function')
+        throw new Error('The second parameter callback must be a function.');
+
+    switch(type){
+        case 'data':
+            this.notificationCallbacks.push(callback);
+            break;
+
+        // adds error, end, timeout, connect
+        default:
+            this.connection.on(type, callback);
+            break;
+    }
+};
+
+/**
+ Subscribes to provider events.provider
+
+ @method on
+ @param {String} type    'connect', 'error', 'end' or 'data'
+ @param {Function} callback   the callback to call
+ */
+IpcProvider.prototype.once = function (type, callback) {
+
+    if(typeof callback !== 'function')
+        throw new Error('The second parameter callback must be a function.');
+
+    this.connection.once(type, callback);
+};
+
+/**
+Removes event listener
+
+@method removeListener
+@param {String} type    'data', 'connect', 'error', 'end' or 'data'
+@param {Function} callback   the callback to call
+*/
+IpcProvider.prototype.removeListener = function (type, callback) {
+    var _this = this;
+
+    switch(type){
+        case 'data':
+            this.notificationCallbacks.forEach(function(cb, index){
+                if(cb === callback)
+                    _this.notificationCallbacks.splice(index, 1);
+            });
+            break;
+
+        default:
+            this.connection.removeListener(type, callback);
+            break;
+    }
+};
+
+/**
+Removes all event listeners
+
+@method removeAllListeners
+@param {String} type    'data', 'connect', 'error', 'end' or 'data'
+*/
+IpcProvider.prototype.removeAllListeners = function (type) {
+    switch(type){
+        case 'data':
+            this.notificationCallbacks = [];
+            break;
+
+        default:
+            this.connection.removeAllListeners(type);
+            break;
+    }
+};
+
+/**
+Resets the providers, clears all callbacks
+
+@method reset
+*/
+IpcProvider.prototype.reset = function () {
+    this._timeout();
+    this.notificationCallbacks = [];
+
+    this.connection.removeAllListeners('error');
+    this.connection.removeAllListeners('end');
+    this.connection.removeAllListeners('timeout');
+
+    this.addDefaultEvents();
+};
+
+module.exports = IpcProvider;
+
+
+},{"oboe":323,"underscore":358,"web3-core-helpers":362}],398:[function(require,module,exports){
+(function (Buffer){
+/*
+ This file is part of web3.js.
+
+ web3.js is free software: you can redistribute it and/or modify
+ it under the terms of the GNU Lesser General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ web3.js is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public License
+ along with web3.js.  If not, see <http://www.gnu.org/licenses/>.
+ */
+/** @file WebsocketProvider.js
+ * @authors:
+ *   Fabian Vogelsteller <fabian@ethereum.org>
+ * @date 2017
+ */
+
+"use strict";
+
+var _ = require('underscore');
+var errors = require('web3-core-helpers').errors;
+
+var Ws = null;
+var _btoa = null;
+var parseURL = null;
+if (typeof window !== 'undefined' && typeof window.WebSocket !== 'undefined') {
+    Ws = function(url, protocols) {
+      return new window.WebSocket(url, protocols);
+    };
+    _btoa = btoa;
+    parseURL = function(url) {
+        return new URL(url);
+    };
+} else {
+    Ws = require('websocket').w3cwebsocket;
+    _btoa = function(str) {
+      return Buffer(str).toString('base64');
+    };
+    var url = require('url');
+    if (url.URL) {
+        // Use the new Node 6+ API for parsing URLs that supports username/password
+        var newURL = url.URL;
+        parseURL = function(url) {
+            return new newURL(url);
+        };
+    }
+    else {
+        // Web3 supports Node.js 5, so fall back to the legacy URL API if necessary
+        parseURL = require('url').parse;
+    }
+}
+// Default connection ws://localhost:8546
+
+
+
+
+var WebsocketProvider = function WebsocketProvider(url, options)  {
+    var _this = this;
+    this.responseCallbacks = {};
+    this.notificationCallbacks = [];
+
+    options = options || {};
+    this._customTimeout = options.timeout;
+
+    // The w3cwebsocket implementation does not support Basic Auth
+    // username/password in the URL. So generate the basic auth header, and
+    // pass through with any additional headers supplied in constructor
+    var parsedURL = parseURL(url);
+    var headers = options.headers || {};
+    var protocol = options.protocol || undefined;
+    if (parsedURL.username && parsedURL.password) {
+        headers.authorization = 'Basic ' + _btoa(parsedURL.username + ':' + parsedURL.password);
+    }
+
+    // Allow a custom client configuration
+    var clientConfig = options.clientConfig || undefined;
+
+    // When all node core implementations that do not have the
+    // WHATWG compatible URL parser go out of service this line can be removed.
+    if (parsedURL.auth) {
+        headers.authorization = 'Basic ' + _btoa(parsedURL.auth);
+    }
+    this.connection = new Ws(url, protocol, undefined, headers, undefined, clientConfig);
+
+    this.addDefaultEvents();
+
+
+    // LISTEN FOR CONNECTION RESPONSES
+    this.connection.onmessage = function(e) {
+        /*jshint maxcomplexity: 6 */
+        var data = (typeof e.data === 'string') ? e.data : '';
+
+        _this._parseResponse(data).forEach(function(result){
+
+            var id = null;
+
+            // get the id which matches the returned id
+            if(_.isArray(result)) {
+                result.forEach(function(load){
+                    if(_this.responseCallbacks[load.id])
+                        id = load.id;
+                });
+            } else {
+                id = result.id;
+            }
+
+            // notification
+            if(!id && result && result.method && result.method.indexOf('_subscription') !== -1) {
+                _this.notificationCallbacks.forEach(function(callback){
+                    if(_.isFunction(callback))
+                        callback(result);
+                });
+
+                // fire the callback
+            } else if(_this.responseCallbacks[id]) {
+                _this.responseCallbacks[id](null, result);
+                delete _this.responseCallbacks[id];
+            }
+        });
+    };
+
+    // make property `connected` which will return the current connection status
+    Object.defineProperty(this, 'connected', {
+      get: function () {
+        return this.connection && this.connection.readyState === this.connection.OPEN;
+      },
+      enumerable: true,
+  });
+};
+
+/**
+ Will add the error and end event to timeout existing calls
+
+ @method addDefaultEvents
+ */
+WebsocketProvider.prototype.addDefaultEvents = function(){
+    var _this = this;
+
+    this.connection.onerror = function(){
+        _this._timeout();
+    };
+
+    this.connection.onclose = function(){
+        _this._timeout();
+
+        // reset all requests and callbacks
+        _this.reset();
+    };
+
+    // this.connection.on('timeout', function(){
+    //     _this._timeout();
+    // });
+};
+
+/**
+ Will parse the response and make an array out of it.
+
+ @method _parseResponse
+ @param {String} data
+ */
+WebsocketProvider.prototype._parseResponse = function(data) {
+    var _this = this,
+        returnValues = [];
+
+    // DE-CHUNKER
+    var dechunkedData = data
+        .replace(/\}[\n\r]?\{/g,'}|--|{') // }{
+        .replace(/\}\][\n\r]?\[\{/g,'}]|--|[{') // }][{
+        .replace(/\}[\n\r]?\[\{/g,'}|--|[{') // }[{
+        .replace(/\}\][\n\r]?\{/g,'}]|--|{') // }]{
+        .split('|--|');
+
+    dechunkedData.forEach(function(data){
+
+        // prepend the last chunk
+        if(_this.lastChunk)
+            data = _this.lastChunk + data;
+
+        var result = null;
+
+        try {
+            result = JSON.parse(data);
+
+        } catch(e) {
+
+            _this.lastChunk = data;
+
+            // start timeout to cancel all requests
+            clearTimeout(_this.lastChunkTimeout);
+            _this.lastChunkTimeout = setTimeout(function(){
+                _this._timeout();
+                throw errors.InvalidResponse(data);
+            }, 1000 * 15);
+
+            return;
+        }
+
+        // cancel timeout and set chunk to null
+        clearTimeout(_this.lastChunkTimeout);
+        _this.lastChunk = null;
+
+        if(result)
+            returnValues.push(result);
+    });
+
+    return returnValues;
+};
+
+
+/**
+ Adds a callback to the responseCallbacks object,
+ which will be called if a response matching the response Id will arrive.
+
+ @method _addResponseCallback
+ */
+WebsocketProvider.prototype._addResponseCallback = function(payload, callback) {
+    var id = payload.id || payload[0].id;
+    var method = payload.method || payload[0].method;
+
+    this.responseCallbacks[id] = callback;
+    this.responseCallbacks[id].method = method;
+
+    var _this = this;
+
+    // schedule triggering the error response if a custom timeout is set
+    if (this._customTimeout) {
+        setTimeout(function () {
+            if (_this.responseCallbacks[id]) {
+                _this.responseCallbacks[id](errors.ConnectionTimeout(_this._customTimeout));
+                delete _this.responseCallbacks[id];
+            }
+        }, this._customTimeout);
+    }
+};
+
+/**
+ Timeout all requests when the end/error event is fired
+
+ @method _timeout
+ */
+WebsocketProvider.prototype._timeout = function() {
+    for(var key in this.responseCallbacks) {
+        if(this.responseCallbacks.hasOwnProperty(key)){
+            this.responseCallbacks[key](errors.InvalidConnection('on WS'));
+            delete this.responseCallbacks[key];
+        }
+    }
+};
+
+
+WebsocketProvider.prototype.send = function (payload, callback) {
+    var _this = this;
+
+    if (this.connection.readyState === this.connection.CONNECTING) {
+        setTimeout(function () {
+            _this.send(payload, callback);
+        }, 10);
+        return;
+    }
+
+    // try reconnect, when connection is gone
+    // if(!this.connection.writable)
+    //     this.connection.connect({url: this.url});
+    if (this.connection.readyState !== this.connection.OPEN) {
+        console.error('connection not open on send()');
+        if (typeof this.connection.onerror === 'function') {
+            this.connection.onerror(new Error('connection not open'));
+        } else {
+            console.error('no error callback');
+        }
+        callback(new Error('connection not open'));
+        return;
+    }
+
+    this.connection.send(JSON.stringify(payload));
+    this._addResponseCallback(payload, callback);
+};
+
+/**
+ Subscribes to provider events.provider
+
+ @method on
+ @param {String} type    'notifcation', 'connect', 'error', 'end' or 'data'
+ @param {Function} callback   the callback to call
+ */
+WebsocketProvider.prototype.on = function (type, callback) {
+
+    if(typeof callback !== 'function')
+        throw new Error('The second parameter callback must be a function.');
+
+    switch(type){
+        case 'data':
+            this.notificationCallbacks.push(callback);
+            break;
+
+        case 'connect':
+            this.connection.onopen = callback;
+            break;
+
+        case 'end':
+            this.connection.onclose = callback;
+            break;
+
+        case 'error':
+            this.connection.onerror = callback;
+            break;
+
+        // default:
+        //     this.connection.on(type, callback);
+        //     break;
+    }
+};
+
+// TODO add once
+
+/**
+ Removes event listener
+
+ @method removeListener
+ @param {String} type    'notifcation', 'connect', 'error', 'end' or 'data'
+ @param {Function} callback   the callback to call
+ */
+WebsocketProvider.prototype.removeListener = function (type, callback) {
+    var _this = this;
+
+    switch(type){
+        case 'data':
+            this.notificationCallbacks.forEach(function(cb, index){
+                if(cb === callback)
+                    _this.notificationCallbacks.splice(index, 1);
+            });
+            break;
+
+        // TODO remvoving connect missing
+
+        // default:
+        //     this.connection.removeListener(type, callback);
+        //     break;
+    }
+};
+
+/**
+ Removes all event listeners
+
+ @method removeAllListeners
+ @param {String} type    'notifcation', 'connect', 'error', 'end' or 'data'
+ */
+WebsocketProvider.prototype.removeAllListeners = function (type) {
+    switch(type){
+        case 'data':
+            this.notificationCallbacks = [];
+            break;
+
+        // TODO remvoving connect properly missing
+
+        case 'connect':
+            this.connection.onopen = null;
+            break;
+
+        case 'end':
+            this.connection.onclose = null;
+            break;
+
+        case 'error':
+            this.connection.onerror = null;
+            break;
+
+        default:
+            // this.connection.removeAllListeners(type);
+            break;
+    }
+};
+
+/**
+ Resets the providers, clears all callbacks
+
+ @method reset
+ */
+WebsocketProvider.prototype.reset = function () {
+    this._timeout();
+    this.notificationCallbacks = [];
+
+    // this.connection.removeAllListeners('error');
+    // this.connection.removeAllListeners('end');
+    // this.connection.removeAllListeners('timeout');
+
+    this.addDefaultEvents();
+};
+
+WebsocketProvider.prototype.disconnect = function () {
+    if (this.connection) {
+        this.connection.close();
+    }
+};
+
+module.exports = WebsocketProvider;
+
+}).call(this,require("buffer").Buffer)
+},{"buffer":51,"underscore":358,"url":168,"web3-core-helpers":362,"websocket":402}],399:[function(require,module,exports){
+arguments[4][187][0].apply(exports,arguments)
+},{"./soliditySha3.js":400,"./utils.js":401,"dup":187,"ethjs-unit":297,"randomhex":344,"underscore":358}],400:[function(require,module,exports){
+arguments[4][188][0].apply(exports,arguments)
+},{"./utils.js":401,"bn.js":219,"dup":188,"underscore":358}],401:[function(require,module,exports){
+arguments[4][189][0].apply(exports,arguments)
+},{"bn.js":219,"dup":189,"eth-lib/lib/hash":285,"number-to-bn":322,"underscore":358,"utf8":359}],402:[function(require,module,exports){
 var _global = (function() { return this || {}; })();
 var NativeWebSocket = _global.WebSocket || _global.MozWebSocket;
 var websocket_version = require('./version');
@@ -61450,10 +53556,10 @@ module.exports = {
     'version'      : websocket_version
 };
 
-},{"./version":578}],578:[function(require,module,exports){
+},{"./version":403}],403:[function(require,module,exports){
 module.exports = require('../package.json').version;
 
-},{"../package.json":579}],579:[function(require,module,exports){
+},{"../package.json":404}],404:[function(require,module,exports){
 module.exports={
   "_args": [
     [
@@ -61476,7 +53582,7 @@ module.exports={
     "gitCommittish": "browserifyCompatible"
   },
   "_requiredBy": [
-    "/web3-providers"
+    "/web3-providers-ws"
   ],
   "_resolved": "git://github.com/frozeman/WebSocket-Node.git#6c72925e3f8aaaea8dc8450f97627e85263999f2",
   "_spec": "git://github.com/frozeman/WebSocket-Node.git#browserifyCompatible",
@@ -61550,7 +53656,7 @@ module.exports={
   "version": "1.0.26"
 }
 
-},{}],580:[function(require,module,exports){
+},{}],405:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
@@ -61596,7 +53702,7 @@ var SyntaxError = /** @class */ (function (_super) {
 }(Error));
 exports.SyntaxError = SyntaxError;
 
-},{}],581:[function(require,module,exports){
+},{}],406:[function(require,module,exports){
 "use strict";
 function __export(m) {
     for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
@@ -61606,7 +53712,7 @@ __export(require("./xml-http-request"));
 var xml_http_request_event_target_1 = require("./xml-http-request-event-target");
 exports.XMLHttpRequestEventTarget = xml_http_request_event_target_1.XMLHttpRequestEventTarget;
 
-},{"./xml-http-request":585,"./xml-http-request-event-target":583}],582:[function(require,module,exports){
+},{"./xml-http-request":410,"./xml-http-request-event-target":408}],407:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var ProgressEvent = /** @class */ (function () {
@@ -61622,7 +53728,7 @@ var ProgressEvent = /** @class */ (function () {
 }());
 exports.ProgressEvent = ProgressEvent;
 
-},{}],583:[function(require,module,exports){
+},{}],408:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var XMLHttpRequestEventTarget = /** @class */ (function () {
@@ -61664,7 +53770,7 @@ var XMLHttpRequestEventTarget = /** @class */ (function () {
 }());
 exports.XMLHttpRequestEventTarget = XMLHttpRequestEventTarget;
 
-},{}],584:[function(require,module,exports){
+},{}],409:[function(require,module,exports){
 (function (Buffer){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
@@ -61745,7 +53851,7 @@ var XMLHttpRequestUpload = /** @class */ (function (_super) {
 exports.XMLHttpRequestUpload = XMLHttpRequestUpload;
 
 }).call(this,require("buffer").Buffer)
-},{"./xml-http-request-event-target":583,"buffer":51}],585:[function(require,module,exports){
+},{"./xml-http-request-event-target":408,"buffer":51}],410:[function(require,module,exports){
 (function (process,Buffer){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
@@ -62195,7 +54301,7 @@ XMLHttpRequest.prototype.nodejsHttpsAgent = https.globalAgent;
 XMLHttpRequest.prototype.nodejsBaseUrl = null;
 
 }).call(this,require('_process'),require("buffer").Buffer)
-},{"./errors":580,"./progress-event":582,"./xml-http-request-event-target":583,"./xml-http-request-upload":584,"_process":124,"buffer":51,"cookiejar":265,"http":161,"https":103,"os":112,"url":168}],586:[function(require,module,exports){
+},{"./errors":405,"./progress-event":407,"./xml-http-request-event-target":408,"./xml-http-request-upload":409,"_process":124,"buffer":51,"cookiejar":250,"http":161,"https":103,"os":112,"url":168}],411:[function(require,module,exports){
 module.exports={
     "abi": [
         {
@@ -63275,7 +55381,7 @@ module.exports={
         }
     ]
 }
-},{}],587:[function(require,module,exports){
+},{}],412:[function(require,module,exports){
 /*
 Copyright 2018 OmiseGO Pte Ltd
 
@@ -63291,7 +55397,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License. */
 
-const { Eth } = require('web3-eth')
+const Web3Eth= require('web3-eth')
 const web3Utils = require('web3-utils')
 
 const STANDARD_EXIT_BOND = 31415926535
@@ -63310,7 +55416,7 @@ class RootChain {
   *
   */
   constructor (web3Provider, plasmaContractAddress, plasmaAbi) {
-    this.eth = new Eth(web3Provider)
+    this.eth = new Web3Eth(web3Provider)
     this.plasmaContractAddress = plasmaContractAddress
     const contractAbi = plasmaAbi || require('./contracts/RootChain.json')
     this.plasmaContract = new this.eth.Contract(contractAbi.abi, plasmaContractAddress)
@@ -63449,7 +55555,7 @@ async function sendTx (eth, txDetails, privateKey) {
 
 module.exports = RootChain
 
-},{"./contracts/RootChain.json":586,"web3-eth":573,"web3-utils":576}],588:[function(require,module,exports){
+},{"./contracts/RootChain.json":411,"web3-eth":394,"web3-utils":399}],413:[function(require,module,exports){
 // Reference https://github.com/bitcoin/bips/blob/master/bip-0066.mediawiki
 // Format: 0x30 [total-length] 0x02 [R-length] [R] 0x02 [S-length] [S]
 // NOTE: SIGHASH byte ignored AND restricted, truncate before use
@@ -63564,11 +55670,11 @@ module.exports = {
   encode: encode
 }
 
-},{"safe-buffer":647}],589:[function(require,module,exports){
+},{"safe-buffer":472}],414:[function(require,module,exports){
 arguments[4][20][0].apply(exports,arguments)
-},{"buffer":22,"dup":20}],590:[function(require,module,exports){
+},{"buffer":22,"dup":20}],415:[function(require,module,exports){
 arguments[4][21][0].apply(exports,arguments)
-},{"crypto":22,"dup":21}],591:[function(require,module,exports){
+},{"crypto":22,"dup":21}],416:[function(require,module,exports){
 const Sha3 = require('js-sha3')
 const Buffer = require('safe-buffer').Buffer
 
@@ -63608,7 +55714,7 @@ module.exports = {
   SHA3Hash: hash
 }
 
-},{"js-sha3":592,"safe-buffer":647}],592:[function(require,module,exports){
+},{"js-sha3":417,"safe-buffer":472}],417:[function(require,module,exports){
 (function (process,global){
 /**
  * [js-sha3]{@link https://github.com/emn178/js-sha3}
@@ -64234,41 +56340,41 @@ module.exports = {
 })();
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"_process":124}],593:[function(require,module,exports){
+},{"_process":124}],418:[function(require,module,exports){
 arguments[4][53][0].apply(exports,arguments)
-},{"dup":53,"inherits":632,"safe-buffer":647,"stream":160,"string_decoder":165}],594:[function(require,module,exports){
+},{"dup":53,"inherits":457,"safe-buffer":472,"stream":160,"string_decoder":165}],419:[function(require,module,exports){
 arguments[4][56][0].apply(exports,arguments)
-},{"cipher-base":593,"dup":56,"inherits":632,"md5.js":642,"ripemd160":645,"sha.js":655}],595:[function(require,module,exports){
+},{"cipher-base":418,"dup":56,"inherits":457,"md5.js":467,"ripemd160":470,"sha.js":480}],420:[function(require,module,exports){
 arguments[4][71][0].apply(exports,arguments)
-},{"../package.json":610,"./elliptic/curve":598,"./elliptic/curves":601,"./elliptic/ec":602,"./elliptic/eddsa":605,"./elliptic/utils":609,"brorand":590,"dup":71}],596:[function(require,module,exports){
+},{"../package.json":435,"./elliptic/curve":423,"./elliptic/curves":426,"./elliptic/ec":427,"./elliptic/eddsa":430,"./elliptic/utils":434,"brorand":415,"dup":71}],421:[function(require,module,exports){
 arguments[4][72][0].apply(exports,arguments)
-},{"../../elliptic":595,"bn.js":589,"dup":72}],597:[function(require,module,exports){
+},{"../../elliptic":420,"bn.js":414,"dup":72}],422:[function(require,module,exports){
 arguments[4][73][0].apply(exports,arguments)
-},{"../../elliptic":595,"../curve":598,"bn.js":589,"dup":73,"inherits":632}],598:[function(require,module,exports){
+},{"../../elliptic":420,"../curve":423,"bn.js":414,"dup":73,"inherits":457}],423:[function(require,module,exports){
 arguments[4][74][0].apply(exports,arguments)
-},{"./base":596,"./edwards":597,"./mont":599,"./short":600,"dup":74}],599:[function(require,module,exports){
+},{"./base":421,"./edwards":422,"./mont":424,"./short":425,"dup":74}],424:[function(require,module,exports){
 arguments[4][75][0].apply(exports,arguments)
-},{"../../elliptic":595,"../curve":598,"bn.js":589,"dup":75,"inherits":632}],600:[function(require,module,exports){
+},{"../../elliptic":420,"../curve":423,"bn.js":414,"dup":75,"inherits":457}],425:[function(require,module,exports){
 arguments[4][76][0].apply(exports,arguments)
-},{"../../elliptic":595,"../curve":598,"bn.js":589,"dup":76,"inherits":632}],601:[function(require,module,exports){
+},{"../../elliptic":420,"../curve":423,"bn.js":414,"dup":76,"inherits":457}],426:[function(require,module,exports){
 arguments[4][77][0].apply(exports,arguments)
-},{"../elliptic":595,"./precomputed/secp256k1":608,"dup":77,"hash.js":619}],602:[function(require,module,exports){
+},{"../elliptic":420,"./precomputed/secp256k1":433,"dup":77,"hash.js":444}],427:[function(require,module,exports){
 arguments[4][78][0].apply(exports,arguments)
-},{"../../elliptic":595,"./key":603,"./signature":604,"bn.js":589,"dup":78,"hmac-drbg":631}],603:[function(require,module,exports){
+},{"../../elliptic":420,"./key":428,"./signature":429,"bn.js":414,"dup":78,"hmac-drbg":456}],428:[function(require,module,exports){
 arguments[4][79][0].apply(exports,arguments)
-},{"../../elliptic":595,"bn.js":589,"dup":79}],604:[function(require,module,exports){
+},{"../../elliptic":420,"bn.js":414,"dup":79}],429:[function(require,module,exports){
 arguments[4][80][0].apply(exports,arguments)
-},{"../../elliptic":595,"bn.js":589,"dup":80}],605:[function(require,module,exports){
+},{"../../elliptic":420,"bn.js":414,"dup":80}],430:[function(require,module,exports){
 arguments[4][81][0].apply(exports,arguments)
-},{"../../elliptic":595,"./key":606,"./signature":607,"dup":81,"hash.js":619}],606:[function(require,module,exports){
+},{"../../elliptic":420,"./key":431,"./signature":432,"dup":81,"hash.js":444}],431:[function(require,module,exports){
 arguments[4][82][0].apply(exports,arguments)
-},{"../../elliptic":595,"dup":82}],607:[function(require,module,exports){
+},{"../../elliptic":420,"dup":82}],432:[function(require,module,exports){
 arguments[4][83][0].apply(exports,arguments)
-},{"../../elliptic":595,"bn.js":589,"dup":83}],608:[function(require,module,exports){
+},{"../../elliptic":420,"bn.js":414,"dup":83}],433:[function(require,module,exports){
 arguments[4][84][0].apply(exports,arguments)
-},{"dup":84}],609:[function(require,module,exports){
+},{"dup":84}],434:[function(require,module,exports){
 arguments[4][85][0].apply(exports,arguments)
-},{"bn.js":589,"dup":85,"minimalistic-assert":643,"minimalistic-crypto-utils":644}],610:[function(require,module,exports){
+},{"bn.js":414,"dup":85,"minimalistic-assert":468,"minimalistic-crypto-utils":469}],435:[function(require,module,exports){
 module.exports={
   "_args": [
     [
@@ -64360,7 +56466,7 @@ module.exports={
   "version": "6.4.1"
 }
 
-},{}],611:[function(require,module,exports){
+},{}],436:[function(require,module,exports){
 const { Buffer } = require('buffer');
 const ethUtil = require('ethereumjs-util');
 const ethAbi = require('ethereumjs-abi');
@@ -64784,7 +56890,7 @@ function nacl_decodeHex(msgHex) {
 
 
 
-},{"buffer":51,"ethereumjs-abi":613,"ethereumjs-util":612,"tweetnacl":664,"tweetnacl-util":663}],612:[function(require,module,exports){
+},{"buffer":51,"ethereumjs-abi":438,"ethereumjs-util":437,"tweetnacl":489,"tweetnacl-util":488}],437:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -65500,10 +57606,10 @@ exports.defineProperties = function (self, fields, data) {
     }
   }
 };
-},{"assert":15,"bn.js":589,"create-hash":594,"ethjs-util":617,"keccak":635,"rlp":646,"safe-buffer":647,"secp256k1":648}],613:[function(require,module,exports){
+},{"assert":15,"bn.js":414,"create-hash":419,"ethjs-util":442,"keccak":460,"rlp":471,"safe-buffer":472,"secp256k1":473}],438:[function(require,module,exports){
 module.exports = require('./lib/index.js')
 
-},{"./lib/index.js":614}],614:[function(require,module,exports){
+},{"./lib/index.js":439}],439:[function(require,module,exports){
 (function (Buffer){
 const utils = require('ethereumjs-util')
 const BN = require('bn.js')
@@ -66064,7 +58170,7 @@ ABI.toSerpent = function (types) {
 module.exports = ABI
 
 }).call(this,require("buffer").Buffer)
-},{"bn.js":589,"buffer":51,"ethereumjs-util":615}],615:[function(require,module,exports){
+},{"bn.js":414,"buffer":51,"ethereumjs-util":440}],440:[function(require,module,exports){
 (function (Buffer){
 const SHA3 = require('keccakjs')
 const secp256k1 = require('secp256k1')
@@ -66769,7 +58875,7 @@ exports.defineProperties = function (self, fields, data) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"assert":15,"bn.js":589,"buffer":51,"create-hash":594,"keccakjs":641,"rlp":646,"secp256k1":648}],616:[function(require,module,exports){
+},{"assert":15,"bn.js":414,"buffer":51,"create-hash":419,"keccakjs":466,"rlp":471,"secp256k1":473}],441:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -67502,7 +59608,7 @@ function calculateSigRecovery(v, chainId) {
 function isValidSigRecovery(recovery) {
   return recovery === 0 || recovery === 1;
 }
-},{"assert":15,"bn.js":589,"create-hash":594,"ethjs-util":617,"keccak":635,"rlp":646,"safe-buffer":647,"secp256k1":648}],617:[function(require,module,exports){
+},{"assert":15,"bn.js":414,"create-hash":419,"ethjs-util":442,"keccak":460,"rlp":471,"safe-buffer":472,"secp256k1":473}],442:[function(require,module,exports){
 (function (Buffer){
 'use strict';
 
@@ -67725,39 +59831,39 @@ module.exports = {
   isHexString: isHexString
 };
 }).call(this,require("buffer").Buffer)
-},{"buffer":51,"is-hex-prefixed":633,"strip-hex-prefix":662}],618:[function(require,module,exports){
+},{"buffer":51,"is-hex-prefixed":458,"strip-hex-prefix":487}],443:[function(require,module,exports){
 arguments[4][89][0].apply(exports,arguments)
-},{"dup":89,"inherits":632,"safe-buffer":647,"stream":160}],619:[function(require,module,exports){
+},{"dup":89,"inherits":457,"safe-buffer":472,"stream":160}],444:[function(require,module,exports){
 arguments[4][90][0].apply(exports,arguments)
-},{"./hash/common":620,"./hash/hmac":621,"./hash/ripemd":622,"./hash/sha":623,"./hash/utils":630,"dup":90}],620:[function(require,module,exports){
+},{"./hash/common":445,"./hash/hmac":446,"./hash/ripemd":447,"./hash/sha":448,"./hash/utils":455,"dup":90}],445:[function(require,module,exports){
 arguments[4][91][0].apply(exports,arguments)
-},{"./utils":630,"dup":91,"minimalistic-assert":643}],621:[function(require,module,exports){
+},{"./utils":455,"dup":91,"minimalistic-assert":468}],446:[function(require,module,exports){
 arguments[4][92][0].apply(exports,arguments)
-},{"./utils":630,"dup":92,"minimalistic-assert":643}],622:[function(require,module,exports){
+},{"./utils":455,"dup":92,"minimalistic-assert":468}],447:[function(require,module,exports){
 arguments[4][93][0].apply(exports,arguments)
-},{"./common":620,"./utils":630,"dup":93}],623:[function(require,module,exports){
+},{"./common":445,"./utils":455,"dup":93}],448:[function(require,module,exports){
 arguments[4][94][0].apply(exports,arguments)
-},{"./sha/1":624,"./sha/224":625,"./sha/256":626,"./sha/384":627,"./sha/512":628,"dup":94}],624:[function(require,module,exports){
+},{"./sha/1":449,"./sha/224":450,"./sha/256":451,"./sha/384":452,"./sha/512":453,"dup":94}],449:[function(require,module,exports){
 arguments[4][95][0].apply(exports,arguments)
-},{"../common":620,"../utils":630,"./common":629,"dup":95}],625:[function(require,module,exports){
+},{"../common":445,"../utils":455,"./common":454,"dup":95}],450:[function(require,module,exports){
 arguments[4][96][0].apply(exports,arguments)
-},{"../utils":630,"./256":626,"dup":96}],626:[function(require,module,exports){
+},{"../utils":455,"./256":451,"dup":96}],451:[function(require,module,exports){
 arguments[4][97][0].apply(exports,arguments)
-},{"../common":620,"../utils":630,"./common":629,"dup":97,"minimalistic-assert":643}],627:[function(require,module,exports){
+},{"../common":445,"../utils":455,"./common":454,"dup":97,"minimalistic-assert":468}],452:[function(require,module,exports){
 arguments[4][98][0].apply(exports,arguments)
-},{"../utils":630,"./512":628,"dup":98}],628:[function(require,module,exports){
+},{"../utils":455,"./512":453,"dup":98}],453:[function(require,module,exports){
 arguments[4][99][0].apply(exports,arguments)
-},{"../common":620,"../utils":630,"dup":99,"minimalistic-assert":643}],629:[function(require,module,exports){
+},{"../common":445,"../utils":455,"dup":99,"minimalistic-assert":468}],454:[function(require,module,exports){
 arguments[4][100][0].apply(exports,arguments)
-},{"../utils":630,"dup":100}],630:[function(require,module,exports){
-arguments[4][332][0].apply(exports,arguments)
-},{"dup":332,"inherits":632,"minimalistic-assert":643}],631:[function(require,module,exports){
+},{"../utils":455,"dup":100}],455:[function(require,module,exports){
+arguments[4][312][0].apply(exports,arguments)
+},{"dup":312,"inherits":457,"minimalistic-assert":468}],456:[function(require,module,exports){
 arguments[4][102][0].apply(exports,arguments)
-},{"dup":102,"hash.js":619,"minimalistic-assert":643,"minimalistic-crypto-utils":644}],632:[function(require,module,exports){
+},{"dup":102,"hash.js":444,"minimalistic-assert":468,"minimalistic-crypto-utils":469}],457:[function(require,module,exports){
 arguments[4][16][0].apply(exports,arguments)
-},{"dup":16}],633:[function(require,module,exports){
+},{"dup":16}],458:[function(require,module,exports){
 arguments[4][177][0].apply(exports,arguments)
-},{"dup":177}],634:[function(require,module,exports){
+},{"dup":177}],459:[function(require,module,exports){
 (function (process,global){
 /**
  * [js-sha3]{@link https://github.com/emn178/js-sha3}
@@ -68417,11 +60523,11 @@ arguments[4][177][0].apply(exports,arguments)
 })();
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"_process":124}],635:[function(require,module,exports){
+},{"_process":124}],460:[function(require,module,exports){
 'use strict'
 module.exports = require('./lib/api')(require('./lib/keccak'))
 
-},{"./lib/api":636,"./lib/keccak":640}],636:[function(require,module,exports){
+},{"./lib/api":461,"./lib/keccak":465}],461:[function(require,module,exports){
 'use strict'
 var createKeccak = require('./keccak')
 var createShake = require('./shake')
@@ -68451,7 +60557,7 @@ module.exports = function (KeccakState) {
   }
 }
 
-},{"./keccak":637,"./shake":638}],637:[function(require,module,exports){
+},{"./keccak":462,"./shake":463}],462:[function(require,module,exports){
 'use strict'
 var Buffer = require('safe-buffer').Buffer
 var Transform = require('stream').Transform
@@ -68537,7 +60643,7 @@ module.exports = function (KeccakState) {
   return Keccak
 }
 
-},{"inherits":632,"safe-buffer":647,"stream":160}],638:[function(require,module,exports){
+},{"inherits":457,"safe-buffer":472,"stream":160}],463:[function(require,module,exports){
 'use strict'
 var Buffer = require('safe-buffer').Buffer
 var Transform = require('stream').Transform
@@ -68614,7 +60720,7 @@ module.exports = function (KeccakState) {
   return Shake
 }
 
-},{"inherits":632,"safe-buffer":647,"stream":160}],639:[function(require,module,exports){
+},{"inherits":457,"safe-buffer":472,"stream":160}],464:[function(require,module,exports){
 'use strict'
 var P1600_ROUND_CONSTANTS = [1, 0, 32898, 0, 32906, 2147483648, 2147516416, 2147483648, 32907, 0, 2147483649, 0, 2147516545, 2147483648, 32777, 2147483648, 138, 0, 136, 0, 2147516425, 0, 2147483658, 0, 2147516555, 0, 139, 2147483648, 32905, 2147483648, 32771, 2147483648, 32770, 2147483648, 128, 2147483648, 32778, 0, 2147483658, 2147483648, 2147516545, 2147483648, 32896, 2147483648, 2147483649, 0, 2147516424, 2147483648]
 
@@ -68803,7 +60909,7 @@ exports.p1600 = function (s) {
   }
 }
 
-},{}],640:[function(require,module,exports){
+},{}],465:[function(require,module,exports){
 'use strict'
 var Buffer = require('safe-buffer').Buffer
 var keccakState = require('./keccak-state-unroll')
@@ -68875,26 +60981,26 @@ Keccak.prototype.copy = function (dest) {
 
 module.exports = Keccak
 
-},{"./keccak-state-unroll":639,"safe-buffer":647}],641:[function(require,module,exports){
+},{"./keccak-state-unroll":464,"safe-buffer":472}],466:[function(require,module,exports){
 module.exports = require('browserify-sha3').SHA3Hash
 
-},{"browserify-sha3":591}],642:[function(require,module,exports){
-arguments[4][510][0].apply(exports,arguments)
-},{"dup":510,"hash-base":618,"inherits":632,"safe-buffer":647}],643:[function(require,module,exports){
+},{"browserify-sha3":416}],467:[function(require,module,exports){
+arguments[4][318][0].apply(exports,arguments)
+},{"dup":318,"hash-base":443,"inherits":457,"safe-buffer":472}],468:[function(require,module,exports){
 arguments[4][110][0].apply(exports,arguments)
-},{"dup":110}],644:[function(require,module,exports){
+},{"dup":110}],469:[function(require,module,exports){
 arguments[4][111][0].apply(exports,arguments)
-},{"dup":111}],645:[function(require,module,exports){
+},{"dup":111}],470:[function(require,module,exports){
 arguments[4][150][0].apply(exports,arguments)
-},{"buffer":51,"dup":150,"hash-base":618,"inherits":632}],646:[function(require,module,exports){
+},{"buffer":51,"dup":150,"hash-base":443,"inherits":457}],471:[function(require,module,exports){
 arguments[4][199][0].apply(exports,arguments)
-},{"bn.js":589,"buffer":51,"dup":199}],647:[function(require,module,exports){
+},{"bn.js":414,"buffer":51,"dup":199}],472:[function(require,module,exports){
 arguments[4][151][0].apply(exports,arguments)
-},{"buffer":51,"dup":151}],648:[function(require,module,exports){
+},{"buffer":51,"dup":151}],473:[function(require,module,exports){
 'use strict'
 module.exports = require('./lib')(require('./lib/elliptic'))
 
-},{"./lib":652,"./lib/elliptic":651}],649:[function(require,module,exports){
+},{"./lib":477,"./lib/elliptic":476}],474:[function(require,module,exports){
 (function (Buffer){
 'use strict'
 var toString = Object.prototype.toString
@@ -68942,7 +61048,7 @@ exports.isNumberInInterval = function (number, x, y, message) {
 }
 
 }).call(this,{"isBuffer":require("../../../../../../../../.nvm/versions/node/v10.9.0/lib/node_modules/browserify/node_modules/is-buffer/index.js")})
-},{"../../../../../../../../.nvm/versions/node/v10.9.0/lib/node_modules/browserify/node_modules/is-buffer/index.js":106}],650:[function(require,module,exports){
+},{"../../../../../../../../.nvm/versions/node/v10.9.0/lib/node_modules/browserify/node_modules/is-buffer/index.js":106}],475:[function(require,module,exports){
 'use strict'
 var Buffer = require('safe-buffer').Buffer
 var bip66 = require('bip66')
@@ -69137,7 +61243,7 @@ exports.signatureImportLax = function (sig) {
   return { r: r, s: s }
 }
 
-},{"bip66":588,"safe-buffer":647}],651:[function(require,module,exports){
+},{"bip66":413,"safe-buffer":472}],476:[function(require,module,exports){
 'use strict'
 var Buffer = require('safe-buffer').Buffer
 var createHash = require('create-hash')
@@ -69402,7 +61508,7 @@ exports.ecdhUnsafe = function (publicKey, privateKey, compressed) {
   return Buffer.from(pair.pub.mul(scalar).encode(true, compressed))
 }
 
-},{"../messages.json":653,"bn.js":589,"create-hash":594,"elliptic":595,"safe-buffer":647}],652:[function(require,module,exports){
+},{"../messages.json":478,"bn.js":414,"create-hash":419,"elliptic":420,"safe-buffer":472}],477:[function(require,module,exports){
 'use strict'
 var assert = require('./assert')
 var der = require('./der')
@@ -69649,7 +61755,7 @@ module.exports = function (secp256k1) {
   }
 }
 
-},{"./assert":649,"./der":650,"./messages.json":653}],653:[function(require,module,exports){
+},{"./assert":474,"./der":475,"./messages.json":478}],478:[function(require,module,exports){
 module.exports={
   "COMPRESSED_TYPE_INVALID": "compressed should be a boolean",
   "EC_PRIVATE_KEY_TYPE_INVALID": "private key should be a Buffer",
@@ -69688,25 +61794,25 @@ module.exports={
   "TWEAK_LENGTH_INVALID": "tweak length is invalid"
 }
 
-},{}],654:[function(require,module,exports){
+},{}],479:[function(require,module,exports){
 arguments[4][152][0].apply(exports,arguments)
-},{"dup":152,"safe-buffer":647}],655:[function(require,module,exports){
+},{"dup":152,"safe-buffer":472}],480:[function(require,module,exports){
 arguments[4][153][0].apply(exports,arguments)
-},{"./sha":656,"./sha1":657,"./sha224":658,"./sha256":659,"./sha384":660,"./sha512":661,"dup":153}],656:[function(require,module,exports){
+},{"./sha":481,"./sha1":482,"./sha224":483,"./sha256":484,"./sha384":485,"./sha512":486,"dup":153}],481:[function(require,module,exports){
 arguments[4][154][0].apply(exports,arguments)
-},{"./hash":654,"dup":154,"inherits":632,"safe-buffer":647}],657:[function(require,module,exports){
+},{"./hash":479,"dup":154,"inherits":457,"safe-buffer":472}],482:[function(require,module,exports){
 arguments[4][155][0].apply(exports,arguments)
-},{"./hash":654,"dup":155,"inherits":632,"safe-buffer":647}],658:[function(require,module,exports){
+},{"./hash":479,"dup":155,"inherits":457,"safe-buffer":472}],483:[function(require,module,exports){
 arguments[4][156][0].apply(exports,arguments)
-},{"./hash":654,"./sha256":659,"dup":156,"inherits":632,"safe-buffer":647}],659:[function(require,module,exports){
+},{"./hash":479,"./sha256":484,"dup":156,"inherits":457,"safe-buffer":472}],484:[function(require,module,exports){
 arguments[4][157][0].apply(exports,arguments)
-},{"./hash":654,"dup":157,"inherits":632,"safe-buffer":647}],660:[function(require,module,exports){
+},{"./hash":479,"dup":157,"inherits":457,"safe-buffer":472}],485:[function(require,module,exports){
 arguments[4][158][0].apply(exports,arguments)
-},{"./hash":654,"./sha512":661,"dup":158,"inherits":632,"safe-buffer":647}],661:[function(require,module,exports){
+},{"./hash":479,"./sha512":486,"dup":158,"inherits":457,"safe-buffer":472}],486:[function(require,module,exports){
 arguments[4][159][0].apply(exports,arguments)
-},{"./hash":654,"dup":159,"inherits":632,"safe-buffer":647}],662:[function(require,module,exports){
+},{"./hash":479,"dup":159,"inherits":457,"safe-buffer":472}],487:[function(require,module,exports){
 arguments[4][183][0].apply(exports,arguments)
-},{"dup":183,"is-hex-prefixed":633}],663:[function(require,module,exports){
+},{"dup":183,"is-hex-prefixed":458}],488:[function(require,module,exports){
 (function (Buffer){
 // Written in 2014-2016 by Dmitry Chestnykh and Devi Mandiri.
 // Public domain.
@@ -69791,7 +61897,7 @@ arguments[4][183][0].apply(exports,arguments)
 }));
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":22}],664:[function(require,module,exports){
+},{"buffer":22}],489:[function(require,module,exports){
 (function(nacl) {
 'use strict';
 
@@ -72170,7 +64276,7 @@ nacl.setPRNG = function(fn) {
 
 })(typeof module !== 'undefined' && module.exports ? module.exports : (self.nacl = self.nacl || {}));
 
-},{"crypto":22}],665:[function(require,module,exports){
+},{"crypto":22}],490:[function(require,module,exports){
 /*
 Copyright 2018 OmiseGO Pte Ltd
 
@@ -72190,7 +64296,7 @@ class InvalidArgumentError extends Error {}
 
 module.exports = InvalidArgumentError
 
-},{}],666:[function(require,module,exports){
+},{}],491:[function(require,module,exports){
 /*
 Copyright 2018 OmiseGO Pte Ltd
 
@@ -72212,7 +64318,7 @@ module.exports = {
   sign: require('./sign')
 }
 
-},{"./InvalidArgumentError":665,"./sign":667,"./transaction":668}],667:[function(require,module,exports){
+},{"./InvalidArgumentError":490,"./sign":492,"./transaction":493}],492:[function(require,module,exports){
 (function (global,Buffer){
 /*
 Copyright 2018 OmiseGO Pte Ltd
@@ -72251,7 +64357,7 @@ function sign (tx, privateKeys) {
 module.exports = sign
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer)
-},{"buffer":51,"eth-sig-util":611,"ethereumjs-util":616,"js-sha3":634}],668:[function(require,module,exports){
+},{"buffer":51,"eth-sig-util":436,"ethereumjs-util":441,"js-sha3":459}],493:[function(require,module,exports){
 (function (global,Buffer){
 /*
 Copyright 2018 OmiseGO Pte Ltd
@@ -72423,4 +64529,4 @@ function sanitiseAddress (address) {
 module.exports = transaction
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer)
-},{"./InvalidArgumentError":665,"buffer":51,"rlp":646,"web3-utils":187}]},{},[173]);
+},{"./InvalidArgumentError":490,"buffer":51,"rlp":471,"web3-utils":187}]},{},[173]);
