@@ -15,5 +15,6 @@ limitations under the License. */
 
 module.exports = {
   InvalidArgumentError: require('./InvalidArgumentError'),
-  transaction: require('./transaction')
+  transaction: require('./transaction'),
+  sign: require('./sign')
 }

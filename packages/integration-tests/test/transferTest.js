@@ -18,14 +18,13 @@ const helper = require('./helper')
 const Web3 = require('web3')
 const ChildChain = require('@omisego/omg-js-childchain')
 const RootChain = require('@omisego/omg-js-rootchain')
+const { transaction } = require('@omisego/omg-js-util')
 const chai = require('chai')
 const assert = chai.assert
 
 const web3 = new Web3(config.geth_url)
 const childChain = new ChildChain(config.watcher_url, config.childchain_url)
 let rootChain
-
-const ETH_CURRENCY = '0x0000000000000000000000000000000000000000'
 
 describe('Transfer tests', async () => {
   before(async () => {
@@ -58,7 +57,7 @@ describe('Transfer tests', async () => {
       assert.equal(utxos.length, 1)
       assert.hasAllKeys(utxos[0], ['utxo_pos', 'txindex', 'owner', 'oindex', 'currency', 'blknum', 'amount'])
       assert.equal(utxos[0].amount.toString(), DEPOSIT_AMOUNT)
-      assert.equal(utxos[0].currency, ETH_CURRENCY)
+      assert.equal(utxos[0].currency, transaction.ETH_CURRENCY)
 
       // Convert 'amount' to a Number
       utxos[0].amount = Number(utxos[0].amount)
@@ -67,11 +66,11 @@ describe('Transfer tests', async () => {
         inputs: [utxos[0]],
         outputs: [{
           owner: bobAccount.address,
-          currency: ETH_CURRENCY,
+          currency: transaction.ETH_CURRENCY,
           amount: Number(TRANSFER_AMOUNT)
         }, {
           owner: aliceAccount.address,
-          currency: ETH_CURRENCY,
+          currency: transaction.ETH_CURRENCY,
           amount: CHANGE_AMOUNT
         }]
       }
@@ -132,18 +131,18 @@ describe('Transfer tests', async () => {
       assert.equal(aliceUtxos.length, 2)
       assert.hasAllKeys(aliceUtxos[0], ['utxo_pos', 'txindex', 'owner', 'oindex', 'currency', 'blknum', 'amount'])
       assert.equal(aliceUtxos[0].amount.toString(), DEPOSIT_AMOUNT)
-      assert.equal(aliceUtxos[0].currency, ETH_CURRENCY)
+      assert.equal(aliceUtxos[0].currency, transaction.ETH_CURRENCY)
       assert.equal(aliceUtxos[1].amount.toString(), DEPOSIT_AMOUNT)
-      assert.equal(aliceUtxos[1].currency, ETH_CURRENCY)
+      assert.equal(aliceUtxos[1].currency, transaction.ETH_CURRENCY)
 
       // Check Bob's utxos on the child chain
       let bobUtxos = await childChain.getUtxos(bobAccount.address)
       assert.equal(bobUtxos.length, 2)
       assert.hasAllKeys(bobUtxos[0], ['utxo_pos', 'txindex', 'owner', 'oindex', 'currency', 'blknum', 'amount'])
       assert.equal(bobUtxos[0].amount.toString(), DEPOSIT_AMOUNT)
-      assert.equal(bobUtxos[0].currency, ETH_CURRENCY)
+      assert.equal(bobUtxos[0].currency, transaction.ETH_CURRENCY)
       assert.equal(bobUtxos[1].amount.toString(), DEPOSIT_AMOUNT)
-      assert.equal(bobUtxos[1].currency, ETH_CURRENCY)
+      assert.equal(bobUtxos[1].currency, transaction.ETH_CURRENCY)
 
       // Construct the transaction body using all 4 deposit utxos
       const inputs = [aliceUtxos[0], aliceUtxos[1], bobUtxos[0], bobUtxos[1]]
@@ -159,22 +158,22 @@ describe('Transfer tests', async () => {
       const outputs = [
         {
           owner: aliceAccount.address,
-          currency: ETH_CURRENCY,
+          currency: transaction.ETH_CURRENCY,
           amount: ALICE_OUTPUT_0
         },
         {
           owner: aliceAccount.address,
-          currency: ETH_CURRENCY,
+          currency: transaction.ETH_CURRENCY,
           amount: ALICE_OUTPUT_1
         },
         {
           owner: bobAccount.address,
-          currency: ETH_CURRENCY,
+          currency: transaction.ETH_CURRENCY,
           amount: BOB_OUTPUT_0
         },
         {
           owner: bobAccount.address,
-          currency: ETH_CURRENCY,
+          currency: transaction.ETH_CURRENCY,
           amount: BOB_OUTPUT_1
         }
       ]
@@ -208,18 +207,18 @@ describe('Transfer tests', async () => {
       assert.equal(aliceUtxos.length, 2)
       assert.hasAllKeys(aliceUtxos[0], ['utxo_pos', 'txindex', 'owner', 'oindex', 'currency', 'blknum', 'amount'])
       assert.equal(aliceUtxos[0].amount.toString(), ALICE_OUTPUT_0)
-      assert.equal(aliceUtxos[0].currency, ETH_CURRENCY)
+      assert.equal(aliceUtxos[0].currency, transaction.ETH_CURRENCY)
       assert.equal(aliceUtxos[1].amount.toString(), ALICE_OUTPUT_1)
-      assert.equal(aliceUtxos[1].currency, ETH_CURRENCY)
+      assert.equal(aliceUtxos[1].currency, transaction.ETH_CURRENCY)
 
       // Check Bob's utxos on the child chain again
       bobUtxos = await childChain.getUtxos(bobAccount.address)
       assert.equal(bobUtxos.length, 2)
       assert.hasAllKeys(bobUtxos[0], ['utxo_pos', 'txindex', 'owner', 'oindex', 'currency', 'blknum', 'amount'])
       assert.equal(bobUtxos[0].amount.toString(), BOB_OUTPUT_0)
-      assert.equal(bobUtxos[0].currency, ETH_CURRENCY)
+      assert.equal(bobUtxos[0].currency, transaction.ETH_CURRENCY)
       assert.equal(bobUtxos[1].amount.toString(), BOB_OUTPUT_1)
-      assert.equal(bobUtxos[1].currency, ETH_CURRENCY)
+      assert.equal(bobUtxos[1].currency, transaction.ETH_CURRENCY)
     })
   })
 })

@@ -43,6 +43,7 @@
     ],
     "ignore": [
       "docs",
+      "dist",
       "packages/integration-tests/tokens"
     ]
   }
