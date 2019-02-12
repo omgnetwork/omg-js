@@ -26,19 +26,18 @@ const rootChain = new RootChain('http://localhost:8545', plasmaContractAddress)
 async function deposit () {
   const amount = '2'
   const address = '0xcb47205fda71789527f3dfbd0fa68d0e58e065d3'
-  const privateKey = '0xc7108da289bb1911f3ee93470003087bf28c5cdef0e94ae4dad69528c850fac7 key'
+  const privateKey = ''
 
   // Create the deposit transaction
-  const depositTx = transaction.encodeDepositTx(address, amount, transaction.NULL_ADDRESS)
+  const depositTx = transaction.encodeDeposit(address, amount, transaction.ETH_CURRENCY)
 
   // Deposit ETH into the Plasma contract
-  const txhash = await rootChain.depositEth(
-    depositTx,
-    amount,
-    { from: address, privateKey: privateKey }
-  )
-
-  console.log(`Deposited ${amount} eth into plasma contract, txhash = ${txhash}`)
+  try {
+    const receipt = await rootChain.depositEth(depositTx, amount, { from: address, privateKey: privateKey })
+    console.log(`Deposited ${amount} eth, txhash: ${receipt.transactionHash}`)
+  } catch (err) {
+    console.error(err)
+  }
 }
 
 deposit()

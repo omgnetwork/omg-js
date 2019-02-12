@@ -1,60 +1,57 @@
-## OMG.JS 
+## OMG-JS 
 [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 
 [![JavaScript Style Guide](https://cdn.rawgit.com/standard/standard/master/badge.svg)](https://github.com/standard/standard)
 
-### JavaScript Library Implementation for Tesuji 
+This is a Javascript library that allows you to interact with OmiseGo's MoreVP implementation of Plasma. It provides functions to:
 
-IMPORTANT: 
-* this was developed against the first release version of `elixir-omg` 
-* This is a first implementation of a JS library, expect breaking changes
+1. Deposit (Eth/Token) from the Root chain into the Child chain.
+2. Transact on the Child chain.
+3. Exit from the Child chain back to the Root chain.
+4. Challenge an invalid exit.
 
-This is a library that allows a Client/Server JavaScript application to Interact with the Tesuji Plasma
-So that you could:
-
-1. Deposit (Eth/Token)
-2. Transact (Eth/Token)
-
-From the Childchain server to the Rootchain
-
-### Installation
-
-Please make sure you have `Node` (>v8.11.3) and also `npm` (>v6.3.0) installed
-0. Clone the repository
-1. Install all the packages
-```
-npm install
-```
-2. Test to make sure everything is installed correctly, please run:
-
-```
-npm run test
-```
 
 ### Getting Started
 
-The project is seperated into 2 submodules:
+The project is organized into 3 submodules:
 
-1. omg-js-childchain
-2. omg-js-rootchain
+1. @omisego/omg-js-rootchain
+2. @omisego/omg-js-childchain
+3. @omisego/omg-js-util
 
-you can import either one separately, or both at once by importing the parent omg-js package
+You can use any of them separately, or all at once by importing the parent `@omisego/omg-js` package
 
-#### Code Documentation
+### Installation
+
+#### Node
+Requires Node >= 8.11.3
+```
+npm install @omisego/omg-js
+```
+
+
+#### Browser
+Copy the `dist/omg.js` file into your project and include it.
+```
+<script type="text/javascript" src="omg.js"></script>
+```
+
+
+### API Documentation
 
 [Documentation for omg-js ](http://omisego.github.io/omg-js)
 
-#### Design Documentation
+### Design Documentation
 
 [How to create your own signing method](/integration-docs/signing-methods.md)
 
-#### Example Implementations
+### Examples
 
-You can find example applications inside `examples` folder
+You can find example code inside `examples` folder
 
 [Deposit ETH through Rootchain Contract](examples/node-deposit.js)
 
-[Transact ETH through Childchain](examples/node-transact.js)
+[Transact ETH on the Child chain](examples/node-transact.js)
 
-[Fetch spendable UTXO of an address](examples/fetch-utxo.js)
+[Get spendable UTXO of an address](examples/fetch-utxo.js)
 
