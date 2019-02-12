@@ -23,17 +23,10 @@
   },
   "dependencies": {
     "@omisego/omg-js-util": "^0.1.7",
-    "base-x": "^3.0.4",
-    "buffer": "^5.2.0",
     "debug": "^4.0.1",
-    "eth-sig-util": "^2.0.2",
-    "ethereumjs-util": "^5.2.0",
-    "http-request": "^0.7.0",
-    "js-sha3": "^0.8.0",
     "json-bigint": "^0.3.0",
     "node-fetch": "^2.2.0",
-    "rlp": "^2.1.0",
-    "web3-utils": "^1.0.0-beta.36"
+    "rlp": "^2.1.0"
   },
   "publishConfig": {
     "access": "public"
