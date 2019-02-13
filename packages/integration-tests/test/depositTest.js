@@ -26,8 +26,6 @@ const web3 = new Web3(config.geth_url)
 const childChain = new ChildChain(config.watcher_url, config.childchain_url)
 let rootChain
 
-const ETH_CURRENCY = '0x0000000000000000000000000000000000000000'
-
 describe('Deposit tests', async () => {
   before(async () => {
     const plasmaContract = await helper.getPlasmaContractAddress(config.contract_exchanger_url)
@@ -54,7 +52,7 @@ describe('Deposit tests', async () => {
       console.log(TEST_AMOUNT)
 
       // Create the deposit transaction
-      const depositTx = transaction.encodeDepositTx(account.address, TEST_AMOUNT, transaction.NULL_ADDRESS)
+      const depositTx = transaction.encodeDeposit(account.address, TEST_AMOUNT, transaction.ETH_CURRENCY)
       console.log(depositTx)
 
       // Deposit ETH into the Plasma contract
@@ -64,7 +62,7 @@ describe('Deposit tests', async () => {
       const balance = await helper.waitForBalance(childChain, account.address, TEST_AMOUNT)
 
       // Check balance is correct
-      assert.equal(balance[0].currency, ETH_CURRENCY)
+      assert.equal(balance[0].currency, transaction.ETH_CURRENCY)
       assert.equal(balance[0].amount.toString(), web3.utils.toWei('1', 'ether'))
       console.log(`Balance: ${balance[0].amount.toString()}`)
 
@@ -73,11 +71,11 @@ describe('Deposit tests', async () => {
       assert.equal(utxos.length, 1)
       assert.hasAllKeys(utxos[0], ['utxo_pos', 'txindex', 'owner', 'oindex', 'currency', 'blknum', 'amount'])
       assert.equal(utxos[0].amount.toString(), web3.utils.toWei('1', 'ether'))
-      assert.equal(utxos[0].currency, ETH_CURRENCY)
+      assert.equal(utxos[0].currency, transaction.ETH_CURRENCY)
     })
   })
 
-  describe('deposit ERC20', async () => {
+  describe.skip('deposit ERC20', async () => {
     let account
     const contractAbi = require('../tokens/build/contracts/ERC20.json')
     const testErc20Contract = new web3.eth.Contract(contractAbi.abi, config.testErc20Contract)
@@ -94,7 +92,7 @@ describe('Deposit tests', async () => {
       await helper.fundAccountERC20(web3, testErc20Contract, accounts[0], '', account.address, INITIAL_AMOUNT)
     })
 
-    it.skip('should deposit ERC20 tokens to the Plasma contract', async () => {
+    it('should deposit ERC20 tokens to the Plasma contract', async () => {
       // The new account should have no initial balance
       const initialBalance = await childChain.getBalance(account.address)
       assert.equal(initialBalance.length, 0)

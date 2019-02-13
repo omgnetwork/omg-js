@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License. */
 
 const fetch = require('node-fetch')
-const debug = require('debug')('omg.childchain.submitTx')
+const debug = require('debug')('omg.childchain.rpc')
 const JSONBigNumber = require('json-bigint')
 
 class RpcError extends Error {

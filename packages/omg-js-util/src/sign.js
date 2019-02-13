@@ -13,10 +13,23 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License. */
 
-// convert byte Array (JS equivalent is Uint8) to JavaScript Buffer
+global.Buffer = global.Buffer || require('buffer').Buffer
 
-function byteArrToBuffer (arr) {
-  return Buffer.from(new Uint8Array(arr))
+const keccak256 = require('js-sha3').keccak256
+const ethUtil = require('ethereumjs-util')
+const sigUtil = require('eth-sig-util')
+
+function ecSign (tosign, privateKey) {
+  const hashed = keccak256(tosign)
+  const signed = ethUtil.ecsign(
+    Buffer.from(hashed, 'hex'),
+    Buffer.from(privateKey.replace('0x', ''), 'hex')
+  )
+  return sigUtil.concatSig(signed.v, signed.r, signed.s)
 }
 
-module.exports = byteArrToBuffer
+function sign (tx, privateKeys) {
+  return privateKeys.map(key => ecSign(tx, key))
+}
+
+module.exports = sign

@@ -18,14 +18,13 @@ const helper = require('./helper')
 const Web3 = require('web3')
 const ChildChain = require('@omisego/omg-js-childchain')
 const RootChain = require('@omisego/omg-js-rootchain')
+const { transaction } = require('@omisego/omg-js-util')
 const chai = require('chai')
 const assert = chai.assert
 
 const web3 = new Web3(config.geth_url)
 const childChain = new ChildChain(config.watcher_url, config.childchain_url)
 let rootChain
-
-const ETH_CURRENCY = '0x0000000000000000000000000000000000000000'
 
 // NB This test waits for at least RootChain.MIN_EXIT_PERIOD so it should be run against a
 // modified RootChain contract with a shorter than normal MIN_EXIT_PERIOD.
@@ -84,7 +83,7 @@ describe('Standard Exit tests', async () => {
 
       // Call processExits before the challenge period is over
       receipt = await rootChain.processExits(
-        ETH_CURRENCY,
+        transaction.ETH_CURRENCY,
         0,
         1,
         {
@@ -107,7 +106,7 @@ describe('Standard Exit tests', async () => {
 
       // Call processExits again.
       receipt = await rootChain.processExits(
-        ETH_CURRENCY,
+        transaction.ETH_CURRENCY,
         0,
         1,
         {
@@ -153,7 +152,7 @@ describe('Standard Exit tests', async () => {
         aliceAccount.address,
         bobAccount.address,
         Number(TRANSFER_AMOUNT),
-        ETH_CURRENCY,
+        transaction.ETH_CURRENCY,
         [aliceAccount.privateKey],
         TRANSFER_AMOUNT
       )
@@ -186,7 +185,7 @@ describe('Standard Exit tests', async () => {
 
       // Call processExits before the challenge period is over
       receipt = await rootChain.processExits(
-        ETH_CURRENCY,
+        transaction.ETH_CURRENCY,
         0,
         1,
         {
@@ -209,7 +208,7 @@ describe('Standard Exit tests', async () => {
 
       // Call processExits again.
       receipt = await rootChain.processExits(
-        ETH_CURRENCY,
+        transaction.ETH_CURRENCY,
         0,
         1,
         {

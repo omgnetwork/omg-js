@@ -14,4 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License. */
 
 const ChildChain = require('./packages/omg-js-childchain/src/index')
+const RootChain = require('./packages/omg-js-rootchain/src/index')
+const OmgUtil = require('./packages/omg-js-util/src/index')
 global.ChildChain = ChildChain
+global.RootChain = RootChain
+global.OmgUtil = OmgUtil

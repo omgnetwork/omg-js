@@ -159,7 +159,7 @@ async function send (childChain, from, to, amount, currency, privateKeys) {
 }
 
 async function depositEthAndWait (rootChain, childChain, address, amount, privateKey, expectedBalance) {
-  const depositTx = transaction.encodeDepositTx(address, amount, transaction.NULL_ADDRESS)
+  const depositTx = transaction.encodeDeposit(address, amount, transaction.ETH_CURRENCY)
   const receipt = await rootChain.depositEth(depositTx, amount, { from: address, privateKey: privateKey })
   // Wait for transaction to be mined
   await waitForBalance(childChain, address, expectedBalance || amount)
@@ -167,7 +167,7 @@ async function depositEthAndWait (rootChain, childChain, address, amount, privat
 }
 
 async function spentOnGas (web3, receipt) {
-  let tx = await web3.eth.getTransaction(receipt.transactionHash)
+  const tx = await web3.eth.getTransaction(receipt.transactionHash)
   return web3.utils.toBN(tx.gasPrice).muln(receipt.gasUsed)
 }
 

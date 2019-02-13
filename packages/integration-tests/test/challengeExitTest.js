@@ -24,7 +24,6 @@ const assert = chai.assert
 
 const web3 = new Web3(config.geth_url)
 const childChain = new ChildChain(config.watcher_url, config.childchain_url)
-const ETH_CURRENCY = '0000000000000000000000000000000000000000'
 let rootChain
 
 // NB This test waits for at least RootChain.MIN_EXIT_PERIOD so it should be run against a
@@ -66,7 +65,7 @@ describe('Challenge exit tests', async () => {
       aliceAccount.address,
       bobAccount.address,
       Number(TRANSFER_AMOUNT),
-      ETH_CURRENCY,
+      transaction.ETH_CURRENCY,
       [aliceAccount.privateKey],
       TRANSFER_AMOUNT
     )
@@ -83,7 +82,7 @@ describe('Challenge exit tests', async () => {
       aliceAccount.address,
       bobAccount.address,
       Number(TRANSFER_AMOUNT),
-      ETH_CURRENCY,
+      transaction.ETH_CURRENCY,
       [aliceAccount.privateKey],
       TRANSFER_AMOUNT * 2
     )
@@ -109,9 +108,9 @@ describe('Challenge exit tests', async () => {
 
     // ...and challenges the exit
     const challengeData = await childChain.getChallengeData(invalidExit.details.utxo_pos)
-    assert.hasAllKeys(challengeData, ['input_index', 'output_id', 'sig', 'txbytes'])
+    assert.hasAllKeys(challengeData, ['input_index', 'utxo_pos', 'sig', 'txbytes'])
     receipt = await rootChain.challengeStandardExit(
-      challengeData.output_id,
+      challengeData.utxo_pos,
       challengeData.txbytes,
       challengeData.input_index,
       challengeData.sig,
@@ -132,7 +131,7 @@ describe('Challenge exit tests', async () => {
 
     // ...and calls finalize exits.
     receipt = await rootChain.processExits(
-      ETH_CURRENCY,
+      transaction.ETH_CURRENCY,
       0,
       1,
       {
@@ -169,7 +168,7 @@ describe('Challenge exit tests', async () => {
       aliceAccount.address,
       bobAccount.address,
       Number(TRANSFER_AMOUNT),
-      ETH_CURRENCY,
+      transaction.ETH_CURRENCY,
       [aliceAccount.privateKey],
       TRANSFER_AMOUNT
     )
@@ -185,7 +184,7 @@ describe('Challenge exit tests', async () => {
       aliceAccount.address,
       bobAccount.address,
       Number(TRANSFER_AMOUNT),
-      ETH_CURRENCY,
+      transaction.ETH_CURRENCY,
       [aliceAccount.privateKey],
       TRANSFER_AMOUNT * 2
     )
@@ -213,7 +212,7 @@ describe('Challenge exit tests', async () => {
 
     // ...and calls finalize exits.
     receipt = await rootChain.processExits(
-      ETH_CURRENCY,
+      transaction.ETH_CURRENCY,
       0,
       1,
       {

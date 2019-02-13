@@ -14,9 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License. */
 
 const rpcApi = require('./rpc/rpcApi')
-const sign = require('./transaction/signature')
 const rlp = require('rlp')
-const { InvalidArgumentError, transaction } = require('@omisego/omg-js-util')
+const { InvalidArgumentError, transaction, sign } = require('@omisego/omg-js-util')
 global.Buffer = global.Buffer || require('buffer').Buffer
 
 class ChildChain {
@@ -90,8 +89,7 @@ class ChildChain {
    */
   createTransaction (transactionBody) {
     transaction.validate(transactionBody)
-    const txArray = transaction.toArray(transactionBody)
-    return rlp.encode(txArray).toString('hex')
+    return transaction.encode(transactionBody)
   }
 
   /**
@@ -104,7 +102,7 @@ class ChildChain {
    */
   signTransaction (unsignedTx, privateKeys) {
     privateKeys.forEach(key => validatePrivateKey)
-    return sign(Buffer.from(unsignedTx, 'hex'), privateKeys)
+    return sign(Buffer.from(unsignedTx.replace('0x', ''), 'hex'), privateKeys)
   }
 
   /**
@@ -117,7 +115,7 @@ class ChildChain {
    */
   buildSignedTransaction (unsignedTx, signatures) {
     // rlp-decode the tx bytes
-    const decodedTx = rlp.decode(Buffer.from(unsignedTx, 'hex'))
+    const decodedTx = rlp.decode(Buffer.from(unsignedTx.replace('0x', ''), 'hex'))
     // Append the signatures
     const signedTx = [signatures, ...decodedTx]
     // rlp-encode the transaction + signatures

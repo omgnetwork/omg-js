@@ -20,6 +20,9 @@
     "access": "public"
   },
   "dependencies": {
+    "eth-sig-util": "^2.1.1",
+    "ethereumjs-util": "^6.0.0",
+    "js-sha3": "^0.8.0",
     "rlp": "^2.2.2"
   }
 }
