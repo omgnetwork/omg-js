@@ -131,7 +131,7 @@ class ChildChain {
    */
   async submitTransaction (transaction) {
     // validateTxBody(transactionBody)
-    return rpcApi.post(`${this.childChainUrl}/transaction.submit`, {
+    return rpcApi.post(`${this.watcherUrl}/transaction.submit`, {
       transaction: transaction.startsWith('0x') ? transaction : `0x${transaction}`
     })
   }
