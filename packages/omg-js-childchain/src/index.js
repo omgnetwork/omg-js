@@ -123,7 +123,7 @@ class ChildChain {
   }
 
   /**
-   * Submit a signed transaction to the childchain
+   * Submit a signed transaction to the watcher
    *
    * @method submitTransaction
    * @param {string} transaction
