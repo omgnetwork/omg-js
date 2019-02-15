@@ -101,13 +101,13 @@ describe('Deposit tests', async () => {
       await helper.approveERC20(web3, testErc20Contract, account.address, account.privateKey, rootChain.plasmaContractAddress, DEPOSIT_AMOUNT)
 
       // Create the deposit transaction
-      const depositTx = transaction.encodeDepositTx(account.address, DEPOSIT_AMOUNT, config.testErc20Contract)
+      const depositTx = transaction.encodeDeposit(account.address, DEPOSIT_AMOUNT, config.testErc20Contract)
 
       // Deposit ERC20 tokens into the Plasma contract
       await rootChain.depositToken(depositTx, { from: account.address, privateKey: account.privateKey })
 
       // Wait for transaction to be mined and reflected in the account's balance
-      const balance = await helper.waitForBalance(childChain, account.address, DEPOSIT_AMOUNT)
+      const balance = await helper.waitForBalance(childChain, account.address, DEPOSIT_AMOUNT, config.testErc20Contract)
 
       // Check balance is correct
       assert.equal(balance[0].amount.toString(), DEPOSIT_AMOUNT)

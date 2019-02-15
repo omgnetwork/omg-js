@@ -79,11 +79,14 @@ async function createAndFundManyAccounts (web3, fundAccount, fundAccountPassword
   return Promise.all(initialAmounts.map(amount => createAndFundAccount(web3, fundAccount, fundAccountPassword, amount)))
 }
 
-function waitForBalance (childChain, address, expectedBalance) {
+function waitForBalance (childChain, address, expectedBalance, currency) {
+  currency = currency || transaction.ETH_CURRENCY
   return promiseRetry(async (retry, number) => {
     console.log(`Waiting for balance...  (${number})`)
     const resp = await childChain.getBalance(address)
-    if (resp.length === 0 || resp[0].amount.toString() !== expectedBalance.toString()) {
+    if (resp.length === 0 || !resp.find(item => {
+      return item.amount.toString() === expectedBalance.toString() && item.currency === currency
+    })) {
       retry()
     }
     return resp
