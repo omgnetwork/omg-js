@@ -103,14 +103,32 @@ const transaction = {
   *
   */
   decode: function (tx) {
-    const [sigs, inputs, outputs] = rlp.decode(Buffer.from(tx.replace('0x', ''), 'hex'))
-    const decoded = { sigs }
-    decoded.inputs = inputs.map(input => {
-      return { blknum: input[0].readUInt16BE(), txindex: input[1].readUInt8(), oindex: input[2].readUInt8() }
-    })
-    decoded.outputs = outputs.map(input => {
-      return { blknum: input[0].readUInt16BE(), txindex: input[1].readUInt8(), oindex: input[2].readUInt8() }
-    })
+    let inputs, outputs, sigs
+    const decoded = rlp.decode(Buffer.from(tx.replace('0x', ''), 'hex'))
+    if (decoded.length === 2) {
+      inputs = decoded[0]
+      outputs = decoded[1]
+    } else if (decoded.length === 3) {
+      sigs = decoded[0]
+      inputs = decoded[1]
+      outputs = decoded[2]
+    }
+
+    return {
+      sigs,
+      inputs: inputs.map(input => {
+        const blknum = parseNumber(input[0])
+        const txindex = parseNumber(input[1])
+        const oindex = parseNumber(input[2])
+        return { blknum, txindex, oindex }
+      }),
+      outputs: outputs.map(output => {
+        const owner = parseString(output[0])
+        const currency = parseString(output[1])
+        const amount = parseNumber(output[2])
+        return { owner, currency, amount }
+      })
+    }
   },
 
   /**
@@ -224,6 +242,14 @@ function sanitiseAddress (address) {
     return `0x${address}`
   }
   return address
+}
+
+function parseNumber (buf) {
+  return buf.length === 0 ? 0 : parseInt(buf.toString('hex'), 16)
+}
+
+function parseString (buf) {
+  return buf.length === 0 ? NULL_ADDRESS : `0x${buf.toString('hex')}`
 }
 
 module.exports = transaction
