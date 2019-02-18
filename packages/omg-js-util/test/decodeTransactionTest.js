@@ -20,7 +20,7 @@ const transaction = require('../src/transaction')
 const sign = require('../src/sign')
 const rlp = require('rlp')
 
-describe.only('decodeTransaction', () => {
+describe('decodeTransaction', () => {
   it('should decode an encoded unsigned transaction with inputs and outputs', async () => {
     const txBody = {
       'inputs': [
