@@ -145,27 +145,4 @@ describe('createTransaction', () => {
     }
     return assert.throws(() => childChain.createTransaction(txBody), InvalidArgumentError, /Outputs must be an array of size/)
   })
-
-  it('should fail to create a transaction with mixed currencies', () => {
-    const txBody = {
-      'inputs': [
-        {
-          'txindex': 0,
-          'oindex': 0,
-          'currency': '0000000000000000000000000000000000000000',
-          'blknum': 19774001,
-          'amount': 1000000000000000000
-        },
-        {
-          'txindex': 0,
-          'oindex': 0,
-          'currency': '0000000000000000000000999999999999999999',
-          'blknum': 19774001,
-          'amount': 1000000000000000000
-        }
-      ],
-      'outputs': []
-    }
-    return assert.throws(() => childChain.createTransaction(txBody), InvalidArgumentError, /Cannot mix currencies/)
-  })
 })
