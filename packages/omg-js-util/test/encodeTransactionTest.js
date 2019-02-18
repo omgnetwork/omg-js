@@ -96,7 +96,7 @@ describe('Transaction tests', () => {
     assert.equal(unsignedTx, expectedTx)
   })
 
-  it('should create a transaction with no outputs', () => {
+  it('should encode a transaction with no outputs', () => {
     const txBody = {
       'inputs': [
         {
