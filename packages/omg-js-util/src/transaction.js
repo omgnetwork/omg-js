@@ -29,14 +29,31 @@ const NULL_OUTPUT = { owner: NULL_ADDRESS, amount: 0, currency: NULL_ADDRESS }
 const BLOCK_OFFSET = web3Utils.toBN(1000000000)
 const TX_OFFSET = 10000
 
+/**
+* A collection of helper functions for creating, encoding and decoding transactions.
+*/
 const transaction = {
   ETH_CURRENCY: NULL_ADDRESS,
 
-  validate: function (arg) {
-    validateInputs(arg.inputs)
-    validateOutputs(arg.outputs)
+  /**
+  * Checks validity of a transaction
+  *
+  *@param {Object} tx the url of the watcher server
+  *@throws an InvalidArgumentError exception if the transaction invalid
+  *
+  */
+  validate: function (tx) {
+    validateInputs(tx.inputs)
+    validateOutputs(tx.outputs)
   },
 
+  /**
+  * RLP encodes a transaction
+  *
+  *@param {Object} transactionBody the transaction object
+  *@returns the RLP encoded transaction
+  *
+  */
   encode: function (transactionBody) {
     const txArray = []
 
@@ -62,6 +79,15 @@ const transaction = {
     return `0x${rlp.encode(txArray).toString('hex').toUpperCase()}`
   },
 
+  /**
+  * Creates and encodes a deposit transaction
+  *
+  *@param {string} owner the address that is making the deposit
+  *@param {Object} amount the amount of the deposit
+  *@param {Object} currency the currency (token address) of the deposit
+  *@returns the RLP encoded deposit transaction
+  *
+  */
   encodeDeposit: function (owner, amount, currency) {
     return this.encode({
       inputs: [],
@@ -69,6 +95,13 @@ const transaction = {
     })
   },
 
+  /**
+  * Decodes an RLP encoded transaction
+  *
+  *@param {string} tx the RLP encoded transaction
+  *@returns the transaction object
+  *
+  */
   decode: function (tx) {
     const [sigs, inputs, outputs] = rlp.decode(Buffer.from(tx.replace('0x', ''), 'hex'))
     const decoded = { sigs }
@@ -80,21 +113,53 @@ const transaction = {
     })
   },
 
-  createTransactionBody: function (fromAddress, fromUtxos, toAddress, toAmount) {
+  /**
+  * Creates a transaction object. It will select from the given utxos to cover the amount
+  * of the transaction, sending any remainder back as change.
+  *
+  *@param {string} fromAddress the address of the sender
+  *@param {string} fromUtxos the utxos to use as transaction inputs
+  *@param {string} toAddress the address of the receiver
+  *@param {string} toAmount the amount to send
+  *@param {string} currency the currency to send
+  *@returns the transaction object
+  *@throws InvalidArgumentError if any of the args are invalid
+  *@throws Error if the given utxos cannot cover the amount
+  *
+  */
+  createTransactionBody: function (fromAddress, fromUtxos, toAddress, toAmount, currency) {
     validateInputs(fromUtxos)
-    const inputArr = fromUtxos.map(utxo => utxo)
+    let inputArr = fromUtxos.filter(utxo => utxo.currency === currency)
 
+    // We can use a maximum of 4 inputs, so just take the largest 4 inputs and try to cover the amount with them
+    // TODO Be more clever about this...
+    if (inputArr.length > 4) {
+      inputArr.sort((a, b) => {
+        const diff = web3Utils.toBN(a.amount).sub(web3Utils.toBN(b.amount))
+        return Number(diff.toString())
+      })
+      inputArr = inputArr.slice(0, 4)
+    }
+
+    // Get the total value of the inputs
     const totalInputValue = inputArr.reduce((acc, curr) => acc.add(web3Utils.toBN(curr.amount.toString())), web3Utils.toBN(0))
+
+    // Check there is enough in the inputs to cover the amount
+    if (totalInputValue.lt(web3Utils.toBN(toAmount))) {
+      throw new Error(`Insufficient funds for ${toAmount}`)
+    }
 
     const outputArr = [{
       owner: toAddress,
+      currency,
       amount: Number(web3Utils.toBN(toAmount))
     }]
 
     if (totalInputValue.gt(web3Utils.toBN(toAmount))) {
-    // The 'change' output
+      // If necessary add a 'change' output
       outputArr.push({
         owner: fromAddress,
+        currency,
         amount: Number(totalInputValue.sub(web3Utils.toBN(toAmount)).toString())
       })
     }
@@ -130,10 +195,6 @@ function validateInputs (arg) {
   if (arg.length === 0 || arg.length > MAX_INPUTS) {
     throw new InvalidArgumentError(`Inputs must be an array of size > 0 and < ${MAX_INPUTS}`)
   }
-
-  if (!arg.every(input => input.currency === arg[0].currency)) {
-    throw new InvalidArgumentError('Cannot mix currencies')
-  }
 }
 
 function validateOutputs (arg) {
@@ -154,7 +215,7 @@ function addOutput (array, output) {
   array.push([
     sanitiseAddress(output.owner), // must start with '0x' to be encoded properly
     sanitiseAddress(output.currency), // must be a Number to be encoded properly
-    Number(output.amount) // must start with '0x' to be encoded properly
+    Number(output.amount) // must be a number to be encoded properly
   ])
 }
 

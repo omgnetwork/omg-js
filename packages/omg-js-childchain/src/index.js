@@ -147,13 +147,13 @@ class ChildChain {
    * @param {number} toAmount - amount to transact
    * @return {Object} the submitted transaction
    */
-  async sendTransaction (fromAddress, fromUtxos, fromPrivateKeys, toAddress, toAmount) {
+  async sendTransaction (fromAddress, fromUtxos, fromPrivateKeys, toAddress, toAmount, currency) {
     validateAddress(fromAddress)
     validateAddress(toAddress)
     validatePrivateKey(fromPrivateKeys)
 
     // create the transaction body
-    const txBody = transaction.createTransactionBody(fromAddress, fromUtxos, toAddress, toAmount)
+    const txBody = transaction.createTransactionBody(fromAddress, fromUtxos, toAddress, toAmount, currency)
     // create transaction
     const unsignedTx = this.createTransaction(txBody)
     // sign transaction
