@@ -64,5 +64,4 @@ describe('Validate Transaction tests', () => {
     }
     return assert.throws(() => transaction.validate(txBody), InvalidArgumentError, /Outputs must be an array of size/)
   })
-
 })
