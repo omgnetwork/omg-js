@@ -228,4 +228,103 @@ describe('Standard Exit tests', async () => {
       assert.equal(bobEthBalance.toString(), expected.toString())
     })
   })
+
+  describe.skip('ERC20 exit', async () => {
+    const contractAbi = require('../tokens/build/contracts/ERC20.json')
+    const ERC20_CURRENCY = config.testErc20Contract
+    const testErc20Contract = new web3.eth.Contract(contractAbi.abi, config.testErc20Contract)
+    const INTIIAL_ALICE_AMOUNT_ETH = web3.utils.toWei('1', 'ether')
+    const INTIIAL_ALICE_AMOUNT_ERC20 = 20
+    const DEPOSIT_AMOUNT = 20
+    let aliceAccount
+
+    before(async () => {
+      // Create Alice's account
+      // Assume the funding account is accounts[0] and has a blank password
+      const accounts = await web3.eth.getAccounts()
+      aliceAccount = await helper.createAndFundAccount(web3, accounts[0], '', INTIIAL_ALICE_AMOUNT_ETH)
+      console.log(`Created Alice account ${JSON.stringify(aliceAccount)}`)
+
+      try {
+        // Make sure the token has been added
+        await rootChain.addToken(config.testErc20Contract, { from: aliceAccount.address, privateKey: aliceAccount.privateKey })
+      } catch (err) {
+        // addToken will revert if the token has already been added. Ignore it. 
+      }
+
+      // Send ERC20 tokens to Alice's account
+      await helper.fundAccountERC20(web3, testErc20Contract, accounts[0], '', aliceAccount.address, INTIIAL_ALICE_AMOUNT_ERC20)
+
+      // Account must approve the Plasma contract
+      await helper.approveERC20(web3, testErc20Contract, aliceAccount.address, aliceAccount.privateKey, rootChain.plasmaContractAddress, DEPOSIT_AMOUNT)
+
+      // Create the deposit transaction
+      const depositTx = transaction.encodeDeposit(aliceAccount.address, DEPOSIT_AMOUNT, config.testErc20Contract)
+
+      // Deposit ERC20 tokens into the Plasma contract
+      await rootChain.depositToken(depositTx, { from: aliceAccount.address, privateKey: aliceAccount.privateKey })
+
+      // Wait for transaction to be mined and reflected in the account's balance
+      const balance = await helper.waitForBalance(childChain, aliceAccount.address, DEPOSIT_AMOUNT, ERC20_CURRENCY)
+      console.log(`Alice's balance: ${balance[0].amount.toString()}`)
+    })
+
+    it('should exit ERC20 tokens', async () => {
+      // Check utxos on the child chain
+      const utxos = await childChain.getUtxos(aliceAccount.address)
+      assert.equal(utxos.length, 1)
+      assert.hasAllKeys(utxos[0], ['utxo_pos', 'txindex', 'owner', 'oindex', 'currency', 'blknum', 'amount'])
+      assert.equal(utxos[0].amount, DEPOSIT_AMOUNT)
+      assert.equal(utxos[0].currency, ERC20_CURRENCY)
+
+      // Get the exit data
+      const utxoToExit = utxos[0]
+      const exitData = await childChain.getExitData(utxoToExit)
+      assert.hasAllKeys(exitData, ['txbytes', 'proof', 'utxo_pos'])
+
+      let receipt = await rootChain.startStandardExit(
+        exitData.utxo_pos,
+        exitData.txbytes,
+        exitData.proof,
+        {
+          privateKey: aliceAccount.privateKey,
+          from: aliceAccount.address
+        }
+      )
+      console.log(`Alice called RootChain.startExit(): txhash = ${receipt.transactionHash}`)
+
+      // Call processExits before the challenge period is over
+      receipt = await rootChain.processExits(
+        config.testErc20Contract,
+        0,
+        1,
+        {
+          privateKey: aliceAccount.privateKey,
+          from: aliceAccount.address
+        }
+      )
+      console.log(`Alice called RootChain.processExits() before challenge period: txhash = ${receipt.transactionHash}`)
+      let balance = await testErc20Contract.methods.balanceOf(aliceAccount.address).call({ from: aliceAccount.address })
+      assert.equal(balance, 0)
+
+      // Wait for challenge period
+      const toWait = await helper.getTimeToExit(rootChain.plasmaContract, exitData.utxo_pos)
+      console.log(`Waiting for challenge period... ${toWait}ms`)
+      await helper.sleep(toWait)
+
+      // Call processExits again.
+      receipt = await rootChain.processExits(
+        config.testErc20Contract,
+        0,
+        1,
+        {
+          privateKey: aliceAccount.privateKey,
+          from: aliceAccount.address
+        }
+      )
+      console.log(`Alice called RootChain.processExits() after challenge period: txhash = ${receipt.transactionHash}`)
+      balance = await testErc20Contract.methods.balanceOf(aliceAccount.address).call({ from: aliceAccount.address })
+      assert.equal(balance, DEPOSIT_AMOUNT)
+    })
+  })
 })
