@@ -37546,7 +37546,7 @@ class ChildChain {
   }
 
   /**
-   * Submit a signed transaction to the childchain
+   * Submit a signed transaction to the watcher
    *
    * @method submitTransaction
    * @param {string} transaction
@@ -37554,7 +37554,7 @@ class ChildChain {
    */
   async submitTransaction (transaction) {
     // validateTxBody(transactionBody)
-    return rpcApi.post(`${this.childChainUrl}/transaction.submit`, {
+    return rpcApi.post(`${this.watcherUrl}/transaction.submit`, {
       transaction: transaction.startsWith('0x') ? transaction : `0x${transaction}`
     })
   }
@@ -37570,13 +37570,13 @@ class ChildChain {
    * @param {number} toAmount - amount to transact
    * @return {Object} the submitted transaction
    */
-  async sendTransaction (fromAddress, fromUtxos, fromPrivateKeys, toAddress, toAmount) {
+  async sendTransaction (fromAddress, fromUtxos, fromPrivateKeys, toAddress, toAmount, currency) {
     validateAddress(fromAddress)
     validateAddress(toAddress)
     validatePrivateKey(fromPrivateKeys)
 
     // create the transaction body
-    const txBody = transaction.createTransactionBody(fromAddress, fromUtxos, toAddress, toAmount)
+    const txBody = transaction.createTransactionBody(fromAddress, fromUtxos, toAddress, toAmount, currency)
     // create transaction
     const unsignedTx = this.createTransaction(txBody)
     // sign transaction
@@ -55397,7 +55397,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License. */
 
-const Web3Eth= require('web3-eth')
+const Web3Eth = require('web3-eth')
 const web3Utils = require('web3-utils')
 
 const STANDARD_EXIT_BOND = 31415926535
@@ -55538,6 +55538,24 @@ class RootChain {
   getStandardExitBond () {
     // TODO Get this from the contract
     return STANDARD_EXIT_BOND
+  }
+
+  /**
+   * Adds a token to the Plasma chain. Tokens must be added in order to be able to exit them.
+   * @method addToken
+   * @param {string} token Address of the token to process.
+   * @return {string} transaction hash of the call
+   * @throws an exception if the token has already been added.
+   */
+  async addToken (token, txOptions) {
+    const txDetails = {
+      from: txOptions.from,
+      to: this.plasmaContractAddress,
+      data: this.plasmaContract.methods.addToken(token).encodeABI(),
+      gas: txOptions.gas || DEFAULT_GAS
+    }
+
+    return sendTx(this.eth, txDetails, txOptions.privateKey)
   }
 }
 
@@ -64390,14 +64408,31 @@ const NULL_OUTPUT = { owner: NULL_ADDRESS, amount: 0, currency: NULL_ADDRESS }
 const BLOCK_OFFSET = web3Utils.toBN(1000000000)
 const TX_OFFSET = 10000
 
+/**
+* A collection of helper functions for creating, encoding and decoding transactions.
+*/
 const transaction = {
   ETH_CURRENCY: NULL_ADDRESS,
 
-  validate: function (arg) {
-    validateInputs(arg.inputs)
-    validateOutputs(arg.outputs)
+  /**
+  * Checks validity of a transaction
+  *
+  *@param {Object} tx the url of the watcher server
+  *@throws an InvalidArgumentError exception if the transaction invalid
+  *
+  */
+  validate: function (tx) {
+    validateInputs(tx.inputs)
+    validateOutputs(tx.outputs)
   },
 
+  /**
+  * RLP encodes a transaction
+  *
+  *@param {Object} transactionBody the transaction object
+  *@returns the RLP encoded transaction
+  *
+  */
   encode: function (transactionBody) {
     const txArray = []
 
@@ -64423,6 +64458,15 @@ const transaction = {
     return `0x${rlp.encode(txArray).toString('hex').toUpperCase()}`
   },
 
+  /**
+  * Creates and encodes a deposit transaction
+  *
+  *@param {string} owner the address that is making the deposit
+  *@param {Object} amount the amount of the deposit
+  *@param {Object} currency the currency (token address) of the deposit
+  *@returns the RLP encoded deposit transaction
+  *
+  */
   encodeDeposit: function (owner, amount, currency) {
     return this.encode({
       inputs: [],
@@ -64430,32 +64474,89 @@ const transaction = {
     })
   },
 
+  /**
+  * Decodes an RLP encoded transaction
+  *
+  *@param {string} tx the RLP encoded transaction
+  *@returns the transaction object
+  *
+  */
   decode: function (tx) {
-    const [sigs, inputs, outputs] = rlp.decode(Buffer.from(tx.replace('0x', ''), 'hex'))
-    const decoded = { sigs }
-    decoded.inputs = inputs.map(input => {
-      return { blknum: input[0].readUInt16BE(), txindex: input[1].readUInt8(), oindex: input[2].readUInt8() }
-    })
-    decoded.outputs = outputs.map(input => {
-      return { blknum: input[0].readUInt16BE(), txindex: input[1].readUInt8(), oindex: input[2].readUInt8() }
-    })
+    let inputs, outputs, sigs
+    const decoded = rlp.decode(Buffer.from(tx.replace('0x', ''), 'hex'))
+    if (decoded.length === 2) {
+      inputs = decoded[0]
+      outputs = decoded[1]
+    } else if (decoded.length === 3) {
+      sigs = decoded[0]
+      inputs = decoded[1]
+      outputs = decoded[2]
+    }
+
+    return {
+      sigs,
+      inputs: inputs.map(input => {
+        const blknum = parseNumber(input[0])
+        const txindex = parseNumber(input[1])
+        const oindex = parseNumber(input[2])
+        return { blknum, txindex, oindex }
+      }),
+      outputs: outputs.map(output => {
+        const owner = parseString(output[0])
+        const currency = parseString(output[1])
+        const amount = parseNumber(output[2])
+        return { owner, currency, amount }
+      })
+    }
   },
 
-  createTransactionBody: function (fromAddress, fromUtxos, toAddress, toAmount) {
+  /**
+  * Creates a transaction object. It will select from the given utxos to cover the amount
+  * of the transaction, sending any remainder back as change.
+  *
+  *@param {string} fromAddress the address of the sender
+  *@param {string} fromUtxos the utxos to use as transaction inputs
+  *@param {string} toAddress the address of the receiver
+  *@param {string} toAmount the amount to send
+  *@param {string} currency the currency to send
+  *@returns the transaction object
+  *@throws InvalidArgumentError if any of the args are invalid
+  *@throws Error if the given utxos cannot cover the amount
+  *
+  */
+  createTransactionBody: function (fromAddress, fromUtxos, toAddress, toAmount, currency) {
     validateInputs(fromUtxos)
-    const inputArr = fromUtxos.map(utxo => utxo)
+    let inputArr = fromUtxos.filter(utxo => utxo.currency === currency)
 
+    // We can use a maximum of 4 inputs, so just take the largest 4 inputs and try to cover the amount with them
+    // TODO Be more clever about this...
+    if (inputArr.length > 4) {
+      inputArr.sort((a, b) => {
+        const diff = web3Utils.toBN(a.amount).sub(web3Utils.toBN(b.amount))
+        return Number(diff.toString())
+      })
+      inputArr = inputArr.slice(0, 4)
+    }
+
+    // Get the total value of the inputs
     const totalInputValue = inputArr.reduce((acc, curr) => acc.add(web3Utils.toBN(curr.amount.toString())), web3Utils.toBN(0))
+
+    // Check there is enough in the inputs to cover the amount
+    if (totalInputValue.lt(web3Utils.toBN(toAmount))) {
+      throw new Error(`Insufficient funds for ${toAmount}`)
+    }
 
     const outputArr = [{
       owner: toAddress,
+      currency,
       amount: Number(web3Utils.toBN(toAmount))
     }]
 
     if (totalInputValue.gt(web3Utils.toBN(toAmount))) {
-    // The 'change' output
+      // If necessary add a 'change' output
       outputArr.push({
         owner: fromAddress,
+        currency,
         amount: Number(totalInputValue.sub(web3Utils.toBN(toAmount)).toString())
       })
     }
@@ -64491,10 +64592,6 @@ function validateInputs (arg) {
   if (arg.length === 0 || arg.length > MAX_INPUTS) {
     throw new InvalidArgumentError(`Inputs must be an array of size > 0 and < ${MAX_INPUTS}`)
   }
-
-  if (!arg.every(input => input.currency === arg[0].currency)) {
-    throw new InvalidArgumentError('Cannot mix currencies')
-  }
 }
 
 function validateOutputs (arg) {
@@ -64515,7 +64612,7 @@ function addOutput (array, output) {
   array.push([
     sanitiseAddress(output.owner), // must start with '0x' to be encoded properly
     sanitiseAddress(output.currency), // must be a Number to be encoded properly
-    Number(output.amount) // must start with '0x' to be encoded properly
+    Number(output.amount) // must be a number to be encoded properly
   ])
 }
 
@@ -64524,6 +64621,14 @@ function sanitiseAddress (address) {
     return `0x${address}`
   }
   return address
+}
+
+function parseNumber (buf) {
+  return buf.length === 0 ? 0 : parseInt(buf.toString('hex'), 16)
+}
+
+function parseString (buf) {
+  return buf.length === 0 ? NULL_ADDRESS : `0x${buf.toString('hex')}`
 }
 
 module.exports = transaction
