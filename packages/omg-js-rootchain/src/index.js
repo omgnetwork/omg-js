@@ -155,6 +155,24 @@ class RootChain {
     // TODO Get this from the contract
     return STANDARD_EXIT_BOND
   }
+
+  /**
+   * Adds a token to the Plasma chain. Tokens must be added in order to be able to exit them.
+   * @method addToken
+   * @param {string} token Address of the token to process.
+   * @return {string} transaction hash of the call
+   * @throws an exception if the token has already been added.
+   */
+  async addToken (token, txOptions) {
+    const txDetails = {
+      from: txOptions.from,
+      to: this.plasmaContractAddress,
+      data: this.plasmaContract.methods.addToken(token).encodeABI(),
+      gas: txOptions.gas || DEFAULT_GAS
+    }
+
+    return sendTx(this.eth, txDetails, txOptions.privateKey)
+  }
 }
 
 async function sendTx (eth, txDetails, privateKey) {
