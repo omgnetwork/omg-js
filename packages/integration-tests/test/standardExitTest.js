@@ -16,6 +16,7 @@ limitations under the License. */
 const config = require('../test-config')
 const helper = require('./helper')
 const Web3 = require('web3')
+const erc20abi = require('human-standard-token-abi')
 const ChildChain = require('@omisego/omg-js-childchain')
 const RootChain = require('@omisego/omg-js-rootchain')
 const { transaction } = require('@omisego/omg-js-util')
@@ -230,14 +231,8 @@ describe('Standard Exit tests', async () => {
   })
 
   describe.skip('ERC20 exit', async () => {
-    let contractAbi
-    try {
-      contractAbi = require('../tokens/build/contracts/ERC20.json')
-    } catch (err) {
-      // Ignore
-    }
     const ERC20_CURRENCY = config.testErc20Contract
-    const testErc20Contract = new web3.eth.Contract(contractAbi.abi, config.testErc20Contract)
+    const testErc20Contract = new web3.eth.Contract(erc20abi, config.testErc20Contract)
     const INTIIAL_ALICE_AMOUNT_ETH = web3.utils.toWei('1', 'ether')
     const INTIIAL_ALICE_AMOUNT_ERC20 = 20
     const DEPOSIT_AMOUNT = 20
@@ -254,7 +249,7 @@ describe('Standard Exit tests', async () => {
         // Make sure the token has been added
         await rootChain.addToken(config.testErc20Contract, { from: aliceAccount.address, privateKey: aliceAccount.privateKey })
       } catch (err) {
-        // addToken will revert if the token has already been added. Ignore it. 
+        // addToken will revert if the token has already been added. Ignore it.
       }
 
       // Send ERC20 tokens to Alice's account

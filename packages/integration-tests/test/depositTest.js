@@ -16,6 +16,7 @@ limitations under the License. */
 const config = require('../test-config')
 const helper = require('./helper')
 const Web3 = require('web3')
+const erc20abi = require('human-standard-token-abi')
 const ChildChain = require('@omisego/omg-js-childchain')
 const RootChain = require('@omisego/omg-js-rootchain')
 const { transaction } = require('@omisego/omg-js-util')
@@ -77,14 +78,7 @@ describe('Deposit tests', async () => {
 
   describe.skip('deposit ERC20', async () => {
     let account
-    let contractAbi
-    try {
-      // TODO Use a standard erc20 abi
-      contractAbi = require('../tokens/build/contracts/ERC20.json')
-    } catch (err) {
-      // Ignore
-    }
-    const testErc20Contract = new web3.eth.Contract(contractAbi.abi, config.testErc20Contract)
+    const testErc20Contract = new web3.eth.Contract(erc20abi, config.testErc20Contract)
     const INITIAL_AMOUNT = 100
     const DEPOSIT_AMOUNT = 20
 
