@@ -31,7 +31,7 @@ let rootChain
 
 describe('Standard Exit tests', async () => {
   before(async () => {
-    const plasmaContract = await helper.getPlasmaContractAddress(config.contract_exchanger_url)
+    const plasmaContract = await helper.getPlasmaContractAddress(config)
     rootChain = new RootChain(config.geth_url, plasmaContract.contract_addr)
   })
 
