@@ -177,7 +177,7 @@ async function spentOnGas (web3, receipt) {
 async function getPlasmaContractAddress (config) {
   if (config.rootchainContract && config.rootchainContract !== '') {
     return config.rootchainContract
-  } else if (config.contract_exchanger_url) {
+  } else if (config.contract_exchanger_url && config.contract_exchanger_url !== '') {
     const repsonse = await fetch(config.contract_exchanger_url)
     return repsonse.json()
   }
