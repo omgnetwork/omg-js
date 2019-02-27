@@ -77,7 +77,13 @@ describe('Deposit tests', async () => {
 
   describe.skip('deposit ERC20', async () => {
     let account
-    const contractAbi = require('../tokens/build/contracts/ERC20.json')
+    let contractAbi
+    try {
+      // TODO Use a standard erc20 abi
+      contractAbi = require('../tokens/build/contracts/ERC20.json')
+    } catch (err) {
+      // Ignore
+    }
     const testErc20Contract = new web3.eth.Contract(contractAbi.abi, config.testErc20Contract)
     const INITIAL_AMOUNT = 100
     const DEPOSIT_AMOUNT = 20
