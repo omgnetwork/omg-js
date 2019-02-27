@@ -45,7 +45,7 @@ describe('Standard Exit tests', async () => {
       const accounts = await web3.eth.getAccounts()
       // Assume the funding account is accounts[0] and has a blank password
       // Create and fund Alice's account
-      aliceAccount = await helper.createAndFundAccount(web3, accounts[0], '', INTIIAL_ALICE_AMOUNT)
+      aliceAccount = await helper.createAndFundAccount(web3, accounts[0], config.fundAccountPw, INTIIAL_ALICE_AMOUNT)
       console.log(`Created Alice account ${JSON.stringify(aliceAccount)}`)
     })
 
@@ -138,7 +138,7 @@ describe('Standard Exit tests', async () => {
     // Create Alice and Bob's accounts
     // Assume the funding account is accounts[0] and has a blank password
       const accounts = await web3.eth.getAccounts()
-    ;[aliceAccount, bobAccount] = await helper.createAndFundManyAccounts(web3, accounts[0], '', [INTIIAL_ALICE_AMOUNT, INTIIAL_BOB_AMOUNT])
+    ;[aliceAccount, bobAccount] = await helper.createAndFundManyAccounts(web3, accounts[0], config.fundAccountPw, [INTIIAL_ALICE_AMOUNT, INTIIAL_BOB_AMOUNT])
       console.log(`Created Alice account ${JSON.stringify(aliceAccount)}`)
       console.log(`Created Bob account ${JSON.stringify(bobAccount)}`)
       // Alice deposits ETH into the Plasma contract
@@ -242,7 +242,7 @@ describe('Standard Exit tests', async () => {
       // Create Alice's account
       // Assume the funding account is accounts[0] and has a blank password
       const accounts = await web3.eth.getAccounts()
-      aliceAccount = await helper.createAndFundAccount(web3, accounts[0], '', INTIIAL_ALICE_AMOUNT_ETH)
+      aliceAccount = await helper.createAndFundAccount(web3, accounts[0], config.fundAccountPw, INTIIAL_ALICE_AMOUNT_ETH)
       console.log(`Created Alice account ${JSON.stringify(aliceAccount)}`)
 
       try {
@@ -253,7 +253,7 @@ describe('Standard Exit tests', async () => {
       }
 
       // Send ERC20 tokens to Alice's account
-      await helper.fundAccountERC20(web3, testErc20Contract, accounts[0], '', aliceAccount.address, INTIIAL_ALICE_AMOUNT_ERC20)
+      await helper.fundAccountERC20(web3, testErc20Contract, accounts[0], config.fundAccountPw, aliceAccount.address, INTIIAL_ALICE_AMOUNT_ERC20)
 
       // Account must approve the Plasma contract
       await helper.approveERC20(web3, testErc20Contract, aliceAccount.address, aliceAccount.privateKey, rootChain.plasmaContractAddress, DEPOSIT_AMOUNT)

@@ -40,7 +40,7 @@ describe('Deposit tests', async () => {
       // Create and fund a new account
       const accounts = await web3.eth.getAccounts()
       // Assume the funding account is accounts[0] and has a blank password
-      account = await helper.createAndFundAccount(web3, accounts[0], '', web3.utils.toWei('2', 'ether'))
+      account = await helper.createAndFundAccount(web3, accounts[0], config.fundAccountPw, web3.utils.toWei('2', 'ether'))
       console.log(`Created new account ${JSON.stringify(account)}`)
     })
 
@@ -86,10 +86,10 @@ describe('Deposit tests', async () => {
     // Create and fund a new account
       const accounts = await web3.eth.getAccounts()
       // Assume the funding account is accounts[0] and has a blank password
-      account = await helper.createAndFundAccount(web3, accounts[0], '', web3.utils.toWei('1', 'ether'))
+      account = await helper.createAndFundAccount(web3, accounts[0], config.fundAccountPw, web3.utils.toWei('1', 'ether'))
       console.log(`Created new account ${JSON.stringify(account)}`)
       // Send ERC20 tokens to the new account
-      await helper.fundAccountERC20(web3, testErc20Contract, accounts[0], '', account.address, INITIAL_AMOUNT)
+      await helper.fundAccountERC20(web3, testErc20Contract, accounts[0], config.fundAccountPw, account.address, INITIAL_AMOUNT)
     })
 
     it('should deposit ERC20 tokens to the Plasma contract', async () => {

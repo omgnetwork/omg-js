@@ -44,7 +44,7 @@ describe('Transfer tests', async () => {
       // Create Alice and Bob's accounts
       // Assume the funding account is accounts[0] and has a blank password
       const accounts = await web3.eth.getAccounts()
-      ;[aliceAccount, bobAccount] = await helper.createAndFundManyAccounts(web3, accounts[0], '', [INTIIAL_ALICE_AMOUNT, 0])
+      ;[aliceAccount, bobAccount] = await helper.createAndFundManyAccounts(web3, accounts[0], config.fundAccountPw, [INTIIAL_ALICE_AMOUNT, 0])
       console.log(`Created Alice account ${JSON.stringify(aliceAccount)}`)
       console.log(`Created Bob account ${JSON.stringify(bobAccount)}`)
       // Alice deposits ETH into the Plasma contract
@@ -110,7 +110,7 @@ describe('Transfer tests', async () => {
       // Create Alice and Bob's accounts
       // Assume the funding account is accounts[0] and has a blank password
       const accounts = await web3.eth.getAccounts()
-      ;[aliceAccount, bobAccount] = await helper.createAndFundManyAccounts(web3, accounts[0], '', [INTIIAL_ALICE_AMOUNT, INITIAL_BOB_AMOUNT])
+      ;[aliceAccount, bobAccount] = await helper.createAndFundManyAccounts(web3, accounts[0], config.fundAccountPw, [INTIIAL_ALICE_AMOUNT, INITIAL_BOB_AMOUNT])
       console.log(`Created Alice account ${JSON.stringify(aliceAccount)}`)
       console.log(`Created Bob account ${JSON.stringify(bobAccount)}`)
 
@@ -237,11 +237,11 @@ describe('Transfer tests', async () => {
       // Create Alice and Bob's accounts
       // Assume the funding account is accounts[0] and has a blank password
       const accounts = await web3.eth.getAccounts()
-      ;[aliceAccount, bobAccount] = await helper.createAndFundManyAccounts(web3, accounts[0], '', [INTIIAL_ALICE_AMOUNT_ETH, 0])
+      ;[aliceAccount, bobAccount] = await helper.createAndFundManyAccounts(web3, accounts[0], config.fundAccountPw, [INTIIAL_ALICE_AMOUNT_ETH, 0])
       console.log(`Created Alice account ${JSON.stringify(aliceAccount)}`)
       console.log(`Created Bob account ${JSON.stringify(bobAccount)}`)
       // Send ERC20 tokens to Alice's account
-      await helper.fundAccountERC20(web3, testErc20Contract, accounts[0], '', aliceAccount.address, INTIIAL_ALICE_AMOUNT_ERC20)
+      await helper.fundAccountERC20(web3, testErc20Contract, accounts[0], config.fundAccountPw, aliceAccount.address, INTIIAL_ALICE_AMOUNT_ERC20)
 
       // Account must approve the Plasma contract
       await helper.approveERC20(web3, testErc20Contract, aliceAccount.address, aliceAccount.privateKey, rootChain.plasmaContractAddress, DEPOSIT_AMOUNT)
@@ -318,7 +318,7 @@ describe('Transfer tests', async () => {
       // Create Alice and Bob's accounts
       // Assume the funding account is accounts[0] and has a blank password
       const accounts = await web3.eth.getAccounts()
-      ;[aliceAccount, bobAccount] = await helper.createAndFundManyAccounts(web3, accounts[0], '', [INTIIAL_ALICE_AMOUNT_ETH, 0])
+      ;[aliceAccount, bobAccount] = await helper.createAndFundManyAccounts(web3, accounts[0], config.fundAccountPw, [INTIIAL_ALICE_AMOUNT_ETH, 0])
       console.log(`Created Alice account ${JSON.stringify(aliceAccount)}`)
       console.log(`Created Bob account ${JSON.stringify(bobAccount)}`)
 
@@ -327,7 +327,7 @@ describe('Transfer tests', async () => {
       console.log(`Alice deposited ${DEPOSIT_AMOUNT_ETH} into RootChain contract`)
 
       // Send ERC20 tokens to Alice's account
-      await helper.fundAccountERC20(web3, testErc20Contract, accounts[0], '', aliceAccount.address, INTIIAL_ALICE_AMOUNT_ERC20)
+      await helper.fundAccountERC20(web3, testErc20Contract, accounts[0], config.fundAccountPw, aliceAccount.address, INTIIAL_ALICE_AMOUNT_ERC20)
       // Account must approve the Plasma contract
       await helper.approveERC20(web3, testErc20Contract, aliceAccount.address, aliceAccount.privateKey, rootChain.plasmaContractAddress, DEPOSIT_AMOUNT_ERC20)
       // Create the ERC20 deposit transaction
@@ -416,7 +416,7 @@ describe('Transfer tests', async () => {
       // Create Alice and Bob's accounts
       // Assume the funding account is accounts[0] and has a blank password
       const accounts = await web3.eth.getAccounts()
-        ;[aliceAccount, bobAccount] = await helper.createAndFundManyAccounts(web3, accounts[0], '', [INTIIAL_ALICE_AMOUNT, 0])
+      ;[aliceAccount, bobAccount] = await helper.createAndFundManyAccounts(web3, accounts[0], config.fundAccountPw, [INTIIAL_ALICE_AMOUNT, 0])
       console.log(`Created Alice account ${JSON.stringify(aliceAccount)}`)
       console.log(`Created Bob account ${JSON.stringify(bobAccount)}`)
       // Alice deposits ETH into the Plasma contract
