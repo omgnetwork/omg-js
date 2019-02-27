@@ -46,7 +46,7 @@ describe('Challenge exit tests', async () => {
     // Create Alice and Bob's accounts
     // Assume the funding account is accounts[0] and has a blank password
     const accounts = await web3.eth.getAccounts()
-    ;[aliceAccount, bobAccount] = await helper.createAndFundManyAccounts(web3, accounts[0], '', [INTIIAL_ALICE_AMOUNT, INTIIAL_BOB_AMOUNT])
+    ;[aliceAccount, bobAccount] = await helper.createAndFundManyAccounts(web3, accounts[0], config.fundAccountPw, [INTIIAL_ALICE_AMOUNT, INTIIAL_BOB_AMOUNT])
     console.log(`Created Alice account ${JSON.stringify(aliceAccount)}`)
     console.log(`Created Bob account ${JSON.stringify(bobAccount)}`)
   })
