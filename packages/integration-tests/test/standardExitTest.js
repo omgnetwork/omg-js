@@ -31,7 +31,7 @@ let rootChain
 
 describe('Standard Exit tests', async () => {
   before(async () => {
-    const plasmaContract = await helper.getPlasmaContractAddress(config.contract_exchanger_url)
+    const plasmaContract = await helper.getPlasmaContractAddress(config)
     rootChain = new RootChain(config.geth_url, plasmaContract.contract_addr)
   })
 
@@ -230,7 +230,12 @@ describe('Standard Exit tests', async () => {
   })
 
   describe.skip('ERC20 exit', async () => {
-    const contractAbi = require('../tokens/build/contracts/ERC20.json')
+    let contractAbi
+    try {
+      contractAbi = require('../tokens/build/contracts/ERC20.json')
+    } catch (err) {
+      // Ignore
+    }
     const ERC20_CURRENCY = config.testErc20Contract
     const testErc20Contract = new web3.eth.Contract(contractAbi.abi, config.testErc20Contract)
     const INTIIAL_ALICE_AMOUNT_ETH = web3.utils.toWei('1', 'ether')

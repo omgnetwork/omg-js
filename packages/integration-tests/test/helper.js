@@ -174,9 +174,15 @@ async function spentOnGas (web3, receipt) {
   return web3.utils.toBN(tx.gasPrice).muln(receipt.gasUsed)
 }
 
-async function getPlasmaContractAddress (url) {
-  const repsonse = await fetch(url)
-  return repsonse.json()
+async function getPlasmaContractAddress (config) {
+  if (config.rootchainContract && config.rootchainContract !== '') {
+    return config.rootchainContract
+  } else if (config.contract_exchanger_url && config.contract_exchanger_url !== '') {
+    const repsonse = await fetch(config.contract_exchanger_url)
+    return repsonse.json()
+  }
+
+  throw new Error('No ROOTCHAIN_CONTRACT or CONTRACT_EXCHANGER_URL configured')
 }
 
 async function getTimeToExit (plasmaContract, output) {
