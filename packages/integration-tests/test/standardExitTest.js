@@ -37,16 +37,19 @@ describe('Standard Exit tests', async () => {
   })
 
   describe('Deposit transaction exit', async () => {
-    const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.0002', 'ether')
-    const DEPOSIT_AMOUNT = web3.utils.toWei('.0001', 'ether')
+    const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.02', 'ether')
+    const DEPOSIT_AMOUNT = web3.utils.toWei('.01', 'ether')
     let aliceAccount
 
     before(async () => {
-      const accounts = await web3.eth.getAccounts()
-      // Assume the funding account is accounts[0] and has a blank password
       // Create and fund Alice's account
-      aliceAccount = await helper.createAndFundAccount(web3, accounts[0], config.fundAccountPw, INTIIAL_ALICE_AMOUNT)
+      aliceAccount = await helper.createAndFundAccount(web3, config, INTIIAL_ALICE_AMOUNT)
       console.log(`Created Alice account ${JSON.stringify(aliceAccount)}`)
+    })
+
+    after(async () => {
+      // Send back any leftover eth
+      helper.returnFunds(web3, config, aliceAccount)
     })
 
     it('should succesfully exit a deposit', async () => {
@@ -127,23 +130,27 @@ describe('Standard Exit tests', async () => {
   })
 
   describe('childchain transaction exit', async () => {
-    const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.0002', 'ether')
-    const INTIIAL_BOB_AMOUNT = web3.utils.toWei('.0001', 'ether')
-    const DEPOSIT_AMOUNT = web3.utils.toWei('.0001', 'ether')
-    const TRANSFER_AMOUNT = web3.utils.toWei('0.00002', 'ether')
+    const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.02', 'ether')
+    const INTIIAL_BOB_AMOUNT = web3.utils.toWei('.01', 'ether')
+    const DEPOSIT_AMOUNT = web3.utils.toWei('.01', 'ether')
+    const TRANSFER_AMOUNT = web3.utils.toWei('0.002', 'ether')
     let aliceAccount
     let bobAccount
 
     before(async () => {
-    // Create Alice and Bob's accounts
-    // Assume the funding account is accounts[0] and has a blank password
-      const accounts = await web3.eth.getAccounts()
-    ;[aliceAccount, bobAccount] = await helper.createAndFundManyAccounts(web3, accounts[0], config.fundAccountPw, [INTIIAL_ALICE_AMOUNT, INTIIAL_BOB_AMOUNT])
+      // Create Alice and Bob's accounts
+      ;[aliceAccount, bobAccount] = await helper.createAndFundManyAccounts(web3, config, [INTIIAL_ALICE_AMOUNT, INTIIAL_BOB_AMOUNT])
       console.log(`Created Alice account ${JSON.stringify(aliceAccount)}`)
       console.log(`Created Bob account ${JSON.stringify(bobAccount)}`)
       // Alice deposits ETH into the Plasma contract
       await helper.depositEthAndWait(rootChain, childChain, aliceAccount.address, DEPOSIT_AMOUNT, aliceAccount.privateKey)
       console.log(`Alice deposited ${DEPOSIT_AMOUNT} into RootChain contract`)
+    })
+
+    after(async () => {
+      // Send back any leftover eth
+      helper.returnFunds(web3, config, aliceAccount)
+      helper.returnFunds(web3, config, bobAccount)
     })
 
     it('should succesfully exit a ChildChain transaction', async () => {
@@ -233,16 +240,14 @@ describe('Standard Exit tests', async () => {
   describe.skip('ERC20 exit', async () => {
     const ERC20_CURRENCY = config.testErc20Contract
     const testErc20Contract = new web3.eth.Contract(erc20abi, config.testErc20Contract)
-    const INTIIAL_ALICE_AMOUNT_ETH = web3.utils.toWei('.0001', 'ether')
+    const INTIIAL_ALICE_AMOUNT_ETH = web3.utils.toWei('.01', 'ether')
     const INTIIAL_ALICE_AMOUNT_ERC20 = 20
     const DEPOSIT_AMOUNT = 20
     let aliceAccount
 
     before(async () => {
       // Create Alice's account
-      // Assume the funding account is accounts[0] and has a blank password
-      const accounts = await web3.eth.getAccounts()
-      aliceAccount = await helper.createAndFundAccount(web3, accounts[0], config.fundAccountPw, INTIIAL_ALICE_AMOUNT_ETH)
+      aliceAccount = await helper.createAndFundAccount(web3, config, INTIIAL_ALICE_AMOUNT_ETH)
       console.log(`Created Alice account ${JSON.stringify(aliceAccount)}`)
 
       try {
@@ -252,6 +257,7 @@ describe('Standard Exit tests', async () => {
         // addToken will revert if the token has already been added. Ignore it.
       }
 
+      const accounts = await web3.eth.getAccounts()
       // Send ERC20 tokens to Alice's account
       await helper.fundAccountERC20(web3, testErc20Contract, accounts[0], config.fundAccountPw, aliceAccount.address, INTIIAL_ALICE_AMOUNT_ERC20)
 
@@ -267,6 +273,11 @@ describe('Standard Exit tests', async () => {
       // Wait for transaction to be mined and reflected in the account's balance
       const balance = await helper.waitForBalance(childChain, aliceAccount.address, DEPOSIT_AMOUNT, ERC20_CURRENCY)
       console.log(`Alice's balance: ${balance[0].amount.toString()}`)
+    })
+
+    after(async () => {
+      // Send back any leftover eth
+      helper.returnFunds(web3, config, aliceAccount)
     })
 
     it('should exit ERC20 tokens', async () => {

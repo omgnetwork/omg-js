@@ -38,10 +38,13 @@ describe('Deposit tests', async () => {
 
     before(async () => {
       // Create and fund a new account
-      const accounts = await web3.eth.getAccounts()
-      // Assume the funding account is accounts[0] and has a blank password
-      account = await helper.createAndFundAccount(web3, accounts[0], config.fundAccountPw, web3.utils.toWei('.0002', 'ether'))
+      account = await helper.createAndFundAccount(web3, config, web3.utils.toWei('.02', 'ether'))
       console.log(`Created new account ${JSON.stringify(account)}`)
+    })
+
+    after(async () => {
+      // Send back any leftover eth
+      helper.returnFunds(web3, config, account)
     })
 
     it('should deposit ETH to the Plasma contract', async () => {
@@ -49,7 +52,7 @@ describe('Deposit tests', async () => {
       const initialBalance = await childChain.getBalance(account.address)
       assert.equal(initialBalance.length, 0)
 
-      const TEST_AMOUNT = web3.utils.toWei('.0001', 'ether')
+      const TEST_AMOUNT = web3.utils.toWei('.01', 'ether')
       console.log(TEST_AMOUNT)
 
       // Create the deposit transaction
@@ -64,14 +67,14 @@ describe('Deposit tests', async () => {
 
       // Check balance is correct
       assert.equal(balance[0].currency, transaction.ETH_CURRENCY)
-      assert.equal(balance[0].amount.toString(), web3.utils.toWei('.0001', 'ether'))
+      assert.equal(balance[0].amount.toString(), TEST_AMOUNT)
       console.log(`Balance: ${balance[0].amount.toString()}`)
 
       // THe account should have one utxo on the child chain
       const utxos = await childChain.getUtxos(account.address)
       assert.equal(utxos.length, 1)
       assert.hasAllKeys(utxos[0], ['utxo_pos', 'txindex', 'owner', 'oindex', 'currency', 'blknum', 'amount'])
-      assert.equal(utxos[0].amount.toString(), web3.utils.toWei('.0001', 'ether'))
+      assert.equal(utxos[0].amount.toString(), TEST_AMOUNT)
       assert.equal(utxos[0].currency, transaction.ETH_CURRENCY)
     })
   })
@@ -83,13 +86,17 @@ describe('Deposit tests', async () => {
     const DEPOSIT_AMOUNT = 20
 
     before(async () => {
-    // Create and fund a new account
-      const accounts = await web3.eth.getAccounts()
-      // Assume the funding account is accounts[0] and has a blank password
-      account = await helper.createAndFundAccount(web3, accounts[0], config.fundAccountPw, web3.utils.toWei('.0001', 'ether'))
+      // Create and fund a new account
+      account = await helper.createAndFundAccount(web3, config, web3.utils.toWei('.01', 'ether'))
       console.log(`Created new account ${JSON.stringify(account)}`)
       // Send ERC20 tokens to the new account
+      const accounts = await web3.eth.getAccounts()
       await helper.fundAccountERC20(web3, testErc20Contract, accounts[0], config.fundAccountPw, account.address, INITIAL_AMOUNT)
+    })
+
+    after(async () => {
+      // Send back any leftover eth
+      helper.returnFunds(web3, config, account)
     })
 
     it('should deposit ERC20 tokens to the Plasma contract', async () => {
