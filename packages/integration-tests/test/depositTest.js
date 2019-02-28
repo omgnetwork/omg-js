@@ -38,7 +38,7 @@ describe('Deposit tests', async () => {
 
     before(async () => {
       // Create and fund a new account
-      account = await helper.createAndFundAccount(web3, config, web3.utils.toWei('.02', 'ether'))
+      account = await helper.createAndFundAccount(web3, config, web3.utils.toWei('.1', 'ether'))
       console.log(`Created new account ${JSON.stringify(account)}`)
     })
 
@@ -52,7 +52,7 @@ describe('Deposit tests', async () => {
       const initialBalance = await childChain.getBalance(account.address)
       assert.equal(initialBalance.length, 0)
 
-      const TEST_AMOUNT = web3.utils.toWei('.01', 'ether')
+      const TEST_AMOUNT = web3.utils.toWei('.0001', 'ether')
       console.log(TEST_AMOUNT)
 
       // Create the deposit transaction
@@ -87,7 +87,7 @@ describe('Deposit tests', async () => {
 
     before(async () => {
       // Create and fund a new account
-      account = await helper.createAndFundAccount(web3, config, web3.utils.toWei('.01', 'ether'))
+      account = await helper.createAndFundAccount(web3, config, web3.utils.toWei('.1', 'ether'))
       console.log(`Created new account ${JSON.stringify(account)}`)
       // Send ERC20 tokens to the new account
       const accounts = await web3.eth.getAccounts()

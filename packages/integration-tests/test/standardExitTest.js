@@ -37,8 +37,8 @@ describe('Standard Exit tests', async () => {
   })
 
   describe('Deposit transaction exit', async () => {
-    const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.02', 'ether')
-    const DEPOSIT_AMOUNT = web3.utils.toWei('.01', 'ether')
+    const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.1', 'ether')
+    const DEPOSIT_AMOUNT = web3.utils.toWei('.0001', 'ether')
     let aliceAccount
 
     before(async () => {
@@ -130,10 +130,10 @@ describe('Standard Exit tests', async () => {
   })
 
   describe('childchain transaction exit', async () => {
-    const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.02', 'ether')
-    const INTIIAL_BOB_AMOUNT = web3.utils.toWei('.01', 'ether')
-    const DEPOSIT_AMOUNT = web3.utils.toWei('.01', 'ether')
-    const TRANSFER_AMOUNT = web3.utils.toWei('0.002', 'ether')
+    const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.1', 'ether')
+    const INTIIAL_BOB_AMOUNT = web3.utils.toWei('.1', 'ether')
+    const DEPOSIT_AMOUNT = web3.utils.toWei('.001', 'ether')
+    const TRANSFER_AMOUNT = web3.utils.toWei('0.0002', 'ether')
     let aliceAccount
     let bobAccount
 
@@ -240,7 +240,7 @@ describe('Standard Exit tests', async () => {
   describe.skip('ERC20 exit', async () => {
     const ERC20_CURRENCY = config.testErc20Contract
     const testErc20Contract = new web3.eth.Contract(erc20abi, config.testErc20Contract)
-    const INTIIAL_ALICE_AMOUNT_ETH = web3.utils.toWei('.01', 'ether')
+    const INTIIAL_ALICE_AMOUNT_ETH = web3.utils.toWei('.1', 'ether')
     const INTIIAL_ALICE_AMOUNT_ERC20 = 20
     const DEPOSIT_AMOUNT = 20
     let aliceAccount

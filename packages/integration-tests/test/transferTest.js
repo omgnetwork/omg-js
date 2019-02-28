@@ -34,9 +34,9 @@ describe('Transfer tests', async () => {
   })
 
   describe('Simple ETH transfer', async () => {
-    const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.02', 'ether')
-    const DEPOSIT_AMOUNT = web3.utils.toWei('.01', 'ether')
-    const TRANSFER_AMOUNT = web3.utils.toWei('0.002', 'ether')
+    const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.1', 'ether')
+    const DEPOSIT_AMOUNT = web3.utils.toWei('.001', 'ether')
+    const TRANSFER_AMOUNT = web3.utils.toWei('0.0002', 'ether')
     let aliceAccount
     let bobAccount
 
@@ -52,8 +52,7 @@ describe('Transfer tests', async () => {
 
     after(async () => {
       // Send back any leftover eth
-      helper.returnFunds(web3, config, aliceAccount)
-      helper.returnFunds(web3, config, bobAccount)
+      await helper.returnFunds(web3, config, aliceAccount)
     })
 
     it('should transfer ETH on the childchain', async () => {
@@ -104,9 +103,9 @@ describe('Transfer tests', async () => {
   })
 
   describe('Transfer with 4 inputs and 4 outputs', async () => {
-    const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.03', 'ether')
-    const INITIAL_BOB_AMOUNT = web3.utils.toWei('.03', 'ether')
-    const DEPOSIT_AMOUNT = web3.utils.toWei('.01', 'ether')
+    const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.1', 'ether')
+    const INITIAL_BOB_AMOUNT = web3.utils.toWei('.1', 'ether')
+    const DEPOSIT_AMOUNT = web3.utils.toWei('.0001', 'ether')
     let aliceAccount
     let bobAccount
 
@@ -234,7 +233,7 @@ describe('Transfer tests', async () => {
   describe.skip('ERC20 transfer', async () => {
     const ERC20_CURRENCY = config.testErc20Contract
     const testErc20Contract = new web3.eth.Contract(erc20abi, config.testErc20Contract)
-    const INTIIAL_ALICE_AMOUNT_ETH = web3.utils.toWei('.01', 'ether')
+    const INTIIAL_ALICE_AMOUNT_ETH = web3.utils.toWei('.1', 'ether')
     const INTIIAL_ALICE_AMOUNT_ERC20 = 20
     const DEPOSIT_AMOUNT = 20
     const TRANSFER_AMOUNT = 3
@@ -269,7 +268,6 @@ describe('Transfer tests', async () => {
     after(async () => {
       // Send back any leftover eth
       helper.returnFunds(web3, config, aliceAccount)
-      helper.returnFunds(web3, config, bobAccount)
     })
 
     it('should transfer ERC20 tokens on the childchain', async () => {
@@ -317,10 +315,10 @@ describe('Transfer tests', async () => {
     })
   })
 
-  describe.skip('Mixed currency transfer', async () => {
+  describe('Mixed currency transfer', async () => {
     const ERC20_CURRENCY = config.testErc20Contract
     const testErc20Contract = new web3.eth.Contract(erc20abi, config.testErc20Contract)
-    const INTIIAL_ALICE_AMOUNT_ETH = web3.utils.toWei('.01', 'ether')
+    const INTIIAL_ALICE_AMOUNT_ETH = web3.utils.toWei('.1', 'ether')
     const INTIIAL_ALICE_AMOUNT_ERC20 = 20
     const DEPOSIT_AMOUNT_ETH = web3.utils.toWei('0.001', 'ether')
     const DEPOSIT_AMOUNT_ERC20 = 20
@@ -358,7 +356,6 @@ describe('Transfer tests', async () => {
     after(async () => {
       // Send back any leftover eth
       helper.returnFunds(web3, config, aliceAccount)
-      helper.returnFunds(web3, config, bobAccount)
     })
 
     it('should transfer ETH and ERC20 tokens on the childchain', async () => {
@@ -426,9 +423,9 @@ describe('Transfer tests', async () => {
   })
 
   describe('sendTransaction test', async () => {
-    const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.02', 'ether')
-    const DEPOSIT_AMOUNT = web3.utils.toWei('.01', 'ether')
-    const TRANSFER_AMOUNT = web3.utils.toWei('0.002', 'ether')
+    const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.1', 'ether')
+    const DEPOSIT_AMOUNT = web3.utils.toWei('.001', 'ether')
+    const TRANSFER_AMOUNT = web3.utils.toWei('0.0002', 'ether')
     let aliceAccount
     let bobAccount
 
@@ -445,7 +442,6 @@ describe('Transfer tests', async () => {
     after(async () => {
       // Send back any leftover eth
       helper.returnFunds(web3, config, aliceAccount)
-      helper.returnFunds(web3, config, bobAccount)
     })
 
     it('should transfer funds on the childchain', async () => {
