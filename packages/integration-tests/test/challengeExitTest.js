@@ -30,10 +30,10 @@ let rootChain
 // modified RootChain contract with a shorter than normal MIN_EXIT_PERIOD.
 
 describe('Challenge exit tests', async () => {
-  const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.0002', 'ether')
-  const INTIIAL_BOB_AMOUNT = web3.utils.toWei('.0001', 'ether')
-  const DEPOSIT_AMOUNT = web3.utils.toWei('.0001', 'ether')
-  const TRANSFER_AMOUNT = web3.utils.toWei('0.00002', 'ether')
+  const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.1', 'ether')
+  const INTIIAL_BOB_AMOUNT = web3.utils.toWei('.1', 'ether')
+  const DEPOSIT_AMOUNT = web3.utils.toWei('.01', 'ether')
+  const TRANSFER_AMOUNT = web3.utils.toWei('0.002', 'ether')
   let aliceAccount
   let bobAccount
 
@@ -44,11 +44,15 @@ describe('Challenge exit tests', async () => {
 
   beforeEach(async () => {
     // Create Alice and Bob's accounts
-    // Assume the funding account is accounts[0] and has a blank password
-    const accounts = await web3.eth.getAccounts()
-    ;[aliceAccount, bobAccount] = await helper.createAndFundManyAccounts(web3, accounts[0], config.fundAccountPw, [INTIIAL_ALICE_AMOUNT, INTIIAL_BOB_AMOUNT])
+    ;[aliceAccount, bobAccount] = await helper.createAndFundManyAccounts(web3, config, [INTIIAL_ALICE_AMOUNT, INTIIAL_BOB_AMOUNT])
     console.log(`Created Alice account ${JSON.stringify(aliceAccount)}`)
     console.log(`Created Bob account ${JSON.stringify(bobAccount)}`)
+  })
+
+  afterEach(async () => {
+    // Send back any leftover eth
+    helper.returnFunds(web3, config, aliceAccount)
+    helper.returnFunds(web3, config, bobAccount)
   })
 
   it('should succesfully challenge a dishonest exit', async () => {

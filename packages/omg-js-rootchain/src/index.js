@@ -19,7 +19,6 @@ const web3Utils = require('web3-utils')
 const STANDARD_EXIT_BOND = 31415926535
 // const INFLIGHT_EXIT_BOND = 31415926535
 // const PIGGYBACK_BOND = 31415926535
-const DEFAULT_GAS = 2000000
 
 class RootChain {
   /**
@@ -53,7 +52,8 @@ class RootChain {
       to: this.plasmaContractAddress,
       value: amount,
       data: this.plasmaContract.methods.deposit(depositTx).encodeABI(),
-      gas: txOptions.gas || DEFAULT_GAS
+      gas: txOptions.gas,
+      gasPrice: txOptions.gasPrice
     }
 
     return sendTx(this.eth, txDetails, txOptions.privateKey)
@@ -72,7 +72,8 @@ class RootChain {
       from: txOptions.from,
       to: this.plasmaContractAddress,
       data: this.plasmaContract.methods.depositFrom(depositTx).encodeABI(),
-      gas: txOptions.gas || DEFAULT_GAS
+      gas: txOptions.gas,
+      gasPrice: txOptions.gasPrice
     }
 
     return sendTx(this.eth, txDetails, txOptions.privateKey)
@@ -98,7 +99,8 @@ class RootChain {
         web3Utils.hexToBytes(inclusionProof)
       ).encodeABI(),
       value: txOptions.value || STANDARD_EXIT_BOND,
-      gas: txOptions.gas || DEFAULT_GAS
+      gas: txOptions.gas,
+      gasPrice: txOptions.gasPrice
     }
 
     return sendTx(this.eth, txDetails, txOptions.privateKey)
@@ -125,7 +127,8 @@ class RootChain {
         inputIndex,
         web3Utils.hexToBytes(challengeTxSig)
       ).encodeABI(),
-      gas: txOptions.gas || DEFAULT_GAS
+      gas: txOptions.gas,
+      gasPrice: txOptions.gasPrice
     }
 
     return sendTx(this.eth, txDetails, txOptions.privateKey)
@@ -145,7 +148,8 @@ class RootChain {
       from: txOptions.from,
       to: this.plasmaContractAddress,
       data: this.plasmaContract.methods.processExits(token, topUtxoPos, exitsToProcess).encodeABI(),
-      gas: txOptions.gas || DEFAULT_GAS
+      gas: txOptions.gas,
+      gasPrice: txOptions.gasPrice
     }
 
     return sendTx(this.eth, txDetails, txOptions.privateKey)
@@ -168,7 +172,8 @@ class RootChain {
       from: txOptions.from,
       to: this.plasmaContractAddress,
       data: this.plasmaContract.methods.addToken(token).encodeABI(),
-      gas: txOptions.gas || DEFAULT_GAS
+      gas: txOptions.gas,
+      gasPrice: txOptions.gasPrice
     }
 
     return sendTx(this.eth, txDetails, txOptions.privateKey)
@@ -176,14 +181,24 @@ class RootChain {
 }
 
 async function sendTx (eth, txDetails, privateKey) {
+  await setGas(eth, txDetails)
   if (!privateKey) {
-    // No privateKey to sign with, assume sending from an unlocked geth account
+    // No privateKey, caller will handle signing if necessary
     return eth.sendTransaction(txDetails)
   } else {
     // First sign the transaction
     const signedTx = await eth.accounts.signTransaction(txDetails, privateKey)
     // Then send it
     return eth.sendSignedTransaction(signedTx.rawTransaction)
+  }
+}
+
+async function setGas (eth, txDetails) {
+  if (!txDetails.gas) {
+    txDetails.gas = await eth.estimateGas(txDetails)
+  }
+  if (!txDetails.gasPrice) {
+    txDetails.gasPrice = await eth.getGasPrice()
   }
 }
 
