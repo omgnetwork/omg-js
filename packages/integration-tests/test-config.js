@@ -21,8 +21,10 @@ const config = {
   childchain_url: process.env.CHILDCHAIN_URL || 'http://localhost:9656',
   rootchainContract: process.env.ROOTCHAIN_CONTRACT || '',
   contract_exchanger_url: process.env.CONTRACT_EXCHANGER_URL || 'http://localhost:5000/get_contract',
-  testErc20Contract: process.env.TEST_ERC20_CONTRACT || '0x3241f670d3d86561d9a3fa13d1eddac3f0fb9a60',
-  fundAccountPw: process.env.FUND_ACCOUNT_PASSWORD || ''
+  testErc20Contract: process.env.TEST_ERC20_CONTRACT || '0x757afd667fe677540eb03b4642716a0bd7c5986a',
+  fundAccount: process.env.FUND_ACCOUNT || '',
+  fundAccountPrivateKey: process.env.FUND_ACCOUNT_PRIVATEKEY || '',
+  fundAccountPassword: process.env.FUND_ACCOUNT_PASSWORD || ''
 }
 
 module.exports = config

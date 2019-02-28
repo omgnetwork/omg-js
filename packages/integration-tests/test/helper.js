@@ -23,18 +23,50 @@ function createAccount (web3) {
   return ret
 }
 
-async function createAndFundAccount (web3, fundAccount, fundAccountPassword, value) {
-  const account = createAccount(web3)
+async function fundAccount (web3, config, address, value) {
+  if (value <= 0) {
+    return
+  }
 
-  if (value > 0) {
-    await web3.eth.personal.unlockAccount(fundAccount, fundAccountPassword)
-    await web3.eth.sendTransaction({
+  let fundAccount
+  if (config.fundAccount && config.fundAccount !== '') {
+    fundAccount = config.fundAccountAddress
+  } else {
+    // Default to using eth.accounts[0]
+    const accounts = await web3.eth.getAccounts()
+    fundAccount = accounts[0]
+  }
+
+  // First check if a private key has been set. If so, use it.
+  if (config.fundAccountPrivateKey && config.fundAccountPrivateKey !== '') {
+    const txDetails = {
       from: fundAccount,
-      to: account.address,
+      to: address,
+      value
+    }
+    // First sign the transaction
+    const signedTx = await web3.eth.accounts.signTransaction(txDetails, config.fundAccountPrivateKey)
+    // Then send it
+    return web3.eth.sendSignedTransaction(signedTx.rawTransaction)
+  }
+
+  // Otherwise, try with a password.
+  const unlocked = await web3.eth.personal.unlockAccount(fundAccount, config.fundAccountPassword)
+  if (unlocked) {
+    return web3.eth.sendTransaction({
+      from: fundAccount,
+      to: address,
       value
     })
   }
 
+  throw new Error(`Funding account ${fundAccount} password or private key not set`)
+}
+
+async function createAndFundAccount (web3, config, value) {
+  const account = createAccount(web3)
+  await fundAccount(web3, config, account.address, value)
+  await waitForEthBalance(web3, account.address, value)
   return account
 }
 
@@ -75,8 +107,8 @@ async function sendTx (eth, txDetails, privateKey) {
   }
 }
 
-async function createAndFundManyAccounts (web3, fundAccount, fundAccountPassword, initialAmounts) {
-  return Promise.all(initialAmounts.map(amount => createAndFundAccount(web3, fundAccount, fundAccountPassword, amount)))
+async function createAndFundManyAccounts (web3, config, initialAmounts) {
+  return Promise.all(initialAmounts.map(amount => createAndFundAccount(web3, config, amount)))
 }
 
 function waitForBalance (childChain, address, expectedBalance, currency) {
@@ -87,6 +119,20 @@ function waitForBalance (childChain, address, expectedBalance, currency) {
     if (resp.length === 0 || !resp.find(item => {
       return item.amount.toString() === expectedBalance.toString() && item.currency === currency
     })) {
+      retry()
+    }
+    return resp
+  }, {
+    minTimeout: 2000,
+    factor: 1
+  })
+}
+
+function waitForEthBalance (web3, address, expectedBalance) {
+  return promiseRetry(async (retry, number) => {
+    console.log(`Waiting for ETH balance...  (${number})`)
+    const resp = await web3.eth.getBalance(address)
+    if (resp.toString() !== expectedBalance.toString()) {
       retry()
     }
     return resp
@@ -190,11 +236,45 @@ async function getTimeToExit (plasmaContract, output) {
   return (Number(exitableAt) - Math.trunc(Date.now() / 1000)) * 1000
 }
 
+async function returnFunds (web3, config, fromAccount) {
+  let fundAccount
+  if (config.fundAccount && config.fundAccount !== '') {
+    fundAccount = config.fundAccountAddress
+  } else {
+    // Default to using eth.accounts[0]
+    const accounts = await web3.eth.getAccounts()
+    fundAccount = accounts[0]
+  }
+
+  const txDetails = {
+    from: fromAccount.address,
+    to: fundAccount
+  }
+
+  const gas = await web3.eth.estimateGas(txDetails)
+  const gasPrice = await web3.eth.getGasPrice()
+
+  txDetails.gas = gas
+  txDetails.gasPrice = gasPrice
+
+  const balance = await web3.eth.getBalance(fromAccount.address)
+  const gasUsed = web3.utils.toBN(gas).mul(web3.utils.toBN(gasPrice))
+  if (Number(gasUsed.toString()) > 0) {
+    txDetails.value = (web3.utils.toBN(balance).sub(gasUsed)).toString()
+
+    // First sign the transaction
+    const signedTx = await web3.eth.accounts.signTransaction(txDetails, fromAccount.privateKey)
+    // Then send it
+    return web3.eth.sendSignedTransaction(signedTx.rawTransaction)
+  }
+}
+
 module.exports = {
   createAccount,
   createAndFundAccount,
   createAndFundManyAccounts,
   waitForBalance,
+  waitForEthBalance,
   sleep,
   send,
   sendAndWait,
@@ -204,5 +284,6 @@ module.exports = {
   spentOnGas,
   waitForEvent,
   getPlasmaContractAddress,
-  getTimeToExit
+  getTimeToExit,
+  returnFunds
 }
