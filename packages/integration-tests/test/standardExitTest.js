@@ -112,7 +112,7 @@ describe('Standard Exit tests', async () => {
       receipt = await rootChain.processExits(
         transaction.ETH_CURRENCY,
         0,
-        1,
+        6,
         {
           privateKey: aliceAccount.privateKey,
           from: aliceAccount.address
@@ -218,7 +218,7 @@ describe('Standard Exit tests', async () => {
       receipt = await rootChain.processExits(
         transaction.ETH_CURRENCY,
         0,
-        1,
+        6,
         {
           privateKey: bobAccount.privateKey,
           from: bobAccount.address
@@ -327,7 +327,7 @@ describe('Standard Exit tests', async () => {
       receipt = await rootChain.processExits(
         config.testErc20Contract,
         0,
-        1,
+        6,
         {
           privateKey: aliceAccount.privateKey,
           from: aliceAccount.address
