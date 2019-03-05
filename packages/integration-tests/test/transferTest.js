@@ -315,7 +315,7 @@ describe('Transfer tests', async () => {
     })
   })
 
-  describe('Mixed currency transfer', async () => {
+  describe.skip('Mixed currency transfer', async () => {
     const ERC20_CURRENCY = config.testErc20Contract
     const testErc20Contract = new web3.eth.Contract(erc20abi, config.testErc20Contract)
     const INTIIAL_ALICE_AMOUNT_ETH = web3.utils.toWei('.1', 'ether')

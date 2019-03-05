@@ -17,6 +17,15 @@ const promiseRetry = require('promise-retry')
 const { transaction } = require('@omisego/omg-js-util')
 const fetch = require('node-fetch')
 
+async function setGas (eth, txDetails) {
+  if (!txDetails.gas) {
+    txDetails.gas = await eth.estimateGas(txDetails)
+  }
+  if (!txDetails.gasPrice) {
+    txDetails.gasPrice = await eth.getGasPrice()
+  }
+}
+
 function createAccount (web3) {
   const ret = web3.eth.accounts.create()
   ret.address = ret.address.toLowerCase()
@@ -30,7 +39,7 @@ async function fundAccount (web3, config, address, value) {
 
   let fundAccount
   if (config.fundAccount && config.fundAccount !== '') {
-    fundAccount = config.fundAccountAddress
+    fundAccount = config.fundAccount
   } else {
     // Default to using eth.accounts[0]
     const accounts = await web3.eth.getAccounts()
@@ -44,6 +53,8 @@ async function fundAccount (web3, config, address, value) {
       to: address,
       value
     }
+    await setGas(web3.eth, txDetails)
+
     // First sign the transaction
     const signedTx = await web3.eth.accounts.signTransaction(txDetails, config.fundAccountPrivateKey)
     // Then send it
@@ -53,11 +64,13 @@ async function fundAccount (web3, config, address, value) {
   // Otherwise, try with a password.
   const unlocked = await web3.eth.personal.unlockAccount(fundAccount, config.fundAccountPassword)
   if (unlocked) {
-    return web3.eth.sendTransaction({
+    const txDetails = {
       from: fundAccount,
       to: address,
       value
-    })
+    }
+    await setGas(web3.eth, txDetails)
+    return web3.eth.sendTransaction(txDetails)
   }
 
   throw new Error(`Funding account ${fundAccount} password or private key not set`)
@@ -108,13 +121,19 @@ async function sendTx (eth, txDetails, privateKey) {
 }
 
 async function createAndFundManyAccounts (web3, config, initialAmounts) {
-  return Promise.all(initialAmounts.map(amount => createAndFundAccount(web3, config, amount)))
+  const ret = []
+  for (let i = 0; i < initialAmounts.length; i++) {
+    const account = await createAndFundAccount(web3, config, initialAmounts[i])
+    ret.push(account)
+  }
+
+  return ret
 }
 
 function waitForBalance (childChain, address, expectedBalance, currency) {
   currency = currency || transaction.ETH_CURRENCY
   return promiseRetry(async (retry, number) => {
-    console.log(`Waiting for balance...  (${number})`)
+    console.log(`Waiting for childchain balance...  (${number})`)
     const resp = await childChain.getBalance(address)
     if (resp.length === 0 || !resp.find(item => {
       return item.amount.toString() === expectedBalance.toString() && item.currency === currency
@@ -123,8 +142,9 @@ function waitForBalance (childChain, address, expectedBalance, currency) {
     }
     return resp
   }, {
-    minTimeout: 2000,
-    factor: 1
+    minTimeout: 6000,
+    factor: 1,
+    retries: 50
   })
 }
 
@@ -138,7 +158,8 @@ function waitForEthBalance (web3, address, expectedBalance) {
     return resp
   }, {
     minTimeout: 2000,
-    factor: 1
+    factor: 1,
+    retries: 30
   })
 }
 
@@ -154,8 +175,9 @@ function waitForEvent (childChain, eventName) {
     }
     retry()
   }, {
-    minTimeout: 2000,
-    factor: 1
+    minTimeout: 6000,
+    factor: 1,
+    retries: 50
   })
 }
 
@@ -222,7 +244,7 @@ async function spentOnGas (web3, receipt) {
 
 async function getPlasmaContractAddress (config) {
   if (config.rootchainContract && config.rootchainContract !== '') {
-    return config.rootchainContract
+    return { contract_addr: config.rootchainContract }
   } else if (config.contract_exchanger_url && config.contract_exchanger_url !== '') {
     const repsonse = await fetch(config.contract_exchanger_url)
     return repsonse.json()
@@ -239,7 +261,7 @@ async function getTimeToExit (plasmaContract, output) {
 async function returnFunds (web3, config, fromAccount) {
   let fundAccount
   if (config.fundAccount && config.fundAccount !== '') {
-    fundAccount = config.fundAccountAddress
+    fundAccount = config.fundAccount
   } else {
     // Default to using eth.accounts[0]
     const accounts = await web3.eth.getAccounts()
