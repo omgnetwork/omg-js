@@ -57,6 +57,28 @@ class ChildChain {
   }
 
   /**
+   * Get a transaction
+   *
+   * @method getTransaction
+   * @param {object} id The hash of the transaction to get
+   * @return {Array} array of transactions
+   */
+  async getTransaction (id) {
+    return rpcApi.post(`${this.watcherUrl}/transaction.get`, { id })
+  }
+
+  /**
+   * Get transactions
+   *
+   * @method getTransactions
+   * @param {object} filters Filter the results by `address`, `blknum` and `limit`
+   * @return {Array} array of transactions
+   */
+  async getTransactions (filters) {
+    return rpcApi.post(`${this.watcherUrl}/transaction.all`, filters)
+  }
+
+  /**
    * Get the exit data for a UTXO
    *
    * @method getExitData
