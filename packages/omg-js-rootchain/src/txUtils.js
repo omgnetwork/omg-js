@@ -28,7 +28,7 @@ async function sendTx (web3, txDetails, privateKey) {
 async function setGas (web3, txDetails) {
   if (!txDetails.gasPrice) {
     if (web3.version.api && web3.version.api.startsWith('0.2')) {
-      return new Promise((resolve, reject) => {
+      txDetails.gasPrice = await new Promise((resolve, reject) => {
         web3.eth.getGasPrice((err, result) => {
           if (err) {
             reject(err)
@@ -43,7 +43,7 @@ async function setGas (web3, txDetails) {
   }
   if (!txDetails.gas) {
     if (web3.version.api && web3.version.api.startsWith('0.2')) {
-      return new Promise((resolve, reject) => {
+      txDetails.gas = await new Promise((resolve, reject) => {
         web3.eth.estimateGas(txDetails, (err, result) => {
           if (err) {
             reject(err)
