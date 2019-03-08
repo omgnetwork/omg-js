@@ -30,7 +30,7 @@ let rootChain
 describe('Transfer tests', async () => {
   before(async () => {
     const plasmaContract = await helper.getPlasmaContractAddress(config)
-    rootChain = new RootChain(config.geth_url, plasmaContract.contract_addr)
+    rootChain = new RootChain(web3, plasmaContract.contract_addr)
   })
 
   describe('Simple ETH transfer', async () => {
