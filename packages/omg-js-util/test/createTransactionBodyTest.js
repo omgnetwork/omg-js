@@ -1,5 +1,5 @@
 const transaction = require('../src/transaction')
-const Web3Utils = require('web3-utils')
+const numberToBN = require('number-to-bn')
 const assert = require('chai').assert
 
 describe('createTransactionBody', () => {
@@ -23,7 +23,7 @@ describe('createTransactionBody', () => {
     assert.equal(txBody.outputs[0].owner, toAddress)
     assert.equal(txBody.outputs[0].amount.toString(), toAmount.toString())
     assert.equal(txBody.outputs[1].owner, fromAddress)
-    const expectedChange = Web3Utils.toBN(fromUtxos[0].amount).sub(Web3Utils.toBN(toAmount))
+    const expectedChange = numberToBN(fromUtxos[0].amount).sub(numberToBN(toAmount))
     assert.equal(txBody.outputs[1].amount.toString(), expectedChange.toString())
   })
 
@@ -54,7 +54,7 @@ describe('createTransactionBody', () => {
     assert.equal(txBody.outputs[0].owner, toAddress)
     assert.equal(txBody.outputs[0].amount.toString(), toAmount.toString())
     assert.equal(txBody.outputs[1].owner, fromAddress)
-    const expectedChange = Web3Utils.toBN(fromUtxos[0].amount).add(Web3Utils.toBN(fromUtxos[1].amount)).sub(Web3Utils.toBN(toAmount))
+    const expectedChange = numberToBN(fromUtxos[0].amount).add(numberToBN(fromUtxos[1].amount)).sub(numberToBN(toAmount))
     assert.equal(txBody.outputs[1].amount.toString(), expectedChange.toString())
   })
 
