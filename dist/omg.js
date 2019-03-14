@@ -16374,7 +16374,7 @@ class RootChain {
   /**
   * Create a RootChain object
   *
-  * @param {string} web3 a web3 provider (can be the url of a geth node)
+  * @param {string} web3 the web3 object to access the Ethereum network
   * @param {string} plasmaContractAddress the address of the RootChain contract
   * @param {string} plasmaAbi the abi of the RootChain contract. If not set the default abi included in './contracts/Rootchain' will be used.
   * @return {Object} a Rootchain object
@@ -35518,11 +35518,7 @@ const ethUtil = require('ethereumjs-util')
 const sigUtil = require('eth-sig-util')
 
 function ecSign (tosign, privateKey) {
-  const ethMsg = Buffer.concat([
-    Buffer.from(`\x19Ethereum Signed Message:\n${tosign.length}`, 'utf-8'),
-    tosign
-  ])
-  const hashed = keccak256(ethMsg)
+  const hashed = keccak256(tosign)
   const signed = ethUtil.ecsign(
     Buffer.from(hashed, 'hex'),
     Buffer.from(privateKey.replace('0x', ''), 'hex')
