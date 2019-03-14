@@ -101,22 +101,23 @@ async function approveERC20 (web3,
   const txDetails = {
     from: ownerAccount,
     to: erc20Contract._address,
-    data: erc20Contract.methods.approve(spender, value).encodeABI(),
-    gas: 2000000
+    data: erc20Contract.methods.approve(spender, value).encodeABI()
   }
 
-  return sendTx(web3.eth, txDetails, ownerAccountPassword)
+  return sendTx(web3, txDetails, ownerAccountPassword)
 }
 
-async function sendTx (eth, txDetails, privateKey) {
+async function sendTx (web3, txDetails, privateKey) {
+  await setGas(web3.eth, txDetails)
+
   if (!privateKey) {
     // No privateKey to sign with, assume sending from an unlocked geth account
-    return eth.sendTransaction(txDetails)
+    return web3.eth.sendTransaction(txDetails)
   } else {
     // First sign the transaction
-    const signedTx = await eth.accounts.signTransaction(txDetails, privateKey)
+    const signedTx = await web3.eth.accounts.signTransaction(txDetails, privateKey)
     // Then send it
-    return eth.sendSignedTransaction(signedTx.rawTransaction)
+    return web3.eth.sendSignedTransaction(signedTx.rawTransaction)
   }
 }
 
