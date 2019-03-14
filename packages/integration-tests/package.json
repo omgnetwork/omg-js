@@ -14,6 +14,7 @@
     "@omisego/omg-js-rootchain": "^1.1.0",
     "@omisego/omg-js-util": "^1.1.0",
     "human-standard-token-abi": "^2.0.0",
-    "node-fetch": "^2.3.0"
+    "node-fetch": "^2.3.0",
+    "web3": "1.0.0-beta.36"
   }
 }

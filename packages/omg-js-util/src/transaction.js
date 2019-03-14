@@ -16,7 +16,7 @@ limitations under the License. */
 global.Buffer = global.Buffer || require('buffer').Buffer
 
 const InvalidArgumentError = require('./InvalidArgumentError')
-const web3Utils = require('web3-utils')
+const numberToBN = require('number-to-bn')
 const rlp = require('rlp')
 
 const MAX_INPUTS = 4
@@ -26,7 +26,7 @@ const NULL_ADDRESS = '0x0000000000000000000000000000000000000000'
 const NULL_INPUT = { blknum: 0, txindex: 0, oindex: 0 }
 const NULL_OUTPUT = { owner: NULL_ADDRESS, amount: 0, currency: NULL_ADDRESS }
 
-const BLOCK_OFFSET = web3Utils.toBN(1000000000)
+const BLOCK_OFFSET = numberToBN(1000000000)
 const TX_OFFSET = 10000
 
 /**
@@ -153,32 +153,32 @@ const transaction = {
     // TODO Be more clever about this...
     if (inputArr.length > 4) {
       inputArr.sort((a, b) => {
-        const diff = web3Utils.toBN(a.amount).sub(web3Utils.toBN(b.amount))
+        const diff = numberToBN(a.amount).sub(numberToBN(b.amount))
         return Number(diff.toString())
       })
       inputArr = inputArr.slice(0, 4)
     }
 
     // Get the total value of the inputs
-    const totalInputValue = inputArr.reduce((acc, curr) => acc.add(web3Utils.toBN(curr.amount.toString())), web3Utils.toBN(0))
+    const totalInputValue = inputArr.reduce((acc, curr) => acc.add(numberToBN(curr.amount.toString())), numberToBN(0))
 
     // Check there is enough in the inputs to cover the amount
-    if (totalInputValue.lt(web3Utils.toBN(toAmount))) {
+    if (totalInputValue.lt(numberToBN(toAmount))) {
       throw new Error(`Insufficient funds for ${toAmount}`)
     }
 
     const outputArr = [{
       owner: toAddress,
       currency,
-      amount: Number(web3Utils.toBN(toAmount))
+      amount: Number(numberToBN(toAmount))
     }]
 
-    if (totalInputValue.gt(web3Utils.toBN(toAmount))) {
+    if (totalInputValue.gt(numberToBN(toAmount))) {
       // If necessary add a 'change' output
       outputArr.push({
         owner: fromAddress,
         currency,
-        amount: Number(totalInputValue.sub(web3Utils.toBN(toAmount)).toString())
+        amount: Number(totalInputValue.sub(numberToBN(toAmount)).toString())
       })
     }
 
@@ -191,13 +191,13 @@ const transaction = {
   },
 
   encodeUtxoPos: function (utxo) {
-    const blk = web3Utils.toBN(utxo.blknum).mul(BLOCK_OFFSET)
-    const tx = web3Utils.toBN(utxo.txindex).muln(TX_OFFSET)
+    const blk = numberToBN(utxo.blknum).mul(BLOCK_OFFSET)
+    const tx = numberToBN(utxo.txindex).muln(TX_OFFSET)
     return blk.add(tx).addn(utxo.oindex)
   },
 
   decodeUtxoPos: function (utxoPos) {
-    const bn = web3Utils.toBN(utxoPos)
+    const bn = numberToBN(utxoPos)
     const blknum = bn.div(BLOCK_OFFSET).toNumber()
     const txindex = bn.mod(BLOCK_OFFSET).divn(TX_OFFSET).toNumber()
     const oindex = bn.modn(TX_OFFSET)

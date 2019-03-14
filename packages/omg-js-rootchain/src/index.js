@@ -13,8 +13,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License. */
 
-const Web3Eth = require('web3-eth')
-const web3Utils = require('web3-utils')
+const { hexToBytes } = require('@omisego/omg-js-util')
+const txUtils = require('./txUtils')
 
 const STANDARD_EXIT_BOND = 31415926535
 // const INFLIGHT_EXIT_BOND = 31415926535
@@ -24,17 +24,21 @@ class RootChain {
   /**
   * Create a RootChain object
   *
-  * @param {string} web3Provider a web3 provider (can be the url of a geth node)
+  * @param {string} web3 the web3 object to access the Ethereum network
   * @param {string} plasmaContractAddress the address of the RootChain contract
   * @param {string} plasmaAbi the abi of the RootChain contract. If not set the default abi included in './contracts/Rootchain' will be used.
   * @return {Object} a Rootchain object
   *
   */
-  constructor (web3Provider, plasmaContractAddress, plasmaAbi) {
-    this.eth = new Web3Eth(web3Provider)
+  constructor (web3, plasmaContractAddress, plasmaAbi) {
+    this.web3 = web3
     this.plasmaContractAddress = plasmaContractAddress
     const contractAbi = plasmaAbi || require('./contracts/RootChain.json')
-    this.plasmaContract = new this.eth.Contract(contractAbi.abi, plasmaContractAddress)
+    if (web3.version.api && web3.version.api.startsWith('0.2')) {
+      this.plasmaContract = this.web3.eth.contract(contractAbi.abi).at(plasmaContractAddress)
+    } else {
+      this.plasmaContract = new this.web3.eth.Contract(contractAbi.abi, plasmaContractAddress)
+    }
   }
 
   /**
@@ -51,12 +55,12 @@ class RootChain {
       from: txOptions.from,
       to: this.plasmaContractAddress,
       value: amount,
-      data: this.plasmaContract.methods.deposit(depositTx).encodeABI(),
+      data: txUtils.getTxData(this.web3, this.plasmaContract, 'deposit', depositTx),
       gas: txOptions.gas,
       gasPrice: txOptions.gasPrice
     }
 
-    return sendTx(this.eth, txDetails, txOptions.privateKey)
+    return txUtils.sendTx(this.web3, txDetails, txOptions.privateKey)
   }
 
   /**
@@ -71,12 +75,12 @@ class RootChain {
     const txDetails = {
       from: txOptions.from,
       to: this.plasmaContractAddress,
-      data: this.plasmaContract.methods.depositFrom(depositTx).encodeABI(),
+      data: txUtils.getTxData(this.web3, this.plasmaContract, 'depositFrom', depositTx),
       gas: txOptions.gas,
       gasPrice: txOptions.gasPrice
     }
 
-    return sendTx(this.eth, txDetails, txOptions.privateKey)
+    return txUtils.sendTx(this.web3, txDetails, txOptions.privateKey)
   }
 
   /**
@@ -93,17 +97,17 @@ class RootChain {
     const txDetails = {
       from: txOptions.from,
       to: this.plasmaContractAddress,
-      data: this.plasmaContract.methods.startStandardExit(
+      data: txUtils.getTxData(this.web3, this.plasmaContract, 'startStandardExit',
         outputId,
-        web3Utils.hexToBytes(outputTx),
-        web3Utils.hexToBytes(inclusionProof)
-      ).encodeABI(),
+        hexToBytes(outputTx),
+        hexToBytes(inclusionProof)
+      ),
       value: txOptions.value || STANDARD_EXIT_BOND,
       gas: txOptions.gas,
       gasPrice: txOptions.gasPrice
     }
 
-    return sendTx(this.eth, txDetails, txOptions.privateKey)
+    return txUtils.sendTx(this.web3, txDetails, txOptions.privateKey)
   }
 
   /**
@@ -121,17 +125,16 @@ class RootChain {
     const txDetails = {
       from: txOptions.from,
       to: this.plasmaContractAddress,
-      data: this.plasmaContract.methods.challengeStandardExit(
+      data: txUtils.getTxData(this.web3, this.plasmaContract, 'challengeStandardExit',
         outputId,
-        web3Utils.hexToBytes(challengeTx),
+        hexToBytes(challengeTx),
         inputIndex,
-        web3Utils.hexToBytes(challengeTxSig)
-      ).encodeABI(),
+        hexToBytes(challengeTxSig)),
       gas: txOptions.gas,
       gasPrice: txOptions.gasPrice
     }
 
-    return sendTx(this.eth, txDetails, txOptions.privateKey)
+    return txUtils.sendTx(this.web3, txDetails, txOptions.privateKey)
   }
 
   /**
@@ -147,12 +150,13 @@ class RootChain {
     const txDetails = {
       from: txOptions.from,
       to: this.plasmaContractAddress,
-      data: this.plasmaContract.methods.processExits(token, topUtxoPos, exitsToProcess).encodeABI(),
+      data: txUtils.getTxData(this.web3, this.plasmaContract, 'processExits',
+        token, topUtxoPos, exitsToProcess),
       gas: txOptions.gas,
       gasPrice: txOptions.gasPrice
     }
 
-    return sendTx(this.eth, txDetails, txOptions.privateKey)
+    return txUtils.sendTx(this.web3, txDetails, txOptions.privateKey)
   }
 
   getStandardExitBond () {
@@ -171,34 +175,12 @@ class RootChain {
     const txDetails = {
       from: txOptions.from,
       to: this.plasmaContractAddress,
-      data: this.plasmaContract.methods.addToken(token).encodeABI(),
+      data: txUtils.getTxData(this.web3, this.plasmaContract, 'addToken', token),
       gas: txOptions.gas,
       gasPrice: txOptions.gasPrice
     }
 
-    return sendTx(this.eth, txDetails, txOptions.privateKey)
-  }
-}
-
-async function sendTx (eth, txDetails, privateKey) {
-  await setGas(eth, txDetails)
-  if (!privateKey) {
-    // No privateKey, caller will handle signing if necessary
-    return eth.sendTransaction(txDetails)
-  } else {
-    // First sign the transaction
-    const signedTx = await eth.accounts.signTransaction(txDetails, privateKey)
-    // Then send it
-    return eth.sendSignedTransaction(signedTx.rawTransaction)
-  }
-}
-
-async function setGas (eth, txDetails) {
-  if (!txDetails.gas) {
-    txDetails.gas = await eth.estimateGas(txDetails)
-  }
-  if (!txDetails.gasPrice) {
-    txDetails.gasPrice = await eth.getGasPrice()
+    return txUtils.sendTx(this.web3, txDetails, txOptions.privateKey)
   }
 }
 

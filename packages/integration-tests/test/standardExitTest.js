@@ -23,7 +23,7 @@ const { transaction } = require('@omisego/omg-js-util')
 const chai = require('chai')
 const assert = chai.assert
 
-const web3 = new Web3(config.geth_url)
+const web3 = new Web3(new Web3.providers.HttpProvider(config.geth_url))
 const childChain = new ChildChain(config.watcher_url, config.childchain_url)
 let rootChain
 
@@ -33,7 +33,7 @@ let rootChain
 describe('Standard Exit tests', async () => {
   before(async () => {
     const plasmaContract = await helper.getPlasmaContractAddress(config)
-    rootChain = new RootChain(config.geth_url, plasmaContract.contract_addr)
+    rootChain = new RootChain(web3, plasmaContract.contract_addr)
   })
 
   describe('Deposit transaction exit', async () => {
