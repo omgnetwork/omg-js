@@ -20,6 +20,7 @@ const erc20abi = require('human-standard-token-abi')
 const ChildChain = require('@omisego/omg-js-childchain')
 const RootChain = require('@omisego/omg-js-rootchain')
 const { transaction } = require('@omisego/omg-js-util')
+const numberToBN = require('number-to-bn')
 const chai = require('chai')
 const assert = chai.assert
 
@@ -33,10 +34,12 @@ describe('Transfer tests', async () => {
     rootChain = new RootChain(web3, plasmaContract.contract_addr)
   })
 
-  describe('Simple ETH transfer', async () => {
-    const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.1', 'ether')
-    const DEPOSIT_AMOUNT = web3.utils.toWei('.001', 'ether')
-    const TRANSFER_AMOUNT = web3.utils.toWei('0.0002', 'ether')
+  describe('Simple ETH (ci-enabled)', async () => {
+    const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('0.5', 'ether')
+    const DEPOSIT_AMOUNT = web3.utils.toWei('.04', 'ether')
+
+    // TRANSFER_AMOUNT is deliberately bigger than Number.MAX_SAFE_INTEGER to cause rounding errors if not properly handled
+    const TRANSFER_AMOUNT = '20000000000000123'
     let aliceAccount
     let bobAccount
 
@@ -63,15 +66,13 @@ describe('Transfer tests', async () => {
       assert.equal(utxos[0].amount.toString(), DEPOSIT_AMOUNT)
       assert.equal(utxos[0].currency, transaction.ETH_CURRENCY)
 
-      // Convert 'amount' to a Number
-      utxos[0].amount = Number(utxos[0].amount)
-      const CHANGE_AMOUNT = utxos[0].amount - TRANSFER_AMOUNT
+      const CHANGE_AMOUNT = numberToBN(utxos[0].amount).sub(numberToBN(TRANSFER_AMOUNT))
       const txBody = {
         inputs: [utxos[0]],
         outputs: [{
           owner: bobAccount.address,
           currency: transaction.ETH_CURRENCY,
-          amount: Number(TRANSFER_AMOUNT)
+          amount: TRANSFER_AMOUNT
         }, {
           owner: aliceAccount.address,
           currency: transaction.ETH_CURRENCY,
@@ -98,7 +99,7 @@ describe('Transfer tests', async () => {
       // Alice's balance should be CHANGE_AMOUNT
       balance = await childChain.getBalance(aliceAccount.address)
       assert.equal(balance.length, 1)
-      assert.equal(balance[0].amount.toString(), CHANGE_AMOUNT)
+      assert.equal(balance[0].amount.toString(), CHANGE_AMOUNT.toString())
     })
   })
 
@@ -230,7 +231,7 @@ describe('Transfer tests', async () => {
     })
   })
 
-  describe.skip('ERC20 transfer', async () => {
+  describe('ERC20 transfer', async () => {
     const ERC20_CURRENCY = config.testErc20Contract
     const testErc20Contract = new web3.eth.Contract(erc20abi, config.testErc20Contract)
     const INTIIAL_ALICE_AMOUNT_ETH = web3.utils.toWei('.1', 'ether')
@@ -315,7 +316,7 @@ describe('Transfer tests', async () => {
     })
   })
 
-  describe.skip('Mixed currency transfer', async () => {
+  describe('Mixed currency transfer', async () => {
     const ERC20_CURRENCY = config.testErc20Contract
     const testErc20Contract = new web3.eth.Contract(erc20abi, config.testErc20Contract)
     const INTIIAL_ALICE_AMOUNT_ETH = web3.utils.toWei('.1', 'ether')
