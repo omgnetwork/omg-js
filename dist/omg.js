@@ -16363,7 +16363,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License. */
 
-const { hexToBytes } = require('@omisego/omg-js-util')
 const txUtils = require('./txUtils')
 
 const STANDARD_EXIT_BOND = 31415926535
@@ -16449,8 +16448,8 @@ class RootChain {
       to: this.plasmaContractAddress,
       data: txUtils.getTxData(this.web3, this.plasmaContract, 'startStandardExit',
         outputId,
-        hexToBytes(outputTx),
-        hexToBytes(inclusionProof)
+        outputTx,
+        inclusionProof
       ),
       value: txOptions.value || STANDARD_EXIT_BOND,
       gas: txOptions.gas,
@@ -16477,9 +16476,9 @@ class RootChain {
       to: this.plasmaContractAddress,
       data: txUtils.getTxData(this.web3, this.plasmaContract, 'challengeStandardExit',
         outputId,
-        hexToBytes(challengeTx),
+        challengeTx,
         inputIndex,
-        hexToBytes(challengeTxSig)),
+        challengeTxSig),
       gas: txOptions.gas,
       gasPrice: txOptions.gasPrice
     }
@@ -16536,7 +16535,7 @@ class RootChain {
 
 module.exports = RootChain
 
-},{"./contracts/RootChain.json":47,"./txUtils":49,"@omisego/omg-js-util":131}],49:[function(require,module,exports){
+},{"./contracts/RootChain.json":47,"./txUtils":49}],49:[function(require,module,exports){
 async function sendTx (web3, txDetails, privateKey) {
   await setGas(web3, txDetails)
   if (!privateKey) {
