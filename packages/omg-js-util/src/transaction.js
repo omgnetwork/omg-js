@@ -232,8 +232,10 @@ function addInput (array, input) {
 function addOutput (array, output) {
   array.push([
     sanitiseAddress(output.owner), // must start with '0x' to be encoded properly
-    sanitiseAddress(output.currency), // must be a Number to be encoded properly
-    Number(output.amount) // must be a number to be encoded properly
+    sanitiseAddress(output.currency), // must start with '0x' to be encoded properly
+    // If amount is 0 it should be encoded as '0x80' (empty byte array)
+    // If it's non zero, it should be a BN to avoid precision loss
+    output.amount === 0 ? 0 : numberToBN(output.amount)
   ])
 }
 
