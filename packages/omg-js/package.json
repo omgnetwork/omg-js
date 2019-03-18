@@ -1,6 +1,6 @@
 {
   "name": "@omisego/omg-js",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "JavaScript Library to interact with OMG Network",
   "keywords": [
     "OMG",
@@ -23,7 +23,7 @@
   },
   "dependencies": {
     "@omisego/omg-js-childchain": "^1.2.1",
-    "@omisego/omg-js-rootchain": "^1.2.1",
+    "@omisego/omg-js-rootchain": "^1.2.2",
     "@omisego/omg-js-util": "^1.2.1"
   },
   "publishConfig": {
