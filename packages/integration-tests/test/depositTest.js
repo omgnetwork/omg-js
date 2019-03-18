@@ -79,7 +79,7 @@ describe('Deposit tests', async () => {
     })
   })
 
-  describe.only('deposit ERC20', async () => {
+  describe('deposit ERC20', async () => {
     let account = {
       privateKey: 'aa2ada66e654bb5e47ea701f83fb27a6bfb8c65cf500dd1836184760fba23fab',
       address: '0x6d882cccbd2db3e30180a150e40dbb30225df0bf'
