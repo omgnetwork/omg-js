@@ -24,7 +24,9 @@ const config = {
   testErc20Contract: process.env.TEST_ERC20_CONTRACT || '0x757afd667fe677540eb03b4642716a0bd7c5986a',
   fundAccount: process.env.FUND_ACCOUNT || '',
   fundAccountPrivateKey: process.env.FUND_ACCOUNT_PRIVATEKEY || '',
-  fundAccountPassword: process.env.FUND_ACCOUNT_PASSWORD || ''
+  fundAccountPassword: process.env.FUND_ACCOUNT_PASSWORD || '',
+  testFaucetAddress: process.env.TEST_FAUCET_ADDRESS || '',
+  testFaucetPrivateKey: process.env.TEST_FAUCET_PRIVATEKEY || ''
 }
 
 module.exports = config

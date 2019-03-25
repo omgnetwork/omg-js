@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License. */
 
 const config = require('../test-config')
-const helper = require('./helper')
+const rcHelper = require('../helpers/rootChainHelper')
 const Web3 = require('web3')
 const ChildChain = require('@omisego/omg-js-childchain')
 const RootChain = require('@omisego/omg-js-rootchain')
@@ -38,33 +38,33 @@ describe('Challenge exit tests', async () => {
   let bobAccount
 
   before(async () => {
-    const plasmaContract = await helper.getPlasmaContractAddress(config)
+    const plasmaContract = await rcHelper.getPlasmaContractAddress(config)
     rootChain = new RootChain(web3, plasmaContract.contract_addr)
   })
 
   beforeEach(async () => {
     // Create Alice and Bob's accounts
-    ;[aliceAccount, bobAccount] = await helper.createAndFundManyAccounts(web3, config, [INTIIAL_ALICE_AMOUNT, INTIIAL_BOB_AMOUNT])
+    ;[aliceAccount, bobAccount] = await rcHelper.createAndFundManyAccounts(web3, config, [INTIIAL_ALICE_AMOUNT, INTIIAL_BOB_AMOUNT])
     console.log(`Created Alice account ${JSON.stringify(aliceAccount)}`)
     console.log(`Created Bob account ${JSON.stringify(bobAccount)}`)
   })
 
   afterEach(async () => {
     // Send back any leftover eth
-    helper.returnFunds(web3, config, aliceAccount)
-    helper.returnFunds(web3, config, bobAccount)
+    rcHelper.returnFunds(web3, config, aliceAccount)
+    rcHelper.returnFunds(web3, config, bobAccount)
   })
 
   it('should succesfully challenge a dishonest exit', async () => {
     // Alice deposits ETH into the Plasma contract
-    let receipt = await helper.depositEthAndWait(rootChain, childChain, aliceAccount.address, DEPOSIT_AMOUNT, aliceAccount.privateKey)
+    let receipt = await rcHelper.depositEthAndWait(rootChain, childChain, aliceAccount.address, DEPOSIT_AMOUNT, aliceAccount.privateKey)
     console.log(`Alice deposited ${DEPOSIT_AMOUNT} into RootChain contract`)
 
     // Keep track of how much Alice spends on gas
-    let aliceSpentOnGas = await helper.spentOnGas(web3, receipt)
+    let aliceSpentOnGas = await rcHelper.spentOnGas(web3, receipt)
 
     // Send TRANSFER_AMOUNT from Alice to Bob
-    await helper.sendAndWait(
+    await rcHelper.sendAndWait(
       childChain,
       aliceAccount.address,
       bobAccount.address,
@@ -81,7 +81,7 @@ describe('Challenge exit tests', async () => {
     const aliceDishonestUtxo = aliceUtxos[0]
 
     // Send another TRANSFER_AMOUNT from Alice to Bob
-    await helper.sendAndWait(
+    await rcHelper.sendAndWait(
       childChain,
       aliceAccount.address,
       bobAccount.address,
@@ -104,10 +104,10 @@ describe('Challenge exit tests', async () => {
       }
     )
     console.log(`Alice called RootChain.startExit(): txhash = ${receipt.transactionHash}`)
-    aliceSpentOnGas.iadd(await helper.spentOnGas(web3, receipt))
+    aliceSpentOnGas.iadd(await rcHelper.spentOnGas(web3, receipt))
 
     // Bob calls watcher/status.get and sees the invalid exit attempt...
-    const invalidExit = await helper.waitForEvent(childChain, 'invalid_exit')
+    const invalidExit = await rcHelper.waitForEvent(childChain, 'invalid_exit')
     assert.equal(transaction.encodeUtxoPos(aliceDishonestUtxo), invalidExit.details.utxo_pos)
 
     // ...and challenges the exit
@@ -126,12 +126,12 @@ describe('Challenge exit tests', async () => {
     console.log(`Bob called RootChain.challengeExit(): txhash = ${receipt.transactionHash}`)
 
     // Keep track of how much Bob spends on gas
-    let bobSpentOnGas = await helper.spentOnGas(web3, receipt)
+    let bobSpentOnGas = await rcHelper.spentOnGas(web3, receipt)
 
     // Alice waits for the challenge period to be over...
-    const toWait = await helper.getTimeToExit(rootChain.plasmaContract, exitData.utxo_pos)
+    const toWait = await rcHelper.getTimeToExit(rootChain.plasmaContract, exitData.utxo_pos)
     console.log(`Waiting for challenge period... ${toWait}ms`)
-    await helper.sleep(toWait)
+    await rcHelper.sleep(toWait)
 
     // ...and calls finalize exits.
     receipt = await rootChain.processExits(
@@ -144,7 +144,7 @@ describe('Challenge exit tests', async () => {
       }
     )
     console.log(`Alice called RootChain.processExits(): txhash = ${receipt.transactionHash}`)
-    aliceSpentOnGas.iadd(await helper.spentOnGas(web3, receipt))
+    aliceSpentOnGas.iadd(await rcHelper.spentOnGas(web3, receipt))
 
     // Get Alice's ETH balance
     const aliceEthBalance = await web3.eth.getBalance(aliceAccount.address)
@@ -167,7 +167,7 @@ describe('Challenge exit tests', async () => {
   // Skip this test as it leaves the childchain byzantine
   it.skip('should exit dishonestly if not challenged', async () => {
     // Send TRANSFER_AMOUNT from Alice to Bob
-    await helper.sendAndWait(
+    await rcHelper.sendAndWait(
       childChain,
       aliceAccount.address,
       bobAccount.address,
@@ -183,7 +183,7 @@ describe('Challenge exit tests', async () => {
     const aliceDishonestUtxo = aliceUtxos[0]
 
     // Send another TRANSFER_AMOUNT from Alice to Bob
-    await helper.sendAndWait(
+    await rcHelper.sendAndWait(
       childChain,
       aliceAccount.address,
       bobAccount.address,
@@ -210,9 +210,9 @@ describe('Challenge exit tests', async () => {
     // Bob does NOT notice Alice's dishonest exit, so he doesn't challenge it :(
 
     // Alice waits for the challenge period to be over...
-    const toWait = await helper.getTimeToExit(rootChain.plasmaContract, exitData.utxo_pos)
+    const toWait = await rcHelper.getTimeToExit(rootChain.plasmaContract, exitData.utxo_pos)
     console.log(`Waiting for challenge period... ${toWait}ms`)
-    await helper.sleep(toWait)
+    await rcHelper.sleep(toWait)
 
     // ...and calls finalize exits.
     receipt = await rootChain.processExits(

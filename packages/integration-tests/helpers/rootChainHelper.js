@@ -76,12 +76,12 @@ async function fundAccount (web3, config, address, value) {
   throw new Error(`Funding account ${fundAccount} password or private key not set`)
 }
 
-async function createAndFundAccount (web3, config, value) {
-  const account = createAccount(web3)
-  await fundAccount(web3, config, account.address, value)
-  await waitForEthBalance(web3, account.address, value)
-  return account
-}
+// async function createAndFundAccount (web3, config, value) {
+//   const account = createAccount(web3)
+//   await fundAccount(web3, config, account.address, value)
+//   await waitForEthBalance(web3, account.address, value)
+//   return account
+// }
 
 async function fundAccountERC20 (web3, erc20Contract, fundAccount, fundAccountPassword, toAccount, value) {
   await web3.eth.personal.unlockAccount(fundAccount, fundAccountPassword)
@@ -119,34 +119,6 @@ async function sendTx (web3, txDetails, privateKey) {
     // Then send it
     return web3.eth.sendSignedTransaction(signedTx.rawTransaction)
   }
-}
-
-async function createAndFundManyAccounts (web3, config, initialAmounts) {
-  const ret = []
-  for (let i = 0; i < initialAmounts.length; i++) {
-    const account = await createAndFundAccount(web3, config, initialAmounts[i])
-    ret.push(account)
-  }
-
-  return ret
-}
-
-function waitForBalance (childChain, address, expectedBalance, currency) {
-  currency = currency || transaction.ETH_CURRENCY
-  return promiseRetry(async (retry, number) => {
-    console.log(`Waiting for childchain balance...  (${number})`)
-    const resp = await childChain.getBalance(address)
-    if (resp.length === 0 || !resp.find(item => {
-      return item.amount.toString() === expectedBalance.toString() && item.currency === currency
-    })) {
-      retry()
-    }
-    return resp
-  }, {
-    minTimeout: 6000,
-    factor: 1,
-    retries: 50
-  })
 }
 
 function waitForEthBalance (web3, address, expectedBalance) {
@@ -230,12 +202,9 @@ async function send (childChain, from, to, amount, currency, privateKeys) {
   return childChain.submitTransaction(signedTx)
 }
 
-async function depositEthAndWait (rootChain, childChain, address, amount, privateKey, expectedBalance) {
+async function depositEth (rootChain, childChain, address, amount, privateKey) {
   const depositTx = transaction.encodeDeposit(address, amount, transaction.ETH_CURRENCY)
-  const receipt = await rootChain.depositEth(depositTx, amount, { from: address, privateKey: privateKey })
-  // Wait for transaction to be mined
-  await waitForBalance(childChain, address, expectedBalance || amount)
-  return receipt
+  return rootChain.depositEth(depositTx, amount, { from: address, privateKey: privateKey })
 }
 
 async function spentOnGas (web3, receipt) {
@@ -294,15 +263,13 @@ async function returnFunds (web3, config, fromAccount) {
 
 module.exports = {
   createAccount,
-  createAndFundAccount,
-  createAndFundManyAccounts,
-  waitForBalance,
   waitForEthBalance,
   sleep,
   send,
   sendAndWait,
-  depositEthAndWait,
+  depositEth,
   fundAccountERC20,
+  fundAccount,
   approveERC20,
   spentOnGas,
   waitForEvent,

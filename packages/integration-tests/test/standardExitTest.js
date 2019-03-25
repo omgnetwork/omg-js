@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License. */
 
 const config = require('../test-config')
-const helper = require('./helper')
+const rcHelper = require('../helpers/rootChainHelper')
 const Web3 = require('web3')
 const erc20abi = require('human-standard-token-abi')
 const ChildChain = require('@omisego/omg-js-childchain')
@@ -32,7 +32,7 @@ let rootChain
 
 describe('Standard Exit tests', async () => {
   before(async () => {
-    const plasmaContract = await helper.getPlasmaContractAddress(config)
+    const plasmaContract = await rcHelper.getPlasmaContractAddress(config)
     rootChain = new RootChain(web3, plasmaContract.contract_addr)
   })
 
@@ -43,22 +43,22 @@ describe('Standard Exit tests', async () => {
 
     before(async () => {
       // Create and fund Alice's account
-      aliceAccount = await helper.createAndFundAccount(web3, config, INTIIAL_ALICE_AMOUNT)
+      aliceAccount = await rcHelper.createAndFundAccount(web3, config, INTIIAL_ALICE_AMOUNT)
       console.log(`Created Alice account ${JSON.stringify(aliceAccount)}`)
     })
 
     after(async () => {
       // Send back any leftover eth
-      helper.returnFunds(web3, config, aliceAccount)
+      rcHelper.returnFunds(web3, config, aliceAccount)
     })
 
     it('should succesfully exit a deposit', async () => {
       // Alice deposits ETH into the Plasma contract
-      let receipt = await helper.depositEthAndWait(rootChain, childChain, aliceAccount.address, DEPOSIT_AMOUNT, aliceAccount.privateKey)
+      let receipt = await rcHelper.depositEthAndWait(rootChain, childChain, aliceAccount.address, DEPOSIT_AMOUNT, aliceAccount.privateKey)
       console.log(`Alice deposited ${DEPOSIT_AMOUNT} into RootChain contract`)
 
       // Keep track of how much Alice spends on gas
-      let aliceSpentOnGas = await helper.spentOnGas(web3, receipt)
+      let aliceSpentOnGas = await rcHelper.spentOnGas(web3, receipt)
       console.log(`aliceSpentOnGas = ${aliceSpentOnGas}`)
 
       // Alice wants to exit without having transacted on the childchain
@@ -83,7 +83,7 @@ describe('Standard Exit tests', async () => {
         }
       )
       console.log(`Alice called RootChain.startExit(): txhash = ${receipt.transactionHash}`)
-      aliceSpentOnGas.iadd(await helper.spentOnGas(web3, receipt))
+      aliceSpentOnGas.iadd(await rcHelper.spentOnGas(web3, receipt))
 
       // Call processExits before the challenge period is over
       receipt = await rootChain.processExits(
@@ -96,7 +96,7 @@ describe('Standard Exit tests', async () => {
         }
       )
       console.log(`Alice called RootChain.processExits() before challenge period: txhash = ${receipt.transactionHash}`)
-      aliceSpentOnGas.iadd(await helper.spentOnGas(web3, receipt))
+      aliceSpentOnGas.iadd(await rcHelper.spentOnGas(web3, receipt))
 
       // Get Alice's ETH balance
       let aliceEthBalance = await web3.eth.getBalance(aliceAccount.address)
@@ -104,9 +104,9 @@ describe('Standard Exit tests', async () => {
       assert.isBelow(Number(aliceEthBalance), Number(INTIIAL_ALICE_AMOUNT))
 
       // Wait for challenge period
-      const toWait = await helper.getTimeToExit(rootChain.plasmaContract, exitData.utxo_pos)
+      const toWait = await rcHelper.getTimeToExit(rootChain.plasmaContract, exitData.utxo_pos)
       console.log(`Waiting for challenge period... ${toWait}ms`)
-      await helper.sleep(toWait)
+      await rcHelper.sleep(toWait)
 
       // Call processExits again.
       receipt = await rootChain.processExits(
@@ -119,7 +119,7 @@ describe('Standard Exit tests', async () => {
         }
       )
       console.log(`Alice called RootChain.processExits() after challenge period: txhash = ${receipt.transactionHash}`)
-      aliceSpentOnGas.iadd(await helper.spentOnGas(web3, receipt))
+      aliceSpentOnGas.iadd(await rcHelper.spentOnGas(web3, receipt))
 
       // Get Alice's ETH balance
       aliceEthBalance = await web3.eth.getBalance(aliceAccount.address)
@@ -139,23 +139,23 @@ describe('Standard Exit tests', async () => {
 
     before(async () => {
       // Create Alice and Bob's accounts
-      ;[aliceAccount, bobAccount] = await helper.createAndFundManyAccounts(web3, config, [INTIIAL_ALICE_AMOUNT, INTIIAL_BOB_AMOUNT])
+      ;[aliceAccount, bobAccount] = await rcHelper.createAndFundManyAccounts(web3, config, [INTIIAL_ALICE_AMOUNT, INTIIAL_BOB_AMOUNT])
       console.log(`Created Alice account ${JSON.stringify(aliceAccount)}`)
       console.log(`Created Bob account ${JSON.stringify(bobAccount)}`)
       // Alice deposits ETH into the Plasma contract
-      await helper.depositEthAndWait(rootChain, childChain, aliceAccount.address, DEPOSIT_AMOUNT, aliceAccount.privateKey)
+      await rcHelper.depositEthAndWait(rootChain, childChain, aliceAccount.address, DEPOSIT_AMOUNT, aliceAccount.privateKey)
       console.log(`Alice deposited ${DEPOSIT_AMOUNT} into RootChain contract`)
     })
 
     after(async () => {
       // Send back any leftover eth
-      helper.returnFunds(web3, config, aliceAccount)
-      helper.returnFunds(web3, config, bobAccount)
+      rcHelper.returnFunds(web3, config, aliceAccount)
+      rcHelper.returnFunds(web3, config, bobAccount)
     })
 
     it('should succesfully exit a ChildChain transaction', async () => {
     // Send TRANSFER_AMOUNT from Alice to Bob
-      await helper.sendAndWait(
+      await rcHelper.sendAndWait(
         childChain,
         aliceAccount.address,
         bobAccount.address,
@@ -189,7 +189,7 @@ describe('Standard Exit tests', async () => {
       console.log(`Bob called RootChain.startExit(): txhash = ${receipt.transactionHash}`)
 
       // Keep track of how much Bob spends on gas
-      let bobSpentOnGas = await helper.spentOnGas(web3, receipt)
+      let bobSpentOnGas = await rcHelper.spentOnGas(web3, receipt)
 
       // Call processExits before the challenge period is over
       receipt = await rootChain.processExits(
@@ -202,7 +202,7 @@ describe('Standard Exit tests', async () => {
         }
       )
       console.log(`Bob called RootChain.processExits() before challenge period: txhash = ${receipt.transactionHash}`)
-      bobSpentOnGas.iadd(await helper.spentOnGas(web3, receipt))
+      bobSpentOnGas.iadd(await rcHelper.spentOnGas(web3, receipt))
 
       // Get Bob's ETH balance
       let bobEthBalance = await web3.eth.getBalance(bobAccount.address)
@@ -210,9 +210,9 @@ describe('Standard Exit tests', async () => {
       assert.isBelow(Number(bobEthBalance), Number(INTIIAL_BOB_AMOUNT))
 
       // Wait for challenge period
-      const toWait = await helper.getTimeToExit(rootChain.plasmaContract, exitData.utxo_pos)
+      const toWait = await rcHelper.getTimeToExit(rootChain.plasmaContract, exitData.utxo_pos)
       console.log(`Waiting for challenge period... ${toWait}ms`)
-      await helper.sleep(toWait)
+      await rcHelper.sleep(toWait)
 
       // Call processExits again.
       receipt = await rootChain.processExits(
@@ -225,7 +225,7 @@ describe('Standard Exit tests', async () => {
         }
       )
       console.log(`Bob called RootChain.processExits() after challenge period: txhash = ${receipt.transactionHash}`)
-      bobSpentOnGas.iadd(await helper.spentOnGas(web3, receipt))
+      bobSpentOnGas.iadd(await rcHelper.spentOnGas(web3, receipt))
 
       // Get Bob's ETH balance
       bobEthBalance = await web3.eth.getBalance(bobAccount.address)
@@ -237,7 +237,7 @@ describe('Standard Exit tests', async () => {
     })
   })
 
-  describe.skip('ERC20 exit', async () => {
+  describe('ERC20 exit', async () => {
     const ERC20_CURRENCY = config.testErc20Contract
     const testErc20Contract = new web3.eth.Contract(erc20abi, config.testErc20Contract)
     const INTIIAL_ALICE_AMOUNT_ETH = web3.utils.toWei('.1', 'ether')
@@ -247,7 +247,7 @@ describe('Standard Exit tests', async () => {
 
     before(async () => {
       // Create Alice's account
-      aliceAccount = await helper.createAndFundAccount(web3, config, INTIIAL_ALICE_AMOUNT_ETH)
+      aliceAccount = await rcHelper.createAndFundAccount(web3, config, INTIIAL_ALICE_AMOUNT_ETH)
       console.log(`Created Alice account ${JSON.stringify(aliceAccount)}`)
 
       try {
@@ -259,10 +259,10 @@ describe('Standard Exit tests', async () => {
 
       const accounts = await web3.eth.getAccounts()
       // Send ERC20 tokens to Alice's account
-      await helper.fundAccountERC20(web3, testErc20Contract, accounts[0], config.fundAccountPw, aliceAccount.address, INTIIAL_ALICE_AMOUNT_ERC20)
+      await rcHelper.fundAccountERC20(web3, testErc20Contract, accounts[0], config.fundAccountPw, aliceAccount.address, INTIIAL_ALICE_AMOUNT_ERC20)
 
       // Account must approve the Plasma contract
-      await helper.approveERC20(web3, testErc20Contract, aliceAccount.address, aliceAccount.privateKey, rootChain.plasmaContractAddress, DEPOSIT_AMOUNT)
+      await rcHelper.approveERC20(web3, testErc20Contract, aliceAccount.address, aliceAccount.privateKey, rootChain.plasmaContractAddress, DEPOSIT_AMOUNT)
 
       // Create the deposit transaction
       const depositTx = transaction.encodeDeposit(aliceAccount.address, DEPOSIT_AMOUNT, config.testErc20Contract)
@@ -271,13 +271,13 @@ describe('Standard Exit tests', async () => {
       await rootChain.depositToken(depositTx, { from: aliceAccount.address, privateKey: aliceAccount.privateKey })
 
       // Wait for transaction to be mined and reflected in the account's balance
-      const balance = await helper.waitForBalance(childChain, aliceAccount.address, DEPOSIT_AMOUNT, ERC20_CURRENCY)
+      const balance = await rcHelper.waitForBalance(childChain, aliceAccount.address, DEPOSIT_AMOUNT, ERC20_CURRENCY)
       console.log(`Alice's balance: ${balance[0].amount.toString()}`)
     })
 
     after(async () => {
       // Send back any leftover eth
-      helper.returnFunds(web3, config, aliceAccount)
+      rcHelper.returnFunds(web3, config, aliceAccount)
     })
 
     it('should exit ERC20 tokens', async () => {
@@ -319,9 +319,9 @@ describe('Standard Exit tests', async () => {
       assert.equal(balance, 0)
 
       // Wait for challenge period
-      const toWait = await helper.getTimeToExit(rootChain.plasmaContract, exitData.utxo_pos)
+      const toWait = await rcHelper.getTimeToExit(rootChain.plasmaContract, exitData.utxo_pos)
       console.log(`Waiting for challenge period... ${toWait}ms`)
-      await helper.sleep(toWait)
+      await rcHelper.sleep(toWait)
 
       // Call processExits again.
       receipt = await rootChain.processExits(

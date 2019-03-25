@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License. */
 
 const config = require('../test-config')
-const helper = require('./helper')
+const rcHelper = require('../helpers/rootChainHelper')
 const Web3 = require('web3')
 const erc20abi = require('human-standard-token-abi')
 const ChildChain = require('@omisego/omg-js-childchain')
@@ -29,7 +29,7 @@ let rootChain
 
 describe('Deposit tests', async () => {
   before(async () => {
-    const plasmaContract = await helper.getPlasmaContractAddress(config)
+    const plasmaContract = await rcHelper.getPlasmaContractAddress(config)
     rootChain = new RootChain(web3, plasmaContract.contract_addr)
   })
 
@@ -38,13 +38,13 @@ describe('Deposit tests', async () => {
 
     before(async () => {
       // Create and fund a new account
-      account = await helper.createAndFundAccount(web3, config, web3.utils.toWei('.1', 'ether'))
+      account = await rcHelper.createAndFundAccount(web3, config, web3.utils.toWei('.1', 'ether'))
       console.log(`Created new account ${JSON.stringify(account)}`)
     })
 
     after(async () => {
       // Send back any leftover eth
-      helper.returnFunds(web3, config, account)
+      rcHelper.returnFunds(web3, config, account)
     })
 
     it('should deposit ETH to the Plasma contract', async () => {
@@ -63,7 +63,7 @@ describe('Deposit tests', async () => {
       await rootChain.depositEth(depositTx, TEST_AMOUNT, { from: account.address, privateKey: account.privateKey })
 
       // Wait for transaction to be mined and reflected in the account's balance
-      const balance = await helper.waitForBalance(childChain, account.address, TEST_AMOUNT)
+      const balance = await rcHelper.waitForBalance(childChain, account.address, TEST_AMOUNT)
 
       // Check balance is correct
       assert.equal(balance[0].currency, transaction.ETH_CURRENCY)
@@ -90,27 +90,27 @@ describe('Deposit tests', async () => {
 
     before(async () => {
       // Create and fund a new account
-      //account = await helper.createAndFundAccount(web3, config, web3.utils.toWei('.1', 'ether'))
-      //console.log(`Created new account ${JSON.stringify(account)}`)
+      account = await rcHelper.createAndFundAccount(web3, config, web3.utils.toWei('.1', 'ether'))
+      console.log(`Created new account ${JSON.stringify(account)}`)
       // Send ERC20 tokens to the new account
-      //const accounts = await web3.eth.getAccounts()
-      //await helper.fundAccountERC20(web3, testErc20Contract, accounts[0], config.fundAccountPw, account.address, INITIAL_AMOUNT)
+      const accounts = await web3.eth.getAccounts()
+      await rcHelper.fundAccountERC20(web3, testErc20Contract, accounts[0], config.fundAccountPw, account.address, INITIAL_AMOUNT)
     })
 
     after(async () => {
       // Send back any leftover eth
-      helper.returnFunds(web3, config, account)
+      rcHelper.returnFunds(web3, config, account)
     })
 
     it('should deposit ERC20 tokens to the Plasma contract', async () => {
       // The new account should have no initial balance
       const initialBalance = await childChain.getBalance(account.address)
-      //assert.equal(initialBalance.length, 0)
+      assert.equal(initialBalance.length, 0)
 
       const resp = await web3.eth.getBalance(account.address)
 
       // Account must approve the Plasma contract
-      // await helper.approveERC20(web3, testErc20Contract, account.address, account.privateKey, rootChain.plasmaContractAddress, DEPOSIT_AMOUNT)
+      await rcHelper.approveERC20(web3, testErc20Contract, account.address, account.privateKey, rootChain.plasmaContractAddress, DEPOSIT_AMOUNT)
 
       // Create the deposit transaction
       const depositTx = transaction.encodeDeposit(account.address, DEPOSIT_AMOUNT, config.testErc20Contract)
@@ -119,7 +119,7 @@ describe('Deposit tests', async () => {
       await rootChain.depositToken(depositTx, { from: account.address, privateKey: account.privateKey })
 
       // Wait for transaction to be mined and reflected in the account's balance
-      const balance = await helper.waitForBalance(childChain, account.address, DEPOSIT_AMOUNT, config.testErc20Contract)
+      const balance = await rcHelper.waitForBalance(childChain, account.address, DEPOSIT_AMOUNT, config.testErc20Contract)
 
       // Check balance is correct
       assert.equal(balance[0].amount.toString(), DEPOSIT_AMOUNT)
