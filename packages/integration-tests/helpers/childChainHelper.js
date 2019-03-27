@@ -36,7 +36,7 @@ function selectUtxos (utxos, amount, currency, includeFee) {
       if (includeFee) {
         // Find the first ETH utxo (that's not selected)
         const ethUtxos = utxos.filter(
-          utxo => utxo.currency === this.OmgUtil.transaction.ETH_CURRENCY
+          utxo => utxo.currency === transaction.ETH_CURRENCY
         )
         const feeUtxo = ethUtxos.find(utxo => utxo !== selected)
         selected.push(feeUtxo)
@@ -46,14 +46,13 @@ function selectUtxos (utxos, amount, currency, includeFee) {
   }
 }
 
-function waitForBalance (childChain, address, expectedBalance, currency) {
-  currency = currency || transaction.ETH_CURRENCY
+function waitForBalance (childChain, address, currency, callback) {
   return promiseRetry(async (retry, number) => {
     console.log(`Waiting for childchain balance...  (${number})`)
     const resp = await childChain.getBalance(address)
-    if (resp.length === 0 || !resp.find(item => {
-      return item.amount.toString() === expectedBalance.toString() && item.currency === currency
-    })) {
+    if (resp.length === 0 ||
+      !resp.find(item => item.currency === currency && callback(item))
+    ) {
       retry()
     }
     return resp
@@ -62,6 +61,12 @@ function waitForBalance (childChain, address, expectedBalance, currency) {
     factor: 1,
     retries: 50
   })
+}
+
+function waitForBalanceEq (childChain, address, expectedAmount, currency) {
+  currency = currency || transaction.ETH_CURRENCY
+  const expectedBn = numberToBN(expectedAmount)
+  return waitForBalance(childChain, address, currency, balance => numberToBN(balance.amount).eq(expectedBn))
 }
 
 function waitForEvent (childChain, eventName) {
@@ -126,6 +131,7 @@ async function send (childChain, from, to, amount, currency, privateKeys) {
 
 module.exports = {
   waitForBalance,
+  waitForBalanceEq,
   send,
   sendAndWait,
   waitForEvent,

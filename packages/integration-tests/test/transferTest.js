@@ -18,7 +18,6 @@ const rcHelper = require('../helpers/rootChainHelper')
 const ccHelper = require('../helpers/childChainHelper')
 const childChainFaucet = require('../helpers/testFaucet')
 const Web3 = require('web3')
-const erc20abi = require('human-standard-token-abi')
 const ChildChain = require('@omisego/omg-js-childchain')
 const RootChain = require('@omisego/omg-js-rootchain')
 const { transaction } = require('@omisego/omg-js-util')
@@ -30,12 +29,11 @@ const web3 = new Web3(config.geth_url)
 const childChain = new ChildChain(config.watcher_url, config.childchain_url)
 let rootChain
 
-describe('Transfer tests', async () => {
+describe.only('Transfer tests', async () => {
   before(async () => {
     const plasmaContract = await rcHelper.getPlasmaContractAddress(config)
     rootChain = new RootChain(web3, plasmaContract.contract_addr)
-    // TODO  Calculate min ETH amount !!!!!
-    await childChainFaucet.init(childChain, config, web3, rootChain, web3.utils.toWei('15', 'ether'))
+    await childChainFaucet.init(rootChain, childChain, web3, config)
   })
 
   describe('Simple ETH (ci-enabled)', async () => {
@@ -53,13 +51,17 @@ describe('Transfer tests', async () => {
       console.log(`Created Bob account ${JSON.stringify(bobAccount)}`)
       // Give some ETH to Alice on the child chain
       await childChainFaucet.fundAccount(aliceAccount.address, INTIIAL_ALICE_AMOUNT, transaction.ETH_CURRENCY)
-      await ccHelper.waitForBalance(childChain, aliceAccount.address, INTIIAL_ALICE_AMOUNT)
+      await ccHelper.waitForBalanceEq(childChain, aliceAccount.address, INTIIAL_ALICE_AMOUNT)
     })
 
     after(async () => {
-      // Send any leftover funds back to the faucet
-      await childChainFaucet.returnFunds(aliceAccount)
-      await childChainFaucet.returnFunds(bobAccount)
+      try {
+        // Send any leftover funds back to the faucet
+        await childChainFaucet.returnFunds(aliceAccount)
+        await childChainFaucet.returnFunds(bobAccount)
+      } catch (err) {
+        console.warn(`Error trying to return funds to the faucet: ${err}`)
+      }
     })
 
     it('should transfer ETH on the childchain', async () => {
@@ -96,7 +98,7 @@ describe('Transfer tests', async () => {
       console.log(`Submitted transaction: ${JSON.stringify(result)}`)
 
       // Bob's balance should be TRANSFER_AMOUNT
-      let balance = await ccHelper.waitForBalance(childChain, bobAccount.address, TRANSFER_AMOUNT)
+      let balance = await ccHelper.waitForBalanceEq(childChain, bobAccount.address, TRANSFER_AMOUNT)
       assert.equal(balance.length, 1)
       assert.equal(balance[0].amount.toString(), TRANSFER_AMOUNT)
 
@@ -121,20 +123,24 @@ describe('Transfer tests', async () => {
 
       // Alice and Bob want 2 utxos each
       await childChainFaucet.fundAccount(aliceAccount.address, UTXO_AMOUNT, transaction.ETH_CURRENCY)
-      await ccHelper.waitForBalance(childChain, aliceAccount.address, UTXO_AMOUNT)
+      await ccHelper.waitForBalanceEq(childChain, aliceAccount.address, UTXO_AMOUNT)
       await childChainFaucet.fundAccount(bobAccount.address, UTXO_AMOUNT, transaction.ETH_CURRENCY)
-      await ccHelper.waitForBalance(childChain, bobAccount.address, UTXO_AMOUNT)
+      await ccHelper.waitForBalanceEq(childChain, bobAccount.address, UTXO_AMOUNT)
 
       await childChainFaucet.fundAccount(aliceAccount.address, UTXO_AMOUNT, transaction.ETH_CURRENCY)
-      await ccHelper.waitForBalance(childChain, aliceAccount.address, UTXO_AMOUNT * 2)
+      await ccHelper.waitForBalanceEq(childChain, aliceAccount.address, UTXO_AMOUNT * 2)
       await childChainFaucet.fundAccount(bobAccount.address, UTXO_AMOUNT, transaction.ETH_CURRENCY)
-      await ccHelper.waitForBalance(childChain, bobAccount.address, UTXO_AMOUNT * 2)
+      await ccHelper.waitForBalanceEq(childChain, bobAccount.address, UTXO_AMOUNT * 2)
     })
 
     after(async () => {
-      // Send any leftover funds back to the faucet
-      await childChainFaucet.returnFunds(aliceAccount)
-      await childChainFaucet.returnFunds(bobAccount)
+      try {
+        // Send any leftover funds back to the faucet
+        await childChainFaucet.returnFunds(aliceAccount)
+        await childChainFaucet.returnFunds(bobAccount)
+      } catch (err) {
+        console.warn(`Error trying to return funds to the faucet: ${err}`)
+      }
     })
 
     it('should send a transaction with 4 inputs and 4 outputs', async () => {
@@ -209,7 +215,7 @@ describe('Transfer tests', async () => {
 
       // Alice's balance should be ALICE_OUTPUT_0 + ALICE_OUTPUT_1
       const expected = web3.utils.toBN(ALICE_OUTPUT_0).add(web3.utils.toBN(ALICE_OUTPUT_1))
-      let balance = await rcHelper.waitForBalance(childChain, aliceAccount.address, expected)
+      let balance = await ccHelper.waitForBalanceEq(childChain, aliceAccount.address, expected)
       assert.equal(balance[0].amount.toString(), expected.toString())
 
       // Check Alice's utxos on the child chain again
@@ -232,44 +238,33 @@ describe('Transfer tests', async () => {
     })
   })
 
-  describe.skip('ERC20 transfer', async () => {
+  describe('ERC20 transfer', async () => {
     const ERC20_CURRENCY = config.testErc20Contract
-    const testErc20Contract = new web3.eth.Contract(erc20abi, config.testErc20Contract)
-    const INTIIAL_ALICE_AMOUNT_ETH = web3.utils.toWei('.1', 'ether')
-    const INTIIAL_ALICE_AMOUNT_ERC20 = 20
-    const DEPOSIT_AMOUNT = 20
+    const INTIIAL_ALICE_AMOUNT = 20
     const TRANSFER_AMOUNT = 3
     let aliceAccount
     let bobAccount
 
     before(async () => {
       // Create Alice and Bob's accounts
-      // Assume the funding account is accounts[0] and has a blank password
-      ;[aliceAccount, bobAccount] = await rcHelper.createAndFundManyAccounts(web3, config, [INTIIAL_ALICE_AMOUNT_ETH, 0])
+      aliceAccount = await rcHelper.createAccount(web3)
       console.log(`Created Alice account ${JSON.stringify(aliceAccount)}`)
+      bobAccount = await rcHelper.createAccount(web3)
       console.log(`Created Bob account ${JSON.stringify(bobAccount)}`)
 
-      const accounts = await web3.eth.getAccounts()
-      // Send ERC20 tokens to Alice's account
-      await rcHelper.fundAccountERC20(web3, testErc20Contract, accounts[0], config.fundAccountPw, aliceAccount.address, INTIIAL_ALICE_AMOUNT_ERC20)
-
-      // Account must approve the Plasma contract
-      await rcHelper.approveERC20(web3, testErc20Contract, aliceAccount.address, aliceAccount.privateKey, rootChain.plasmaContractAddress, DEPOSIT_AMOUNT)
-
-      // Create the deposit transaction
-      const depositTx = transaction.encodeDeposit(aliceAccount.address, DEPOSIT_AMOUNT, config.testErc20Contract)
-
-      // Deposit ERC20 tokens into the Plasma contract
-      await rootChain.depositToken(depositTx, { from: aliceAccount.address, privateKey: aliceAccount.privateKey })
-
-      // Wait for transaction to be mined and reflected in the account's balance
-      const balance = await rcHelper.waitForBalance(childChain, aliceAccount.address, DEPOSIT_AMOUNT, ERC20_CURRENCY)
-      console.log(`Alice's balance: ${balance[0].amount.toString()}`)
+      // Give some ERC20 to Alice on the child chain
+      await childChainFaucet.fundAccount(aliceAccount.address, INTIIAL_ALICE_AMOUNT, ERC20_CURRENCY)
+      await ccHelper.waitForBalanceEq(childChain, aliceAccount.address, INTIIAL_ALICE_AMOUNT, ERC20_CURRENCY)
     })
 
     after(async () => {
-      // Send back any leftover eth
-      rcHelper.returnFunds(web3, config, aliceAccount)
+      try {
+        // Send any leftover funds back to the faucet
+        await childChainFaucet.returnFunds(aliceAccount)
+        await childChainFaucet.returnFunds(bobAccount)
+      } catch (err) {
+        console.warn(`Error trying to return funds to the faucet: ${err}`)
+      }
     })
 
     it('should transfer ERC20 tokens on the childchain', async () => {
@@ -277,7 +272,7 @@ describe('Transfer tests', async () => {
       const utxos = await childChain.getUtxos(aliceAccount.address)
       assert.equal(utxos.length, 1)
       assert.hasAllKeys(utxos[0], ['utxo_pos', 'txindex', 'owner', 'oindex', 'currency', 'blknum', 'amount'])
-      assert.equal(utxos[0].amount, DEPOSIT_AMOUNT)
+      assert.equal(utxos[0].amount, INTIIAL_ALICE_AMOUNT)
       assert.equal(utxos[0].currency, ERC20_CURRENCY)
 
       const CHANGE_AMOUNT = utxos[0].amount - TRANSFER_AMOUNT
@@ -306,7 +301,7 @@ describe('Transfer tests', async () => {
       console.log(`Submitted transaction: ${JSON.stringify(result)}`)
 
       // Bob's balance should be TRANSFER_AMOUNT
-      let balance = await rcHelper.waitForBalance(childChain, bobAccount.address, TRANSFER_AMOUNT, ERC20_CURRENCY)
+      let balance = await ccHelper.waitForBalanceEq(childChain, bobAccount.address, TRANSFER_AMOUNT, ERC20_CURRENCY)
       assert.equal(balance.length, 1)
       assert.equal(balance[0].amount, TRANSFER_AMOUNT)
 
@@ -317,47 +312,37 @@ describe('Transfer tests', async () => {
     })
   })
 
-  describe.skip('Mixed currency transfer', async () => {
+  describe('Mixed currency transfer', async () => {
     const ERC20_CURRENCY = config.testErc20Contract
-    const testErc20Contract = new web3.eth.Contract(erc20abi, config.testErc20Contract)
-    const INTIIAL_ALICE_AMOUNT_ETH = web3.utils.toWei('.1', 'ether')
+    const INTIIAL_ALICE_AMOUNT_ETH = web3.utils.toWei('0.001', 'ether')
     const INTIIAL_ALICE_AMOUNT_ERC20 = 20
-    const DEPOSIT_AMOUNT_ETH = web3.utils.toWei('0.001', 'ether')
-    const DEPOSIT_AMOUNT_ERC20 = 20
-    const TRANSFER_AMOUNT_ETH = web3.utils.toWei('0.0004', 'ether')
+    const TRANSFER_AMOUNT_ETH = numberToBN(web3.utils.toWei('0.0004', 'ether'))
     const TRANSFER_AMOUNT_ERC20 = 7
     let aliceAccount
     let bobAccount
 
     before(async () => {
       // Create Alice and Bob's accounts
-      ;[aliceAccount, bobAccount] = await rcHelper.createAndFundManyAccounts(web3, config, [INTIIAL_ALICE_AMOUNT_ETH, 0])
+      aliceAccount = await rcHelper.createAccount(web3)
       console.log(`Created Alice account ${JSON.stringify(aliceAccount)}`)
+      bobAccount = await rcHelper.createAccount(web3)
       console.log(`Created Bob account ${JSON.stringify(bobAccount)}`)
-
-      // Alice deposits ETH into the Plasma contract
-      await rcHelper.depositEthAndWait(rootChain, childChain, aliceAccount.address, DEPOSIT_AMOUNT_ETH, aliceAccount.privateKey)
-      console.log(`Alice deposited ${DEPOSIT_AMOUNT_ETH} into RootChain contract`)
-
-      // Send ERC20 tokens to Alice's account
-      const accounts = await web3.eth.getAccounts()
-      await rcHelper.fundAccountERC20(web3, testErc20Contract, accounts[0], config.fundAccountPw, aliceAccount.address, INTIIAL_ALICE_AMOUNT_ERC20)
-      // Account must approve the Plasma contract
-      await rcHelper.approveERC20(web3, testErc20Contract, aliceAccount.address, aliceAccount.privateKey, rootChain.plasmaContractAddress, DEPOSIT_AMOUNT_ERC20)
-      // Create the ERC20 deposit transaction
-      const depositTx = transaction.encodeDeposit(aliceAccount.address, DEPOSIT_AMOUNT_ERC20, config.testErc20Contract)
-      // Deposit ERC20 tokens into the Plasma contract
-      await rootChain.depositToken(depositTx, { from: aliceAccount.address, privateKey: aliceAccount.privateKey })
-      console.log(`Alice deposited ${DEPOSIT_AMOUNT_ERC20} tokens into RootChain contract`)
-
-      // Wait for transaction to be mined and reflected in the account's balance
-      const balance = await rcHelper.waitForBalance(childChain, aliceAccount.address, DEPOSIT_AMOUNT_ERC20, ERC20_CURRENCY)
-      console.log(`Alice's balance: ${balance[0].amount.toString()}`)
+      // Give some ETH to Alice on the child chain
+      await childChainFaucet.fundAccount(aliceAccount.address, INTIIAL_ALICE_AMOUNT_ETH, transaction.ETH_CURRENCY)
+      await ccHelper.waitForBalanceEq(childChain, aliceAccount.address, INTIIAL_ALICE_AMOUNT_ETH)
+      // Give some ERC20 tokens to Alice on the child chain
+      await childChainFaucet.fundAccount(aliceAccount.address, INTIIAL_ALICE_AMOUNT_ERC20, ERC20_CURRENCY)
+      await ccHelper.waitForBalanceEq(childChain, aliceAccount.address, INTIIAL_ALICE_AMOUNT_ERC20, ERC20_CURRENCY)
     })
 
     after(async () => {
-      // Send back any leftover eth
-      rcHelper.returnFunds(web3, config, aliceAccount)
+      try {
+        // Send any leftover funds back to the faucet
+        await childChainFaucet.returnFunds(aliceAccount)
+        await childChainFaucet.returnFunds(bobAccount)
+      } catch (err) {
+        console.warn(`Error trying to return funds to the faucet: ${err}`)
+      }
     })
 
     it('should transfer ETH and ERC20 tokens on the childchain', async () => {
@@ -365,19 +350,19 @@ describe('Transfer tests', async () => {
       const utxos = await childChain.getUtxos(aliceAccount.address)
       assert.equal(utxos.length, 2)
       assert.hasAllKeys(utxos[0], ['utxo_pos', 'txindex', 'owner', 'oindex', 'currency', 'blknum', 'amount'])
-      assert.equal(utxos[0].amount, DEPOSIT_AMOUNT_ETH)
+      assert.equal(utxos[0].amount, INTIIAL_ALICE_AMOUNT_ETH)
       assert.equal(utxos[0].currency, transaction.ETH_CURRENCY)
-      assert.equal(utxos[1].amount, DEPOSIT_AMOUNT_ERC20)
+      assert.equal(utxos[1].amount, INTIIAL_ALICE_AMOUNT_ERC20)
       assert.equal(utxos[1].currency, ERC20_CURRENCY)
 
-      const CHANGE_AMOUNT_ETH = utxos[0].amount - TRANSFER_AMOUNT_ETH
+      const CHANGE_AMOUNT_ETH = numberToBN(utxos[0].amount).sub(TRANSFER_AMOUNT_ETH)
       const CHANGE_AMOUNT_ERC20 = utxos[1].amount - TRANSFER_AMOUNT_ERC20
       const txBody = {
         inputs: [utxos[0], utxos[1]],
         outputs: [{
           owner: bobAccount.address,
           currency: transaction.ETH_CURRENCY,
-          amount: Number(TRANSFER_AMOUNT_ETH)
+          amount: TRANSFER_AMOUNT_ETH
         }, {
           owner: aliceAccount.address,
           currency: transaction.ETH_CURRENCY,
@@ -385,7 +370,7 @@ describe('Transfer tests', async () => {
         }, {
           owner: bobAccount.address,
           currency: ERC20_CURRENCY,
-          amount: Number(TRANSFER_AMOUNT_ERC20)
+          amount: TRANSFER_AMOUNT_ERC20
         }, {
           owner: aliceAccount.address,
           currency: ERC20_CURRENCY,
@@ -405,22 +390,18 @@ describe('Transfer tests', async () => {
       console.log(`Submitted transaction: ${JSON.stringify(result)}`)
 
       // Bob's ETH balance should be TRANSFER_AMOUNT_ETH
-      let balance = await rcHelper.waitForBalance(childChain, bobAccount.address, TRANSFER_AMOUNT_ETH)
+      let balance = await ccHelper.waitForBalanceEq(childChain, bobAccount.address, TRANSFER_AMOUNT_ETH)
       // Bob's ERC20 balance should be TRANSFER_AMOUNT_ERC20
-      balance = await rcHelper.waitForBalance(childChain, bobAccount.address, TRANSFER_AMOUNT_ERC20, ERC20_CURRENCY)
+      balance = await ccHelper.waitForBalanceEq(childChain, bobAccount.address, TRANSFER_AMOUNT_ERC20, ERC20_CURRENCY)
       assert.equal(balance.length, 2)
-      assert.equal(balance[0].amount, TRANSFER_AMOUNT_ETH)
-      assert.equal(balance[0].currency, transaction.ETH_CURRENCY)
-      assert.equal(balance[1].amount, TRANSFER_AMOUNT_ERC20)
-      assert.equal(balance[1].currency, ERC20_CURRENCY)
+      assert.deepInclude(balance, { currency: transaction.ETH_CURRENCY, amount: Number(TRANSFER_AMOUNT_ETH.toString()) })
+      assert.deepInclude(balance, { currency: ERC20_CURRENCY, amount: TRANSFER_AMOUNT_ERC20 })
 
       // Check Alice's balance
       balance = await childChain.getBalance(aliceAccount.address)
       assert.equal(balance.length, 2)
-      assert.equal(balance[0].amount, CHANGE_AMOUNT_ETH)
-      assert.equal(balance[0].currency, transaction.ETH_CURRENCY)
-      assert.equal(balance[1].amount, CHANGE_AMOUNT_ERC20)
-      assert.equal(balance[1].currency, ERC20_CURRENCY)
+      assert.deepInclude(balance, { currency: transaction.ETH_CURRENCY, amount: Number(CHANGE_AMOUNT_ETH.toString()) })
+      assert.deepInclude(balance, { currency: ERC20_CURRENCY, amount: CHANGE_AMOUNT_ERC20 })
     })
   })
 
@@ -439,13 +420,17 @@ describe('Transfer tests', async () => {
       console.log(`Created Bob account ${JSON.stringify(bobAccount)}`)
       // Give some ETH to Alice on the child chain
       await childChainFaucet.fundAccount(aliceAccount.address, INTIIAL_ALICE_AMOUNT, transaction.ETH_CURRENCY)
-      await ccHelper.waitForBalance(childChain, aliceAccount.address, INTIIAL_ALICE_AMOUNT)
+      await ccHelper.waitForBalanceEq(childChain, aliceAccount.address, INTIIAL_ALICE_AMOUNT)
     })
 
     after(async () => {
-      // Send any leftover funds back to the faucet
-      await childChainFaucet.returnFunds(aliceAccount)
-      await childChainFaucet.returnFunds(bobAccount)
+      try {
+        // Send any leftover funds back to the faucet
+        await childChainFaucet.returnFunds(aliceAccount)
+        await childChainFaucet.returnFunds(bobAccount)
+      } catch (err) {
+        console.warn(`Error trying to return funds to the faucet: ${err}`)
+      }
     })
 
     it('should transfer funds on the childchain', async () => {
@@ -467,7 +452,7 @@ describe('Transfer tests', async () => {
       console.log(`Submitted transaction: ${JSON.stringify(result)}`)
 
       // Bob's balance should be TRANSFER_AMOUNT
-      let balance = await ccHelper.waitForBalance(childChain, bobAccount.address, TRANSFER_AMOUNT)
+      let balance = await ccHelper.waitForBalanceEq(childChain, bobAccount.address, TRANSFER_AMOUNT)
       assert.equal(balance.length, 1)
       assert.equal(balance[0].amount.toString(), TRANSFER_AMOUNT)
     })

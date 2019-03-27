@@ -76,22 +76,18 @@ async function fundAccount (web3, config, address, value) {
   throw new Error(`Funding account ${fundAccount} password or private key not set`)
 }
 
-// async function createAndFundAccount (web3, config, value) {
-//   const account = createAccount(web3)
-//   await fundAccount(web3, config, account.address, value)
-//   await waitForEthBalance(web3, account.address, value)
-//   return account
-// }
+async function getERC20Balance (web3, contract, address) {
+  const txDetails = {
+    from: address,
+    to: contract._address,
+    data: contract.methods.balanceOf(address).encodeABI()
+  }
 
-async function fundAccountERC20 (web3, erc20Contract, fundAccount, fundAccountPassword, toAccount, value) {
-  await web3.eth.personal.unlockAccount(fundAccount, fundAccountPassword)
-  return erc20Contract.methods.transfer(toAccount, value).send({
-    from: fundAccount,
-    gas: 2000000
-  })
+  return web3.eth.call(txDetails)
 }
 
-async function approveERC20 (web3,
+async function approveERC20 (
+  web3,
   erc20Contract,
   ownerAccount,
   ownerAccountPassword,
@@ -121,11 +117,11 @@ async function sendTx (web3, txDetails, privateKey) {
   }
 }
 
-function waitForEthBalance (web3, address, expectedBalance) {
+function waitForEthBalance (web3, address, callback) {
   return promiseRetry(async (retry, number) => {
     console.log(`Waiting for ETH balance...  (${number})`)
     const resp = await web3.eth.getBalance(address)
-    if (resp.toString() !== expectedBalance.toString()) {
+    if (!callback(resp)) {
       retry()
     }
     return resp
@@ -158,11 +154,6 @@ function sleep (ms) {
   return new Promise(resolve => {
     setTimeout(resolve, ms)
   })
-}
-
-async function sendAndWait (childChain, from, to, amount, currency, privateKeys, expectedBalance) {
-  await send(childChain, from, to, amount, currency, privateKeys)
-  return waitForBalance(childChain, to, expectedBalance)
 }
 
 async function send (childChain, from, to, amount, currency, privateKeys) {
@@ -204,7 +195,12 @@ async function send (childChain, from, to, amount, currency, privateKeys) {
 
 async function depositEth (rootChain, childChain, address, amount, privateKey) {
   const depositTx = transaction.encodeDeposit(address, amount, transaction.ETH_CURRENCY)
-  return rootChain.depositEth(depositTx, amount, { from: address, privateKey: privateKey })
+  return rootChain.depositEth(depositTx, amount, { from: address, privateKey })
+}
+
+async function depositToken (rootChain, childChain, address, amount, currency, privateKey) {
+  const depositTx = transaction.encodeDeposit(address, amount, currency)
+  return rootChain.depositToken(depositTx, { from: address, privateKey })
 }
 
 async function spentOnGas (web3, receipt) {
@@ -266,14 +262,15 @@ module.exports = {
   waitForEthBalance,
   sleep,
   send,
-  sendAndWait,
   depositEth,
-  fundAccountERC20,
+  depositToken,
   fundAccount,
   approveERC20,
+  getERC20Balance,
   spentOnGas,
   waitForEvent,
   getPlasmaContractAddress,
   getTimeToExit,
-  returnFunds
+  returnFunds,
+  setGas
 }
