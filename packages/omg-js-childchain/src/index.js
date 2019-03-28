@@ -99,7 +99,7 @@ class ChildChain {
    * @return {string} challenge data for the UTXO
    */
   async getChallengeData (utxoPos) {
-    return rpcApi.post(`${this.watcherUrl}/utxo.get_challenge_data`, { utxo_pos: utxoPos })
+    return rpcApi.post(`${this.watcherUrl}/utxo.get_challenge_data`, { utxo_pos: Number(utxoPos.toString()) })
   }
 
   /**

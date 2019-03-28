@@ -97,7 +97,7 @@ class RootChain {
       from: txOptions.from,
       to: this.plasmaContractAddress,
       data: txUtils.getTxData(this.web3, this.plasmaContract, 'startStandardExit',
-        outputId,
+        outputId.toString(),
         outputTx,
         inclusionProof
       ),

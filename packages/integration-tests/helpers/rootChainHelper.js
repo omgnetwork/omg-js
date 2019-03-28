@@ -15,6 +15,7 @@ limitations under the License. */
 
 const promiseRetry = require('promise-retry')
 const { transaction } = require('@omisego/omg-js-util')
+const numberToBN = require('number-to-bn')
 const fetch = require('node-fetch')
 
 async function setGas (eth, txDetails) {
@@ -30,50 +31,6 @@ function createAccount (web3) {
   const ret = web3.eth.accounts.create()
   ret.address = ret.address.toLowerCase()
   return ret
-}
-
-async function fundAccount (web3, config, address, value) {
-  if (value <= 0) {
-    return
-  }
-
-  let fundAccount
-  if (config.fundAccount && config.fundAccount !== '') {
-    fundAccount = config.fundAccount
-  } else {
-    // Default to using eth.accounts[0]
-    const accounts = await web3.eth.getAccounts()
-    fundAccount = accounts[0]
-  }
-
-  // First check if a private key has been set. If so, use it.
-  if (config.fundAccountPrivateKey && config.fundAccountPrivateKey !== '') {
-    const txDetails = {
-      from: fundAccount,
-      to: address,
-      value
-    }
-    await setGas(web3.eth, txDetails)
-
-    // First sign the transaction
-    const signedTx = await web3.eth.accounts.signTransaction(txDetails, config.fundAccountPrivateKey)
-    // Then send it
-    return web3.eth.sendSignedTransaction(signedTx.rawTransaction)
-  }
-
-  // Otherwise, try with a password.
-  const unlocked = await web3.eth.personal.unlockAccount(fundAccount, config.fundAccountPassword)
-  if (unlocked) {
-    const txDetails = {
-      from: fundAccount,
-      to: address,
-      value
-    }
-    await setGas(web3.eth, txDetails)
-    return web3.eth.sendTransaction(txDetails)
-  }
-
-  throw new Error(`Funding account ${fundAccount} password or private key not set`)
 }
 
 async function getERC20Balance (web3, contract, address) {
@@ -130,6 +87,11 @@ function waitForEthBalance (web3, address, callback) {
     factor: 1,
     retries: 30
   })
+}
+
+function waitForEthBalanceEq (web3, address, expectedAmount) {
+  const expectedBn = numberToBN(expectedAmount)
+  return waitForEthBalance(web3, address, balance => numberToBN(balance).eq(expectedBn))
 }
 
 function waitForEvent (childChain, eventName) {
@@ -220,7 +182,7 @@ async function getPlasmaContractAddress (config) {
 }
 
 async function getTimeToExit (plasmaContract, output) {
-  const exitableAt = await plasmaContract.methods.getExitableTimestamp(output).call()
+  const exitableAt = await plasmaContract.methods.getExitableTimestamp(output.toString()).call()
   return (Number(exitableAt) - Math.trunc(Date.now() / 1000)) * 1000
 }
 
@@ -260,11 +222,11 @@ async function returnFunds (web3, config, fromAccount) {
 module.exports = {
   createAccount,
   waitForEthBalance,
+  waitForEthBalanceEq,
   sleep,
   send,
   depositEth,
   depositToken,
-  fundAccount,
   approveERC20,
   getERC20Balance,
   spentOnGas,

@@ -39,12 +39,12 @@ const faucet = {
       this.privateKey = faucetAccount.privateKey
     }
 
-    const minAmountWei = web3.utils.toWei(config.minAmountEth || '2', 'ether')
-    await this.initEthBalance(web3, minAmountWei, config)
-    await this.initERC20Balance(web3, config.minAmountERC20 || 100, config.testErc20Contract, config)
+    await this.initEthBalance(web3, config)
+    await this.initERC20Balance(web3, config)
   },
 
-  initEthBalance: async function (web3, minAmount, config) {
+  initEthBalance: async function (web3, config) {
+    const minAmount = web3.utils.toWei(config.minAmountEth || '2', 'ether')
     // Check that the faucet's balance is enough to run the tests
     const ccBalance = await this.childChain.getBalance(this.address)
     const ccEthBalance = ccBalance.find(e => e.currency === transaction.ETH_CURRENCY)
@@ -83,7 +83,9 @@ const faucet = {
     }
   },
 
-  initERC20Balance: async function (web3, minAmount, currency, config) {
+  initERC20Balance: async function (web3, config) {
+    const minAmount = config.minAmountERC20 || 100
+    const currency = config.testErc20Contract
     // Check that the faucet's balance is enough to run the tests
     const ccBalances = await this.childChain.getBalance(this.address)
     const ccCurrencyBalance = ccBalances.find(e => e.currency === currency)
@@ -125,59 +127,32 @@ const faucet = {
     }
   },
 
-  fundAccount: async function (address, amount, currency) {
-    if (amount <= 0) {
+  fundChildchain: async function (address, amount, currency) {
+    await ccHelper.send(this.childChain, this.address, address, amount, currency, this.privateKey)
+    console.log(`Faucet sent ${amount} ${currency} on childchain to ${address}`)
+  },
+
+  fundRootchain: async function (web3, address, value) {
+    if (value <= 0) {
       return
     }
 
-    const utxos = await this.childChain.getUtxos(this.address)
-    const transferZeroFee = currency !== transaction.ETH_CURRENCY
-    const utxosToSpend = ccHelper.selectUtxos(utxos, amount, currency, transferZeroFee)
-    if (!utxosToSpend || utxosToSpend.length === 0) {
-      throw new Error(`Not enough funds in childChainFaucet to cover ${amount} ${currency}`)
+    const txDetails = {
+      from: this.address,
+      to: address,
+      value
     }
+    await rcHelper.setGas(web3.eth, txDetails)
 
-    const txBody = {
-      inputs: utxosToSpend,
-      outputs: [{
-        owner: address,
-        currency,
-        amount
-      }]
-    }
-
-    const bnAmount = numberToBN(utxosToSpend[0].amount)
-    if (bnAmount.gt(numberToBN(amount))) {
-      // Need to add a 'change' output
-      const CHANGE_AMOUNT = bnAmount.sub(numberToBN(amount))
-      txBody.outputs.push({
-        owner: this.address,
-        currency,
-        amount: CHANGE_AMOUNT
-      })
-    }
-
-    if (this.transferZeroFee && utxosToSpend.length > 1) {
-      // The fee input can be returned
-      txBody.outputs.push({
-        owner: this.address,
-        currency: utxosToSpend[utxosToSpend.length - 1].currency,
-        amount: utxosToSpend[utxosToSpend.length - 1].amount
-      })
-    }
-
-    // create transaction
-    const unsignedTx = this.childChain.createTransaction(txBody)
-    // sign transaction
-    const privateKeys = new Array(utxosToSpend.length).fill(this.privateKey)
-    const signatures = this.childChain.signTransaction(unsignedTx, privateKeys)
-    // build transaction
-    const signedTx = this.childChain.buildSignedTransaction(unsignedTx, signatures)
-    // submit transaction
-    return this.childChain.submitTransaction(signedTx)
+    const signedTx = await web3.eth.accounts.signTransaction(txDetails, this.privateKey)
+    return web3.eth.sendSignedTransaction(signedTx.rawTransaction)
   },
 
-  returnFunds: async function (account) {
+  returnFunds: async function (web3, account) {
+    return Promise.all([this.returnChildchainFunds(account), this.returnRootchainFunds(web3, account)])
+  },
+
+  returnChildchainFunds: async function (account) {
     const utxos = await this.childChain.getUtxos(account.address)
     const balances = await this.childChain.getBalance(account.address)
     return Promise.all(balances.map(balance => {
@@ -194,6 +169,25 @@ const faucet = {
         )
       }
     }))
+  },
+
+  returnRootchainFunds: async function (web3, account) {
+    const txDetails = {
+      from: account.address,
+      to: this.address
+    }
+    await rcHelper.setGas(web3.eth, txDetails)
+
+    const balance = await web3.eth.getBalance(account.address)
+    if (balance.toString() !== '0') {
+      const txGas = numberToBN(txDetails.gas).mul(numberToBN(txDetails.gasPrice))
+      const txValue = numberToBN(balance).sub(txGas)
+      if (txValue.gt(0)) {
+        txDetails.value = txValue
+        const signedTx = await web3.eth.accounts.signTransaction(txDetails, account.privateKey)
+        return web3.eth.sendSignedTransaction(signedTx.rawTransaction)
+      }
+    }
   }
 }
 
