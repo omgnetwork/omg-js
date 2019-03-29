@@ -240,7 +240,7 @@ describe('Transfer tests', async () => {
 
   describe('ERC20 transfer', async () => {
     const ERC20_CURRENCY = config.testErc20Contract
-    const INTIIAL_ALICE_AMOUNT = 20
+    const INTIIAL_ALICE_AMOUNT = 10
     const TRANSFER_AMOUNT = 3
     let aliceAccount
     let bobAccount
@@ -315,7 +315,7 @@ describe('Transfer tests', async () => {
   describe('Mixed currency transfer', async () => {
     const ERC20_CURRENCY = config.testErc20Contract
     const INTIIAL_ALICE_AMOUNT_ETH = web3.utils.toWei('0.001', 'ether')
-    const INTIIAL_ALICE_AMOUNT_ERC20 = 20
+    const INTIIAL_ALICE_AMOUNT_ERC20 = 10
     const TRANSFER_AMOUNT_ETH = numberToBN(web3.utils.toWei('0.0004', 'ether'))
     const TRANSFER_AMOUNT_ERC20 = 7
     let aliceAccount

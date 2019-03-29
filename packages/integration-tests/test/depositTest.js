@@ -45,7 +45,7 @@ describe('Deposit tests', async () => {
       // Create and fund a new account
       aliceAccount = await rcHelper.createAccount(web3)
       console.log(`Created new account ${JSON.stringify(aliceAccount)}`)
-      await faucet.fundRootchain(web3, aliceAccount.address, INTIIAL_ALICE_AMOUNT)
+      await faucet.fundRootchainEth(web3, aliceAccount.address, INTIIAL_ALICE_AMOUNT)
       await rcHelper.waitForEthBalanceEq(web3, aliceAccount.address, INTIIAL_ALICE_AMOUNT)
     })
 
@@ -98,11 +98,8 @@ describe('Deposit tests', async () => {
       // Create and fund Alice's account
       aliceAccount = await rcHelper.createAccount(web3)
       console.log(`Created Alice account ${JSON.stringify(aliceAccount)}`)
-      await Promise.all([
-        faucet.fundRootchain(web3, aliceAccount.address, INTIIAL_AMOUNT_ETH),
-        faucet.fundRootchainERC20(web3, aliceAccount.address, INITIAL_AMOUNT_ERC20, testErc20Contract)
-
-      ])
+      await faucet.fundRootchainEth(web3, aliceAccount.address, INTIIAL_AMOUNT_ETH)
+      await faucet.fundRootchainERC20(web3, aliceAccount.address, INITIAL_AMOUNT_ERC20, testErc20Contract)
 
       await Promise.all([
         rcHelper.waitForEthBalanceEq(web3, aliceAccount.address, INTIIAL_AMOUNT_ETH),
@@ -111,8 +108,12 @@ describe('Deposit tests', async () => {
     })
 
     after(async () => {
-      // Send back any leftover eth
-      rcHelper.returnFunds(web3, config, aliceAccount)
+      try {
+        // Send any leftover funds back to the faucet
+        await faucet.returnFunds(web3, aliceAccount)
+      } catch (err) {
+        console.warn(`Error trying to return funds to the faucet: ${err}`)
+      }
     })
 
     it('should deposit ERC20 tokens to the Plasma contract', async () => {

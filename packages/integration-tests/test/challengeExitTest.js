@@ -29,7 +29,7 @@ let rootChain
 // NB This test waits for at least RootChain.MIN_EXIT_PERIOD so it should be run against a
 // modified RootChain contract with a shorter than normal MIN_EXIT_PERIOD.
 
-describe('Challenge exit tests', async () => {
+describe.skip('Challenge exit tests', async () => {
   const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.1', 'ether')
   const INTIIAL_BOB_AMOUNT = web3.utils.toWei('.1', 'ether')
   const DEPOSIT_AMOUNT = web3.utils.toWei('.01', 'ether')

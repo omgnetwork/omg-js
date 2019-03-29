@@ -19,6 +19,12 @@ const numberToBN = require('number-to-bn')
 const fetch = require('node-fetch')
 const erc20abi = require('human-standard-token-abi')
 
+function createAccount (web3) {
+  const ret = web3.eth.accounts.create()
+  ret.address = ret.address.toLowerCase()
+  return ret
+}
+
 async function setGas (eth, txDetails) {
   if (!txDetails.gas) {
     txDetails.gas = await eth.estimateGas(txDetails)
@@ -28,40 +34,7 @@ async function setGas (eth, txDetails) {
   }
 }
 
-function createAccount (web3) {
-  const ret = web3.eth.accounts.create()
-  ret.address = ret.address.toLowerCase()
-  return ret
-}
-
-async function getERC20Balance (web3, contract, address) {
-  const txDetails = {
-    from: address,
-    to: contract._address,
-    data: contract.methods.balanceOf(address).encodeABI()
-  }
-
-  return web3.eth.call(txDetails)
-}
-
-async function approveERC20 (
-  web3,
-  erc20Contract,
-  ownerAccount,
-  ownerAccountPassword,
-  spender,
-  value
-) {
-  const txDetails = {
-    from: ownerAccount,
-    to: erc20Contract._address,
-    data: erc20Contract.methods.approve(spender, value).encodeABI()
-  }
-
-  return sendTx(web3, txDetails, ownerAccountPassword)
-}
-
-async function sendTx (web3, txDetails, privateKey) {
+async function sendTransaction (web3, txDetails, privateKey) {
   await setGas(web3.eth, txDetails)
 
   if (!privateKey) {
@@ -73,6 +46,11 @@ async function sendTx (web3, txDetails, privateKey) {
     // Then send it
     return web3.eth.sendSignedTransaction(signedTx.rawTransaction)
   }
+}
+
+async function spentOnGas (web3, receipt) {
+  const tx = await web3.eth.getTransaction(receipt.transactionHash)
+  return web3.utils.toBN(tx.gasPrice).muln(receipt.gasUsed)
 }
 
 function waitForEthBalance (web3, address, callback) {
@@ -93,6 +71,16 @@ function waitForEthBalance (web3, address, callback) {
 function waitForEthBalanceEq (web3, address, expectedAmount) {
   const expectedBn = numberToBN(expectedAmount)
   return waitForEthBalance(web3, address, balance => numberToBN(balance).eq(expectedBn))
+}
+
+async function getERC20Balance (web3, contract, address) {
+  const txDetails = {
+    from: address,
+    to: contract._address,
+    data: contract.methods.balanceOf(address).encodeABI()
+  }
+
+  return web3.eth.call(txDetails)
 }
 
 function waitForERC20Balance (web3, address, contractAddress, callback) {
@@ -116,65 +104,27 @@ function waitForERC20BalanceEq (web3, address, contractAddress, expectedAmount) 
   return waitForERC20Balance(web3, address, contractAddress, balance => numberToBN(balance).eq(expectedBn))
 }
 
-function waitForEvent (childChain, eventName) {
-  return promiseRetry(async (retry, number) => {
-    console.log(`Waiting for ${eventName} event...  (${number})`)
-    const status = await childChain.status()
-    if (status.byzantine_events) {
-      const found = status.byzantine_events.find(e => e.event === eventName)
-      if (found) {
-        return found
-      }
-    }
-    retry()
-  }, {
-    minTimeout: 6000,
-    factor: 1,
-    retries: 50
-  })
-}
-
 function sleep (ms) {
   return new Promise(resolve => {
     setTimeout(resolve, ms)
   })
 }
 
-async function send (childChain, from, to, amount, currency, privateKeys) {
-  // Get 'from' account's utxos
-  const utxos = await childChain.getUtxos(from)
-
-  // TODO For now assume that one utxo can cover the amount to be sent
-
-  // Convert 'amount' to a Number
-  utxos[0].amount = Number(utxos[0].amount)
-
-  if (utxos[0].amount < amount) {
-    throw new Error(`utxo amount ${utxos[0].amount} is not enough to send ${amount}`)
+async function approveERC20 (
+  web3,
+  erc20Contract,
+  ownerAccount,
+  ownerAccountPassword,
+  spender,
+  value
+) {
+  const txDetails = {
+    from: ownerAccount,
+    to: erc20Contract._address,
+    data: erc20Contract.methods.approve(spender, value).encodeABI()
   }
 
-  // Construct the tx body
-  const txBody = {
-    inputs: [utxos[0]],
-    outputs: [{
-      owner: to,
-      currency,
-      amount
-    }, {
-      owner: from,
-      currency,
-      amount: utxos[0].amount - amount
-    }]
-  }
-
-  // Create the unsigned transaction
-  const unsignedTx = await childChain.createTransaction(txBody)
-  // Sign it
-  const signatures = await childChain.signTransaction(unsignedTx, privateKeys)
-  // Build the signed transaction
-  const signedTx = await childChain.buildSignedTransaction(unsignedTx, signatures)
-  // Submit the signed transaction to the childchain
-  return childChain.submitTransaction(signedTx)
+  return sendTransaction(web3, txDetails, ownerAccountPassword)
 }
 
 async function depositEth (rootChain, childChain, address, amount, privateKey) {
@@ -185,11 +135,6 @@ async function depositEth (rootChain, childChain, address, amount, privateKey) {
 async function depositToken (rootChain, childChain, address, amount, currency, privateKey) {
   const depositTx = transaction.encodeDeposit(address, amount, currency)
   return rootChain.depositToken(depositTx, { from: address, privateKey })
-}
-
-async function spentOnGas (web3, receipt) {
-  const tx = await web3.eth.getTransaction(receipt.transactionHash)
-  return web3.utils.toBN(tx.gasPrice).muln(receipt.gasUsed)
 }
 
 async function getPlasmaContractAddress (config) {
@@ -208,39 +153,6 @@ async function getTimeToExit (plasmaContract, output) {
   return (Number(exitableAt) - Math.trunc(Date.now() / 1000)) * 1000
 }
 
-async function returnFunds (web3, config, fromAccount) {
-  let fundAccount
-  if (config.fundAccount && config.fundAccount !== '') {
-    fundAccount = config.fundAccount
-  } else {
-    // Default to using eth.accounts[0]
-    const accounts = await web3.eth.getAccounts()
-    fundAccount = accounts[0]
-  }
-
-  const txDetails = {
-    from: fromAccount.address,
-    to: fundAccount
-  }
-
-  const gas = await web3.eth.estimateGas(txDetails)
-  const gasPrice = await web3.eth.getGasPrice()
-
-  txDetails.gas = gas
-  txDetails.gasPrice = gasPrice
-
-  const balance = await web3.eth.getBalance(fromAccount.address)
-  const gasUsed = web3.utils.toBN(gas).mul(web3.utils.toBN(gasPrice))
-  if (Number(gasUsed.toString()) > 0) {
-    txDetails.value = (web3.utils.toBN(balance).sub(gasUsed)).toString()
-
-    // First sign the transaction
-    const signedTx = await web3.eth.accounts.signTransaction(txDetails, fromAccount.privateKey)
-    // Then send it
-    return web3.eth.sendSignedTransaction(signedTx.rawTransaction)
-  }
-}
-
 module.exports = {
   createAccount,
   waitForEthBalance,
@@ -248,15 +160,13 @@ module.exports = {
   waitForERC20Balance,
   waitForERC20BalanceEq,
   sleep,
-  send,
+  sendTransaction,
   depositEth,
   depositToken,
   approveERC20,
   getERC20Balance,
   spentOnGas,
-  waitForEvent,
   getPlasmaContractAddress,
   getTimeToExit,
-  returnFunds,
   setGas
 }

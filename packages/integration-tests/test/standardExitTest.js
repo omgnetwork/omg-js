@@ -48,7 +48,7 @@ describe('Standard Exit tests', async () => {
       // Create and fund Alice's account
       aliceAccount = await rcHelper.createAccount(web3)
       console.log(`Created Alice account ${JSON.stringify(aliceAccount)}`)
-      await faucet.fundRootchain(web3, aliceAccount.address, INTIIAL_ALICE_AMOUNT)
+      await faucet.fundRootchainEth(web3, aliceAccount.address, INTIIAL_ALICE_AMOUNT)
       await rcHelper.waitForEthBalanceEq(web3, aliceAccount.address, INTIIAL_ALICE_AMOUNT)
     })
 
@@ -158,7 +158,7 @@ describe('Standard Exit tests', async () => {
         // Give some ETH to Alice on the child chain
         faucet.fundChildchain(aliceAccount.address, INTIIAL_ALICE_AMOUNT, transaction.ETH_CURRENCY),
         // Give some ETH to Bob on the root chain
-        faucet.fundRootchain(web3, bobAccount.address, INTIIAL_BOB_RC_AMOUNT)
+        faucet.fundRootchainEth(web3, bobAccount.address, INTIIAL_BOB_RC_AMOUNT)
       ])
       // Wait for finality
       await Promise.all([
@@ -266,7 +266,7 @@ describe('Standard Exit tests', async () => {
     const ERC20_CURRENCY = config.testErc20Contract
     const testErc20Contract = new web3.eth.Contract(erc20abi, config.testErc20Contract)
     const INTIIAL_ALICE_AMOUNT_ETH = web3.utils.toWei('.1', 'ether')
-    const INTIIAL_ALICE_AMOUNT_ERC20 = 20
+    const INTIIAL_ALICE_AMOUNT_ERC20 = 2
     let aliceAccount
 
     before(async () => {
@@ -275,7 +275,7 @@ describe('Standard Exit tests', async () => {
       console.log(`Created Alice account ${JSON.stringify(aliceAccount)}`)
       await Promise.all([
         faucet.fundChildchain(aliceAccount.address, INTIIAL_ALICE_AMOUNT_ERC20, ERC20_CURRENCY),
-        faucet.fundRootchain(web3, aliceAccount.address, INTIIAL_ALICE_AMOUNT_ETH)
+        faucet.fundRootchainEth(web3, aliceAccount.address, INTIIAL_ALICE_AMOUNT_ETH)
       ])
 
       await Promise.all([
