@@ -30,6 +30,9 @@ const faucet = {
     this.childChain = childChain
     this.address = config.testFaucetAddress
     this.privateKey = config.testFaucetPrivateKey
+    this.erc20ContractAddress = config.testErc20Contract
+    this.erc20Contract = new web3.eth.Contract(erc20abi, this.erc20ContractAddress)
+    this.fundAccount = await getFundAccount(web3, config)
 
     if (!this.address || this.address === '') {
       // If no faucet configured, create a new one. This is really only useful when running tests locally.
@@ -39,12 +42,11 @@ const faucet = {
       this.privateKey = faucetAccount.privateKey
     }
 
-    await this.initEthBalance(web3, config)
-    await this.initERC20Balance(web3, config)
+    await this.initEthBalance(web3, web3.utils.toWei(config.minAmountEth || '20', 'ether'))
+    await this.initERC20Balance(web3, config.minAmountERC20 || 100)
   },
 
-  initEthBalance: async function (web3, config) {
-    const minAmount = web3.utils.toWei(config.minAmountEth || '2', 'ether')
+  initEthBalance: async function (web3, minAmount) {
     // Check that the faucet's balance is enough to run the tests
     const ccBalance = await this.childChain.getBalance(this.address)
     const ccEthBalance = ccBalance.find(e => e.currency === transaction.ETH_CURRENCY)
@@ -56,7 +58,7 @@ const faucet = {
       // Check if there are enough root chain funds in the faucet
       if (numberToBN(rcEthBalance).lte(needed)) {
         // For local testing, try to automatically top up the faucet
-        await this.topUpEth(web3, config, needed)
+        await this.topUpEth(web3, needed)
       }
 
       try {
@@ -71,11 +73,11 @@ const faucet = {
     }
   },
 
-  topUpEth: async function (web3, config, amount) {
+  topUpEth: async function (web3, amount) {
     try {
       const topup = numberToBN(amount).add(numberToBN(web3.utils.toWei('0.1', 'ether'))) // A bit extra for gas
       console.log(`Not enough Root chain ETH in faucet ${this.address}, attempting to top up with ${topup.toString()}`)
-      await topUpFaucet(web3, config, this.address, topup)
+      await topUpFaucet(web3, this.address, topup, this.fundAccount)
       await rcHelper.waitForEthBalance(web3, this.address, balance => numberToBN(balance).gte(topup))
     } catch (err) {
       console.warn(err)
@@ -83,44 +85,41 @@ const faucet = {
     }
   },
 
-  initERC20Balance: async function (web3, config) {
-    const minAmount = config.minAmountERC20 || 100
-    const currency = config.testErc20Contract
+  initERC20Balance: async function (web3, minAmount) {
     // Check that the faucet's balance is enough to run the tests
     const ccBalances = await this.childChain.getBalance(this.address)
-    const ccCurrencyBalance = ccBalances.find(e => e.currency === currency)
+    const ccCurrencyBalance = ccBalances.find(e => e.currency === this.erc20ContractAddress)
     if (!ccCurrencyBalance || numberToBN(ccCurrencyBalance.amount).lt(minAmount)) {
       // If not, try to deposit more funds from the root chain
       const needed = ccCurrencyBalance ? numberToBN(minAmount).sub(numberToBN(ccCurrencyBalance.amount)) : numberToBN(minAmount)
 
-      const testErc20Contract = new web3.eth.Contract(erc20abi, currency)
       // Check faucet erc20 balance
-      const erc20Balance = await rcHelper.getERC20Balance(web3, testErc20Contract, this.address, this.privateKey)
+      const erc20Balance = await rcHelper.getERC20Balance(web3, this.erc20Contract, this.address, this.privateKey)
       if (numberToBN(erc20Balance).lte(needed)) {
         // For local testing, try to automatically top up the faucet
-        await this.topUpERC20(web3, config, needed, testErc20Contract)
+        await this.topUpERC20(web3, needed, this.erc20Contract)
       }
 
       try {
-        console.log(`Not enough Child chain erc20 tokens in faucet ${this.address}, attempting to deposit ${needed.toString()} ${currency} from root chain`)
-        await rcHelper.approveERC20(web3, testErc20Contract, this.address, this.privateKey, this.rootChain.plasmaContractAddress, needed.toString())
-        await rcHelper.depositToken(this.rootChain, this.childChain, this.address, needed, currency, this.privateKey)
-        await ccHelper.waitForBalance(this.childChain, this.address, currency, balance => numberToBN(balance.amount).gte(needed))
-        console.log(`Test faucet ${this.address} topped up with ${needed.toString()} ${currency}`)
+        console.log(`Not enough Child chain erc20 tokens in faucet ${this.address}, attempting to deposit ${needed.toString()} ${this.erc20ContractAddress} from root chain`)
+        await rcHelper.approveERC20(web3, this.erc20Contract, this.address, this.privateKey, this.rootChain.plasmaContractAddress, needed.toString())
+        await rcHelper.depositToken(this.rootChain, this.childChain, this.address, needed, this.erc20ContractAddress, this.privateKey)
+        await ccHelper.waitForBalance(this.childChain, this.address, this.erc20ContractAddress, balance => numberToBN(balance.amount).gte(needed))
+        console.log(`Test faucet ${this.address} topped up with ${needed.toString()} ${this.erc20ContractAddress}`)
       } catch (err) {
-        console.error(`Error depositing ${needed.toString()} ${currency} - not enough tokens in faucet?`)
+        console.error(`Error depositing ${needed.toString()} ${this.erc20ContractAddress} - not enough tokens in faucet?`)
         throw err
       }
     }
   },
 
-  topUpERC20: async function (web3, config, amount, testErc20Contract) {
+  topUpERC20: async function (web3, amount, testErc20Contract) {
     try {
       // For local testing, try to automatically top up the faucet
       console.log(`Not enough Root chain erc20 tokens in faucet ${this.address}, attempting to top up with ${amount.toString()} tokens`)
-      await topUpFaucetERC20(web3, config, this.address, amount, testErc20Contract)
+      await topUpFaucetERC20(web3, this.address, amount, testErc20Contract, this.fundAccount)
       // TODO Should wait for balance...
-      await rcHelper.sleep(1000)
+      await rcHelper.sleep(2000)
     } catch (err) {
       console.warn(err)
       throw new Error(`Not enough ${testErc20Contract._address} tokens in test faucet ${this.address}. Please top up!`)
@@ -144,6 +143,27 @@ const faucet = {
     }
     await rcHelper.setGas(web3.eth, txDetails)
 
+    const signedTx = await web3.eth.accounts.signTransaction(txDetails, this.privateKey)
+    return web3.eth.sendSignedTransaction(signedTx.rawTransaction)
+  },
+
+  fundRootchainERC20: async function (web3, address, value) {
+    if (value <= 0) {
+      return
+    }
+
+    const balance = await rcHelper.getERC20Balance(web3, this.erc20Contract, this.address)
+    if (numberToBN(balance).lt(numberToBN(value))) {
+      // For local testing, try to automatically top up the faucet
+      await this.topUpERC20(web3, value, this.erc20Contract)
+    }
+
+    const txDetails = {
+      from: this.address,
+      to: this.erc20ContractAddress,
+      data: this.erc20Contract.methods.transfer(address, value.toString()).encodeABI()
+    }
+    await rcHelper.setGas(web3.eth, txDetails)
     const signedTx = await web3.eth.accounts.signTransaction(txDetails, this.privateKey)
     return web3.eth.sendSignedTransaction(signedTx.rawTransaction)
   },
@@ -191,8 +211,7 @@ const faucet = {
   }
 }
 
-async function topUpFaucet (web3, config, address, value) {
-  const fundAccount = await getFundAccount(web3, config)
+async function topUpFaucet (web3, address, value, fundAccount) {
   const txDetails = {
     from: fundAccount.address,
     to: address,
@@ -200,7 +219,7 @@ async function topUpFaucet (web3, config, address, value) {
   }
   await rcHelper.setGas(web3.eth, txDetails)
 
-  if (fundAccount.privateKey) {
+  if (this.fundAccount.privateKey) {
     // If a private key has been set then use it.
     const signedTx = await web3.eth.accounts.signTransaction(txDetails, fundAccount.privateKey)
     return web3.eth.sendSignedTransaction(signedTx.rawTransaction)
@@ -215,8 +234,7 @@ async function topUpFaucet (web3, config, address, value) {
   throw new Error(`Funding account ${fundAccount} password or private key not set`)
 }
 
-async function topUpFaucetERC20 (web3, config, address, value, contract) {
-  const fundAccount = await getFundAccount(web3, config)
+async function topUpFaucetERC20 (web3, address, value, contract, fundAccount) {
   const txDetails = {
     from: fundAccount.address,
     to: contract._address,

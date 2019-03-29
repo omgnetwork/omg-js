@@ -17,6 +17,7 @@ const promiseRetry = require('promise-retry')
 const { transaction } = require('@omisego/omg-js-util')
 const numberToBN = require('number-to-bn')
 const fetch = require('node-fetch')
+const erc20abi = require('human-standard-token-abi')
 
 async function setGas (eth, txDetails) {
   if (!txDetails.gas) {
@@ -92,6 +93,27 @@ function waitForEthBalance (web3, address, callback) {
 function waitForEthBalanceEq (web3, address, expectedAmount) {
   const expectedBn = numberToBN(expectedAmount)
   return waitForEthBalance(web3, address, balance => numberToBN(balance).eq(expectedBn))
+}
+
+function waitForERC20Balance (web3, address, contractAddress, callback) {
+  const contract = new web3.eth.Contract(erc20abi, contractAddress)
+  return promiseRetry(async (retry, number) => {
+    console.log(`Waiting for ERC20 balance...  (${number})`)
+    const resp = await getERC20Balance(web3, contract, address)
+    if (!callback(resp)) {
+      retry()
+    }
+    return resp
+  }, {
+    minTimeout: 2000,
+    factor: 1,
+    retries: 30
+  })
+}
+
+function waitForERC20BalanceEq (web3, address, contractAddress, expectedAmount) {
+  const expectedBn = numberToBN(expectedAmount)
+  return waitForERC20Balance(web3, address, contractAddress, balance => numberToBN(balance).eq(expectedBn))
 }
 
 function waitForEvent (childChain, eventName) {
@@ -223,6 +245,8 @@ module.exports = {
   createAccount,
   waitForEthBalance,
   waitForEthBalanceEq,
+  waitForERC20Balance,
+  waitForERC20BalanceEq,
   sleep,
   send,
   depositEth,
