@@ -36,7 +36,7 @@ describe('Transfer tests', async () => {
     await faucet.init(rootChain, childChain, web3, config)
   })
 
-  describe('Simple ETH (ci-enabled)', async () => {
+  describe('Simple ETH (ci-enabled-fast)', async () => {
     const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.1', 'ether')
     // TRANSFER_AMOUNT is deliberately bigger than Number.MAX_SAFE_INTEGER to cause rounding errors if not properly handled
     const TRANSFER_AMOUNT = '20000000000000123'
@@ -109,7 +109,7 @@ describe('Transfer tests', async () => {
     })
   })
 
-  describe('Transfer with 4 inputs and 4 outputs  (ci-enabled)', async () => {
+  describe('Transfer with 4 inputs and 4 outputs  (ci-enabled-fast)', async () => {
     const UTXO_AMOUNT = web3.utils.toWei('.0001', 'ether')
     let aliceAccount
     let bobAccount
@@ -312,7 +312,7 @@ describe('Transfer tests', async () => {
     })
   })
 
-  describe('Mixed currency transfer', async () => {
+  describe('Mixed currency transfer (ci-enabled)', async () => {
     const ERC20_CURRENCY = config.testErc20Contract
     const INTIIAL_ALICE_AMOUNT_ETH = web3.utils.toWei('0.001', 'ether')
     const INTIIAL_ALICE_AMOUNT_ERC20 = 10
@@ -405,7 +405,7 @@ describe('Transfer tests', async () => {
     })
   })
 
-  describe('sendTransaction test (ci-enabled)', async () => {
+  describe('sendTransaction test (ci-enabled-fast)', async () => {
     const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.1', 'ether')
     // TRANSFER_AMOUNT is deliberately bigger than Number.MAX_SAFE_INTEGER to cause rounding errors if not properly handled
     const TRANSFER_AMOUNT = '20000000000000123'

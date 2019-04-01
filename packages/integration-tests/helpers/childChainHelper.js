@@ -72,12 +72,12 @@ function waitForBalanceEq (childChain, address, expectedAmount, currency) {
   return waitForBalance(childChain, address, currency, balance => numberToBN(balance.amount).eq(expectedBn))
 }
 
-function waitForEvent (childChain, eventName) {
+function waitForEvent (childChain, callback) {
   return promiseRetry(async (retry, number) => {
-    console.log(`Waiting for ${eventName} event...  (${number})`)
+    console.log(`Waiting for event...  (${number})`)
     const status = await childChain.status()
     if (status.byzantine_events) {
-      const found = status.byzantine_events.find(e => e.event === eventName)
+      const found = status.byzantine_events.find(e => callback)
       if (found) {
         return found
       }

@@ -125,7 +125,7 @@ class RootChain {
       from: txOptions.from,
       to: this.plasmaContractAddress,
       data: txUtils.getTxData(this.web3, this.plasmaContract, 'challengeStandardExit',
-        outputId,
+        outputId.toString(),
         challengeTx,
         inputIndex,
         challengeTxSig),

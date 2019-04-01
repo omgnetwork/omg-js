@@ -39,7 +39,7 @@ describe('Standard Exit tests', async () => {
     await faucet.init(rootChain, childChain, web3, config)
   })
 
-  describe('Deposit transaction exit', async () => {
+  describe('Deposit transaction exit (ci-enabled)', async () => {
     const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.1', 'ether')
     const DEPOSIT_AMOUNT = web3.utils.toWei('.0001', 'ether')
     let aliceAccount
@@ -140,7 +140,7 @@ describe('Standard Exit tests', async () => {
     })
   })
 
-  describe('childchain transaction exit', async () => {
+  describe('childchain transaction exit (ci-enabled)', async () => {
     const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.001', 'ether')
     const INTIIAL_BOB_RC_AMOUNT = web3.utils.toWei('.1', 'ether')
     const TRANSFER_AMOUNT = web3.utils.toWei('0.0002', 'ether')
@@ -262,7 +262,7 @@ describe('Standard Exit tests', async () => {
     })
   })
 
-  describe('ERC20 exit', async () => {
+  describe('ERC20 exit (ci-enabled)', async () => {
     const ERC20_CURRENCY = config.testErc20Contract
     const testErc20Contract = new web3.eth.Contract(erc20abi, config.testErc20Contract)
     const INTIIAL_ALICE_AMOUNT_ETH = web3.utils.toWei('.1', 'ether')

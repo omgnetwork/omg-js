@@ -36,7 +36,7 @@ describe('Deposit tests', async () => {
     await faucet.init(rootChain, childChain, web3, config)
   })
 
-  describe('deposit ETH', async () => {
+  describe('deposit ETH (ci-enabled)', async () => {
     const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.1', 'ether')
     const TEST_AMOUNT = web3.utils.toWei('.0001', 'ether')
     let aliceAccount
@@ -87,7 +87,7 @@ describe('Deposit tests', async () => {
     })
   })
 
-  describe('deposit ERC20', async () => {
+  describe('deposit ERC20 (ci-enabled)', async () => {
     let aliceAccount
     const testErc20Contract = new web3.eth.Contract(erc20abi, config.testErc20Contract)
     const INTIIAL_AMOUNT_ETH = web3.utils.toWei('.1', 'ether')
