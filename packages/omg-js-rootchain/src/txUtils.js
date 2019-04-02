@@ -2,7 +2,6 @@ async function sendTx (web3, txDetails, privateKey) {
   await setGas(web3, txDetails)
   if (!privateKey) {
     // No privateKey, caller will handle signing if necessary
-
     if (web3.version.api && web3.version.api.startsWith('0.2')) {
       return new Promise((resolve, reject) => {
         web3.eth.sendTransaction(txDetails, (err, transactionHash) => {
@@ -17,7 +16,6 @@ async function sendTx (web3, txDetails, privateKey) {
       return web3.eth.sendTransaction(txDetails)
     }
   } else {
-    // TODO
     // First sign the transaction
     const signedTx = await web3.eth.accounts.signTransaction(txDetails, privateKey)
     // Then send it
@@ -27,18 +25,23 @@ async function sendTx (web3, txDetails, privateKey) {
 
 async function setGas (web3, txDetails) {
   if (!txDetails.gasPrice) {
-    if (web3.version.api && web3.version.api.startsWith('0.2')) {
-      txDetails.gasPrice = await new Promise((resolve, reject) => {
-        web3.eth.getGasPrice((err, result) => {
-          if (err) {
-            reject(err)
-          } else {
-            resolve(result)
-          }
+    try {
+      if (web3.version.api && web3.version.api.startsWith('0.2')) {
+        txDetails.gasPrice = await new Promise((resolve, reject) => {
+          web3.eth.getGasPrice((err, result) => {
+            if (err) {
+              reject(err)
+            } else {
+              resolve(result)
+            }
+          })
         })
-      })
-    } else {
-      txDetails.gasPrice = await web3.eth.getGasPrice()
+      } else {
+        txDetails.gasPrice = await web3.eth.getGasPrice()
+      }
+    } catch (err) {
+      console.warn(`Error getting gas price: ${err}`)
+      txDetails.gasPrice = '1000000000' // Default to 1 GWEI
     }
   }
   if (!txDetails.gas) {

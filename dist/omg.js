@@ -15084,7 +15084,7 @@ class ChildChain {
    * @return {string} challenge data for the UTXO
    */
   async getChallengeData (utxoPos) {
-    return rpcApi.post(`${this.watcherUrl}/utxo.get_challenge_data`, { utxo_pos: utxoPos })
+    return rpcApi.post(`${this.watcherUrl}/utxo.get_challenge_data`, { utxo_pos: Number(utxoPos.toString()) })
   }
 
   /**
@@ -16447,7 +16447,7 @@ class RootChain {
       from: txOptions.from,
       to: this.plasmaContractAddress,
       data: txUtils.getTxData(this.web3, this.plasmaContract, 'startStandardExit',
-        outputId,
+        outputId.toString(),
         outputTx,
         inclusionProof
       ),
@@ -16475,7 +16475,7 @@ class RootChain {
       from: txOptions.from,
       to: this.plasmaContractAddress,
       data: txUtils.getTxData(this.web3, this.plasmaContract, 'challengeStandardExit',
-        outputId,
+        outputId.toString(),
         challengeTx,
         inputIndex,
         challengeTxSig),
@@ -16540,7 +16540,6 @@ async function sendTx (web3, txDetails, privateKey) {
   await setGas(web3, txDetails)
   if (!privateKey) {
     // No privateKey, caller will handle signing if necessary
-
     if (web3.version.api && web3.version.api.startsWith('0.2')) {
       return new Promise((resolve, reject) => {
         web3.eth.sendTransaction(txDetails, (err, transactionHash) => {
@@ -16555,7 +16554,6 @@ async function sendTx (web3, txDetails, privateKey) {
       return web3.eth.sendTransaction(txDetails)
     }
   } else {
-    // TODO
     // First sign the transaction
     const signedTx = await web3.eth.accounts.signTransaction(txDetails, privateKey)
     // Then send it
@@ -16565,18 +16563,23 @@ async function sendTx (web3, txDetails, privateKey) {
 
 async function setGas (web3, txDetails) {
   if (!txDetails.gasPrice) {
-    if (web3.version.api && web3.version.api.startsWith('0.2')) {
-      txDetails.gasPrice = await new Promise((resolve, reject) => {
-        web3.eth.getGasPrice((err, result) => {
-          if (err) {
-            reject(err)
-          } else {
-            resolve(result)
-          }
+    try {
+      if (web3.version.api && web3.version.api.startsWith('0.2')) {
+        txDetails.gasPrice = await new Promise((resolve, reject) => {
+          web3.eth.getGasPrice((err, result) => {
+            if (err) {
+              reject(err)
+            } else {
+              resolve(result)
+            }
+          })
         })
-      })
-    } else {
-      txDetails.gasPrice = await web3.eth.getGasPrice()
+      } else {
+        txDetails.gasPrice = await web3.eth.getGasPrice()
+      }
+    } catch (err) {
+      console.warn(`Error getting gas price: ${err}`)
+      txDetails.gasPrice = '1000000000' // Default to 1 GWEI
     }
   }
   if (!txDetails.gas) {
@@ -35698,23 +35701,24 @@ const transaction = {
     // Get the total value of the inputs
     const totalInputValue = inputArr.reduce((acc, curr) => acc.add(numberToBN(curr.amount.toString())), numberToBN(0))
 
+    const bnAmount = numberToBN(toAmount)
     // Check there is enough in the inputs to cover the amount
-    if (totalInputValue.lt(numberToBN(toAmount))) {
-      throw new Error(`Insufficient funds for ${toAmount}`)
+    if (totalInputValue.lt(bnAmount)) {
+      throw new Error(`Insufficient funds for ${bnAmount.toString()}`)
     }
 
     const outputArr = [{
       owner: toAddress,
       currency,
-      amount: Number(numberToBN(toAmount))
+      amount: bnAmount
     }]
 
-    if (totalInputValue.gt(numberToBN(toAmount))) {
+    if (totalInputValue.gt(bnAmount)) {
       // If necessary add a 'change' output
       outputArr.push({
         owner: fromAddress,
         currency,
-        amount: Number(totalInputValue.sub(numberToBN(toAmount)).toString())
+        amount: totalInputValue.sub(bnAmount)
       })
     }
 
