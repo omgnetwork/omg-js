@@ -201,47 +201,47 @@ class ChildChain {
    * Get the exit data for an in-flight transaction
    *
    * @method inFlightExitGetData
-   * @param {string} transaction the hex-encoded transaction
+   * @param {string} txbytes the hex-encoded transaction
    * @return {Object} exit data for the in-flight transaction
    */
-  async inFlightExitGetData (transaction) {
-    return rpcApi.post(`${this.watcherUrl}/in_flight_exit.get_data`, { transaction })
+  async inFlightExitGetData (txbytes) {
+    return rpcApi.post(`${this.watcherUrl}/in_flight_exit.get_data`, { txbytes: hexPrefix(transaction) })
   }
 
   /**
    * Get a competitor for an in-flight transaction
    *
    * @method inFlightExitGetCompetitor
-   * @param {string} transaction the hex-encoded transaction
+   * @param {string} txbytes the hex-encoded transaction
    * @return {Object} a competitor to the in-flight transaction
    */
-  async inFlightExitGetCompetitor (transaction) {
-    return rpcApi.post(`${this.watcherUrl}/in_flight_exit.get_competitor`, { transaction })
+  async inFlightExitGetCompetitor (txbytes) {
+    return rpcApi.post(`${this.watcherUrl}/in_flight_exit.get_competitor`, { txbytes: hexPrefix(transaction) })
   }
 
   /**
    * Proves that a transaction has been put into a block (and therefore is canonical).
    *
    * @method inFlightExitProveCanonical
-   * @param {string} transaction the hex-encoded transaction
+   * @param {string} txbytes the hex-encoded transaction
    * @return {Object} the inclusion proof of the transaction
    */
-  async inFlightExitProveCanonical (transaction) {
-    return rpcApi.post(`${this.watcherUrl}/in_flight_exit.prove_canonical`, { transaction })
+  async inFlightExitProveCanonical (txbytes) {
+    return rpcApi.post(`${this.watcherUrl}/in_flight_exit.prove_canonical`, { txbytes: hexPrefix(transaction) })
   }
 
   /**
    * Get the data to challenge an invalid input piggybacked on an in-flight exit.
    *
    * @method inFlightGetInputChallengeData
-   * @param {string} transaction the hex-encoded transaction
+   * @param {string} txbytes the hex-encoded transaction
    * @param {number} inputIndex the index of the input in the transaction
    * @return {Object} the challenge data
    */
-  async inFlightExitGetInputChallengeData (transaction, inputIndex) {
+  async inFlightExitGetInputChallengeData (txbytes, inputIndex) {
     return rpcApi.post(
       `${this.watcherUrl}/in_flight_exit.get_input_challenge_data`,
-      { transaction, input_index: inputIndex }
+      { txbytes: hexPrefix(transaction), input_index: inputIndex }
     )
   }
 
@@ -249,16 +249,20 @@ class ChildChain {
    * Get the data to challenge an invalid output piggybacked on an in-flight exit.
    *
    * @method inFlightExitGetOutputChallengeData
-   * @param {string} transaction the hex-encoded transaction
+   * @param {string} txbytes the hex-encoded transaction
    * @param {number} outputIndex the index of the output in the transaction
    * @return {Object} the challenge data
    */
-  async inFlightExitGetOutputChallengeData (transaction, outputIndex) {
+  async inFlightExitGetOutputChallengeData (txbytes, outputIndex) {
     return rpcApi.post(
       `${this.watcherUrl}/in_flight_exit.get_output_challenge_data`,
-      { transaction, output_index: outputIndex }
+      { txbytes: hexPrefix(transaction), output_index: outputIndex }
     )
   }
+}
+
+function hexPrefix (data) {
+  return data.startsWith('0x') ? data : `0x${data}`
 }
 
 function validatePrivateKey (arg) {
