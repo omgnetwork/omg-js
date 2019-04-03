@@ -205,7 +205,7 @@ class ChildChain {
    * @return {Object} exit data for the in-flight transaction
    */
   async inFlightExitGetData (txbytes) {
-    return rpcApi.post(`${this.watcherUrl}/in_flight_exit.get_data`, { txbytes: hexPrefix(transaction) })
+    return rpcApi.post(`${this.watcherUrl}/in_flight_exit.get_data`, { txbytes: hexPrefix(txbytes) })
   }
 
   /**
@@ -216,7 +216,7 @@ class ChildChain {
    * @return {Object} a competitor to the in-flight transaction
    */
   async inFlightExitGetCompetitor (txbytes) {
-    return rpcApi.post(`${this.watcherUrl}/in_flight_exit.get_competitor`, { txbytes: hexPrefix(transaction) })
+    return rpcApi.post(`${this.watcherUrl}/in_flight_exit.get_competitor`, { txbytes: hexPrefix(txbytes) })
   }
 
   /**
@@ -227,37 +227,7 @@ class ChildChain {
    * @return {Object} the inclusion proof of the transaction
    */
   async inFlightExitProveCanonical (txbytes) {
-    return rpcApi.post(`${this.watcherUrl}/in_flight_exit.prove_canonical`, { txbytes: hexPrefix(transaction) })
-  }
-
-  /**
-   * Get the data to challenge an invalid input piggybacked on an in-flight exit.
-   *
-   * @method inFlightGetInputChallengeData
-   * @param {string} txbytes the hex-encoded transaction
-   * @param {number} inputIndex the index of the input in the transaction
-   * @return {Object} the challenge data
-   */
-  async inFlightExitGetInputChallengeData (txbytes, inputIndex) {
-    return rpcApi.post(
-      `${this.watcherUrl}/in_flight_exit.get_input_challenge_data`,
-      { txbytes: hexPrefix(transaction), input_index: inputIndex }
-    )
-  }
-
-  /**
-   * Get the data to challenge an invalid output piggybacked on an in-flight exit.
-   *
-   * @method inFlightExitGetOutputChallengeData
-   * @param {string} txbytes the hex-encoded transaction
-   * @param {number} outputIndex the index of the output in the transaction
-   * @return {Object} the challenge data
-   */
-  async inFlightExitGetOutputChallengeData (txbytes, outputIndex) {
-    return rpcApi.post(
-      `${this.watcherUrl}/in_flight_exit.get_output_challenge_data`,
-      { txbytes: hexPrefix(transaction), output_index: outputIndex }
-    )
+    return rpcApi.post(`${this.watcherUrl}/in_flight_exit.prove_canonical`, { txbytes: hexPrefix(txbytes) })
   }
 }
 
