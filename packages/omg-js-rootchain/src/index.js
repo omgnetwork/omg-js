@@ -259,7 +259,7 @@ class RootChain {
         this.plasmaContract,
         'piggybackInFlightExit',
         inFlightTx,
-        txOptions
+        outputIndex
       ),
       value: PIGGYBACK_BOND,
       gas: txOptions.gas,

@@ -53,6 +53,10 @@ const faucet = {
   },
 
   initEthBalance: async function (web3, minAmount) {
+    if (numberToBN(minAmount).eqn(0)) {
+      return
+    }
+
     // Check that the faucet has enough funds to run the tests
     const ccBalance = await this.childChain.getBalance(this.address)
     const ccEthBalance = ccBalance.find(e => e.currency === transaction.ETH_CURRENCY)
@@ -62,7 +66,7 @@ const faucet = {
 
       // Check if there are enough root chain funds in the faucet
       const rcEthBalance = await web3.eth.getBalance(this.address)
-      if (numberToBN(rcEthBalance).lte(needed)) {
+      if (numberToBN(rcEthBalance).lt(needed)) {
         // For local testing, try to automatically top up the faucet
         await this.topUpEth(web3, needed)
       }
@@ -85,6 +89,10 @@ const faucet = {
   },
 
   initERC20Balance: async function (web3, minAmount) {
+    if (numberToBN(minAmount).eqn(0)) {
+      return
+    }
+
     // Check that the faucet has enough funds to run the tests
     const ccBalances = await this.childChain.getBalance(this.address)
     const ccCurrencyBalance = ccBalances.find(e => e.currency === this.erc20ContractAddress)
@@ -94,7 +102,7 @@ const faucet = {
 
       // Check if there are enough root chain funds in the faucet
       const erc20Balance = await rcHelper.getERC20Balance(web3, this.erc20Contract, this.address, this.privateKey)
-      if (numberToBN(erc20Balance).lte(needed)) {
+      if (numberToBN(erc20Balance).lt(needed)) {
         // For local testing, try to automatically top up the faucet
         await this.topUpERC20(web3, needed)
       }
@@ -157,7 +165,7 @@ const faucet = {
       value: amount
     }
     const ret = await rcHelper.sendTransaction(web3, txDetails, this.privateKey)
-    console.log(`Faucet sent ${amount} ETH on childchain to ${address}`)
+    console.log(`Faucet sent ${amount} ETH on root chain to ${address}`)
     return ret
   },
 

@@ -128,6 +128,7 @@ describe('Challenge exit tests', async () => {
       const invalidExitUtxoPos = transaction.encodeUtxoPos(aliceDishonestUtxo).toString()
       const invalidExit = await ccHelper.waitForEvent(
         childChain,
+        'byzantine_events',
         e => e.event === 'invalid_exit' && e.details.utxo_pos.toString() === invalidExitUtxoPos
       )
 

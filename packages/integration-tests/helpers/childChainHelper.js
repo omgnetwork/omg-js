@@ -72,12 +72,12 @@ function waitForBalanceEq (childChain, address, expectedAmount, currency) {
   return waitForBalance(childChain, address, currency, balance => numberToBN(balance.amount).eq(expectedBn))
 }
 
-function waitForEvent (childChain, callback) {
+function waitForEvent (childChain, type, callback) {
   return promiseRetry(async (retry, number) => {
     console.log(`Waiting for event...  (${number})`)
     const status = await childChain.status()
-    if (status.byzantine_events) {
-      const found = status.byzantine_events.find(e => callback)
+    if (status[type]) {
+      const found = status[type].find(callback)
       if (found) {
         return found
       }
@@ -91,8 +91,9 @@ function waitForEvent (childChain, callback) {
 }
 
 async function sendAndWait (childChain, from, to, amount, currency, privateKey, expectedBalance) {
-  await send(childChain, from, to, amount, currency, privateKey)
-  return waitForBalanceEq(childChain, to, expectedBalance, currency)
+  const ret = await send(childChain, from, to, amount, currency, privateKey)
+  await waitForBalanceEq(childChain, to, expectedBalance, currency)
+  return ret
 }
 
 async function send (childChain, from, to, amount, currency, fromPrivateKey) {
@@ -145,7 +146,8 @@ async function send (childChain, from, to, amount, currency, fromPrivateKey) {
   // Build the signed transaction
   const signedTx = await childChain.buildSignedTransaction(unsignedTx, signatures)
   // Submit the signed transaction to the childchain
-  return childChain.submitTransaction(signedTx)
+  const result = await childChain.submitTransaction(signedTx)
+  return { result, txbytes: signedTx }
 }
 
 module.exports = {
