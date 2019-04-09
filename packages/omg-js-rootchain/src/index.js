@@ -16,8 +16,8 @@ limitations under the License. */
 const txUtils = require('./txUtils')
 
 const STANDARD_EXIT_BOND = 31415926535
-// const INFLIGHT_EXIT_BOND = 31415926535
-// const PIGGYBACK_BOND = 31415926535
+const INFLIGHT_EXIT_BOND = 31415926535
+const PIGGYBACK_BOND = 31415926535
 
 class RootChain {
   /**
@@ -54,7 +54,12 @@ class RootChain {
       from: txOptions.from,
       to: this.plasmaContractAddress,
       value: amount,
-      data: txUtils.getTxData(this.web3, this.plasmaContract, 'deposit', depositTx),
+      data: txUtils.getTxData(
+        this.web3,
+        this.plasmaContract,
+        'deposit',
+        depositTx
+      ),
       gas: txOptions.gas,
       gasPrice: txOptions.gasPrice
     }
@@ -74,7 +79,12 @@ class RootChain {
     const txDetails = {
       from: txOptions.from,
       to: this.plasmaContractAddress,
-      data: txUtils.getTxData(this.web3, this.plasmaContract, 'depositFrom', depositTx),
+      data: txUtils.getTxData(
+        this.web3,
+        this.plasmaContract,
+        'depositFrom',
+        depositTx
+      ),
       gas: txOptions.gas,
       gasPrice: txOptions.gasPrice
     }
@@ -96,12 +106,15 @@ class RootChain {
     const txDetails = {
       from: txOptions.from,
       to: this.plasmaContractAddress,
-      data: txUtils.getTxData(this.web3, this.plasmaContract, 'startStandardExit',
+      data: txUtils.getTxData(
+        this.web3,
+        this.plasmaContract,
+        'startStandardExit',
         outputId.toString(),
         outputTx,
         inclusionProof
       ),
-      value: txOptions.value || STANDARD_EXIT_BOND,
+      value: STANDARD_EXIT_BOND,
       gas: txOptions.gas,
       gasPrice: txOptions.gasPrice
     }
@@ -124,7 +137,10 @@ class RootChain {
     const txDetails = {
       from: txOptions.from,
       to: this.plasmaContractAddress,
-      data: txUtils.getTxData(this.web3, this.plasmaContract, 'challengeStandardExit',
+      data: txUtils.getTxData(
+        this.web3,
+        this.plasmaContract,
+        'challengeStandardExit',
         outputId.toString(),
         challengeTx,
         inputIndex,
@@ -149,8 +165,14 @@ class RootChain {
     const txDetails = {
       from: txOptions.from,
       to: this.plasmaContractAddress,
-      data: txUtils.getTxData(this.web3, this.plasmaContract, 'processExits',
-        token, topUtxoPos, exitsToProcess),
+      data: txUtils.getTxData(
+        this.web3,
+        this.plasmaContract,
+        'processExits',
+        token,
+        topUtxoPos,
+        exitsToProcess
+      ),
       gas: txOptions.gas,
       gasPrice: txOptions.gasPrice
     }
@@ -174,7 +196,232 @@ class RootChain {
     const txDetails = {
       from: txOptions.from,
       to: this.plasmaContractAddress,
-      data: txUtils.getTxData(this.web3, this.plasmaContract, 'addToken', token),
+      data: txUtils.getTxData(
+        this.web3,
+        this.plasmaContract,
+        'addToken',
+        token
+      ),
+      gas: txOptions.gas,
+      gasPrice: txOptions.gasPrice
+    }
+
+    return txUtils.sendTx(this.web3, txDetails, txOptions.privateKey)
+  }
+
+  /**
+   * Starts an exit for an in-flight transaction.
+   *
+   * @method startInFlightExit
+   * @param {string} inFlightTx RLP encoded in-flight transaction.
+   * @param {string} inputTxs Transactions that created the inputs to the in-flight transaction.
+   * @param {string} inputTxsInclusionProofs Merkle proofs that show the input-creating transactions are valid.
+   * @param {string} inFlightTxSigs Signatures from the owners of each input.
+   * @param {Object} txOptions transaction options, such as `from`, gas` and `privateKey`
+   * @return {string} transaction hash of the call
+   */
+  async startInFlightExit (inFlightTx, inputTxs, inputTxsInclusionProofs, inFlightTxSigs, txOptions) {
+    const txDetails = {
+      from: txOptions.from,
+      to: this.plasmaContractAddress,
+      data: txUtils.getTxData(
+        this.web3,
+        this.plasmaContract,
+        'startInFlightExit',
+        inFlightTx,
+        inputTxs,
+        inputTxsInclusionProofs,
+        inFlightTxSigs
+      ),
+      value: INFLIGHT_EXIT_BOND,
+      gas: txOptions.gas,
+      gasPrice: txOptions.gasPrice
+    }
+
+    return txUtils.sendTx(this.web3, txDetails, txOptions.privateKey)
+  }
+
+  /**
+   * Allows a user to piggyback onto an in-flight transaction.
+   *
+   * @method piggybackInFlightExit
+   * @param {string} inFlightTx RLP encoded in-flight transaction.
+   * @param {number} outputIndex Index of the input/output to piggyback (0-7).
+   * @param {Object} txOptions transaction options, such as `from`, gas` and `privateKey`
+   * @return {string} transaction hash of the call
+   */
+  async piggybackInFlightExit (inFlightTx, outputIndex, txOptions) {
+    const txDetails = {
+      from: txOptions.from,
+      to: this.plasmaContractAddress,
+      data: txUtils.getTxData(
+        this.web3,
+        this.plasmaContract,
+        'piggybackInFlightExit',
+        inFlightTx,
+        outputIndex
+      ),
+      value: PIGGYBACK_BOND,
+      gas: txOptions.gas,
+      gasPrice: txOptions.gasPrice
+    }
+
+    return txUtils.sendTx(this.web3, txDetails, txOptions.privateKey)
+  }
+
+  /**
+   * Attempts to prove that an in-flight exit is not canonical.
+   *
+   * @method challengeInFlightExitNotCanonical
+   * @param {string} inFlightTx RLP encoded in-flight transaction being exited.
+   * @param {number} inFlightTxInputIndex Index of the double-spent input in the in-flight transaction.
+   * @param {string} competingTx RLP encoded transaction that spent the input.
+   * @param {number} competingTxInputIndex Index of the double-spent input in the competing transaction.
+   * @param {number} competingTxPos Position of the competing transaction.
+   * @param {string} competingTxInclusionProof Proof that the competing transaction was included.
+   * @param {string} competingTxSig Signature proving that the owner of the input signed the competitor.
+   * @param {Object} txOptions transaction options, such as `from`, gas` and `privateKey`
+   * @return {string} transaction hash of the call
+   */
+  async challengeInFlightExitNotCanonical (
+    inFlightTx,
+    inFlightTxInputIndex,
+    competingTx,
+    competingTxInputIndex,
+    competingTxPos,
+    competingTxInclusionProof,
+    competingTxSig,
+    txOptions
+  ) {
+    const txDetails = {
+      from: txOptions.from,
+      to: this.plasmaContractAddress,
+      data: txUtils.getTxData(this.web3,
+        this.plasmaContract,
+        'challengeInFlightExitNotCanonical',
+        inFlightTx,
+        inFlightTxInputIndex,
+        competingTx,
+        competingTxInputIndex,
+        competingTxPos,
+        competingTxInclusionProof,
+        competingTxSig
+      ),
+      gas: txOptions.gas,
+      gasPrice: txOptions.gasPrice
+    }
+
+    return txUtils.sendTx(this.web3, txDetails, txOptions.privateKey)
+  }
+
+  /**
+   * Allows a user to respond to competitors to an in-flight exit by showing the transaction is included.
+   *
+   * @method respondToNonCanonicalChallenge
+   * @param {string} inFlightTx RLP encoded in-flight transaction being exited.
+   * @param {number} inFlightTxPos Position of the in-flight transaction in the chain.
+   * @param {string} inFlightTxInclusionProof Proof that the in-flight transaction is included before the competitor.
+   * @param {Object} txOptions transaction options, such as `from`, gas` and `privateKey`
+   * @return {string} transaction hash of the call
+   */
+  async respondToNonCanonicalChallenge (
+    inFlightTx,
+    inFlightTxPos,
+    inFlightTxInclusionProof,
+    txOptions
+  ) {
+    const txDetails = {
+      from: txOptions.from,
+      to: this.plasmaContractAddress,
+      data: txUtils.getTxData(
+        this.web3,
+        this.plasmaContract,
+        'respondToNonCanonicalChallenge',
+        inFlightTx,
+        inFlightTxPos,
+        inFlightTxInclusionProof
+      ),
+      gas: txOptions.gas,
+      gasPrice: txOptions.gasPrice
+    }
+
+    return txUtils.sendTx(this.web3, txDetails, txOptions.privateKey)
+  }
+
+  /**
+   * Removes an input from list of exitable outputs in an in-flight transaction.
+   * @method challengeInFlightExitInputSpent
+   * @param {string} inFlightTx RLP encoded in-flight transaction being exited.
+   * @param {number} inFlightTxInputIndex Input that's been spent.
+   * @param {string} spendingTx RLP encoded transaction that spends the input.
+   * @param {number} spendingTxInputIndex Which input to the spending transaction spends the input.
+   * @param {string} spendingTxSig Signature that shows the input owner signed the spending transaction.
+   * @param {Object} txOptions transaction options, such as `from`, gas` and `privateKey`
+   * @return {string} transaction hash of the call
+   */
+  async challengeInFlightExitInputSpent (
+    inFlightTx,
+    inFlightTxInputIndex,
+    spendingTx,
+    spendingTxInputIndex,
+    spendingTxSig,
+    txOptions
+  ) {
+    const txDetails = {
+      from: txOptions.from,
+      to: this.plasmaContractAddress,
+      data: txUtils.getTxData(
+        this.web3,
+        this.plasmaContract,
+        'challengeInFlightExitInputSpent',
+        inFlightTx,
+        inFlightTxInputIndex,
+        spendingTx,
+        spendingTxInputIndex,
+        spendingTxSig
+      ),
+      gas: txOptions.gas,
+      gasPrice: txOptions.gasPrice
+    }
+
+    return txUtils.sendTx(this.web3, txDetails, txOptions.privateKey)
+  }
+
+  /**
+   * Removes an output from list of exitable outputs in an in-flight transaction.
+   * @method challengeInFlightExitInputSpent
+   * @param {string} inFlightTx RLP encoded in-flight transaction being exited.
+   * @param {number} inFlightTxOutputPos Output that's been spent.
+   * @param {string} inFlightTxInclusionProof Proof that the in-flight transaction was included.
+   * @param {string} spendingTx RLP encoded transaction that spends the input.
+   * @param {number} spendingTxInputIndex Which input to the spending transaction spends the input.
+   * @param {string} spendingTxSig Signature that shows the input owner signed the spending transaction.
+   * @param {Object} txOptions transaction options, such as `from`, gas` and `privateKey`
+   * @return {string} transaction hash of the call
+   */
+  async challengeInFlightExitOutputSpent (
+    inFlightTx,
+    inFlightTxOutputPos,
+    inFlightTxInclusionProof,
+    spendingTx,
+    spendingTxInputIndex,
+    spendingTxSig,
+    txOptions
+  ) {
+    const txDetails = {
+      from: txOptions.from,
+      to: this.plasmaContractAddress,
+      data: txUtils.getTxData(
+        this.web3,
+        this.plasmaContract,
+        'challengeInFlightExitOutputSpent',
+        inFlightTx,
+        inFlightTxOutputPos,
+        inFlightTxInclusionProof,
+        spendingTx,
+        spendingTxInputIndex,
+        spendingTxSig
+      ),
       gas: txOptions.gas,
       gasPrice: txOptions.gasPrice
     }

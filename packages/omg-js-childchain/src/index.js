@@ -196,6 +196,43 @@ class ChildChain {
   async status () {
     return rpcApi.post(`${this.watcherUrl}/status.get`, {})
   }
+
+  /**
+   * Get the exit data for an in-flight transaction
+   *
+   * @method inFlightExitGetData
+   * @param {string} txbytes the hex-encoded transaction
+   * @return {Object} exit data for the in-flight transaction
+   */
+  async inFlightExitGetData (txbytes) {
+    return rpcApi.post(`${this.watcherUrl}/in_flight_exit.get_data`, { txbytes: hexPrefix(txbytes) })
+  }
+
+  /**
+   * Get a competitor for an in-flight transaction
+   *
+   * @method inFlightExitGetCompetitor
+   * @param {string} txbytes the hex-encoded transaction
+   * @return {Object} a competitor to the in-flight transaction
+   */
+  async inFlightExitGetCompetitor (txbytes) {
+    return rpcApi.post(`${this.watcherUrl}/in_flight_exit.get_competitor`, { txbytes: hexPrefix(txbytes) })
+  }
+
+  /**
+   * Proves that a transaction has been put into a block (and therefore is canonical).
+   *
+   * @method inFlightExitProveCanonical
+   * @param {string} txbytes the hex-encoded transaction
+   * @return {Object} the inclusion proof of the transaction
+   */
+  async inFlightExitProveCanonical (txbytes) {
+    return rpcApi.post(`${this.watcherUrl}/in_flight_exit.prove_canonical`, { txbytes: hexPrefix(txbytes) })
+  }
+}
+
+function hexPrefix (data) {
+  return data.startsWith('0x') ? data : `0x${data}`
 }
 
 function validatePrivateKey (arg) {
