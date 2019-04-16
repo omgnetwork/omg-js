@@ -96,7 +96,7 @@ async function sendAndWait (childChain, from, to, amount, currency, privateKey, 
   return ret
 }
 
-async function send (childChain, from, to, amount, currency, fromPrivateKey) {
+async function createTx (childChain, from, to, amount, currency, fromPrivateKey) {
   if (amount <= 0) {
     return
   }
@@ -140,11 +140,17 @@ async function send (childChain, from, to, amount, currency, fromPrivateKey) {
 
   // Create the unsigned transaction
   const unsignedTx = await childChain.createTransaction(txBody)
+  console.log(`Unsigned tx: ${unsignedTx}`)
   // Sign it
   const privateKeys = new Array(utxosToSpend.length).fill(fromPrivateKey)
   const signatures = await childChain.signTransaction(unsignedTx, privateKeys)
   // Build the signed transaction
-  const signedTx = await childChain.buildSignedTransaction(unsignedTx, signatures)
+  return childChain.buildSignedTransaction(unsignedTx, signatures)
+}
+
+async function send (childChain, from, to, amount, currency, fromPrivateKey) {
+  const signedTx = await createTx(childChain, from, to, amount, currency, fromPrivateKey)
+  console.log(`  Signed tx: ${signedTx}`)
   // Submit the signed transaction to the childchain
   const result = await childChain.submitTransaction(signedTx)
   return { result, txbytes: signedTx }
@@ -154,6 +160,7 @@ module.exports = {
   waitForBalance,
   waitForBalanceEq,
   send,
+  createTx,
   sendAndWait,
   waitForEvent,
   selectUtxos
