@@ -140,7 +140,6 @@ async function createTx (childChain, from, to, amount, currency, fromPrivateKey)
 
   // Create the unsigned transaction
   const unsignedTx = await childChain.createTransaction(txBody)
-  console.log(`Unsigned tx: ${unsignedTx}`)
   // Sign it
   const privateKeys = new Array(utxosToSpend.length).fill(fromPrivateKey)
   const signatures = await childChain.signTransaction(unsignedTx, privateKeys)
@@ -150,7 +149,6 @@ async function createTx (childChain, from, to, amount, currency, fromPrivateKey)
 
 async function send (childChain, from, to, amount, currency, fromPrivateKey) {
   const signedTx = await createTx(childChain, from, to, amount, currency, fromPrivateKey)
-  console.log(`  Signed tx: ${signedTx}`)
   // Submit the signed transaction to the childchain
   const result = await childChain.submitTransaction(signedTx)
   return { result, txbytes: signedTx }

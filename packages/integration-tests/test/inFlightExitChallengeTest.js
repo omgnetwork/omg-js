@@ -165,9 +165,8 @@ describe('In-flight Exit Challenge tests', async () => {
       )
 
       // Carol gets the competitor of Bob's exit
-
       const competitor = await childChain.inFlightExitGetCompetitor(invalidExit.txbytes)
-      console.log(JSON.stringify(competitor, null, 2))
+      console.log(`Got competitor`)
 
       // Challenge the IFE as non canonical
       await rootChain.challengeInFlightExitNotCanonical(
@@ -204,6 +203,8 @@ describe('In-flight Exit Challenge tests', async () => {
       console.log(`Bob called RootChain.processExits() after challenge period: txhash = ${receipt.transactionHash}`)
       bobSpentOnGas.iadd(await rcHelper.spentOnGas(web3, receipt))
 
+      await rcHelper.awaitTx(web3, receipt.transactionHash)
+
       // Get Bob's ETH balance
       let bobEthBalance = await web3.eth.getBalance(bobAccount.address)
       // Expect Bob's balance to be INTIIAL_BOB_AMOUNT - INFLIGHT_EXIT_BOND - PIGGYBACK_BOND - gas spent
@@ -215,6 +216,3 @@ describe('In-flight Exit Challenge tests', async () => {
     })
   })
 })
-
-async function doInflight (bobAccount, bobTx) {
-}
