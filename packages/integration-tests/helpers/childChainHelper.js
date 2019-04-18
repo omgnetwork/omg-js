@@ -16,6 +16,7 @@ limitations under the License. */
 const promiseRetry = require('promise-retry')
 const { transaction } = require('@omisego/omg-js-util')
 const numberToBN = require('number-to-bn')
+const ethUtil = require('ethereumjs-util')
 
 function selectUtxos (utxos, amount, currency, includeFee) {
   // Filter by desired currency and sort in descending order
@@ -154,6 +155,20 @@ async function send (childChain, from, to, amount, currency, fromPrivateKey) {
   return { result, txbytes: signedTx }
 }
 
+function checkSig (web3, tx, sig, address) {
+  // Split the sig
+  const r = sig.slice(0, 66)
+  const s = `0x${sig.slice(66, 130)}`
+  const v = web3.utils.toDecimal(`0x${sig.slice(130, 132)}`)
+
+  const hashed = web3.utils.sha3(tx)
+  const signer = ethUtil.ecrecover(ethUtil.toBuffer(hashed), v, r, s)
+  const signerAddress = `0x${ethUtil.pubToAddress(signer).toString('hex')}`
+  if (signerAddress !== address) {
+    throw new Error(`Signer ${signerAddress} does not match address ${address}`)
+  }
+}
+
 module.exports = {
   waitForBalance,
   waitForBalanceEq,
@@ -161,5 +176,6 @@ module.exports = {
   createTx,
   sendAndWait,
   waitForEvent,
-  selectUtxos
+  selectUtxos,
+  checkSig
 }
