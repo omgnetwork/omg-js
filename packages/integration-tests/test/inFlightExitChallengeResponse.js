@@ -75,7 +75,7 @@ describe('In-flight Exit Challenge Response tests', async () => {
       try {
         // Send any leftover funds back to the faucet
         await faucet.returnFunds(web3, aliceAccount)
-        // await faucet.returnFunds(web3, bobAccount)
+        await faucet.returnFunds(web3, bobAccount)
         await faucet.returnFunds(web3, carolAccount)
       } catch (err) {
         console.warn(`Error trying to return funds to the faucet: ${err}`)
