@@ -82,7 +82,7 @@ describe('In-flight Exit Challenge Response tests', async () => {
       }
     })
 
-    it.only('should respond to an invalid IFE challenge', async () => {
+    it('should respond to an invalid IFE challenge', async () => {
       // Alice creates a transaction to send funds to Bob
       const bobTx = await ccHelper.createTx(
         childChain,
