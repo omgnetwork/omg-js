@@ -13,6 +13,7 @@
     "@omisego/omg-js-childchain": "^1.2.1",
     "@omisego/omg-js-rootchain": "^1.2.2",
     "@omisego/omg-js-util": "^1.2.1",
+    "ethereum-event-logs": "^1.3.0",
     "human-standard-token-abi": "^2.0.0",
     "node-fetch": "^2.3.0",
     "web3": "1.0.0-beta.36"

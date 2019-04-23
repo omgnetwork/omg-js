@@ -18,6 +18,7 @@ const { transaction } = require('@omisego/omg-js-util')
 const numberToBN = require('number-to-bn')
 const fetch = require('node-fetch')
 const erc20abi = require('human-standard-token-abi')
+const { parseLog } = require('ethereum-event-logs')
 
 function createAccount (web3) {
   const ret = web3.eth.accounts.create()
@@ -215,6 +216,11 @@ function awaitTx (web3, txnHash, options) {
   }
 }
 
+function printlogs (receipt, abi) {
+  const events = parseLog(receipt.logs, abi)
+  events.forEach(e => console.log(`__ LOG__ ${e.name} : ${JSON.stringify(e.args)}`))
+}
+
 module.exports = {
   createAccount,
   waitForEthBalance,
@@ -231,5 +237,6 @@ module.exports = {
   getPlasmaContractAddress,
   getTimeToExit,
   setGas,
-  awaitTx
+  awaitTx,
+  printlogs
 }
