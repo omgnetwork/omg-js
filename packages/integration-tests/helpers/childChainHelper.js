@@ -42,7 +42,11 @@ function selectUtxos (utxos, amount, currency, includeFee) {
           utxo => utxo.currency === transaction.ETH_CURRENCY
         )
         const feeUtxo = ethUtxos.find(utxo => utxo !== selected)
-        selected.push(feeUtxo)
+        if (!feeUtxo) {
+          console.warn(`Can't find a fee utxo, transaction may fail!`)
+        } else {
+          selected.push(feeUtxo)
+        }
       }
       return selected
     }
