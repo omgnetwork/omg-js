@@ -45,9 +45,9 @@ describe('Transfer tests', async () => {
 
     before(async () => {
       // Create Alice and Bob's accounts
-      aliceAccount = await rcHelper.createAccount(web3)
+      aliceAccount = rcHelper.createAccount(web3)
       console.log(`Created Alice account ${JSON.stringify(aliceAccount)}`)
-      bobAccount = await rcHelper.createAccount(web3)
+      bobAccount = rcHelper.createAccount(web3)
       console.log(`Created Bob account ${JSON.stringify(bobAccount)}`)
       // Give some ETH to Alice on the child chain
       await faucet.fundChildchain(aliceAccount.address, INTIIAL_ALICE_AMOUNT, transaction.ETH_CURRENCY)
@@ -116,9 +116,9 @@ describe('Transfer tests', async () => {
 
     before(async () => {
       // Create Alice and Bob's accounts
-      aliceAccount = await rcHelper.createAccount(web3)
+      aliceAccount = rcHelper.createAccount(web3)
       console.log(`Created Alice account ${JSON.stringify(aliceAccount)}`)
-      bobAccount = await rcHelper.createAccount(web3)
+      bobAccount = rcHelper.createAccount(web3)
       console.log(`Created Bob account ${JSON.stringify(bobAccount)}`)
 
       // Alice and Bob want 2 utxos each
@@ -247,9 +247,9 @@ describe('Transfer tests', async () => {
 
     before(async () => {
       // Create Alice and Bob's accounts
-      aliceAccount = await rcHelper.createAccount(web3)
+      aliceAccount = rcHelper.createAccount(web3)
       console.log(`Created Alice account ${JSON.stringify(aliceAccount)}`)
-      bobAccount = await rcHelper.createAccount(web3)
+      bobAccount = rcHelper.createAccount(web3)
       console.log(`Created Bob account ${JSON.stringify(bobAccount)}`)
 
       // Give some ERC20 to Alice on the child chain
@@ -323,9 +323,9 @@ describe('Transfer tests', async () => {
 
     before(async () => {
       // Create Alice and Bob's accounts
-      aliceAccount = await rcHelper.createAccount(web3)
+      aliceAccount = rcHelper.createAccount(web3)
       console.log(`Created Alice account ${JSON.stringify(aliceAccount)}`)
-      bobAccount = await rcHelper.createAccount(web3)
+      bobAccount = rcHelper.createAccount(web3)
       console.log(`Created Bob account ${JSON.stringify(bobAccount)}`)
       // Give some ETH to Alice on the child chain
       await faucet.fundChildchain(aliceAccount.address, INTIIAL_ALICE_AMOUNT_ETH, transaction.ETH_CURRENCY)
@@ -414,9 +414,9 @@ describe('Transfer tests', async () => {
 
     before(async () => {
       // Create Alice and Bob's accounts
-      aliceAccount = await rcHelper.createAccount(web3)
+      aliceAccount = rcHelper.createAccount(web3)
       console.log(`Created Alice account ${JSON.stringify(aliceAccount)}`)
-      bobAccount = await rcHelper.createAccount(web3)
+      bobAccount = rcHelper.createAccount(web3)
       console.log(`Created Bob account ${JSON.stringify(bobAccount)}`)
       // Give some ETH to Alice on the child chain
       await faucet.fundChildchain(aliceAccount.address, INTIIAL_ALICE_AMOUNT, transaction.ETH_CURRENCY)

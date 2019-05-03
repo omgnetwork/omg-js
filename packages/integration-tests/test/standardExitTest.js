@@ -46,7 +46,7 @@ describe('Standard Exit tests', async () => {
 
     before(async () => {
       // Create and fund Alice's account
-      aliceAccount = await rcHelper.createAccount(web3)
+      aliceAccount = rcHelper.createAccount(web3)
       console.log(`Created Alice account ${JSON.stringify(aliceAccount)}`)
       await faucet.fundRootchainEth(web3, aliceAccount.address, INTIIAL_ALICE_AMOUNT)
       await rcHelper.waitForEthBalanceEq(web3, aliceAccount.address, INTIIAL_ALICE_AMOUNT)
@@ -149,9 +149,9 @@ describe('Standard Exit tests', async () => {
 
     before(async () => {
       // Create Alice and Bob's accounts
-      aliceAccount = await rcHelper.createAccount(web3)
+      aliceAccount = rcHelper.createAccount(web3)
       console.log(`Created Alice account ${JSON.stringify(aliceAccount)}`)
-      bobAccount = await rcHelper.createAccount(web3)
+      bobAccount = rcHelper.createAccount(web3)
       console.log(`Created Bob account ${JSON.stringify(bobAccount)}`)
 
       await Promise.all([
@@ -271,7 +271,7 @@ describe('Standard Exit tests', async () => {
 
     before(async () => {
       // Create and fund Alice's account
-      aliceAccount = await rcHelper.createAccount(web3)
+      aliceAccount = rcHelper.createAccount(web3)
       console.log(`Created Alice account ${JSON.stringify(aliceAccount)}`)
       await Promise.all([
         faucet.fundChildchain(aliceAccount.address, INTIIAL_ALICE_AMOUNT_ERC20, ERC20_CURRENCY),
