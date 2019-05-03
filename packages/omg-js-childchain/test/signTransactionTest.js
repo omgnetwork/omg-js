@@ -1,4 +1,4 @@
-const ChildChain = require('../src')
+const ChildChain = require('../src/childchain')
 const assert = require('chai').assert
 
 const childChain = new ChildChain('watcher_url', 'childChain_url')

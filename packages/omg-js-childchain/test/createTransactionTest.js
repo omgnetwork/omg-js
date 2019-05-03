@@ -1,4 +1,4 @@
-const ChildChain = require('../src')
+const ChildChain = require('../src/childchain')
 const { InvalidArgumentError } = require('@omisego/omg-js-util')
 const assert = require('chai').assert
 
