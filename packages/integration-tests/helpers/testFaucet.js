@@ -46,10 +46,8 @@ const faucet = {
       this.privateKey = faucetAccount.privateKey
     }
 
-    return Promise.all([
-      this.initEthBalance(web3, web3.utils.toWei(config.minAmountEth || '2', 'ether')),
-      this.initERC20Balance(web3, config.minAmountERC20 || 20)
-    ])
+    await this.initEthBalance(web3, web3.utils.toWei(config.minAmountEth || '2', 'ether'))
+    await this.initERC20Balance(web3, config.minAmountERC20 || 20)
   },
 
   initEthBalance: async function (web3, minAmount) {
