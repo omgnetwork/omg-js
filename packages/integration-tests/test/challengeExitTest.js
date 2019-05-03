@@ -48,9 +48,9 @@ describe('Challenge exit tests', async () => {
 
     before(async () => {
       // Create Alice and Bob's accounts
-      aliceAccount = await rcHelper.createAccount(web3)
+      aliceAccount = rcHelper.createAccount(web3)
       console.log(`Created Alice account ${JSON.stringify(aliceAccount)}`)
-      bobAccount = await rcHelper.createAccount(web3)
+      bobAccount = rcHelper.createAccount(web3)
       console.log(`Created Bob account ${JSON.stringify(bobAccount)}`)
 
       await Promise.all([

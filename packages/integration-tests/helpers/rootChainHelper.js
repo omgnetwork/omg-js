@@ -18,6 +18,7 @@ const { transaction } = require('@omisego/omg-js-util')
 const numberToBN = require('number-to-bn')
 const fetch = require('node-fetch')
 const erc20abi = require('human-standard-token-abi')
+const { parseLog } = require('ethereum-event-logs')
 
 function createAccount (web3) {
   const ret = web3.eth.accounts.create()
@@ -153,6 +154,73 @@ async function getTimeToExit (plasmaContract, output) {
   return (Number(exitableAt) - Math.trunc(Date.now() / 1000)) * 1000
 }
 
+const DEFAULT_INTERVAL = 1000
+const DEFAULT_BLOCKS_TO_WAIT = 1
+
+function awaitTx (web3, txnHash, options) {
+  const interval = options && options.interval ? options.interval : DEFAULT_INTERVAL
+  const blocksToWait = options && options.blocksToWait ? options.blocksToWait : DEFAULT_BLOCKS_TO_WAIT
+  var transactionReceiptAsync = async function (txnHash, resolve, reject) {
+    try {
+      var receipt = await web3.eth.getTransactionReceipt(txnHash)
+      if (!receipt) {
+        setTimeout(function () {
+          transactionReceiptAsync(txnHash, resolve, reject)
+        }, interval)
+      } else {
+        if (blocksToWait > 0) {
+          var resolvedReceipt = await receipt
+          if (!resolvedReceipt || !resolvedReceipt.blockNumber) {
+            setTimeout(function () {
+              transactionReceiptAsync(txnHash, resolve, reject)
+            }, interval)
+          } else {
+            try {
+              var block = await web3.eth.getBlock(resolvedReceipt.blockNumber)
+              var current = await web3.eth.getBlock('latest')
+              if (current.number - block.number >= blocksToWait) {
+                var txn = await web3.eth.getTransaction(txnHash)
+                if (txn.blockNumber != null) {
+                  resolve(resolvedReceipt)
+                } else {
+                  reject(new Error('Transaction with hash: ' + txnHash + ' ended up in an uncle block.'))
+                }
+              } else {
+                setTimeout(function () {
+                  transactionReceiptAsync(txnHash, resolve, reject)
+                }, interval)
+              }
+            } catch (e) {
+              setTimeout(function () {
+                transactionReceiptAsync(txnHash, resolve, reject)
+              }, interval)
+            }
+          }
+        } else resolve(receipt)
+      }
+    } catch (e) {
+      reject(e)
+    }
+  }
+
+  if (Array.isArray(txnHash)) {
+    var promises = []
+    txnHash.forEach(function (oneTxHash) {
+      promises.push(awaitTx(web3, oneTxHash, options))
+    })
+    return Promise.all(promises)
+  } else {
+    return new Promise(function (resolve, reject) {
+      transactionReceiptAsync(txnHash, resolve, reject)
+    })
+  }
+}
+
+function printlogs (receipt, abi) {
+  const events = parseLog(receipt.logs, abi)
+  events.forEach(e => console.log(`__ LOG__ ${e.name} : ${JSON.stringify(e.args)}`))
+}
+
 module.exports = {
   createAccount,
   waitForEthBalance,
@@ -168,5 +236,7 @@ module.exports = {
   spentOnGas,
   getPlasmaContractAddress,
   getTimeToExit,
-  setGas
+  setGas,
+  awaitTx,
+  printlogs
 }
