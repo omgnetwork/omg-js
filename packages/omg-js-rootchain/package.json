@@ -7,7 +7,7 @@
     "OmiseGo",
     "Plasma"
   ],
-  "main": "src/index.js",
+  "main": "src/rootchain.js",
   "author": "OmiseGo",
   "contributors": [
     "Pong Cheecharern <pong@omise.co>",

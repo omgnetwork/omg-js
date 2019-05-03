@@ -18,7 +18,7 @@ const describe = mocha.describe
 const it = mocha.it
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
-const ChildChain = require('../src')
+const ChildChain = require('../src/childchain')
 const nock = require('nock')
 
 chai.use(chaiAsPromised)
