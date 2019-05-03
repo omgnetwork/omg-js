@@ -91,7 +91,7 @@ describe('Deposit tests', async () => {
     let aliceAccount
     const testErc20Contract = new web3.eth.Contract(erc20abi, config.testErc20Contract)
     const INTIIAL_AMOUNT_ETH = web3.utils.toWei('.1', 'ether')
-    const INITIAL_AMOUNT_ERC20 = 10
+    const INITIAL_AMOUNT_ERC20 = 3
     const TEST_AMOUNT = 2
 
     before(async () => {

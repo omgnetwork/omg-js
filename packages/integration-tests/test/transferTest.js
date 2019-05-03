@@ -240,7 +240,8 @@ describe('Transfer tests', async () => {
 
   describe('ERC20 transfer', async () => {
     const ERC20_CURRENCY = config.testErc20Contract
-    const INTIIAL_ALICE_AMOUNT = 10
+    const INTIIAL_ALICE_AMOUNT_ETH = web3.utils.toWei('.00000001', 'ether')
+    const INTIIAL_ALICE_AMOUNT = 4
     const TRANSFER_AMOUNT = 3
     let aliceAccount
     let bobAccount
@@ -252,6 +253,9 @@ describe('Transfer tests', async () => {
       bobAccount = rcHelper.createAccount(web3)
       console.log(`Created Bob account ${JSON.stringify(bobAccount)}`)
 
+      // Give some ETH to Alice on the childchain to pay fees
+      await faucet.fundChildchain(aliceAccount.address, INTIIAL_ALICE_AMOUNT_ETH, transaction.ETH_CURRENCY)
+      await ccHelper.waitForBalanceEq(childChain, aliceAccount.address, INTIIAL_ALICE_AMOUNT_ETH)
       // Give some ERC20 to Alice on the child chain
       await faucet.fundChildchain(aliceAccount.address, INTIIAL_ALICE_AMOUNT, ERC20_CURRENCY)
       await ccHelper.waitForBalanceEq(childChain, aliceAccount.address, INTIIAL_ALICE_AMOUNT, ERC20_CURRENCY)
@@ -267,17 +271,20 @@ describe('Transfer tests', async () => {
       }
     })
 
-    it('should transfer ERC20 tokens on the childchain', async () => {
+    // Skipped because it will only work if the ERC20 token is also a fee currency
+    it.skip('should transfer ERC20 tokens on the childchain', async () => {
       // Check utxos on the child chain
       const utxos = await childChain.getUtxos(aliceAccount.address)
-      assert.equal(utxos.length, 1)
+      assert.equal(utxos.length, 2)
       assert.hasAllKeys(utxos[0], ['utxo_pos', 'txindex', 'owner', 'oindex', 'currency', 'blknum', 'amount'])
-      assert.equal(utxos[0].amount, INTIIAL_ALICE_AMOUNT)
-      assert.equal(utxos[0].currency, ERC20_CURRENCY)
 
-      const CHANGE_AMOUNT = utxos[0].amount - TRANSFER_AMOUNT
+      const erc20Utxo = utxos.find(utxo => utxo.currency === ERC20_CURRENCY)
+      assert.equal(erc20Utxo.amount, INTIIAL_ALICE_AMOUNT)
+      assert.equal(erc20Utxo.currency, ERC20_CURRENCY)
+
+      const CHANGE_AMOUNT = erc20Utxo.amount - TRANSFER_AMOUNT
       const txBody = {
-        inputs: [utxos[0]],
+        inputs: [erc20Utxo],
         outputs: [{
           owner: bobAccount.address,
           currency: ERC20_CURRENCY,
@@ -315,9 +322,9 @@ describe('Transfer tests', async () => {
   describe('Mixed currency transfer (ci-enabled)', async () => {
     const ERC20_CURRENCY = config.testErc20Contract
     const INTIIAL_ALICE_AMOUNT_ETH = web3.utils.toWei('0.001', 'ether')
-    const INTIIAL_ALICE_AMOUNT_ERC20 = 10
+    const INTIIAL_ALICE_AMOUNT_ERC20 = 3
     const TRANSFER_AMOUNT_ETH = numberToBN(web3.utils.toWei('0.0004', 'ether'))
-    const TRANSFER_AMOUNT_ERC20 = 7
+    const TRANSFER_AMOUNT_ERC20 = 2
     let aliceAccount
     let bobAccount
 
