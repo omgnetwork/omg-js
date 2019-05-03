@@ -1,17 +1,246 @@
 {
     "abi": [
         {
+            "constant": true,
+            "inputs": [],
+            "name": "nextFeeExit",
+            "outputs": [
+                {
+                    "name": "",
+                    "type": "uint256"
+                }
+            ],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
             "constant": false,
             "inputs": [
                 {
                     "name": "_token",
                     "type": "address"
+                },
+                {
+                    "name": "_topExitId",
+                    "type": "uint192"
+                },
+                {
+                    "name": "_exitsToProcess",
+                    "type": "uint256"
                 }
             ],
-            "name": "addToken",
+            "name": "processExits",
             "outputs": [],
             "payable": false,
             "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "constant": true,
+            "inputs": [],
+            "name": "MAX_INPUTS",
+            "outputs": [
+                {
+                    "name": "",
+                    "type": "uint8"
+                }
+            ],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "constant": true,
+            "inputs": [
+                {
+                    "name": "priority",
+                    "type": "uint256"
+                }
+            ],
+            "name": "unpackExitId",
+            "outputs": [
+                {
+                    "name": "",
+                    "type": "uint64"
+                },
+                {
+                    "name": "",
+                    "type": "uint192"
+                },
+                {
+                    "name": "",
+                    "type": "bool"
+                }
+            ],
+            "payable": false,
+            "stateMutability": "pure",
+            "type": "function"
+        },
+        {
+            "constant": true,
+            "inputs": [
+                {
+                    "name": "",
+                    "type": "uint192"
+                }
+            ],
+            "name": "exits",
+            "outputs": [
+                {
+                    "name": "owner",
+                    "type": "address"
+                },
+                {
+                    "name": "token",
+                    "type": "address"
+                },
+                {
+                    "name": "amount",
+                    "type": "uint256"
+                },
+                {
+                    "name": "position",
+                    "type": "uint192"
+                }
+            ],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "constant": true,
+            "inputs": [
+                {
+                    "name": "",
+                    "type": "uint192"
+                }
+            ],
+            "name": "inFlightExits",
+            "outputs": [
+                {
+                    "name": "exitStartTimestamp",
+                    "type": "uint256"
+                },
+                {
+                    "name": "exitPriority",
+                    "type": "uint256"
+                },
+                {
+                    "name": "exitMap",
+                    "type": "uint256"
+                },
+                {
+                    "name": "bondOwner",
+                    "type": "address"
+                },
+                {
+                    "name": "oldestCompetitor",
+                    "type": "uint256"
+                }
+            ],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "constant": true,
+            "inputs": [
+                {
+                    "name": "_feeExitId",
+                    "type": "uint192"
+                }
+            ],
+            "name": "getFeeExitPriority",
+            "outputs": [
+                {
+                    "name": "",
+                    "type": "uint256"
+                }
+            ],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "constant": false,
+            "inputs": [],
+            "name": "_initOperator",
+            "outputs": [],
+            "payable": false,
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "constant": true,
+            "inputs": [
+                {
+                    "name": "_tx",
+                    "type": "bytes"
+                },
+                {
+                    "name": "_outputIndex",
+                    "type": "uint256"
+                }
+            ],
+            "name": "getInFlightExitOutput",
+            "outputs": [
+                {
+                    "name": "",
+                    "type": "address"
+                },
+                {
+                    "name": "",
+                    "type": "address"
+                },
+                {
+                    "name": "",
+                    "type": "uint256"
+                }
+            ],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "constant": false,
+            "inputs": [
+                {
+                    "name": "_inFlightTx",
+                    "type": "bytes"
+                },
+                {
+                    "name": "_inFlightTxPos",
+                    "type": "uint256"
+                },
+                {
+                    "name": "_inFlightTxInclusionProof",
+                    "type": "bytes"
+                }
+            ],
+            "name": "respondToNonCanonicalChallenge",
+            "outputs": [],
+            "payable": false,
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "constant": true,
+            "inputs": [
+                {
+                    "name": "_utxoPos",
+                    "type": "uint256"
+                }
+            ],
+            "name": "getExitableTimestamp",
+            "outputs": [
+                {
+                    "name": "",
+                    "type": "uint256"
+                }
+            ],
+            "payable": false,
+            "stateMutability": "view",
             "type": "function"
         },
         {
@@ -48,6 +277,75 @@
             "constant": false,
             "inputs": [
                 {
+                    "name": "_token",
+                    "type": "address"
+                },
+                {
+                    "name": "_amount",
+                    "type": "uint256"
+                }
+            ],
+            "name": "startFeeExit",
+            "outputs": [],
+            "payable": true,
+            "stateMutability": "payable",
+            "type": "function"
+        },
+        {
+            "constant": true,
+            "inputs": [],
+            "name": "piggybackBond",
+            "outputs": [
+                {
+                    "name": "",
+                    "type": "uint256"
+                }
+            ],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "constant": true,
+            "inputs": [],
+            "name": "nextChildBlock",
+            "outputs": [
+                {
+                    "name": "",
+                    "type": "uint256"
+                }
+            ],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "constant": true,
+            "inputs": [
+                {
+                    "name": "_exitId",
+                    "type": "uint192"
+                },
+                {
+                    "name": "_utxoPos",
+                    "type": "uint256"
+                }
+            ],
+            "name": "getStandardExitPriority",
+            "outputs": [
+                {
+                    "name": "",
+                    "type": "uint256"
+                }
+            ],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "constant": false,
+            "inputs": [
+                {
                     "name": "_inFlightTx",
                     "type": "bytes"
                 },
@@ -64,7 +362,7 @@
                     "type": "uint8"
                 },
                 {
-                    "name": "_competingTxId",
+                    "name": "_competingTxPos",
                     "type": "uint256"
                 },
                 {
@@ -83,91 +381,17 @@
             "type": "function"
         },
         {
-            "constant": false,
-            "inputs": [
+            "constant": true,
+            "inputs": [],
+            "name": "operator",
+            "outputs": [
                 {
-                    "name": "_inFlightTx",
-                    "type": "bytes"
-                },
-                {
-                    "name": "_inFlightTxOutputId",
-                    "type": "uint256"
-                },
-                {
-                    "name": "_inFlightTxInclusionProof",
-                    "type": "bytes"
-                },
-                {
-                    "name": "_spendingTx",
-                    "type": "bytes"
-                },
-                {
-                    "name": "_spendingTxInputIndex",
-                    "type": "uint256"
-                },
-                {
-                    "name": "_spendingTxSig",
-                    "type": "bytes"
+                    "name": "",
+                    "type": "address"
                 }
             ],
-            "name": "challengeInFlightExitOutputSpent",
-            "outputs": [],
             "payable": false,
-            "stateMutability": "nonpayable",
-            "type": "function"
-        },
-        {
-            "constant": false,
-            "inputs": [
-                {
-                    "name": "_outputId",
-                    "type": "uint192"
-                },
-                {
-                    "name": "_challengeTx",
-                    "type": "bytes"
-                },
-                {
-                    "name": "_inputIndex",
-                    "type": "uint256"
-                },
-                {
-                    "name": "_challengeTxSig",
-                    "type": "bytes"
-                }
-            ],
-            "name": "challengeStandardExit",
-            "outputs": [],
-            "payable": false,
-            "stateMutability": "nonpayable",
-            "type": "function"
-        },
-        {
-            "constant": false,
-            "inputs": [
-                {
-                    "name": "_depositTx",
-                    "type": "bytes"
-                }
-            ],
-            "name": "deposit",
-            "outputs": [],
-            "payable": true,
-            "stateMutability": "payable",
-            "type": "function"
-        },
-        {
-            "constant": false,
-            "inputs": [
-                {
-                    "name": "_depositTx",
-                    "type": "bytes"
-                }
-            ],
-            "name": "depositFrom",
-            "outputs": [],
-            "payable": false,
-            "stateMutability": "nonpayable",
+            "stateMutability": "view",
             "type": "function"
         },
         {
@@ -192,62 +416,53 @@
             "constant": false,
             "inputs": [
                 {
-                    "name": "_token",
-                    "type": "address"
-                },
-                {
-                    "name": "_topUtxoPos",
-                    "type": "uint256"
-                },
-                {
-                    "name": "_exitsToProcess",
-                    "type": "uint256"
-                }
-            ],
-            "name": "processExits",
-            "outputs": [],
-            "payable": false,
-            "stateMutability": "nonpayable",
-            "type": "function"
-        },
-        {
-            "constant": false,
-            "inputs": [
-                {
                     "name": "_inFlightTx",
                     "type": "bytes"
                 },
                 {
-                    "name": "_inFlightTxId",
+                    "name": "_inFlightTxOutputPos",
                     "type": "uint256"
                 },
                 {
                     "name": "_inFlightTxInclusionProof",
                     "type": "bytes"
+                },
+                {
+                    "name": "_spendingTx",
+                    "type": "bytes"
+                },
+                {
+                    "name": "_spendingTxInputIndex",
+                    "type": "uint8"
+                },
+                {
+                    "name": "_spendingTxSig",
+                    "type": "bytes"
                 }
             ],
-            "name": "respondToNonCanonicalChallenge",
+            "name": "challengeInFlightExitOutputSpent",
             "outputs": [],
             "payable": false,
             "stateMutability": "nonpayable",
             "type": "function"
         },
         {
-            "constant": false,
+            "constant": true,
             "inputs": [
                 {
-                    "name": "_token",
-                    "type": "address"
-                },
-                {
-                    "name": "_amount",
-                    "type": "uint256"
+                    "name": "_tx",
+                    "type": "bytes"
                 }
             ],
-            "name": "startFeeExit",
-            "outputs": [],
-            "payable": true,
-            "stateMutability": "payable",
+            "name": "getInFlightExitId",
+            "outputs": [
+                {
+                    "name": "",
+                    "type": "uint192"
+                }
+            ],
+            "payable": false,
+            "stateMutability": "pure",
             "type": "function"
         },
         {
@@ -277,10 +492,131 @@
             "type": "function"
         },
         {
+            "constant": true,
+            "inputs": [],
+            "name": "nextDepositBlock",
+            "outputs": [
+                {
+                    "name": "",
+                    "type": "uint256"
+                }
+            ],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "constant": true,
+            "inputs": [
+                {
+                    "name": "_token",
+                    "type": "address"
+                }
+            ],
+            "name": "getNextExit",
+            "outputs": [
+                {
+                    "name": "",
+                    "type": "uint64"
+                },
+                {
+                    "name": "",
+                    "type": "uint192"
+                },
+                {
+                    "name": "",
+                    "type": "bool"
+                }
+            ],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "constant": true,
+            "inputs": [],
+            "name": "standardExitBond",
+            "outputs": [
+                {
+                    "name": "",
+                    "type": "uint256"
+                }
+            ],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
             "constant": false,
             "inputs": [
                 {
-                    "name": "_outputId",
+                    "name": "_depositTx",
+                    "type": "bytes"
+                }
+            ],
+            "name": "deposit",
+            "outputs": [],
+            "payable": true,
+            "stateMutability": "payable",
+            "type": "function"
+        },
+        {
+            "constant": true,
+            "inputs": [
+                {
+                    "name": "_token",
+                    "type": "address"
+                }
+            ],
+            "name": "hasToken",
+            "outputs": [
+                {
+                    "name": "",
+                    "type": "bool"
+                }
+            ],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "constant": true,
+            "inputs": [
+                {
+                    "name": "_value",
+                    "type": "uint256"
+                }
+            ],
+            "name": "flagged",
+            "outputs": [
+                {
+                    "name": "",
+                    "type": "bool"
+                }
+            ],
+            "payable": false,
+            "stateMutability": "pure",
+            "type": "function"
+        },
+        {
+            "constant": true,
+            "inputs": [],
+            "name": "CHILD_BLOCK_INTERVAL",
+            "outputs": [
+                {
+                    "name": "",
+                    "type": "uint256"
+                }
+            ],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "constant": false,
+            "inputs": [
+                {
+                    "name": "_utxoPos",
                     "type": "uint192"
                 },
                 {
@@ -299,6 +635,34 @@
             "type": "function"
         },
         {
+            "constant": true,
+            "inputs": [],
+            "name": "inFlightExitBond",
+            "outputs": [
+                {
+                    "name": "",
+                    "type": "uint256"
+                }
+            ],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "constant": false,
+            "inputs": [
+                {
+                    "name": "_minExitPeriod",
+                    "type": "uint256"
+                }
+            ],
+            "name": "init",
+            "outputs": [],
+            "payable": false,
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
             "constant": false,
             "inputs": [
                 {
@@ -310,6 +674,195 @@
             "outputs": [],
             "payable": false,
             "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "constant": true,
+            "inputs": [
+                {
+                    "name": "_txbytes",
+                    "type": "bytes"
+                },
+                {
+                    "name": "_utxoPos",
+                    "type": "uint256"
+                }
+            ],
+            "name": "getStandardExitId",
+            "outputs": [
+                {
+                    "name": "",
+                    "type": "uint192"
+                }
+            ],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "constant": true,
+            "inputs": [
+                {
+                    "name": "",
+                    "type": "address"
+                }
+            ],
+            "name": "exitsQueues",
+            "outputs": [
+                {
+                    "name": "",
+                    "type": "address"
+                }
+            ],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "constant": false,
+            "inputs": [
+                {
+                    "name": "_token",
+                    "type": "address"
+                }
+            ],
+            "name": "addToken",
+            "outputs": [],
+            "payable": false,
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "constant": true,
+            "inputs": [],
+            "name": "minExitPeriod",
+            "outputs": [
+                {
+                    "name": "",
+                    "type": "uint256"
+                }
+            ],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "constant": true,
+            "inputs": [],
+            "name": "getDepositBlockNumber",
+            "outputs": [
+                {
+                    "name": "",
+                    "type": "uint256"
+                }
+            ],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "constant": false,
+            "inputs": [
+                {
+                    "name": "_standardExitId",
+                    "type": "uint192"
+                },
+                {
+                    "name": "_challengeTx",
+                    "type": "bytes"
+                },
+                {
+                    "name": "_inputIndex",
+                    "type": "uint8"
+                },
+                {
+                    "name": "_challengeTxSig",
+                    "type": "bytes"
+                }
+            ],
+            "name": "challengeStandardExit",
+            "outputs": [],
+            "payable": false,
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "constant": true,
+            "inputs": [
+                {
+                    "name": "_tx",
+                    "type": "bytes"
+                },
+                {
+                    "name": "_txoPos",
+                    "type": "uint256"
+                }
+            ],
+            "name": "getInFlightExitPriority",
+            "outputs": [
+                {
+                    "name": "",
+                    "type": "uint256"
+                }
+            ],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "constant": true,
+            "inputs": [
+                {
+                    "name": "",
+                    "type": "uint256"
+                }
+            ],
+            "name": "blocks",
+            "outputs": [
+                {
+                    "name": "root",
+                    "type": "bytes32"
+                },
+                {
+                    "name": "timestamp",
+                    "type": "uint256"
+                }
+            ],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "constant": false,
+            "inputs": [
+                {
+                    "name": "_depositTx",
+                    "type": "bytes"
+                }
+            ],
+            "name": "depositFrom",
+            "outputs": [],
+            "payable": false,
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "constant": true,
+            "inputs": [
+                {
+                    "name": "feeExitNum",
+                    "type": "uint256"
+                }
+            ],
+            "name": "getFeeExitId",
+            "outputs": [
+                {
+                    "name": "",
+                    "type": "uint192"
+                }
+            ],
+            "payable": false,
+            "stateMutability": "pure",
             "type": "function"
         },
         {
@@ -379,21 +932,35 @@
                 },
                 {
                     "indexed": false,
-                    "name": "outputId",
-                    "type": "uint256"
-                },
-                {
-                    "indexed": false,
-                    "name": "amount",
-                    "type": "uint256"
-                },
-                {
-                    "indexed": false,
-                    "name": "token",
-                    "type": "address"
+                    "name": "exitId",
+                    "type": "uint192"
                 }
             ],
             "name": "ExitStarted",
+            "type": "event"
+        },
+        {
+            "anonymous": false,
+            "inputs": [
+                {
+                    "indexed": true,
+                    "name": "exitId",
+                    "type": "uint192"
+                }
+            ],
+            "name": "ExitFinalized",
+            "type": "event"
+        },
+        {
+            "anonymous": false,
+            "inputs": [
+                {
+                    "indexed": true,
+                    "name": "utxoPos",
+                    "type": "uint256"
+                }
+            ],
+            "name": "ExitChallenged",
             "type": "event"
         },
         {
@@ -429,7 +996,7 @@
                 {
                     "indexed": false,
                     "name": "outputIndex",
-                    "type": "uint256"
+                    "type": "uint8"
                 }
             ],
             "name": "InFlightExitPiggybacked",
@@ -461,6 +1028,28 @@
             "anonymous": false,
             "inputs": [
                 {
+                    "indexed": false,
+                    "name": "challenger",
+                    "type": "address"
+                },
+                {
+                    "indexed": false,
+                    "name": "txHash",
+                    "type": "bytes32"
+                },
+                {
+                    "indexed": false,
+                    "name": "challengeTxPosition",
+                    "type": "uint256"
+                }
+            ],
+            "name": "InFlightExitChallengeResponded",
+            "type": "event"
+        },
+        {
+            "anonymous": false,
+            "inputs": [
+                {
                     "indexed": true,
                     "name": "challenger",
                     "type": "address"
@@ -472,8 +1061,8 @@
                 },
                 {
                     "indexed": false,
-                    "name": "outputId",
-                    "type": "uint256"
+                    "name": "outputIndex",
+                    "type": "uint8"
                 }
             ],
             "name": "InFlightExitOutputBlocked",
@@ -483,597 +1072,18 @@
             "anonymous": false,
             "inputs": [
                 {
-                    "indexed": true,
-                    "name": "utxoPos",
-                    "type": "uint256"
+                    "indexed": false,
+                    "name": "inFlightExitId",
+                    "type": "uint192"
+                },
+                {
+                    "indexed": false,
+                    "name": "outputIndex",
+                    "type": "uint8"
                 }
             ],
-            "name": "ExitFinalized",
+            "name": "InFlightExitFinalized",
             "type": "event"
-        },
-        {
-            "anonymous": false,
-            "inputs": [
-                {
-                    "indexed": true,
-                    "name": "utxoPos",
-                    "type": "uint256"
-                }
-            ],
-            "name": "ExitChallenged",
-            "type": "event"
-        },
-        {
-            "constant": true,
-            "inputs": [
-                {
-                    "name": "",
-                    "type": "uint256"
-                }
-            ],
-            "name": "blocks",
-            "outputs": [
-                {
-                    "name": "root",
-                    "type": "bytes32"
-                },
-                {
-                    "name": "timestamp",
-                    "type": "uint256"
-                }
-            ],
-            "payable": false,
-            "stateMutability": "view",
-            "type": "function"
-        },
-        {
-            "constant": true,
-            "inputs": [],
-            "name": "CHILD_BLOCK_INTERVAL",
-            "outputs": [
-                {
-                    "name": "",
-                    "type": "uint256"
-                }
-            ],
-            "payable": false,
-            "stateMutability": "view",
-            "type": "function"
-        },
-        {
-            "constant": true,
-            "inputs": [
-                {
-                    "name": "_value",
-                    "type": "uint256"
-                }
-            ],
-            "name": "clearFlag",
-            "outputs": [
-                {
-                    "name": "",
-                    "type": "uint256"
-                }
-            ],
-            "payable": false,
-            "stateMutability": "pure",
-            "type": "function"
-        },
-        {
-            "constant": true,
-            "inputs": [
-                {
-                    "name": "",
-                    "type": "uint192"
-                }
-            ],
-            "name": "exits",
-            "outputs": [
-                {
-                    "name": "owner",
-                    "type": "address"
-                },
-                {
-                    "name": "token",
-                    "type": "address"
-                },
-                {
-                    "name": "amount",
-                    "type": "uint256"
-                }
-            ],
-            "payable": false,
-            "stateMutability": "view",
-            "type": "function"
-        },
-        {
-            "constant": true,
-            "inputs": [
-                {
-                    "name": "",
-                    "type": "address"
-                }
-            ],
-            "name": "exitsQueues",
-            "outputs": [
-                {
-                    "name": "",
-                    "type": "address"
-                }
-            ],
-            "payable": false,
-            "stateMutability": "view",
-            "type": "function"
-        },
-        {
-            "constant": true,
-            "inputs": [
-                {
-                    "name": "_value",
-                    "type": "uint256"
-                }
-            ],
-            "name": "flagged",
-            "outputs": [
-                {
-                    "name": "",
-                    "type": "bool"
-                }
-            ],
-            "payable": false,
-            "stateMutability": "pure",
-            "type": "function"
-        },
-        {
-            "constant": true,
-            "inputs": [],
-            "name": "getDepositBlockNumber",
-            "outputs": [
-                {
-                    "name": "",
-                    "type": "uint256"
-                }
-            ],
-            "payable": false,
-            "stateMutability": "view",
-            "type": "function"
-        },
-        {
-            "constant": true,
-            "inputs": [
-                {
-                    "name": "_outputId",
-                    "type": "uint256"
-                }
-            ],
-            "name": "getExitableTimestamp",
-            "outputs": [
-                {
-                    "name": "",
-                    "type": "uint256"
-                }
-            ],
-            "payable": false,
-            "stateMutability": "view",
-            "type": "function"
-        },
-        {
-            "constant": true,
-            "inputs": [
-                {
-                    "name": "_feeExitId",
-                    "type": "uint256"
-                }
-            ],
-            "name": "getFeeExitPriority",
-            "outputs": [
-                {
-                    "name": "",
-                    "type": "uint256"
-                }
-            ],
-            "payable": false,
-            "stateMutability": "view",
-            "type": "function"
-        },
-        {
-            "constant": true,
-            "inputs": [
-                {
-                    "name": "_tx",
-                    "type": "bytes"
-                }
-            ],
-            "name": "getInFlightExitId",
-            "outputs": [
-                {
-                    "name": "",
-                    "type": "uint192"
-                }
-            ],
-            "payable": false,
-            "stateMutability": "pure",
-            "type": "function"
-        },
-        {
-            "constant": true,
-            "inputs": [
-                {
-                    "name": "_tx",
-                    "type": "bytes"
-                },
-                {
-                    "name": "_outputIndex",
-                    "type": "uint256"
-                }
-            ],
-            "name": "getInFlightExitOutput",
-            "outputs": [
-                {
-                    "name": "",
-                    "type": "address"
-                },
-                {
-                    "name": "",
-                    "type": "address"
-                },
-                {
-                    "name": "",
-                    "type": "uint256"
-                }
-            ],
-            "payable": false,
-            "stateMutability": "view",
-            "type": "function"
-        },
-        {
-            "constant": true,
-            "inputs": [
-                {
-                    "name": "_outputId",
-                    "type": "uint256"
-                },
-                {
-                    "name": "_tx",
-                    "type": "bytes"
-                }
-            ],
-            "name": "getInFlightExitPriority",
-            "outputs": [
-                {
-                    "name": "",
-                    "type": "uint256"
-                }
-            ],
-            "payable": false,
-            "stateMutability": "view",
-            "type": "function"
-        },
-        {
-            "constant": true,
-            "inputs": [
-                {
-                    "name": "_token",
-                    "type": "address"
-                }
-            ],
-            "name": "getNextExit",
-            "outputs": [
-                {
-                    "name": "",
-                    "type": "uint64"
-                },
-                {
-                    "name": "",
-                    "type": "uint192"
-                },
-                {
-                    "name": "",
-                    "type": "bool"
-                }
-            ],
-            "payable": false,
-            "stateMutability": "view",
-            "type": "function"
-        },
-        {
-            "constant": true,
-            "inputs": [
-                {
-                    "name": "_outputId",
-                    "type": "uint256"
-                }
-            ],
-            "name": "getStandardExitId",
-            "outputs": [
-                {
-                    "name": "",
-                    "type": "uint192"
-                }
-            ],
-            "payable": false,
-            "stateMutability": "pure",
-            "type": "function"
-        },
-        {
-            "constant": true,
-            "inputs": [
-                {
-                    "name": "_exitId",
-                    "type": "uint192"
-                },
-                {
-                    "name": "_outputId",
-                    "type": "uint256"
-                }
-            ],
-            "name": "getStandardExitPriority",
-            "outputs": [
-                {
-                    "name": "",
-                    "type": "uint256"
-                }
-            ],
-            "payable": false,
-            "stateMutability": "view",
-            "type": "function"
-        },
-        {
-            "constant": true,
-            "inputs": [
-                {
-                    "name": "_token",
-                    "type": "address"
-                }
-            ],
-            "name": "hasToken",
-            "outputs": [
-                {
-                    "name": "",
-                    "type": "bool"
-                }
-            ],
-            "payable": false,
-            "stateMutability": "view",
-            "type": "function"
-        },
-        {
-            "constant": true,
-            "inputs": [],
-            "name": "inFlightExitBond",
-            "outputs": [
-                {
-                    "name": "",
-                    "type": "uint256"
-                }
-            ],
-            "payable": false,
-            "stateMutability": "view",
-            "type": "function"
-        },
-        {
-            "constant": true,
-            "inputs": [
-                {
-                    "name": "",
-                    "type": "uint192"
-                }
-            ],
-            "name": "inFlightExits",
-            "outputs": [
-                {
-                    "name": "exitStartTimestamp",
-                    "type": "uint256"
-                },
-                {
-                    "name": "exitMap",
-                    "type": "uint256"
-                },
-                {
-                    "name": "bondOwner",
-                    "type": "address"
-                },
-                {
-                    "name": "oldestCompetitor",
-                    "type": "uint256"
-                }
-            ],
-            "payable": false,
-            "stateMutability": "view",
-            "type": "function"
-        },
-        {
-            "constant": true,
-            "inputs": [
-                {
-                    "name": "uniqueId",
-                    "type": "uint192"
-                }
-            ],
-            "name": "isInFlight",
-            "outputs": [
-                {
-                    "name": "",
-                    "type": "bool"
-                }
-            ],
-            "payable": false,
-            "stateMutability": "pure",
-            "type": "function"
-        },
-        {
-            "constant": true,
-            "inputs": [
-                {
-                    "name": "exitableTimestamp",
-                    "type": "uint64"
-                }
-            ],
-            "name": "isMature",
-            "outputs": [
-                {
-                    "name": "",
-                    "type": "bool"
-                }
-            ],
-            "payable": false,
-            "stateMutability": "view",
-            "type": "function"
-        },
-        {
-            "constant": true,
-            "inputs": [
-                {
-                    "name": "priority",
-                    "type": "uint256"
-                }
-            ],
-            "name": "markInFlight",
-            "outputs": [
-                {
-                    "name": "",
-                    "type": "uint256"
-                }
-            ],
-            "payable": false,
-            "stateMutability": "pure",
-            "type": "function"
-        },
-        {
-            "constant": true,
-            "inputs": [
-                {
-                    "name": "priority",
-                    "type": "uint256"
-                }
-            ],
-            "name": "markStandard",
-            "outputs": [
-                {
-                    "name": "",
-                    "type": "uint256"
-                }
-            ],
-            "payable": false,
-            "stateMutability": "pure",
-            "type": "function"
-        },
-        {
-            "constant": true,
-            "inputs": [],
-            "name": "MIN_EXIT_PERIOD",
-            "outputs": [
-                {
-                    "name": "",
-                    "type": "uint256"
-                }
-            ],
-            "payable": false,
-            "stateMutability": "view",
-            "type": "function"
-        },
-        {
-            "constant": true,
-            "inputs": [],
-            "name": "nextChildBlock",
-            "outputs": [
-                {
-                    "name": "",
-                    "type": "uint256"
-                }
-            ],
-            "payable": false,
-            "stateMutability": "view",
-            "type": "function"
-        },
-        {
-            "constant": true,
-            "inputs": [],
-            "name": "nextDepositBlock",
-            "outputs": [
-                {
-                    "name": "",
-                    "type": "uint256"
-                }
-            ],
-            "payable": false,
-            "stateMutability": "view",
-            "type": "function"
-        },
-        {
-            "constant": true,
-            "inputs": [],
-            "name": "nextFeeExit",
-            "outputs": [
-                {
-                    "name": "",
-                    "type": "uint256"
-                }
-            ],
-            "payable": false,
-            "stateMutability": "view",
-            "type": "function"
-        },
-        {
-            "constant": true,
-            "inputs": [],
-            "name": "operator",
-            "outputs": [
-                {
-                    "name": "",
-                    "type": "address"
-                }
-            ],
-            "payable": false,
-            "stateMutability": "view",
-            "type": "function"
-        },
-        {
-            "constant": true,
-            "inputs": [],
-            "name": "piggybackBond",
-            "outputs": [
-                {
-                    "name": "",
-                    "type": "uint256"
-                }
-            ],
-            "payable": false,
-            "stateMutability": "view",
-            "type": "function"
-        },
-        {
-            "constant": true,
-            "inputs": [
-                {
-                    "name": "_value",
-                    "type": "uint256"
-                }
-            ],
-            "name": "setFlag",
-            "outputs": [
-                {
-                    "name": "",
-                    "type": "uint256"
-                }
-            ],
-            "payable": false,
-            "stateMutability": "pure",
-            "type": "function"
-        },
-        {
-            "constant": true,
-            "inputs": [],
-            "name": "standardExitBond",
-            "outputs": [
-                {
-                    "name": "",
-                    "type": "uint256"
-                }
-            ],
-            "payable": false,
-            "stateMutability": "view",
-            "type": "function"
         }
     ]
 }
