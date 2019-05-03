@@ -126,14 +126,18 @@ class RootChain {
    * Blocks a standard exit by showing the exiting output was spent.
    *
    * @method challengeStandardExit
-   * @param {number} outputId Identifier of the exiting output.
+   * @param {number} standardExitId Identifier of the exiting output.
    * @param {string} challengeTx RLP encoded transaction that spends the exiting output.
    * @param {number} inputIndex Which input to the challenging tx corresponds to the exiting output.
    * @param {string} challengeTxSig Signature from the exiting output owner over the spend.
    * @param {Object} txOptions transaction options, such as `from`, gas` and `privateKey`
    * @return {string} transaction hash of the call
    */
-  async challengeStandardExit (outputId, challengeTx, inputIndex, challengeTxSig, txOptions) {
+  async challengeStandardExit (standardExitId, challengeTx, inputIndex, challengeTxSig, txOptions) {
+    // standardExitId is an extremely large number as it uses the entire int192.
+    // It's too big to be represented as a Number, so we convert it to a hex string
+    const exitId = txUtils.int192toHex(standardExitId)
+
     const txDetails = {
       from: txOptions.from,
       to: this.plasmaContractAddress,
@@ -141,7 +145,7 @@ class RootChain {
         this.web3,
         this.plasmaContract,
         'challengeStandardExit',
-        outputId.toString(),
+        exitId,
         challengeTx,
         inputIndex,
         challengeTxSig),
