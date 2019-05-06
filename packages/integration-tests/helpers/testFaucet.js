@@ -66,8 +66,8 @@ const faucet = {
     const ccEthBalance = ccBalance.find(e => e.currency === transaction.ETH_CURRENCY)
     const ccErc20Balance = ccBalance.find(e => e.currency === this.erc20ContractAddress)
 
-    console.info(`Childchain ETH balance: ${ccEthBalance.amount.toString()}`)
-    console.info(`Childchain ERC20 balance: ${ccErc20Balance.amount.toString()}`)
+    console.info(`Childchain ETH balance: ${ccEthBalance ? ccEthBalance.amount.toString() : '0'}`)
+    console.info(`Childchain ERC20 balance: ${ccErc20Balance ? ccErc20Balance.amount.toString() : '0'}`)
     console.info(`----------------- Faucet -----------------------`)
   },
 
