@@ -29,7 +29,6 @@ const childChain = new ChildChain(config.watcher_url, config.childchain_url)
 let rootChain
 
 const INFLIGHT_EXIT_BOND = 31415926535
-const PIGGYBACK_BOND = 31415926535
 
 // NB This test waits for at least RootChain.MIN_EXIT_PERIOD so it should be run against a
 // modified RootChain contract with a shorter than normal MIN_EXIT_PERIOD.
@@ -44,6 +43,7 @@ describe('In-flight Exit Challenge tests', async () => {
   describe('in-flight transaction challenge exit with competitor', async () => {
     const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.001', 'ether')
     const INTIIAL_BOB_RC_AMOUNT = web3.utils.toWei('.1', 'ether')
+    const INTIIAL_CAROL_RC_AMOUNT = web3.utils.toWei('.1', 'ether')
     const TRANSFER_AMOUNT = web3.utils.toWei('0.0002', 'ether')
     let aliceAccount
     let bobAccount
@@ -65,12 +65,12 @@ describe('In-flight Exit Challenge tests', async () => {
         faucet.fundRootchainEth(web3, bobAccount.address, INTIIAL_BOB_RC_AMOUNT)
       ])
       // Give some ETH to Carol on the root chain
-      await faucet.fundRootchainEth(web3, carolAccount.address, INTIIAL_BOB_RC_AMOUNT)
+      await faucet.fundRootchainEth(web3, carolAccount.address, INTIIAL_CAROL_RC_AMOUNT)
 
       // Wait for finality
       await Promise.all([
         ccHelper.waitForBalanceEq(childChain, aliceAccount.address, INTIIAL_ALICE_AMOUNT),
-        rcHelper.waitForEthBalanceEq(web3, carolAccount.address, INTIIAL_BOB_RC_AMOUNT),
+        rcHelper.waitForEthBalanceEq(web3, carolAccount.address, INTIIAL_CAROL_RC_AMOUNT),
         rcHelper.waitForEthBalanceEq(web3, bobAccount.address, INTIIAL_BOB_RC_AMOUNT)
       ])
     })
@@ -168,7 +168,7 @@ describe('In-flight Exit Challenge tests', async () => {
       console.log(`Got competitor`)
 
       // Challenge the IFE as non canonical
-      await rootChain.challengeInFlightExitNotCanonical(
+      receipt = await rootChain.challengeInFlightExitNotCanonical(
         competitor.in_flight_txbytes,
         competitor.in_flight_input_index,
         competitor.competing_txbytes,
@@ -181,6 +181,8 @@ describe('In-flight Exit Challenge tests', async () => {
           from: carolAccount.address
         }
       )
+      // Keep track of how much Carol spends on gas
+      let carolSpentOnGas = await rcHelper.spentOnGas(web3, receipt)
 
       // Wait for challenge period
       const utxoPos = transaction.encodeUtxoPos(cInput)
@@ -206,19 +208,29 @@ describe('In-flight Exit Challenge tests', async () => {
 
       // Get Bob's ETH balance
       let bobEthBalance = await web3.eth.getBalance(bobAccount.address)
-      // Bob's IFE was not successful, so expect his balance to be
-      // INTIIAL_BOB_AMOUNT - INFLIGHT_EXIT_BOND - PIGGYBACK_BOND - gas spent
+      // Bob's IFE was not successful, so he loses his exit bond.
+      // But he does not lose his piggyback bond, so expect his balance to be
+      // INTIIAL_BOB_AMOUNT - INFLIGHT_EXIT_BOND - gas spent
       const expected = web3.utils.toBN(INTIIAL_BOB_RC_AMOUNT)
         .sub(web3.utils.toBN(INFLIGHT_EXIT_BOND))
-        .sub(web3.utils.toBN(PIGGYBACK_BOND))
         .sub(bobSpentOnGas)
       assert.equal(bobEthBalance.toString(), expected.toString())
+
+      // Get carol's ETH balance
+      let carolEthBalance = await web3.eth.getBalance(carolAccount.address)
+      // carol got Bob's exit bond, so expect her balance to be
+      // INTIIAL_CAROL_AMOUNT + INFLIGHT_EXIT_BOND - gas spent
+      const carolExpected = web3.utils.toBN(INTIIAL_CAROL_RC_AMOUNT)
+        .add(web3.utils.toBN(INFLIGHT_EXIT_BOND))
+        .sub(carolSpentOnGas)
+      assert.equal(carolEthBalance.toString(), carolExpected.toString())
     })
   })
 
   describe('in-flight transaction challenge exit without competitor', async () => {
     const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.001', 'ether')
     const INTIIAL_BOB_RC_AMOUNT = web3.utils.toWei('.1', 'ether')
+    const INTIIAL_CAROL_RC_AMOUNT = web3.utils.toWei('.1', 'ether')
     const TRANSFER_AMOUNT = web3.utils.toWei('0.0002', 'ether')
     let aliceAccount
     let bobAccount
@@ -240,12 +252,12 @@ describe('In-flight Exit Challenge tests', async () => {
         faucet.fundRootchainEth(web3, bobAccount.address, INTIIAL_BOB_RC_AMOUNT)
       ])
       // Give some ETH to Carol on the root chain
-      await faucet.fundRootchainEth(web3, carolAccount.address, INTIIAL_BOB_RC_AMOUNT)
+      await faucet.fundRootchainEth(web3, carolAccount.address, INTIIAL_CAROL_RC_AMOUNT)
 
       // Wait for finality
       await Promise.all([
         ccHelper.waitForBalanceEq(childChain, aliceAccount.address, INTIIAL_ALICE_AMOUNT),
-        rcHelper.waitForEthBalanceEq(web3, carolAccount.address, INTIIAL_BOB_RC_AMOUNT),
+        rcHelper.waitForEthBalanceEq(web3, carolAccount.address, INTIIAL_CAROL_RC_AMOUNT),
         rcHelper.waitForEthBalanceEq(web3, bobAccount.address, INTIIAL_BOB_RC_AMOUNT)
       ])
     })
@@ -341,7 +353,7 @@ describe('In-flight Exit Challenge tests', async () => {
       // Carol's tx was not put into a block so it can't be a competitor,
       // but she can still challenge Bob's IFE as non-canonical.
       const carolTxUnsigned = transaction.encode(carolTxDecoded)
-      await rootChain.challengeInFlightExitNotCanonical(
+      receipt = await rootChain.challengeInFlightExitNotCanonical(
         inflightExit.txbytes,
         0,
         carolTxUnsigned,
@@ -354,6 +366,8 @@ describe('In-flight Exit Challenge tests', async () => {
           from: carolAccount.address
         }
       )
+      // Keep track of how much Carol spends on gas
+      let carolSpentOnGas = await rcHelper.spentOnGas(web3, receipt)
 
       // Wait for challenge period
       const utxoPos = transaction.encodeUtxoPos(cInput)
@@ -379,12 +393,22 @@ describe('In-flight Exit Challenge tests', async () => {
 
       // Get Bob's ETH balance
       let bobEthBalance = await web3.eth.getBalance(bobAccount.address)
-      // Bob's IFE was not successful, so expect his balance to be
-      // INTIIAL_BOB_AMOUNT - PIGGYBACK_BOND - gas spent
+      // Bob's IFE was not successful, so he loses his exit bond.
+      // But he does not lose his piggyback bond, so expect his balance to be
+      // INTIIAL_BOB_AMOUNT - INFLIGHT_EXIT_BOND - gas spent
       const expected = web3.utils.toBN(INTIIAL_BOB_RC_AMOUNT)
-        .sub(web3.utils.toBN(PIGGYBACK_BOND))
+        .sub(web3.utils.toBN(INFLIGHT_EXIT_BOND))
         .sub(bobSpentOnGas)
       assert.equal(bobEthBalance.toString(), expected.toString())
+
+      // Get carol's ETH balance
+      let carolEthBalance = await web3.eth.getBalance(carolAccount.address)
+      // carol got Bob's exit bond, so expect her balance to be
+      // INTIIAL_CAROL_AMOUNT + INFLIGHT_EXIT_BOND - gas spent
+      const carolExpected = web3.utils.toBN(INTIIAL_CAROL_RC_AMOUNT)
+        .add(web3.utils.toBN(INFLIGHT_EXIT_BOND))
+        .sub(carolSpentOnGas)
+      assert.equal(carolEthBalance.toString(), carolExpected.toString())
     })
   })
 })

@@ -27,15 +27,20 @@ async function topUpEth (web3, address, value, fundAccount) {
   }
   await rcHelper.setGas(web3.eth, txDetails)
 
-  if (this.fundAccount.privateKey) {
+  if (fundAccount.privateKey) {
     // If a private key has been set then use it.
     const signedTx = await web3.eth.accounts.signTransaction(txDetails, fundAccount.privateKey)
     return web3.eth.sendSignedTransaction(signedTx.rawTransaction)
   } else {
     // Otherwise try with a password.
-    const unlocked = await web3.eth.personal.unlockAccount(fundAccount.address, fundAccount.password)
-    if (unlocked) {
-      return web3.eth.sendTransaction(txDetails)
+    try {
+      const unlocked = await web3.eth.personal.unlockAccount(fundAccount.address, fundAccount.password)
+      if (unlocked) {
+        return web3.eth.sendTransaction(txDetails)
+      }
+    } catch (err) {
+      console.error(err)
+      throw err
     }
   }
 

@@ -27,6 +27,8 @@ const faucet = {
     }
     this.initialised = true
 
+    console.info(`----------------- Initialising Faucet -----------------------`)
+
     this.rootChain = rootChain
     this.childChain = childChain
     this.address = config.testFaucetAddress
@@ -48,6 +50,25 @@ const faucet = {
 
     await this.initEthBalance(web3, web3.utils.toWei(config.minAmountEth || '2', 'ether'))
     await this.initERC20Balance(web3, config.minAmountERC20 || 20)
+    await this.showInfo(web3)
+  },
+
+  showInfo: async function (web3) {
+    console.info(`----------------- Faucet -----------------------`)
+    console.info(`Address: ${this.address}`)
+    console.info(`ERC20 token: ${this.erc20ContractAddress}`)
+    console.info(`----------------- `)
+    console.info(`Rootchain ETH balance: ${await web3.eth.getBalance(this.address)}`)
+    console.info(`Rootchain ERC20 balance: ${await rcHelper.getERC20Balance(web3, this.erc20Contract, this.address)}`)
+    console.info(`----------------- `)
+
+    const ccBalance = await this.childChain.getBalance(this.address)
+    const ccEthBalance = ccBalance.find(e => e.currency === transaction.ETH_CURRENCY)
+    const ccErc20Balance = ccBalance.find(e => e.currency === this.erc20ContractAddress)
+
+    console.info(`Childchain ETH balance: ${ccEthBalance ? ccEthBalance.amount.toString() : '0'}`)
+    console.info(`Childchain ERC20 balance: ${ccErc20Balance ? ccErc20Balance.amount.toString() : '0'}`)
+    console.info(`----------------- Faucet -----------------------`)
   },
 
   initEthBalance: async function (web3, minAmount) {

@@ -69,8 +69,17 @@ function getTxData (web3, contract, method, ...args) {
   }
 }
 
+function int192toHex (int192) {
+  if (typeof int192 === 'string') {
+    return int192.startsWith('0x') ? int192 : `0x${int192}`
+  } else {
+    return `0x${int192.toString(16)}`
+  }
+}
+
 module.exports = {
   sendTx,
   setGas,
-  getTxData
+  getTxData,
+  int192toHex
 }

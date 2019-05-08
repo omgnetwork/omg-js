@@ -167,6 +167,8 @@ describe('In-flight Exit tests', async () => {
       console.log(`Bob called RootChain.processExits() after challenge period: txhash = ${receipt.transactionHash}`)
       bobSpentOnGas.iadd(await rcHelper.spentOnGas(web3, receipt))
 
+      await rcHelper.awaitTx(web3, receipt.transactionHash)
+
       // Get Bob's ETH balance
       bobEthBalance = await web3.eth.getBalance(bobAccount.address)
       // Expect Bob's balance to be INTIIAL_BOB_AMOUNT + TRANSFER_AMOUNT - gas spent
