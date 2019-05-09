@@ -118,28 +118,31 @@ class ChildChain {
    * Sign a transaction
    *
    * @method signTransaction
-   * @param {string} unsignedTx
+   * @param {string} typedData
    * @param {Array} privateKeys
    * @return {Array} array of signatures
    */
-  signTransaction (unsignedTx, privateKeys) {
+  signTransaction (typedData, privateKeys) {
     privateKeys.forEach(key => validatePrivateKey)
-    return sign(Buffer.from(unsignedTx.replace('0x', ''), 'hex'), privateKeys)
+    const jsonData = JSON.parse(typedData)
+    const toSign = transaction.signHash(jsonData)
+    return sign(toSign, privateKeys)
   }
 
   /**
    * Build a signed transaction into the format expected by submitTransaction
    *
    * @method buildSignedTransaction
-   * @param {string} unsignedTx
+   * @param {string} txData
    * @param {Array} signatures
    * @return {string} signed transaction
    */
-  buildSignedTransaction (unsignedTx, signatures) {
-    // rlp-decode the tx bytes
-    const decodedTx = rlp.decode(Buffer.from(unsignedTx.replace('0x', ''), 'hex'))
+  buildSignedTransaction (txData, signatures) {
+    // Convert the data to an array
+    const jsonData = JSON.parse(txData) // TODO validate this
+    const txArray = transaction.toArray(jsonData.message)
     // Append the signatures
-    const signedTx = [signatures, ...decodedTx]
+    const signedTx = [signatures, ...txArray]
     // rlp-encode the transaction + signatures
     return rlp.encode(signedTx).toString('hex')
   }
@@ -176,12 +179,12 @@ class ChildChain {
 
     // create the transaction body
     const txBody = transaction.createTransactionBody(fromAddress, fromUtxos, toAddress, toAmount, currency)
-    // create transaction
-    const unsignedTx = this.createTransaction(txBody)
-    // sign transaction
-    const signatures = this.signTransaction(unsignedTx, fromPrivateKeys)
-    // build transaction
-    const signedTx = this.buildSignedTransaction(unsignedTx, signatures)
+    // Get the transaction data
+    const typedData = transaction.getTypedData(4, txBody)
+    // Sign it
+    const signatures = this.signTransaction(typedData, fromPrivateKeys)
+    // Build the signed transaction
+    const signedTx = this.buildSignedTransaction(typedData, signatures)
     // submit transaction
     return this.submitTransaction(signedTx)
   }

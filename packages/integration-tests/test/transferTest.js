@@ -86,13 +86,13 @@ describe('Transfer tests', async () => {
         }]
       }
 
-      // Create the unsigned transaction
-      const unsignedTx = childChain.createTransaction(txBody)
+      // Get the transaction data
+      const typedData = transaction.getTypedData(4, txBody)
       // Sign it
-      const signatures = await childChain.signTransaction(unsignedTx, [aliceAccount.privateKey])
+      const signatures = childChain.signTransaction(typedData, [aliceAccount.privateKey])
       assert.equal(signatures.length, 1)
       // Build the signed transaction
-      const signedTx = await childChain.buildSignedTransaction(unsignedTx, signatures)
+      const signedTx = childChain.buildSignedTransaction(typedData, signatures)
       // Submit the signed transaction to the childchain
       const result = await childChain.submitTransaction(signedTx)
       console.log(`Submitted transaction: ${JSON.stringify(result)}`)
@@ -194,11 +194,10 @@ describe('Transfer tests', async () => {
         }
       ]
 
-      // Create the unsigned transaction
-      const unsignedTx = childChain.createTransaction({ inputs, outputs })
+      // Get the transaction data
+      const typedData = transaction.getTypedData(4, { inputs, outputs })
       // Sign it with the correct private key for each input
-      const signatures = await childChain.signTransaction(
-        unsignedTx,
+      const signatures = childChain.signTransaction(typedData,
         [
           aliceAccount.privateKey,
           aliceAccount.privateKey,
@@ -208,7 +207,8 @@ describe('Transfer tests', async () => {
       )
       assert.equal(signatures.length, 4)
       // Build the signed transaction
-      const signedTx = await childChain.buildSignedTransaction(unsignedTx, signatures)
+      const signedTx = childChain.buildSignedTransaction(typedData, signatures)
+
       // Submit the signed transaction to the childchain
       const result = await childChain.submitTransaction(signedTx)
       console.log(`Submitted transaction: ${JSON.stringify(result)}`)
@@ -296,13 +296,13 @@ describe('Transfer tests', async () => {
         }]
       }
 
-      // Create the unsigned transaction
-      const unsignedTx = childChain.createTransaction(txBody)
+      // Get the transaction data
+      const typedData = transaction.getTypedData(4, txBody)
       // Sign it
-      const signatures = await childChain.signTransaction(unsignedTx, [aliceAccount.privateKey])
+      const signatures = childChain.signTransaction(typedData, [aliceAccount.privateKey])
       assert.equal(signatures.length, 1)
       // Build the signed transaction
-      const signedTx = await childChain.buildSignedTransaction(unsignedTx, signatures)
+      const signedTx = childChain.buildSignedTransaction(typedData, signatures)
       // Submit the signed transaction to the childchain
       const result = await childChain.submitTransaction(signedTx)
       console.log(`Submitted transaction: ${JSON.stringify(result)}`)
@@ -314,8 +314,8 @@ describe('Transfer tests', async () => {
 
       // Alice's balance should be CHANGE_AMOUNT
       balance = await childChain.getBalance(aliceAccount.address)
-      assert.equal(balance.length, 1)
-      assert.equal(balance[0].amount, CHANGE_AMOUNT)
+      const erc20Balance = balance.filter(b => b.currency === ERC20_CURRENCY)
+      assert.equal(erc20Balance[0].amount, CHANGE_AMOUNT)
     })
   })
 
@@ -385,13 +385,13 @@ describe('Transfer tests', async () => {
         }]
       }
 
-      // Create the unsigned transaction
-      const unsignedTx = childChain.createTransaction(txBody)
+      // Get the transaction data
+      const typedData = transaction.getTypedData(4, txBody)
       // Sign it
-      const signatures = await childChain.signTransaction(unsignedTx, [aliceAccount.privateKey, aliceAccount.privateKey])
+      const signatures = childChain.signTransaction(typedData, [aliceAccount.privateKey, aliceAccount.privateKey])
       assert.equal(signatures.length, 2)
       // Build the signed transaction
-      const signedTx = await childChain.buildSignedTransaction(unsignedTx, signatures)
+      const signedTx = childChain.buildSignedTransaction(typedData, signatures)
       // Submit the signed transaction to the childchain
       const result = await childChain.submitTransaction(signedTx)
       console.log(`Submitted transaction: ${JSON.stringify(result)}`)

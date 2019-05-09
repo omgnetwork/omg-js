@@ -18,13 +18,14 @@ global.Buffer = global.Buffer || require('buffer').Buffer
 const InvalidArgumentError = require('./InvalidArgumentError')
 const numberToBN = require('number-to-bn')
 const rlp = require('rlp')
+const { getTypedData, signHash } = require('./typedData')
 
 const MAX_INPUTS = 4
 const MAX_OUTPUTS = 4
 
 const NULL_ADDRESS = '0x0000000000000000000000000000000000000000'
 const NULL_INPUT = { blknum: 0, txindex: 0, oindex: 0 }
-const NULL_OUTPUT = { owner: NULL_ADDRESS, amount: 0, currency: NULL_ADDRESS }
+const NULL_OUTPUT = { owner: NULL_ADDRESS, currency: NULL_ADDRESS, amount: 0 }
 
 const BLOCK_OFFSET = numberToBN(1000000000)
 const TX_OFFSET = 10000
@@ -69,7 +70,7 @@ const transaction = {
 
     const outputArray = []
     for (let i = 0; i < MAX_OUTPUTS; i++) {
-      addOutput(outputArray,
+      addOutputCurrency(outputArray,
         i < transactionBody.outputs.length
           ? transactionBody.outputs[i]
           : NULL_OUTPUT)
@@ -77,6 +78,33 @@ const transaction = {
 
     txArray.push(outputArray)
     return `0x${rlp.encode(txArray).toString('hex').toUpperCase()}`
+  },
+
+  /**
+  * Converts a transaction into an array suitable for RLP encoding
+  *
+  *@param {Object} typedDataMessage the transaction object
+  *@returns the transaction as an array
+  *
+  */
+  toArray: function (typedDataMessage) {
+    const txArray = []
+
+    const inputArray = []
+    addInput(inputArray, typedDataMessage.input0)
+    addInput(inputArray, typedDataMessage.input1)
+    addInput(inputArray, typedDataMessage.input2)
+    addInput(inputArray, typedDataMessage.input3)
+    txArray.push(inputArray)
+
+    const outputArray = []
+    addOutput(outputArray, typedDataMessage.output0)
+    addOutput(outputArray, typedDataMessage.output1)
+    addOutput(outputArray, typedDataMessage.output2)
+    addOutput(outputArray, typedDataMessage.output3)
+    txArray.push(outputArray)
+
+    return txArray
   },
 
   /**
@@ -203,6 +231,14 @@ const transaction = {
     const txindex = bn.mod(BLOCK_OFFSET).divn(TX_OFFSET).toNumber()
     const oindex = bn.modn(TX_OFFSET)
     return { blknum, txindex, oindex }
+  },
+
+  getTypedData: function (chainId, tx) {
+    return getTypedData(chainId, tx)
+  },
+
+  signHash: function (typedData) {
+    return signHash(typedData)
   }
 }
 
@@ -231,6 +267,16 @@ function addInput (array, input) {
 }
 
 function addOutput (array, output) {
+  array.push([
+    sanitiseAddress(output.owner), // must start with '0x' to be encoded properly
+    sanitiseAddress(output.token), // must start with '0x' to be encoded properly
+    // If amount is 0 it should be encoded as '0x80' (empty byte array)
+    // If it's non zero, it should be a BN to avoid precision loss
+    output.amount === 0 ? 0 : numberToBN(output.amount)
+  ])
+}
+
+function addOutputCurrency (array, output) {
   array.push([
     sanitiseAddress(output.owner), // must start with '0x' to be encoded properly
     sanitiseAddress(output.currency), // must start with '0x' to be encoded properly
