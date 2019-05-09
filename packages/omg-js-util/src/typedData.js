@@ -85,7 +85,7 @@ function getTypedData (tx) {
     metadata: tx.metadata || NULL_METADATA
   }
 
-  return JSON.stringify(typedData)
+  return typedData
 }
 
 module.exports = getTypedData
