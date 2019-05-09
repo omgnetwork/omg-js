@@ -71,7 +71,7 @@ const transaction = {
 
     const outputArray = []
     for (let i = 0; i < MAX_OUTPUTS; i++) {
-      addOutputCurrency(outputArray,
+      addOutputWithCurrency(outputArray,
         i < transactionBody.outputs.length
           ? transactionBody.outputs[i]
           : NULL_OUTPUT)
@@ -98,11 +98,13 @@ const transaction = {
     addInput(inputArray, typedDataMessage.input3)
     txArray.push(inputArray)
 
+    // NB Currently outputs havce a 'token' member instead of 'currency'. 
+    // This is likely to change in the future
     const outputArray = []
-    addOutput(outputArray, typedDataMessage.output0)
-    addOutput(outputArray, typedDataMessage.output1)
-    addOutput(outputArray, typedDataMessage.output2)
-    addOutput(outputArray, typedDataMessage.output3)
+    addOutputWithToken(outputArray, typedDataMessage.output0)
+    addOutputWithToken(outputArray, typedDataMessage.output1)
+    addOutputWithToken(outputArray, typedDataMessage.output2)
+    addOutputWithToken(outputArray, typedDataMessage.output3)
     txArray.push(outputArray)
 
     return txArray
@@ -267,7 +269,7 @@ function addInput (array, input) {
   array.push([input.blknum, input.txindex, input.oindex])
 }
 
-function addOutput (array, output) {
+function addOutputWithToken (array, output) {
   array.push([
     sanitiseAddress(output.owner), // must start with '0x' to be encoded properly
     sanitiseAddress(output.token), // must start with '0x' to be encoded properly
@@ -277,7 +279,7 @@ function addOutput (array, output) {
   ])
 }
 
-function addOutputCurrency (array, output) {
+function addOutputWithCurrency (array, output) {
   array.push([
     sanitiseAddress(output.owner), // must start with '0x' to be encoded properly
     sanitiseAddress(output.currency), // must start with '0x' to be encoded properly
