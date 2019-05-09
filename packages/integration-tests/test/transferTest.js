@@ -87,7 +87,7 @@ describe('Transfer tests', async () => {
       }
 
       // Get the transaction data
-      const typedData = transaction.getTypedData(4, txBody)
+      const typedData = transaction.getTypedData(txBody)
       // Sign it
       const signatures = childChain.signTransaction(typedData, [aliceAccount.privateKey])
       assert.equal(signatures.length, 1)
@@ -195,7 +195,7 @@ describe('Transfer tests', async () => {
       ]
 
       // Get the transaction data
-      const typedData = transaction.getTypedData(4, { inputs, outputs })
+      const typedData = transaction.getTypedData({ inputs, outputs })
       // Sign it with the correct private key for each input
       const signatures = childChain.signTransaction(typedData,
         [
@@ -297,7 +297,7 @@ describe('Transfer tests', async () => {
       }
 
       // Get the transaction data
-      const typedData = transaction.getTypedData(4, txBody)
+      const typedData = transaction.getTypedData(txBody)
       // Sign it
       const signatures = childChain.signTransaction(typedData, [aliceAccount.privateKey])
       assert.equal(signatures.length, 1)
@@ -386,7 +386,7 @@ describe('Transfer tests', async () => {
       }
 
       // Get the transaction data
-      const typedData = transaction.getTypedData(4, txBody)
+      const typedData = transaction.getTypedData(txBody)
       // Sign it
       const signatures = childChain.signTransaction(typedData, [aliceAccount.privateKey, aliceAccount.privateKey])
       assert.equal(signatures.length, 2)

@@ -55,8 +55,8 @@ const typedData = {
   primaryType: 'Transaction'
 }
 
-function getTypedData (chainId, tx) {
-  domainData.chainId = chainId
+function getTypedData (tx) {
+  domainData.chainId = 4 // TODO chainId will be removed, for now it's hardcoded to 4
 
   // Sanitise inputs
   const inputs = tx.inputs.map(i => ({

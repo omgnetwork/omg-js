@@ -144,7 +144,7 @@ async function createTx (childChain, from, to, amount, currency, fromPrivateKey)
   }
 
   // Create the unsigned transaction
-  const typedData = transaction.getTypedData(4, txBody)
+  const typedData = transaction.getTypedData(txBody)
 
   // Sign it
   const privateKeys = new Array(utxosToSpend.length).fill(fromPrivateKey)

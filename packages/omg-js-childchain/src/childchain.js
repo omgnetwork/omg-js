@@ -180,7 +180,7 @@ class ChildChain {
     // create the transaction body
     const txBody = transaction.createTransactionBody(fromAddress, fromUtxos, toAddress, toAmount, currency)
     // Get the transaction data
-    const typedData = transaction.getTypedData(4, txBody)
+    const typedData = transaction.getTypedData(txBody)
     // Sign it
     const signatures = this.signTransaction(typedData, fromPrivateKeys)
     // Build the signed transaction
