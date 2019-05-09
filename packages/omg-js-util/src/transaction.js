@@ -18,7 +18,8 @@ global.Buffer = global.Buffer || require('buffer').Buffer
 const InvalidArgumentError = require('./InvalidArgumentError')
 const numberToBN = require('number-to-bn')
 const rlp = require('rlp')
-const { getTypedData, signHash } = require('./typedData')
+const getTypedData = require('./typedData')
+const getToSignHash = require('./signHash')
 
 const MAX_INPUTS = 4
 const MAX_OUTPUTS = 4
@@ -238,7 +239,7 @@ const transaction = {
   },
 
   signHash: function (typedData) {
-    return signHash(typedData)
+    return getToSignHash(typedData)
   }
 }
 
