@@ -98,10 +98,8 @@ module.exports = {
 const ethUtil = require('ethereumjs-util')
 const abi = require('ethereumjs-abi')
 
-const types = typedData.types
-
 // Recursively finds all the dependencies of a type
-function dependencies (primaryType, found = []) {
+function dependencies (types, primaryType, found = []) {
   if (found.includes(primaryType)) {
     return found
   }
@@ -110,7 +108,7 @@ function dependencies (primaryType, found = []) {
   }
   found.push(primaryType)
   for (let field of types[primaryType]) {
-    for (let dep of dependencies(field.type, found)) {
+    for (let dep of dependencies(types, field.type, found)) {
       if (!found.includes(dep)) {
         found.push(dep)
       }
@@ -119,9 +117,9 @@ function dependencies (primaryType, found = []) {
   return found
 }
 
-function encodeType (primaryType) {
+function encodeType (types, primaryType) {
   // Get dependencies primary first, then alphabetical
-  let deps = dependencies(primaryType)
+  let deps = dependencies(types, primaryType)
   deps = deps.filter(t => t !== primaryType)
   deps = [primaryType].concat(deps.sort())
 
@@ -133,17 +131,17 @@ function encodeType (primaryType) {
   return result
 }
 
-function typeHash (primaryType) {
-  return ethUtil.keccak256(encodeType(primaryType))
+function typeHash (types, primaryType) {
+  return ethUtil.keccak256(encodeType(types, primaryType))
 }
 
-function encodeData (primaryType, data) {
+function encodeData (types, primaryType, data) {
   let encTypes = []
   let encValues = []
 
   // Add typehash
   encTypes.push('bytes32')
-  encValues.push(typeHash(primaryType))
+  encValues.push(typeHash(types, primaryType))
 
   // Add field contents
   for (let field of types[primaryType]) {
@@ -154,10 +152,10 @@ function encodeData (primaryType, data) {
       encValues.push(value)
     } else if (types[field.type] !== undefined) {
       encTypes.push('bytes32')
-      value = ethUtil.keccak256(encodeData(field.type, value))
+      value = ethUtil.keccak256(encodeData(types, field.type, value))
       encValues.push(value)
     } else if (field.type.lastIndexOf(']') === field.type.length - 1) {
-      throw new Error('TODO: Arrays currently unimplemented in encodeData')
+      throw new Error('Arrays currently unimplemented in encodeData')
     } else {
       encTypes.push(field.type)
       encValues.push(value)
@@ -167,16 +165,16 @@ function encodeData (primaryType, data) {
   return abi.rawEncode(encTypes, encValues)
 }
 
-function structHash (primaryType, data) {
-  return ethUtil.keccak256(encodeData(primaryType, data))
+function structHash (types, primaryType, data) {
+  return ethUtil.keccak256(encodeData(types, primaryType, data))
 }
 
 function signHash (typedData) {
   return ethUtil.keccak256(
     Buffer.concat([
       Buffer.from('1901', 'hex'),
-      structHash('EIP712Domain', typedData.domain),
-      structHash(typedData.primaryType, typedData.message)
+      structHash(typedData.types, 'EIP712Domain', typedData.domain),
+      structHash(typedData.types, typedData.primaryType, typedData.message)
     ])
   )
 }
