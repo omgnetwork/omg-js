@@ -124,7 +124,7 @@ class ChildChain {
    */
   signTransaction (typedData, privateKeys) {
     privateKeys.forEach(key => validatePrivateKey)
-    const toSign = transaction.signHash(typedData)
+    const toSign = transaction.getToSignHash(typedData)
     return sign(toSign, privateKeys)
   }
 

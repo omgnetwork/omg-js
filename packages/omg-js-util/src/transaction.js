@@ -240,7 +240,7 @@ const transaction = {
     return getTypedData(chainId, tx)
   },
 
-  signHash: function (typedData) {
+  getToSignHash: function (typedData) {
     return getToSignHash(typedData)
   }
 }
