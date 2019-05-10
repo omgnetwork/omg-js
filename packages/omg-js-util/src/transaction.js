@@ -98,7 +98,7 @@ const transaction = {
     addInput(inputArray, typedDataMessage.input3)
     txArray.push(inputArray)
 
-    // NB Currently outputs havce a 'token' member instead of 'currency'. 
+    // NB Currently outputs have a 'token' member instead of 'currency'
     // This is likely to change in the future
     const outputArray = []
     addOutputWithToken(outputArray, typedDataMessage.output0)

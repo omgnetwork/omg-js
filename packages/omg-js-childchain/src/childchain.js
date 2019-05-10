@@ -118,8 +118,8 @@ class ChildChain {
    * Sign a transaction
    *
    * @method signTransaction
-   * @param {string} typedData
-   * @param {Array} privateKeys
+   * @param {string} typedData The typedData of the transaction, as returned by transaction.getTypedData()
+   * @param {Array} privateKeys An array of private keys to sign the inputs of the transaction
    * @return {Array} array of signatures
    */
   signTransaction (typedData, privateKeys) {
@@ -132,8 +132,8 @@ class ChildChain {
    * Build a signed transaction into the format expected by submitTransaction
    *
    * @method buildSignedTransaction
-   * @param {string} txData
-   * @param {Array} signatures
+   * @param {string} txData The typedData of the transaction, as returned by transaction.getTypedData
+   * @param {Array} signatures An array of signatures, one for each input spent by the transaction
    * @return {string} signed transaction
    */
   buildSignedTransaction (txData, signatures) {
@@ -149,7 +149,7 @@ class ChildChain {
    * Submit a signed transaction to the watcher
    *
    * @method submitTransaction
-   * @param {string} transaction
+   * @param {string} transaction the encoded signed transaction, as returned by buildSignedTransaction
    * @return {Object} the submitted transaction
    */
   async submitTransaction (transaction) {
