@@ -43,7 +43,7 @@ Copy the `dist/omg.js` file into your project and include it.
 
 ### Design Documentation
 
-[How to create your own signing method](/integration-docs/signing-methods.md)
+[How to sign a transaction](/integration-docs/signing-methods.md)
 
 ### Examples
 

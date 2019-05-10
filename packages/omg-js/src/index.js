@@ -13,23 +13,12 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License. */
 
-const RootChain = require('omg-js-rootchain')
-const ChildChain = require('omg-js-childchain')
+const RootChain = require('@omisego/omg-js-rootchain')
+const ChildChain = require('@omisego/omg-js-childchain')
+const OmgUtil = require('@omisego/omg-js-util')
 
-/**
-  *Interact with Tesuji Plasma Childchain & Rootchain from JavaScript (Node.js and Browser)
-  *
-  *@param {string} watcherUrl contains the url of the watcher server
-  *@param {string} childChainUrl contains the url of the childchain server to communicate with
-  *@param {string} web3Provider contains the url of the geth node/ web3 provider
-  *@return {object} Omg (Omg.childchain and Omg.rootChain)
-  */
-
-class Omg {
-  constructor (watcherUrl, childChainUrl, web3Provider) {
-    this.childChain = new ChildChain(watcherUrl, childChainUrl)
-    this.rootChain = new RootChain(web3Provider)
-  }
+module.exports = {
+  RootChain,
+  ChildChain,
+  OmgUtil
 }
-
-module.exports = Omg
