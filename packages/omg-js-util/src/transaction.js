@@ -236,8 +236,8 @@ const transaction = {
     return { blknum, txindex, oindex }
   },
 
-  getTypedData: function (chainId, tx) {
-    return getTypedData(chainId, tx)
+  getTypedData: function (tx) {
+    return getTypedData(tx)
   },
 
   getToSignHash: function (typedData) {
