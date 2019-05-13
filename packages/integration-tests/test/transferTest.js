@@ -87,7 +87,7 @@ describe('Transfer tests', async () => {
       }
 
       // Get the transaction data
-      const typedData = transaction.getTypedData(txBody)
+      const typedData = transaction.getTypedData(txBody, rootChain.plasmaContractAddress)
       // Sign it
       const signatures = childChain.signTransaction(typedData, [aliceAccount.privateKey])
       assert.equal(signatures.length, 1)
@@ -195,7 +195,7 @@ describe('Transfer tests', async () => {
       ]
 
       // Get the transaction data
-      const typedData = transaction.getTypedData({ inputs, outputs })
+      const typedData = transaction.getTypedData({ inputs, outputs }, rootChain.plasmaContractAddress)
       // Sign it with the correct private key for each input
       const signatures = childChain.signTransaction(typedData,
         [
@@ -297,7 +297,7 @@ describe('Transfer tests', async () => {
       }
 
       // Get the transaction data
-      const typedData = transaction.getTypedData(txBody)
+      const typedData = transaction.getTypedData(txBody, rootChain.plasmaContractAddress)
       // Sign it
       const signatures = childChain.signTransaction(typedData, [aliceAccount.privateKey])
       assert.equal(signatures.length, 1)
@@ -386,7 +386,7 @@ describe('Transfer tests', async () => {
       }
 
       // Get the transaction data
-      const typedData = transaction.getTypedData(txBody)
+      const typedData = transaction.getTypedData(txBody, rootChain.plasmaContractAddress)
       // Sign it
       const signatures = childChain.signTransaction(typedData, [aliceAccount.privateKey, aliceAccount.privateKey])
       assert.equal(signatures.length, 2)
@@ -454,7 +454,8 @@ describe('Transfer tests', async () => {
         [aliceAccount.privateKey],
         bobAccount.address,
         TRANSFER_AMOUNT,
-        transaction.ETH_CURRENCY
+        transaction.ETH_CURRENCY,
+        rootChain.plasmaContractAddress
       )
       console.log(`Submitted transaction: ${JSON.stringify(result)}`)
 

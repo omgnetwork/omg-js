@@ -168,9 +168,11 @@ class ChildChain {
    * @param {Array} fromPrivateKeys - private keys of the utxos to spend
    * @param {string} toAddress - the address of the recipient
    * @param {number} toAmount - amount to transact
+   * @param {string} currency - address of the erc20 contract (or transaction.ETH_CURRENCY for ETH)
+   * @param {string} verifyingContract - address of the RootChain contract
    * @return {Object} the submitted transaction
    */
-  async sendTransaction (fromAddress, fromUtxos, fromPrivateKeys, toAddress, toAmount, currency) {
+  async sendTransaction (fromAddress, fromUtxos, fromPrivateKeys, toAddress, toAmount, currency, verifyingContract) {
     validateAddress(fromAddress)
     validateAddress(toAddress)
     validatePrivateKey(fromPrivateKeys)
@@ -178,7 +180,7 @@ class ChildChain {
     // create the transaction body
     const txBody = transaction.createTransactionBody(fromAddress, fromUtxos, toAddress, toAmount, currency)
     // Get the transaction data
-    const typedData = transaction.getTypedData(txBody)
+    const typedData = transaction.getTypedData(txBody, verifyingContract)
     // Sign it
     const signatures = this.signTransaction(typedData, fromPrivateKeys)
     // Build the signed transaction

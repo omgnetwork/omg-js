@@ -89,7 +89,8 @@ describe('Challenge exit tests', async () => {
         TRANSFER_AMOUNT,
         transaction.ETH_CURRENCY,
         aliceAccount.privateKey,
-        TRANSFER_AMOUNT
+        TRANSFER_AMOUNT,
+        rootChain.plasmaContractAddress
       )
 
       console.log(`Transferred ${TRANSFER_AMOUNT} from Alice to Bob`)
@@ -106,7 +107,8 @@ describe('Challenge exit tests', async () => {
         TRANSFER_AMOUNT,
         transaction.ETH_CURRENCY,
         aliceAccount.privateKey,
-        TRANSFER_AMOUNT * 2
+        TRANSFER_AMOUNT * 2,
+        rootChain.plasmaContractAddress
       )
       console.log(`Transferred ${TRANSFER_AMOUNT} from Alice to Bob again`)
 

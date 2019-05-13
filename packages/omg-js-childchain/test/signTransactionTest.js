@@ -31,9 +31,10 @@ describe('signTransaction', () => {
       }
 
       const privateKey = 'a07cb7889ab3a164dcc72cb6103f2573c7ef2d4a855810594d2bf25df60bc39e'
-      const expectedSig = '0xea4cc4cce74857f43b46ab6d8a735a0d44a9ff39c6a165d6a390cd5db193265220ebc4430ade992b6197506a3ef2d0e65e97256fec423a7e17e3659c039a82321c'
+      const expectedSig = '0xed0ff5633cb85aa0f64684759185f8a9f94fd1b654be5942d562bf64f504e3a96a83b90a5e50e50b8a75d4f711d1c0e56066519237dbd94e564084a561b8ba2f1b'
+      const verifyingContract = '0xecda6da8fddd416837bdcf38d6e17a4a898534eb'
 
-      const typedData = transaction.getTypedData(txBody)
+      const typedData = transaction.getTypedData(txBody, verifyingContract)
       const toSign = transaction.getToSignHash(typedData)
       const signatures = sign(toSign, [privateKey])
       assert.equal(signatures[0], expectedSig)

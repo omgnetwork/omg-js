@@ -84,7 +84,8 @@ describe('In-flight Exit tests', async () => {
         TRANSFER_AMOUNT,
         transaction.ETH_CURRENCY,
         aliceAccount.privateKey,
-        TRANSFER_AMOUNT
+        TRANSFER_AMOUNT,
+        rootChain.plasmaContractAddress
       )
       console.log(`Transferred ${TRANSFER_AMOUNT} from Alice to Bob`)
 

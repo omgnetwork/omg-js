@@ -71,7 +71,7 @@ const transaction = {
 
     const outputArray = []
     for (let i = 0; i < MAX_OUTPUTS; i++) {
-      addOutputWithCurrency(outputArray,
+      addOutput(outputArray,
         i < transactionBody.outputs.length
           ? transactionBody.outputs[i]
           : NULL_OUTPUT)
@@ -98,13 +98,11 @@ const transaction = {
     addInput(inputArray, typedDataMessage.input3)
     txArray.push(inputArray)
 
-    // NB Currently outputs have a 'token' member instead of 'currency'
-    // This is likely to change in the future
     const outputArray = []
-    addOutputWithToken(outputArray, typedDataMessage.output0)
-    addOutputWithToken(outputArray, typedDataMessage.output1)
-    addOutputWithToken(outputArray, typedDataMessage.output2)
-    addOutputWithToken(outputArray, typedDataMessage.output3)
+    addOutput(outputArray, typedDataMessage.output0)
+    addOutput(outputArray, typedDataMessage.output1)
+    addOutput(outputArray, typedDataMessage.output2)
+    addOutput(outputArray, typedDataMessage.output3)
     txArray.push(outputArray)
 
     return txArray
@@ -236,8 +234,8 @@ const transaction = {
     return { blknum, txindex, oindex }
   },
 
-  getTypedData: function (tx) {
-    return getTypedData(tx)
+  getTypedData: function (tx, verifyingContract) {
+    return getTypedData(tx, verifyingContract)
   },
 
   getToSignHash: function (typedData) {
@@ -269,17 +267,7 @@ function addInput (array, input) {
   array.push([input.blknum, input.txindex, input.oindex])
 }
 
-function addOutputWithToken (array, output) {
-  array.push([
-    sanitiseAddress(output.owner), // must start with '0x' to be encoded properly
-    sanitiseAddress(output.token), // must start with '0x' to be encoded properly
-    // If amount is 0 it should be encoded as '0x80' (empty byte array)
-    // If it's non zero, it should be a BN to avoid precision loss
-    output.amount === 0 ? 0 : numberToBN(output.amount)
-  ])
-}
-
-function addOutputWithCurrency (array, output) {
+function addOutput (array, output) {
   array.push([
     sanitiseAddress(output.owner), // must start with '0x' to be encoded properly
     sanitiseAddress(output.currency), // must start with '0x' to be encoded properly

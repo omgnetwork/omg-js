@@ -94,7 +94,8 @@ describe('In-flight Exit Challenge tests', async () => {
         bobAccount.address,
         TRANSFER_AMOUNT,
         transaction.ETH_CURRENCY,
-        aliceAccount.privateKey
+        aliceAccount.privateKey,
+        rootChain.plasmaContractAddress
       )
 
       // Bob doesn't see the transaction get put into a block. He assumes that the operator
@@ -144,7 +145,8 @@ describe('In-flight Exit Challenge tests', async () => {
         TRANSFER_AMOUNT,
         transaction.ETH_CURRENCY,
         aliceAccount.privateKey,
-        TRANSFER_AMOUNT
+        TRANSFER_AMOUNT,
+        rootChain.plasmaContractAddress
       )
 
       // Carol sees that Bob is trying to exit the same input that Alice sent to her.
@@ -281,7 +283,8 @@ describe('In-flight Exit Challenge tests', async () => {
         bobAccount.address,
         TRANSFER_AMOUNT,
         transaction.ETH_CURRENCY,
-        aliceAccount.privateKey
+        aliceAccount.privateKey,
+        rootChain.plasmaContractAddress
       )
 
       // Bob doesn't see the transaction get put into a block. He assumes that the operator
@@ -331,7 +334,8 @@ describe('In-flight Exit Challenge tests', async () => {
         carolAccount.address,
         TRANSFER_AMOUNT,
         transaction.ETH_CURRENCY,
-        aliceAccount.privateKey
+        aliceAccount.privateKey,
+        rootChain.plasmaContractAddress
       )
 
       // Carol sees that Bob is trying to exit the same input that Alice sent to her.

@@ -175,7 +175,15 @@ const faucet = {
   },
 
   fundChildchain: async function (address, amount, currency) {
-    const ret = await ccHelper.send(this.childChain, this.address, address, amount, currency, this.privateKey)
+    const ret = await ccHelper.send(
+      this.childChain,
+      this.address,
+      address,
+      amount,
+      currency,
+      this.privateKey,
+      this.rootChain.plasmaContractAddress
+    )
     console.log(`Faucet sent ${amount} ${currency} on childchain to ${address}`)
     return ret
   },
@@ -227,7 +235,9 @@ const faucet = {
         this.address,
         balance.amount,
         balance.currency,
-        account.privateKey)
+        account.privateKey,
+        this.rootChain.plasmaContractAddress
+      )
       console.log(`${account.address} returned ${balance.amount} ${balance.currency} to faucet on childchain`)
       return ret
     }))
