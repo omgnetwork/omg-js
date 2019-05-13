@@ -7,7 +7,7 @@
     "postinstall": "./node_modules/.bin/lerna bootstrap --hoist",
     "test": "./node_modules/.bin/standard && ./node_modules/.bin/mocha packages/omg-js-childchain/test packages/omg-js-rootchain/test packages/omg-js-util/test",
     "build": "browserify browserify.js -o dist/omg.js",
-    "build-doc": "documentation build packages/omg-js/src/** packages/omg-js-childchain/src/** packages/omg-js-rootchain/src/** --config documentation.yml -f html -o docs",
+    "build-doc": "documentation build packages/omg-js/src/** packages/omg-js-childchain/src/** packages/omg-js-rootchain/src/** packages/omg-js-util/src/** --config documentation.yml -f html -o docs",
     "integration-test": "./node_modules/.bin/mocha --timeout=0 packages/integration-tests/test",
     "ci-test": "./node_modules/.bin/mocha --timeout=0 --grep ci-enabled packages/integration-tests/test",
     "ci-test-fast": "./node_modules/.bin/mocha --timeout=0 --grep ci-enabled-fast packages/integration-tests/test"

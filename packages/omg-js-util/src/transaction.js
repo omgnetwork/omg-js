@@ -220,12 +220,28 @@ const transaction = {
     return txBody
   },
 
+  /**
+  * Encodes a utxo into the format used in the RootChain contract
+  * i.e. blocknum * 1000000000 + txindex * 10000 + oindex
+  *
+  *@param {string} utxo the utxo object
+  *@returns the encoded utxo position
+  *
+  */
   encodeUtxoPos: function (utxo) {
     const blk = numberToBN(utxo.blknum).mul(BLOCK_OFFSET)
     const tx = numberToBN(utxo.txindex).muln(TX_OFFSET)
     return blk.add(tx).addn(utxo.oindex)
   },
 
+  /**
+  * Decodes a utxo from the format used in the RootChain contract
+  * i.e. blocknum * 1000000000 + txindex * 10000 + oindex
+  *
+  *@param {string} utxoPos the utxo position
+  *@returns the utxo object
+  *
+  */
   decodeUtxoPos: function (utxoPos) {
     const bn = numberToBN(utxoPos)
     const blknum = bn.div(BLOCK_OFFSET).toNumber()
@@ -234,10 +250,25 @@ const transaction = {
     return { blknum, txindex, oindex }
   },
 
+  /**
+  * Returns the typed data for signing a transaction
+  *
+  *@param {Object} tx the transaction body
+  *@param {string} verifyingContract the address of the RootChain contract
+  *@returns the typed data of the transaction
+  *
+  */
   getTypedData: function (tx, verifyingContract) {
     return getTypedData(tx, verifyingContract)
   },
 
+  /**
+  * Returns the hash of the typed data, to be signed by e.g. `ecsign`
+  *
+  *@param {Object} typedData the transaction's typed data
+  *@returns the signing hash
+  *
+  */
   getToSignHash: function (typedData) {
     return getToSignHash(typedData)
   }
