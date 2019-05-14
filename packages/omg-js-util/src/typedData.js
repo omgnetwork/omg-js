@@ -38,7 +38,7 @@ const outputSpec = [
 const domainData = {
   name: 'OMG Network',
   version: '1',
-  verifyingContract: '0x44de0ec539b8c4a4b530c78620fe8320167f2f74',
+  verifyingContract: '',
   salt: '0xfad5c7f626d80f9256ef01929f3beb96e058b8b4b0e3fe52d84f054c0e2a7a83'
 }
 
