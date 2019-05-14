@@ -15,14 +15,12 @@ limitations under the License. */
 
 global.Buffer = global.Buffer || require('buffer').Buffer
 
-const keccak256 = require('js-sha3').keccak256
 const ethUtil = require('ethereumjs-util')
 const sigUtil = require('eth-sig-util')
 
 function ecSign (tosign, privateKey) {
-  const hashed = keccak256(tosign)
   const signed = ethUtil.ecsign(
-    Buffer.from(hashed, 'hex'),
+    tosign,
     Buffer.from(privateKey.replace('0x', ''), 'hex')
   )
   return sigUtil.concatSig(signed.v, signed.r, signed.s)

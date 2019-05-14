@@ -76,7 +76,7 @@ const faucet = {
       return
     }
 
-    // Check that the faucet has enough funds to run the tests
+    // Check that the faucet has enough childchain funds to run the tests
     const ccBalance = await this.childChain.getBalance(this.address)
     const ccEthBalance = ccBalance.find(e => e.currency === transaction.ETH_CURRENCY)
     if (!ccEthBalance || numberToBN(ccEthBalance.amount).lt(numberToBN(minAmount))) {
@@ -104,6 +104,13 @@ const faucet = {
         console.warn(`Error topping up faucet ${this.address}`)
         throw err
       }
+    }
+
+    // Check if there are still enough root chain funds in the faucet
+    const rcEthBalance = await web3.eth.getBalance(this.address)
+    if (numberToBN(rcEthBalance).lt(numberToBN(minAmount))) {
+      // For local testing, try to automatically top up the faucet
+      await this.topUpEth(web3, minAmount)
     }
   },
 
@@ -168,7 +175,15 @@ const faucet = {
   },
 
   fundChildchain: async function (address, amount, currency) {
-    const ret = await ccHelper.send(this.childChain, this.address, address, amount, currency, this.privateKey)
+    const ret = await ccHelper.send(
+      this.childChain,
+      this.address,
+      address,
+      amount,
+      currency,
+      this.privateKey,
+      this.rootChain.plasmaContractAddress
+    )
     console.log(`Faucet sent ${amount} ${currency} on childchain to ${address}`)
     return ret
   },
@@ -220,7 +235,9 @@ const faucet = {
         this.address,
         balance.amount,
         balance.currency,
-        account.privateKey)
+        account.privateKey,
+        this.rootChain.plasmaContractAddress
+      )
       console.log(`${account.address} returned ${balance.amount} ${balance.currency} to faucet on childchain`)
       return ret
     }))

@@ -100,7 +100,7 @@ describe('decodeTransaction', () => {
     })
   })
 
-  it('should decode an encoded signed transaction with only inputs', async () => {
+  it.skip('should decode an encoded signed transaction with only inputs', async () => {
     const txBody = {
       'inputs': [
         {
@@ -136,7 +136,7 @@ describe('decodeTransaction', () => {
     })
   })
 
-  it('should decode an encoded signed transaction with inputs and outputs', async () => {
+  it.skip('should decode an encoded signed transaction with inputs and outputs', async () => {
     const txBody = {
       'inputs': [
         {

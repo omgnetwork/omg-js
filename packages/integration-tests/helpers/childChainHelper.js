@@ -95,13 +95,13 @@ function waitForEvent (childChain, type, callback) {
   })
 }
 
-async function sendAndWait (childChain, from, to, amount, currency, privateKey, expectedBalance) {
-  const ret = await send(childChain, from, to, amount, currency, privateKey)
+async function sendAndWait (childChain, from, to, amount, currency, privateKey, expectedBalance, verifyingContract) {
+  const ret = await send(childChain, from, to, amount, currency, privateKey, verifyingContract)
   await waitForBalanceEq(childChain, to, expectedBalance, currency)
   return ret
 }
 
-async function createTx (childChain, from, to, amount, currency, fromPrivateKey) {
+async function createTx (childChain, from, to, amount, currency, fromPrivateKey, verifyingContract) {
   if (amount <= 0) {
     return
   }
@@ -137,23 +137,24 @@ async function createTx (childChain, from, to, amount, currency, fromPrivateKey)
   if (this.transferZeroFee && utxosToSpend.length > 1) {
     // The fee input can be returned
     txBody.outputs.push({
-      owner: this.address,
+      owner: from,
       currency: utxosToSpend[utxosToSpend.length - 1].currency,
       amount: utxosToSpend[utxosToSpend.length - 1].amount
     })
   }
 
   // Create the unsigned transaction
-  const unsignedTx = await childChain.createTransaction(txBody)
+  const typedData = transaction.getTypedData(txBody, verifyingContract)
+
   // Sign it
   const privateKeys = new Array(utxosToSpend.length).fill(fromPrivateKey)
-  const signatures = await childChain.signTransaction(unsignedTx, privateKeys)
+  const signatures = childChain.signTransaction(typedData, privateKeys)
   // Build the signed transaction
-  return childChain.buildSignedTransaction(unsignedTx, signatures)
+  return childChain.buildSignedTransaction(typedData, signatures)
 }
 
-async function send (childChain, from, to, amount, currency, fromPrivateKey) {
-  const signedTx = await createTx(childChain, from, to, amount, currency, fromPrivateKey)
+async function send (childChain, from, to, amount, currency, fromPrivateKey, verifyingContract) {
+  const signedTx = await createTx(childChain, from, to, amount, currency, fromPrivateKey, verifyingContract)
   // Submit the signed transaction to the childchain
   const result = await childChain.submitTransaction(signedTx)
   return { result, txbytes: signedTx }

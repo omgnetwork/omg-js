@@ -1,17 +1,43 @@
-const ChildChain = require('../src/childchain')
+const { sign, transaction } = require('@omisego/omg-js-util')
 const assert = require('chai').assert
 
-const childChain = new ChildChain('watcher_url', 'childChain_url')
-
 describe('signTransaction', () => {
-  it('should sign the entire transaction object correctly', () => {
-    const privateKey = '0x2cc1636720fda6cc925b2594440cbb6fa75b6df818db8a795b0119bf37984233'
-    const unsignedTx = 'f85283c2f629808080808094000000000000000000000000000000000000000094736fa62adc040e4fdabfadf87e74ce0197304fad880de0b6b3a764000094000000000000000000000000000000000000000080'
-    const signatures = childChain.signTransaction(unsignedTx, [privateKey])
-    assert.equal(signatures.length, 1)
-    assert.equal(signatures[0], '0x4f7bd9407c6b66a76e2217cd2c2c89e1923e8c1cf369d194c8b6f052b5f9ddbc1c642fc8310f29eaae111f07fc825dab835f99a726365ac2f1a6d79ddb5277181b')
-    const signedTx = childChain.buildSignedTransaction(unsignedTx, signatures)
-    const expectedTx = 'f897f843b8414f7bd9407c6b66a76e2217cd2c2c89e1923e8c1cf369d194c8b6f052b5f9ddbc1c642fc8310f29eaae111f07fc825dab835f99a726365ac2f1a6d79ddb5277181b83c2f629808080808094000000000000000000000000000000000000000094736fa62adc040e4fdabfadf87e74ce0197304fad880de0b6b3a764000094000000000000000000000000000000000000000080'
-    assert.equal(signedTx, expectedTx)
+  describe('signTransaction', () => {
+    it('should sign the entire transaction object correctly', () => {
+      const txBody = {
+        'inputs': [
+          {
+            'amount': 5555431,
+            'blknum': 2000,
+            'currency': '0x0000000000000000000000000000000000000000',
+            'oindex': 1,
+            'owner': '0xf86b5b1c2c8de1ea4dc737c849272340fa3561c5',
+            'txindex': 0,
+            'utxo_pos': 2000000000001
+          }
+        ],
+        'outputs': [
+          {
+            'owner': '0xf86b5b1c2c8de1ea4dc737c849272340fa3561c5',
+            'currency': '0x0000000000000000000000000000000000000000',
+            'amount': 123
+          },
+          {
+            'owner': '0xf86b5b1c2c8de1ea4dc737c849272340fa3561c5',
+            'currency': '0x0000000000000000000000000000000000000000',
+            'amount': 5555308
+          }
+        ]
+      }
+
+      const privateKey = 'a07cb7889ab3a164dcc72cb6103f2573c7ef2d4a855810594d2bf25df60bc39e'
+      const expectedSig = '0xed0ff5633cb85aa0f64684759185f8a9f94fd1b654be5942d562bf64f504e3a96a83b90a5e50e50b8a75d4f711d1c0e56066519237dbd94e564084a561b8ba2f1b'
+      const verifyingContract = '0xecda6da8fddd416837bdcf38d6e17a4a898534eb'
+
+      const typedData = transaction.getTypedData(txBody, verifyingContract)
+      const toSign = transaction.getToSignHash(typedData)
+      const signatures = sign(toSign, [privateKey])
+      assert.equal(signatures[0], expectedSig)
+    })
   })
 })

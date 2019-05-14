@@ -393,7 +393,7 @@ class RootChain {
 
   /**
    * Removes an output from list of exitable outputs in an in-flight transaction.
-   * @method challengeInFlightExitInputSpent
+   * @method challengeInFlightExitOutputSpent
    * @param {string} inFlightTx RLP encoded in-flight transaction being exited.
    * @param {number} inFlightTxOutputPos Output that's been spent.
    * @param {string} inFlightTxInclusionProof Proof that the in-flight transaction was included.

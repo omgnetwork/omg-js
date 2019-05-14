@@ -18,13 +18,15 @@ global.Buffer = global.Buffer || require('buffer').Buffer
 const InvalidArgumentError = require('./InvalidArgumentError')
 const numberToBN = require('number-to-bn')
 const rlp = require('rlp')
+const getTypedData = require('./typedData')
+const getToSignHash = require('./signHash')
 
 const MAX_INPUTS = 4
 const MAX_OUTPUTS = 4
 
 const NULL_ADDRESS = '0x0000000000000000000000000000000000000000'
 const NULL_INPUT = { blknum: 0, txindex: 0, oindex: 0 }
-const NULL_OUTPUT = { owner: NULL_ADDRESS, amount: 0, currency: NULL_ADDRESS }
+const NULL_OUTPUT = { owner: NULL_ADDRESS, currency: NULL_ADDRESS, amount: 0 }
 
 const BLOCK_OFFSET = numberToBN(1000000000)
 const TX_OFFSET = 10000
@@ -77,6 +79,33 @@ const transaction = {
 
     txArray.push(outputArray)
     return `0x${rlp.encode(txArray).toString('hex').toUpperCase()}`
+  },
+
+  /**
+  * Converts a transaction into an array suitable for RLP encoding
+  *
+  *@param {Object} typedDataMessage the transaction object
+  *@returns the transaction as an array
+  *
+  */
+  toArray: function (typedDataMessage) {
+    const txArray = []
+
+    const inputArray = []
+    addInput(inputArray, typedDataMessage.input0)
+    addInput(inputArray, typedDataMessage.input1)
+    addInput(inputArray, typedDataMessage.input2)
+    addInput(inputArray, typedDataMessage.input3)
+    txArray.push(inputArray)
+
+    const outputArray = []
+    addOutput(outputArray, typedDataMessage.output0)
+    addOutput(outputArray, typedDataMessage.output1)
+    addOutput(outputArray, typedDataMessage.output2)
+    addOutput(outputArray, typedDataMessage.output3)
+    txArray.push(outputArray)
+
+    return txArray
   },
 
   /**
@@ -191,18 +220,57 @@ const transaction = {
     return txBody
   },
 
+  /**
+  * Encodes a utxo into the format used in the RootChain contract
+  * i.e. blocknum * 1000000000 + txindex * 10000 + oindex
+  *
+  *@param {string} utxo the utxo object
+  *@returns the encoded utxo position
+  *
+  */
   encodeUtxoPos: function (utxo) {
     const blk = numberToBN(utxo.blknum).mul(BLOCK_OFFSET)
     const tx = numberToBN(utxo.txindex).muln(TX_OFFSET)
     return blk.add(tx).addn(utxo.oindex)
   },
 
+  /**
+  * Decodes a utxo from the format used in the RootChain contract
+  * i.e. blocknum * 1000000000 + txindex * 10000 + oindex
+  *
+  *@param {string} utxoPos the utxo position
+  *@returns the utxo object
+  *
+  */
   decodeUtxoPos: function (utxoPos) {
     const bn = numberToBN(utxoPos)
     const blknum = bn.div(BLOCK_OFFSET).toNumber()
     const txindex = bn.mod(BLOCK_OFFSET).divn(TX_OFFSET).toNumber()
     const oindex = bn.modn(TX_OFFSET)
     return { blknum, txindex, oindex }
+  },
+
+  /**
+  * Returns the typed data for signing a transaction
+  *
+  *@param {Object} tx the transaction body
+  *@param {string} verifyingContract the address of the RootChain contract
+  *@returns the typed data of the transaction
+  *
+  */
+  getTypedData: function (tx, verifyingContract) {
+    return getTypedData(tx, verifyingContract)
+  },
+
+  /**
+  * Returns the hash of the typed data, to be signed by e.g. `ecsign`
+  *
+  *@param {Object} typedData the transaction's typed data
+  *@returns the signing hash
+  *
+  */
+  getToSignHash: function (typedData) {
+    return getToSignHash(typedData)
   }
 }
 

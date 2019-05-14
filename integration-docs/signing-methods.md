@@ -1,33 +1,80 @@
-### Implementing Different Signing Methods
+## Signing a transaction
 
-Ideally, a client library should support multiple signing methods. Currently, as a barebone basic demonstration `omg-js` supports transaction signing via raw privatekey and single UTXO as input through `sendSingleTransaction` function. Although, it works for demonstration purpose, a practical usage would require support from signing for users with multiple types of wallets
+The OMG Network childchain uses `eth_signTypedData` as described in [EIP-712](https://github.com/ethereum/EIPs/blob/master/EIPS/eip-712.md)
 
-### Implementing your own sendTransaction function
+This means that a web3 provider (e.g. Metamask) can do the signing.
 
-processing transaction to the childchain consists of 4 major components:
-
-1. create
-2. sign
-3. build 
-4. submit 
-
-Although the library provides an option for you to build your own method, all depending on your key management implementation. To create a sendTransaction function that utilizes a hardware wallet, ie. a hardware wallet like Trezor, only changes required is implementing your own `sign` function. The client library should be able to handle the rest for you.
+### Creating and signing with `eth_signTypedData`
+The steps involved in creating and signing a transaction are as follows:
+1. Create the transaction body by specifying inputs, outputs and optional metadata.
+2. Convert the transaction body into `typedData`format.
+3. Call `eth_signTypedData` to sign it. Note that you must `JSON.stringify()` the typed data.
+4. Assemble the signatures and the transaction body into an RLP encoded format.
+5. Submit the transaction to the child chain.
 
 ```
-//example of sending a transaction with Trezor
+    // create the transaction body
+    const txBody = transaction.createTransactionBody(fromAddress, fromUtxos, toAddress, toAmount, currency)
 
-async sendTransactionWithTrezor(txBody, privateKey) {
-  let unsignedTx = childChain.createTransaction(txBody)
+    // Get the transaction typed data
+    const typedData = transaction.getTypedData(txBody)
 
-  //custom function for signing with Trezor
-  let signature = await signTransactionWithTrezor(unsignedTx, [privateKey])
+    // Sign the typed data
+    const signatures = await new Promise((resolve, reject) => {
+      web3.currentProvider.sendAsync(
+        {
+          method: 'eth_signTypedData_v3',
+          params: [signer, JSON.stringify(typedData)],
+          from: signer
+        },
+        (err, result) => {
+          if (err) {
+            reject(err)
+          } else if (result.error) {
+            reject(result.error.message)
+          } else {
+            resolve(result.result)
+          }
+        }
+      )
+    })
 
-  let signedTx = await childChain.buildSignedTransaction(unsignedTx, signature)
-  let submission = await childChain.submitTransaction(signedTx)
+    // Build the signed transaction
+    const signedTx = childchain.buildSignedTransaction(typedData, signatures)
 
-}
+    // Submit transaction
+    const tx = await childchain.submitTransaction(signedTx)
+```
 
+### Creating and signing without `eth_signTypedData`
+If you want to manage your private keys yourself, you don't have to use `eth_signTypedData`. You must create a hash of the typed data and sign that using `ecsign`. There is a convience function provided to do this: `childchain.signTransaction(typedData, privateKeys)` . Or you can do it manually, similar to the above:
 
+1. Create the transaction body by specifying inputs, outputs and optional metadata.
+2. Convert the transaction body into `typedData`format.
+3. Call `transaction.getToSignHash(typedData)` to get the hash to sign
+4. Sign it using elliptic curve signing (e.g. `ecsign`)
+5. Assemble the signatures and the transaction body into an RLP encoded format.
+6. Submit the transaction to the child chain.
+
+```
+    // create the transaction body
+    const txBody = transaction.createTransactionBody(fromAddress, fromUtxos, toAddress, toAmount, currency)
+
+    // Get the transaction typed data
+    const typedData = transaction.getTypedData(txBody)
+
+    // Get the hash to sign
+    const toSign = transaction.getToSignHash(typedData)
+
+    // Sign the hashed data (once for each input spent)
+    const privateKeys = [...the private keys of the spent inputs...]
+    const signatures = privateKeys.map(key => ecsign(toSign, key))
+
+    // Build the signed transaction
+    const signedTx = childchain.buildSignedTransaction(typedData, signatures)
+
+    // Submit transaction
+    const tx = await childchain.submitTransaction(signedTx)
 ```
 
 

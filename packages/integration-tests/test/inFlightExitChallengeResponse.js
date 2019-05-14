@@ -90,7 +90,8 @@ describe('In-flight Exit Challenge Response tests', async () => {
         bobAccount.address,
         TRANSFER_AMOUNT,
         transaction.ETH_CURRENCY,
-        aliceAccount.privateKey
+        aliceAccount.privateKey,
+        rootChain.plasmaContractAddress
       )
 
       // Bob doesn't see the transaction get put into a block. He assumes that the operator
@@ -141,7 +142,7 @@ describe('In-flight Exit Challenge Response tests', async () => {
         TRANSFER_AMOUNT,
         transaction.ETH_CURRENCY,
         aliceAccount.privateKey,
-        web3
+        rootChain.plasmaContractAddress
       )
 
       // Bob's transaction eventually does get put into a block

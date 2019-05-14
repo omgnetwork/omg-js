@@ -118,28 +118,29 @@ class ChildChain {
    * Sign a transaction
    *
    * @method signTransaction
-   * @param {string} unsignedTx
-   * @param {Array} privateKeys
+   * @param {string} typedData The typedData of the transaction, as returned by transaction.getTypedData()
+   * @param {Array} privateKeys An array of private keys to sign the inputs of the transaction
    * @return {Array} array of signatures
    */
-  signTransaction (unsignedTx, privateKeys) {
+  signTransaction (typedData, privateKeys) {
     privateKeys.forEach(key => validatePrivateKey)
-    return sign(Buffer.from(unsignedTx.replace('0x', ''), 'hex'), privateKeys)
+    const toSign = transaction.getToSignHash(typedData)
+    return sign(toSign, privateKeys)
   }
 
   /**
    * Build a signed transaction into the format expected by submitTransaction
    *
    * @method buildSignedTransaction
-   * @param {string} unsignedTx
-   * @param {Array} signatures
+   * @param {string} txData The typedData of the transaction, as returned by transaction.getTypedData
+   * @param {Array} signatures An array of signatures, one for each input spent by the transaction
    * @return {string} signed transaction
    */
-  buildSignedTransaction (unsignedTx, signatures) {
-    // rlp-decode the tx bytes
-    const decodedTx = rlp.decode(Buffer.from(unsignedTx.replace('0x', ''), 'hex'))
-    // Append the signatures
-    const signedTx = [signatures, ...decodedTx]
+  buildSignedTransaction (txData, signatures) {
+    // Convert the data to an array
+    const txArray = transaction.toArray(txData.message)
+    // Prepend the signatures
+    const signedTx = [signatures, ...txArray]
     // rlp-encode the transaction + signatures
     return rlp.encode(signedTx).toString('hex')
   }
@@ -148,7 +149,7 @@ class ChildChain {
    * Submit a signed transaction to the watcher
    *
    * @method submitTransaction
-   * @param {string} transaction
+   * @param {string} transaction the encoded signed transaction, as returned by buildSignedTransaction
    * @return {Object} the submitted transaction
    */
   async submitTransaction (transaction) {
@@ -167,21 +168,23 @@ class ChildChain {
    * @param {Array} fromPrivateKeys - private keys of the utxos to spend
    * @param {string} toAddress - the address of the recipient
    * @param {number} toAmount - amount to transact
+   * @param {string} currency - address of the erc20 contract (or transaction.ETH_CURRENCY for ETH)
+   * @param {string} verifyingContract - address of the RootChain contract
    * @return {Object} the submitted transaction
    */
-  async sendTransaction (fromAddress, fromUtxos, fromPrivateKeys, toAddress, toAmount, currency) {
+  async sendTransaction (fromAddress, fromUtxos, fromPrivateKeys, toAddress, toAmount, currency, verifyingContract) {
     validateAddress(fromAddress)
     validateAddress(toAddress)
     validatePrivateKey(fromPrivateKeys)
 
     // create the transaction body
     const txBody = transaction.createTransactionBody(fromAddress, fromUtxos, toAddress, toAmount, currency)
-    // create transaction
-    const unsignedTx = this.createTransaction(txBody)
-    // sign transaction
-    const signatures = this.signTransaction(unsignedTx, fromPrivateKeys)
-    // build transaction
-    const signedTx = this.buildSignedTransaction(unsignedTx, signatures)
+    // Get the transaction data
+    const typedData = transaction.getTypedData(txBody, verifyingContract)
+    // Sign it
+    const signatures = this.signTransaction(typedData, fromPrivateKeys)
+    // Build the signed transaction
+    const signedTx = this.buildSignedTransaction(typedData, signatures)
     // submit transaction
     return this.submitTransaction(signedTx)
   }

@@ -1,9 +1,10 @@
 toc:
-  - Omg
   - name: ChildChain
     children:
       - getUtxos
       - getBalance
+      - getTransaction
+      - getTransactions
       - getExitData
       - getChallengeData
       - createTransaction
@@ -12,6 +13,9 @@ toc:
       - submitTransaction
       - sendTransaction
       - status
+      - inFlightExitGetData
+      - inFlightExitGetCompetitor
+      - inFlightExitProveCanonical
 
   - name: RootChain
     children:
@@ -20,3 +24,14 @@ toc:
       - startStandardExit
       - challengeStandardExit
       - processExits
+      - addToken
+      - startInFlightExit
+      - piggybackInFlightExit
+      - challengeInFlightExitNotCanonical
+      - respondToNonCanonicalChallenge
+      - challengeInFlightExitInputSpent
+      - challengeInFlightExitOutputSpent
+
+  - name: OMG Util
+    children:
+      - transaction
