@@ -16,19 +16,22 @@ limitations under the License. */
 // bare minimum example for sending a transaction
 
 const ChildChain = require('../packages/omg-js-childchain')
+const { transaction } = require('../packages/omg-js-util')
+const { sign } = require('../packages/omg-js-util')
 
-const aliceAddress = '0xcb47205fda71789527f3dfbd0fa68d0e58e065d3'
+const aliceAddress = ''
 const alicePrivateKey = ''
-const bobAddress = '0xbe465c63320ec0646e0fdf3c52a1a9fba4ed3a06'
+const bobAddress = ''
+const rootchainAddr = ''
 
 const childChain = new ChildChain(
-  `http://localhost:8545`,
-  `http://localhost:9656`
+  `http://localhost:7434`,
+  `http://localhost:8656`
 )
 
 async function sendTx () {
   try {
-    const amount = 2
+    const amount = 100
     const utxos = await childChain.getUtxos(aliceAddress)
 
     const tx = await childChain.sendTransaction(
@@ -36,7 +39,9 @@ async function sendTx () {
       [utxos[0]],
       [alicePrivateKey],
       bobAddress,
-      amount
+      amount,
+      transaction.ETH_CURRENCY,
+      rootchainAddr
     )
     console.log(tx)
   } catch (err) {
