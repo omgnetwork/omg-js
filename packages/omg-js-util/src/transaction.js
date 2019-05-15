@@ -165,7 +165,7 @@ const transaction = {
   * of the transaction, sending any remainder back as change.
   *
   *@param {string} fromAddress the address of the sender
-  *@param {string} fromUtxos the utxos to use as transaction inputs
+  *@param {array} fromUtxos the utxos to use as transaction inputs
   *@param {string} toAddress the address of the receiver
   *@param {string} toAmount the amount to send
   *@param {string} currency the currency to send
