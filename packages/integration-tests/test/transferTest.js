@@ -455,6 +455,7 @@ describe('Transfer tests', async () => {
         bobAccount.address,
         TRANSFER_AMOUNT,
         transaction.ETH_CURRENCY,
+        null,
         rootChain.plasmaContractAddress
       )
       console.log(`Submitted transaction: ${JSON.stringify(result)}`)
