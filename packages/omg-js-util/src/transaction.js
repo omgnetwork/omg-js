@@ -131,15 +131,17 @@ const transaction = {
   *
   */
   decode: function (tx) {
-    let inputs, outputs, sigs
+    let inputs, outputs, sigs, metadata
     const decoded = rlp.decode(Buffer.from(tx.replace('0x', ''), 'hex'))
-    if (decoded.length === 2) {
+    if (decoded.length === 3) {
       inputs = decoded[0]
       outputs = decoded[1]
-    } else if (decoded.length === 3) {
+      metadata = decoded[2]
+    } else if (decoded.length === 4) {
       sigs = decoded[0]
       inputs = decoded[1]
       outputs = decoded[2]
+      metadata = decoded[3]
     }
 
     return {
@@ -155,7 +157,8 @@ const transaction = {
         const currency = parseString(output[1])
         const amount = parseNumber(output[2])
         return { owner, currency, amount }
-      })
+      }),
+      metadata
     }
   },
 
