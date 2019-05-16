@@ -17,7 +17,7 @@ The steps involved in creating and signing a transaction are as follows:
     const txBody = transaction.createTransactionBody(fromAddress, fromUtxos, toAddress, toAmount, currency)
 
     // Get the transaction typed data
-    const typedData = transaction.getTypedData(txBody)
+    const typedData = transaction.getTypedData(txBody, verificationContract)
 
     // Sign the typed data
     const signatures = await new Promise((resolve, reject) => {
@@ -61,7 +61,7 @@ If you want to manage your private keys yourself, you don't have to use `eth_sig
     const txBody = transaction.createTransactionBody(fromAddress, fromUtxos, toAddress, toAmount, currency)
 
     // Get the transaction typed data
-    const typedData = transaction.getTypedData(txBody)
+    const typedData = transaction.getTypedData(txBody, verificationContract)
 
     // Get the hash to sign
     const toSign = transaction.getToSignHash(typedData)
