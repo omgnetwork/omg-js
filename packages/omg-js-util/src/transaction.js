@@ -18,15 +18,11 @@ global.Buffer = global.Buffer || require('buffer').Buffer
 const InvalidArgumentError = require('./InvalidArgumentError')
 const numberToBN = require('number-to-bn')
 const rlp = require('rlp')
-const getTypedData = require('./typedData')
+const typedData = require('./typedData')
 const getToSignHash = require('./signHash')
 
 const MAX_INPUTS = 4
 const MAX_OUTPUTS = 4
-
-const NULL_ADDRESS = '0x0000000000000000000000000000000000000000'
-const NULL_INPUT = { blknum: 0, txindex: 0, oindex: 0 }
-const NULL_OUTPUT = { owner: NULL_ADDRESS, currency: NULL_ADDRESS, amount: 0 }
 
 const BLOCK_OFFSET = numberToBN(1000000000)
 const TX_OFFSET = 10000
@@ -35,7 +31,8 @@ const TX_OFFSET = 10000
 * A collection of helper functions for creating, encoding and decoding transactions.
 */
 const transaction = {
-  ETH_CURRENCY: NULL_ADDRESS,
+  ETH_CURRENCY: typedData.NULL_ADDRESS,
+  NULL_METADATA: typedData.NULL_METADATA,
 
   /**
   * Checks validity of a transaction
@@ -47,6 +44,7 @@ const transaction = {
   validate: function (tx) {
     validateInputs(tx.inputs)
     validateOutputs(tx.outputs)
+    validateMetadata(tx.metadata)
   },
 
   /**
@@ -64,7 +62,7 @@ const transaction = {
       addInput(inputArray,
         i < transactionBody.inputs.length
           ? transactionBody.inputs[i]
-          : NULL_INPUT)
+          : typedData.NULL_INPUT)
     }
 
     txArray.push(inputArray)
@@ -74,7 +72,7 @@ const transaction = {
       addOutput(outputArray,
         i < transactionBody.outputs.length
           ? transactionBody.outputs[i]
-          : NULL_OUTPUT)
+          : typedData.NULL_OUTPUT)
     }
 
     txArray.push(outputArray)
@@ -104,6 +102,7 @@ const transaction = {
     addOutput(outputArray, typedDataMessage.output2)
     addOutput(outputArray, typedDataMessage.output3)
     txArray.push(outputArray)
+    txArray.push(typedDataMessage.metadata)
 
     return txArray
   },
@@ -169,13 +168,23 @@ const transaction = {
   *@param {string} toAddress the address of the receiver
   *@param {string} toAmount the amount to send
   *@param {string} currency the currency to send
+  *@param {string} metadata the currency to send
   *@returns the transaction object
   *@throws InvalidArgumentError if any of the args are invalid
   *@throws Error if the given utxos cannot cover the amount
   *
   */
-  createTransactionBody: function (fromAddress, fromUtxos, toAddress, toAmount, currency) {
+  createTransactionBody: function (
+    fromAddress,
+    fromUtxos,
+    toAddress,
+    toAmount,
+    currency,
+    metadata
+  ) {
     validateInputs(fromUtxos)
+    validateMetadata(metadata)
+
     let inputArr = fromUtxos.filter(utxo => utxo.currency === currency)
 
     // We can use a maximum of 4 inputs, so just take the largest 4 inputs and try to cover the amount with them
@@ -214,7 +223,8 @@ const transaction = {
 
     const txBody = {
       inputs: inputArr,
-      outputs: outputArr
+      outputs: outputArr,
+      metadata
     }
 
     return txBody
@@ -259,7 +269,7 @@ const transaction = {
   *
   */
   getTypedData: function (tx, verifyingContract) {
-    return getTypedData(tx, verifyingContract)
+    return typedData.getTypedData(tx, verifyingContract)
   },
 
   /**
@@ -271,6 +281,32 @@ const transaction = {
   */
   getToSignHash: function (typedData) {
     return getToSignHash(typedData)
+  },
+
+  /**
+  * Transaction metadata is of type `bytes32`. To pass a string shorter than 32 bytes it must be hex encoded and padded.
+  * This method is one way of doing that.
+  *
+  *@param {string} str the string to be encoded and passed as metadata
+  *@returns the encoded metadata
+  *
+  */
+  encodeMetadata: function (str) {
+    const encodedMetadata = Buffer.from(str).toString('hex').padStart(64, '0')
+    return `0x${encodedMetadata}`
+  },
+
+  /**
+  * Transaction metadata is of type `bytes32`. To pass a string shorter than 32 bytes it must be hex encoded and padded.
+  * This method decodes a string that was encoded with encodeMetadata().
+  *
+  *@param {string} str the metadata string to be decoded
+  *@returns the decoded metadata
+  *
+  */
+  decodeMetadata: function (str) {
+    const unpad = str.replace('0x', '').replace(/^0*/, '')
+    return Buffer.from(unpad, 'hex').toString()
   }
 }
 
@@ -291,6 +327,21 @@ function validateOutputs (arg) {
 
   if (arg.length > MAX_OUTPUTS) {
     throw new InvalidArgumentError(`Outputs must be an array of size < ${MAX_OUTPUTS}`)
+  }
+}
+
+function validateMetadata (arg) {
+  if (arg) {
+    let invalid = false
+    try {
+      const hex = Buffer.from(arg.replace('0x', ''), 'hex')
+      invalid = hex.length !== 32
+    } catch (err) {
+      invalid = true
+    }
+    if (invalid) {
+      throw new InvalidArgumentError('Metadata must be a 32-byte hex string')
+    }
   }
 }
 
@@ -320,7 +371,7 @@ function parseNumber (buf) {
 }
 
 function parseString (buf) {
-  return buf.length === 0 ? NULL_ADDRESS : `0x${buf.toString('hex')}`
+  return buf.length === 0 ? typedData.NULL_ADDRESS : `0x${buf.toString('hex')}`
 }
 
 module.exports = transaction
