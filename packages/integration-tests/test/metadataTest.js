@@ -21,7 +21,6 @@ const Web3 = require('web3')
 const ChildChain = require('@omisego/omg-js-childchain')
 const RootChain = require('@omisego/omg-js-rootchain')
 const { transaction } = require('@omisego/omg-js-util')
-const numberToBN = require('number-to-bn')
 const chai = require('chai')
 const assert = chai.assert
 
