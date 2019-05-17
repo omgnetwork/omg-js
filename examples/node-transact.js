@@ -17,7 +17,6 @@ limitations under the License. */
 
 const ChildChain = require('../packages/omg-js-childchain')
 const { transaction } = require('../packages/omg-js-util')
-const { sign } = require('../packages/omg-js-util')
 
 const aliceAddress = ''
 const alicePrivateKey = ''
