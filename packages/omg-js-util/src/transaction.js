@@ -76,6 +76,9 @@ const transaction = {
     }
 
     txArray.push(outputArray)
+    if (transactionBody.metadata) {
+      txArray.push(transactionBody.metadata)
+    }
     return `0x${rlp.encode(txArray).toString('hex').toUpperCase()}`
   },
 
