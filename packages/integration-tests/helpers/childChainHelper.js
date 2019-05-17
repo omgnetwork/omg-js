@@ -174,6 +174,44 @@ function checkSig (web3, tx, sig, address) {
   }
 }
 
+async function splitUtxo (childChain, verifyingContract, account, utxo, split) {
+  console.log(`Splitting utxo ${transaction.encodeUtxoPos(utxo)}`)
+
+  const txBody = {
+    inputs: [utxo],
+    outputs: []
+  }
+  const div = Math.floor(utxo.amount / split)
+  txBody.outputs = new Array(split).fill().map(x => ({
+    owner: account.address,
+    currency: transaction.ETH_CURRENCY,
+    amount: div
+  }))
+
+  // Create the unsigned transaction
+  const typedData = transaction.getTypedData(txBody, verifyingContract)
+
+  // Sign it
+  const signatures = childChain.signTransaction(typedData, [account.privateKey])
+  // Build the signed transaction
+  const signedTx = childChain.buildSignedTransaction(typedData, signatures)
+  return childChain.submitTransaction(signedTx)
+}
+
+function waitNumUtxos (childChain, address, num) {
+  return promiseRetry(async (retry, number) => {
+    console.log(`Waiting for utxos...  (${number})`)
+    const utxos = await childChain.getUtxos(address)
+    if (utxos.length !== num) {
+      retry()
+    }
+  }, {
+    minTimeout: 6000,
+    factor: 1,
+    retries: 50
+  })
+}
+
 module.exports = {
   waitForBalance,
   waitForBalanceEq,
@@ -182,5 +220,7 @@ module.exports = {
   sendAndWait,
   waitForEvent,
   selectUtxos,
-  checkSig
+  checkSig,
+  splitUtxo,
+  waitNumUtxos
 }
