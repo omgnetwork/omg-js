@@ -169,16 +169,33 @@ class ChildChain {
    * @param {string} toAddress - the address of the recipient
    * @param {number} toAmount - amount to transact
    * @param {string} currency - address of the erc20 contract (or transaction.ETH_CURRENCY for ETH)
+   * @param {string} metadata - the metadata to include in the transaction. Must be a 32-byte hex string
    * @param {string} verifyingContract - address of the RootChain contract
    * @return {Object} the submitted transaction
    */
-  async sendTransaction (fromAddress, fromUtxos, fromPrivateKeys, toAddress, toAmount, currency, verifyingContract) {
+  async sendTransaction (
+    fromAddress,
+    fromUtxos,
+    fromPrivateKeys,
+    toAddress,
+    toAmount,
+    currency,
+    metadata,
+    verifyingContract
+  ) {
     validateAddress(fromAddress)
     validateAddress(toAddress)
     validatePrivateKey(fromPrivateKeys)
 
     // create the transaction body
-    const txBody = transaction.createTransactionBody(fromAddress, fromUtxos, toAddress, toAmount, currency)
+    const txBody = transaction.createTransactionBody(
+      fromAddress,
+      fromUtxos,
+      toAddress,
+      toAmount,
+      currency,
+      metadata
+    )
     // Get the transaction data
     const typedData = transaction.getTypedData(txBody, verifyingContract)
     // Sign it

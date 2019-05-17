@@ -85,4 +85,10 @@ function getTypedData (tx, verifyingContract) {
   return typedData
 }
 
-module.exports = getTypedData
+module.exports = {
+  getTypedData,
+  NULL_ADDRESS,
+  NULL_INPUT,
+  NULL_OUTPUT,
+  NULL_METADATA
+}
