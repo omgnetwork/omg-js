@@ -56,7 +56,8 @@ describe('decodeTransaction', () => {
           'currency': '0x0000000000000000000000000000000000000000',
           'amount': 1234567890123456
         }
-      ]
+      ],
+      metadata: transaction.NULL_METADATA
     }
 
     const encodedTx = transaction.encode(txBody)
@@ -82,7 +83,8 @@ describe('decodeTransaction', () => {
           'blknum': 9821314
         }
       ],
-      outputs: []
+      outputs: [],
+      metadata: transaction.NULL_METADATA
     }
 
     const encodedTx = transaction.encode(txBody)

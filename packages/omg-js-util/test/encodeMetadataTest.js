@@ -17,7 +17,7 @@ const chai = require('chai')
 const assert = chai.assert
 const transaction = require('../src/transaction')
 
-describe.only('Encode metadata tests', () => {
+describe('Encode metadata tests', () => {
   it('should encode/decode a string', () => {
     const str = '00100'
     return assert.equal(transaction.decodeMetadata(transaction.encodeMetadata(str)), str)

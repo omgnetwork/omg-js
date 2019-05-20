@@ -31,11 +31,6 @@ let rootChain
 
 describe('Metadata tests', async () => {
   before(async () => {
-    const md = '007'
-    const encoded = transaction.encodeMetadata(md)
-    const decoded = transaction.decodeMetadata(encoded)
-    assert.equal(decoded, md)
-
     const plasmaContract = await rcHelper.getPlasmaContractAddress(config)
     rootChain = new RootChain(web3, plasmaContract.contract_addr)
     await faucet.init(rootChain, childChain, web3, config)

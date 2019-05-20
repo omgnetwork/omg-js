@@ -103,15 +103,17 @@ class ChildChain {
   }
 
   /**
-   * Create an unsigned transaction
+   * Given currency, amount and spender, finds spender's inputs sufficient to perform a payment. If also provided with receiver's address, creates and encodes a transaction
    *
    * @method createTransaction
-   * @param {Object} transactionBody
-   * @return {string} unsigned transaction
+   * @param {string} owner
+   * @param {Array} payments
+   * @param {Object} fee
+   * @param {string} metadata
+   * @return {Object} a transaction
    */
-  createTransaction (transactionBody) {
-    transaction.validate(transactionBody)
-    return transaction.encode(transactionBody)
+  createTransaction (owner, payments, fee, metadata) {
+    return rpcApi.post(`${this.watcherUrl}/transaction.create`, { owner, payments, fee, metadata })
   }
 
   /**
