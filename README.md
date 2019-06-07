@@ -10,6 +10,9 @@ This is a Javascript library that allows you to interact with OmiseGo's MoreVP i
 3. Exit from the Child chain back to the Root chain.
 4. Challenge an invalid exit.
 
+## Compatibility
+
+This library is currently compatible with version 0.2 of the OMG Network
 
 ### Getting Started
 
