@@ -29,7 +29,7 @@ const web3 = new Web3(config.geth_url)
 const childChain = new ChildChain(config.watcher_url, config.childchain_url)
 let rootChain
 
-describe('Metadata tests', async () => {
+describe('Metadata tests (ci-enabled-fast)', async () => {
   before(async () => {
     const plasmaContract = await rcHelper.getPlasmaContractAddress(config)
     rootChain = new RootChain(web3, plasmaContract.contract_addr)
