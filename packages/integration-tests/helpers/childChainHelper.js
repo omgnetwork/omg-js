@@ -95,6 +95,22 @@ function waitForEvent (childChain, type, callback) {
   })
 }
 
+function waitForWatcher (childChain) {
+  return promiseRetry(async (retry, number) => {
+    console.log(`Waiting for Watcher...  (${number})`)
+    try {
+      await childChain.status()
+    } catch (err) {
+      console.warn(`Error calling Watcher: ${err}`)
+      retry()
+    }
+  }, {
+    minTimeout: 5000,
+    factor: 1,
+    retries: 24
+  })
+}
+
 async function sendAndWait (childChain, from, to, amount, currency, privateKey, expectedBalance, verifyingContract) {
   const ret = await send(childChain, from, to, amount, currency, privateKey, verifyingContract)
   await waitForBalanceEq(childChain, to, expectedBalance, currency)
@@ -222,5 +238,6 @@ module.exports = {
   selectUtxos,
   checkSig,
   splitUtxo,
-  waitNumUtxos
+  waitNumUtxos,
+  waitForWatcher
 }

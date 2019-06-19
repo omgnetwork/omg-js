@@ -14,11 +14,18 @@ See the License for the specific language governing permissions and
 limitations under the License. */
 
 const config = require('../test-config')
+const ccHelper = require('../helpers/childChainHelper')
+const ChildChain = require('@omisego/omg-js-childchain')
 const fetch = require('node-fetch')
 const chai = require('chai')
 const assert = chai.assert
 
-describe('CORS Header tests (ci-enabled-fast)', async () => {
+describe.only('CORS Header tests (ci-enabled-fast)', async () => {
+  before(async () => {
+    const childChain = new ChildChain(config.watcher_url, config.childchain_url)
+    await ccHelper.waitForWatcher(childChain)
+  })
+
   describe('Watcher CORS Header test', async () => {
     it('should return CORS headers', async () => {
       const url = `${config.watcher_url}/status.get`

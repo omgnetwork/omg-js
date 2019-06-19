@@ -48,6 +48,9 @@ const faucet = {
       this.privateKey = faucetAccount.privateKey
     }
 
+    // Make sure that the Watcher is up and running
+    await ccHelper.waitForWatcher(childChain)
+
     await this.initEthBalance(web3, web3.utils.toWei(config.minAmountEth || '2', 'ether'))
     await this.initERC20Balance(web3, config.minAmountERC20 || 20)
     await this.showInfo(web3)
