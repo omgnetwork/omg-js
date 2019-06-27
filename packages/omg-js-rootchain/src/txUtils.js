@@ -1,4 +1,4 @@
-async function sendTx (web3, txDetails, privateKey) {
+async function sendTx(web3, txDetails, privateKey) {
   await setGas(web3, txDetails)
   if (!privateKey) {
     // No privateKey, caller will handle signing if necessary
@@ -17,13 +17,13 @@ async function sendTx (web3, txDetails, privateKey) {
     }
   } else {
     // First sign the transaction
-    const signedTx = await web3.eth.accounts.signTransaction(txDetails, privateKey)
+    const signedTx = await web3.eth.accounts.signTransaction(txDetails, prefixHex(privateKey))
     // Then send it
     return web3.eth.sendSignedTransaction(signedTx.rawTransaction)
   }
 }
 
-async function setGas (web3, txDetails) {
+async function setGas(web3, txDetails) {
   if (!txDetails.gasPrice) {
     try {
       if (web3.version.api && web3.version.api.startsWith('0.2')) {
@@ -61,7 +61,7 @@ async function setGas (web3, txDetails) {
   }
 }
 
-function getTxData (web3, contract, method, ...args) {
+function getTxData(web3, contract, method, ...args) {
   if (web3.version.api && web3.version.api.startsWith('0.2')) {
     return contract[method].getData(...args)
   } else {
@@ -69,12 +69,16 @@ function getTxData (web3, contract, method, ...args) {
   }
 }
 
-function int192toHex (int192) {
+function int192toHex(int192) {
   if (typeof int192 === 'string') {
     return int192.startsWith('0x') ? int192 : `0x${int192}`
   } else {
     return `0x${int192.toString(16)}`
   }
+}
+
+function prefixHex(hexString) {
+  return hexString.startsWith("0x") ? hexString : `0x${hexString}`
 }
 
 module.exports = {
