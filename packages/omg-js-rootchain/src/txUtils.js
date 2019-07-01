@@ -17,7 +17,7 @@ async function sendTx (web3, txDetails, privateKey) {
     }
   } else {
     // First sign the transaction
-    const signedTx = await web3.eth.accounts.signTransaction(txDetails, privateKey)
+    const signedTx = await web3.eth.accounts.signTransaction(txDetails, prefixHex(privateKey))
     // Then send it
     return web3.eth.sendSignedTransaction(signedTx.rawTransaction)
   }
@@ -75,6 +75,10 @@ function int192toHex (int192) {
   } else {
     return `0x${int192.toString(16)}`
   }
+}
+
+function prefixHex (hexString) {
+  return hexString.startsWith('0x') ? hexString : `0x${hexString}`
 }
 
 module.exports = {
