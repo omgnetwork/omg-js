@@ -30,10 +30,12 @@ const web3 = new Web3(new Web3.providers.HttpProvider(config.geth_url), null, { 
 const rootChain = new RootChain(web3, config.rootchain_plasma_contract_address)
 const childChain = new ChildChain(config.watcher_url)
 
+const rootChainDelayMillis = config.rootchain_delay_millis
+
 const aliceAddress = config.alice_eth_address
 const alicePrivateKey = config.alice_eth_address_private_key
 
-const depositAmount = BigNumber(web3.utils.toWei('2', 'ether'))
+const depositAmount = BigNumber(web3.utils.toWei(config.alice_eth_deposit_amount, 'ether'))
 
 async function depositEthIntoPlasmaContract () {
   let rootchainBalance = await web3.eth.getBalance(aliceAddress)
@@ -41,7 +43,6 @@ async function depositEthIntoPlasmaContract () {
   console.log(`Alice's rootchain balance: ${rootchainBalance}`)
 
   let childchainBalanceArray = await childChain.getBalance(aliceAddress)
-  let childchainBalance
 
   console.log(`Alice's childchain balance: ${childchainBalanceArray.length === 0 ? 0 : childchainBalanceArray[0].amount}`)
 
@@ -61,22 +62,23 @@ async function depositEthIntoPlasmaContract () {
 
   // wait for transaction to be recorded in a block
   console.log(`Waiting for transaction to be recorded in a block...`)
-  await wait(40000)
+  await wait(rootChainDelayMillis)
 
   rootchainBalance = await web3.eth.getBalance(aliceAddress)
   console.log(`Alice's new rootchain balance: ${rootchainBalance}`)
 
   childchainBalanceArray = await childChain.getBalance(aliceAddress)
-  childchainBalance = childchainBalanceArray[0].amount
-  console.log(`Alice's new childchain balance: ${childchainBalance}`)
+  console.log(`Alice's new childchain balance: ${childchainBalanceArray.length === 0 ? 0 : childchainBalanceArray[0].amount}`)
 
   return Promise.resolve()
 }
 
 (async () => {
   try {
-    await depositEthIntoPlasmaContract()
+    const result = await depositEthIntoPlasmaContract()
+    return Promise.resolve(result)
   } catch (error) {
     console.log(error)
+    return Promise.reject(error)
   }
 })()

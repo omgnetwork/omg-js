@@ -34,7 +34,7 @@ const alicePrivateKey = config.alice_eth_address_private_key
 
 const bobAddress = config.bob_eth_address
 
-const transferAmount = BigNumber(web3.utils.toWei('1', 'ether'))
+const transferAmount = BigNumber(web3.utils.toWei(config.alice_eth_transfer_amount, 'ether'))
 const feeAmount = BigNumber(web3.utils.toWei('0.00000000000000001', 'ether'))
 
 const payments = [{
@@ -99,12 +99,16 @@ async function createSignBuildAndSubmitTransaction () {
 
   console.log(`Alice's childchain balance: ${alicesBalanceArray.length === 0 ? 0 : alicesBalanceArray[0].amount}`)
   console.log(`Bob's childchain balance: ${bobsBalanceArray.length === 0 ? 0 : bobsBalanceArray[0].amount}`)
+
+  return Promise.resolve()
 }
 
 (async () => {
   try {
-    await createSignBuildAndSubmitTransaction()
+    const result = await createSignBuildAndSubmitTransaction()
+    return Promise.resolve(result)
   } catch (error) {
     console.log(error)
+    return Promise.reject(error)
   }
 })()

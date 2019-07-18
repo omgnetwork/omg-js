@@ -50,19 +50,23 @@ Copy the `dist/omg.js` file into your project and include it.
 
 ### Examples
 
+#### Prerequisites
+
+Both Alice's and Bob's Ethereum accounts need to have some ETH in them. The ETH is used for gas costs on the rootchain, fees on the childchain and the actual ETH transferred from Alice to Bob.
+
+#### Running the Examples
+
 You can find example code inside `examples` folder. To run the examples, step inside the `examples` directory. Run `npm install`. Edit your `config.js` file to have to correct values.
 
-_Note: You may need to also run `npm install` in the `packages\omg-js-rootchain`, `packages\omg-js-childchain` and `packages\omg-js-util` directories._
-
-Let's run through a story between Alice and Bob. In this story, Alice will first deposit 2 ETH from the root chain into the child chain. Then Alice will transfer 1 ETH to Bob on the child chain. Finally, Bob will exit his funds from the child chain back into the root chain. His root chain balance will be reflected with the extra 1 ETH that Alice sent to him on the child chain.
+Let's run through a story between Alice and Bob. In this story, Alice will first deposit some ETH from the root chain into the child chain. Then Alice will transfer some of that ETH to Bob on the child chain. Finally, Bob will exit his funds from the child chain back into the root chain. His root chain balance will be reflected with the extra 1 ETH that Alice sent to him on the child chain.
 
 From the `examples` folder run the scripts below in order to follow the story.
 
-1. [Deposit 2 ETH from Alice's Rootchain to the Childchain](examples/childchain-deposit.js)
+1. [Deposit some ETH from Alice's Rootchain to the Childchain](examples/childchain-deposit.js)
     
     `npm run childchain-deposit`
 
-2. [Send 1 ETH from Alice's Childchain to Bob's Childchain](examples/childchain-transaction.js)
+2. [Send some ETH from Alice's Childchain to Bob's Childchain](examples/childchain-transaction.js)
     
     `npm run childchain-transaction`
 
@@ -75,5 +79,7 @@ Alice has now sent some ETH to Bob. You should see a UTXO for Alice and a UTXO f
 4. [Transfer (exit) all of Bob's Childchain funds to the Rootchain](examples/childchain-exit.js)
 
     `npm run childchain-exit`
+
+Checking Bob's final rootchain balance you will notice it will be a little less than expected. This is because of rootchain gas costs Bob had to pay to exit the childchain.
 
 

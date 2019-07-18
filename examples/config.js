@@ -24,19 +24,25 @@ const config = {
 
   rootchain_plasma_contract_address: process.env.ROOTCHAIN_CONTRACT || '',
 
+  // delay time for block to be mined (times may vary if you are running your own chain, or running on 
+  // one of the testnets)
+  rootchain_delay_millis: process.env.ROOTCHAIN_DELAY_MILLIS || 40000,
+
   geth_url: process.env.GETH_URL || '',
 
   alice_eth_address: process.env.ALICE_ETH_ADDRESS || '',
   // Note: make sure this value is prefixed with '0x' or you may see nonce errors
   alice_eth_address_private_key: process.env.ALICE_ETH_ADDRESS_PRIVATE_KEY || '',
 
+  // amount of ETH to deposit from rootchain to childchain
+  alice_eth_deposit_amount: process.env.ALICE_ETH_DEPOSIT_AMOUNT || '.1',
+
+  // amount of ETH to transfer from Alice to Bob on the childchain
+  alice_eth_transfer_amount: process.env.ALICE_ETH_TRANSFER_AMOUNT || '.05',
+
   bob_eth_address: process.env.BOB_ETH_ADDRESS || '',
   // Note: make sure this value is prefixed with '0x' or you may see nonce errors
-  bob_eth_address_private_key: process.env.BOB_ETH_ADDRESS_PRIVATE_KEY || '',
-
-  john_eth_address: process.env.JOHN_ETH_ADDRESS || '',
-  // Note: make sure this value is prefixed with '0x' or you may see nonce errors
-  john_eth_address_private_key: process.env.JOHN_ETH_ADDRESS_PRIVATE_KEY || ''
+  bob_eth_address_private_key: process.env.BOB_ETH_ADDRESS_PRIVATE_KEY || ''
 }
 
 module.exports = config

@@ -27,7 +27,10 @@ const childChain = new ChildChain(config.watcher_url);
 
     const bobUtxos = await childChain.getUtxos(config.bob_eth_address)
     console.log(`Bob UTXOs: ${JSON.stringify(bobUtxos, undefined, 2)}`)
+
+    return Promise.resolve()
   } catch (error) {
     console.log(error)
+    return Promise.reject(error)
   }
 })()

@@ -34,8 +34,6 @@ const bobPrivateKey = config.bob_eth_address_private_key
 
 const aliceAddress = config.alice_eth_address
 
-let bobSpentOnGas
-
 async function exitChildChain () {
   let aliceRootchainBalance = await web3.eth.getBalance(aliceAddress)
   let bobRootchainBalance = await web3.eth.getBalance(bobAddress)
@@ -71,13 +69,6 @@ async function exitChildChain () {
 
   console.log(`Started standard childchain exit. Start standard exit receipt: ${JSON.stringify(startExitReceipt, undefined, 2)}`)
 
-  const startExitTransaction = await web3.eth.getTransaction(startExitReceipt.transactionHash)
-
-  // track gas spendings
-  bobSpentOnGas = web3.utils.toBN(startExitTransaction.gasPrice).muln(startExitReceipt.gasUsed)
-
-  console.log(`Gas used for standard childchain exit: ${bobSpentOnGas}`)
-
   // wait for challenge period to be over
   let waitMs =
     await rootChain.plasmaContract.methods.getExitableTimestamp(exitData.utxo_pos.toString()).call()
@@ -95,16 +86,7 @@ async function exitChildChain () {
     { privateKey: bobPrivateKey, from: bobAddress }
   )
 
-  console.log(`Started post-challenge childchain process exits. ` +
-      `Post-challenge childchain process exits receipt: ${JSON.stringify(processExitsPostChallengeReceipt, undefined, 2)}`)
-
-  const processExitsPostChallengeTxn =
-      await web3.eth.getTransaction(processExitsPostChallengeReceipt.transactionHash)
-
-  console.log(`Gas used for childchain process exits: ${web3.utils.toBN(processExitsPostChallengeTxn.gasPrice).muln(processExitsPostChallengeReceipt.gasUsed)}`)
-
-  bobSpentOnGas.iadd(web3.utils.toBN(processExitsPostChallengeTxn.gasPrice).muln(processExitsPostChallengeReceipt.gasUsed))
-  console.log(`Total gas used: ${bobSpentOnGas}`)
+  console.log(`Post-challenge process exits started. Process exits receipt: ${JSON.stringify(processExitsPostChallengeReceipt, undefined, 2)}`)
 
   // get final ETH balance
   aliceRootchainBalance = await web3.eth.getBalance(aliceAddress)
@@ -118,8 +100,6 @@ async function exitChildChain () {
 
   console.log(`Final alice childchain balance: ${aliceChildchainBalanceArray.length === 0 ? 0 : aliceChildchainBalanceArray[0].amount}`)
   console.log(`Final bob childchain balance: ${bobChildchainBalanceArray.length === 0 ? 0 : bobChildchainBalanceArray[0].amount}`)
-
-  console.log(`Total gas used: ${bobSpentOnGas}`)
 
   bobUtxos = await childChain.getUtxos(bobAddress)
   bobUtxoToExit = bobUtxos[0]
@@ -137,8 +117,10 @@ async function exitChildChain () {
 
 (async () => {
   try {
-    await exitChildChain()
+    const result = await exitChildChain()
+    return Promise.resolve(result)
   } catch (error) {
     console.log(error)
+    return Promise.reject(error)
   }
 })()
