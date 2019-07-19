@@ -1,0 +1,20 @@
+{
+  "name": "omg-js-examples",
+  "version": "0.1.0",
+  "description": "",
+  "main": "",
+  "scripts": {
+    "childchain-deposit": "node childchain-deposit.js",
+    "childchain-exit": "node childchain-exit.js",
+    "childchain-transaction": "node childchain-transaction.js",
+    "childchain-utxos": "node childchain-utxos.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bignumber.js": "^9.0.0",
+    "promise-retry": "^1.1.1",
+    "web3": "^1.0.0-beta.55"
+  }
+}
