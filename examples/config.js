@@ -24,7 +24,7 @@ const config = {
 
   rootchain_plasma_contract_address: process.env.ROOTCHAIN_CONTRACT || '',
 
-  // delay time for block to be mined (times may vary if you are running your own chain, or running on 
+  // delay time for block to be mined (times may vary if you are running your own chain, or running on
   // one of the testnets)
   rootchain_delay_millis: process.env.ROOTCHAIN_DELAY_MILLIS || 40000,
 
@@ -42,7 +42,10 @@ const config = {
 
   bob_eth_address: process.env.BOB_ETH_ADDRESS || '',
   // Note: make sure this value is prefixed with '0x' or you may see nonce errors
-  bob_eth_address_private_key: process.env.BOB_ETH_ADDRESS_PRIVATE_KEY || ''
+  bob_eth_address_private_key: process.env.BOB_ETH_ADDRESS_PRIVATE_KEY || '',
+
+  millis_to_wait_for_txn: process.env.MILLIS_TO_WAIT_FOR_TXN || 1000,
+  blocks_to_wait_for_txn: process.env.BLOCKS_TO_WAIT_FOR_TXN || 1
 }
 
 module.exports = config

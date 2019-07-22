@@ -86,7 +86,7 @@ async function createSignBuildAndSubmitTransaction () {
 
   // wait for transaction to be recorded in a block
   console.log(`Waiting for transaction to be recorded in a block...`)
-  await wait(40000)
+  await wait.wait(40000)
 
   aliceRootchainBalance = await web3.eth.getBalance(aliceAddress)
   bobRootchainBalance = await web3.eth.getBalance(bobAddress)
