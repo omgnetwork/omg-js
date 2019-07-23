@@ -70,7 +70,7 @@ async function exitChildChain () {
   console.log(`Started standard childchain exit. Start standard exit receipt: ${JSON.stringify(startExitReceipt, undefined, 2)}`)
 
   // wait for challenge period to complete
-  await wait.waitChallengePeriodWaitTime(rootChain, exitData)
+  await wait.waitForChallengePeriodToEnd(rootChain, exitData)
 
   // call processExits() after challenge period is over
   const processExitsPostChallengeReceipt = await rootChain.processExits(

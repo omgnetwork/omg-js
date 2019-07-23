@@ -28,6 +28,8 @@ const wait = require('./wait.js')
 const web3 = new Web3(new Web3.providers.HttpProvider(config.geth_url), null, { transactionConfirmationBlocks: 1 })
 
 const rootChain = new RootChain(web3, config.rootchain_plasma_contract_address)
+const rootChainPlasmaContractAddress = config.rootchain_plasma_contract_address
+
 const childChain = new ChildChain(config.watcher_url)
 
 const aliceAddress = config.alice_eth_address
@@ -73,7 +75,7 @@ async function inflightExitChildChain () {
   console.log(`Created transaction of ${payments[0].amount} from Alice to Bob.`)
 
   // get the transaction data
-  const typedData = transaction.getTypedData(createdTxn.transactions[0], web3, config.rootchain_plasma_contract_address)
+  const typedData = transaction.getTypedData(createdTxn.transactions[0], rootChainPlasmaContractAddress)
 
   // sign the data
   const signatures = childChain.signTransaction(typedData, [alicePrivateKey])
@@ -133,7 +135,7 @@ async function inflightExitChildChain () {
     `${JSON.stringify(piggybackInFlightExitReceipt)}`)
 
   // wait for challenge period to complete
-  await wait.waitChallengePeriodWaitTime(rootChain, exitData)
+  await wait.waitForChallengePeriodToEnd(rootChain, exitData)
 
   // call processExits() after challenge period is over
   const processExitsPostChallengeReceipt = await rootChain.processExits(

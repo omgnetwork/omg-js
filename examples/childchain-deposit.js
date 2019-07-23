@@ -58,8 +58,8 @@ async function depositEthIntoPlasmaContract () {
   console.log(`Finished awaiting rootChain.depositEth()`)
   console.log(`Transaction receipt: ${JSON.stringify(transactionReceipt, undefined, 2)}`)
 
-  // wait for transaction to be recorded in a block
-  console.log(`Waiting for transaction to be recorded in a block...`)
+  // wait for transaction to be recorded by the watcher
+  console.log(`Waiting for transaction to be recorded by the watcher...`)
   await wait.waitForTransaction(web3, transactionReceipt.transactionHash, config.millis_to_wait_for_next_block, config.blocks_to_wait_for_txn)
 
   rootchainBalance = await web3.eth.getBalance(aliceAddress)

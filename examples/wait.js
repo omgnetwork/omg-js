@@ -3,7 +3,7 @@ function wait (ms) {
   return new Promise((resolve, reject) => setTimeout(resolve, ms))
 }
 
-async function waitChallengePeriodWaitTime (rootChain, exitData) {
+async function waitForChallengePeriodToEnd (rootChain, exitData) {
   let waitMs = await rootChain.plasmaContract.methods.getExitableTimestamp(exitData.utxo_pos.toString()).call()
   waitMs = (Number(waitMs) - Math.trunc(Date.now() / 1000)) * 1000
 
@@ -54,6 +54,6 @@ async function waitForTransaction (web3, transactionHash, millisToWaitForTxn, bl
 
 module.exports = {
   wait: wait,
-  waitChallengePeriodWaitTime: waitChallengePeriodWaitTime,
+  waitChallengePeriodWaitTime: waitForChallengePeriodToEnd,
   waitForTransaction: waitForTransaction
 }
