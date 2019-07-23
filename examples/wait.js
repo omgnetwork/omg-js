@@ -24,10 +24,13 @@ async function waitForTransaction (web3, transactionHash, millisToWaitForTxn, bl
           let block = await web3.eth.getBlock(transactionReceipt.blockNumber)
           let current = await web3.eth.getBlock('latest')
 
-          if (current.number - block.number >= blocksToWaitForTxn) {
-            let transcation = await web3.eth.getTransaction(transactionHash)
+          console.log(`transaction block: ${block.number}`)
+          console.log(`current block:     ${current.number}`)
 
-            if (transcation.blockNumber != null) {
+          if (current.number - block.number >= blocksToWaitForTxn) {
+            let transaction = await web3.eth.getTransaction(transactionHash)
+
+            if (transaction.blockNumber !== null) {
               return resolve(transactionReceipt)
             } else {
               return reject(new Error('Transaction with hash: ' + transactionHash + ' ended up in an uncle block.'))
@@ -48,6 +51,7 @@ async function waitForTransaction (web3, transactionHash, millisToWaitForTxn, bl
 
   return new Promise((resolve, reject) => transactionReceiptAsync(transactionHash, resolve, reject))
 }
+
 module.exports = {
   wait: wait,
   waitChallengePeriodWaitTime: waitChallengePeriodWaitTime,

@@ -144,7 +144,7 @@ async function inflightExitChildChain () {
   console.log(`Post-challenge process exits started. Process exits receipt: ${JSON.stringify(processExitsPostChallengeReceipt, undefined, 2)}`)
 
   await wait.waitForTransaction(
-    web3, processExitsPostChallengeReceipt.transactionHash, config.millis_to_wait_for_txn, config.blocks_to_wait_for_txn)
+    web3, processExitsPostChallengeReceipt.transactionHash, config.millis_to_wait_for_next_block, config.blocks_to_wait_for_txn)
 
   // get final ETH balance
   aliceRootchainBalance = await web3.eth.getBalance(aliceAddress)
