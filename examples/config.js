@@ -31,10 +31,10 @@ const config = {
   alice_eth_address_private_key: process.env.ALICE_ETH_ADDRESS_PRIVATE_KEY || '',
 
   // amount of ETH to deposit from rootchain to childchain
-  alice_eth_deposit_amount: process.env.ALICE_ETH_DEPOSIT_AMOUNT || '10',
+  alice_eth_deposit_amount: process.env.ALICE_ETH_DEPOSIT_AMOUNT || '0.5',
 
   // amount of ETH to transfer from Alice to Bob on the childchain
-  alice_eth_transfer_amount: process.env.ALICE_ETH_TRANSFER_AMOUNT || '.05',
+  alice_eth_transfer_amount: process.env.ALICE_ETH_TRANSFER_AMOUNT || '0.05',
 
   bob_eth_address: process.env.BOB_ETH_ADDRESS || '',
   // Note: make sure this value is prefixed with '0x' or you may see nonce errors
@@ -42,8 +42,8 @@ const config = {
 
   millis_to_wait_for_next_block: process.env.MILLIS_TO_WAIT_FOR_NEXT_BLOCK || 1000,
 
-  // watcher will confirm the rootchain txn in 10 blocks
-  blocks_to_wait_for_txn: process.env.BLOCKS_TO_WAIT_FOR_TXN || 11
+  // watcher will confirm the rootchain txn in 12 blocks
+  blocks_to_wait_for_txn: process.env.BLOCKS_TO_WAIT_FOR_TXN || 12
 }
 
 module.exports = config

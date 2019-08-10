@@ -54,6 +54,6 @@ async function waitForTransaction (web3, transactionHash, millisToWaitForTxn, bl
 
 module.exports = {
   wait: wait,
-  waitChallengePeriodWaitTime: waitForChallengePeriodToEnd,
+  waitForChallengePeriodToEnd: waitForChallengePeriodToEnd,
   waitForTransaction: waitForTransaction
 }

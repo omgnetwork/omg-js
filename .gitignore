@@ -4,4 +4,6 @@ node_modules
 # VS Code directories
 .vscode
 
+.idea
+
 build

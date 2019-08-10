@@ -68,7 +68,7 @@ async function createSignBuildAndSubmitTransaction () {
     transaction.NULL_METADATA
   )
 
-  console.log(`Created a childcahin transaction of ${web3.utils.fromWei(payments[0].amount.toString(), 'ether')} ETH from Alice to Bob.`)
+  console.log(`Created a childchain transaction of ${web3.utils.fromWei(payments[0].amount.toString(), 'ether')} ETH from Alice to Bob.`)
 
   // get the transaction data
   const typedData = transaction.getTypedData(createdTxn.transactions[0], rootChainPlasmaContractAddress)
