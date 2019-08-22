@@ -30,8 +30,6 @@ const web3 = new Web3(new Web3.providers.HttpProvider(config.geth_url), null, { 
 const rootChain = new RootChain(web3, config.rootchain_plasma_contract_address)
 const childChain = new ChildChain(config.watcher_url)
 
-const rootChainDelayMillis = config.rootchain_delay_millis
-
 const aliceAddress = config.alice_eth_address
 const alicePrivateKey = config.alice_eth_address_private_key
 
@@ -60,9 +58,9 @@ async function depositEthIntoPlasmaContract () {
   console.log(`Finished awaiting rootChain.depositEth()`)
   console.log(`Transaction receipt: ${JSON.stringify(transactionReceipt, undefined, 2)}`)
 
-  // wait for transaction to be recorded in a block
-  console.log(`Waiting for transaction to be recorded in a block...`)
-  await wait(rootChainDelayMillis)
+  // wait for transaction to be recorded by the watcher
+  console.log(`Waiting for transaction to be recorded by the watcher...`)
+  await wait.waitForTransaction(web3, transactionReceipt.transactionHash, config.millis_to_wait_for_next_block, config.blocks_to_wait_for_txn)
 
   rootchainBalance = await web3.eth.getBalance(aliceAddress)
   console.log(`Alice's new rootchain balance: ${rootchainBalance}`)

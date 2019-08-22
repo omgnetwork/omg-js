@@ -68,7 +68,7 @@ async function createSignBuildAndSubmitTransaction () {
     transaction.NULL_METADATA
   )
 
-  console.log(`Created a childcahin transaction of ${web3.utils.fromWei(payments[0].amount.toString(), 'ether')} ETH from Alice to Bob.`)
+  console.log(`Created a childchain transaction of ${web3.utils.fromWei(payments[0].amount.toString(), 'ether')} ETH from Alice to Bob.`)
 
   // get the transaction data
   const typedData = transaction.getTypedData(createdTxn.transactions[0], rootChainPlasmaContractAddress)
@@ -84,9 +84,9 @@ async function createSignBuildAndSubmitTransaction () {
 
   console.log(`Submitted transaction. Transaction receipt: ${JSON.stringify(transactionReceipt, undefined, 2)}`)
 
-  // wait for transaction to be recorded in a block
-  console.log(`Waiting for transaction to be recorded in a block...`)
-  await wait(40000)
+  // wait for transaction to be recorded by the watcher
+  console.log(`Waiting for transaction to be recorded by the watcher...`)
+  await wait.wait(40000)
 
   aliceRootchainBalance = await web3.eth.getBalance(aliceAddress)
   bobRootchainBalance = await web3.eth.getBalance(bobAddress)

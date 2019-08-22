@@ -6,6 +6,7 @@
   "scripts": {
     "childchain-deposit": "node childchain-deposit.js",
     "childchain-exit": "node childchain-exit.js",
+    "childchain-inflight-exit": "node childchain-inflight-exit.js",
     "childchain-transaction": "node childchain-transaction.js",
     "childchain-utxos": "node childchain-utxos.js",
     "test": "echo \"Error: no test specified\" && exit 1"
