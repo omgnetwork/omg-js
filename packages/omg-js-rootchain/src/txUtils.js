@@ -2,6 +2,7 @@
  * Send transaction using web3
  *
  * @method sendTx
+ * @private
  * @param web3 the web3 object to access the Ethereum network
  * @param {object} txDetails transaction details object
  * @param {string} privateKey private key
