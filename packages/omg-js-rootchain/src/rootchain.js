@@ -13,6 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License. */
 
+const { ArgTypes } = require('@omisego/omg-js-util')
 const txUtils = require('./txUtils')
 
 const STANDARD_EXIT_BOND = 31415926535
@@ -50,6 +51,12 @@ class RootChain {
    * @return {string} transaction hash of the call
    */
   async depositEth (depositTx, amount, txOptions) {
+    ArgTypes.validate(this.depositEth, [
+      ArgTypes.isString.isRequired,
+      ArgTypes.isNumber.isRequired,
+      ArgTypes.isTxOptions.isRequired
+    ])
+
     const txDetails = {
       from: txOptions.from,
       to: this.plasmaContractAddress,

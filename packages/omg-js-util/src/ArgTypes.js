@@ -13,6 +13,13 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License. */
 
+/**
+* Validates function arguments
+* @param fn the calling function
+* @param {object} validator either a list or object of validator methods
+* @throws {TypeError} if invalid input, will throw a TypeError
+* @returns {null} returns null if there is no input validation error
+*/
 function validate (fn, validator) {
   const passedArgs = fn.arguments
   const unnamedArgs = Array.isArray(validator)
@@ -39,12 +46,12 @@ function validate (fn, validator) {
   }
 }
 
-const number = {
+const isNumber = {
   isRequired: (fnName, arg) => {
     if (!arg || arg === null) {
       throw TypeError(`${fnName} is missing a required argument with type number.`)
     }
-    number.test(fnName, arg)
+    isNumber.test(fnName, arg)
   },
   test: (fnName, arg) => {
     if (!arg || arg === null) return
@@ -54,12 +61,22 @@ const number = {
   }
 }
 
-const string = {
+const isAny = {
+  isRequired: (fnName, arg) => {
+    if (!arg || arg === null) {
+      throw TypeError(`${fnName} is missing a required argument.`)
+    }
+    isAny.test(fnName, arg)
+  },
+  test: (fnName, arg) => null
+}
+
+const isString = {
   isRequired: (fnName, arg) => {
     if (!arg || arg === null) {
       throw TypeError(`${fnName} is missing a required argument with type string.`)
     }
-    string.test(fnName, arg)
+    isString.test(fnName, arg)
   },
   test: (fnName, arg) => {
     if (!arg || arg === null) return
@@ -69,12 +86,12 @@ const string = {
   }
 }
 
-const func = {
+const isFunc = {
   isRequired: (fnName, arg) => {
     if (!arg || arg === null) {
       throw TypeError(`${fnName} is missing a required argument with type func.`)
     }
-    func.test(fnName, arg)
+    isFunc.test(fnName, arg)
   },
   test: (fnName, arg) => {
     if (!arg || arg === null) return
@@ -84,12 +101,12 @@ const func = {
   }
 }
 
-const bool = {
+const isBool = {
   isRequired: (fnName, arg) => {
     if (!arg || arg === null) {
       throw TypeError(`${fnName} is missing a required argument with type boolean.`)
     }
-    bool.test(fnName, arg)
+    isBool.test(fnName, arg)
   },
   test: (fnName, arg) => {
     if (!arg || arg === null) return
@@ -99,12 +116,12 @@ const bool = {
   }
 }
 
-const metadata = {
+const isMetadata = {
   isRequired: (fnName, arg) => {
     if (!arg || arg === null) {
       throw TypeError(`${fnName} is missing a required argument with type metadata.`)
     }
-    metadata.test(fnName, arg)
+    isMetadata.test(fnName, arg)
   },
   test: (fnName, arg) => {
     if (!arg || arg === null) return
@@ -121,11 +138,37 @@ const metadata = {
   }
 }
 
+const isTxOptions = {
+  isRequired: (fnName, arg) => {
+    if (!arg || arg === null) {
+      throw TypeError(`${fnName} is missing a required argument with type txOptions.`)
+    }
+    isTxOptions.test(fnName, arg)
+  },
+  test: (fnName, arg) => {
+    if (!arg || arg === null) return
+    const validation = {
+      from: isString.isRequired,
+      gas: isNumber.test,
+      gasPrice: isAny.test,
+      privateKey: isString.test
+    }
+    Object.keys(validation).forEach(key => {
+      const validator = validation[key]
+      validator(fnName, arg[key])
+    })
+  }
+}
+
 module.exports = {
   validate,
-  number,
-  string,
-  func,
-  bool,
-  metadata
+  // generic types
+  isAny,
+  isNumber,
+  isString,
+  isFunc,
+  isBool,
+  // specific types
+  isMetadata,
+  isTxOptions
 }

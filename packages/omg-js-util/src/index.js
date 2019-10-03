@@ -17,5 +17,6 @@ module.exports = {
   InvalidArgumentError: require('./InvalidArgumentError'),
   transaction: require('./transaction'),
   sign: require('./sign'),
-  hexToBytes: require('./hexToBytes')
+  hexToBytes: require('./hexToBytes'),
+  ArgTypes: require('./argTypes')
 }
