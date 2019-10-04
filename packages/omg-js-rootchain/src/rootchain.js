@@ -48,15 +48,10 @@ class RootChain {
    * @param {string} depositTx RLP encoded childchain deposit transaction
    * @param {number} amount amount of ETH to deposit
    * @param {Object} txOptions transaction options, such as `from`, `gas` and `privateKey`
-   * @return {string} transaction hash of the call
+   * @param {Object} [callBacks] callbacks to events from the transaction lifecycle
+   * @return {Promise<{ transactionHash: string }>} promise that resolves with an object holding the transaction hash
    */
-  async depositEth (depositTx, amount, txOptions) {
-    ArgTypes.validate(this.depositEth, [
-      ArgTypes.isString.isRequired,
-      ArgTypes.isNumber.isRequired,
-      ArgTypes.isTxOptions.isRequired
-    ])
-
+  async depositEth (depositTx, amount, txOptions, callBacks) {
     const txDetails = {
       from: txOptions.from,
       to: this.plasmaContractAddress,
@@ -70,8 +65,7 @@ class RootChain {
       gas: txOptions.gas,
       gasPrice: txOptions.gasPrice
     }
-
-    return txUtils.sendTx(this.web3, txDetails, txOptions.privateKey)
+    return txUtils.sendTx(this.web3, txDetails, txOptions.privateKey, callBacks)
   }
 
   /**

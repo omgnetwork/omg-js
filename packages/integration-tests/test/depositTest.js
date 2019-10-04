@@ -58,6 +58,48 @@ describe('Deposit tests', async () => {
       }
     })
 
+    it('depositEth calls event emitter if passed', async () => {
+      const depositTx = transaction.encodeDeposit(aliceAccount.address, TEST_AMOUNT, transaction.ETH_CURRENCY)
+
+      let confirmationNum
+      let receipt
+
+      await new Promise((resolve, reject) => {
+        rootChain.depositEth(
+          depositTx,
+          TEST_AMOUNT,
+          {
+            from: aliceAccount.address,
+            privateKey: aliceAccount.privateKey
+          },
+          {
+            onConfirmation: res => confirmationNum = res,
+            onReceipt: res => {
+              receipt = res
+              resolve()
+            }
+          }
+        )
+      })
+
+      assert.isNumber(confirmationNum)
+      assert.isObject(receipt)
+    })
+
+    it('deposit call resolves in an object containing the transaction hash', async () => {
+      const depositTx = transaction.encodeDeposit(aliceAccount.address, TEST_AMOUNT, transaction.ETH_CURRENCY)
+      const depositRes = await rootChain.depositEth(
+        depositTx,
+        TEST_AMOUNT,
+        {
+          from: aliceAccount.address,
+          privateKey: aliceAccount.privateKey
+        }
+      )
+      assert.isObject(depositRes)
+      assert.isString(depositRes.transactionHash)
+    })
+
     it('should deposit ETH to the Plasma contract', async () => {
       // The new account should have no initial balance
       const initialBalance = await childChain.getBalance(aliceAccount.address)

@@ -1,26 +1,52 @@
-async function sendTx (web3, txDetails, privateKey) {
+/**
+ * Send transaction using web3
+ *
+ * @method sendTx
+ * @private
+ * @param web3 the web3 object to access the Ethereum network
+ * @param {object} txDetails transaction details object
+ * @param {string} privateKey private key
+ * @param {{ onReceipt: any, onConfirmation: any }} [callBacks] callbacks to use during transaction lifecycle
+ * @return {Promise<{ transactionHash: string }>} promise that resolves with the transaction hash
+ */
+async function sendTx (web3, txDetails, privateKey, callBacks) {
   await setGas(web3, txDetails)
   if (!privateKey) {
     // No privateKey, caller will handle signing if necessary
     if (web3.version.api && web3.version.api.startsWith('0.2')) {
       return new Promise((resolve, reject) => {
         web3.eth.sendTransaction(txDetails, (err, transactionHash) => {
-          if (err) {
-            reject(err)
-          } else {
-            resolve({ transactionHash })
-          }
+          err
+            ? reject(err)
+            : resolve({ transactionHash })
         })
       })
-    } else {
-      return web3.eth.sendTransaction(txDetails)
     }
-  } else {
-    // First sign the transaction
-    const signedTx = await web3.eth.accounts.signTransaction(txDetails, prefixHex(privateKey))
-    // Then send it
-    return web3.eth.sendSignedTransaction(signedTx.rawTransaction)
+    if (callBacks) {
+      return new Promise((resolve, reject) => {
+        web3.eth.sendTransaction(txDetails)
+          .on('receipt', callBacks.onReceipt)
+          .on('confirmation', callBacks.onConfirmation)
+          .on('transactionHash', hash => resolve({ transactionHash: hash }))
+          .on('error', reject)
+      })
+    }
+    return web3.eth.sendTransaction(txDetails)
   }
+
+  // First sign the transaction
+  const signedTx = await web3.eth.accounts.signTransaction(txDetails, prefixHex(privateKey))
+  // Then send it
+  if (callBacks) {
+    return new Promise((resolve, reject) => {
+      web3.eth.sendSignedTransaction(signedTx.rawTransaction)
+        .on('receipt', callBacks.onReceipt)
+        .on('confirmation', callBacks.onConfirmation)
+        .on('transactionHash', hash => resolve({ transactionHash: hash }))
+        .on('error', reject)
+    })
+  }
+  return web3.eth.sendSignedTransaction(signedTx.rawTransaction)
 }
 
 async function setGas (web3, txDetails) {
