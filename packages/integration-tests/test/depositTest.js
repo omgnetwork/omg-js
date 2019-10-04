@@ -73,7 +73,9 @@ describe('Deposit tests', async () => {
             privateKey: aliceAccount.privateKey
           },
           {
-            onConfirmation: res => confirmationNum = res,
+            onConfirmation: res => {
+              confirmationNum = res
+            },
             onReceipt: res => {
               receipt = res
               resolve()

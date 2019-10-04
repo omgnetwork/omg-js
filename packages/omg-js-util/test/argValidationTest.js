@@ -28,7 +28,7 @@ describe('argumentValidation', () => {
   describe('unnamed generic arguments', () => {
     it('unnamed arguments should skip non required validators on null', () => {
       function myFunction (amount, address) {
-        ArgTypes.validate(myFunction, [
+        ArgTypes.validate('myFunction', arguments, [
           ArgTypes.isNumber,
           ArgTypes.isNumber.isRequired
         ])
@@ -39,7 +39,7 @@ describe('argumentValidation', () => {
 
     it('unnamed arguments should skip non required validators on undefined', () => {
       function myFunction (amount, address) {
-        ArgTypes.validate(myFunction, [
+        ArgTypes.validate('myFunction', arguments, [
           ArgTypes.isNumber,
           ArgTypes.isNumber.isRequired
         ])
@@ -50,7 +50,7 @@ describe('argumentValidation', () => {
 
     it('unnamed arguments should throw on invalid validation with descriptive message', () => {
       function myFunction (amount, address) {
-        ArgTypes.validate(myFunction, [
+        ArgTypes.validate('myFunction', arguments, [
           ArgTypes.isNumber,
           ArgTypes.isNumber.isRequired
         ])
@@ -64,7 +64,7 @@ describe('argumentValidation', () => {
 
     it('unnamed arguments should throw on invalid validation with mixed types', () => {
       function myFunction (amount, address) {
-        ArgTypes.validate(myFunction, [
+        ArgTypes.validate('myFunction', arguments, [
           ArgTypes.isString.isRequired,
           ArgTypes.isNumber.isRequired
         ])
@@ -80,7 +80,7 @@ describe('argumentValidation', () => {
   describe('named generic arguments', () => {
     it('named arguments should skip non required validators on null', () => {
       function myFunction ({ amount, address }) {
-        ArgTypes.validate(myFunction, {
+        ArgTypes.validate('myFunction', arguments, {
           amount: ArgTypes.isNumber,
           address: ArgTypes.isString.isRequired
         })
@@ -91,7 +91,7 @@ describe('argumentValidation', () => {
 
     it('named arguments should skip non required validators on undefined', () => {
       function myFunction ({ amount, address }) {
-        ArgTypes.validate(myFunction, {
+        ArgTypes.validate('myFunction', arguments, {
           amount: ArgTypes.isNumber,
           address: ArgTypes.isString.isRequired
         })
@@ -102,7 +102,7 @@ describe('argumentValidation', () => {
 
     it('named arguments should throw on required validators', () => {
       function myFunction ({ amount, address }) {
-        ArgTypes.validate(myFunction, {
+        ArgTypes.validate('myFunction', arguments, {
           amount: ArgTypes.isNumber.isRequired,
           address: ArgTypes.isString.isRequired
         })
@@ -116,7 +116,7 @@ describe('argumentValidation', () => {
 
     it('named arguments should throw on invalid validation with descriptive message', () => {
       function myFunction ({ amount, address }) {
-        ArgTypes.validate(myFunction, {
+        ArgTypes.validate('myFunction', arguments, {
           amount: ArgTypes.isNumber,
           address: ArgTypes.isString.isRequired
         })
@@ -132,7 +132,7 @@ describe('argumentValidation', () => {
   describe('other arguments', () => {
     it('any type validation should pass through anything', () => {
       function myFunction (arg) {
-        ArgTypes.validate(myFunction, [
+        ArgTypes.validate('myFunction', arguments, [
           ArgTypes.isAny.isRequired
         ])
         return true
@@ -146,7 +146,7 @@ describe('argumentValidation', () => {
 
     it('func type validation should work', () => {
       function myFunction (callback) {
-        ArgTypes.validate(myFunction, [
+        ArgTypes.validate('myFunction', arguments, [
           ArgTypes.isFunc
         ])
         return true
@@ -160,7 +160,7 @@ describe('argumentValidation', () => {
 
     it('bool type validation should work', () => {
       function myFunction (callback) {
-        ArgTypes.validate(myFunction, [
+        ArgTypes.validate('myFunction', arguments, [
           ArgTypes.isBool
         ])
         return true
@@ -172,11 +172,11 @@ describe('argumentValidation', () => {
       )
     })
   })
-  describe.only('more specific validation', () => {
-    it.only('validation should work on class methods', () => {
+  describe('more specific validation', () => {
+    it('validation should work on class methods', () => {
       class SampleRootChain {
         sampleDeposit (amount) {
-          ArgTypes.validate(this.sampleDeposit, [
+          ArgTypes.validate('sampleDeposit', arguments, [
             ArgTypes.isNumber.isRequired
           ])
           return true
@@ -191,7 +191,7 @@ describe('argumentValidation', () => {
 
     it('metadata type should work', () => {
       function myFunction (metadata) {
-        ArgTypes.validate(myFunction, [
+        ArgTypes.validate('myFunction', arguments, [
           ArgTypes.isMetadata
         ])
         return true
@@ -203,7 +203,7 @@ describe('argumentValidation', () => {
       )
 
       function myNamedFunction ({ metadata }) {
-        ArgTypes.validate(myNamedFunction, {
+        ArgTypes.validate('myNamedFunction', arguments, {
           metadata: ArgTypes.isMetadata
         })
         return true
@@ -221,7 +221,7 @@ describe('argumentValidation', () => {
 
     it('txOptions type should validate passed object correctly', () => {
       function myFunction (txOptions) {
-        ArgTypes.validate(myFunction, [
+        ArgTypes.validate('myFunction', arguments, [
           ArgTypes.isTxOptions.isRequired
         ])
         return true

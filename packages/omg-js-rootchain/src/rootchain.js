@@ -13,7 +13,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License. */
 
-const { ArgTypes } = require('@omisego/omg-js-util')
 const txUtils = require('./txUtils')
 
 const STANDARD_EXIT_BOND = 31415926535

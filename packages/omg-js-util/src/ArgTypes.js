@@ -15,19 +15,19 @@ limitations under the License. */
 
 /**
 * Validates function arguments
-* @param fn the calling function
+* @param {string} name the calling function's name for the error message
+* @param {array} passedArgs the calling functions arguments array
 * @param {object} validator either a list or object of validator methods
 * @throws {TypeError} if invalid input, will throw a TypeError
 * @returns {null} returns null if there is no input validation error
 */
-function validate (fn, validator) {
-  const passedArgs = fn.arguments
+function validate (name, passedArgs, validator) {
   const unnamedArgs = Array.isArray(validator)
 
   const executeValidator = (key, value) => {
     validator[key].name === 'isRequired'
-      ? validator[key](fn.name, value)
-      : validator[key].test(fn.name, value)
+      ? validator[key](name, value)
+      : validator[key].test(name, value)
   }
 
   // if function receives unnamed inputs
