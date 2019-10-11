@@ -34,7 +34,7 @@ async function get ({ url, proxyUrl }) {
     const res = await fetch.get(url)
     return parseResponse(res)
   } catch (err) {
-    throw new RpcError(err)
+    throw new Error(err)
   }
 }
 
@@ -55,21 +55,21 @@ async function post ({ url, body, proxyUrl }) {
       body,
       json: true
     }
-    const res = await fetch(options)
+    const res = await fetch.post(options)
     return parseResponse(res)
   } catch (err) {
-    throw new RpcError(err)
+    throw new Error(err)
   }
 }
 
 async function parseResponse (resp) {
-  const body = await resp.text()
+  const body = JSON.stringify(resp)
   let json
   try {
     // Need to use a JSON parser capable of handling uint256
     json = JSONBigNumber.parse(body)
   } catch (err) {
-    throw new Error('Unknown server error')
+    throw new Error(err.message)
   }
   debug(`rpc response is ${JSON.stringify(json)}`)
 
