@@ -13,14 +13,13 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License. */
 
-const request = require('request')
+const request = require('request-promise')
 const debug = require('debug')('omg.childchain.rpc')
 const JSONBigNumber = require('json-bigint')
 
 class RpcError extends Error {
-  constructor ({ code, description }) {
-    super(description || code)
-    this.code = code
+  constructor (data) {
+    super(data.description || data.code || data)
   }
 }
 
@@ -77,8 +76,6 @@ async function parseResponse (res) {
     return json.data
   }
 
-  // TODO: THROWS HERE WITH REQUEST DATA NOT RESPONSE
-  console.log('json: ', json)
   throw new RpcError(json.data)
 }
 

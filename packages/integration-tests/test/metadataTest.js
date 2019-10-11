@@ -26,7 +26,7 @@ const assert = chai.assert
 const ethUtil = require('ethereumjs-util')
 
 const web3 = new Web3(config.geth_url)
-const childChain = new ChildChain({ watcherUrl: config.watcher_url })
+const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url })
 let rootChain
 
 describe('Metadata tests (ci-enabled-fast)', async () => {
