@@ -26,10 +26,10 @@ const chai = require('chai')
 const assert = chai.assert
 
 const web3 = new Web3(new Web3.providers.HttpProvider(config.geth_url))
-const childChain = new ChildChain({ watcherUrl: config.watcher_url })
+const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url })
 let rootChain
 
-describe('Deposit tests', async () => {
+describe.only('Deposit tests', async () => {
   before(async () => {
     const plasmaContract = await rcHelper.getPlasmaContractAddress(config)
     rootChain = new RootChain(web3, plasmaContract.contract_addr)

@@ -13,7 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License. */
 
-const rp = require('request-promise')
+const request = require('request')
 const debug = require('debug')('omg.childchain.rpc')
 const JSONBigNumber = require('json-bigint')
 
@@ -25,9 +25,9 @@ class RpcError extends Error {
 }
 
 async function get ({ url, proxyUrl }) {
-  let fetch = rp
+  let fetch = request
   if (proxyUrl) {
-    fetch = rp.defaults({ proxy: proxyUrl })
+    fetch = request.defaults({ proxy: proxyUrl })
   }
 
   try {
@@ -42,9 +42,9 @@ async function post ({ url, body, proxyUrl }) {
   body.jsonrpc = body.jsonrpc || '2.0'
   body.id = body.id || 0
 
-  let fetch = rp
+  let fetch = request
   if (proxyUrl) {
-    fetch = rp.defaults({ proxy: proxyUrl })
+    fetch = request.defaults({ proxy: proxyUrl })
   }
 
   try {
@@ -62,8 +62,8 @@ async function post ({ url, body, proxyUrl }) {
   }
 }
 
-async function parseResponse (resp) {
-  const body = JSON.stringify(resp)
+async function parseResponse (res) {
+  const body = JSON.stringify(res)
   let json
   try {
     // Need to use a JSON parser capable of handling uint256
@@ -76,6 +76,9 @@ async function parseResponse (resp) {
   if (json.success) {
     return json.data
   }
+
+  // TODO: THROWS HERE WITH REQUEST DATA NOT RESPONSE
+  console.log('json: ', json)
   throw new RpcError(json.data)
 }
 
