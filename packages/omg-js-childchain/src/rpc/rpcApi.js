@@ -13,7 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License. */
 
-const fetch = require('node-fetch')
+const rp = require('request-promise')
 const debug = require('debug')('omg.childchain.rpc')
 const JSONBigNumber = require('json-bigint')
 
@@ -24,19 +24,42 @@ class RpcError extends Error {
   }
 }
 
-async function get (url) {
-  return fetch(url).then(parseResponse)
+async function get ({ url, proxyUrl }) {
+  let fetch = rp
+  if (proxyUrl) {
+    fetch = rp.defaults({ proxy: proxyUrl })
+  }
+
+  try {
+    const res = await fetch.get(url)
+    return parseResponse(res)
+  } catch (err) {
+    throw new RpcError(err)
+  }
 }
 
-async function post (url, body) {
+async function post ({ url, body, proxyUrl }) {
   body.jsonrpc = body.jsonrpc || '2.0'
   body.id = body.id || 0
 
-  return fetch(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body)
-  }).then(parseResponse)
+  let fetch = rp
+  if (proxyUrl) {
+    fetch = rp.defaults({ proxy: proxyUrl })
+  }
+
+  try {
+    const options = {
+      method: 'POST',
+      uri: url,
+      headers: { 'Content-Type': 'application/json' },
+      body,
+      json: true
+    }
+    const res = await fetch(options)
+    return parseResponse(res)
+  } catch (err) {
+    throw new RpcError(err)
+  }
 }
 
 async function parseResponse (resp) {

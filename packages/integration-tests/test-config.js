@@ -18,6 +18,7 @@ require('dotenv').config()
 const config = {
   geth_url: process.env.GETH_URL || 'http://localhost:8545',
   watcher_url: process.env.WATCHER_URL || 'http://localhost:7434',
+  watcher_proxy_url: process.env.WATCHER_PROXY_URL || 'http://localhost:9000',
   childchain_url: process.env.CHILDCHAIN_URL || 'http://localhost:9656',
   rootchainContract: process.env.ROOTCHAIN_CONTRACT || '',
   contract_exchanger_url: process.env.CONTRACT_EXCHANGER_URL || 'http://localhost:5000/get_contract',
