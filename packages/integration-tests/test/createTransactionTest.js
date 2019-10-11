@@ -26,7 +26,7 @@ const chai = require('chai')
 const assert = chai.assert
 
 const web3 = new Web3(config.geth_url)
-const childChain = new ChildChain(config.watcher_url, config.childchain_url)
+const childChain = new ChildChain({ watcherUrl: config.watcher_url })
 let rootChain
 
 describe('Create transaction tests', async () => {
