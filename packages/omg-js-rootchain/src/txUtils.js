@@ -11,6 +11,7 @@
  */
 async function sendTx (web3, txDetails, privateKey, callBacks) {
   await setGas(web3, txDetails)
+  console.log(txDetails, '############')
   if (!privateKey) {
     // No privateKey, caller will handle signing if necessary
     if (web3.version.api && web3.version.api.startsWith('0.2')) {

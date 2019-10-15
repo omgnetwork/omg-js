@@ -19,6 +19,7 @@ const numberToBN = require('number-to-bn')
 const fetch = require('node-fetch')
 const erc20abi = require('human-standard-token-abi')
 const { parseLog } = require('ethereum-event-logs')
+const { utils } = require('web3')
 
 function createAccount (web3) {
   const ret = web3.eth.accounts.create()
@@ -129,12 +130,12 @@ async function approveERC20 (
 }
 
 async function depositEth (rootChain, childChain, address, amount, privateKey) {
-  const depositTx = transaction.encodeDeposit(address, amount, transaction.ETH_CURRENCY)
+  const depositTx = transaction.encodeDepositAld(address, amount, transaction.ETH_CURRENCY)
   return rootChain.depositEth(depositTx, amount, { from: address, privateKey })
 }
 
 async function depositToken (rootChain, childChain, address, amount, currency, privateKey) {
-  const depositTx = transaction.encodeDeposit(address, amount, currency)
+  const depositTx = transaction.encodeDepositAld(address, amount, currency)
   return rootChain.depositToken(depositTx, { from: address, privateKey })
 }
 

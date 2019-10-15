@@ -32,11 +32,28 @@ class RootChain {
   constructor (web3, plasmaContractAddress, plasmaAbi) {
     this.web3 = web3
     this.plasmaContractAddress = plasmaContractAddress
-    const contractAbi = plasmaAbi || require('./contracts/RootChain.json')
+
+    const contractAbi = plasmaAbi || require('./contracts/PlasmaFramework.json')
+
     if (web3.version.api && web3.version.api.startsWith('0.2')) {
       this.plasmaContract = this.web3.eth.contract(contractAbi.abi).at(plasmaContractAddress)
+
+      const ethVaultAbi = require('./contracts/EthVault.json')
+      const erc20VaultAbi = require('./contracts/ERC20Vault.json')
+      const exitGameRegistryAbi = require('./contracts/ExitGameRegistry.json')
+      const ethVaultAddress = this.plasmaContract.vaults([1]) 
+      this.ethVault = this.web3.eth.contract(ethVaultAbi.abi).at(ethVaultAddress)
+      this.erc20Vault = this.web3.eth.contract(erc20VaultAbi.abi).at(erc20VaultAddress)
+      this.exitGameRegistry = this.web3.eth.contract(exitGameRegistryAbi.abi).at(exitGameRegistryAddress)
     } else {
       this.plasmaContract = new this.web3.eth.Contract(contractAbi.abi, plasmaContractAddress)
+      const ethVaultAbi = require('./contracts/EthVault.json')
+      const erc20VaultAbi = require('./contracts/ERC20Vault.json')
+      const exitGameRegistryAbi = require('./contracts/ExitGameRegistry.json')
+
+      // this.ethVault = new this.web3.eth.Contract(ethVaultAbi.abi, ethVaultAddress)
+      // this.erc20Vault = new this.web3.eth.Contract(erc20VaultAbi.abi, erc20VaultAddress)
+      // this.exitGameRegistry = new this.web3.eth.Contract(exitGameRegistryAbi.abi, exitGameRegistryAddress)
     }
   }
 
@@ -51,22 +68,31 @@ class RootChain {
    * @return {Promise<{ transactionHash: string }>} promise that resolves with an object holding the transaction hash
    */
   async depositEth (depositTx, amount, txOptions, callBacks) {
+    const ethVaultAddress = await this.plasmaContract.methods.vaults(1).call()
+
+    const ethVaultAbi = require('./contracts/EthVault.json')
+    const ethVaultContract = new this.web3.eth.Contract(ethVaultAbi.abi, ethVaultAddress)
+
     const txDetails = {
       from: txOptions.from,
-      to: this.plasmaContractAddress,
+      to: ethVaultAddress,
       value: amount,
       data: txUtils.getTxData(
         this.web3,
-        this.plasmaContract,
+        ethVaultContract,
         'deposit',
         depositTx
       ),
-      gas: txOptions.gas,
+      gas: 70000,
       gasPrice: txOptions.gasPrice
     }
+
     return txUtils.sendTx(this.web3, txDetails, txOptions.privateKey, callBacks)
   }
 
+  async getErc20VaultAddress () {
+    return this.plasmaContract.methods.vaults(2).call()
+  }
   /**
    * Deposit ERC20 Token to rootchain (caller must be token owner)
    *
@@ -76,16 +102,19 @@ class RootChain {
    * @return {string} transaction hash of the call
    */
   async depositToken (depositTx, txOptions) {
+    const erc20VaultAddress = await this.plasmaContract.methods.vaults(2).call()
+    const erc20VaultAbi = require('./contracts/Erc20Vault.json')
+    const erc20VaultContract = new this.web3.eth.Contract(erc20VaultAbi.abi, erc20VaultAddress)
     const txDetails = {
       from: txOptions.from,
-      to: this.plasmaContractAddress,
+      to: erc20VaultAddress,
       data: txUtils.getTxData(
         this.web3,
-        this.plasmaContract,
-        'depositFrom',
+        erc20VaultContract,
+        'deposit',
         depositTx
       ),
-      gas: txOptions.gas,
+      gas: 70000, // txOptions.gas,
       gasPrice: txOptions.gasPrice
     }
 
