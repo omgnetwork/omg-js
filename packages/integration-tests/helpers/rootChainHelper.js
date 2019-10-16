@@ -52,7 +52,7 @@ async function sendTransaction (web3, txDetails, privateKey) {
 
 async function spentOnGas (web3, receipt) {
   const tx = await web3.eth.getTransaction(receipt.transactionHash)
-  return web3.utils.toBN(tx.gasPrice).muln(receipt.gasUsed)
+  return utils.toBN(tx.gasPrice).muln(receipt.gasUsed)
 }
 
 function waitForEthBalance (web3, address, callback) {
