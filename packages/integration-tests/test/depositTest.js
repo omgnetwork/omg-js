@@ -29,14 +29,14 @@ const web3 = new Web3(new Web3.providers.HttpProvider(config.geth_url))
 const childChain = new ChildChain(config.watcher_url, config.childchain_url)
 let rootChain
 
-describe.only('Deposit tests', async () => {
+describe('Deposit tests', async () => {
   before(async () => {
     const plasmaContract = await rcHelper.getPlasmaContractAddress(config)
     rootChain = new RootChain(web3, plasmaContract.contract_addr)
     await faucet.init(rootChain, childChain, web3, config)
   })
 
-  describe.only('deposit ETH (ci-enabled)', async () => {
+  describe('deposit ETH (ci-enabled)', async () => {
     const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.1', 'ether')
     const TEST_AMOUNT = web3.utils.toWei('.0001', 'ether')
     let aliceAccount
