@@ -16,11 +16,11 @@ limitations under the License. */
 require('dotenv').config()
 
 const config = {
-  geth_url: process.env.GETH_URL || 'http://localhost:8545',
-  watcher_url: process.env.WATCHER_URL || 'http://localhost:7434',
-  childchain_url: process.env.CHILDCHAIN_URL || 'http://localhost:9656',
+  geth_url: process.env.GETH_URL || '',
+  watcher_url: process.env.WATCHER_URL || '',
+  childchain_url: process.env.CHILDCHAIN_URL || '',
   rootchainContract: process.env.ROOTCHAIN_CONTRACT || '',
-  contract_exchanger_url: process.env.CONTRACT_EXCHANGER_URL || 'http://localhost:5000/get_contract',
+  contract_exchanger_url: process.env.CONTRACT_EXCHANGER_URL || '',
   testErc20Contract: process.env.TEST_ERC20_CONTRACT || '',
   fundAccount: process.env.FUND_ACCOUNT || '',
   fundAccountPrivateKey: process.env.FUND_ACCOUNT_PRIVATEKEY || '',

@@ -1,0 +1,2580 @@
+{
+  "contractName": "EthVault",
+  "abi": [
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "depositVerifiers",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_verifier",
+          "type": "address"
+        }
+      ],
+      "name": "setDepositVerifier",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "getEffectiveDepositVerifier",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "operator",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "newDepositVerifierMaturityTimestamp",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "contract PlasmaFramework",
+          "name": "_framework",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address payable",
+          "name": "receiver",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "EthWithdrawn",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "depositor",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "blknum",
+          "type": "uint256"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "token",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "DepositCreated",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "nextDepositVerifier",
+          "type": "address"
+        }
+      ],
+      "name": "SetDepositVerifierCalled",
+      "type": "event"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "internalType": "bytes",
+          "name": "_depositTx",
+          "type": "bytes"
+        }
+      ],
+      "name": "deposit",
+      "outputs": [],
+      "payable": true,
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "internalType": "address payable",
+          "name": "receiver",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "withdraw",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "metadata": "{\"compiler\":{\"version\":\"0.5.11+commit.c082d0b4\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"constant\":true,\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"depositVerifiers\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"internalType\":\"address\",\"name\":\"_verifier\",\"type\":\"address\"}],\"name\":\"setDepositVerifier\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"getEffectiveDepositVerifier\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"operator\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"internalType\":\"bytes\",\"name\":\"_depositTx\",\"type\":\"bytes\"}],\"name\":\"deposit\",\"outputs\":[],\"payable\":true,\"stateMutability\":\"payable\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"newDepositVerifierMaturityTimestamp\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"internalType\":\"address payable\",\"name\":\"receiver\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"withdraw\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"contract PlasmaFramework\",\"name\":\"_framework\",\"type\":\"address\"}],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address payable\",\"name\":\"receiver\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"EthWithdrawn\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"depositor\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"blknum\",\"type\":\"uint256\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"token\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"DepositCreated\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"nextDepositVerifier\",\"type\":\"address\"}],\"name\":\"SetDepositVerifierCalled\",\"type\":\"event\"}],\"devdoc\":{\"methods\":{\"deposit(bytes)\":{\"params\":{\"_depositTx\":\"RLP encoded transaction to act as the deposit.\"}},\"getEffectiveDepositVerifier()\":{\"return\":\"contract address of deposit verifier.\"},\"setDepositVerifier(address)\":{\"details\":\"emit SetDepositVerifierCalledWhen one contract is already set next will be effective after MIN_EXIT_PERIOD.\",\"params\":{\"_verifier\":\"address of the verifier contract.\"}},\"withdraw(address,uint256)\":{\"params\":{\"amount\":\"amount of eth to transfer.\",\"receiver\":\"address of the transferee\"}}}},\"userdoc\":{\"methods\":{\"deposit(bytes)\":{\"notice\":\"Allows a user to deposit ETH into the contract. Once the deposit is recognized, the owner is able to make transactions on the OMG network.\"},\"getEffectiveDepositVerifier()\":{\"notice\":\"Gets currently effective deposit verifier contract address.\"},\"setDepositVerifier(address)\":{\"notice\":\"Sets the deposit verifier contract. This can be only called by the operator.\"},\"withdraw(address,uint256)\":{\"notice\":\"Withdraw ETH that have been exited from the OMG network successfully.\"}}}},\"settings\":{\"compilationTarget\":{\"/Users/nocholas/plasma-contracts/plasma_framework/contracts/src/vaults/EthVault.sol\":\"EthVault\"},\"evmVersion\":\"petersburg\",\"libraries\":{},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"/Users/nocholas/plasma-contracts/plasma_framework/contracts/src/framework/BlockController.sol\":{\"keccak256\":\"0xa374350b3d82ee548e10c112be124e45e684a21a30aef320ace75120959b6cf9\",\"urls\":[\"bzz-raw://0432ba3c13a015c1cdf770d3ad373133df0d6e0b80a950e4670e4e3800279806\",\"dweb:/ipfs/Qmc8a7RFs828kSY9ctBG4uZvXeoEvKv44oNKSXQHjqZBgw\"]},\"/Users/nocholas/plasma-contracts/plasma_framework/contracts/src/framework/ExitGameController.sol\":{\"keccak256\":\"0x8dc9568e7689ec6551c9fd607ac59948454528bf82875b5793209983a51f73c2\",\"urls\":[\"bzz-raw://ccd7251b1e0cf8bd10ab93295ca46037a3664eb26e396c17b168f15d4cfa4c6a\",\"dweb:/ipfs/QmX9fC6pYPGBx4dWVagjwi5rW5Mo4xkd8YAnMYpZLbSjwf\"]},\"/Users/nocholas/plasma-contracts/plasma_framework/contracts/src/framework/PlasmaFramework.sol\":{\"keccak256\":\"0x781b8906c41e018cb13709308f53d8f989a221b91812eb79bc092fc532e77a56\",\"urls\":[\"bzz-raw://a43e8b867ab3594551fcc484574ea2c0cfc48873292a043afbc58cfc7b7637ff\",\"dweb:/ipfs/QmcrypshZtB1nkzLzoQMvEsZ2me2VjzDt3reUTzefHQ17P\"]},\"/Users/nocholas/plasma-contracts/plasma_framework/contracts/src/framework/Protocol.sol\":{\"keccak256\":\"0xf29b987181c30970cfd21f760d2cdde66e7c73dbe0fb29623e3378dcb1afb917\",\"urls\":[\"bzz-raw://95b7233b00f6130d8651f2bea882751d5d0b2860e103ef800183f2bd9181d196\",\"dweb:/ipfs/QmShqfPZC8e3WCh4B6MFL3fbcFjm1L3mq8utD6cajDaTC5\"]},\"/Users/nocholas/plasma-contracts/plasma_framework/contracts/src/framework/interfaces/IExitProcessor.sol\":{\"keccak256\":\"0x881da1858b5bc28edca4e412276c55e504182387dbd0a47d437c874e2cd98570\",\"urls\":[\"bzz-raw://a06549075b8e895edff53684ef647aa9fd6293f8807afe18320f1aa40c798180\",\"dweb:/ipfs/QmaaC4xJt4WFGw1EUWAD26DEiNqTTWZ1T5WHrjv58ihaiD\"]},\"/Users/nocholas/plasma-contracts/plasma_framework/contracts/src/framework/models/BlockModel.sol\":{\"keccak256\":\"0xaf78eb1526c7aae13e504ddd73ce0284aee632e907a0a03e5779c035f5018653\",\"urls\":[\"bzz-raw://b1ce08cd8c277ec84d5dd844766ea1ce071c40c942f3e4894ea639d4958e4255\",\"dweb:/ipfs/QmNX4Cx8ZYepV2D2EQyigTcNh5SjYNxqXwAMxSGY5UxiGT\"]},\"/Users/nocholas/plasma-contracts/plasma_framework/contracts/src/framework/registries/ExitGameRegistry.sol\":{\"keccak256\":\"0xa2d5b11826407c65c9c0892a9a0db4d2d2fb06f2b131d69dad911d9fbaa28cdd\",\"urls\":[\"bzz-raw://f8933004f1911be708e9fc43fe63062992cb5a26c964399caf7cd63a541ee1b1\",\"dweb:/ipfs/QmcA3zo2xexXKrRsjikNGK2UjoEtbdJmqySV8hGbsHme7u\"]},\"/Users/nocholas/plasma-contracts/plasma_framework/contracts/src/framework/registries/VaultRegistry.sol\":{\"keccak256\":\"0x5d9e056fa909f02646fd033535e16ef51d607fedd0042e7094a09002a015aeca\",\"urls\":[\"bzz-raw://c1013c973dff37550bede64d429639cf8ef1c25b63c73e93d8df1c4231acc68e\",\"dweb:/ipfs/QmUijPKuaoLLqcFyYcvy9pvJFoDLjM2gSAfHBd1113z8Gi\"]},\"/Users/nocholas/plasma-contracts/plasma_framework/contracts/src/framework/utils/ExitPriority.sol\":{\"keccak256\":\"0x0625ac9b60cb2f3095de5f716ce290838555ba0bee25bc72d0e158cedca409c0\",\"urls\":[\"bzz-raw://b62b7950a1bf9ba0773e65a215e78ced2f3f0b042f95f308ab4715e1492ee21d\",\"dweb:/ipfs/QmTRAp7FHSVkQkhNaeq9rsEDg2edN74Ky8rx7V7cwcZ1jz\"]},\"/Users/nocholas/plasma-contracts/plasma_framework/contracts/src/framework/utils/Operated.sol\":{\"keccak256\":\"0xf34ef253d237fa848cc685f3a39e459deffd86658d40eb32118367d2bff9688a\",\"urls\":[\"bzz-raw://859f4ee6c2bae9c8c1b0ff5e18f7bbb77b83440f4dd1061847491f5d273de97d\",\"dweb:/ipfs/Qmb4j7TC8jbyt5CbqRNFChnfibcgALyyr5p3yDarbVoENF\"]},\"/Users/nocholas/plasma-contracts/plasma_framework/contracts/src/framework/utils/PriorityQueue.sol\":{\"keccak256\":\"0x81276ec9b9cb74265e8de85e4b562af115de36d71c2069b12f707d1fe882fc56\",\"urls\":[\"bzz-raw://5eff180863841cdbaa01da775a23d70a3e7dfd8c507db1d1bf225bec623d3587\",\"dweb:/ipfs/QmWMZvuBxYrNvn1Us85KBS8yvxUegJP4kjaWc11Znfg5aA\"]},\"/Users/nocholas/plasma-contracts/plasma_framework/contracts/src/framework/utils/Quarantine.sol\":{\"keccak256\":\"0x318533aa74d86527fcd3a78b320cd54bfc95cb443a9a8f59fedcfaa8d9a3cc1e\",\"urls\":[\"bzz-raw://ca4ef4208cce55817b4dbbee649bfb8f4bf378e019c6f43491eebc469b9e0ab8\",\"dweb:/ipfs/QmSyt6wxYPzm3H5zghLSZFe9499DLQYPzpHgYT7s73fsqU\"]},\"/Users/nocholas/plasma-contracts/plasma_framework/contracts/src/utils/TxPosLib.sol\":{\"keccak256\":\"0x3f4f6110f8cdfefd2061518b90c02bc5f0716e0a2a34cb65a6b28738f381dc53\",\"urls\":[\"bzz-raw://66a6f78c7f47e25bb916398c5b5b5e7da6fc954ca852f3e7995a4d234c41aa00\",\"dweb:/ipfs/QmZ9v3hjqLGLDrApYPjHMtRieyKLfJSBGJXfqkXkAkmJqo\"]},\"/Users/nocholas/plasma-contracts/plasma_framework/contracts/src/vaults/EthVault.sol\":{\"keccak256\":\"0xbe85cfdf16eaad759753e86231b9cd8b67d18402d9aff22388bb9f11491fc59a\",\"urls\":[\"bzz-raw://407248d7e1a62adb85704b59bdf2e4283a6fdfcbdd813d2a6022bcaf508944b9\",\"dweb:/ipfs/QmPJLK5PL94ZCATwRDDcG5Exyn52Y5ma6jzan3Zp4AHQ73\"]},\"/Users/nocholas/plasma-contracts/plasma_framework/contracts/src/vaults/Vault.sol\":{\"keccak256\":\"0x9345a8db591e2194bc774e873e6bd1b6557c3055dde4e9f8feb2186b80bd76d0\",\"urls\":[\"bzz-raw://b2fb759bff8c6df476c536fc24f971625748e3539deb787743beaf08c8519742\",\"dweb:/ipfs/Qmf4M1X2wWQxMN6JZ6pBtUCbihrN9cFvyao7PWaKfjHDoQ\"]},\"/Users/nocholas/plasma-contracts/plasma_framework/contracts/src/vaults/ZeroHashesProvider.sol\":{\"keccak256\":\"0xbca63b74bd3e6fda813192c032fbb58764bd57df938b110200c97217241b0499\",\"urls\":[\"bzz-raw://ab67a317112fe4bddb1e7304b96a4746491e9e841a848e5a4221607ee0d22571\",\"dweb:/ipfs/QmVgN2RRLvPSMBWVng5QU7eXpZa5qmpTKA4pWC3JpBcMEB\"]},\"/Users/nocholas/plasma-contracts/plasma_framework/contracts/src/vaults/verifiers/IEthDepositVerifier.sol\":{\"keccak256\":\"0x0f8ed9d239dcebb90eba29a88ce9e077b94eab893dc5e0005cab1aec1a0fadbc\",\"urls\":[\"bzz-raw://ca17852fbd7bcf9f6c41c9e42f727a3d4d00c1fb74bea23c011070ff05e1eb75\",\"dweb:/ipfs/QmdBZT3QSLFcYGyD18F6ZeFe91gkS4mLG3yPm5VNNnfmFQ\"]},\"openzeppelin-solidity/contracts/math/SafeMath.sol\":{\"keccak256\":\"0x4ccf2d7b51873db1ccfd54ca2adae5eac3b184f9699911ed4490438419f1c690\",\"urls\":[\"bzz-raw://d62d769b2219d5de39013093412623e624fa887f871826ea3bae6052ee893610\",\"dweb:/ipfs/QmV3yVktya1s617QmuzQR2CfuJgUi3dR2xEZY9ecmqZ2G1\"]},\"openzeppelin-solidity/contracts/ownership/Ownable.sol\":{\"keccak256\":\"0xf79fb10e8235770eb4aea7249034076a3cc9f9119ad944fc48705bae9c9d20dc\",\"urls\":[\"bzz-raw://cd3429aa9a4878dcf6c73faa32c3722f4013d4be012ece543b246faa6b50f55c\",\"dweb:/ipfs/QmS55hgTvNEAKinus19m65CB4wcymN8EiUPFpRx5tYJ1i2\"]}},\"version\":1}",
+  "bytecode": "0x60806040527f800000000000000000000000000000000000000000000000000000000000000060145534801561003457600080fd5b50604051610a55380380610a558339818101604052602081101561005757600080fd5b505160008054336001600160a01b031991821617909155600180549091166001600160a01b038316179055806100966100ac602090811b61073c17901c565b6100a4906002906010610140565b5050506101b7565b6100b461017e565b6100bc61017e565b604080516000602080830182905283518084038201815292840190935281519190920120905b601081101561013757818382601081106100f857fe5b602090810291909101919091526040805180830185905280820194909452805180850382018152606090940190528251920191909120906001016100e2565b50909150505b90565b826010810192821561016e579160200282015b8281111561016e578251825591602001919060010190610153565b5061017a92915061019d565b5090565b6040518061020001604052806010906020820280388339509192915050565b61013d91905b8082111561017a57600081556001016101a3565b61088f806101c66000396000f3fe6080604052600436106100705760003560e01c8063570ca7351161004e578063570ca7351461010557806398b1e06a1461011a578063a7e5994f1461018a578063f3fef3a3146101b157610070565b806302e9b07b146100755780632c6ce78b146100bb57806352518b7f146100f0575b600080fd5b34801561008157600080fd5b5061009f6004803603602081101561009857600080fd5b50356101ea565b604080516001600160a01b039092168252519081900360200190f35b3480156100c757600080fd5b506100ee600480360360208110156100de57600080fd5b50356001600160a01b0316610207565b005b3480156100fc57600080fd5b5061009f6103be565b34801561011157600080fd5b5061009f6103ed565b6100ee6004803603602081101561013057600080fd5b81019060208101813564010000000081111561014b57600080fd5b82018360208201111561015d57600080fd5b8035906020019184600183028401116401000000008311171561017f57600080fd5b5090925090506103fc565b34801561019657600080fd5b5061019f610530565b60408051918252519081900360200190f35b3480156101bd57600080fd5b506100ee600480360360408110156101d457600080fd5b506001600160a01b038135169060200135610536565b601281600281106101f757fe5b01546001600160a01b0316905081565b6000546001600160a01b03163314610266576040805162461bcd60e51b815260206004820152601c60248201527f4e6f74206265696e672063616c6c6564206279206f70657261746f7200000000604482015290519081900360640190fd5b6001600160a01b0381166102ab5760405162461bcd60e51b815260040180806020018281038252602f81526020018061082c602f913960400191505060405180910390fd5b6012546001600160a01b031615610363576102c46103be565b601280546001600160a01b03199081166001600160a01b0393841617909155601380549091168383161790556001546040805163d4a2b4ef60e01b81529051919092169163d4a2b4ef916004808301926020929190829003018186803b15801561032d57600080fd5b505afa158015610341573d6000803e3d6000fd5b505050506040513d602081101561035757600080fd5b5051420160145561037f565b601280546001600160a01b0319166001600160a01b0383161790555b604080516001600160a01b038316815290517f11e5a7570e0de4b31179f8c9cf5e8a1e6cfd23731ec7a5a06e3006d71dd321fd9181900360200190a150565b60006014544210156103e157601260005b01546001600160a01b031690506103ea565b601260016103cf565b90565b6000546001600160a01b031690565b6104046103be565b6001600160a01b031663aee150c7838334336040518563ffffffff1660e01b81526004018080602001848152602001836001600160a01b03166001600160a01b031681526020018281038252868682818152602001925080828437600081840152601f19601f8201169050808301925050509550505050505060006040518083038186803b15801561049557600080fd5b505afa1580156104a9573d6000803e3d6000fd5b5050505060006104ee83838080601f01602080910402602001604051908101604052809392919081815260200183838082843760009201919091525061066292505050565b604080513481529051919250600091839133917f18569122d84f30025bb8dffb33563f1bdbfb9637f21552b11b8305686e9cb3079181900360200190a4505050565b60145481565b60015460408051632d0816d760e11b815233600482015290516001600160a01b0390921691635a102dae91602480820192602092909190829003018186803b15801561058157600080fd5b505afa158015610595573d6000803e3d6000fd5b505050506040513d60208110156105ab57600080fd5b50516105e85760405162461bcd60e51b815260040180806020018281038252603d8152602001806107ef603d913960400191505060405180910390fd5b6040516001600160a01b0383169082156108fc029083906000818181858888f1935050505015801561061e573d6000803e3d6000fd5b506040805182815290516001600160a01b038416917f8455ae6be5d92f1df1c3c1484388e247a36c7e60d72055ae216dbc258f257d4b919081900360200190a25050565b80516020820120600090815b60108110156106ba57816002826010811061068557fe5b01546040805160208082019490945280820192909252805180830382018152606090920190528051910120915060010161066e565b50600154604080516317cb58d360e31b81526004810184905290516000926001600160a01b03169163be5ac69891602480830192602092919082900301818787803b15801561070857600080fd5b505af115801561071c573d6000803e3d6000fd5b505050506040513d602081101561073257600080fd5b5051949350505050565b6107446107cf565b61074c6107cf565b604080516000602080830182905283518084038201815292840190935281519190920120905b60108110156107c7578183826010811061078857fe5b60209081029190910191909152604080518083018590528082019490945280518085038201815260609094019052825192019190912090600101610772565b509091505090565b604051806102000160405280601090602082028038833950919291505056fe43616c6c65642066726f6d2061206e6f6e72656769737465726564206f722071756172616e74696e656420457869742047616d6520636f6e747261637443616e6e6f742073657420616e20656d7074792061646472657373206173206465706f736974207665726966696572a265627a7a7231582068b086a47d8e5e0495591a6d88b9db2f790a83c7f3a6eb93e4a6d480ed36922964736f6c634300050b0032",
+  "deployedBytecode": "0x6080604052600436106100705760003560e01c8063570ca7351161004e578063570ca7351461010557806398b1e06a1461011a578063a7e5994f1461018a578063f3fef3a3146101b157610070565b806302e9b07b146100755780632c6ce78b146100bb57806352518b7f146100f0575b600080fd5b34801561008157600080fd5b5061009f6004803603602081101561009857600080fd5b50356101ea565b604080516001600160a01b039092168252519081900360200190f35b3480156100c757600080fd5b506100ee600480360360208110156100de57600080fd5b50356001600160a01b0316610207565b005b3480156100fc57600080fd5b5061009f6103be565b34801561011157600080fd5b5061009f6103ed565b6100ee6004803603602081101561013057600080fd5b81019060208101813564010000000081111561014b57600080fd5b82018360208201111561015d57600080fd5b8035906020019184600183028401116401000000008311171561017f57600080fd5b5090925090506103fc565b34801561019657600080fd5b5061019f610530565b60408051918252519081900360200190f35b3480156101bd57600080fd5b506100ee600480360360408110156101d457600080fd5b506001600160a01b038135169060200135610536565b601281600281106101f757fe5b01546001600160a01b0316905081565b6000546001600160a01b03163314610266576040805162461bcd60e51b815260206004820152601c60248201527f4e6f74206265696e672063616c6c6564206279206f70657261746f7200000000604482015290519081900360640190fd5b6001600160a01b0381166102ab5760405162461bcd60e51b815260040180806020018281038252602f81526020018061082c602f913960400191505060405180910390fd5b6012546001600160a01b031615610363576102c46103be565b601280546001600160a01b03199081166001600160a01b0393841617909155601380549091168383161790556001546040805163d4a2b4ef60e01b81529051919092169163d4a2b4ef916004808301926020929190829003018186803b15801561032d57600080fd5b505afa158015610341573d6000803e3d6000fd5b505050506040513d602081101561035757600080fd5b5051420160145561037f565b601280546001600160a01b0319166001600160a01b0383161790555b604080516001600160a01b038316815290517f11e5a7570e0de4b31179f8c9cf5e8a1e6cfd23731ec7a5a06e3006d71dd321fd9181900360200190a150565b60006014544210156103e157601260005b01546001600160a01b031690506103ea565b601260016103cf565b90565b6000546001600160a01b031690565b6104046103be565b6001600160a01b031663aee150c7838334336040518563ffffffff1660e01b81526004018080602001848152602001836001600160a01b03166001600160a01b031681526020018281038252868682818152602001925080828437600081840152601f19601f8201169050808301925050509550505050505060006040518083038186803b15801561049557600080fd5b505afa1580156104a9573d6000803e3d6000fd5b5050505060006104ee83838080601f01602080910402602001604051908101604052809392919081815260200183838082843760009201919091525061066292505050565b604080513481529051919250600091839133917f18569122d84f30025bb8dffb33563f1bdbfb9637f21552b11b8305686e9cb3079181900360200190a4505050565b60145481565b60015460408051632d0816d760e11b815233600482015290516001600160a01b0390921691635a102dae91602480820192602092909190829003018186803b15801561058157600080fd5b505afa158015610595573d6000803e3d6000fd5b505050506040513d60208110156105ab57600080fd5b50516105e85760405162461bcd60e51b815260040180806020018281038252603d8152602001806107ef603d913960400191505060405180910390fd5b6040516001600160a01b0383169082156108fc029083906000818181858888f1935050505015801561061e573d6000803e3d6000fd5b506040805182815290516001600160a01b038416917f8455ae6be5d92f1df1c3c1484388e247a36c7e60d72055ae216dbc258f257d4b919081900360200190a25050565b80516020820120600090815b60108110156106ba57816002826010811061068557fe5b01546040805160208082019490945280820192909252805180830382018152606090920190528051910120915060010161066e565b50600154604080516317cb58d360e31b81526004810184905290516000926001600160a01b03169163be5ac69891602480830192602092919082900301818787803b15801561070857600080fd5b505af115801561071c573d6000803e3d6000fd5b505050506040513d602081101561073257600080fd5b5051949350505050565b6107446107cf565b61074c6107cf565b604080516000602080830182905283518084038201815292840190935281519190920120905b60108110156107c7578183826010811061078857fe5b60209081029190910191909152604080518083018590528082019490945280518085038201815260609094019052825192019190912090600101610772565b509091505090565b604051806102000160405280601090602082028038833950919291505056fe43616c6c65642066726f6d2061206e6f6e72656769737465726564206f722071756172616e74696e656420457869742047616d6520636f6e747261637443616e6e6f742073657420616e20656d7074792061646472657373206173206465706f736974207665726966696572a265627a7a7231582068b086a47d8e5e0495591a6d88b9db2f790a83c7f3a6eb93e4a6d480ed36922964736f6c634300050b0032",
+  "sourceMap": "137:1303:96:-;;;926:8:97;873:61;;422:67:96;8:9:-1;5:2;;;30:1;27;20:12;5:2;422:67:96;;;;;;;;;;;;;;;13:2:-1;8:3;5:11;2:2;;;29:1;26;19:12;2:2;-1:-1;422:67:96;112:9:79;:22;;124:10;-1:-1:-1;;;;;;112:22:79;;;;;;;-1:-1:-1;1025:22:97;;;;;-1:-1:-1;;;;;1025:22:97;;;;;422:67:96;1070:34:97;:32;422:67:96;1070:32:97;;;;;:34;;:::i;:::-;1057:47;;:10;;:47;;:::i;:::-;;968:143;422:67:96;137:1303;;166:369:98;214:18;;:::i;:::-;244:29;;:::i;:::-;312:28;;;283:16;312:28;;;;;;;;;26:21:-1;;;22:32;;6:49;;312:28:98;;;;;;302:39;;;;;;;;351:151;372:2;368:1;:6;351:151;;;411:8;395:10;406:1;395:13;;;;;;;;;;;;;;;:24;;;;454:36;;;;;;;;;;;;;;;;;;26:21:-1;;;22:32;;6:49;;454:36:98;;;;;;444:47;;;;;;;;;376:3;;351:151;;;-1:-1:-1;518:10:98;;-1:-1:-1;;166:369:98;;:::o;137:1303:96:-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;-1:-1:-1;137:1303:96;;;-1:-1:-1;137:1303:96;:::i;:::-;;;:::o;:::-;;;;;;;;;;;29:2:-1;21:6;17:15;117:4;105:10;97:6;88:34;-1:-1;137:1303:96;;;-1:-1:-1;;137:1303:96:o;:::-;;;;;;;;;;;;;;;;;;;;;;;;;",
+  "deployedSourceMap": "137:1303:96:-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;833:34:97;;8:9:-1;5:2;;;30:1;27;20:12;5:2;833:34:97;;;;;;13:2:-1;8:3;5:11;2:2;;;29:1;26;19:12;2:2;-1:-1;833:34:97;;:::i;:::-;;;;-1:-1:-1;;;;;833:34:97;;;;;;;;;;;;;;1749:533;;8:9:-1;5:2;;;30:1;27;20:12;5:2;1749:533:97;;;;;;13:2:-1;8:3;5:11;2:2;;;29:1;26;19:12;2:2;-1:-1;1749:533:97;-1:-1:-1;;;;;1749:533:97;;:::i;:::-;;2432:240;;8:9:-1;5:2;;;30:1;27;20:12;5:2;2432:240:97;;;:::i;269:82:79:-;;8:9:-1;5:2;;;30:1;27;20:12;5:2;269:82:79;;;:::i;744:307:96:-;;;;;;13:2:-1;8:3;5:11;2:2;;;29:1;26;19:12;2:2;744:307:96;;;;;;;;21:11:-1;5:28;;2:2;;;46:1;43;36:12;2:2;744:307:96;;35:9:-1;28:4;12:14;8:25;5:40;2:2;;;58:1;55;48:12;2:2;744:307:96;;;;;;100:9:-1;95:1;81:12;77:20;67:8;63:35;60:50;39:11;25:12;22:29;11:107;8:2;;;131:1;128;121:12;8:2;-1:-1;744:307:96;;-1:-1:-1;744:307:96;-1:-1:-1;744:307:96;:::i;873:61:97:-;;8:9:-1;5:2;;;30:1;27;20:12;5:2;873:61:97;;;:::i;:::-;;;;;;;;;;;;;;;;1251:187:96;;8:9:-1;5:2;;;30:1;27;20:12;5:2;1251:187:96;;;;;;13:2:-1;8:3;5:11;2:2;;;29:1;26;19:12;2:2;-1:-1;;;;;;1251:187:96;;;;;;;;:::i;833:34:97:-;;;;;;;;;;;;-1:-1:-1;;;;;833:34:97;;-1:-1:-1;833:34:97;:::o;1749:533::-;203:9:79;;-1:-1:-1;;;;;203:9:79;189:10;:23;181:64;;;;;-1:-1:-1;;;181:64:79;;;;;;;;;;;;;;;;;;;;;;;;;;;;-1:-1:-1;;;;;1834:23:97;;1826:83;;;;-1:-1:-1;;;1826:83:97;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;1924:16;:19;-1:-1:-1;;;;;1924:19:97;:33;1920:305;;1995:29;:27;:29::i;:::-;1973:16;:51;;-1:-1:-1;;;;;;1973:51:97;;;-1:-1:-1;;;;;1973:51:97;;;;;;;2038:19;:31;;;;;;;;;;;-1:-1:-1;2127:9:97;:25;;;-1:-1:-1;;;2127:25:97;;;;:9;;;;;:23;;:25;;;;;;;;;;;;;;:9;:25;;;5:2:-1;;;;30:1;27;20:12;5:2;2127:25:97;;;;8:9:-1;5:2;;;45:16;42:1;39;24:38;77:16;74:1;67:27;5:2;2127:25:97;;;;;;;13:2:-1;8:3;5:11;2:2;;;29:1;26;19:12;2:2;-1:-1;2127:25:97;2121:3;:31;2083:35;:69;1920:305;;;2183:16;:31;;-1:-1:-1;;;;;;2183:31:97;-1:-1:-1;;;;;2183:31:97;;;;;1920:305;2240:35;;;-1:-1:-1;;;;;2240:35:97;;;;;;;;;;;;;;;1749:533;:::o;2432:240::-;2492:7;2521:35;;2515:3;:41;2511:155;;;2579:16;2596:1;2579:19;;;-1:-1:-1;;;;;2579:19:97;;-1:-1:-1;2572:26:97;;2511:155;2636:16;2653:1;2636:19;;2511:155;2432:240;:::o;269:82:79:-;309:7;335:9;-1:-1:-1;;;;;335:9:79;269:82;:::o;744:307:96:-;835:29;:27;:29::i;:::-;-1:-1:-1;;;;;815:57:96;;873:10;;885:9;896:10;815:92;;;;;;;;;;;;;;;;;;;;;-1:-1:-1;;;;;815:92:96;-1:-1:-1;;;;;815:92:96;;;;;;;;;;;;;;;;;;;;30:3:-1;22:6;14;1:33;99:1;93:3;85:6;81:16;74:27;137:4;133:9;126:4;121:3;117:14;113:30;106:37;;169:3;161:6;157:16;147:26;;815:92:96;;;;;;;;;;;;;;;;;;;;8:9:-1;5:2;;;30:1;27;20:12;5:2;815:92:96;;;;8:9:-1;5:2;;;45:16;42:1;39;24:38;77:16;74:1;67:27;5:2;815:92:96;;;;917:14;934:37;960:10;;934:37;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;30:3:-1;22:6;14;1:33;99:1;81:16;;74:27;;;;-1:-1;934:25:96;;-1:-1:-1;;;934:37:96:i;:::-;987:57;;;1034:9;987:57;;;;917:54;;-1:-1:-1;1030:1:96;;917:54;;1002:10;;987:57;;;;;;;;;744:307;;;:::o;873:61:97:-;;;;:::o;1251:187:96:-;1297:9:97;;1280:59;;;-1:-1:-1;;;1280:59:97;;1328:10;1280:59;;;;;;-1:-1:-1;;;;;1297:9:97;;;;1280:47;;:59;;;;;;;;;;;;;;;1297:9;1280:59;;;5:2:-1;;;;30:1;27;20:12;5:2;1280:59:97;;;;8:9:-1;5:2;;;45:16;42:1;39;24:38;77:16;74:1;67:27;5:2;1280:59:97;;;;;;;13:2:-1;8:3;5:11;2:2;;;29:1;26;19:12;2:2;-1:-1;1280:59:97;1259:167;;;;-1:-1:-1;;;1259:167:97;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;1361:25:96;;-1:-1:-1;;;;;1361:17:96;;;:25;;;;;1379:6;;1361:25;;;;1379:6;1361:17;:25;;;;;;;;8:9:-1;5:2;;;45:16;42:1;39;24:38;77:16;74:1;67:27;5:2;-1:-1;1401:30:96;;;;;;;;-1:-1:-1;;;;;1401:30:96;;;;;;;;;;;;;1251:187;;:::o;2843:352:97:-;2949:21;;;;;;2915:7;;;2980:110;3001:2;2997:1;:6;2980:110;;;3058:4;3064:10;3075:1;3064:13;;;;;;;;;3041:37;;;;;;;;;;;;;;;;;;;;26:21:-1;;;22:32;;6:49;;3041:37:97;;;;;;3031:48;;;;;;-1:-1:-1;3005:3:97;;2980:110;;;-1:-1:-1;3124:9:97;;:34;;;-1:-1:-1;;;3124:34:97;;;;;;;;;;3100:21;;-1:-1:-1;;;;;3124:9:97;;:28;;:34;;;;;;;;;;;;;;3100:21;3124:9;:34;;;5:2:-1;;;;30:1;27;20:12;5:2;3124:34:97;;;;8:9:-1;5:2;;;45:16;42:1;39;24:38;77:16;74:1;67:27;5:2;3124:34:97;;;;;;;13:2:-1;8:3;5:11;2:2;;;29:1;26;19:12;2:2;-1:-1;3124:34:97;;2843:352;-1:-1:-1;;;;2843:352:97:o;166:369:98:-;214:18;;:::i;:::-;244:29;;:::i;:::-;312:28;;;283:16;312:28;;;;;;;;;26:21:-1;;;22:32;;6:49;;312:28:98;;;;;;302:39;;;;;;;;351:151;372:2;368:1;:6;351:151;;;411:8;395:10;406:1;395:13;;;;;;;;;;;;;;;:24;;;;454:36;;;;;;;;;;;;;;;;;;26:21:-1;;;22:32;;6:49;;454:36:98;;;;;;444:47;;;;;;;;;376:3;;351:151;;;-1:-1:-1;518:10:98;;-1:-1:-1;;166:369:98;:::o;-1:-1:-1:-;;;;;;;;;;;29:2;21:6;17:15;117:4;105:10;97:6;88:34;-1:-1;;;;;;:::o",
+  "source": "pragma solidity 0.5.11;\n\nimport \"./Vault.sol\";\nimport \"./verifiers/IEthDepositVerifier.sol\";\nimport \"../framework/PlasmaFramework.sol\";\n\ncontract EthVault is Vault {\n    event EthWithdrawn(\n        address payable indexed receiver,\n        uint256 amount\n    );\n\n    event DepositCreated(\n        address indexed depositor,\n        uint256 indexed blknum,\n        address indexed token,\n        uint256 amount\n    );\n\n    constructor(PlasmaFramework _framework) public Vault(_framework) {}\n\n    /**\n     * @notice Allows a user to deposit ETH into the contract.\n     * Once the deposit is recognized, the owner is able to make transactions on the OMG network.\n     * @param _depositTx RLP encoded transaction to act as the deposit.\n     */\n    function deposit(bytes calldata _depositTx) external payable {\n        IEthDepositVerifier(getEffectiveDepositVerifier()).verify(_depositTx, msg.value, msg.sender);\n        uint256 blknum = super._submitDepositBlock(_depositTx);\n\n        emit DepositCreated(msg.sender, blknum, address(0), msg.value);\n    }\n\n    /**\n    * @notice Withdraw ETH that have been exited from the OMG network successfully.\n    * @param receiver address of the transferee\n    * @param amount amount of eth to transfer.\n    */\n    function withdraw(address payable receiver, uint256 amount) external onlyFromNonQuarantinedExitGame {\n        receiver.transfer(amount);\n        emit EthWithdrawn(receiver, amount);\n    }\n}\n",
+  "sourcePath": "/Users/nocholas/plasma-contracts/plasma_framework/contracts/src/vaults/EthVault.sol",
+  "ast": {
+    "absolutePath": "/Users/nocholas/plasma-contracts/plasma_framework/contracts/src/vaults/EthVault.sol",
+    "exportedSymbols": {
+      "EthVault": [
+        14319
+      ]
+    },
+    "id": 14320,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 14231,
+        "literals": [
+          "solidity",
+          "0.5",
+          ".11"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "0:23:96"
+      },
+      {
+        "absolutePath": "/Users/nocholas/plasma-contracts/plasma_framework/contracts/src/vaults/Vault.sol",
+        "file": "./Vault.sol",
+        "id": 14232,
+        "nodeType": "ImportDirective",
+        "scope": 14320,
+        "sourceUnit": 14503,
+        "src": "25:21:96",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "absolutePath": "/Users/nocholas/plasma-contracts/plasma_framework/contracts/src/vaults/verifiers/IEthDepositVerifier.sol",
+        "file": "./verifiers/IEthDepositVerifier.sol",
+        "id": 14233,
+        "nodeType": "ImportDirective",
+        "scope": 14320,
+        "sourceUnit": 14827,
+        "src": "47:45:96",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "absolutePath": "/Users/nocholas/plasma-contracts/plasma_framework/contracts/src/framework/PlasmaFramework.sol",
+        "file": "../framework/PlasmaFramework.sol",
+        "id": 14234,
+        "nodeType": "ImportDirective",
+        "scope": 14320,
+        "sourceUnit": 10988,
+        "src": "93:42:96",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "baseContracts": [
+          {
+            "arguments": null,
+            "baseName": {
+              "contractScope": null,
+              "id": 14235,
+              "name": "Vault",
+              "nodeType": "UserDefinedTypeName",
+              "referencedDeclaration": 14502,
+              "src": "158:5:96",
+              "typeDescriptions": {
+                "typeIdentifier": "t_contract$_Vault_$14502",
+                "typeString": "contract Vault"
+              }
+            },
+            "id": 14236,
+            "nodeType": "InheritanceSpecifier",
+            "src": "158:5:96"
+          }
+        ],
+        "contractDependencies": [
+          11525,
+          14502
+        ],
+        "contractKind": "contract",
+        "documentation": null,
+        "fullyImplemented": true,
+        "id": 14319,
+        "linearizedBaseContracts": [
+          14319,
+          14502,
+          11525
+        ],
+        "name": "EthVault",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "anonymous": false,
+            "documentation": null,
+            "id": 14242,
+            "name": "EthWithdrawn",
+            "nodeType": "EventDefinition",
+            "parameters": {
+              "id": 14241,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 14238,
+                  "indexed": true,
+                  "name": "receiver",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 14242,
+                  "src": "198:32:96",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address_payable",
+                    "typeString": "address payable"
+                  },
+                  "typeName": {
+                    "id": 14237,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "198:15:96",
+                    "stateMutability": "payable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address_payable",
+                      "typeString": "address payable"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 14240,
+                  "indexed": false,
+                  "name": "amount",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 14242,
+                  "src": "240:14:96",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 14239,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "240:7:96",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "188:72:96"
+            },
+            "src": "170:91:96"
+          },
+          {
+            "anonymous": false,
+            "documentation": null,
+            "id": 14252,
+            "name": "DepositCreated",
+            "nodeType": "EventDefinition",
+            "parameters": {
+              "id": 14251,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 14244,
+                  "indexed": true,
+                  "name": "depositor",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 14252,
+                  "src": "297:25:96",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 14243,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "297:7:96",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 14246,
+                  "indexed": true,
+                  "name": "blknum",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 14252,
+                  "src": "332:22:96",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 14245,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "332:7:96",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 14248,
+                  "indexed": true,
+                  "name": "token",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 14252,
+                  "src": "364:21:96",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 14247,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "364:7:96",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 14250,
+                  "indexed": false,
+                  "name": "amount",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 14252,
+                  "src": "395:14:96",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 14249,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "395:7:96",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "287:128:96"
+            },
+            "src": "267:149:96"
+          },
+          {
+            "body": {
+              "id": 14260,
+              "nodeType": "Block",
+              "src": "487:2:96",
+              "statements": []
+            },
+            "documentation": null,
+            "id": 14261,
+            "implemented": true,
+            "kind": "constructor",
+            "modifiers": [
+              {
+                "arguments": [
+                  {
+                    "argumentTypes": null,
+                    "id": 14257,
+                    "name": "_framework",
+                    "nodeType": "Identifier",
+                    "overloadedDeclarations": [],
+                    "referencedDeclaration": 14254,
+                    "src": "475:10:96",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_contract$_PlasmaFramework_$10987",
+                      "typeString": "contract PlasmaFramework"
+                    }
+                  }
+                ],
+                "id": 14258,
+                "modifierName": {
+                  "argumentTypes": null,
+                  "id": 14256,
+                  "name": "Vault",
+                  "nodeType": "Identifier",
+                  "overloadedDeclarations": [],
+                  "referencedDeclaration": 14502,
+                  "src": "469:5:96",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_type$_t_contract$_Vault_$14502_$",
+                    "typeString": "type(contract Vault)"
+                  }
+                },
+                "nodeType": "ModifierInvocation",
+                "src": "469:17:96"
+              }
+            ],
+            "name": "",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 14255,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 14254,
+                  "name": "_framework",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 14261,
+                  "src": "434:26:96",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_contract$_PlasmaFramework_$10987",
+                    "typeString": "contract PlasmaFramework"
+                  },
+                  "typeName": {
+                    "contractScope": null,
+                    "id": 14253,
+                    "name": "PlasmaFramework",
+                    "nodeType": "UserDefinedTypeName",
+                    "referencedDeclaration": 10987,
+                    "src": "434:15:96",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_contract$_PlasmaFramework_$10987",
+                      "typeString": "contract PlasmaFramework"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "433:28:96"
+            },
+            "returnParameters": {
+              "id": 14259,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "487:0:96"
+            },
+            "scope": 14319,
+            "src": "422:67:96",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "public"
+          },
+          {
+            "body": {
+              "id": 14296,
+              "nodeType": "Block",
+              "src": "805:246:96",
+              "statements": [
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "arguments": [
+                      {
+                        "argumentTypes": null,
+                        "id": 14271,
+                        "name": "_depositTx",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 14263,
+                        "src": "873:10:96",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_bytes_calldata_ptr",
+                          "typeString": "bytes calldata"
+                        }
+                      },
+                      {
+                        "argumentTypes": null,
+                        "expression": {
+                          "argumentTypes": null,
+                          "id": 14272,
+                          "name": "msg",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 16152,
+                          "src": "885:3:96",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_magic_message",
+                            "typeString": "msg"
+                          }
+                        },
+                        "id": 14273,
+                        "isConstant": false,
+                        "isLValue": false,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "memberName": "value",
+                        "nodeType": "MemberAccess",
+                        "referencedDeclaration": null,
+                        "src": "885:9:96",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      },
+                      {
+                        "argumentTypes": null,
+                        "expression": {
+                          "argumentTypes": null,
+                          "id": 14274,
+                          "name": "msg",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 16152,
+                          "src": "896:3:96",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_magic_message",
+                            "typeString": "msg"
+                          }
+                        },
+                        "id": 14275,
+                        "isConstant": false,
+                        "isLValue": false,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "memberName": "sender",
+                        "nodeType": "MemberAccess",
+                        "referencedDeclaration": null,
+                        "src": "896:10:96",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_address_payable",
+                          "typeString": "address payable"
+                        }
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_bytes_calldata_ptr",
+                          "typeString": "bytes calldata"
+                        },
+                        {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        },
+                        {
+                          "typeIdentifier": "t_address_payable",
+                          "typeString": "address payable"
+                        }
+                      ],
+                      "expression": {
+                        "argumentTypes": null,
+                        "arguments": [
+                          {
+                            "argumentTypes": null,
+                            "arguments": [],
+                            "expression": {
+                              "argumentTypes": [],
+                              "id": 14267,
+                              "name": "getEffectiveDepositVerifier",
+                              "nodeType": "Identifier",
+                              "overloadedDeclarations": [],
+                              "referencedDeclaration": 14454,
+                              "src": "835:27:96",
+                              "typeDescriptions": {
+                                "typeIdentifier": "t_function_internal_view$__$returns$_t_address_$",
+                                "typeString": "function () view returns (address)"
+                              }
+                            },
+                            "id": 14268,
+                            "isConstant": false,
+                            "isLValue": false,
+                            "isPure": false,
+                            "kind": "functionCall",
+                            "lValueRequested": false,
+                            "names": [],
+                            "nodeType": "FunctionCall",
+                            "src": "835:29:96",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_address",
+                              "typeString": "address"
+                            }
+                          }
+                        ],
+                        "expression": {
+                          "argumentTypes": [
+                            {
+                              "typeIdentifier": "t_address",
+                              "typeString": "address"
+                            }
+                          ],
+                          "id": 14266,
+                          "name": "IEthDepositVerifier",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 14826,
+                          "src": "815:19:96",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_type$_t_contract$_IEthDepositVerifier_$14826_$",
+                            "typeString": "type(contract IEthDepositVerifier)"
+                          }
+                        },
+                        "id": 14269,
+                        "isConstant": false,
+                        "isLValue": false,
+                        "isPure": false,
+                        "kind": "typeConversion",
+                        "lValueRequested": false,
+                        "names": [],
+                        "nodeType": "FunctionCall",
+                        "src": "815:50:96",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_contract$_IEthDepositVerifier_$14826",
+                          "typeString": "contract IEthDepositVerifier"
+                        }
+                      },
+                      "id": 14270,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "memberName": "verify",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": 14825,
+                      "src": "815:57:96",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_external_view$_t_bytes_memory_ptr_$_t_uint256_$_t_address_$returns$__$",
+                        "typeString": "function (bytes memory,uint256,address) view external"
+                      }
+                    },
+                    "id": 14276,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "815:92:96",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_tuple$__$",
+                      "typeString": "tuple()"
+                    }
+                  },
+                  "id": 14277,
+                  "nodeType": "ExpressionStatement",
+                  "src": "815:92:96"
+                },
+                {
+                  "assignments": [
+                    14279
+                  ],
+                  "declarations": [
+                    {
+                      "constant": false,
+                      "id": 14279,
+                      "name": "blknum",
+                      "nodeType": "VariableDeclaration",
+                      "scope": 14296,
+                      "src": "917:14:96",
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      },
+                      "typeName": {
+                        "id": 14278,
+                        "name": "uint256",
+                        "nodeType": "ElementaryTypeName",
+                        "src": "917:7:96",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      },
+                      "value": null,
+                      "visibility": "internal"
+                    }
+                  ],
+                  "id": 14284,
+                  "initialValue": {
+                    "argumentTypes": null,
+                    "arguments": [
+                      {
+                        "argumentTypes": null,
+                        "id": 14282,
+                        "name": "_depositTx",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 14263,
+                        "src": "960:10:96",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_bytes_calldata_ptr",
+                          "typeString": "bytes calldata"
+                        }
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_bytes_calldata_ptr",
+                          "typeString": "bytes calldata"
+                        }
+                      ],
+                      "expression": {
+                        "argumentTypes": null,
+                        "id": 14280,
+                        "name": "super",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 16243,
+                        "src": "934:5:96",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_super$_EthVault_$14319",
+                          "typeString": "contract super EthVault"
+                        }
+                      },
+                      "id": 14281,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "memberName": "_submitDepositBlock",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": 14501,
+                      "src": "934:25:96",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_internal_nonpayable$_t_bytes_memory_ptr_$returns$_t_uint256_$",
+                        "typeString": "function (bytes memory) returns (uint256)"
+                      }
+                    },
+                    "id": 14283,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "934:37:96",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "nodeType": "VariableDeclarationStatement",
+                  "src": "917:54:96"
+                },
+                {
+                  "eventCall": {
+                    "argumentTypes": null,
+                    "arguments": [
+                      {
+                        "argumentTypes": null,
+                        "expression": {
+                          "argumentTypes": null,
+                          "id": 14286,
+                          "name": "msg",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 16152,
+                          "src": "1002:3:96",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_magic_message",
+                            "typeString": "msg"
+                          }
+                        },
+                        "id": 14287,
+                        "isConstant": false,
+                        "isLValue": false,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "memberName": "sender",
+                        "nodeType": "MemberAccess",
+                        "referencedDeclaration": null,
+                        "src": "1002:10:96",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_address_payable",
+                          "typeString": "address payable"
+                        }
+                      },
+                      {
+                        "argumentTypes": null,
+                        "id": 14288,
+                        "name": "blknum",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 14279,
+                        "src": "1014:6:96",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      },
+                      {
+                        "argumentTypes": null,
+                        "arguments": [
+                          {
+                            "argumentTypes": null,
+                            "hexValue": "30",
+                            "id": 14290,
+                            "isConstant": false,
+                            "isLValue": false,
+                            "isPure": true,
+                            "kind": "number",
+                            "lValueRequested": false,
+                            "nodeType": "Literal",
+                            "src": "1030:1:96",
+                            "subdenomination": null,
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_rational_0_by_1",
+                              "typeString": "int_const 0"
+                            },
+                            "value": "0"
+                          }
+                        ],
+                        "expression": {
+                          "argumentTypes": [
+                            {
+                              "typeIdentifier": "t_rational_0_by_1",
+                              "typeString": "int_const 0"
+                            }
+                          ],
+                          "id": 14289,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": true,
+                          "lValueRequested": false,
+                          "nodeType": "ElementaryTypeNameExpression",
+                          "src": "1022:7:96",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_type$_t_address_$",
+                            "typeString": "type(address)"
+                          },
+                          "typeName": "address"
+                        },
+                        "id": 14291,
+                        "isConstant": false,
+                        "isLValue": false,
+                        "isPure": true,
+                        "kind": "typeConversion",
+                        "lValueRequested": false,
+                        "names": [],
+                        "nodeType": "FunctionCall",
+                        "src": "1022:10:96",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_address_payable",
+                          "typeString": "address payable"
+                        }
+                      },
+                      {
+                        "argumentTypes": null,
+                        "expression": {
+                          "argumentTypes": null,
+                          "id": 14292,
+                          "name": "msg",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 16152,
+                          "src": "1034:3:96",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_magic_message",
+                            "typeString": "msg"
+                          }
+                        },
+                        "id": 14293,
+                        "isConstant": false,
+                        "isLValue": false,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "memberName": "value",
+                        "nodeType": "MemberAccess",
+                        "referencedDeclaration": null,
+                        "src": "1034:9:96",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_address_payable",
+                          "typeString": "address payable"
+                        },
+                        {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        },
+                        {
+                          "typeIdentifier": "t_address_payable",
+                          "typeString": "address payable"
+                        },
+                        {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      ],
+                      "id": 14285,
+                      "name": "DepositCreated",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 14252,
+                      "src": "987:14:96",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_event_nonpayable$_t_address_$_t_uint256_$_t_address_$_t_uint256_$returns$__$",
+                        "typeString": "function (address,uint256,address,uint256)"
+                      }
+                    },
+                    "id": 14294,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "987:57:96",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_tuple$__$",
+                      "typeString": "tuple()"
+                    }
+                  },
+                  "id": 14295,
+                  "nodeType": "EmitStatement",
+                  "src": "982:62:96"
+                }
+              ]
+            },
+            "documentation": "@notice Allows a user to deposit ETH into the contract.\nOnce the deposit is recognized, the owner is able to make transactions on the OMG network.\n@param _depositTx RLP encoded transaction to act as the deposit.",
+            "id": 14297,
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [],
+            "name": "deposit",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 14264,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 14263,
+                  "name": "_depositTx",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 14297,
+                  "src": "761:25:96",
+                  "stateVariable": false,
+                  "storageLocation": "calldata",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes_calldata_ptr",
+                    "typeString": "bytes"
+                  },
+                  "typeName": {
+                    "id": 14262,
+                    "name": "bytes",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "761:5:96",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes_storage_ptr",
+                      "typeString": "bytes"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "760:27:96"
+            },
+            "returnParameters": {
+              "id": 14265,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "805:0:96"
+            },
+            "scope": 14319,
+            "src": "744:307:96",
+            "stateMutability": "payable",
+            "superFunction": null,
+            "visibility": "external"
+          },
+          {
+            "body": {
+              "id": 14317,
+              "nodeType": "Block",
+              "src": "1351:87:96",
+              "statements": [
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "arguments": [
+                      {
+                        "argumentTypes": null,
+                        "id": 14309,
+                        "name": "amount",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 14301,
+                        "src": "1379:6:96",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      ],
+                      "expression": {
+                        "argumentTypes": null,
+                        "id": 14306,
+                        "name": "receiver",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 14299,
+                        "src": "1361:8:96",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_address_payable",
+                          "typeString": "address payable"
+                        }
+                      },
+                      "id": 14308,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "memberName": "transfer",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": null,
+                      "src": "1361:17:96",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_transfer_nonpayable$_t_uint256_$returns$__$",
+                        "typeString": "function (uint256)"
+                      }
+                    },
+                    "id": 14310,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "1361:25:96",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_tuple$__$",
+                      "typeString": "tuple()"
+                    }
+                  },
+                  "id": 14311,
+                  "nodeType": "ExpressionStatement",
+                  "src": "1361:25:96"
+                },
+                {
+                  "eventCall": {
+                    "argumentTypes": null,
+                    "arguments": [
+                      {
+                        "argumentTypes": null,
+                        "id": 14313,
+                        "name": "receiver",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 14299,
+                        "src": "1414:8:96",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_address_payable",
+                          "typeString": "address payable"
+                        }
+                      },
+                      {
+                        "argumentTypes": null,
+                        "id": 14314,
+                        "name": "amount",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 14301,
+                        "src": "1424:6:96",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_address_payable",
+                          "typeString": "address payable"
+                        },
+                        {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      ],
+                      "id": 14312,
+                      "name": "EthWithdrawn",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 14242,
+                      "src": "1401:12:96",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_event_nonpayable$_t_address_payable_$_t_uint256_$returns$__$",
+                        "typeString": "function (address payable,uint256)"
+                      }
+                    },
+                    "id": 14315,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "1401:30:96",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_tuple$__$",
+                      "typeString": "tuple()"
+                    }
+                  },
+                  "id": 14316,
+                  "nodeType": "EmitStatement",
+                  "src": "1396:35:96"
+                }
+              ]
+            },
+            "documentation": "@notice Withdraw ETH that have been exited from the OMG network successfully.\n@param receiver address of the transferee\n@param amount amount of eth to transfer.",
+            "id": 14318,
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [
+              {
+                "arguments": null,
+                "id": 14304,
+                "modifierName": {
+                  "argumentTypes": null,
+                  "id": 14303,
+                  "name": "onlyFromNonQuarantinedExitGame",
+                  "nodeType": "Identifier",
+                  "overloadedDeclarations": [],
+                  "referencedDeclaration": 14376,
+                  "src": "1320:30:96",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_modifier$__$",
+                    "typeString": "modifier ()"
+                  }
+                },
+                "nodeType": "ModifierInvocation",
+                "src": "1320:30:96"
+              }
+            ],
+            "name": "withdraw",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 14302,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 14299,
+                  "name": "receiver",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 14318,
+                  "src": "1269:24:96",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address_payable",
+                    "typeString": "address payable"
+                  },
+                  "typeName": {
+                    "id": 14298,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1269:15:96",
+                    "stateMutability": "payable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address_payable",
+                      "typeString": "address payable"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 14301,
+                  "name": "amount",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 14318,
+                  "src": "1295:14:96",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 14300,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1295:7:96",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1268:42:96"
+            },
+            "returnParameters": {
+              "id": 14305,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "1351:0:96"
+            },
+            "scope": 14319,
+            "src": "1251:187:96",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "external"
+          }
+        ],
+        "scope": 14320,
+        "src": "137:1303:96"
+      }
+    ],
+    "src": "0:1441:96"
+  },
+  "legacyAST": {
+    "absolutePath": "/Users/nocholas/plasma-contracts/plasma_framework/contracts/src/vaults/EthVault.sol",
+    "exportedSymbols": {
+      "EthVault": [
+        14319
+      ]
+    },
+    "id": 14320,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 14231,
+        "literals": [
+          "solidity",
+          "0.5",
+          ".11"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "0:23:96"
+      },
+      {
+        "absolutePath": "/Users/nocholas/plasma-contracts/plasma_framework/contracts/src/vaults/Vault.sol",
+        "file": "./Vault.sol",
+        "id": 14232,
+        "nodeType": "ImportDirective",
+        "scope": 14320,
+        "sourceUnit": 14503,
+        "src": "25:21:96",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "absolutePath": "/Users/nocholas/plasma-contracts/plasma_framework/contracts/src/vaults/verifiers/IEthDepositVerifier.sol",
+        "file": "./verifiers/IEthDepositVerifier.sol",
+        "id": 14233,
+        "nodeType": "ImportDirective",
+        "scope": 14320,
+        "sourceUnit": 14827,
+        "src": "47:45:96",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "absolutePath": "/Users/nocholas/plasma-contracts/plasma_framework/contracts/src/framework/PlasmaFramework.sol",
+        "file": "../framework/PlasmaFramework.sol",
+        "id": 14234,
+        "nodeType": "ImportDirective",
+        "scope": 14320,
+        "sourceUnit": 10988,
+        "src": "93:42:96",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "baseContracts": [
+          {
+            "arguments": null,
+            "baseName": {
+              "contractScope": null,
+              "id": 14235,
+              "name": "Vault",
+              "nodeType": "UserDefinedTypeName",
+              "referencedDeclaration": 14502,
+              "src": "158:5:96",
+              "typeDescriptions": {
+                "typeIdentifier": "t_contract$_Vault_$14502",
+                "typeString": "contract Vault"
+              }
+            },
+            "id": 14236,
+            "nodeType": "InheritanceSpecifier",
+            "src": "158:5:96"
+          }
+        ],
+        "contractDependencies": [
+          11525,
+          14502
+        ],
+        "contractKind": "contract",
+        "documentation": null,
+        "fullyImplemented": true,
+        "id": 14319,
+        "linearizedBaseContracts": [
+          14319,
+          14502,
+          11525
+        ],
+        "name": "EthVault",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "anonymous": false,
+            "documentation": null,
+            "id": 14242,
+            "name": "EthWithdrawn",
+            "nodeType": "EventDefinition",
+            "parameters": {
+              "id": 14241,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 14238,
+                  "indexed": true,
+                  "name": "receiver",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 14242,
+                  "src": "198:32:96",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address_payable",
+                    "typeString": "address payable"
+                  },
+                  "typeName": {
+                    "id": 14237,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "198:15:96",
+                    "stateMutability": "payable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address_payable",
+                      "typeString": "address payable"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 14240,
+                  "indexed": false,
+                  "name": "amount",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 14242,
+                  "src": "240:14:96",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 14239,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "240:7:96",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "188:72:96"
+            },
+            "src": "170:91:96"
+          },
+          {
+            "anonymous": false,
+            "documentation": null,
+            "id": 14252,
+            "name": "DepositCreated",
+            "nodeType": "EventDefinition",
+            "parameters": {
+              "id": 14251,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 14244,
+                  "indexed": true,
+                  "name": "depositor",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 14252,
+                  "src": "297:25:96",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 14243,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "297:7:96",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 14246,
+                  "indexed": true,
+                  "name": "blknum",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 14252,
+                  "src": "332:22:96",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 14245,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "332:7:96",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 14248,
+                  "indexed": true,
+                  "name": "token",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 14252,
+                  "src": "364:21:96",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 14247,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "364:7:96",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 14250,
+                  "indexed": false,
+                  "name": "amount",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 14252,
+                  "src": "395:14:96",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 14249,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "395:7:96",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "287:128:96"
+            },
+            "src": "267:149:96"
+          },
+          {
+            "body": {
+              "id": 14260,
+              "nodeType": "Block",
+              "src": "487:2:96",
+              "statements": []
+            },
+            "documentation": null,
+            "id": 14261,
+            "implemented": true,
+            "kind": "constructor",
+            "modifiers": [
+              {
+                "arguments": [
+                  {
+                    "argumentTypes": null,
+                    "id": 14257,
+                    "name": "_framework",
+                    "nodeType": "Identifier",
+                    "overloadedDeclarations": [],
+                    "referencedDeclaration": 14254,
+                    "src": "475:10:96",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_contract$_PlasmaFramework_$10987",
+                      "typeString": "contract PlasmaFramework"
+                    }
+                  }
+                ],
+                "id": 14258,
+                "modifierName": {
+                  "argumentTypes": null,
+                  "id": 14256,
+                  "name": "Vault",
+                  "nodeType": "Identifier",
+                  "overloadedDeclarations": [],
+                  "referencedDeclaration": 14502,
+                  "src": "469:5:96",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_type$_t_contract$_Vault_$14502_$",
+                    "typeString": "type(contract Vault)"
+                  }
+                },
+                "nodeType": "ModifierInvocation",
+                "src": "469:17:96"
+              }
+            ],
+            "name": "",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 14255,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 14254,
+                  "name": "_framework",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 14261,
+                  "src": "434:26:96",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_contract$_PlasmaFramework_$10987",
+                    "typeString": "contract PlasmaFramework"
+                  },
+                  "typeName": {
+                    "contractScope": null,
+                    "id": 14253,
+                    "name": "PlasmaFramework",
+                    "nodeType": "UserDefinedTypeName",
+                    "referencedDeclaration": 10987,
+                    "src": "434:15:96",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_contract$_PlasmaFramework_$10987",
+                      "typeString": "contract PlasmaFramework"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "433:28:96"
+            },
+            "returnParameters": {
+              "id": 14259,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "487:0:96"
+            },
+            "scope": 14319,
+            "src": "422:67:96",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "public"
+          },
+          {
+            "body": {
+              "id": 14296,
+              "nodeType": "Block",
+              "src": "805:246:96",
+              "statements": [
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "arguments": [
+                      {
+                        "argumentTypes": null,
+                        "id": 14271,
+                        "name": "_depositTx",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 14263,
+                        "src": "873:10:96",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_bytes_calldata_ptr",
+                          "typeString": "bytes calldata"
+                        }
+                      },
+                      {
+                        "argumentTypes": null,
+                        "expression": {
+                          "argumentTypes": null,
+                          "id": 14272,
+                          "name": "msg",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 16152,
+                          "src": "885:3:96",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_magic_message",
+                            "typeString": "msg"
+                          }
+                        },
+                        "id": 14273,
+                        "isConstant": false,
+                        "isLValue": false,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "memberName": "value",
+                        "nodeType": "MemberAccess",
+                        "referencedDeclaration": null,
+                        "src": "885:9:96",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      },
+                      {
+                        "argumentTypes": null,
+                        "expression": {
+                          "argumentTypes": null,
+                          "id": 14274,
+                          "name": "msg",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 16152,
+                          "src": "896:3:96",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_magic_message",
+                            "typeString": "msg"
+                          }
+                        },
+                        "id": 14275,
+                        "isConstant": false,
+                        "isLValue": false,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "memberName": "sender",
+                        "nodeType": "MemberAccess",
+                        "referencedDeclaration": null,
+                        "src": "896:10:96",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_address_payable",
+                          "typeString": "address payable"
+                        }
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_bytes_calldata_ptr",
+                          "typeString": "bytes calldata"
+                        },
+                        {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        },
+                        {
+                          "typeIdentifier": "t_address_payable",
+                          "typeString": "address payable"
+                        }
+                      ],
+                      "expression": {
+                        "argumentTypes": null,
+                        "arguments": [
+                          {
+                            "argumentTypes": null,
+                            "arguments": [],
+                            "expression": {
+                              "argumentTypes": [],
+                              "id": 14267,
+                              "name": "getEffectiveDepositVerifier",
+                              "nodeType": "Identifier",
+                              "overloadedDeclarations": [],
+                              "referencedDeclaration": 14454,
+                              "src": "835:27:96",
+                              "typeDescriptions": {
+                                "typeIdentifier": "t_function_internal_view$__$returns$_t_address_$",
+                                "typeString": "function () view returns (address)"
+                              }
+                            },
+                            "id": 14268,
+                            "isConstant": false,
+                            "isLValue": false,
+                            "isPure": false,
+                            "kind": "functionCall",
+                            "lValueRequested": false,
+                            "names": [],
+                            "nodeType": "FunctionCall",
+                            "src": "835:29:96",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_address",
+                              "typeString": "address"
+                            }
+                          }
+                        ],
+                        "expression": {
+                          "argumentTypes": [
+                            {
+                              "typeIdentifier": "t_address",
+                              "typeString": "address"
+                            }
+                          ],
+                          "id": 14266,
+                          "name": "IEthDepositVerifier",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 14826,
+                          "src": "815:19:96",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_type$_t_contract$_IEthDepositVerifier_$14826_$",
+                            "typeString": "type(contract IEthDepositVerifier)"
+                          }
+                        },
+                        "id": 14269,
+                        "isConstant": false,
+                        "isLValue": false,
+                        "isPure": false,
+                        "kind": "typeConversion",
+                        "lValueRequested": false,
+                        "names": [],
+                        "nodeType": "FunctionCall",
+                        "src": "815:50:96",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_contract$_IEthDepositVerifier_$14826",
+                          "typeString": "contract IEthDepositVerifier"
+                        }
+                      },
+                      "id": 14270,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "memberName": "verify",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": 14825,
+                      "src": "815:57:96",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_external_view$_t_bytes_memory_ptr_$_t_uint256_$_t_address_$returns$__$",
+                        "typeString": "function (bytes memory,uint256,address) view external"
+                      }
+                    },
+                    "id": 14276,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "815:92:96",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_tuple$__$",
+                      "typeString": "tuple()"
+                    }
+                  },
+                  "id": 14277,
+                  "nodeType": "ExpressionStatement",
+                  "src": "815:92:96"
+                },
+                {
+                  "assignments": [
+                    14279
+                  ],
+                  "declarations": [
+                    {
+                      "constant": false,
+                      "id": 14279,
+                      "name": "blknum",
+                      "nodeType": "VariableDeclaration",
+                      "scope": 14296,
+                      "src": "917:14:96",
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      },
+                      "typeName": {
+                        "id": 14278,
+                        "name": "uint256",
+                        "nodeType": "ElementaryTypeName",
+                        "src": "917:7:96",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      },
+                      "value": null,
+                      "visibility": "internal"
+                    }
+                  ],
+                  "id": 14284,
+                  "initialValue": {
+                    "argumentTypes": null,
+                    "arguments": [
+                      {
+                        "argumentTypes": null,
+                        "id": 14282,
+                        "name": "_depositTx",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 14263,
+                        "src": "960:10:96",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_bytes_calldata_ptr",
+                          "typeString": "bytes calldata"
+                        }
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_bytes_calldata_ptr",
+                          "typeString": "bytes calldata"
+                        }
+                      ],
+                      "expression": {
+                        "argumentTypes": null,
+                        "id": 14280,
+                        "name": "super",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 16243,
+                        "src": "934:5:96",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_super$_EthVault_$14319",
+                          "typeString": "contract super EthVault"
+                        }
+                      },
+                      "id": 14281,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "memberName": "_submitDepositBlock",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": 14501,
+                      "src": "934:25:96",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_internal_nonpayable$_t_bytes_memory_ptr_$returns$_t_uint256_$",
+                        "typeString": "function (bytes memory) returns (uint256)"
+                      }
+                    },
+                    "id": 14283,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "934:37:96",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "nodeType": "VariableDeclarationStatement",
+                  "src": "917:54:96"
+                },
+                {
+                  "eventCall": {
+                    "argumentTypes": null,
+                    "arguments": [
+                      {
+                        "argumentTypes": null,
+                        "expression": {
+                          "argumentTypes": null,
+                          "id": 14286,
+                          "name": "msg",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 16152,
+                          "src": "1002:3:96",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_magic_message",
+                            "typeString": "msg"
+                          }
+                        },
+                        "id": 14287,
+                        "isConstant": false,
+                        "isLValue": false,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "memberName": "sender",
+                        "nodeType": "MemberAccess",
+                        "referencedDeclaration": null,
+                        "src": "1002:10:96",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_address_payable",
+                          "typeString": "address payable"
+                        }
+                      },
+                      {
+                        "argumentTypes": null,
+                        "id": 14288,
+                        "name": "blknum",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 14279,
+                        "src": "1014:6:96",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      },
+                      {
+                        "argumentTypes": null,
+                        "arguments": [
+                          {
+                            "argumentTypes": null,
+                            "hexValue": "30",
+                            "id": 14290,
+                            "isConstant": false,
+                            "isLValue": false,
+                            "isPure": true,
+                            "kind": "number",
+                            "lValueRequested": false,
+                            "nodeType": "Literal",
+                            "src": "1030:1:96",
+                            "subdenomination": null,
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_rational_0_by_1",
+                              "typeString": "int_const 0"
+                            },
+                            "value": "0"
+                          }
+                        ],
+                        "expression": {
+                          "argumentTypes": [
+                            {
+                              "typeIdentifier": "t_rational_0_by_1",
+                              "typeString": "int_const 0"
+                            }
+                          ],
+                          "id": 14289,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": true,
+                          "lValueRequested": false,
+                          "nodeType": "ElementaryTypeNameExpression",
+                          "src": "1022:7:96",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_type$_t_address_$",
+                            "typeString": "type(address)"
+                          },
+                          "typeName": "address"
+                        },
+                        "id": 14291,
+                        "isConstant": false,
+                        "isLValue": false,
+                        "isPure": true,
+                        "kind": "typeConversion",
+                        "lValueRequested": false,
+                        "names": [],
+                        "nodeType": "FunctionCall",
+                        "src": "1022:10:96",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_address_payable",
+                          "typeString": "address payable"
+                        }
+                      },
+                      {
+                        "argumentTypes": null,
+                        "expression": {
+                          "argumentTypes": null,
+                          "id": 14292,
+                          "name": "msg",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 16152,
+                          "src": "1034:3:96",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_magic_message",
+                            "typeString": "msg"
+                          }
+                        },
+                        "id": 14293,
+                        "isConstant": false,
+                        "isLValue": false,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "memberName": "value",
+                        "nodeType": "MemberAccess",
+                        "referencedDeclaration": null,
+                        "src": "1034:9:96",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_address_payable",
+                          "typeString": "address payable"
+                        },
+                        {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        },
+                        {
+                          "typeIdentifier": "t_address_payable",
+                          "typeString": "address payable"
+                        },
+                        {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      ],
+                      "id": 14285,
+                      "name": "DepositCreated",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 14252,
+                      "src": "987:14:96",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_event_nonpayable$_t_address_$_t_uint256_$_t_address_$_t_uint256_$returns$__$",
+                        "typeString": "function (address,uint256,address,uint256)"
+                      }
+                    },
+                    "id": 14294,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "987:57:96",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_tuple$__$",
+                      "typeString": "tuple()"
+                    }
+                  },
+                  "id": 14295,
+                  "nodeType": "EmitStatement",
+                  "src": "982:62:96"
+                }
+              ]
+            },
+            "documentation": "@notice Allows a user to deposit ETH into the contract.\nOnce the deposit is recognized, the owner is able to make transactions on the OMG network.\n@param _depositTx RLP encoded transaction to act as the deposit.",
+            "id": 14297,
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [],
+            "name": "deposit",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 14264,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 14263,
+                  "name": "_depositTx",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 14297,
+                  "src": "761:25:96",
+                  "stateVariable": false,
+                  "storageLocation": "calldata",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes_calldata_ptr",
+                    "typeString": "bytes"
+                  },
+                  "typeName": {
+                    "id": 14262,
+                    "name": "bytes",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "761:5:96",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes_storage_ptr",
+                      "typeString": "bytes"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "760:27:96"
+            },
+            "returnParameters": {
+              "id": 14265,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "805:0:96"
+            },
+            "scope": 14319,
+            "src": "744:307:96",
+            "stateMutability": "payable",
+            "superFunction": null,
+            "visibility": "external"
+          },
+          {
+            "body": {
+              "id": 14317,
+              "nodeType": "Block",
+              "src": "1351:87:96",
+              "statements": [
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "arguments": [
+                      {
+                        "argumentTypes": null,
+                        "id": 14309,
+                        "name": "amount",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 14301,
+                        "src": "1379:6:96",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      ],
+                      "expression": {
+                        "argumentTypes": null,
+                        "id": 14306,
+                        "name": "receiver",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 14299,
+                        "src": "1361:8:96",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_address_payable",
+                          "typeString": "address payable"
+                        }
+                      },
+                      "id": 14308,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "memberName": "transfer",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": null,
+                      "src": "1361:17:96",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_transfer_nonpayable$_t_uint256_$returns$__$",
+                        "typeString": "function (uint256)"
+                      }
+                    },
+                    "id": 14310,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "1361:25:96",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_tuple$__$",
+                      "typeString": "tuple()"
+                    }
+                  },
+                  "id": 14311,
+                  "nodeType": "ExpressionStatement",
+                  "src": "1361:25:96"
+                },
+                {
+                  "eventCall": {
+                    "argumentTypes": null,
+                    "arguments": [
+                      {
+                        "argumentTypes": null,
+                        "id": 14313,
+                        "name": "receiver",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 14299,
+                        "src": "1414:8:96",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_address_payable",
+                          "typeString": "address payable"
+                        }
+                      },
+                      {
+                        "argumentTypes": null,
+                        "id": 14314,
+                        "name": "amount",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 14301,
+                        "src": "1424:6:96",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_address_payable",
+                          "typeString": "address payable"
+                        },
+                        {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      ],
+                      "id": 14312,
+                      "name": "EthWithdrawn",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 14242,
+                      "src": "1401:12:96",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_event_nonpayable$_t_address_payable_$_t_uint256_$returns$__$",
+                        "typeString": "function (address payable,uint256)"
+                      }
+                    },
+                    "id": 14315,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "1401:30:96",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_tuple$__$",
+                      "typeString": "tuple()"
+                    }
+                  },
+                  "id": 14316,
+                  "nodeType": "EmitStatement",
+                  "src": "1396:35:96"
+                }
+              ]
+            },
+            "documentation": "@notice Withdraw ETH that have been exited from the OMG network successfully.\n@param receiver address of the transferee\n@param amount amount of eth to transfer.",
+            "id": 14318,
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [
+              {
+                "arguments": null,
+                "id": 14304,
+                "modifierName": {
+                  "argumentTypes": null,
+                  "id": 14303,
+                  "name": "onlyFromNonQuarantinedExitGame",
+                  "nodeType": "Identifier",
+                  "overloadedDeclarations": [],
+                  "referencedDeclaration": 14376,
+                  "src": "1320:30:96",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_modifier$__$",
+                    "typeString": "modifier ()"
+                  }
+                },
+                "nodeType": "ModifierInvocation",
+                "src": "1320:30:96"
+              }
+            ],
+            "name": "withdraw",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 14302,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 14299,
+                  "name": "receiver",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 14318,
+                  "src": "1269:24:96",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address_payable",
+                    "typeString": "address payable"
+                  },
+                  "typeName": {
+                    "id": 14298,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1269:15:96",
+                    "stateMutability": "payable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address_payable",
+                      "typeString": "address payable"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 14301,
+                  "name": "amount",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 14318,
+                  "src": "1295:14:96",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 14300,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1295:7:96",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1268:42:96"
+            },
+            "returnParameters": {
+              "id": 14305,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "1351:0:96"
+            },
+            "scope": 14319,
+            "src": "1251:187:96",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "external"
+          }
+        ],
+        "scope": 14320,
+        "src": "137:1303:96"
+      }
+    ],
+    "src": "0:1441:96"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.5.11+commit.c082d0b4.Emscripten.clang"
+  },
+  "networks": {},
+  "schemaVersion": "3.0.16",
+  "updatedAt": "2019-10-07T12:24:58.285Z",
+  "devdoc": {
+    "methods": {
+      "deposit(bytes)": {
+        "params": {
+          "_depositTx": "RLP encoded transaction to act as the deposit."
+        }
+      },
+      "getEffectiveDepositVerifier()": {
+        "return": "contract address of deposit verifier."
+      },
+      "setDepositVerifier(address)": {
+        "details": "emit SetDepositVerifierCalledWhen one contract is already set next will be effective after MIN_EXIT_PERIOD.",
+        "params": {
+          "_verifier": "address of the verifier contract."
+        }
+      },
+      "withdraw(address,uint256)": {
+        "params": {
+          "amount": "amount of eth to transfer.",
+          "receiver": "address of the transferee"
+        }
+      }
+    }
+  },
+  "userdoc": {
+    "methods": {
+      "deposit(bytes)": {
+        "notice": "Allows a user to deposit ETH into the contract. Once the deposit is recognized, the owner is able to make transactions on the OMG network."
+      },
+      "getEffectiveDepositVerifier()": {
+        "notice": "Gets currently effective deposit verifier contract address."
+      },
+      "setDepositVerifier(address)": {
+        "notice": "Sets the deposit verifier contract. This can be only called by the operator."
+      },
+      "withdraw(address,uint256)": {
+        "notice": "Withdraw ETH that have been exited from the OMG network successfully."
+      }
+    }
+  }
+}

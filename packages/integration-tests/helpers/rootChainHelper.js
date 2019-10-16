@@ -19,6 +19,7 @@ const numberToBN = require('number-to-bn')
 const fetch = require('node-fetch')
 const erc20abi = require('human-standard-token-abi')
 const { parseLog } = require('ethereum-event-logs')
+const { utils } = require('web3')
 
 function createAccount (web3) {
   const ret = web3.eth.accounts.create()
@@ -51,7 +52,7 @@ async function sendTransaction (web3, txDetails, privateKey) {
 
 async function spentOnGas (web3, receipt) {
   const tx = await web3.eth.getTransaction(receipt.transactionHash)
-  return web3.utils.toBN(tx.gasPrice).muln(receipt.gasUsed)
+  return utils.toBN(tx.gasPrice).muln(receipt.gasUsed)
 }
 
 function waitForEthBalance (web3, address, callback) {

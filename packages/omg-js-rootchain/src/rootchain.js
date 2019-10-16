@@ -32,14 +32,29 @@ class RootChain {
   constructor (web3, plasmaContractAddress, plasmaAbi) {
     this.web3 = web3
     this.plasmaContractAddress = plasmaContractAddress
-    const contractAbi = plasmaAbi || require('./contracts/RootChain.json')
-    if (web3.version.api && web3.version.api.startsWith('0.2')) {
-      this.plasmaContract = this.web3.eth.contract(contractAbi.abi).at(plasmaContractAddress)
-    } else {
-      this.plasmaContract = new this.web3.eth.Contract(contractAbi.abi, plasmaContractAddress)
-    }
+    this.isLegacyWeb3 = web3.version.api && web3.version.api.startsWith('0.2')
+    // contracts abi
+    this.erc20VaultAbi = require('./contracts/ERC20Vault.json')
+    this.ethVaultAbi = require('./contracts/EthVault.json')
+    this.exitGameRegistryAbi = require('./contracts/ExitGameRegistry.json')
+    this.plasmaFrameworkAbi = plasmaAbi || require('./contracts/PlasmaFramework.json')
+    this.plasmaContract = this.getContract(this.plasmaFrameworkAbi.abi, plasmaContractAddress)
   }
 
+  getEthVaultAddress () {
+    return this.plasmaContract.methods.vaults(1).call()
+  }
+
+  getErc20VaultAddress () {
+    return this.plasmaContract.methods.vaults(2).call()
+  }
+
+  getContract (abi, address) {
+    if (this.isLegacyWeb3) {
+      return this.web3.eth.contract(abi).at(address)
+    } 
+    return new this.web3.eth.Contract(abi, address)
+  }
   /**
    * Deposit ETH to rootchain
    *
@@ -47,26 +62,26 @@ class RootChain {
    * @param {string} depositTx RLP encoded childchain deposit transaction
    * @param {number} amount amount of ETH to deposit
    * @param {Object} txOptions transaction options, such as `from`, `gas` and `privateKey`
-   * @param {Object} [callBacks] callbacks to events from the transaction lifecycle
+   * @param {Object} [callbacks] callbacks to events from the transaction lifecycle
    * @return {Promise<{ transactionHash: string }>} promise that resolves with an object holding the transaction hash
    */
-  async depositEth (depositTx, amount, txOptions, callBacks) {
+  async depositEth (depositTx, amount, txOptions, callbacks) {
+    const ethVaultAddress = await this.getEthVaultAddress()
+    const ethVaultContract = this.getContract(this.ethVaultAbi.abi, ethVaultAddress)
     const txDetails = {
       from: txOptions.from,
-      to: this.plasmaContractAddress,
+      to: ethVaultAddress,
       value: amount,
       data: txUtils.getTxData(
         this.web3,
-        this.plasmaContract,
+        ethVaultContract,
         'deposit',
         depositTx
-      ),
-      gas: txOptions.gas,
-      gasPrice: txOptions.gasPrice
+      )
     }
-    return txUtils.sendTx(this.web3, txDetails, txOptions.privateKey, callBacks)
-  }
 
+    return txUtils.sendTx(this.web3, txDetails, txOptions.privateKey, callbacks)
+  }
   /**
    * Deposit ERC20 Token to rootchain (caller must be token owner)
    *
@@ -76,17 +91,17 @@ class RootChain {
    * @return {string} transaction hash of the call
    */
   async depositToken (depositTx, txOptions) {
+    const erc20VaultAddress = await this.getErc20VaultAddress()
+    const erc20VaultContract = this.getContract(this.erc20VaultAbi.abi, erc20VaultAddress)
     const txDetails = {
       from: txOptions.from,
-      to: this.plasmaContractAddress,
+      to: erc20VaultAddress,
       data: txUtils.getTxData(
         this.web3,
-        this.plasmaContract,
-        'depositFrom',
+        erc20VaultContract,
+        'deposit',
         depositTx
-      ),
-      gas: txOptions.gas,
-      gasPrice: txOptions.gasPrice
+      )
     }
 
     return txUtils.sendTx(this.web3, txDetails, txOptions.privateKey)

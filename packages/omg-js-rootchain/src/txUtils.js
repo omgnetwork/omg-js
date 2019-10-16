@@ -6,10 +6,10 @@
  * @param web3 the web3 object to access the Ethereum network
  * @param {object} txDetails transaction details object
  * @param {string} privateKey private key
- * @param {{ onReceipt: any, onConfirmation: any }} [callBacks] callbacks to use during transaction lifecycle
+ * @param {{ onReceipt: any, onConfirmation: any }} [callbacks] callbacks to use during transaction lifecycle
  * @return {Promise<{ transactionHash: string }>} promise that resolves with the transaction hash
  */
-async function sendTx (web3, txDetails, privateKey, callBacks) {
+async function sendTx (web3, txDetails, privateKey, callbacks) {
   await setGas(web3, txDetails)
   if (!privateKey) {
     // No privateKey, caller will handle signing if necessary
@@ -22,11 +22,11 @@ async function sendTx (web3, txDetails, privateKey, callBacks) {
         })
       })
     }
-    if (callBacks) {
+    if (callbacks) {
       return new Promise((resolve, reject) => {
         web3.eth.sendTransaction(txDetails)
-          .on('receipt', callBacks.onReceipt)
-          .on('confirmation', callBacks.onConfirmation)
+          .on('receipt', callbacks.onReceipt)
+          .on('confirmation', callbacks.onConfirmation)
           .on('transactionHash', hash => resolve({ transactionHash: hash }))
           .on('error', reject)
       })
@@ -37,11 +37,11 @@ async function sendTx (web3, txDetails, privateKey, callBacks) {
   // First sign the transaction
   const signedTx = await web3.eth.accounts.signTransaction(txDetails, prefixHex(privateKey))
   // Then send it
-  if (callBacks) {
+  if (callbacks) {
     return new Promise((resolve, reject) => {
       web3.eth.sendSignedTransaction(signedTx.rawTransaction)
-        .on('receipt', callBacks.onReceipt)
-        .on('confirmation', callBacks.onConfirmation)
+        .on('receipt', callbacks.onReceipt)
+        .on('confirmation', callbacks.onConfirmation)
         .on('transactionHash', hash => resolve({ transactionHash: hash }))
         .on('error', reject)
     })
