@@ -69,7 +69,6 @@ class RootChain {
    */
   async depositEth (depositTx, amount, txOptions, callBacks) {
     const ethVaultAddress = await this.plasmaContract.methods.vaults(1).call()
-
     const ethVaultAbi = require('./contracts/EthVault.json')
     const ethVaultContract = new this.web3.eth.Contract(ethVaultAbi.abi, ethVaultAddress)
 
@@ -105,6 +104,7 @@ class RootChain {
     const erc20VaultAddress = await this.plasmaContract.methods.vaults(2).call()
     const erc20VaultAbi = require('./contracts/Erc20Vault.json')
     const erc20VaultContract = new this.web3.eth.Contract(erc20VaultAbi.abi, erc20VaultAddress)
+
     const txDetails = {
       from: txOptions.from,
       to: erc20VaultAddress,
@@ -113,9 +113,7 @@ class RootChain {
         erc20VaultContract,
         'deposit',
         depositTx
-      ),
-      gas: 70000, // txOptions.gas,
-      gasPrice: txOptions.gasPrice
+      )
     }
 
     return txUtils.sendTx(this.web3, txDetails, txOptions.privateKey)
