@@ -59,7 +59,7 @@ describe('Deposit tests', async () => {
     })
 
     it('depositEth calls event emitter if passed', async () => {
-      const depositTx = transaction.encodeDepositAld(aliceAccount.address, TEST_AMOUNT, transaction.ETH_CURRENCY)
+      const depositTx = transaction.encodeDeposit(aliceAccount.address, TEST_AMOUNT, transaction.ETH_CURRENCY)
       let confirmationNum
       let receipt
 

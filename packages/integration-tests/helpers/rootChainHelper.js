@@ -130,12 +130,12 @@ async function approveERC20 (
 }
 
 async function depositEth (rootChain, childChain, address, amount, privateKey) {
-  const depositTx = transaction.encodeDepositAld(address, amount, transaction.ETH_CURRENCY)
+  const depositTx = transaction.encodeDeposit(address, amount, transaction.ETH_CURRENCY)
   return rootChain.depositEth(depositTx, amount, { from: address, privateKey })
 }
 
 async function depositToken (rootChain, childChain, address, amount, currency, privateKey) {
-  const depositTx = transaction.encodeDepositAld(address, amount, currency)
+  const depositTx = transaction.encodeDeposit(address, amount, currency)
   return rootChain.depositToken(depositTx, { from: address, privateKey })
 }
 

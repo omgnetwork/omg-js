@@ -121,10 +121,10 @@ const transaction = {
   *
   */
   encodeDeposit: function (owner, amount, currency) {
-    return this.encode({
-      inputs: [],
-      outputs: [{ owner, amount, currency }]
-    })
+    const output = new PaymentTransactionOutput(1, amount, owner, currency)
+    const transaction = new PlasmaDepositTransaction(output)
+    const encoded = transaction.rlpEncoded()
+    return encoded
   },
 
   /**
@@ -164,13 +164,6 @@ const transaction = {
       }),
       metadata
     }
-  },
-
-  encodeDepositAld: function (owner, amount, currency) {
-    const output = new PaymentTransactionOutput(1, amount, owner, currency)
-    const transaction = new PlasmaDepositTransaction(output)
-    const encoded = transaction.rlpEncoded()
-    return encoded
   },
 
   /**
