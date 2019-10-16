@@ -136,7 +136,7 @@ async function depositEth (rootChain, childChain, address, amount, privateKey) {
 
 async function depositToken (rootChain, childChain, address, amount, currency, privateKey) {
   const depositTx = transaction.encodeDepositAld(address, amount, currency)
-  return rootChain.depositToken(`0x${depositTx.toString('hex')}`, { from: address, privateKey })
+  return rootChain.depositToken(depositTx, { from: address, privateKey })
 }
 
 async function getPlasmaContractAddress (config) {

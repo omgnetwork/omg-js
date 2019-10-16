@@ -23,7 +23,7 @@ class PaymentTransactionOutput {
         if (this.amount instanceof BN) {
             return [this.outputType, this.outputGuard, this.token, web3.utils.numberToHex(this.amount)];
         }
-        return [this.outputType, this.outputGuard, this.token, this.amount];
+        return [this.outputType, this.outputGuard, this.token, +this.amount];
     }
 
     rlpEncoded() {
@@ -47,7 +47,6 @@ class PaymentTransaction {
 
     rlpEncoded() {
         const tx = [this.transactionType];
-
         tx.push(this.inputs);
         tx.push(PaymentTransaction.formatForRlpEncoding(this.outputs));
         tx.push(this.metaData);
