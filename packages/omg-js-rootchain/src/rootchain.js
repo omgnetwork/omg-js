@@ -37,7 +37,9 @@ class RootChain {
     this.erc20VaultAbi = require('./contracts/ERC20Vault.json')
     this.ethVaultAbi = require('./contracts/EthVault.json')
     this.exitGameRegistryAbi = require('./contracts/ExitGameRegistry.json')
+    this.paymentExitGameAbi = require('./contracts/PaymentExitGame.json')
     this.plasmaFrameworkAbi = plasmaAbi || require('./contracts/PlasmaFramework.json')
+
     this.plasmaContract = this.getContract(this.plasmaFrameworkAbi.abi, plasmaContractAddress)
   }
 
@@ -47,6 +49,10 @@ class RootChain {
 
   getErc20VaultAddress () {
     return this.plasmaContract.methods.vaults(2).call()
+  }
+
+  getPaymentExitGameAddress () {
+    return this.plasmaContract.methods.exitGames(1).call()
   }
 
   getContract (abi, address) {
@@ -118,15 +124,20 @@ class RootChain {
    * @return {string} transaction hash of the call
    */
   async startStandardExit (outputId, outputTx, inclusionProof, txOptions) {
+    const paymentExitGameAddress = this.getPaymentExitGameAddress()
+    const paymentExitGameContract = this.getContract(this.paymentExitGameAbi.abi, paymentExitGameAddress)
+    const EMPTY_BYTES_32 = '0x0000000000000000000000000000000000000000000000000000000000000000'
+
     const txDetails = {
       from: txOptions.from,
-      to: this.plasmaContractAddress,
+      to: paymentExitGameAddress,
       data: txUtils.getTxData(
         this.web3,
-        this.plasmaContract,
+        paymentExitGameContract,
         'startStandardExit',
         outputId.toString(),
         outputTx,
+        EMPTY_BYTES_32,
         inclusionProof
       ),
       value: STANDARD_EXIT_BOND,
