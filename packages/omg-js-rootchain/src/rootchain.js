@@ -18,6 +18,8 @@ const txUtils = require('./txUtils')
 const STANDARD_EXIT_BOND = 31415926535
 const INFLIGHT_EXIT_BOND = 31415926535
 const PIGGYBACK_BOND = 31415926535
+const ETH_VAULT_ID = 1
+const ERC20_VAULT_ID = 2
 
 class RootChain {
   /**
@@ -42,11 +44,11 @@ class RootChain {
   }
 
   getEthVaultAddress () {
-    return this.plasmaContract.methods.vaults(1).call()
+    return this.plasmaContract.methods.vaults(ETH_VAULT_ID).call()
   }
 
   getErc20VaultAddress () {
-    return this.plasmaContract.methods.vaults(2).call()
+    return this.plasmaContract.methods.vaults(ERC20_VAULT_ID).call()
   }
 
   getContract (abi, address) {
@@ -205,7 +207,7 @@ class RootChain {
   }
 
   /**
-   * Adds a token to the Plasma chain. Tokens must be added in order to be able to exit them.
+   * Adds an erc20 token to the Plasma chain. Tokens must be added in order to be able to exit them.
    * @method addToken
    * @param {string} token Address of the token to process.
    * @return {string} transaction hash of the call
@@ -218,7 +220,8 @@ class RootChain {
       data: txUtils.getTxData(
         this.web3,
         this.plasmaContract,
-        'addToken',
+        'addExitQueue',
+        ERC20_VAULT_ID,
         token
       ),
       gas: txOptions.gas,
