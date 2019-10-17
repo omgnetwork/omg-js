@@ -209,7 +209,7 @@ class RootChain {
 
     const txDetails = {
       from: txOptions.from,
-      to: this.paymentExitGameContractAddress,
+      to: paymentExitGameContractAddress,
       data: txUtils.getTxData(
         this.web3,
         paymentExitGameContract,
