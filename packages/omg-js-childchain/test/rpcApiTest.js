@@ -15,7 +15,7 @@ limitations under the License. */
 
 const { use, assert } = require('chai')
 const chaiAsPromised = require('chai-as-promised')
-const rp = require('request-promise')
+const rp = require('request-promise-native')
 const sinon = require('sinon')
 
 const ChildChain = require('../src/childchain')
