@@ -32,7 +32,7 @@ let rootChain
 // NB This test waits for at least RootChain.MIN_EXIT_PERIOD so it should be run against a
 // modified RootChain contract with a shorter than normal MIN_EXIT_PERIOD.
 
-describe.only('Standard Exit tests', async () => {
+describe('Standard Exit tests', async () => {
   before(async () => {
     const plasmaContract = await rcHelper.getPlasmaContractAddress(config)
     rootChain = new RootChain(web3, plasmaContract.contract_addr)
@@ -61,10 +61,10 @@ describe.only('Standard Exit tests', async () => {
       }
     })
 
-    it.only('should succesfully exit a deposit', async () => {
+    it('should succesfully exit a deposit', async () => {
       // Alice deposits ETH into the Plasma contract
       let receipt = await rcHelper.depositEth(rootChain, childChain, aliceAccount.address, DEPOSIT_AMOUNT, aliceAccount.privateKey)
-      // await ccHelper.waitForBalanceEq(childChain, aliceAccount.address, DEPOSIT_AMOUNT)
+      await ccHelper.waitForBalanceEq(childChain, aliceAccount.address, DEPOSIT_AMOUNT)
       console.log(`Alice deposited ${DEPOSIT_AMOUNT} into RootChain contract`)
 
       // Keep track of how much Alice spends on gas
