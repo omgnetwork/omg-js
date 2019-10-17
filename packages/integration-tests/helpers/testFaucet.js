@@ -39,7 +39,7 @@ const faucet = {
     // The fundAccount is used to top up the faucet - useful for local testing
     // that may not have a dedicated faucet
     this.fundAccount = await getFundAccount(web3, config)
-
+    
     if (!this.address || this.address === '') {
       // If no faucet configured, create a new one. This is really only useful when running tests locally.
       const faucetAccount = rcHelper.createAccount(web3)
@@ -62,13 +62,13 @@ const faucet = {
     console.info(`Rootchain ERC20 balance: ${await rcHelper.getERC20Balance(web3, this.erc20Contract, this.address)}`)
     console.info(`----------------- `)
 
-    const ccBalance = await this.childChain.getBalance(this.address)
-    const ccEthBalance = ccBalance.find(e => e.currency === transaction.ETH_CURRENCY)
-    const ccErc20Balance = ccBalance.find(e => e.currency === this.erc20ContractAddress)
+    // const ccBalance = await this.childChain.getBalance(this.address)
+    // const ccEthBalance = ccBalance.find(e => e.currency === transaction.ETH_CURRENCY)
+    // const ccErc20Balance = ccBalance.find(e => e.currency === this.erc20ContractAddress)
 
-    console.info(`Childchain ETH balance: ${ccEthBalance ? ccEthBalance.amount.toString() : '0'}`)
-    console.info(`Childchain ERC20 balance: ${ccErc20Balance ? ccErc20Balance.amount.toString() : '0'}`)
-    console.info(`----------------- Faucet -----------------------`)
+    // console.info(`Childchain ETH balance: ${ccEthBalance ? ccEthBalance.amount.toString() : '0'}`)
+    // console.info(`Childchain ERC20 balance: ${ccErc20Balance ? ccErc20Balance.amount.toString() : '0'}`)
+    // console.info(`----------------- Faucet -----------------------`)
   },
 
   initEthBalance: async function (web3, minAmount) {
@@ -93,13 +93,13 @@ const faucet = {
       try {
         console.log(`Not enough Child chain ETH in faucet ${this.address}, attempting to deposit ${needed.toString()} ETH from root chain`)
         await rcHelper.depositEth(this.rootChain, this.childChain, this.address, needed, this.privateKey)
-        await ccHelper.waitForBalance(
-          this.childChain,
-          this.address,
-          transaction.ETH_CURRENCY,
-          balance => numberToBN(balance.amount).gte(numberToBN(minAmount))
-        )
-        console.log(`Test faucet ${this.address} topped up with ${needed.toString()} ETH`)
+        // await ccHelper.waitForBalance(
+        //   this.childChain,
+        //   this.address,
+        //   transaction.ETH_CURRENCY,
+        //   balance => numberToBN(balance.amount).gte(numberToBN(minAmount))
+        // )
+        // console.log(`Test faucet ${this.address} topped up with ${needed.toString()} ETH`)
       } catch (err) {
         console.warn(`Error topping up faucet ${this.address}`)
         throw err
@@ -142,12 +142,12 @@ const faucet = {
           throw new Error('ERC20 approval failed!')
         }
         await rcHelper.depositToken(this.rootChain, this.childChain, this.address, needed.toNumber(), this.erc20ContractAddress, this.privateKey)
-        await ccHelper.waitForBalance(
-          this.childChain,
-          this.address,
-          this.erc20ContractAddress,
-          balance => numberToBN(balance.amount).gte(numberToBN(minAmount))
-        )
+        // await ccHelper.waitForBalance(
+        //   this.childChain,
+        //   this.address,
+        //   this.erc20ContractAddress,
+        //   balance => numberToBN(balance.amount).gte(numberToBN(minAmount))
+        // )
         console.log(`Test faucet ${this.address} topped up with ${needed.toString()} ${this.erc20ContractAddress}`)
       } catch (err) {
         console.error(`Error depositing ${needed.toString()} ${this.erc20ContractAddress} - not enough tokens in faucet?`)
