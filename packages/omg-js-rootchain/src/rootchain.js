@@ -205,7 +205,7 @@ class RootChain {
   }
 
   /**
-   * Adds a token to the Plasma chain. Tokens must be added in order to be able to exit them.
+   * Adds an erc20 token to the Plasma chain. Tokens must be added in order to be able to exit them.
    * @method addToken
    * @param {string} token Address of the token to process.
    * @return {string} transaction hash of the call
@@ -218,7 +218,8 @@ class RootChain {
       data: txUtils.getTxData(
         this.web3,
         this.plasmaContract,
-        'addToken',
+        'addExitQueue',
+        2,
         token
       ),
       gas: txOptions.gas,
