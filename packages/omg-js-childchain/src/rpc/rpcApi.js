@@ -24,13 +24,14 @@ class RpcError extends Error {
 }
 
 async function get ({ url, proxyUrl }) {
-  let fetch = request
-  if (proxyUrl) {
-    fetch = request.defaults({ proxy: proxyUrl })
-  }
-
   try {
-    const res = await fetch.get(url)
+    const options = {
+      method: 'GET',
+      uri: url,
+      ...proxyUrl && { proxy: proxyUrl }
+    }
+
+    const res = await request.get(options)
     return parseResponse(res)
   } catch (err) {
     throw new Error(err)
@@ -41,20 +42,16 @@ async function post ({ url, body, proxyUrl }) {
   body.jsonrpc = body.jsonrpc || '2.0'
   body.id = body.id || 0
 
-  let fetch = request
-  if (proxyUrl) {
-    fetch = request.defaults({ proxy: proxyUrl })
-  }
-
   try {
     const options = {
       method: 'POST',
       uri: url,
       headers: { 'Content-Type': 'application/json' },
       body,
-      json: true
+      json: true,
+      ...proxyUrl && { proxy: proxyUrl }
     }
-    const res = await fetch.post(options)
+    const res = await request.post(options)
     return parseResponse(res)
   } catch (err) {
     throw new Error(err)
@@ -62,13 +59,16 @@ async function post ({ url, body, proxyUrl }) {
 }
 
 async function parseResponse (res) {
+  console.log('res: ', res)
+  console.log('type: ', typeof res)
+
   const body = JSON.stringify(res)
   let json
   try {
     // Need to use a JSON parser capable of handling uint256
     json = JSONBigNumber.parse(body)
   } catch (err) {
-    throw new Error(err.message)
+    throw new Error('Unknown server error')
   }
   debug(`rpc response is ${JSON.stringify(json)}`)
 

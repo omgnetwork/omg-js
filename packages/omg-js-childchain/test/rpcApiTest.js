@@ -44,7 +44,11 @@ describe('rpcApi test', () => {
   it('should get to passed url', async () => {
     const res = await rpcApi.get({ url: watcherUrl })
     assert.equal(res, 'foobar')
-    sinon.assert.calledWith(rp.get, watcherUrl)
+    const expectedCall = {
+      method: 'GET',
+      uri: 'http://omg-watcher'
+    }
+    sinon.assert.calledWith(rp.get, expectedCall)
   })
 
   it('should post to passed url', async () => {
@@ -70,11 +74,9 @@ describe('rpcApi integration test', () => {
       success: true,
       data: 'foobar'
     })
-    sinon.spy(rp, 'defaults')
   })
   after(() => {
     rp.post.restore()
-    rp.defaults.restore()
   })
   it('childchain should pass proxy url if it exists', async () => {
     const childchainWithProxy = new ChildChain({ watcherUrl, watcherProxyUrl: proxyUrl })
@@ -84,13 +86,11 @@ describe('rpcApi integration test', () => {
       uri: `${watcherUrl}/transaction.get`,
       headers: { 'Content-Type': 'application/json' },
       body: { id: 3, jsonrpc: '2.0' },
-      pool: undefined,
       proxy: proxyUrl,
       json: true
     }
     assert.equal(res, 'foobar')
     sinon.assert.calledWith(rp.post, expectedCall)
-    sinon.assert.calledWith(rp.defaults, { proxy: proxyUrl })
   })
 
   it('childchain should not pass proxy url if it doesnt exist', async () => {
@@ -105,6 +105,5 @@ describe('rpcApi integration test', () => {
     }
     assert.equal(res, 'foobar')
     sinon.assert.calledWith(rp.post, expectedCall)
-    sinon.assert.calledWith(rp.defaults, { proxy: proxyUrl })
   })
 })
