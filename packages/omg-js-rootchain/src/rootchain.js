@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License. */
 
 const txUtils = require('./txUtils')
+const { transaction } = require('@omisego/omg-js-util')
 
 const STANDARD_EXIT_BOND = 14000000000000000
 const INFLIGHT_EXIT_BOND = 31415926535
@@ -226,6 +227,8 @@ class RootChain {
    * @throws an exception if the token has already been added.
    */
   async addToken (token, txOptions) {
+    const vaultId = token === transaction.ETH_CURRENCY ? 1 : 2
+
     const txDetails = {
       from: txOptions.from,
       to: this.plasmaContractAddress,
@@ -233,7 +236,7 @@ class RootChain {
         this.web3,
         this.plasmaContract,
         'addExitQueue',
-        2,
+        vaultId,
         token
       ),
       gas: txOptions.gas,
