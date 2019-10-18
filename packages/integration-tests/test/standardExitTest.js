@@ -83,7 +83,11 @@ describe.only('Standard Exit tests', async () => {
       const exitData = await childChain.getExitData(utxoToExit)
       assert.hasAllKeys(exitData, ['txbytes', 'proof', 'utxo_pos'])
 
-      await rootChain.addToken(transaction.ETH_CURRENCY, { from: aliceAccount.address, privateKey: aliceAccount.privateKey })
+      try {
+        await rootChain.addToken(transaction.ETH_CURRENCY, { from: aliceAccount.address, privateKey: aliceAccount.privateKey })
+      } catch (err) {
+        //
+      }
 
       receipt = await rootChain.startStandardExit(
         exitData.utxo_pos,
