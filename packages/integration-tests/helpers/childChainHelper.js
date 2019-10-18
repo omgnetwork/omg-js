@@ -59,7 +59,7 @@ function waitForBalance (childChain, address, currency, callback) {
     const resp = await childChain.getBalance(address)
     if (
       resp.length === 0 ||
-      !resp.find(item => item.currency === currency && callback(item))
+      resp.find(item => item.currency.toLowerCase() !== currency.toLowerCase() || (callback && !callback(item)))
     ) {
       retry()
     }
