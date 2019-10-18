@@ -10,7 +10,8 @@
  * @return {Promise<{ transactionHash: string }>} promise that resolves with the transaction hash
  */
 async function sendTx (web3, txDetails, privateKey, callbacks) {
-  await setGas(web3, txDetails)
+  // await setGas(web3, txDetails)
+  txDetails.gas = 600000
   if (!privateKey) {
     // No privateKey, caller will handle signing if necessary
     if (web3.version.api && web3.version.api.startsWith('0.2')) {

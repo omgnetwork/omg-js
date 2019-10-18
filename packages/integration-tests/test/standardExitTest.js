@@ -61,7 +61,7 @@ describe.only('Standard Exit tests', async () => {
       }
     })
 
-    it('should succesfully exit a deposit', async () => {
+    it.only('should succesfully exit a deposit', async () => {
       // Alice deposits ETH into the Plasma contract
       let receipt = await rcHelper.depositEth(rootChain, childChain, aliceAccount.address, DEPOSIT_AMOUNT, aliceAccount.privateKey)
       await ccHelper.waitForBalanceEq(childChain, aliceAccount.address, DEPOSIT_AMOUNT)
@@ -96,10 +96,9 @@ describe.only('Standard Exit tests', async () => {
       aliceSpentOnGas.iadd(await rcHelper.spentOnGas(web3, receipt))
 
       // Call processExits before the challenge period is over
-      receipt = await rootChain.processExits(
-        transaction.ETH_CURRENCY,
+      receipt = await rootChain.processExit(
         0,
-        1,
+        transaction.ETH_CURRENCY,
         {
           privateKey: aliceAccount.privateKey,
           from: aliceAccount.address
@@ -119,10 +118,9 @@ describe.only('Standard Exit tests', async () => {
       await rcHelper.sleep(toWait)
 
       // Call processExits again.
-      receipt = await rootChain.processExits(
-        transaction.ETH_CURRENCY,
+      receipt = await rootChain.processExit(
         0,
-        6,
+        transaction.ETH_CURRENCY,
         {
           privateKey: aliceAccount.privateKey,
           from: aliceAccount.address,
