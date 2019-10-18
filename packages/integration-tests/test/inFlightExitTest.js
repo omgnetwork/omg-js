@@ -111,7 +111,7 @@ describe('In-flight Exit tests', async () => {
       console.log(`Bob called RootChain.startInFlightExit(): txhash = ${receipt.transactionHash}`)
 
       // Keep track of how much Bob spends on gas
-      let bobSpentOnGas = await rcHelper.spentOnGas(web3, receipt)
+      const bobSpentOnGas = await rcHelper.spentOnGas(web3, receipt)
 
       // Decode the transaction to get the index of Bob's output
       const decodedTx = transaction.decode(txbytes)

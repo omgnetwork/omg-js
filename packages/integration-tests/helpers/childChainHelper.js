@@ -26,7 +26,7 @@ function selectUtxos (utxos, amount, currency, includeFee) {
 
   if (sorted) {
     const selected = []
-    let currentBalance = numberToBN(0)
+    const currentBalance = numberToBN(0)
     for (let i = 0; i < Math.min(sorted.length, 4); i++) {
       selected.push(sorted[i])
       currentBalance.iadd(numberToBN(sorted[i].amount))
@@ -43,7 +43,7 @@ function selectUtxos (utxos, amount, currency, includeFee) {
         )
         const feeUtxo = ethUtxos.find(utxo => utxo !== selected)
         if (!feeUtxo) {
-          console.warn(`Can't find a fee utxo, transaction may fail!`)
+          console.warn('Can\'t find a fee utxo, transaction may fail!')
         } else {
           selected.push(feeUtxo)
         }

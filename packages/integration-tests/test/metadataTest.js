@@ -80,7 +80,7 @@ describe('Metadata tests (ci-enabled-fast)', async () => {
       console.log(`Submitted transaction: ${JSON.stringify(result)}`)
 
       // Bob's balance should be TRANSFER_AMOUNT
-      let balance = await ccHelper.waitForBalanceEq(childChain, bobAccount.address, TRANSFER_AMOUNT)
+      const balance = await ccHelper.waitForBalanceEq(childChain, bobAccount.address, TRANSFER_AMOUNT)
       assert.equal(balance.length, 1)
       assert.equal(balance[0].amount.toString(), TRANSFER_AMOUNT)
 
@@ -136,7 +136,7 @@ describe('Metadata tests (ci-enabled-fast)', async () => {
       console.log(`Submitted transaction: ${JSON.stringify(result)}`)
 
       // Bob's balance should be TRANSFER_AMOUNT
-      let balance = await ccHelper.waitForBalanceEq(childChain, bobAccount.address, TRANSFER_AMOUNT)
+      const balance = await ccHelper.waitForBalanceEq(childChain, bobAccount.address, TRANSFER_AMOUNT)
       assert.equal(balance.length, 1)
       assert.equal(balance[0].amount.toString(), TRANSFER_AMOUNT)
 
@@ -187,7 +187,7 @@ describe('Metadata tests (ci-enabled-fast)', async () => {
       console.log(`Submitted transaction: ${JSON.stringify(result)}`)
 
       // Bob's balance should be TRANSFER_AMOUNT
-      let balance = await ccHelper.waitForBalanceEq(childChain, bobAccount.address, TRANSFER_AMOUNT)
+      const balance = await ccHelper.waitForBalanceEq(childChain, bobAccount.address, TRANSFER_AMOUNT)
       assert.equal(balance.length, 1)
       assert.equal(balance[0].amount.toString(), TRANSFER_AMOUNT)
 
