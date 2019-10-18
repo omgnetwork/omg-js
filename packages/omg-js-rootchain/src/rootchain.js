@@ -18,7 +18,6 @@ const txUtils = require('./txUtils')
 const STANDARD_EXIT_BOND = 14000000000000000
 const INFLIGHT_EXIT_BOND = 31415926535
 const PIGGYBACK_BOND = 31415926535
-const PAYMENT_TX_TYPE = 1
 
 class RootChain {
   /**
@@ -59,9 +58,10 @@ class RootChain {
   getContract (abi, address) {
     if (this.isLegacyWeb3) {
       return this.web3.eth.contract(abi).at(address)
-    } 
+    }
     return new this.web3.eth.Contract(abi, address)
   }
+
   /**
    * Deposit ETH to rootchain
    *
@@ -89,6 +89,7 @@ class RootChain {
 
     return txUtils.sendTx(this.web3, txDetails, txOptions.privateKey, callbacks)
   }
+
   /**
    * Deposit ERC20 Token to rootchain (caller must be token owner)
    *
@@ -127,7 +128,6 @@ class RootChain {
   async startStandardExit (outputId, outputTx, inclusionProof, txOptions) {
     const paymentExitGameAddress = await this.getPaymentExitGameAddress()
     const paymentExitGameContract = this.getContract(this.paymentExitGameAbi.abi, paymentExitGameAddress)
-    const EMPTY_BYTES_32 = '0x0000000000000000000000000000000000000000000000000000000000000000'
 
     const txDetails = {
       from: txOptions.from,
@@ -193,7 +193,7 @@ class RootChain {
    * @param {Object} txOptions transaction options, such as `from`, gas` and `privateKey`
    * @return {string} transaction hash of the call
    */
-  async processExit(exitId, token, txOptions) {
+  async processExit (exitId, token, txOptions) {
     const txDetails = {
       from: txOptions.from,
       to: this.plasmaContractAddress,
@@ -232,7 +232,8 @@ class RootChain {
       data: txUtils.getTxData(
         this.web3,
         this.plasmaContract,
-        'addToken',
+        'addExitQueue',
+        2,
         token
       ),
       gas: txOptions.gas,

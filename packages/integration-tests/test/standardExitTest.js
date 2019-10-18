@@ -68,7 +68,7 @@ describe.only('Standard Exit tests', async () => {
       console.log(`Alice deposited ${DEPOSIT_AMOUNT} into RootChain contract`)
 
       // Keep track of how much Alice spends on gas
-      let aliceSpentOnGas = await rcHelper.spentOnGas(web3, receipt)
+      const aliceSpentOnGas = await rcHelper.spentOnGas(web3, receipt)
       console.log(`aliceSpentOnGas = ${aliceSpentOnGas}`)
 
       // Alice wants to exit without having transacted on the childchain
@@ -82,6 +82,8 @@ describe.only('Standard Exit tests', async () => {
       const utxoToExit = aliceUtxos[0]
       const exitData = await childChain.getExitData(utxoToExit)
       assert.hasAllKeys(exitData, ['txbytes', 'proof', 'utxo_pos'])
+
+      await rootChain.addToken(transaction.ETH_CURRENCY, { from: aliceAccount.address, privateKey: aliceAccount.privateKey })
 
       receipt = await rootChain.startStandardExit(
         exitData.utxo_pos,
@@ -212,7 +214,7 @@ describe.only('Standard Exit tests', async () => {
       console.log(`Bob called RootChain.startExit(): txhash = ${receipt.transactionHash}`)
 
       // Keep track of how much Bob spends on gas
-      let bobSpentOnGas = await rcHelper.spentOnGas(web3, receipt)
+      const bobSpentOnGas = await rcHelper.spentOnGas(web3, receipt)
 
       // Call processExits before the challenge period is over
       receipt = await rootChain.processExits(
