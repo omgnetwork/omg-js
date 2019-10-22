@@ -215,7 +215,7 @@ describe('Transfer tests', async () => {
 
       // Alice's balance should be ALICE_OUTPUT_0 + ALICE_OUTPUT_1
       const expected = web3.utils.toBN(ALICE_OUTPUT_0).add(web3.utils.toBN(ALICE_OUTPUT_1))
-      let balance = await ccHelper.waitForBalanceEq(childChain, aliceAccount.address, expected)
+      const balance = await ccHelper.waitForBalanceEq(childChain, aliceAccount.address, expected)
       assert.equal(balance[0].amount.toString(), expected.toString())
 
       // Check Alice's utxos on the child chain again
@@ -461,7 +461,7 @@ describe('Transfer tests', async () => {
       console.log(`Submitted transaction: ${JSON.stringify(result)}`)
 
       // Bob's balance should be TRANSFER_AMOUNT
-      let balance = await ccHelper.waitForBalanceEq(childChain, bobAccount.address, TRANSFER_AMOUNT)
+      const balance = await ccHelper.waitForBalanceEq(childChain, bobAccount.address, TRANSFER_AMOUNT)
       assert.equal(balance.length, 1)
       assert.equal(balance[0].amount.toString(), TRANSFER_AMOUNT)
     })

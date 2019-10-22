@@ -3,7 +3,7 @@ function hexToBytes (hex) {
   hex = hex.replace(/^0x/i, '')
   hex = hex.length % 2 ? '0' + hex : hex
 
-  let bytes = []
+  const bytes = []
   for (let c = 0; c < hex.length; c += 2) {
     bytes.push(parseInt(hex.substr(c, 2), 16))
   }

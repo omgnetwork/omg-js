@@ -32,7 +32,7 @@ let rootChain
 // NB This test waits for at least RootChain.MIN_EXIT_PERIOD so it should be run against a
 // modified RootChain contract with a shorter than normal MIN_EXIT_PERIOD.
 
-describe('Standard Exit tests', async () => {
+describe.only('Standard Exit tests', async () => {
   before(async () => {
     const plasmaContract = await rcHelper.getPlasmaContractAddress(config)
     rootChain = new RootChain(web3, plasmaContract.contract_addr)
@@ -44,7 +44,7 @@ describe('Standard Exit tests', async () => {
     const DEPOSIT_AMOUNT = web3.utils.toWei('.0001', 'ether')
     let aliceAccount
 
-    before(async () => {
+    beforeEach(async () => {
       // Create and fund Alice's account
       aliceAccount = rcHelper.createAccount(web3)
       console.log(`Created Alice account ${JSON.stringify(aliceAccount)}`)
@@ -52,7 +52,7 @@ describe('Standard Exit tests', async () => {
       await rcHelper.waitForEthBalanceEq(web3, aliceAccount.address, INTIIAL_ALICE_AMOUNT)
     })
 
-    after(async () => {
+    afterEach(async () => {
       try {
         // Send any leftover funds back to the faucet
         await faucet.returnFunds(web3, aliceAccount)
@@ -61,14 +61,14 @@ describe('Standard Exit tests', async () => {
       }
     })
 
-    it('should succesfully exit a deposit', async () => {
+    it.only('should succesfully exit a deposit', async () => {
       // Alice deposits ETH into the Plasma contract
       let receipt = await rcHelper.depositEth(rootChain, childChain, aliceAccount.address, DEPOSIT_AMOUNT, aliceAccount.privateKey)
       await ccHelper.waitForBalanceEq(childChain, aliceAccount.address, DEPOSIT_AMOUNT)
       console.log(`Alice deposited ${DEPOSIT_AMOUNT} into RootChain contract`)
 
       // Keep track of how much Alice spends on gas
-      let aliceSpentOnGas = await rcHelper.spentOnGas(web3, receipt)
+      const aliceSpentOnGas = await rcHelper.spentOnGas(web3, receipt)
       console.log(`aliceSpentOnGas = ${aliceSpentOnGas}`)
 
       // Alice wants to exit without having transacted on the childchain
@@ -83,6 +83,12 @@ describe('Standard Exit tests', async () => {
       const exitData = await childChain.getExitData(utxoToExit)
       assert.hasAllKeys(exitData, ['txbytes', 'proof', 'utxo_pos'])
 
+      try {
+        await rootChain.addToken(transaction.ETH_CURRENCY, { from: aliceAccount.address, privateKey: aliceAccount.privateKey })
+      } catch (err) {
+        //
+      }
+
       receipt = await rootChain.startStandardExit(
         exitData.utxo_pos,
         exitData.txbytes,
@@ -96,10 +102,9 @@ describe('Standard Exit tests', async () => {
       aliceSpentOnGas.iadd(await rcHelper.spentOnGas(web3, receipt))
 
       // Call processExits before the challenge period is over
-      receipt = await rootChain.processExits(
-        transaction.ETH_CURRENCY,
+      receipt = await rootChain.processExit(
         0,
-        1,
+        transaction.ETH_CURRENCY,
         {
           privateKey: aliceAccount.privateKey,
           from: aliceAccount.address
@@ -119,10 +124,9 @@ describe('Standard Exit tests', async () => {
       await rcHelper.sleep(toWait)
 
       // Call processExits again.
-      receipt = await rootChain.processExits(
-        transaction.ETH_CURRENCY,
+      receipt = await rootChain.processExit(
         0,
-        6,
+        transaction.ETH_CURRENCY,
         {
           privateKey: aliceAccount.privateKey,
           from: aliceAccount.address,
@@ -214,7 +218,7 @@ describe('Standard Exit tests', async () => {
       console.log(`Bob called RootChain.startExit(): txhash = ${receipt.transactionHash}`)
 
       // Keep track of how much Bob spends on gas
-      let bobSpentOnGas = await rcHelper.spentOnGas(web3, receipt)
+      const bobSpentOnGas = await rcHelper.spentOnGas(web3, receipt)
 
       // Call processExits before the challenge period is over
       receipt = await rootChain.processExits(

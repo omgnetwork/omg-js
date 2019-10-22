@@ -14,8 +14,9 @@ See the License for the specific language governing permissions and
 limitations under the License. */
 
 const txUtils = require('./txUtils')
+const { transaction } = require('@omisego/omg-js-util')
 
-const STANDARD_EXIT_BOND = 31415926535
+const STANDARD_EXIT_BOND = 14000000000000000
 const INFLIGHT_EXIT_BOND = 31415926535
 const PIGGYBACK_BOND = 31415926535
 
@@ -58,9 +59,10 @@ class RootChain {
   getContract (abi, address) {
     if (this.isLegacyWeb3) {
       return this.web3.eth.contract(abi).at(address)
-    } 
+    }
     return new this.web3.eth.Contract(abi, address)
   }
+
   /**
    * Deposit ETH to rootchain
    *
@@ -88,6 +90,7 @@ class RootChain {
 
     return txUtils.sendTx(this.web3, txDetails, txOptions.privateKey, callbacks)
   }
+
   /**
    * Deposit ERC20 Token to rootchain (caller must be token owner)
    *
@@ -124,9 +127,8 @@ class RootChain {
    * @return {string} transaction hash of the call
    */
   async startStandardExit (outputId, outputTx, inclusionProof, txOptions) {
-    const paymentExitGameAddress = this.getPaymentExitGameAddress()
+    const paymentExitGameAddress = await this.getPaymentExitGameAddress()
     const paymentExitGameContract = this.getContract(this.paymentExitGameAbi.abi, paymentExitGameAddress)
-    const EMPTY_BYTES_32 = '0x0000000000000000000000000000000000000000000000000000000000000000'
 
     const txDetails = {
       from: txOptions.from,
@@ -135,14 +137,16 @@ class RootChain {
         this.web3,
         paymentExitGameContract,
         'startStandardExit',
-        outputId.toString(),
-        outputTx,
-        EMPTY_BYTES_32,
-        inclusionProof
+        [
+          outputId.toString(),
+          outputTx,
+          [],
+          inclusionProof
+        ]
       ),
-      value: STANDARD_EXIT_BOND,
-      gas: txOptions.gas,
-      gasPrice: txOptions.gasPrice
+      value: STANDARD_EXIT_BOND
+      // gas: txOptions.gas,
+      // gasPrice: txOptions.gasPrice
     }
 
     return txUtils.sendTx(this.web3, txDetails, txOptions.privateKey)
@@ -183,15 +187,14 @@ class RootChain {
   }
 
   /**
-   * Processes any exits that have completed the challenge period.
-   * @method processExits
-   * @param {string} token Address of the token to process.
-   * @param {number} topUtxoPos First exit that should be processed. Set to zero to skip the check.
-   * @param {number} exitsToProcess Maximum number of exits to process.
+   * Processes any exit that has completed the challenge period.
+   * @method processExit
+   * @param {string} exitId An exit id returned from startStandardExit.
+   * @param {string} token An address of the token to exit.
    * @param {Object} txOptions transaction options, such as `from`, gas` and `privateKey`
    * @return {string} transaction hash of the call
    */
-  async processExits (token, topUtxoPos, exitsToProcess, txOptions) {
+  async processExit (exitId, token, txOptions) {
     const txDetails = {
       from: txOptions.from,
       to: this.plasmaContractAddress,
@@ -199,9 +202,10 @@ class RootChain {
         this.web3,
         this.plasmaContract,
         'processExits',
+        1,
         token,
-        topUtxoPos,
-        exitsToProcess
+        exitId,
+        1
       ),
       gas: txOptions.gas,
       gasPrice: txOptions.gasPrice
@@ -223,13 +227,16 @@ class RootChain {
    * @throws an exception if the token has already been added.
    */
   async addToken (token, txOptions) {
+    const vaultId = token === transaction.ETH_CURRENCY ? 1 : 2
+
     const txDetails = {
       from: txOptions.from,
       to: this.plasmaContractAddress,
       data: txUtils.getTxData(
         this.web3,
         this.plasmaContract,
-        'addToken',
+        'addExitQueue',
+        vaultId,
         token
       ),
       gas: txOptions.gas,

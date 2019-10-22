@@ -11,8 +11,8 @@ function dependencies (types, primaryType, found = []) {
     return found
   }
   found.push(primaryType)
-  for (let field of types[primaryType]) {
-    for (let dep of dependencies(types, field.type, found)) {
+  for (const field of types[primaryType]) {
+    for (const dep of dependencies(types, field.type, found)) {
       if (!found.includes(dep)) {
         found.push(dep)
       }
@@ -29,7 +29,7 @@ function encodeType (types, primaryType) {
 
   // Format as a string with fields
   let result = ''
-  for (let type of deps) {
+  for (const type of deps) {
     result += `${type}(${types[type].map(({ name, type }) => `${type} ${name}`).join(',')})`
   }
   return result
@@ -40,15 +40,15 @@ function typeHash (types, primaryType) {
 }
 
 function encodeData (types, primaryType, data) {
-  let encTypes = []
-  let encValues = []
+  const encTypes = []
+  const encValues = []
 
   // Add typehash
   encTypes.push('bytes32')
   encValues.push(typeHash(types, primaryType))
 
   // Add field contents
-  for (let field of types[primaryType]) {
+  for (const field of types[primaryType]) {
     let value = data[field.name]
     if (field.type === 'string' || field.type === 'bytes') {
       encTypes.push('bytes32')

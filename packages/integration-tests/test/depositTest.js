@@ -41,7 +41,7 @@ describe('Deposit tests', async () => {
     const TEST_AMOUNT = web3.utils.toWei('.0001', 'ether')
     let aliceAccount
 
-    before(async () => {
+    beforeEach(async () => {
       // Create and fund a new account
       aliceAccount = rcHelper.createAccount(web3)
       console.log(`Created new account ${JSON.stringify(aliceAccount)}`)
@@ -49,7 +49,7 @@ describe('Deposit tests', async () => {
       await rcHelper.waitForEthBalanceEq(web3, aliceAccount.address, INTIIAL_ALICE_AMOUNT)
     })
 
-    after(async () => {
+    afterEach(async () => {
       try {
         // Send any leftover funds back to the faucet
         await faucet.returnFunds(web3, aliceAccount)
@@ -108,7 +108,6 @@ describe('Deposit tests', async () => {
 
       // Create the deposit transaction
       const depositTx = transaction.encodeDeposit(aliceAccount.address, TEST_AMOUNT, transaction.ETH_CURRENCY)
-      console.log(depositTx)
 
       // Deposit ETH into the Plasma contract
       await rootChain.depositEth(depositTx, TEST_AMOUNT, { from: aliceAccount.address, privateKey: aliceAccount.privateKey })
@@ -165,7 +164,8 @@ describe('Deposit tests', async () => {
       assert.equal(initialBalance.length, 0)
 
       // Account must approve the Plasma contract
-      await rcHelper.approveERC20(web3, testErc20Contract, aliceAccount.address, aliceAccount.privateKey, rootChain.plasmaContractAddress, TEST_AMOUNT)
+      const erc20VaultAddress = await rootChain.getErc20VaultAddress()
+      await rcHelper.approveERC20(web3, testErc20Contract, aliceAccount.address, aliceAccount.privateKey, erc20VaultAddress, TEST_AMOUNT)
 
       // Create the deposit transaction
       const depositTx = transaction.encodeDeposit(aliceAccount.address, TEST_AMOUNT, config.testErc20Contract)

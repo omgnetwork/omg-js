@@ -124,7 +124,7 @@ describe('Challenge exit tests', async () => {
         }
       )
       console.log(`Alice called RootChain.startExit(): txhash = ${receipt.transactionHash}`)
-      let aliceSpentOnGas = await rcHelper.spentOnGas(web3, receipt)
+      const aliceSpentOnGas = await rcHelper.spentOnGas(web3, receipt)
 
       // Bob calls watcher/status.get and sees the invalid exit attempt...
       const invalidExitUtxoPos = transaction.encodeUtxoPos(aliceDishonestUtxo).toString()
@@ -150,7 +150,7 @@ describe('Challenge exit tests', async () => {
       console.log(`Bob called RootChain.challengeExit(): txhash = ${receipt.transactionHash}`)
 
       // Keep track of how much Bob spends on gas
-      let bobSpentOnGas = await rcHelper.spentOnGas(web3, receipt)
+      const bobSpentOnGas = await rcHelper.spentOnGas(web3, receipt)
 
       // Alice waits for the challenge period to be over...
       const toWait = await rcHelper.getTimeToExit(rootChain.plasmaContract, exitData.utxo_pos)

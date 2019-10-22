@@ -85,7 +85,7 @@ async function createSignBuildAndSubmitTransaction () {
   console.log(`Submitted transaction. Transaction receipt: ${JSON.stringify(transactionReceipt, undefined, 2)}`)
 
   // wait for transaction to be recorded by the watcher
-  console.log(`Waiting for transaction to be recorded by the watcher...`)
+  console.log('Waiting for transaction to be recorded by the watcher...')
   await wait.wait(40000)
 
   aliceRootchainBalance = await web3.eth.getBalance(aliceAddress)

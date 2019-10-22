@@ -11,24 +11,24 @@ async function waitForChallengePeriodToEnd (rootChain, exitData) {
 
   await wait(waitMs)
 
-  console.log(`Challenge period to finished`)
+  console.log('Challenge period to finished')
 }
 
 async function waitForTransaction (web3, transactionHash, millisToWaitForTxn, blocksToWaitForTxn) {
   var transactionReceiptAsync = async (transactionHash, resolve, reject) => {
     try {
-      let transactionReceipt = await web3.eth.getTransactionReceipt(transactionHash)
+      const transactionReceipt = await web3.eth.getTransactionReceipt(transactionHash)
 
       if (blocksToWaitForTxn > 0) {
         try {
-          let block = await web3.eth.getBlock(transactionReceipt.blockNumber)
-          let current = await web3.eth.getBlock('latest')
+          const block = await web3.eth.getBlock(transactionReceipt.blockNumber)
+          const current = await web3.eth.getBlock('latest')
 
           console.log(`transaction block: ${block.number}`)
           console.log(`current block:     ${current.number}`)
 
           if (current.number - block.number >= blocksToWaitForTxn) {
-            let transaction = await web3.eth.getTransaction(transactionHash)
+            const transaction = await web3.eth.getTransaction(transactionHash)
 
             if (transaction.blockNumber !== null) {
               return resolve(transactionReceipt)

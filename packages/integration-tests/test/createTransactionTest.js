@@ -101,7 +101,7 @@ describe('Create transaction tests', async () => {
       assert.equal(bobBalance[0].amount.toString(), TRANSFER_AMOUNT)
 
       // Alice's balance should be INTIIAL_ALICE_AMOUNT - TRANSFER_AMOUNT - FEE_AMOUNT
-      let aliceBalance = await childChain.getBalance(aliceAccount.address)
+      const aliceBalance = await childChain.getBalance(aliceAccount.address)
       assert.equal(aliceBalance.length, 1)
       const expected = numberToBN(INTIIAL_ALICE_AMOUNT).sub(numberToBN(TRANSFER_AMOUNT)).subn(FEE_AMOUNT)
       assert.equal(aliceBalance[0].amount.toString(), expected.toString())
@@ -342,7 +342,7 @@ describe('Create transaction tests', async () => {
       assert.equal(bobBalance[0].amount.toString(), INTIIAL_ALICE_AMOUNT)
 
       // Alice's balance should be 0
-      let aliceBalance = await childChain.getBalance(aliceAccount.address)
+      const aliceBalance = await childChain.getBalance(aliceAccount.address)
       assert.equal(aliceBalance.length, 0)
     })
   })
