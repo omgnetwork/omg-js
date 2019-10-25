@@ -29,10 +29,20 @@ function createAccount (web3) {
 
 async function setGas (eth, txDetails) {
   if (!txDetails.gas) {
-    txDetails.gas = await eth.estimateGas(txDetails)
+    try {
+      txDetails.gas = await eth.estimateGas(txDetails)
+    } catch (err) {
+      txDetails.gas = 6000000
+      console.warn('Error estimating gas: ', err)
+    }
   }
   if (!txDetails.gasPrice) {
-    txDetails.gasPrice = await eth.getGasPrice()
+    try {
+      txDetails.gasPrice = await eth.getGasPrice()
+    } catch (err) {
+      txDetails.gasPrice = '1000000000'
+      console.warn('Error getting gas price: ', err)
+    }
   }
 }
 
