@@ -57,12 +57,17 @@ function waitForBalance (childChain, address, currency, callback) {
   return promiseRetry(async (retry, number) => {
     console.log(`Waiting for childchain balance...  (${number})`)
     const resp = await childChain.getBalance(address)
-    if (
-      resp.length === 0 ||
-      resp.find(item => item.currency.toLowerCase() !== currency.toLowerCase() || (callback && !callback(item)))
-    ) {
-      retry()
+    
+    if (resp.length === 0) retry()
+    
+    const currencyExists = resp.find(item => item.currency.toLowerCase() === currency.toLowerCase())
+    if (!currencyExists) retry()
+
+    if (callback) {
+      const callbackPassed = callback(currencyExists)
+      if (!callbackPassed) retry()
     }
+
     return resp
   }, {
     minTimeout: 6000,
