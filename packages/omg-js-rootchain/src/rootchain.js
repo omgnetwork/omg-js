@@ -85,7 +85,9 @@ class RootChain {
         ethVaultContract,
         'deposit',
         depositTx
-      )
+      ),
+      gas: txOptions.gas,
+      gasPrice: txOptions.gasPrice
     }
 
     return txUtils.sendTx(this.web3, txDetails, txOptions.privateKey, callbacks)
@@ -110,7 +112,9 @@ class RootChain {
         erc20VaultContract,
         'deposit',
         depositTx
-      )
+      ),
+      gas: txOptions.gas,
+      gasPrice: txOptions.gasPrice
     }
 
     return txUtils.sendTx(this.web3, txDetails, txOptions.privateKey)
@@ -144,9 +148,9 @@ class RootChain {
           inclusionProof
         ]
       ),
-      value: STANDARD_EXIT_BOND
-      // gas: txOptions.gas,
-      // gasPrice: txOptions.gasPrice
+      value: STANDARD_EXIT_BOND,
+      gas: txOptions.gas,
+      gasPrice: txOptions.gasPrice
     }
 
     return txUtils.sendTx(this.web3, txDetails, txOptions.privateKey)
@@ -195,6 +199,8 @@ class RootChain {
    * @return {string} transaction hash of the call
    */
   async processExit (exitId, token, txOptions) {
+    const vaultId = token === transaction.ETH_CURRENCY ? 1 : 2
+
     const txDetails = {
       from: txOptions.from,
       to: this.plasmaContractAddress,
@@ -202,7 +208,7 @@ class RootChain {
         this.web3,
         this.plasmaContract,
         'processExits',
-        1,
+        vaultId,
         token,
         exitId,
         1
