@@ -66,7 +66,6 @@ async function setGas (web3, txDetails) {
         txDetails.gasPrice = await web3.eth.getGasPrice()
       }
     } catch (err) {
-      console.warn(`Error getting gas price: ${err}`)
       txDetails.gasPrice = '1000000000' // Default to 1 GWEI
     }
   }
@@ -86,7 +85,6 @@ async function setGas (web3, txDetails) {
         txDetails.gas = await web3.eth.estimateGas(txDetails)
       }
     } catch (err) {
-      console.warn(`Error getting gas: ${err}`)
       txDetails.gas = 6000000
     }
   }

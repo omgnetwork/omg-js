@@ -52,14 +52,14 @@ describe('Standard Exit tests', async () => {
       await rcHelper.waitForEthBalanceEq(web3, aliceAccount.address, INTIIAL_ALICE_AMOUNT)
     })
 
-    // afterEach(async () => {
-    //   try {
-    //     // Send any leftover funds back to the faucet
-    //     await faucet.returnFunds(web3, aliceAccount)
-    //   } catch (err) {
-    //     console.warn(`Error trying to return funds to the faucet: ${err}`)
-    //   }
-    // })
+    afterEach(async () => {
+      try {
+        // Send any leftover funds back to the faucet
+        await faucet.returnFunds(web3, aliceAccount)
+      } catch (err) {
+        console.warn(`Error trying to return funds to the faucet: ${err}`)
+      }
+    })
 
     it('should succesfully exit a deposit', async () => {
       // Alice deposits ETH into the Plasma contract

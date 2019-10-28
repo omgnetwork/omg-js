@@ -19,6 +19,9 @@ const { transaction } = require('@omisego/omg-js-util')
 const STANDARD_EXIT_BOND = 14000000000000000
 const INFLIGHT_EXIT_BOND = 31415926535
 const PIGGYBACK_BOND = 31415926535
+const ETH_VAULT_ID = 1
+const ERC20_VAULT_ID = 2
+const PAYMENT_TYPE = 1
 
 class RootChain {
   /**
@@ -45,15 +48,15 @@ class RootChain {
   }
 
   getEthVaultAddress () {
-    return this.plasmaContract.methods.vaults(1).call()
+    return this.plasmaContract.methods.vaults(ETH_VAULT_ID).call()
   }
 
   getErc20VaultAddress () {
-    return this.plasmaContract.methods.vaults(2).call()
+    return this.plasmaContract.methods.vaults(ERC20_VAULT_ID).call()
   }
 
   getPaymentExitGameAddress () {
-    return this.plasmaContract.methods.exitGames(1).call()
+    return this.plasmaContract.methods.exitGames(PAYMENT_TYPE).call()
   }
 
   getContract (abi, address) {
