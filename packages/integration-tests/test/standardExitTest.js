@@ -84,9 +84,12 @@ describe.only('Standard Exit tests', async () => {
       assert.hasAllKeys(exitData, ['txbytes', 'proof', 'utxo_pos'])
 
       try {
-        await rootChain.addToken(transaction.ETH_CURRENCY, { from: aliceAccount.address, privateKey: aliceAccount.privateKey })
+        const addTokenCall = await rootChain.addToken(transaction.ETH_CURRENCY, { from: aliceAccount.address, privateKey: aliceAccount.privateKey })
+        aliceSpentOnGas.iadd(await rcHelper.spentOnGas(web3, addTokenCall))
       } catch (err) {
-        //
+        console.log(`Already added ${transaction.ETH_CURRENCY} to exit queue...`)
+        const failedReceipt = JSON.parse(err.message.split('EVM:')[1])
+        aliceSpentOnGas.iadd(await rcHelper.spentOnGas(web3, failedReceipt))
       }
 
       receipt = await rootChain.startStandardExit(
