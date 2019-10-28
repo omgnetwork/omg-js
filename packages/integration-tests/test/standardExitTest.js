@@ -52,14 +52,14 @@ describe.only('Standard Exit tests', async () => {
       await rcHelper.waitForEthBalanceEq(web3, aliceAccount.address, INTIIAL_ALICE_AMOUNT)
     })
 
-    afterEach(async () => {
-      try {
-        // Send any leftover funds back to the faucet
-        await faucet.returnFunds(web3, aliceAccount)
-      } catch (err) {
-        console.warn(`Error trying to return funds to the faucet: ${err}`)
-      }
-    })
+    // afterEach(async () => {
+    //   try {
+    //     // Send any leftover funds back to the faucet
+    //     await faucet.returnFunds(web3, aliceAccount)
+    //   } catch (err) {
+    //     console.warn(`Error trying to return funds to the faucet: ${err}`)
+    //   }
+    // })
 
     it.only('should succesfully exit a deposit', async () => {
       // Alice deposits ETH into the Plasma contract
@@ -124,7 +124,7 @@ describe.only('Standard Exit tests', async () => {
       assert.isBelow(Number(aliceEthBalance), Number(INTIIAL_ALICE_AMOUNT))
 
       // Wait for challenge period
-      const toWait = await rcHelper.getTimeToExit(rootChain.plasmaContract, exitData.utxo_pos)
+      const toWait = await rcHelper.getTimeToExit(rootChain.plasmaContract, 0)
       console.log(`Waiting for challenge period... ${toWait}ms`)
       await rcHelper.sleep(toWait)
 

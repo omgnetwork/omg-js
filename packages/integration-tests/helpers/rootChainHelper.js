@@ -160,9 +160,10 @@ async function getPlasmaContractAddress (config) {
   throw new Error('No ROOTCHAIN_CONTRACT or CONTRACT_EXCHANGER_URL configured')
 }
 
-async function getTimeToExit (plasmaContract, output) {
-  const exitableAt = await plasmaContract.methods.getExitableTimestamp(output.toString()).call()
-  return (Number(exitableAt) - Math.trunc(Date.now() / 1000)) * 1000
+async function getTimeToExit (plasmaContract, blockTimestamp) {
+  const minExitPeriod = await plasmaContract.methods.minExitPeriod().call() * 1000
+  const now = Date.now()
+  return Math.max(blockTimestamp + (minExitPeriod * 2), now + minExitPeriod) - Math.trunc(now / 1000) * 1000
 }
 
 const DEFAULT_INTERVAL = 1000
