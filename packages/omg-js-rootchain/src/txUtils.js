@@ -10,8 +10,7 @@
  * @return {Promise<{ transactionHash: string }>} promise that resolves with the transaction hash
  */
 async function sendTx (web3, txDetails, privateKey, callbacks) {
-  // await setGas(web3, txDetails)
-  txDetails.gas = 600000
+  await setGas(web3, txDetails)
   if (!privateKey) {
     // No privateKey, caller will handle signing if necessary
     if (web3.version.api && web3.version.api.startsWith('0.2')) {
@@ -72,18 +71,23 @@ async function setGas (web3, txDetails) {
     }
   }
   if (!txDetails.gas) {
-    if (web3.version.api && web3.version.api.startsWith('0.2')) {
-      txDetails.gas = await new Promise((resolve, reject) => {
-        web3.eth.estimateGas(txDetails, (err, result) => {
-          if (err) {
-            reject(err)
-          } else {
-            resolve(result)
-          }
+    try {
+      if (web3.version.api && web3.version.api.startsWith('0.2')) {
+        txDetails.gas = await new Promise((resolve, reject) => {
+          web3.eth.estimateGas(txDetails, (err, result) => {
+            if (err) {
+              reject(err)
+            } else {
+              resolve(result)
+            }
+          })
         })
-      })
-    } else {
-      txDetails.gas = await web3.eth.estimateGas(txDetails)
+      } else {
+        txDetails.gas = await web3.eth.estimateGas(txDetails)
+      }
+    } catch (err) {
+      console.warn(`Error getting gas: ${err}`)
+      txDetails.gas = 6000000
     }
   }
 }

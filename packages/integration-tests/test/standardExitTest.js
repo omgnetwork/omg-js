@@ -40,8 +40,8 @@ describe.only('Standard Exit tests', async () => {
   })
 
   describe('Deposit transaction exit (ci-enabled)', async () => {
-    const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.1', 'ether')
-    const DEPOSIT_AMOUNT = web3.utils.toWei('.0001', 'ether')
+    const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('1', 'ether')
+    const DEPOSIT_AMOUNT = web3.utils.toWei('.1', 'ether')
     let aliceAccount
 
     beforeEach(async () => {
@@ -102,15 +102,20 @@ describe.only('Standard Exit tests', async () => {
       aliceSpentOnGas.iadd(await rcHelper.spentOnGas(web3, receipt))
 
       // Call processExits before the challenge period is over
-      receipt = await rootChain.processExit(
-        0,
-        transaction.ETH_CURRENCY,
-        {
-          privateKey: aliceAccount.privateKey,
-          from: aliceAccount.address
-        }
-      )
-      console.log(`Alice called RootChain.processExits() before challenge period: txhash = ${receipt.transactionHash}`)
+      try {
+        receipt = await rootChain.processExit(
+          0,
+          transaction.ETH_CURRENCY,
+          {
+            privateKey: aliceAccount.privateKey,
+            from: aliceAccount.address
+          }
+        )
+        console.log(`Alice called RootChain.processExits() before challenge period: txhash = ${receipt.transactionHash}`)
+      } catch (err) {
+        throw new Error(err)
+      }
+
       aliceSpentOnGas.iadd(await rcHelper.spentOnGas(web3, receipt))
 
       // Get Alice's ETH balance
