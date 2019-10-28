@@ -48,7 +48,7 @@ const faucet = {
       this.privateKey = faucetAccount.privateKey
     }
 
-    await this.initEthBalance(web3, web3.utils.toWei(config.minAmountEth || '3', 'ether'))
+    await this.initEthBalance(web3, web3.utils.toWei(config.minAmountEth || '1', 'ether'))
     await this.initERC20Balance(web3, config.minAmountERC20 || 20)
     await this.showInfo(web3)
   },
