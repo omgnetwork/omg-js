@@ -1,5 +1,4 @@
 const { constants } = require('openzeppelin-test-helpers')
-const { UtxoPos } = require('./positions.js')
 const web3Utils = require('web3-utils')
 const web3Abi = require('web3-eth-abi')
 const EMPTY_BYTES32 =
