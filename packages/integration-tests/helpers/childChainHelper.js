@@ -157,10 +157,18 @@ async function createTx (childChain, from, to, amount, currency, fromPrivateKey,
 }
 
 async function send (childChain, from, to, amount, currency, fromPrivateKey, verifyingContract) {
-  const signedTx = await createTx(childChain, from, to, amount, currency, fromPrivateKey, verifyingContract)
-  // Submit the signed transaction to the childchain
-  const result = await childChain.submitTransaction(signedTx)
-  return { result, txbytes: signedTx }
+  if (amount <= 0) {
+    return
+  }
+
+  const payments = [{ amount: parseInt(amount), currency, owner: to }]
+  // TODO Zero fee for now
+  const fee = { amount: 0, currency: transaction.ETH_CURRENCY }
+
+  const createdTx = await childChain.createTransaction(from, payments, fee, transaction.NULL_METADATA)
+  const privateKeys = new Array(createdTx.transactions[0].inputs.length).fill(fromPrivateKey)
+  const txTypedData = childChain.signTypedData(createdTx.transactions[0], privateKeys)
+  return childChain.submitTyped(txTypedData)
 }
 
 function checkSig (web3, tx, sig, address) {
@@ -180,25 +188,21 @@ function checkSig (web3, tx, sig, address) {
 async function splitUtxo (childChain, verifyingContract, account, utxo, split) {
   console.log(`Splitting utxo ${transaction.encodeUtxoPos(utxo)}`)
 
-  const txBody = {
-    inputs: [utxo],
-    outputs: []
-  }
   const div = Math.floor(utxo.amount / split)
-  txBody.outputs = new Array(split).fill().map(x => ({
+  const payments = new Array(split).fill().map(x => ({
     owner: account.address,
     currency: transaction.ETH_CURRENCY,
     amount: div
   }))
 
-  // Create the unsigned transaction
-  const typedData = transaction.getTypedData(txBody, verifyingContract)
+  // TODO Zero fee for now
+  const fee = { amount: 0, currency: transaction.ETH_CURRENCY }
 
-  // Sign it
-  const signatures = childChain.signTransaction(typedData, [account.privateKey])
-  // Build the signed transaction
-  const signedTx = childChain.buildSignedTransaction(typedData, signatures)
-  return childChain.submitTransaction(signedTx)
+  const createdTx = await childChain.createTransaction(account.address, payments, fee, transaction.NULL_METADATA)
+
+  const privateKeys = new Array(createdTx.transactions[0].inputs.length).fill(account.privateKey)
+  const txTypedData = childChain.signTypedData(createdTx.transactions[0], privateKeys)
+  return childChain.submitTyped(txTypedData)
 }
 
 function waitNumUtxos (childChain, address, num) {

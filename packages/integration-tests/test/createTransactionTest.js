@@ -29,7 +29,7 @@ const web3 = new Web3(config.geth_url)
 const childChain = new ChildChain(config.watcher_url, config.childchain_url)
 let rootChain
 
-describe('Create transaction tests', async () => {
+describe('Create transaction tests (ci-enabled)', async () => {
   before(async () => {
     const plasmaContract = await rcHelper.getPlasmaContractAddress(config)
     rootChain = new RootChain(web3, plasmaContract.contract_addr)
@@ -85,14 +85,8 @@ describe('Create transaction tests', async () => {
       assert.equal(createdTx.result, 'complete')
       assert.equal(createdTx.transactions.length, 1)
 
-      // Get the transaction data
-      const typedData = transaction.getTypedData(createdTx.transactions[0], rootChain.plasmaContractAddress)
-      // Sign it
-      const signatures = childChain.signTransaction(typedData, [aliceAccount.privateKey])
-      // Build the signed transaction
-      const signedTx = childChain.buildSignedTransaction(typedData, signatures)
-      // Submit the signed transaction to the childchain
-      const result = await childChain.submitTransaction(signedTx)
+      const txTypedData = childChain.signTypedData(createdTx.transactions[0], [aliceAccount.privateKey])
+      const result = await childChain.submitTyped(txTypedData)
       console.log(`Submitted transaction: ${JSON.stringify(result)}`)
 
       // Bob's balance should be TRANSFER_AMOUNT
@@ -213,14 +207,8 @@ describe('Create transaction tests', async () => {
       assert.equal(createdTx.result, 'complete')
       assert.equal(createdTx.transactions.length, 1)
 
-      // Get the transaction data
-      const typedData = transaction.getTypedData(createdTx.transactions[0], rootChain.plasmaContractAddress)
-      // Sign it
-      const signatures = childChain.signTransaction(typedData, [aliceAccount.privateKey, aliceAccount.privateKey])
-      // Build the signed transaction
-      const signedTx = childChain.buildSignedTransaction(typedData, signatures)
-      // Submit the signed transaction to the childchain
-      const result = await childChain.submitTransaction(signedTx)
+      const txTypedData = childChain.signTypedData(createdTx.transactions[0], [aliceAccount.privateKey, aliceAccount.privateKey])
+      const result = await childChain.submitTyped(txTypedData)
       console.log(`Submitted transaction: ${JSON.stringify(result)}`)
 
       // Bob's ETH balance should be TRANSFER_AMOUNT_ETH
@@ -263,6 +251,7 @@ describe('Create transaction tests', async () => {
       const utxos = await childChain.getUtxos(aliceAccount.address)
       assert.equal(utxos.length, 2)
       await ccHelper.splitUtxo(childChain, rootChain.plasmaContractAddress, aliceAccount, utxos[0], 4)
+      await ccHelper.waitNumUtxos(childChain, aliceAccount.address, 5)
       await ccHelper.splitUtxo(childChain, rootChain.plasmaContractAddress, aliceAccount, utxos[1], 4)
       // Wait for the split txs to finalise
       await ccHelper.waitNumUtxos(childChain, aliceAccount.address, 8)
@@ -301,15 +290,9 @@ describe('Create transaction tests', async () => {
 
       // Send the intermediate transactions
       await Promise.all(createdTx.transactions.map(tx => {
-        // Get the transaction data
-        const typedData = transaction.getTypedData(tx, rootChain.plasmaContractAddress)
-        // Sign it
         const privateKeys = new Array(tx.inputs.length).fill(aliceAccount.privateKey)
-        const signatures = childChain.signTransaction(typedData, privateKeys)
-        // Build the signed transaction
-        const signedTx = childChain.buildSignedTransaction(typedData, signatures)
-        // Submit the signed transaction to the childchain
-        return childChain.submitTransaction(signedTx)
+        const txTypedData = childChain.signTypedData(tx, privateKeys)
+        return childChain.submitTyped(txTypedData)
       }))
 
       // Wait for the intermediate transactions.
@@ -325,15 +308,9 @@ describe('Create transaction tests', async () => {
       assert.equal(createdTx2.result, 'complete')
       assert.equal(createdTx2.transactions.length, 1)
 
-      // Get the transaction data
-      const typedData = transaction.getTypedData(createdTx2.transactions[0], rootChain.plasmaContractAddress)
-      // Sign it
       const privateKeys = new Array(createdTx2.transactions[0].inputs.length).fill(aliceAccount.privateKey)
-      const signatures = childChain.signTransaction(typedData, privateKeys)
-      // Build the signed transaction
-      const signedTx = childChain.buildSignedTransaction(typedData, signatures)
-      // Submit the signed transaction to the childchain
-      const result = await childChain.submitTransaction(signedTx)
+      const txTypedData = childChain.signTypedData(createdTx2.transactions[0], privateKeys)
+      const result = await childChain.submitTyped(txTypedData)
       console.log(`Submitted transaction: ${JSON.stringify(result)}`)
 
       // Bob's balance should be INTIIAL_ALICE_AMOUNT
@@ -393,15 +370,9 @@ describe('Create transaction tests', async () => {
       assert.equal(createdTx.result, 'complete')
       assert.equal(createdTx.transactions.length, 1)
 
-      // Get the transaction data
-      const typedData = transaction.getTypedData(createdTx.transactions[0], rootChain.plasmaContractAddress)
-      // Sign it
       const privateKeys = new Array(createdTx.transactions[0].inputs.length).fill(aliceAccount.privateKey)
-      const signatures = childChain.signTransaction(typedData, privateKeys)
-      // Build the signed transaction
-      const signedTx = childChain.buildSignedTransaction(typedData, signatures)
-      // Submit the signed transaction to the childchain
-      const result = await childChain.submitTransaction(signedTx)
+      const txTypedData = childChain.signTypedData(createdTx.transactions[0], privateKeys)
+      const result = await childChain.submitTyped(txTypedData)
       console.log(`Submitted transaction: ${JSON.stringify(result)}`)
 
       // Wait for the split tx to finalise, Alice should now have 4 utxos

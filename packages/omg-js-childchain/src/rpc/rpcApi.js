@@ -18,8 +18,8 @@ const debug = require('debug')('omg.childchain.rpc')
 const JSONBigNumber = require('json-bigint')
 
 class RpcError extends Error {
-  constructor ({ code, description }) {
-    super(description || code)
+  constructor ({ code, description, messages }) {
+    super(description || code + (messages ? `, ${messages.code}` : ''))
     this.code = code
   }
 }
