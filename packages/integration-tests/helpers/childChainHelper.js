@@ -151,6 +151,7 @@ async function createTx (childChain, from, to, amount, currency, fromPrivateKey,
   const privateKeys = new Array(utxosToSpend.length).fill(fromPrivateKey)
   const signatures = childChain.signTransaction(txBody, privateKeys, verifyingContract)
   // Build the signed transaction
+  const typedData = transaction.getTypedData(txBody, verifyingContract)
   return childChain.buildSignedTransaction(typedData, signatures)
 }
 

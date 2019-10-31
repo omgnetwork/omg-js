@@ -355,7 +355,7 @@ function validateMetadata (arg) {
 }
 
 function addInput (array, input) {
-  if(input.amount > 0){
+  if(input.blknum !== 0){
     const encodedPosition = transaction.encodeUtxoPos(input)
     array.push(encodedPosition)
   }

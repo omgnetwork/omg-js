@@ -17,13 +17,6 @@ const fetch = require('node-fetch')
 const debug = require('debug')('omg.childchain.rpc')
 const JSONBigNumber = require('json-bigint')
 
-class RpcError extends Error {
-  constructor ({ code, description }) {
-    super(description || code)
-    this.code = code
-  }
-}
-
 async function get (url) {
   return fetch(url).then(parseResponse)
 }
@@ -54,7 +47,7 @@ async function parseResponse (resp) {
   if (json.success) {
     return json.data
   }
-  throw new RpcError(json.data)
+  throw new Error(JSON.stringify(json.data))
 }
 
 module.exports = {

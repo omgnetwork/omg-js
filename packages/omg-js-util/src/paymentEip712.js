@@ -31,23 +31,23 @@ const hashInput = input => {
   )
 }
 
-const hashOutput = output =>
-  web3Utils.sha3(
-    web3Abi.encodeParameters(
-      ['bytes32', 'uint256', 'bytes20', 'address', 'uint256'],
-      [
-        OUTPUT_TYPE_HASH,
-        output.outputType,
-        output.outputGuard,
-        output.currency,
-        1 || output.amount
-      ]
-    )
+const hashOutput = output => {
+return web3Utils.sha3(
+  web3Abi.encodeParameters(
+    ['bytes32', 'uint256', 'bytes20', 'address', 'uint256'],
+    [
+      OUTPUT_TYPE_HASH,
+      output.outputType,
+      output.outputGuard,
+      output.currency,
+      web3Utils.toHex(output.amount)
+    ]
   )
+)
+}
+
 
 const hashTx = (tx, verifyingContract) => {
-  console.log('==================================')
-  console.log(JSON.stringify(tx))
   const domainSeparator = web3Utils.sha3(
     web3Abi.encodeParameters(
       ['bytes32', 'bytes32', 'bytes32', 'address', 'bytes32'],
@@ -60,15 +60,14 @@ const hashTx = (tx, verifyingContract) => {
       ]
     )
   )
-
   const inputs = tx.inputs.map(hashInput)
   const outputs = tx.outputs.map(hashOutput)
 
-  const HASH_EMPTY_INPUT = hashInput(0)
+  const HASH_EMPTY_INPUT = hashInput({ blknum: 0, txindex: 0, oindex: 0 })
   const HASH_EMPTY_OUTPUT = hashOutput({
     outputType: 0,
     outputGuard: EMPTY_BYTES20,
-    token: constants.ZERO_ADDRESS,
+    currency: constants.ZERO_ADDRESS,
     amount: 0
   })
   const txHash = web3Utils.sha3(
@@ -88,7 +87,7 @@ const hashTx = (tx, verifyingContract) => {
       ],
       [
         TX_TYPE_HASH,
-        tx.transactionType,
+        1,
         inputs.length > 0 ? inputs[0] : HASH_EMPTY_INPUT,
         inputs.length > 1 ? inputs[1] : HASH_EMPTY_INPUT,
         inputs.length > 2 ? inputs[2] : HASH_EMPTY_INPUT,
