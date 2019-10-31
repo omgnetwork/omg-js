@@ -16,6 +16,7 @@ limitations under the License. */
 const rpcApi = require('./rpc/rpcApi')
 const rlp = require('rlp')
 const { InvalidArgumentError, transaction, sign } = require('@omisego/omg-js-util')
+const paymentEip712 = require('@omisego/omg-js-util/src/paymentEip712')
 global.Buffer = global.Buffer || require('buffer').Buffer
 
 class ChildChain {
@@ -124,10 +125,9 @@ class ChildChain {
    * @param {Array} privateKeys An array of private keys to sign the inputs of the transaction
    * @return {Array} array of signatures
    */
-  signTransaction (typedData, privateKeys) {
-    privateKeys.forEach(key => validatePrivateKey)
-    const toSign = transaction.getToSignHash(typedData)
-    return sign(toSign, privateKeys)
+  signTransaction (tx, privateKeys, verifyingContract) {
+    const txHashToSign = paymentEip712.hashTx(tx, verifyingContract)
+    return sign(txHashToSign, privateKeys)
   }
 
   /**
@@ -142,7 +142,7 @@ class ChildChain {
     // Convert the data to an array
     const txArray = transaction.toArray(txData.message)
     // Prepend the signatures
-    const signedTx = [signatures, ...txArray]
+    const signedTx = [signatures, 1, ...txArray]
     // rlp-encode the transaction + signatures
     return rlp.encode(signedTx).toString('hex')
   }
@@ -198,10 +198,8 @@ class ChildChain {
       currency,
       metadata
     )
-    // Get the transaction data
-    const typedData = transaction.getTypedData(txBody, verifyingContract)
     // Sign it
-    const signatures = this.signTransaction(typedData, fromPrivateKeys)
+    const signatures = this.signTransaction(txBody, fromPrivateKeys, verifyingContract)
     // Build the signed transaction
     const signedTx = this.buildSignedTransaction(typedData, signatures)
     // submit transaction
