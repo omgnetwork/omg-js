@@ -213,7 +213,7 @@ describe('Standard Exit tests', async () => {
       const exitData = await childChain.getExitData(utxoToExit)
       assert.hasAllKeys(exitData, ['txbytes', 'proof', 'utxo_pos'])
 
-      let receipt = await rootChain.startStandardExit(
+      const startStandardExitReceipt = await rootChain.startStandardExit(
         exitData.utxo_pos,
         exitData.txbytes,
         exitData.proof,
@@ -222,13 +222,13 @@ describe('Standard Exit tests', async () => {
           from: bobAccount.address
         }
       )
-      console.log(`Bob called RootChain.startExit(): txhash = ${receipt.transactionHash}`)
+      console.log(`Bob called RootChain.startExit(): txhash = ${startStandardExitReceipt.transactionHash}`)
 
       // Keep track of how much Bob spends on gas
-      const bobSpentOnGas = await rcHelper.spentOnGas(web3, receipt)
+      const bobSpentOnGas = await rcHelper.spentOnGas(web3, startStandardExitReceipt)
 
       // Call processExits before the challenge period is over
-      receipt = await rootChain.processExits(
+      const processExitReceiptBefore = await rootChain.processExits(
         0,
         transaction.ETH_CURRENCY,
         {
@@ -236,8 +236,8 @@ describe('Standard Exit tests', async () => {
           from: bobAccount.address
         }
       )
-      console.log(`Bob called RootChain.processExits() before challenge period: txhash = ${receipt.transactionHash}`)
-      bobSpentOnGas.iadd(await rcHelper.spentOnGas(web3, receipt))
+      console.log(`Bob called RootChain.processExits() before challenge period: txhash = ${processExitReceiptBefore.transactionHash}`)
+      bobSpentOnGas.iadd(await rcHelper.spentOnGas(web3, processExitReceiptBefore))
 
       // Get Bob's ETH balance
       let bobEthBalance = await web3.eth.getBalance(bobAccount.address)
@@ -250,7 +250,7 @@ describe('Standard Exit tests', async () => {
       await rcHelper.sleep(toWait)
 
       // Call processExits again.
-      receipt = await rootChain.processExits(
+      const processExitReceiptAfter = await rootChain.processExits(
         0,
         transaction.ETH_CURRENCY,
         {
@@ -258,8 +258,8 @@ describe('Standard Exit tests', async () => {
           from: bobAccount.address
         }
       )
-      console.log(`Bob called RootChain.processExits() after challenge period: txhash = ${receipt.transactionHash}`)
-      bobSpentOnGas.iadd(await rcHelper.spentOnGas(web3, receipt))
+      console.log(`Bob called RootChain.processExits() after challenge period: txhash = ${processExitReceiptAfter.transactionHash}`)
+      bobSpentOnGas.iadd(await rcHelper.spentOnGas(web3, processExitReceiptAfter))
 
       // Get Bob's ETH balance
       bobEthBalance = await web3.eth.getBalance(bobAccount.address)
