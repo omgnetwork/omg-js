@@ -125,9 +125,9 @@ class ChildChain {
    * @param {Array} privateKeys An array of private keys to sign the inputs of the transaction
    * @return {Array} array of signatures
    */
-  signTransaction (tx, privateKeys, verifyingContract) {
-    const txHashToSign = paymentEip712.hashTx(tx, verifyingContract)
-    return sign(txHashToSign, privateKeys)
+  signTransaction (typedData, privateKeys) {
+    const toSign = transaction.getToSignHash(typedData)
+    return sign(toSign, privateKeys)
   }
 
   /**
