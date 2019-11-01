@@ -364,7 +364,7 @@ function addInput (array, input) {
 function addOutput (array, output) {
   if(output.amount > 0) {
     array.push([
-      sanitiseAddress(output.outputType),
+      output.outputType,
       sanitiseAddress(output.outputGuard), // must start with '0x' to be encoded properly
       sanitiseAddress(output.currency), // must start with '0x' to be encoded properly
       // If amount is 0 it should be encoded as '0x80' (empty byte array)

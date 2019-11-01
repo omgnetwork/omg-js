@@ -1,6 +1,7 @@
 const { constants } = require('openzeppelin-test-helpers')
 const web3Utils = require('web3-utils')
 const web3Abi = require('web3-eth-abi')
+const { UtxoPos } = require('./positions.js')
 
 const EMPTY_BYTES32 = '0x0000000000000000000000000000000000000000000000000000000000000000'
 const EMPTY_BYTES20 = '0x0000000000000000000000000000000000000000'
@@ -12,13 +13,16 @@ const INPUT_TYPE_HASH = web3Utils.sha3('Input(uint256 blknum,uint256 txindex,uin
 const OUTPUT_TYPE_HASH = web3Utils.sha3('Output(uint256 outputType,bytes20 outputGuard,address currency,uint256 amount)')
 const SALT = '0xfad5c7f626d80f9256ef01929f3beb96e058b8b4b0e3fe52d84f054c0e2a7a83'
 
-const hashInput = input => {
-  return web3Utils.sha3(
-    web3Abi.encodeParameters(
-      ['bytes32', 'uint256', 'uint256', 'uint256'],
-      [INPUT_TYPE_HASH, input.blknum, input.txindex, input.oindex]
-    )
-  )
+const hashInput = (input) => {
+  const utxoPos = new UtxoPos(input.utxo_pos || 0)
+  return web3Utils.sha3(web3Abi.encodeParameters([
+      'bytes32', 'uint256', 'uint256', 'uint256',
+  ], [
+      INPUT_TYPE_HASH,
+      utxoPos.blockNum,
+      utxoPos.txIndex,
+      utxoPos.outputIndex,
+  ]))
 }
 
 const hashOutput = output => {

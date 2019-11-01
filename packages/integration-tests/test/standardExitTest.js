@@ -212,7 +212,7 @@ describe.only('Standard Exit tests', async () => {
       // Get the exit data
       const utxoToExit = bobUtxos[0]
       const exitData = await childChain.getExitData(utxoToExit)
-      assert.hasAllKeys(exitData, ['txbytes', 'sigs', 'proof', 'utxo_pos'])
+      assert.hasAllKeys(exitData, ['txbytes', 'proof', 'utxo_pos'])
 
       let receipt = await rootChain.startStandardExit(
         exitData.utxo_pos,
