@@ -32,7 +32,7 @@ let rootChain
 // NB This test waits for at least RootChain.MIN_EXIT_PERIOD so it should be run against a
 // modified RootChain contract with a shorter than normal MIN_EXIT_PERIOD.
 
-describe.only('Standard Exit tests', async () => {
+describe('Standard Exit tests', async () => {
   before(async () => {
     const plasmaContract = await rcHelper.getPlasmaContractAddress(config)
     rootChain = new RootChain(web3, plasmaContract.contract_addr)
@@ -106,7 +106,7 @@ describe.only('Standard Exit tests', async () => {
 
       // Call processExits before the challenge period is over
       try {
-        receipt = await rootChain.processExit(
+        receipt = await rootChain.processExits(
           0,
           transaction.ETH_CURRENCY,
           {
@@ -132,13 +132,12 @@ describe.only('Standard Exit tests', async () => {
       await rcHelper.sleep(toWait)
 
       // Call processExits again.
-      receipt = await rootChain.processExit(
+      receipt = await rootChain.processExits(
         0,
         transaction.ETH_CURRENCY,
         {
           privateKey: aliceAccount.privateKey,
           from: aliceAccount.address,
-          gas: 200000
         }
       )
       console.log(`Alice called RootChain.processExits() after challenge period: txhash = ${receipt.transactionHash}`)
@@ -152,7 +151,7 @@ describe.only('Standard Exit tests', async () => {
     })
   })
 
-  describe('childchain transaction exit (ci-enabled)', async () => {
+  describe.only('childchain transaction exit (ci-enabled)', async () => {
     const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.001', 'ether')
     const INTIIAL_BOB_RC_AMOUNT = web3.utils.toWei('.1', 'ether')
     const TRANSFER_AMOUNT = web3.utils.toWei('0.0002', 'ether')
@@ -230,9 +229,8 @@ describe.only('Standard Exit tests', async () => {
 
       // Call processExits before the challenge period is over
       receipt = await rootChain.processExits(
-        transaction.ETH_CURRENCY,
         0,
-        1,
+        transaction.ETH_CURRENCY,
         {
           privateKey: bobAccount.privateKey,
           from: bobAccount.address
@@ -247,19 +245,17 @@ describe.only('Standard Exit tests', async () => {
       assert.isBelow(Number(bobEthBalance), Number(INTIIAL_BOB_RC_AMOUNT))
 
       // Wait for challenge period
-      const toWait = await rcHelper.getTimeToExit(rootChain.plasmaContract, exitData.utxo_pos)
+      const toWait = await rcHelper.getTimeToExit(rootChain.plasmaContract, 0)
       console.log(`Waiting for challenge period... ${toWait}ms`)
       await rcHelper.sleep(toWait)
 
       // Call processExits again.
       receipt = await rootChain.processExits(
-        transaction.ETH_CURRENCY,
         0,
-        1,
+        transaction.ETH_CURRENCY,
         {
           privateKey: bobAccount.privateKey,
-          from: bobAccount.address,
-          gas: 200000
+          from: bobAccount.address
         }
       )
       console.log(`Bob called RootChain.processExits() after challenge period: txhash = ${receipt.transactionHash}`)
@@ -339,9 +335,8 @@ describe.only('Standard Exit tests', async () => {
 
       // Call processExits before the challenge period is over
       receipt = await rootChain.processExits(
-        config.testErc20Contract,
         0,
-        1,
+        config.testErc20Contract,
         {
           privateKey: aliceAccount.privateKey,
           from: aliceAccount.address
@@ -352,19 +347,17 @@ describe.only('Standard Exit tests', async () => {
       assert.equal(balance, 0)
 
       // Wait for challenge period
-      const toWait = await rcHelper.getTimeToExit(rootChain.plasmaContract, exitData.utxo_pos)
+      const toWait = await rcHelper.getTimeToExit(rootChain.plasmaContract, 0)
       console.log(`Waiting for challenge period... ${toWait}ms`)
       await rcHelper.sleep(toWait)
 
       // Call processExits again.
       receipt = await rootChain.processExits(
-        config.testErc20Contract,
         0,
-        6,
+        config.testErc20Contract,
         {
           privateKey: aliceAccount.privateKey,
           from: aliceAccount.address,
-          gas: 200000
         }
       )
       console.log(`Alice called RootChain.processExits() after challenge period: txhash = ${receipt.transactionHash}`)

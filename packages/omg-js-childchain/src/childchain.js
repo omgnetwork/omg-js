@@ -16,7 +16,6 @@ limitations under the License. */
 const rpcApi = require('./rpc/rpcApi')
 const rlp = require('rlp')
 const { InvalidArgumentError, transaction, sign } = require('@omisego/omg-js-util')
-const paymentEip712 = require('@omisego/omg-js-util/src/paymentEip712')
 global.Buffer = global.Buffer || require('buffer').Buffer
 
 class ChildChain {

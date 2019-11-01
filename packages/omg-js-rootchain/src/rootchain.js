@@ -201,7 +201,7 @@ class RootChain {
    * @param {Object} txOptions transaction options, such as `from`, gas` and `privateKey`
    * @return {string} transaction hash of the call
    */
-  async processExit (exitId, token, txOptions) {
+  async processExits (exitId, token, txOptions) {
     const vaultId = token === transaction.ETH_CURRENCY ? 1 : 2
 
     const txDetails = {
