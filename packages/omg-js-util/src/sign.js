@@ -19,9 +19,8 @@ const ethUtil = require('ethereumjs-util')
 const sigUtil = require('eth-sig-util')
 
 function ecSign (tosign, privateKey) {
-  const message = (tosign.length === 66) ? tosign.substring(2) : msgHashHex
   const signed = ethUtil.ecsign(
-    Buffer.from(message, 'hex'),
+    tosign,
     Buffer.from(privateKey.replace('0x', ''), 'hex')
   )
   return sigUtil.concatSig(signed.v, signed.r, signed.s)
