@@ -83,13 +83,14 @@ describe('Standard Exit tests', async () => {
       const exitData = await childChain.getExitData(utxoToExit)
       assert.hasAllKeys(exitData, ['txbytes', 'proof', 'utxo_pos'])
 
-      try {
+      // check if queue exists for this token
+      const hasToken = await rootChain.hasToken(transaction.ETH_CURRENCY)
+      if (!hasToken) {
+        console.log(`Adding a ${transaction.ETH_CURRENCY} exit queue`)
         const addTokenCall = await rootChain.addToken(transaction.ETH_CURRENCY, { from: aliceAccount.address, privateKey: aliceAccount.privateKey })
-        aliceSpentOnGas.iadd(await rcHelper.spentOnGas(web3, addTokenCall))
-      } catch (err) {
-        console.log(`Already added ${transaction.ETH_CURRENCY} to exit queue...`)
-        const failedReceipt = JSON.parse(err.message.split('EVM:')[1])
-        aliceSpentOnGas.iadd(await rcHelper.spentOnGas(web3, failedReceipt))
+        aliceSpentOnGas.iadd(await rcHelper.spentOnGas(web3, addTokenCall))        
+      } else {
+        console.log(`Exit queue for ${transaction.ETH_CURRENCY} already exists`)
       }
 
       receipt = await rootChain.startStandardExit(
@@ -146,8 +147,8 @@ describe('Standard Exit tests', async () => {
 
       // Get Alice's ETH balance
       aliceEthBalance = await web3.eth.getBalance(aliceAccount.address)
-      // Expect Alice's balance to be INTIIAL_ALICE_AMOUNT + TRANSFER_AMOUNT - gas spent
-      const expected = web3.utils.toBN(INTIIAL_ALICE_AMOUNT).sub(aliceSpentOnGas)
+      // Expect Alice's balance to be INTIIAL_ALICE_AMOUNT - DEPOSIT_AMOUNT - gas spent
+      const expected = web3.utils.toBN(INTIIAL_ALICE_AMOUNT).sub(web3.utils.toBN(DEPOSIT_AMOUNT)).sub(aliceSpentOnGas)
       assert.equal(aliceEthBalance.toString(), expected.toString())
     })
   })

@@ -229,6 +229,17 @@ class RootChain {
   }
 
   /**
+   * Checks if an exit queue exists for this token
+   * @method hasToken
+   * @param {string} token address of the token to check.
+   * @return {boolean} whether an exit queue exists for this token
+   */
+  hasToken (token) {
+    const vaultId = token === transaction.ETH_CURRENCY ? 1 : 2
+    return this.plasmaContract.methods.hasExitQueue(vaultId, token).call()
+  }
+
+  /**
    * Adds a token to the Plasma chain. Tokens must be added in order to be able to exit them.
    * @method addToken
    * @param {string} token Address of the token to process.
