@@ -151,7 +151,7 @@ describe.only('Standard Exit tests', async () => {
     })
   })
 
-  describe.only('childchain transaction exit (ci-enabled)', async () => {
+  describe('childchain transaction exit (ci-enabled)', async () => {
     const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.001', 'ether')
     const INTIIAL_BOB_RC_AMOUNT = web3.utils.toWei('.1', 'ether')
     const TRANSFER_AMOUNT = web3.utils.toWei('0.0002', 'ether')
@@ -302,13 +302,6 @@ describe.only('Standard Exit tests', async () => {
         ccHelper.waitForBalanceEq(childChain, aliceAccount.address, INTIIAL_ALICE_AMOUNT_ERC20, ERC20_CURRENCY),
         rcHelper.waitForEthBalanceEq(web3, aliceAccount.address, INTIIAL_ALICE_AMOUNT_ETH)
       ])
-
-      try {
-        // Make sure the token has been added
-        await rootChain.addToken(config.testErc20Contract, { from: aliceAccount.address, privateKey: aliceAccount.privateKey })
-      } catch (err) {
-        // addToken will revert if the token has already been added. Ignore it.
-      }
     })
 
     after(async () => {
@@ -331,7 +324,13 @@ describe.only('Standard Exit tests', async () => {
       // Get the exit data
       const utxoToExit = utxos[0]
       const exitData = await childChain.getExitData(utxoToExit)
-      assert.hasAllKeys(exitData, ['txbytes', 'sigs', 'proof', 'utxo_pos'])
+      assert.hasAllKeys(exitData, ['txbytes', 'proof', 'utxo_pos'])
+      try {
+        await rootChain.addToken(config.testErc20Contract, { from: aliceAccount.address, privateKey: aliceAccount.privateKey })
+      } catch (err) {
+        console.log(`Already added ${config.testErc20Contract} to exit queue...`)
+      }
+
 
       let receipt = await rootChain.startStandardExit(
         exitData.utxo_pos,
