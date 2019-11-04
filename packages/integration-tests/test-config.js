@@ -17,11 +17,11 @@ require('dotenv').config()
 
 const config = {
   geth_url: process.env.GETH_URL || 'https://rinkeby.infura.io/v3/a301a155083f4196b46670952fa3aa4e',
-  watcher_url: process.env.WATCHER_URL || 'http://audit-ea36f5f-watcher.omg.network/',
-  childchain_url: process.env.CHILDCHAIN_URL || 'http://audit-ea36f5f-childchain.omg.network/',
-  rootchainContract: process.env.ROOTCHAIN_CONTRACT || '0x979f7c2be6db0a0ef19995294670fc292aba2f5b',
-  contract_exchanger_url: process.env.CONTRACT_EXCHANGER_URL || 'http://localhost:5000/get_contract',
-  testErc20Contract: process.env.TEST_ERC20_CONTRACT || '0xc778417E063141139Fce010982780140Aa0cD5Ab',
+  watcher_url: process.env.WATCHER_URL || 'https://dev-ea36f5f-watcher.omg.network/',
+  childchain_url: process.env.CHILDCHAIN_URL || ' https://dev-ea36f5f-childchain.omg.network/',
+  rootchainContract: process.env.ROOTCHAIN_CONTRACT || '0x005eaff9ce5a4ec47848db8a79df3763d26c8d01',
+  contract_exchanger_url: process.env.CONTRACT_EXCHANGER_URL || 'http://localhost:8000/contracts',
+  testErc20Contract: process.env.TEST_ERC20_CONTRACT || '0xc778417e063141139fce010982780140aa0cd5ab',
   fundAccount: process.env.FUND_ACCOUNT || '0xDda6fD1D4cDd22439c06de86145c448430249F70',
   fundAccountPrivateKey: process.env.FUND_ACCOUNT_PRIVATEKEY || '0x85B36F4A027581038BB5014E22CBF097DD13B665522C5B16E13DB94D01EC9C51',
   fundAccountPassword: process.env.FUND_ACCOUNT_PASSWORD || '',
