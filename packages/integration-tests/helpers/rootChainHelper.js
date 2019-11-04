@@ -162,8 +162,11 @@ async function getPlasmaContractAddress (config) {
 
 async function getTimeToExit (plasmaContract, blockTimestamp) {
   const minExitPeriod = await plasmaContract.methods.minExitPeriod().call() * 1000
+  console.log('MIN_EXIT_PERIOD:', minExitPeriod)
   const now = Date.now()
-  return Math.max(blockTimestamp + (minExitPeriod * 2), now + minExitPeriod) - Math.trunc(now / 1000) * 1000
+  const firstVal = (Number(minExitPeriod) * 2) + 100000
+  const secondVal = Number(minExitPeriod) + 100000
+  return Math.max(firstVal, secondVal)
 }
 
 const DEFAULT_INTERVAL = 1000

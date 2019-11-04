@@ -32,7 +32,7 @@ let rootChain
 // NB This test waits for at least RootChain.MIN_EXIT_PERIOD so it should be run against a
 // modified RootChain contract with a shorter than normal MIN_EXIT_PERIOD.
 
-describe('Standard Exit tests', async () => {
+describe.only('Standard Exit tests', async () => {
   before(async () => {
     const plasmaContract = await rcHelper.getPlasmaContractAddress(config)
     rootChain = new RootChain(web3, plasmaContract.contract_addr)
@@ -189,6 +189,9 @@ describe('Standard Exit tests', async () => {
     })
 
     it('should succesfully exit a ChildChain transaction', async () => {
+      // Track total gas used
+      let bobSpentOnGas
+
       // Send TRANSFER_AMOUNT from Alice to Bob
       await ccHelper.sendAndWait(
         childChain,
@@ -212,6 +215,15 @@ describe('Standard Exit tests', async () => {
       const utxoToExit = bobUtxos[0]
       const exitData = await childChain.getExitData(utxoToExit)
       assert.hasAllKeys(exitData, ['txbytes', 'proof', 'utxo_pos'])
+      
+      try {
+        const addTokenCall = await rootChain.addToken(transaction.ETH_CURRENCY, { from: bobAccount.address, privateKey: bobAccount.privateKey })
+        bobSpentOnGas = await rcHelper.spentOnGas(web3, addTokenCall)
+      } catch (err) {
+        console.log(`Already added ${transaction.ETH_CURRENCY} to exit queue...`)
+        const failedReceipt = JSON.parse(err.message.split('EVM:')[1])
+        bobSpentOnGas = await rcHelper.spentOnGas(web3, failedReceipt)
+      }
 
       const startStandardExitReceipt = await rootChain.startStandardExit(
         exitData.utxo_pos,
@@ -224,8 +236,7 @@ describe('Standard Exit tests', async () => {
       )
       console.log(`Bob called RootChain.startExit(): txhash = ${startStandardExitReceipt.transactionHash}`)
 
-      // Keep track of how much Bob spends on gas
-      const bobSpentOnGas = await rcHelper.spentOnGas(web3, startStandardExitReceipt)
+      bobSpentOnGas.iadd(await rcHelper.spentOnGas(web3, startStandardExitReceipt))
 
       // Call processExits before the challenge period is over
       const processExitReceiptBefore = await rootChain.processExits(
