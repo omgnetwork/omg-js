@@ -214,7 +214,7 @@ class RootChain {
         vaultId,
         token,
         exitId,
-        1
+        20 // assume the exit queue is less than 20 for now
       ),
       gas: txOptions.gas,
       gasPrice: txOptions.gasPrice
