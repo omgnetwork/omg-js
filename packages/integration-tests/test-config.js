@@ -16,18 +16,18 @@ limitations under the License. */
 require('dotenv').config()
 
 const config = {
-  geth_url: process.env.GETH_URL || 'https://rinkeby.infura.io/v3/a301a155083f4196b46670952fa3aa4e',
-  watcher_url: process.env.WATCHER_URL || 'https://dev-ea36f5f-watcher.omg.network/',
-  childchain_url: process.env.CHILDCHAIN_URL || ' https://dev-ea36f5f-childchain.omg.network/',
-  rootchainContract: process.env.ROOTCHAIN_CONTRACT || '0x005eaff9ce5a4ec47848db8a79df3763d26c8d01',
-  contract_exchanger_url: process.env.CONTRACT_EXCHANGER_URL || 'http://localhost:8000/contracts',
-  testErc20Contract: process.env.TEST_ERC20_CONTRACT || '0xc778417e063141139fce010982780140aa0cd5ab',
-  fundAccount: process.env.FUND_ACCOUNT || '0xDda6fD1D4cDd22439c06de86145c448430249F70',
-  fundAccountPrivateKey: process.env.FUND_ACCOUNT_PRIVATEKEY || '0x85B36F4A027581038BB5014E22CBF097DD13B665522C5B16E13DB94D01EC9C51',
+  geth_url: process.env.GETH_URL || '',
+  watcher_url: process.env.WATCHER_URL || '',
+  childchain_url: process.env.CHILDCHAIN_URL || '',
+  rootchainContract: process.env.ROOTCHAIN_CONTRACT || '',
+  contract_exchanger_url: process.env.CONTRACT_EXCHANGER_URL || '',
+  testErc20Contract: process.env.TEST_ERC20_CONTRACT || '',
+  fundAccount: process.env.FUND_ACCOUNT || '',
+  fundAccountPrivateKey: process.env.FUND_ACCOUNT_PRIVATEKEY || '',
   fundAccountPassword: process.env.FUND_ACCOUNT_PASSWORD || '',
-  testFaucetAddress: process.env.TEST_FAUCET_ADDRESS || '0xDda6fD1D4cDd22439c06de86145c448430249F70',
-  testFaucetPrivateKey: process.env.TEST_FAUCET_PRIVATEKEY || '0x85B36F4A027581038BB5014E22CBF097DD13B665522C5B16E13DB94D01EC9C51',
-  minAmountEth: process.env.TEST_MIN_ETH || '0.5',
+  testFaucetAddress: process.env.TEST_FAUCET_ADDRESS || '',
+  testFaucetPrivateKey: process.env.TEST_FAUCET_PRIVATEKEY || '',
+  minAmountEth: process.env.TEST_MIN_ETH || '',
   minAmountERC20: process.env.TEST_MIN_ERC20 || ''
 }
 
