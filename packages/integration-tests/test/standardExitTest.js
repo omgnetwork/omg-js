@@ -107,9 +107,10 @@ describe('Standard Exit tests', async () => {
 
       // Call processExits before the challenge period is over
       try {
-        receipt = await rootChain.processExit(
-          0,
+        receipt = await rootChain.processExits(
           transaction.ETH_CURRENCY,
+          0,
+          1,
           {
             privateKey: aliceAccount.privateKey,
             from: aliceAccount.address
@@ -133,9 +134,10 @@ describe('Standard Exit tests', async () => {
       await rcHelper.sleep(toWait)
 
       // Call processExits again.
-      receipt = await rootChain.processExit(
-        0,
+      receipt = await rootChain.processExits(
         transaction.ETH_CURRENCY,
+        0,
+        1,
         {
           privateKey: aliceAccount.privateKey,
           from: aliceAccount.address,

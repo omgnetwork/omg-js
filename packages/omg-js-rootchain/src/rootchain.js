@@ -195,13 +195,14 @@ class RootChain {
 
   /**
    * Processes any exit that has completed the challenge period.
-   * @method processExit
-   * @param {string} exitId An exit id returned from startStandardExit.
+   * @method processExits
    * @param {string} token An address of the token to exit.
+   * @param {string} exitId An exit id returned from startStandardExit.
+   * @param {number} maxExitsToProcess The max number of exits to process
    * @param {Object} txOptions transaction options, such as `from`, gas` and `privateKey`
    * @return {string} transaction hash of the call
    */
-  async processExit (exitId, token, txOptions) {
+  async processExits (token, exitId, maxExitsToProcess, txOptions) {
     const vaultId = token === transaction.ETH_CURRENCY ? 1 : 2
 
     const txDetails = {
@@ -214,7 +215,7 @@ class RootChain {
         vaultId,
         token,
         exitId,
-        1
+        maxExitsToProcess
       ),
       gas: txOptions.gas,
       gasPrice: txOptions.gasPrice
