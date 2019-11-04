@@ -197,8 +197,9 @@ class ChildChain {
       currency,
       metadata
     )
+    const typedData = transaction.getTypedData(txBody, verifyingContract)
     // Sign it
-    const signatures = this.signTransaction(txBody, fromPrivateKeys, verifyingContract)
+    const signatures = this.signTransaction(typedData, fromPrivateKeys)
     // Build the signed transaction
     const signedTx = this.buildSignedTransaction(typedData, signatures)
     // submit transaction
