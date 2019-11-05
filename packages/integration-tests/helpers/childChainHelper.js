@@ -115,23 +115,24 @@ async function createTx (childChain, from, to, amount, currency, fromPrivateKey,
   if (!utxosToSpend || utxosToSpend.length === 0) {
     throw new Error(`Not enough funds in ${from} to cover ${amount} ${currency}`)
   }
-
   // Construct the tx body
   const txBody = {
     inputs: utxosToSpend,
     outputs: [{
-      owner: to,
+      outputType: 1,
+      outputGuard: to,
       currency,
       amount
     }]
   }
 
-  const bnAmount = numberToBN(utxosToSpend[0].amount)
-  if (bnAmount.gt(numberToBN(amount))) {
+  const utxoAmount = utxosToSpend[0].amount
+  if (utxoAmount > amount) {
     // Need to add a 'change' output
-    const CHANGE_AMOUNT = bnAmount.sub(numberToBN(amount))
+    const CHANGE_AMOUNT = utxoAmount - amount
     txBody.outputs.push({
-      owner: from,
+      outputType: 1,
+      outputGuard: from,
       currency,
       amount: CHANGE_AMOUNT
     })
@@ -140,19 +141,17 @@ async function createTx (childChain, from, to, amount, currency, fromPrivateKey,
   if (this.transferZeroFee && utxosToSpend.length > 1) {
     // The fee input can be returned
     txBody.outputs.push({
-      owner: from,
+      outputType: 1,
+      outputGuard: from,
       currency: utxosToSpend[utxosToSpend.length - 1].currency,
       amount: utxosToSpend[utxosToSpend.length - 1].amount
     })
   }
 
-  // Create the unsigned transaction
-  const typedData = transaction.getTypedData(txBody, verifyingContract)
-
-  // Sign it
   const privateKeys = new Array(utxosToSpend.length).fill(fromPrivateKey)
+  const typedData = transaction.getTypedData(txBody, verifyingContract)
   const signatures = childChain.signTransaction(typedData, privateKeys)
-  // Build the signed transaction
+
   return childChain.buildSignedTransaction(typedData, signatures)
 }
 

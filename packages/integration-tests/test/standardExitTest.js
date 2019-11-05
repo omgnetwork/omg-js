@@ -110,7 +110,7 @@ describe('Standard Exit tests', async () => {
         receipt = await rootChain.processExits(
           transaction.ETH_CURRENCY,
           0,
-          1,
+          20,
           {
             privateKey: aliceAccount.privateKey,
             from: aliceAccount.address
@@ -137,11 +137,10 @@ describe('Standard Exit tests', async () => {
       receipt = await rootChain.processExits(
         transaction.ETH_CURRENCY,
         0,
-        1,
+        20,
         {
           privateKey: aliceAccount.privateKey,
           from: aliceAccount.address,
-          gas: 200000
         }
       )
       console.log(`Alice called RootChain.processExits() after challenge period: txhash = ${receipt.transactionHash}`)
@@ -193,6 +192,9 @@ describe('Standard Exit tests', async () => {
     })
 
     it('should succesfully exit a ChildChain transaction', async () => {
+      // Track total gas used
+      let bobSpentOnGas
+
       // Send TRANSFER_AMOUNT from Alice to Bob
       await ccHelper.sendAndWait(
         childChain,
@@ -215,9 +217,18 @@ describe('Standard Exit tests', async () => {
       // Get the exit data
       const utxoToExit = bobUtxos[0]
       const exitData = await childChain.getExitData(utxoToExit)
-      assert.hasAllKeys(exitData, ['txbytes', 'sigs', 'proof', 'utxo_pos'])
+      assert.hasAllKeys(exitData, ['txbytes', 'proof', 'utxo_pos'])
+      
+      try {
+        const addTokenCall = await rootChain.addToken(transaction.ETH_CURRENCY, { from: bobAccount.address, privateKey: bobAccount.privateKey })
+        bobSpentOnGas = await rcHelper.spentOnGas(web3, addTokenCall)
+      } catch (err) {
+        console.log(`Already added ${transaction.ETH_CURRENCY} to exit queue...`)
+        const failedReceipt = JSON.parse(err.message.split('EVM:')[1])
+        bobSpentOnGas = await rcHelper.spentOnGas(web3, failedReceipt)
+      }
 
-      let receipt = await rootChain.startStandardExit(
+      const startStandardExitReceipt = await rootChain.startStandardExit(
         exitData.utxo_pos,
         exitData.txbytes,
         exitData.proof,
@@ -226,23 +237,22 @@ describe('Standard Exit tests', async () => {
           from: bobAccount.address
         }
       )
-      console.log(`Bob called RootChain.startExit(): txhash = ${receipt.transactionHash}`)
+      console.log(`Bob called RootChain.startExit(): txhash = ${startStandardExitReceipt.transactionHash}`)
 
-      // Keep track of how much Bob spends on gas
-      const bobSpentOnGas = await rcHelper.spentOnGas(web3, receipt)
+      bobSpentOnGas.iadd(await rcHelper.spentOnGas(web3, startStandardExitReceipt))
 
       // Call processExits before the challenge period is over
-      receipt = await rootChain.processExits(
+      const processExitReceiptBefore = await rootChain.processExits(
         transaction.ETH_CURRENCY,
         0,
-        1,
+        20,
         {
           privateKey: bobAccount.privateKey,
           from: bobAccount.address
         }
       )
-      console.log(`Bob called RootChain.processExits() before challenge period: txhash = ${receipt.transactionHash}`)
-      bobSpentOnGas.iadd(await rcHelper.spentOnGas(web3, receipt))
+      console.log(`Bob called RootChain.processExits() before challenge period: txhash = ${processExitReceiptBefore.transactionHash}`)
+      bobSpentOnGas.iadd(await rcHelper.spentOnGas(web3, processExitReceiptBefore))
 
       // Get Bob's ETH balance
       let bobEthBalance = await web3.eth.getBalance(bobAccount.address)
@@ -250,23 +260,22 @@ describe('Standard Exit tests', async () => {
       assert.isBelow(Number(bobEthBalance), Number(INTIIAL_BOB_RC_AMOUNT))
 
       // Wait for challenge period
-      const toWait = await rcHelper.getTimeToExit(rootChain.plasmaContract, exitData.utxo_pos)
+      const toWait = await rcHelper.getTimeToExit(rootChain.plasmaContract, 0)
       console.log(`Waiting for challenge period... ${toWait}ms`)
       await rcHelper.sleep(toWait)
 
       // Call processExits again.
-      receipt = await rootChain.processExits(
+      const processExitReceiptAfter = await rootChain.processExits(
         transaction.ETH_CURRENCY,
         0,
-        1,
+        20,
         {
           privateKey: bobAccount.privateKey,
-          from: bobAccount.address,
-          gas: 200000
+          from: bobAccount.address
         }
       )
-      console.log(`Bob called RootChain.processExits() after challenge period: txhash = ${receipt.transactionHash}`)
-      bobSpentOnGas.iadd(await rcHelper.spentOnGas(web3, receipt))
+      console.log(`Bob called RootChain.processExits() after challenge period: txhash = ${processExitReceiptAfter.transactionHash}`)
+      bobSpentOnGas.iadd(await rcHelper.spentOnGas(web3, processExitReceiptAfter))
 
       // Get Bob's ETH balance
       bobEthBalance = await web3.eth.getBalance(bobAccount.address)
@@ -298,13 +307,6 @@ describe('Standard Exit tests', async () => {
         ccHelper.waitForBalanceEq(childChain, aliceAccount.address, INTIIAL_ALICE_AMOUNT_ERC20, ERC20_CURRENCY),
         rcHelper.waitForEthBalanceEq(web3, aliceAccount.address, INTIIAL_ALICE_AMOUNT_ETH)
       ])
-
-      try {
-        // Make sure the token has been added
-        await rootChain.addToken(config.testErc20Contract, { from: aliceAccount.address, privateKey: aliceAccount.privateKey })
-      } catch (err) {
-        // addToken will revert if the token has already been added. Ignore it.
-      }
     })
 
     after(async () => {
@@ -327,7 +329,13 @@ describe('Standard Exit tests', async () => {
       // Get the exit data
       const utxoToExit = utxos[0]
       const exitData = await childChain.getExitData(utxoToExit)
-      assert.hasAllKeys(exitData, ['txbytes', 'sigs', 'proof', 'utxo_pos'])
+      assert.hasAllKeys(exitData, ['txbytes', 'proof', 'utxo_pos'])
+      try {
+        await rootChain.addToken(config.testErc20Contract, { from: aliceAccount.address, privateKey: aliceAccount.privateKey })
+      } catch (err) {
+        console.log(`Already added ${config.testErc20Contract} to exit queue...`)
+      }
+
 
       let receipt = await rootChain.startStandardExit(
         exitData.utxo_pos,
@@ -344,7 +352,7 @@ describe('Standard Exit tests', async () => {
       receipt = await rootChain.processExits(
         config.testErc20Contract,
         0,
-        1,
+        20,
         {
           privateKey: aliceAccount.privateKey,
           from: aliceAccount.address
@@ -355,7 +363,7 @@ describe('Standard Exit tests', async () => {
       assert.equal(balance, 0)
 
       // Wait for challenge period
-      const toWait = await rcHelper.getTimeToExit(rootChain.plasmaContract, exitData.utxo_pos)
+      const toWait = await rcHelper.getTimeToExit(rootChain.plasmaContract, 0)
       console.log(`Waiting for challenge period... ${toWait}ms`)
       await rcHelper.sleep(toWait)
 
@@ -363,11 +371,10 @@ describe('Standard Exit tests', async () => {
       receipt = await rootChain.processExits(
         config.testErc20Contract,
         0,
-        6,
+        20,
         {
           privateKey: aliceAccount.privateKey,
           from: aliceAccount.address,
-          gas: 200000
         }
       )
       console.log(`Alice called RootChain.processExits() after challenge period: txhash = ${receipt.transactionHash}`)

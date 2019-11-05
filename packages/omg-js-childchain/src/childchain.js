@@ -125,7 +125,6 @@ class ChildChain {
    * @return {Array} array of signatures
    */
   signTransaction (typedData, privateKeys) {
-    privateKeys.forEach(key => validatePrivateKey)
     const toSign = transaction.getToSignHash(typedData)
     return sign(toSign, privateKeys)
   }
@@ -142,7 +141,7 @@ class ChildChain {
     // Convert the data to an array
     const txArray = transaction.toArray(txData.message)
     // Prepend the signatures
-    const signedTx = [signatures, ...txArray]
+    const signedTx = [signatures, txData.message.txType, ...txArray]
     // rlp-encode the transaction + signatures
     return rlp.encode(signedTx).toString('hex')
   }
@@ -198,7 +197,6 @@ class ChildChain {
       currency,
       metadata
     )
-    // Get the transaction data
     const typedData = transaction.getTypedData(txBody, verifyingContract)
     // Sign it
     const signatures = this.signTransaction(typedData, fromPrivateKeys)

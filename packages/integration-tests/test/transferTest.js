@@ -76,11 +76,13 @@ describe('Transfer tests', async () => {
       const txBody = {
         inputs: [utxos[0]],
         outputs: [{
-          owner: bobAccount.address,
+          outputType: 1,
+          outputGuard: bobAccount.address,
           currency: transaction.ETH_CURRENCY,
           amount: TRANSFER_AMOUNT
         }, {
-          owner: aliceAccount.address,
+          outputType: 1,
+          outputGuard: aliceAccount.address,
           currency: transaction.ETH_CURRENCY,
           amount: CHANGE_AMOUNT
         }]
@@ -173,22 +175,26 @@ describe('Transfer tests', async () => {
 
       const outputs = [
         {
-          owner: aliceAccount.address,
+          outputType: 1,
+          outputGuard: aliceAccount.address,
           currency: transaction.ETH_CURRENCY,
           amount: ALICE_OUTPUT_0
         },
         {
-          owner: aliceAccount.address,
+          outputType: 1,
+          outputGuard: aliceAccount.address,
           currency: transaction.ETH_CURRENCY,
           amount: ALICE_OUTPUT_1
         },
         {
-          owner: bobAccount.address,
+          outputType: 1,
+          outputGuard: bobAccount.address,
           currency: transaction.ETH_CURRENCY,
           amount: BOB_OUTPUT_0
         },
         {
-          owner: bobAccount.address,
+          outputType: 1,
+          outputGuard: bobAccount.address,
           currency: transaction.ETH_CURRENCY,
           amount: BOB_OUTPUT_1
         }
@@ -286,11 +292,13 @@ describe('Transfer tests', async () => {
       const txBody = {
         inputs: [erc20Utxo],
         outputs: [{
-          owner: bobAccount.address,
+          outputType: 1,
+          outputGuard: bobAccount.address,
           currency: ERC20_CURRENCY,
           amount: Number(TRANSFER_AMOUNT)
         }, {
-          owner: aliceAccount.address,
+          outputType: 1,
+          outputGuard: aliceAccount.address,
           currency: ERC20_CURRENCY,
           amount: CHANGE_AMOUNT
         }]
@@ -367,19 +375,23 @@ describe('Transfer tests', async () => {
       const txBody = {
         inputs: [utxos[0], utxos[1]],
         outputs: [{
-          owner: bobAccount.address,
+          outputType: 1,
+          outputGuard: bobAccount.address,
           currency: transaction.ETH_CURRENCY,
           amount: TRANSFER_AMOUNT_ETH
         }, {
-          owner: aliceAccount.address,
+          outputType: 1,
+          outputGuard: aliceAccount.address,
           currency: transaction.ETH_CURRENCY,
           amount: CHANGE_AMOUNT_ETH
         }, {
-          owner: bobAccount.address,
+          outputType: 1,
+          outputGuard: bobAccount.address,
           currency: ERC20_CURRENCY,
           amount: TRANSFER_AMOUNT_ERC20
         }, {
-          owner: aliceAccount.address,
+          outputType: 1,
+          outputGuard: aliceAccount.address,
           currency: ERC20_CURRENCY,
           amount: CHANGE_AMOUNT_ERC20
         }]
