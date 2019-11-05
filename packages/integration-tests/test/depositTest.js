@@ -185,7 +185,7 @@ describe('Deposit tests', async () => {
       assert.equal(utxos.length, 1)
       assert.hasAllKeys(utxos[0], ['utxo_pos', 'txindex', 'owner', 'oindex', 'currency', 'blknum', 'amount'])
       assert.equal(utxos[0].amount.toString(), TEST_AMOUNT)
-      assert.equal(utxos[0].currency, config.testErc20Contract)
+      assert.equal(utxos[0].currency.toLowerCase(), config.testErc20Contract.toLowerCase())
     })
   })
 })

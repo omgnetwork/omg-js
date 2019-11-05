@@ -48,6 +48,7 @@ describe('Add Token tests', async () => {
     return rootChain.addToken(fakeErc20.address, { from: aliceAccount.address, privateKey: aliceAccount.privateKey }).should.be.fulfilled
   })
 
+  // TODO: use rootchain.hasToken to check if queue exists
   it('add token should not add token if added before', async () => {
     const fakeErc20 = rcHelper.createAccount(web3)
     await rootChain.addToken(fakeErc20.address, { from: aliceAccount.address, privateKey: aliceAccount.privateKey }).should.be.fulfilled

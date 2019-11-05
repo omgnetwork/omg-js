@@ -368,7 +368,7 @@ describe('Transfer tests', async () => {
       assert.equal(utxos[0].amount, INTIIAL_ALICE_AMOUNT_ETH)
       assert.equal(utxos[0].currency, transaction.ETH_CURRENCY)
       assert.equal(utxos[1].amount, INTIIAL_ALICE_AMOUNT_ERC20)
-      assert.equal(utxos[1].currency, ERC20_CURRENCY)
+      assert.equal(utxos[1].currency.toLowerCase(), ERC20_CURRENCY.toLowerCase())
 
       const CHANGE_AMOUNT_ETH = numberToBN(utxos[0].amount).sub(TRANSFER_AMOUNT_ETH)
       const CHANGE_AMOUNT_ERC20 = utxos[1].amount - TRANSFER_AMOUNT_ERC20
@@ -412,15 +412,18 @@ describe('Transfer tests', async () => {
       let balance = await ccHelper.waitForBalanceEq(childChain, bobAccount.address, TRANSFER_AMOUNT_ETH)
       // Bob's ERC20 balance should be TRANSFER_AMOUNT_ERC20
       balance = await ccHelper.waitForBalanceEq(childChain, bobAccount.address, TRANSFER_AMOUNT_ERC20, ERC20_CURRENCY)
+      balance = balance.map(i => ({ ...i, currency: i.currency.toLowerCase() }))
       assert.equal(balance.length, 2)
       assert.deepInclude(balance, { currency: transaction.ETH_CURRENCY, amount: Number(TRANSFER_AMOUNT_ETH.toString()) })
-      assert.deepInclude(balance, { currency: ERC20_CURRENCY, amount: TRANSFER_AMOUNT_ERC20 })
+      assert.deepInclude(balance, { currency: ERC20_CURRENCY.toLowerCase(), amount: TRANSFER_AMOUNT_ERC20 })
 
       // Check Alice's balance
       balance = await childChain.getBalance(aliceAccount.address)
+      balance = balance.map(i => ({ ...i, currency: i.currency.toLowerCase() }))
+
       assert.equal(balance.length, 2)
       assert.deepInclude(balance, { currency: transaction.ETH_CURRENCY, amount: Number(CHANGE_AMOUNT_ETH.toString()) })
-      assert.deepInclude(balance, { currency: ERC20_CURRENCY, amount: CHANGE_AMOUNT_ERC20 })
+      assert.deepInclude(balance, { currency: ERC20_CURRENCY.toLowerCase(), amount: CHANGE_AMOUNT_ERC20 })
     })
   })
 

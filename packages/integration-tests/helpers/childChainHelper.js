@@ -21,7 +21,7 @@ const ethUtil = require('ethereumjs-util')
 function selectUtxos (utxos, amount, currency, includeFee) {
   // Filter by desired currency and sort in descending order
   const sorted = utxos
-    .filter(utxo => utxo.currency === currency)
+    .filter(utxo => utxo.currency.toLowerCase() === currency.toLowerCase())
     .sort((a, b) => numberToBN(b.amount).sub(numberToBN(a.amount)))
 
   if (sorted) {
@@ -39,7 +39,7 @@ function selectUtxos (utxos, amount, currency, includeFee) {
       if (includeFee) {
         // Find the first ETH utxo (that's not selected)
         const ethUtxos = utxos.filter(
-          utxo => utxo.currency === transaction.ETH_CURRENCY
+          utxo => utxo.currency.toLowerCase() === transaction.ETH_CURRENCY.toLowerCase()
         )
         const feeUtxo = ethUtxos.find(utxo => utxo !== selected)
         if (!feeUtxo) {
