@@ -40,8 +40,8 @@ describe('Standard Exit tests', async () => {
   })
 
   describe('Deposit transaction exit (ci-enabled)', async () => {
-    const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('1', 'ether')
-    const DEPOSIT_AMOUNT = web3.utils.toWei('.1', 'ether')
+    const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.1', 'ether')
+    const DEPOSIT_AMOUNT = web3.utils.toWei('.0001', 'ether')
     let aliceAccount
 
     beforeEach(async () => {
