@@ -85,7 +85,7 @@ async function setGas (web3, txDetails) {
         txDetails.gas = await web3.eth.estimateGas(txDetails)
       }
     } catch (err) {
-      txDetails.gas = 6000000
+      throw new Error(`Error estimating gas: ${err}`)
     }
   }
 }

@@ -32,8 +32,7 @@ async function setGas (eth, txDetails) {
     try {
       txDetails.gas = await eth.estimateGas(txDetails)
     } catch (err) {
-      txDetails.gas = 6000000
-      console.warn('Error estimating gas: ', err)
+      throw new Error(`Error estimating gas: ${err}`)
     }
   }
   if (!txDetails.gasPrice) {
