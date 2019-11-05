@@ -49,41 +49,6 @@ const transaction = {
   },
 
   /**
-  * RLP encodes a transaction
-  *
-  *@param {Object} transactionBody the transaction object
-  *@returns the RLP encoded transaction
-  *
-  */
-  encode: function (transactionBody) {
-    const txArray = []
-
-    const inputArray = []
-    for (let i = 0; i < MAX_INPUTS; i++) {
-      addInput(inputArray,
-        i < transactionBody.inputs.length
-          ? transactionBody.inputs[i]
-          : typedData.NULL_INPUT)
-    }
-
-    txArray.push(inputArray)
-
-    const outputArray = []
-    for (let i = 0; i < MAX_OUTPUTS; i++) {
-      addOutput(outputArray,
-        i < transactionBody.outputs.length
-          ? transactionBody.outputs[i]
-          : typedData.NULL_OUTPUT)
-    }
-
-    txArray.push(outputArray)
-    if (transactionBody.metadata) {
-      txArray.push(transactionBody.metadata)
-    }
-    return `0x${rlp.encode(txArray).toString('hex').toUpperCase()}`
-  },
-
-  /**
   * Converts a transaction into an array suitable for RLP encoding
   *
   *@param {Object} typedDataMessage the transaction object

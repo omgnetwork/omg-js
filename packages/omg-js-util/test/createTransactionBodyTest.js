@@ -20,9 +20,9 @@ describe('createTransactionBody', () => {
 
     const txBody = transaction.createTransactionBody(fromAddress, fromUtxos, toAddress, toAmount, transaction.ETH_CURRENCY)
     assert.equal(txBody.outputs.length, 2)
-    assert.equal(txBody.outputs[0].owner, toAddress)
+    assert.equal(txBody.outputs[0].outputGuard, toAddress)
     assert.equal(txBody.outputs[0].amount.toString(), toAmount.toString())
-    assert.equal(txBody.outputs[1].owner, fromAddress)
+    assert.equal(txBody.outputs[1].outputGuard, fromAddress)
     const expectedChange = numberToBN(fromUtxos[0].amount).sub(numberToBN(toAmount))
     assert.equal(txBody.outputs[1].amount.toString(), expectedChange.toString())
   })
@@ -51,9 +51,9 @@ describe('createTransactionBody', () => {
 
     const txBody = transaction.createTransactionBody(fromAddress, fromUtxos, toAddress, toAmount, transaction.ETH_CURRENCY)
     assert.equal(txBody.outputs.length, 2)
-    assert.equal(txBody.outputs[0].owner, toAddress)
+    assert.equal(txBody.outputs[0].outputGuard, toAddress)
     assert.equal(txBody.outputs[0].amount.toString(), toAmount.toString())
-    assert.equal(txBody.outputs[1].owner, fromAddress)
+    assert.equal(txBody.outputs[1].outputGuard, fromAddress)
     const expectedChange = numberToBN(fromUtxos[0].amount).add(numberToBN(fromUtxos[1].amount)).sub(numberToBN(toAmount))
     assert.equal(txBody.outputs[1].amount.toString(), expectedChange.toString())
   })
@@ -82,7 +82,7 @@ describe('createTransactionBody', () => {
 
     const txBody = transaction.createTransactionBody(fromAddress, fromUtxos, toAddress, toAmount, transaction.ETH_CURRENCY)
     assert.equal(txBody.outputs.length, 1)
-    assert.equal(txBody.outputs[0].owner, toAddress)
+    assert.equal(txBody.outputs[0].outputGuard, toAddress)
     assert.equal(txBody.outputs[0].amount.toString(), toAmount.toString())
   })
 
@@ -103,7 +103,7 @@ describe('createTransactionBody', () => {
 
     const txBody = transaction.createTransactionBody(fromAddress, fromUtxos, toAddress, toAmount, transaction.ETH_CURRENCY)
     assert.equal(txBody.outputs.length, 1)
-    assert.equal(txBody.outputs[0].owner, toAddress)
+    assert.equal(txBody.outputs[0].outputGuard, toAddress)
     assert.equal(txBody.outputs[0].amount.toString(), toAmount.toString())
   })
 
