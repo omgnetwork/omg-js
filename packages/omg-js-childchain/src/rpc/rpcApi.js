@@ -17,6 +17,13 @@ const fetch = require('node-fetch')
 const debug = require('debug')('omg.childchain.rpc')
 const JSONBigNumber = require('json-bigint')
 
+class RpcError extends Error {
+  constructor ({ code, description, messages }) {
+    super(description || code + (messages ? `, ${messages.code}` : ''))
+    this.code = code
+  }
+}
+
 async function get (url) {
   return fetch(url).then(parseResponse)
 }
