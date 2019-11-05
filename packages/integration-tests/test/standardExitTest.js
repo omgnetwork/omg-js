@@ -148,8 +148,8 @@ describe('Standard Exit tests', async () => {
 
       // Get Alice's ETH balance
       aliceEthBalance = await web3.eth.getBalance(aliceAccount.address)
-      // Expect Alice's balance to be INTIIAL_ALICE_AMOUNT - DEPOSIT_AMOUNT - gas spent
-      const expected = web3.utils.toBN(INTIIAL_ALICE_AMOUNT).sub(web3.utils.toBN(DEPOSIT_AMOUNT)).sub(aliceSpentOnGas)
+      // Expect Alice's balance to be INTIIAL_ALICE_AMOUNT - gas spent
+      const expected = web3.utils.toBN(INTIIAL_ALICE_AMOUNT).sub(aliceSpentOnGas)
       assert.equal(aliceEthBalance.toString(), expected.toString())
     })
   })
@@ -324,7 +324,7 @@ describe('Standard Exit tests', async () => {
       assert.equal(utxos.length, 1)
       assert.hasAllKeys(utxos[0], ['utxo_pos', 'txindex', 'owner', 'oindex', 'currency', 'blknum', 'amount'])
       assert.equal(utxos[0].amount, INTIIAL_ALICE_AMOUNT_ERC20)
-      assert.equal(utxos[0].currency, ERC20_CURRENCY)
+      assert.equal(utxos[0].currency.toLowerCase(), ERC20_CURRENCY.toLowerCase())
 
       // Get the exit data
       const utxoToExit = utxos[0]
