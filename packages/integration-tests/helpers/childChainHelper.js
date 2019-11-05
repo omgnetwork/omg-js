@@ -233,6 +233,7 @@ module.exports = {
   waitForBalance,
   waitForBalanceEq,
   send,
+  sendSubmitTyped,
   createTx,
   sendAndWait,
   waitForEvent,
