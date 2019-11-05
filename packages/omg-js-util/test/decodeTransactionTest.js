@@ -23,38 +23,38 @@ const rlp = require('rlp')
 describe('decodeTransaction', () => {
   it('should decode an encoded unsigned transaction with inputs and outputs', async () => {
     const txBody = {
-      'inputs': [
+      inputs: [
         {
-          'txindex': 0,
-          'oindex': 0,
-          'blknum': 12
+          txindex: 0,
+          oindex: 0,
+          blknum: 12
         },
         {
-          'txindex': 4579,
-          'oindex': 13,
-          'blknum': 9821314
+          txindex: 4579,
+          oindex: 13,
+          blknum: 9821314
         }
       ],
-      'outputs': [
+      outputs: [
         {
-          'owner': '0xf4ebbe787311bb955bb353b7a4d8b97af8ed1c9b',
-          'currency': '0xf4ebbe787311bb955bb353b7a4d8b97af8ed1c9b',
-          'amount': 1
+          owner: '0xf4ebbe787311bb955bb353b7a4d8b97af8ed1c9b',
+          currency: '0xf4ebbe787311bb955bb353b7a4d8b97af8ed1c9b',
+          amount: 1
         },
         {
-          'owner': '0xf4ebbe787311bb955bb353b7a4d8b97af8ed1c9b',
-          'currency': '0x0000000000000000000000000000000000000000',
-          'amount': 4567
+          owner: '0xf4ebbe787311bb955bb353b7a4d8b97af8ed1c9b',
+          currency: '0x0000000000000000000000000000000000000000',
+          amount: 4567
         },
         {
-          'owner': '0xf4ebbe787311bb955bb353b7a4d8b97af8ed1c9b',
-          'currency': '0x0000000000000000000000000000000000000000',
-          'amount': 89008900
+          owner: '0xf4ebbe787311bb955bb353b7a4d8b97af8ed1c9b',
+          currency: '0x0000000000000000000000000000000000000000',
+          amount: 89008900
         },
         {
-          'owner': '0xf4ebbe787311bb955bb353b7a4d8b97af8ed1c9b',
-          'currency': '0x0000000000000000000000000000000000000000',
-          'amount': 1234567890123456
+          owner: '0xf4ebbe787311bb955bb353b7a4d8b97af8ed1c9b',
+          currency: '0x0000000000000000000000000000000000000000',
+          amount: 1234567890123456
         }
       ],
       metadata: transaction.NULL_METADATA
@@ -73,14 +73,14 @@ describe('decodeTransaction', () => {
     const txBody = {
       inputs: [
         {
-          'txindex': 0,
-          'oindex': 0,
-          'blknum': 12
+          txindex: 0,
+          oindex: 0,
+          blknum: 12
         },
         {
-          'txindex': 4579,
-          'oindex': 13,
-          'blknum': 9821314
+          txindex: 4579,
+          oindex: 13,
+          blknum: 9821314
         }
       ],
       outputs: [],
@@ -104,16 +104,16 @@ describe('decodeTransaction', () => {
 
   it.skip('should decode an encoded signed transaction with only inputs', async () => {
     const txBody = {
-      'inputs': [
+      inputs: [
         {
-          'txindex': 0,
-          'oindex': 0,
-          'blknum': 12
+          txindex: 0,
+          oindex: 0,
+          blknum: 12
         },
         {
-          'txindex': 4579,
-          'oindex': 13,
-          'blknum': 9821314
+          txindex: 4579,
+          oindex: 13,
+          blknum: 9821314
         }
       ],
       outputs: []
@@ -140,28 +140,28 @@ describe('decodeTransaction', () => {
 
   it.skip('should decode an encoded signed transaction with inputs and outputs', async () => {
     const txBody = {
-      'inputs': [
+      inputs: [
         {
-          'txindex': 0,
-          'oindex': 0,
-          'blknum': 12
+          txindex: 0,
+          oindex: 0,
+          blknum: 12
         },
         {
-          'txindex': 4579,
-          'oindex': 13,
-          'blknum': 9821314
+          txindex: 4579,
+          oindex: 13,
+          blknum: 9821314
         }
       ],
       outputs: [
         {
-          'owner': '0xf4ebbe787311bb955bb353b7a4d8b97af8ed1c9b',
-          'currency': '0xf4ebbe787311bb955bb353b7a4d8b97af8ed1c9b',
-          'amount': 1
+          owner: '0xf4ebbe787311bb955bb353b7a4d8b97af8ed1c9b',
+          currency: '0xf4ebbe787311bb955bb353b7a4d8b97af8ed1c9b',
+          amount: 1
         },
         {
-          'owner': '0xf4ebbe787311bb955bb353b7a4d8b97af8ed1c9b',
-          'currency': '0x0000000000000000000000000000000000000000',
-          'amount': 4567
+          owner: '0xf4ebbe787311bb955bb353b7a4d8b97af8ed1c9b',
+          currency: '0x0000000000000000000000000000000000000000',
+          amount: 4567
         }]
     }
 

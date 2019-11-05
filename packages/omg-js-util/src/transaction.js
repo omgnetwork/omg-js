@@ -355,14 +355,14 @@ function validateMetadata (arg) {
 }
 
 function addInput (array, input) {
-  if(input.blknum !== 0){
+  if (input.blknum !== 0) {
     const encodedPosition = transaction.encodeUtxoPos(input)
     array.push(encodedPosition)
   }
 }
 
 function addOutput (array, output) {
-  if(output.amount > 0) {
+  if (output.amount > 0) {
     array.push([
       output.outputType,
       sanitiseAddress(output.outputGuard), // must start with '0x' to be encoded properly
@@ -372,8 +372,6 @@ function addOutput (array, output) {
       output.amount === 0 ? 0 : numberToBN(output.amount)
     ])
   }
-
-
 }
 
 function sanitiseAddress (address) {

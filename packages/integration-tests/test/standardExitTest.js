@@ -88,7 +88,7 @@ describe('Standard Exit tests', async () => {
       if (!hasToken) {
         console.log(`Adding a ${transaction.ETH_CURRENCY} exit queue`)
         const addTokenCall = await rootChain.addToken(transaction.ETH_CURRENCY, { from: aliceAccount.address, privateKey: aliceAccount.privateKey })
-        aliceSpentOnGas.iadd(await rcHelper.spentOnGas(web3, addTokenCall))        
+        aliceSpentOnGas.iadd(await rcHelper.spentOnGas(web3, addTokenCall))
       } else {
         console.log(`Exit queue for ${transaction.ETH_CURRENCY} already exists`)
       }
@@ -140,7 +140,7 @@ describe('Standard Exit tests', async () => {
         20,
         {
           privateKey: aliceAccount.privateKey,
-          from: aliceAccount.address,
+          from: aliceAccount.address
         }
       )
       console.log(`Alice called RootChain.processExits() after challenge period: txhash = ${receipt.transactionHash}`)
@@ -218,7 +218,7 @@ describe('Standard Exit tests', async () => {
       const utxoToExit = bobUtxos[0]
       const exitData = await childChain.getExitData(utxoToExit)
       assert.hasAllKeys(exitData, ['txbytes', 'proof', 'utxo_pos'])
-      
+
       try {
         const addTokenCall = await rootChain.addToken(transaction.ETH_CURRENCY, { from: bobAccount.address, privateKey: bobAccount.privateKey })
         bobSpentOnGas = await rcHelper.spentOnGas(web3, addTokenCall)
@@ -336,7 +336,6 @@ describe('Standard Exit tests', async () => {
         console.log(`Already added ${config.testErc20Contract} to exit queue...`)
       }
 
-
       let receipt = await rootChain.startStandardExit(
         exitData.utxo_pos,
         exitData.txbytes,
@@ -374,7 +373,7 @@ describe('Standard Exit tests', async () => {
         20,
         {
           privateKey: aliceAccount.privateKey,
-          from: aliceAccount.address,
+          from: aliceAccount.address
         }
       )
       console.log(`Alice called RootChain.processExits() after challenge period: txhash = ${receipt.transactionHash}`)

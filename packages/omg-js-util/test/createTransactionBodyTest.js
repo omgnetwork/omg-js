@@ -7,11 +7,11 @@ describe('createTransactionBody', () => {
     const fromAddress = '0xf4ebbe787311bb955bb353b7a4d8b97af8ed1c9b'
     const fromUtxos = [
       {
-        'txindex': 0,
-        'oindex': 0,
-        'currency': transaction.ETH_CURRENCY,
-        'blknum': 19774001,
-        'amount': 1000000000000000000
+        txindex: 0,
+        oindex: 0,
+        currency: transaction.ETH_CURRENCY,
+        blknum: 19774001,
+        amount: 1000000000000000000
       }
     ]
 
@@ -31,18 +31,18 @@ describe('createTransactionBody', () => {
     const fromAddress = '0xf4ebbe787311bb955bb353b7a4d8b97af8ed1c9b'
     const fromUtxos = [
       {
-        'txindex': 0,
-        'oindex': 0,
-        'currency': transaction.ETH_CURRENCY,
-        'blknum': 19774001,
-        'amount': 10
+        txindex: 0,
+        oindex: 0,
+        currency: transaction.ETH_CURRENCY,
+        blknum: 19774001,
+        amount: 10
       },
       {
-        'txindex': 0,
-        'oindex': 0,
-        'currency': transaction.ETH_CURRENCY,
-        'blknum': 19774001,
-        'amount': 10
+        txindex: 0,
+        oindex: 0,
+        currency: transaction.ETH_CURRENCY,
+        blknum: 19774001,
+        amount: 10
       }
     ]
 
@@ -62,18 +62,18 @@ describe('createTransactionBody', () => {
     const fromAddress = '0xf4ebbe787311bb955bb353b7a4d8b97af8ed1c9b'
     const fromUtxos = [
       {
-        'txindex': 0,
-        'oindex': 0,
-        'currency': transaction.ETH_CURRENCY,
-        'blknum': 19774001,
-        'amount': 10
+        txindex: 0,
+        oindex: 0,
+        currency: transaction.ETH_CURRENCY,
+        blknum: 19774001,
+        amount: 10
       },
       {
-        'txindex': 0,
-        'oindex': 0,
-        'currency': transaction.ETH_CURRENCY,
-        'blknum': 19774001,
-        'amount': 10
+        txindex: 0,
+        oindex: 0,
+        currency: transaction.ETH_CURRENCY,
+        blknum: 19774001,
+        amount: 10
       }
     ]
 
@@ -90,11 +90,11 @@ describe('createTransactionBody', () => {
     const fromAddress = '0xf4ebbe787311bb955bb353b7a4d8b97af8ed1c9b'
     const fromUtxos = [
       {
-        'txindex': 0,
-        'oindex': 0,
-        'currency': transaction.ETH_CURRENCY,
-        'blknum': 19774001,
-        'amount': 1000000000000000000
+        txindex: 0,
+        oindex: 0,
+        currency: transaction.ETH_CURRENCY,
+        blknum: 19774001,
+        amount: 1000000000000000000
       }
     ]
 
@@ -111,11 +111,11 @@ describe('createTransactionBody', () => {
     const fromAddress = '0xf4ebbe787311bb955bb353b7a4d8b97af8ed1c9b'
     const fromUtxos = [
       {
-        'txindex': 0,
-        'oindex': 0,
-        'currency': transaction.ETH_CURRENCY,
-        'blknum': 19774001,
-        'amount': 10
+        txindex: 0,
+        oindex: 0,
+        currency: transaction.ETH_CURRENCY,
+        blknum: 19774001,
+        amount: 10
       }
     ]
 

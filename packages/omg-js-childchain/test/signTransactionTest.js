@@ -5,27 +5,27 @@ describe('signTransaction', () => {
   describe('signTransaction', () => {
     it('should sign the entire transaction object correctly', () => {
       const txBody = {
-        'inputs': [
+        inputs: [
           {
-            'amount': 5555431,
-            'blknum': 2000,
-            'currency': '0x0000000000000000000000000000000000000000',
-            'oindex': 1,
-            'owner': '0xf86b5b1c2c8de1ea4dc737c849272340fa3561c5',
-            'txindex': 0,
-            'utxo_pos': 2000000000001
+            amount: 5555431,
+            blknum: 2000,
+            currency: '0x0000000000000000000000000000000000000000',
+            oindex: 1,
+            owner: '0xf86b5b1c2c8de1ea4dc737c849272340fa3561c5',
+            txindex: 0,
+            utxo_pos: 2000000000001
           }
         ],
-        'outputs': [
+        outputs: [
           {
-            'owner': '0xf86b5b1c2c8de1ea4dc737c849272340fa3561c5',
-            'currency': '0x0000000000000000000000000000000000000000',
-            'amount': 123
+            owner: '0xf86b5b1c2c8de1ea4dc737c849272340fa3561c5',
+            currency: '0x0000000000000000000000000000000000000000',
+            amount: 123
           },
           {
-            'owner': '0xf86b5b1c2c8de1ea4dc737c849272340fa3561c5',
-            'currency': '0x0000000000000000000000000000000000000000',
-            'amount': 5555308
+            owner: '0xf86b5b1c2c8de1ea4dc737c849272340fa3561c5',
+            currency: '0x0000000000000000000000000000000000000000',
+            amount: 5555308
           }
         ]
       }
