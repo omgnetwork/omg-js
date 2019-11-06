@@ -155,7 +155,7 @@ async function createTx (childChain, from, to, amount, currency, fromPrivateKey,
   return childChain.buildSignedTransaction(typedData, signatures)
 }
 
-async function sendSubmitTyped ({ childchain, from, to, amount, currency, fromPrivateKey }) {
+async function sendSubmitTyped (childChain, from, to, amount, currency, fromPrivateKey) {
   if (amount <= 0) {
     return
   }

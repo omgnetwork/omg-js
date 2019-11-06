@@ -180,7 +180,7 @@ const faucet = {
   },
 
   fundChildchain: async function (address, amount, currency) {
-    const ret = await ccHelper.send(
+    const ret = await ccHelper.sendSubmitTyped(
       this.childChain,
       this.address,
       address,
