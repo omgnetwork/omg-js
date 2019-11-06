@@ -27,7 +27,7 @@ const faucet = {
     }
     this.initialised = true
 
-    console.info(`----------------- Initialising Faucet -----------------------`)
+    console.info('----------------- Initialising Faucet -----------------------')
 
     this.rootChain = rootChain
     this.childChain = childChain
@@ -54,21 +54,21 @@ const faucet = {
   },
 
   showInfo: async function (web3) {
-    console.info(`----------------- Faucet -----------------------`)
+    console.info('----------------- Faucet -----------------------')
     console.info(`Address: ${this.address}`)
     console.info(`ERC20 token: ${this.erc20ContractAddress}`)
-    console.info(`----------------- `)
+    console.info('----------------- ')
     console.info(`Rootchain ETH balance: ${await web3.eth.getBalance(this.address)}`)
     console.info(`Rootchain ERC20 balance: ${await rcHelper.getERC20Balance(web3, this.erc20Contract, this.address)}`)
-    console.info(`----------------- `)
+    console.info('----------------- ')
 
     const ccBalance = await this.childChain.getBalance(this.address)
     const ccEthBalance = ccBalance.find(e => e.currency === transaction.ETH_CURRENCY)
-    const ccErc20Balance = ccBalance.find(e => e.currency === this.erc20ContractAddress)
+    const ccErc20Balance = ccBalance.find(e => e.currency.toLowerCase() === this.erc20ContractAddress.toLowerCase())
 
     console.info(`Childchain ETH balance: ${ccEthBalance ? ccEthBalance.amount.toString() : '0'}`)
     console.info(`Childchain ERC20 balance: ${ccErc20Balance ? ccErc20Balance.amount.toString() : '0'}`)
-    console.info(`----------------- Faucet -----------------------`)
+    console.info('----------------- Faucet -----------------------')
   },
 
   initEthBalance: async function (web3, minAmount) {
@@ -138,7 +138,7 @@ const faucet = {
         const erc20VaultAddress = await this.rootChain.getErc20VaultAddress()
         await rcHelper.approveERC20(web3, this.erc20Contract, this.address, this.privateKey, erc20VaultAddress, needed.toNumber())
         const allowed = await this.erc20Contract.methods.allowance(this.address, erc20VaultAddress).call()
-        if (allowed === "0") {
+        if (allowed === '0') {
           throw new Error('ERC20 approval failed!')
         }
         await rcHelper.depositToken(this.rootChain, this.childChain, this.address, needed.toNumber(), this.erc20ContractAddress, this.privateKey)
@@ -180,7 +180,7 @@ const faucet = {
   },
 
   fundChildchain: async function (address, amount, currency) {
-    const ret = await ccHelper.send(
+    const ret = await ccHelper.sendSubmitTyped(
       this.childChain,
       this.address,
       address,

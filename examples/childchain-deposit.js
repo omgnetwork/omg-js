@@ -47,7 +47,7 @@ async function depositEthIntoPlasmaContract () {
   const depositTransaction = transaction.encodeDeposit(aliceAddress, depositAmount, transaction.ETH_CURRENCY)
 
   console.log(`Depositing ${web3.utils.fromWei(depositAmount.toString(), 'ether')} ETH from the rootchain to the childchain`)
-  console.log(`Awaiting rootChain.depositEth()...`)
+  console.log('Awaiting rootChain.depositEth()...')
 
   // deposit ETH into the Plasma contract
   const transactionReceipt = await rootChain.depositEth(depositTransaction, depositAmount, {
@@ -55,11 +55,11 @@ async function depositEthIntoPlasmaContract () {
     privateKey: alicePrivateKey
   })
 
-  console.log(`Finished awaiting rootChain.depositEth()`)
+  console.log('Finished awaiting rootChain.depositEth()')
   console.log(`Transaction receipt: ${JSON.stringify(transactionReceipt, undefined, 2)}`)
 
   // wait for transaction to be recorded by the watcher
-  console.log(`Waiting for transaction to be recorded by the watcher...`)
+  console.log('Waiting for transaction to be recorded by the watcher...')
   await wait.waitForTransaction(web3, transactionReceipt.transactionHash, config.millis_to_wait_for_next_block, config.blocks_to_wait_for_txn)
 
   rootchainBalance = await web3.eth.getBalance(aliceAddress)

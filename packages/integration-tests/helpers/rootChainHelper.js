@@ -29,10 +29,19 @@ function createAccount (web3) {
 
 async function setGas (eth, txDetails) {
   if (!txDetails.gas) {
-    txDetails.gas = await eth.estimateGas(txDetails)
+    try {
+      txDetails.gas = await eth.estimateGas(txDetails)
+    } catch (err) {
+      throw new Error(`Error estimating gas: ${err}`)
+    }
   }
   if (!txDetails.gasPrice) {
-    txDetails.gasPrice = await eth.getGasPrice()
+    try {
+      txDetails.gasPrice = await eth.getGasPrice()
+    } catch (err) {
+      txDetails.gasPrice = '1000000000'
+      console.warn('Error getting gas price: ', err)
+    }
   }
 }
 
@@ -150,9 +159,11 @@ async function getPlasmaContractAddress (config) {
   throw new Error('No ROOTCHAIN_CONTRACT or CONTRACT_EXCHANGER_URL configured')
 }
 
-async function getTimeToExit (plasmaContract, output) {
-  const exitableAt = await plasmaContract.methods.getExitableTimestamp(output.toString()).call()
-  return (Number(exitableAt) - Math.trunc(Date.now() / 1000)) * 1000
+async function getTimeToExit (plasmaContract, blockTimestamp) {
+  // time to exit need to be caculate properly, this is just for testing assume * 2 min exit period
+  const minExitPeriod = await plasmaContract.methods.minExitPeriod().call() * 1000
+  console.log('MIN_EXIT_PERIOD:', minExitPeriod)
+  return (Number(minExitPeriod) * 2) + 100000
 }
 
 const DEFAULT_INTERVAL = 1000

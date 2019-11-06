@@ -22,45 +22,45 @@ const InvalidArgumentError = require('../src/InvalidArgumentError')
 describe('Validate Transaction tests', () => {
   it('should fail to create a transaction with non array inputs', () => {
     const txBody = {
-      'inputs': {
-        'txindex': 0,
-        'oindex': 0,
-        'currency': '0000000000000000000000000000000000000000',
-        'blknum': 19774001
+      inputs: {
+        txindex: 0,
+        oindex: 0,
+        currency: '0000000000000000000000000000000000000000',
+        blknum: 19774001
       },
-      'outputs': []
+      outputs: []
     }
     return assert.throws(() => transaction.validate(txBody), InvalidArgumentError, /Inputs must be an array/)
   })
 
   it('should fail to create a transaction with 0 inputs', () => {
     const txBody = {
-      'inputs': [],
-      'outputs': []
+      inputs: [],
+      outputs: []
     }
     return assert.throws(() => transaction.validate(txBody), InvalidArgumentError, /Inputs must be an array of size/)
   })
 
   it('should fail to create a transaction with too many inputs', () => {
     const txBody = {
-      'inputs': [{}, {}, {}, {}, {}],
-      'outputs': []
+      inputs: [{}, {}, {}, {}, {}],
+      outputs: []
     }
     return assert.throws(() => transaction.validate(txBody), InvalidArgumentError, /Inputs must be an array of size/)
   })
 
   it('should fail to create a transaction with too many outputs', () => {
     const txBody = {
-      'inputs': [
+      inputs: [
         {
-          'txindex': 0,
-          'oindex': 0,
-          'currency': '0000000000000000000000000000000000000000',
-          'blknum': 19774001,
-          'amount': 1000000000000000000
+          txindex: 0,
+          oindex: 0,
+          currency: '0000000000000000000000000000000000000000',
+          blknum: 19774001,
+          amount: 1000000000000000000
         }
       ],
-      'outputs': [{}, {}, {}, {}, {}]
+      outputs: [{}, {}, {}, {}, {}]
     }
     return assert.throws(() => transaction.validate(txBody), InvalidArgumentError, /Outputs must be an array of size/)
   })

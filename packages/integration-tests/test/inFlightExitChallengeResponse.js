@@ -115,7 +115,7 @@ describe('In-flight Exit Challenge Response tests', async () => {
       console.log(`Bob called RootChain.startInFlightExit(): txhash = ${receipt.transactionHash}`)
 
       // Keep track of how much Bob spends on gas
-      let bobSpentOnGas = await rcHelper.spentOnGas(web3, receipt)
+      const bobSpentOnGas = await rcHelper.spentOnGas(web3, receipt)
 
       // Decode the transaction to get the index of Bob's output
       const decodedTx = transaction.decode(bobTx)
@@ -229,7 +229,7 @@ describe('In-flight Exit Challenge Response tests', async () => {
       await rcHelper.awaitTx(web3, receipt.transactionHash)
 
       // Get Bob's ETH balance
-      let bobEthBalance = await web3.eth.getBalance(bobAccount.address)
+      const bobEthBalance = await web3.eth.getBalance(bobAccount.address)
       // Bob's IFE was successful, so expect his balance to be
       // INTIIAL_BOB_AMOUNT + TRANSFER_AMOUNT - gas spent
       const expected = web3.utils.toBN(INTIIAL_BOB_RC_AMOUNT)

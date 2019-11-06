@@ -32,7 +32,7 @@ describe('getBalance', () => {
     }]
 
     nock(watcherUrl)
-      .post(`/account.get_balance`, { address, 'jsonrpc': '2.0', 'id': 0 })
+      .post('/account.get_balance', { address, jsonrpc: '2.0', id: 0 })
       .reply(200, { success: true, data: expectedObject })
 
     const childChain = new ChildChain(watcherUrl, '')
@@ -51,7 +51,7 @@ describe('getBalance', () => {
     }
 
     nock(watcherUrl)
-      .post(`/account.get_balance`, { address, 'jsonrpc': '2.0', 'id': 0 })
+      .post('/account.get_balance', { address, jsonrpc: '2.0', id: 0 })
       .reply(200, { success: false, data: errorObject })
 
     const childChain = new ChildChain(watcherUrl, '')

@@ -66,23 +66,26 @@ async function setGas (web3, txDetails) {
         txDetails.gasPrice = await web3.eth.getGasPrice()
       }
     } catch (err) {
-      console.warn(`Error getting gas price: ${err}`)
       txDetails.gasPrice = '1000000000' // Default to 1 GWEI
     }
   }
   if (!txDetails.gas) {
-    if (web3.version.api && web3.version.api.startsWith('0.2')) {
-      txDetails.gas = await new Promise((resolve, reject) => {
-        web3.eth.estimateGas(txDetails, (err, result) => {
-          if (err) {
-            reject(err)
-          } else {
-            resolve(result)
-          }
+    try {
+      if (web3.version.api && web3.version.api.startsWith('0.2')) {
+        txDetails.gas = await new Promise((resolve, reject) => {
+          web3.eth.estimateGas(txDetails, (err, result) => {
+            if (err) {
+              reject(err)
+            } else {
+              resolve(result)
+            }
+          })
         })
-      })
-    } else {
-      txDetails.gas = await web3.eth.estimateGas(txDetails)
+      } else {
+        txDetails.gas = await web3.eth.estimateGas(txDetails)
+      }
+    } catch (err) {
+      throw new Error(`Error estimating gas: ${err}`)
     }
   }
 }

@@ -18,8 +18,8 @@ const debug = require('debug')('omg.childchain.rpc')
 const JSONBigNumber = require('json-bigint')
 
 class RpcError extends Error {
-  constructor ({ code, description }) {
-    super(description || code)
+  constructor ({ code, description, messages }) {
+    super(description || code + (messages ? `, ${messages.code}` : ''))
     this.code = code
   }
 }
@@ -46,6 +46,7 @@ async function parseResponse (resp) {
     // Need to use a JSON parser capable of handling uint256
     json = JSONBigNumber.parse(body)
   } catch (err) {
+    console.warn(err)
     throw new Error('Unknown server error')
   }
   debug(`rpc response is ${JSON.stringify(json)}`)
@@ -53,6 +54,7 @@ async function parseResponse (resp) {
   if (json.success) {
     return json.data
   }
+
   throw new RpcError(json.data)
 }
 
