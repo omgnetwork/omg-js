@@ -170,22 +170,35 @@ class RootChain {
    * @param {Object} txOptions transaction options, such as `from`, gas` and `privateKey`
    * @return {string} transaction hash of the call
    */
-  async challengeStandardExit (standardExitId, challengeTx, inputIndex, challengeTxSig, txOptions) {
+  async challengeStandardExit (standardExitId, exitingTx, challengeTx, inputIndex, challengeTxSig, txOptions) {
     // standardExitId is an extremely large number as it uses the entire int192.
     // It's too big to be represented as a Number, so we convert it to a hex string
     const exitId = txUtils.int192toHex(standardExitId)
 
+    const paymentExitGameAddress = await this.getPaymentExitGameAddress()
+    const paymentExitGameContract = this.getContract(this.paymentExitGameAbi.abi, paymentExitGameAddress)
+
     const txDetails = {
       from: txOptions.from,
-      to: this.plasmaContractAddress,
+      to: paymentExitGameAddress,
       data: txUtils.getTxData(
         this.web3,
-        this.plasmaContract,
+        paymentExitGameContract,
         'challengeStandardExit',
-        exitId,
-        challengeTx,
-        inputIndex,
-        challengeTxSig),
+        [
+          exitId,
+          exitingTx,
+          challengeTx,
+          inputIndex,
+          challengeTxSig,
+          // below args not necessary for ALD but we pass empty values to keep the contract happy
+          '0x', // spendingConditionOptionalArgs
+          '0x', // outputGuardPreimage
+          0, // challengeTxPos
+          '0x', // challengeTxInclusionProof
+          '0x' // challengeTxConfirmSig
+        ]
+      ),
       gas: txOptions.gas,
       gasPrice: txOptions.gasPrice
     }

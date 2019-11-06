@@ -38,6 +38,26 @@ describe('Challenge exit tests', async () => {
     await faucet.init(rootChain, childChain, web3, config)
   })
 
+  // it('challenge demo', async () => {
+  //   const utxoPos = 130000000000000
+  //   const challengeData = await childChain.getChallengeData(utxoPos)
+  //   const receipt = await rootChain.challengeStandardExit(
+  //     challengeData.exit_id,
+  //     challengeData.exiting_tx,
+  //     challengeData.txbytes,
+  //     challengeData.input_index,
+  //     challengeData.sig,
+  //     {
+  //       privateKey: config.testFaucetPrivateKey,
+  //       from: config.testFaucetAddress,
+  //       gas: 6000000
+  //     }
+  //   )
+
+  //   console.log(receipt)
+  //   assert.isTrue(true)
+  // })
+
   describe('Challenge a standard exit (ci-enabled)', async () => {
     const INTIIAL_ALICE_RC_AMOUNT = web3.utils.toWei('.1', 'ether')
     const INTIIAL_BOB_RC_AMOUNT = web3.utils.toWei('.1', 'ether')
@@ -136,9 +156,10 @@ describe('Challenge exit tests', async () => {
 
       // ...and challenges the exit
       const challengeData = await childChain.getChallengeData(invalidExit.details.utxo_pos)
-      assert.hasAllKeys(challengeData, ['input_index', 'exit_id', 'sig', 'txbytes'])
+      assert.hasAllKeys(challengeData, ['input_index', 'exit_id', 'exiting_tx', 'sig', 'txbytes'])
       receipt = await rootChain.challengeStandardExit(
         challengeData.exit_id,
+        challengeData.exiting_tx,
         challengeData.txbytes,
         challengeData.input_index,
         challengeData.sig,
