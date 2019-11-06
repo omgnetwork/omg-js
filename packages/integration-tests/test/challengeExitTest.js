@@ -182,7 +182,7 @@ describe('Challenge exit tests', async () => {
       receipt = await rootChain.processExits(
         transaction.ETH_CURRENCY,
         0,
-        1,
+        20,
         {
           privateKey: aliceAccount.privateKey,
           from: aliceAccount.address
