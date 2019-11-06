@@ -126,10 +126,10 @@ async function createTx (childChain, from, to, amount, currency, fromPrivateKey,
     }]
   }
 
-  const utxoAmount = utxosToSpend[0].amount
-  if (utxoAmount > amount) {
+  const utxoAmount = numberToBN(utxosToSpend[0].amount)
+  if (utxoAmount.gt(numberToBN(amount))) {
     // Need to add a 'change' output
-    const CHANGE_AMOUNT = utxoAmount - amount
+    const CHANGE_AMOUNT = utxoAmount.sub(numberToBN(amount))
     txBody.outputs.push({
       outputType: 1,
       outputGuard: from,
