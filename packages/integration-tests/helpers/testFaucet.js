@@ -139,7 +139,7 @@ const faucet = {
         if (allowed === '0') {
           throw new Error('ERC20 approval failed!')
         }
-        await rcHelper.depositToken(this.rootChain, this.childChain, this.address, needed.toNumber(), this.erc20ContractAddress, this.privateKey)
+        await rcHelper.depositToken(this.rootChain, this.address, needed.toNumber(), this.erc20ContractAddress, this.privateKey)
         await ccHelper.waitForBalance(
           this.childChain,
           this.address,
