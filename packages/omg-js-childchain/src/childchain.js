@@ -23,7 +23,7 @@ class ChildChain {
   * Creates a ChildChain object
   *
   *@param {string} watcherUrl the url of the watcher server
-  *@param {string} [watcherProxyUrl] the proxy url for requests made to the watcher server
+  *@param {string} [watcherProxyUrl] *optional* the proxy url for requests made to the watcher server
   *@return {Object} ChildChain Object
   *
   */

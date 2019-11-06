@@ -18,8 +18,9 @@ const debug = require('debug')('omg.childchain.rpc')
 const JSONBigNumber = require('json-bigint')
 
 class RpcError extends Error {
-  constructor (data) {
-    super(data.description || data.code || data)
+  constructor ({ code, description, messages }) {
+    super(description || code + (messages ? `, ${messages.code}` : ''))
+    this.code = code
   }
 }
 
@@ -59,9 +60,6 @@ async function post ({ url, body, proxyUrl }) {
 }
 
 async function parseResponse (res) {
-  console.log('res: ', res)
-  console.log('type: ', typeof res)
-
   const body = JSON.stringify(res)
   let json
   try {
