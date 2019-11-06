@@ -106,20 +106,16 @@ describe('Standard Exit tests', async () => {
       aliceSpentOnGas.iadd(await rcHelper.spentOnGas(web3, receipt))
 
       // Call processExits before the challenge period is over
-      try {
-        receipt = await rootChain.processExits(
-          transaction.ETH_CURRENCY,
-          0,
-          20,
-          {
-            privateKey: aliceAccount.privateKey,
-            from: aliceAccount.address
-          }
-        )
-        console.log(`Alice called RootChain.processExits() before challenge period: txhash = ${receipt.transactionHash}`)
-      } catch (err) {
-        throw new Error(err)
-      }
+      receipt = await rootChain.processExits(
+        transaction.ETH_CURRENCY,
+        0,
+        20,
+        {
+          privateKey: aliceAccount.privateKey,
+          from: aliceAccount.address
+        }
+      )
+      console.log(`Alice called RootChain.processExits() before challenge period: txhash = ${receipt.transactionHash}`)
 
       aliceSpentOnGas.iadd(await rcHelper.spentOnGas(web3, receipt))
 
@@ -219,13 +215,13 @@ describe('Standard Exit tests', async () => {
       const exitData = await childChain.getExitData(utxoToExit)
       assert.hasAllKeys(exitData, ['txbytes', 'proof', 'utxo_pos'])
 
-      try {
+      const hasToken = await rootChain.hasToken(transaction.ETH_CURRENCY)
+      if (!hasToken) {
+        console.log(`Adding a ${transaction.ETH_CURRENCY} exit queue`)
         const addTokenCall = await rootChain.addToken(transaction.ETH_CURRENCY, { from: bobAccount.address, privateKey: bobAccount.privateKey })
         bobSpentOnGas = await rcHelper.spentOnGas(web3, addTokenCall)
-      } catch (err) {
-        console.log(`Already added ${transaction.ETH_CURRENCY} to exit queue...`)
-        const failedReceipt = JSON.parse(err.message.split('EVM:')[1])
-        bobSpentOnGas = await rcHelper.spentOnGas(web3, failedReceipt)
+      } else {
+        console.log(`Exit queue for ${transaction.ETH_CURRENCY} already exists`)
       }
 
       const startStandardExitReceipt = await rootChain.startStandardExit(
@@ -330,10 +326,13 @@ describe('Standard Exit tests', async () => {
       const utxoToExit = utxos[0]
       const exitData = await childChain.getExitData(utxoToExit)
       assert.hasAllKeys(exitData, ['txbytes', 'proof', 'utxo_pos'])
-      try {
+
+      const hasToken = await rootChain.hasToken(config.testErc20Contract)
+      if (!hasToken) {
+        console.log(`Adding a ${config.testErc20Contract} exit queue`)
         await rootChain.addToken(config.testErc20Contract, { from: aliceAccount.address, privateKey: aliceAccount.privateKey })
-      } catch (err) {
-        console.log(`Already added ${config.testErc20Contract} to exit queue...`)
+      } else {
+        console.log(`Exit queue for ${config.testErc20Contract} already exists`)
       }
 
       let receipt = await rootChain.startStandardExit(

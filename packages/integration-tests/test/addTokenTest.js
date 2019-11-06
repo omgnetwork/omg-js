@@ -10,7 +10,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License. */
 
-const { should, use } = require('chai')
+const { assert, should, use } = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 const RootChain = require('@omisego/omg-js-rootchain')
 const ChildChain = require('@omisego/omg-js-childchain')
@@ -30,8 +30,8 @@ let childChain
 let aliceAccount
 const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.1', 'ether')
 
-describe('Add Token tests', async () => {
-  beforeEach(async () => {
+describe('AddExitQueue tests', async () => {
+  before(async () => {
     aliceAccount = rcHelper.createAccount(web3)
     console.log(`Created new account ${JSON.stringify(aliceAccount)}`)
     const plasmaContract = await rcHelper.getPlasmaContractAddress(config)
@@ -45,13 +45,16 @@ describe('Add Token tests', async () => {
 
   it('add token should add token if not added before', async () => {
     const fakeErc20 = rcHelper.createAccount(web3)
+    const hasToken = await rootChain.hasToken(fakeErc20.address)
+    assert.isFalse(hasToken)
     return rootChain.addToken(fakeErc20.address, { from: aliceAccount.address, privateKey: aliceAccount.privateKey }).should.be.fulfilled
   })
 
-  // TODO: use rootchain.hasToken to check if queue exists
   it('add token should not add token if added before', async () => {
     const fakeErc20 = rcHelper.createAccount(web3)
     await rootChain.addToken(fakeErc20.address, { from: aliceAccount.address, privateKey: aliceAccount.privateKey }).should.be.fulfilled
+    const hasToken = await rootChain.hasToken(fakeErc20.address)
+    assert.isTrue(hasToken)
     return rootChain.addToken(fakeErc20.address, { from: aliceAccount.address, privateKey: aliceAccount.privateKey }).should.be.rejected
   })
 })

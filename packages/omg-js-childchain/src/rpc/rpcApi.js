@@ -54,7 +54,8 @@ async function parseResponse (resp) {
   if (json.success) {
     return json.data
   }
-  throw new Error(JSON.stringify(json.data))
+
+  throw new RpcError(json.data)
 }
 
 module.exports = {
