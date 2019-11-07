@@ -92,6 +92,17 @@ const transaction = {
     return encoded
   },
 
+  // TODO ADD js-doc
+  decodeDeposit: function (encodedDeposit) {
+    const { outputs } = transaction.decodePaymentTransactionRaw(encodedDeposit)
+    const [{ outputGuard, amount, currency }] = outputs
+    return {
+      owner: outputGuard,
+      amount,
+      currency
+    }
+  },
+
   /**
   * Decodes an RLP encoded transaction
   *
@@ -131,7 +142,8 @@ const transaction = {
     }
   },
 
-  decodePaymentTransaction: (encodedPaymentTransaction) => {
+  // TODO ADD js-doc
+  decodePaymentTransactionRaw: (encodedPaymentTransaction) => {
     const [transactionType, inputs, outputs, metadata] = rlp.decode(encodedPaymentTransaction)
     return {
       transactionType: parseNumber(transactionType),

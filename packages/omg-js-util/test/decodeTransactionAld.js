@@ -19,13 +19,13 @@ const assert = chai.assert
 const transaction = require('../src/transaction')
 
 describe.only('decodeTransaction', () => {
-  it('should decode encoded deposit', async () => {
+  it('should decode encoded deposit to raw', async () => {
     const owner = '0xf4ebbe787311bb955bb353b7a4d8b97af8ed1c9b'
     const amount = 10
     const currency = '0x0000000000000000000000000000000000000000'
 
     const encodedTx = transaction.encodeDeposit(owner, amount, currency)
-    const decoded = transaction.decodePaymentTransaction(encodedTx)
+    const decoded = transaction.decodePaymentTransactionRaw(encodedTx)
     assert.deepEqual(decoded, {
       transactionType: 1,
       inputs: [],
@@ -38,6 +38,19 @@ describe.only('decodeTransaction', () => {
         }
       ],
       metadata: '0x0000000000000000000000000000000000000000000000000000000000000000'
+    })
+  })
+
+  it('should decode encoded deposit', async () => {
+    const owner = '0xf4ebbe787311bb955bb353b7a4d8b97af8ed1c9b'
+    const amount = 10
+    const currency = '0x0000000000000000000000000000000000000000'
+    const encodedTx = transaction.encodeDeposit(owner, amount, currency)
+    const decoded = transaction.decodeDeposit(encodedTx)
+    assert.deepEqual(decoded, {
+      owner,
+      amount,
+      currency
     })
   })
 })
