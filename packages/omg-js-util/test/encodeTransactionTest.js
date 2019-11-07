@@ -17,7 +17,7 @@ const chai = require('chai')
 const assert = chai.assert
 const transaction = require('../src/transaction')
 
-describe.only('Transaction tests', () => {
+describe('Transaction tests', () => {
   it('should return an encoded transaction from 1 input and 1 output', async () => {
     const txBody = {
       inputs: [

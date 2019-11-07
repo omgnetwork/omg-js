@@ -86,10 +86,8 @@ const transaction = {
   *
   */
   encodeDeposit: function (owner, amount, currency) {
-    const output = new PaymentTransactionOutput(1, amount, owner, currency)
-    const transaction = new PlasmaDepositTransaction(output)
-    const encoded = transaction.rlpEncoded()
-    return encoded
+    const outputs = [{ outputType: 1, outputGuard: owner, currency, amount }]
+    return transaction.encode({ transactionType: 1, inputs: [], outputs, metadata: '0x0000000000000000000000000000000000000000000000000000000000000000' })
   },
 
   // TODO ADD js-doc

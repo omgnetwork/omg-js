@@ -48,8 +48,16 @@ describe('Standard Exit tests', async () => {
       // Create and fund Alice's account
       aliceAccount = rcHelper.createAccount(web3)
       console.log(`Created Alice account ${JSON.stringify(aliceAccount)}`)
-      await faucet.fundRootchainEth(web3, aliceAccount.address, INTIIAL_ALICE_AMOUNT)
-      await rcHelper.waitForEthBalanceEq(web3, aliceAccount.address, INTIIAL_ALICE_AMOUNT)
+      await faucet.fundRootchainEth(
+        web3,
+        aliceAccount.address,
+        INTIIAL_ALICE_AMOUNT
+      )
+      await rcHelper.waitForEthBalanceEq(
+        web3,
+        aliceAccount.address,
+        INTIIAL_ALICE_AMOUNT
+      )
     })
 
     afterEach(async () => {
@@ -63,8 +71,18 @@ describe('Standard Exit tests', async () => {
 
     it('should succesfully exit a deposit', async () => {
       // Alice deposits ETH into the Plasma contract
-      let receipt = await rcHelper.depositEth(rootChain, childChain, aliceAccount.address, DEPOSIT_AMOUNT, aliceAccount.privateKey)
-      await ccHelper.waitForBalanceEq(childChain, aliceAccount.address, DEPOSIT_AMOUNT)
+      let receipt = await rcHelper.depositEth(
+        rootChain,
+        childChain,
+        aliceAccount.address,
+        DEPOSIT_AMOUNT,
+        aliceAccount.privateKey
+      )
+      await ccHelper.waitForBalanceEq(
+        childChain,
+        aliceAccount.address,
+        DEPOSIT_AMOUNT
+      )
       console.log(`Alice deposited ${DEPOSIT_AMOUNT} into RootChain contract`)
 
       // Keep track of how much Alice spends on gas
@@ -86,7 +104,10 @@ describe('Standard Exit tests', async () => {
       const hasToken = await rootChain.hasToken(transaction.ETH_CURRENCY)
       if (!hasToken) {
         console.log(`Adding a ${transaction.ETH_CURRENCY} exit queue`)
-        const addTokenCall = await rootChain.addToken(transaction.ETH_CURRENCY, { from: aliceAccount.address, privateKey: aliceAccount.privateKey })
+        const addTokenCall = await rootChain.addToken(
+          transaction.ETH_CURRENCY,
+          { from: aliceAccount.address, privateKey: aliceAccount.privateKey }
+        )
         aliceSpentOnGas.iadd(await rcHelper.spentOnGas(web3, addTokenCall))
       } else {
         console.log(`Exit queue for ${transaction.ETH_CURRENCY} already exists`)
@@ -101,20 +122,19 @@ describe('Standard Exit tests', async () => {
           from: aliceAccount.address
         }
       )
-      console.log(`Alice called RootChain.startExit(): txhash = ${receipt.transactionHash}`)
+      console.log(
+        `Alice called RootChain.startExit(): txhash = ${receipt.transactionHash}`
+      )
       aliceSpentOnGas.iadd(await rcHelper.spentOnGas(web3, receipt))
 
       // Call processExits before the challenge period is over
-      receipt = await rootChain.processExits(
-        transaction.ETH_CURRENCY,
-        0,
-        20,
-        {
-          privateKey: aliceAccount.privateKey,
-          from: aliceAccount.address
-        }
+      receipt = await rootChain.processExits(transaction.ETH_CURRENCY, 0, 20, {
+        privateKey: aliceAccount.privateKey,
+        from: aliceAccount.address
+      })
+      console.log(
+        `Alice called RootChain.processExits() before challenge period: txhash = ${receipt.transactionHash}`
       )
-      console.log(`Alice called RootChain.processExits() before challenge period: txhash = ${receipt.transactionHash}`)
 
       aliceSpentOnGas.iadd(await rcHelper.spentOnGas(web3, receipt))
 
@@ -129,22 +149,21 @@ describe('Standard Exit tests', async () => {
       await rcHelper.sleep(toWait)
 
       // Call processExits again.
-      receipt = await rootChain.processExits(
-        transaction.ETH_CURRENCY,
-        0,
-        20,
-        {
-          privateKey: aliceAccount.privateKey,
-          from: aliceAccount.address
-        }
+      receipt = await rootChain.processExits(transaction.ETH_CURRENCY, 0, 20, {
+        privateKey: aliceAccount.privateKey,
+        from: aliceAccount.address
+      })
+      console.log(
+        `Alice called RootChain.processExits() after challenge period: txhash = ${receipt.transactionHash}`
       )
-      console.log(`Alice called RootChain.processExits() after challenge period: txhash = ${receipt.transactionHash}`)
       aliceSpentOnGas.iadd(await rcHelper.spentOnGas(web3, receipt))
 
       // Get Alice's ETH balance
       aliceEthBalance = await web3.eth.getBalance(aliceAccount.address)
       // Expect Alice's balance to be INTIIAL_ALICE_AMOUNT - gas spent
-      const expected = web3.utils.toBN(INTIIAL_ALICE_AMOUNT).sub(aliceSpentOnGas)
+      const expected = web3.utils
+        .toBN(INTIIAL_ALICE_AMOUNT)
+        .sub(aliceSpentOnGas)
       assert.equal(aliceEthBalance.toString(), expected.toString())
     })
   })
@@ -165,14 +184,26 @@ describe('Standard Exit tests', async () => {
 
       await Promise.all([
         // Give some ETH to Alice on the child chain
-        faucet.fundChildchain(aliceAccount.address, INTIIAL_ALICE_AMOUNT, transaction.ETH_CURRENCY),
+        faucet.fundChildchain(
+          aliceAccount.address,
+          INTIIAL_ALICE_AMOUNT,
+          transaction.ETH_CURRENCY
+        ),
         // Give some ETH to Bob on the root chain
         faucet.fundRootchainEth(web3, bobAccount.address, INTIIAL_BOB_RC_AMOUNT)
       ])
       // Wait for finality
       await Promise.all([
-        ccHelper.waitForBalanceEq(childChain, aliceAccount.address, INTIIAL_ALICE_AMOUNT),
-        rcHelper.waitForEthBalanceEq(web3, bobAccount.address, INTIIAL_BOB_RC_AMOUNT)
+        ccHelper.waitForBalanceEq(
+          childChain,
+          aliceAccount.address,
+          INTIIAL_ALICE_AMOUNT
+        ),
+        rcHelper.waitForEthBalanceEq(
+          web3,
+          bobAccount.address,
+          INTIIAL_BOB_RC_AMOUNT
+        )
       ])
     })
 
@@ -213,11 +244,13 @@ describe('Standard Exit tests', async () => {
       const utxoToExit = bobUtxos[0]
       const exitData = await childChain.getExitData(utxoToExit)
       assert.hasAllKeys(exitData, ['txbytes', 'proof', 'utxo_pos'])
-
       const hasToken = await rootChain.hasToken(transaction.ETH_CURRENCY)
       if (!hasToken) {
         console.log(`Adding a ${transaction.ETH_CURRENCY} exit queue`)
-        const addTokenCall = await rootChain.addToken(transaction.ETH_CURRENCY, { from: bobAccount.address, privateKey: bobAccount.privateKey })
+        const addTokenCall = await rootChain.addToken(
+          transaction.ETH_CURRENCY,
+          { from: bobAccount.address, privateKey: bobAccount.privateKey }
+        )
         bobSpentOnGas = await rcHelper.spentOnGas(web3, addTokenCall)
       } else {
         console.log(`Exit queue for ${transaction.ETH_CURRENCY} already exists`)
@@ -232,9 +265,13 @@ describe('Standard Exit tests', async () => {
           from: bobAccount.address
         }
       )
-      console.log(`Bob called RootChain.startExit(): txhash = ${startStandardExitReceipt.transactionHash}`)
+      console.log(
+        `Bob called RootChain.startExit(): txhash = ${startStandardExitReceipt.transactionHash}`
+      )
 
-      bobSpentOnGas.iadd(await rcHelper.spentOnGas(web3, startStandardExitReceipt))
+      bobSpentOnGas.iadd(
+        await rcHelper.spentOnGas(web3, startStandardExitReceipt)
+      )
 
       // Call processExits before the challenge period is over
       const processExitReceiptBefore = await rootChain.processExits(
@@ -246,8 +283,12 @@ describe('Standard Exit tests', async () => {
           from: bobAccount.address
         }
       )
-      console.log(`Bob called RootChain.processExits() before challenge period: txhash = ${processExitReceiptBefore.transactionHash}`)
-      bobSpentOnGas.iadd(await rcHelper.spentOnGas(web3, processExitReceiptBefore))
+      console.log(
+        `Bob called RootChain.processExits() before challenge period: txhash = ${processExitReceiptBefore.transactionHash}`
+      )
+      bobSpentOnGas.iadd(
+        await rcHelper.spentOnGas(web3, processExitReceiptBefore)
+      )
 
       // Get Bob's ETH balance
       let bobEthBalance = await web3.eth.getBalance(bobAccount.address)
@@ -269,13 +310,18 @@ describe('Standard Exit tests', async () => {
           from: bobAccount.address
         }
       )
-      console.log(`Bob called RootChain.processExits() after challenge period: txhash = ${processExitReceiptAfter.transactionHash}`)
-      bobSpentOnGas.iadd(await rcHelper.spentOnGas(web3, processExitReceiptAfter))
+      console.log(
+        `Bob called RootChain.processExits() after challenge period: txhash = ${processExitReceiptAfter.transactionHash}`
+      )
+      bobSpentOnGas.iadd(
+        await rcHelper.spentOnGas(web3, processExitReceiptAfter)
+      )
 
       // Get Bob's ETH balance
       bobEthBalance = await web3.eth.getBalance(bobAccount.address)
       // Expect Bob's balance to be INTIIAL_BOB_AMOUNT + TRANSFER_AMOUNT - gas spent
-      const expected = web3.utils.toBN(INTIIAL_BOB_RC_AMOUNT)
+      const expected = web3.utils
+        .toBN(INTIIAL_BOB_RC_AMOUNT)
         .add(web3.utils.toBN(TRANSFER_AMOUNT))
         .sub(bobSpentOnGas)
       assert.equal(bobEthBalance.toString(), expected.toString())
@@ -284,7 +330,10 @@ describe('Standard Exit tests', async () => {
 
   describe('ERC20 exit (ci-enabled)', async () => {
     const ERC20_CURRENCY = config.testErc20Contract
-    const testErc20Contract = new web3.eth.Contract(erc20abi, config.testErc20Contract)
+    const testErc20Contract = new web3.eth.Contract(
+      erc20abi,
+      config.testErc20Contract
+    )
     const INTIIAL_ALICE_AMOUNT_ETH = web3.utils.toWei('.1', 'ether')
     const INTIIAL_ALICE_AMOUNT_ERC20 = 2
     let aliceAccount
@@ -294,13 +343,30 @@ describe('Standard Exit tests', async () => {
       aliceAccount = rcHelper.createAccount(web3)
       console.log(`Created Alice account ${JSON.stringify(aliceAccount)}`)
       await Promise.all([
-        faucet.fundChildchain(aliceAccount.address, INTIIAL_ALICE_AMOUNT_ERC20, ERC20_CURRENCY),
-        faucet.fundRootchainEth(web3, aliceAccount.address, INTIIAL_ALICE_AMOUNT_ETH)
+        faucet.fundChildchain(
+          aliceAccount.address,
+          INTIIAL_ALICE_AMOUNT_ERC20,
+          ERC20_CURRENCY
+        ),
+        faucet.fundRootchainEth(
+          web3,
+          aliceAccount.address,
+          INTIIAL_ALICE_AMOUNT_ETH
+        )
       ])
 
       await Promise.all([
-        ccHelper.waitForBalanceEq(childChain, aliceAccount.address, INTIIAL_ALICE_AMOUNT_ERC20, ERC20_CURRENCY),
-        rcHelper.waitForEthBalanceEq(web3, aliceAccount.address, INTIIAL_ALICE_AMOUNT_ETH)
+        ccHelper.waitForBalanceEq(
+          childChain,
+          aliceAccount.address,
+          INTIIAL_ALICE_AMOUNT_ERC20,
+          ERC20_CURRENCY
+        ),
+        rcHelper.waitForEthBalanceEq(
+          web3,
+          aliceAccount.address,
+          INTIIAL_ALICE_AMOUNT_ETH
+        )
       ])
     })
 
@@ -317,9 +383,20 @@ describe('Standard Exit tests', async () => {
       // Check utxos on the child chain
       const utxos = await childChain.getUtxos(aliceAccount.address)
       assert.equal(utxos.length, 1)
-      assert.hasAllKeys(utxos[0], ['utxo_pos', 'txindex', 'owner', 'oindex', 'currency', 'blknum', 'amount'])
+      assert.hasAllKeys(utxos[0], [
+        'utxo_pos',
+        'txindex',
+        'owner',
+        'oindex',
+        'currency',
+        'blknum',
+        'amount'
+      ])
       assert.equal(utxos[0].amount, INTIIAL_ALICE_AMOUNT_ERC20)
-      assert.equal(utxos[0].currency.toLowerCase(), ERC20_CURRENCY.toLowerCase())
+      assert.equal(
+        utxos[0].currency.toLowerCase(),
+        ERC20_CURRENCY.toLowerCase()
+      )
 
       // Get the exit data
       const utxoToExit = utxos[0]
@@ -329,7 +406,10 @@ describe('Standard Exit tests', async () => {
       const hasToken = await rootChain.hasToken(config.testErc20Contract)
       if (!hasToken) {
         console.log(`Adding a ${config.testErc20Contract} exit queue`)
-        await rootChain.addToken(config.testErc20Contract, { from: aliceAccount.address, privateKey: aliceAccount.privateKey })
+        await rootChain.addToken(config.testErc20Contract, {
+          from: aliceAccount.address,
+          privateKey: aliceAccount.privateKey
+        })
       } else {
         console.log(`Exit queue for ${config.testErc20Contract} already exists`)
       }
@@ -343,20 +423,21 @@ describe('Standard Exit tests', async () => {
           from: aliceAccount.address
         }
       )
-      console.log(`Alice called RootChain.startExit(): txhash = ${receipt.transactionHash}`)
+      console.log(
+        `Alice called RootChain.startExit(): txhash = ${receipt.transactionHash}`
+      )
 
       // Call processExits before the challenge period is over
-      receipt = await rootChain.processExits(
-        config.testErc20Contract,
-        0,
-        20,
-        {
-          privateKey: aliceAccount.privateKey,
-          from: aliceAccount.address
-        }
+      receipt = await rootChain.processExits(config.testErc20Contract, 0, 20, {
+        privateKey: aliceAccount.privateKey,
+        from: aliceAccount.address
+      })
+      console.log(
+        `Alice called RootChain.processExits() before challenge period: txhash = ${receipt.transactionHash}`
       )
-      console.log(`Alice called RootChain.processExits() before challenge period: txhash = ${receipt.transactionHash}`)
-      let balance = await testErc20Contract.methods.balanceOf(aliceAccount.address).call({ from: aliceAccount.address })
+      let balance = await testErc20Contract.methods
+        .balanceOf(aliceAccount.address)
+        .call({ from: aliceAccount.address })
       assert.equal(balance, 0)
 
       // Wait for challenge period
@@ -365,17 +446,16 @@ describe('Standard Exit tests', async () => {
       await rcHelper.sleep(toWait)
 
       // Call processExits again.
-      receipt = await rootChain.processExits(
-        config.testErc20Contract,
-        0,
-        20,
-        {
-          privateKey: aliceAccount.privateKey,
-          from: aliceAccount.address
-        }
+      receipt = await rootChain.processExits(config.testErc20Contract, 0, 20, {
+        privateKey: aliceAccount.privateKey,
+        from: aliceAccount.address
+      })
+      console.log(
+        `Alice called RootChain.processExits() after challenge period: txhash = ${receipt.transactionHash}`
       )
-      console.log(`Alice called RootChain.processExits() after challenge period: txhash = ${receipt.transactionHash}`)
-      balance = await testErc20Contract.methods.balanceOf(aliceAccount.address).call({ from: aliceAccount.address })
+      balance = await testErc20Contract.methods
+        .balanceOf(aliceAccount.address)
+        .call({ from: aliceAccount.address })
       assert.equal(balance, INTIIAL_ALICE_AMOUNT_ERC20)
     })
   })
