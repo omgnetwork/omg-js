@@ -18,7 +18,7 @@ const chai = require('chai')
 const assert = chai.assert
 const transaction = require('../src/transaction')
 
-describe.only('decodeTransaction', () => {
+describe('decodeTransaction', () => {
   it('should decode encoded deposit to raw', async () => {
     const owner = '0xf4ebbe787311bb955bb353b7a4d8b97af8ed1c9b'
     const amount = 10
@@ -53,4 +53,5 @@ describe.only('decodeTransaction', () => {
       currency
     })
   })
+  
 })
