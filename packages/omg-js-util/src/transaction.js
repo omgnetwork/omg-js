@@ -131,6 +131,25 @@ const transaction = {
     }
   },
 
+  decodePaymentTransaction: (encodedPaymentTransaction) => {
+    const [transactionType, inputs, outputs, metadata] = rlp.decode(encodedPaymentTransaction)
+    return {
+      transactionType: parseNumber(transactionType),
+      inputs: inputs.map(([blknum, txindex, oindex]) => ({
+        blknum: parseNumber(blknum),
+        txindex: parseNumber(txindex),
+        oindex: parseNumber(oindex)
+      })),
+      outputs: outputs.map(([outputType, outputGuard, currency, amount]) => ({
+        outputType: parseNumber(outputType),
+        outputGuard: parseString(outputGuard),
+        currency: parseString(currency),
+        amount: parseNumber(amount)
+      })),
+      metadata: parseString(metadata)
+    }
+  },
+
   /**
   * Creates a transaction object. It will select from the given utxos to cover the amount
   * of the transaction, sending any remainder back as change.

@@ -2,7 +2,8 @@ const rlp = require('rlp')
 const { BN } = require('openzeppelin-test-helpers')
 const utils = require('web3-utils')
 
-const EMPTY_BYTES_32 = '0x0000000000000000000000000000000000000000000000000000000000000000'
+const EMPTY_BYTES_32 =
+  '0x0000000000000000000000000000000000000000000000000000000000000000'
 
 const TransactionTypes = {
   PLASMA_DEPOSIT: 1
@@ -18,7 +19,12 @@ class PaymentTransactionOutput {
 
   formatForRlpEncoding () {
     if (this.amount instanceof BN) {
-      return [this.outputType, this.outputGuard, this.token, utils.numberToHex(this.amount)]
+      return [
+        this.outputType,
+        this.outputGuard,
+        this.token,
+        utils.numberToHex(this.amount)
+      ]
     }
     return [this.outputType, this.outputGuard, this.token, +this.amount]
   }
@@ -30,7 +36,12 @@ class PaymentTransactionOutput {
   static parseFromContractOutput (output) {
     const amount = parseInt(output.amount, 10)
     const outputType = parseInt(output.outputType, 10)
-    return new PaymentTransactionOutput(outputType, amount, output.outputGuard, output.token)
+    return new PaymentTransactionOutput(
+      outputType,
+      amount,
+      output.outputGuard,
+      output.token
+    )
   }
 }
 
