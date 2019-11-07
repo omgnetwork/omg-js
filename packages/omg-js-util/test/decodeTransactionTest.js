@@ -23,6 +23,7 @@ const rlp = require('rlp')
 describe('decodeTransaction', () => {
   it('should decode an encoded unsigned transaction with inputs and outputs', async () => {
     const txBody = {
+      transactionType: 1,
       inputs: [
         {
           txindex: 0,
@@ -37,22 +38,26 @@ describe('decodeTransaction', () => {
       ],
       outputs: [
         {
-          owner: '0xf4ebbe787311bb955bb353b7a4d8b97af8ed1c9b',
+          outputType: 1,
+          outputGuard: '0xf4ebbe787311bb955bb353b7a4d8b97af8ed1c9b',
           currency: '0xf4ebbe787311bb955bb353b7a4d8b97af8ed1c9b',
           amount: 1
         },
         {
-          owner: '0xf4ebbe787311bb955bb353b7a4d8b97af8ed1c9b',
+          outputType: 1,
+          outputGuard: '0xf4ebbe787311bb955bb353b7a4d8b97af8ed1c9b',
           currency: '0x0000000000000000000000000000000000000000',
           amount: 4567
         },
         {
-          owner: '0xf4ebbe787311bb955bb353b7a4d8b97af8ed1c9b',
+          outputType: 1,
+          outputGuard: '0xf4ebbe787311bb955bb353b7a4d8b97af8ed1c9b',
           currency: '0x0000000000000000000000000000000000000000',
           amount: 89008900
         },
         {
-          owner: '0xf4ebbe787311bb955bb353b7a4d8b97af8ed1c9b',
+          outputType: 1,
+          outputGuard: '0xf4ebbe787311bb955bb353b7a4d8b97af8ed1c9b',
           currency: '0x0000000000000000000000000000000000000000',
           amount: 1234567890123456
         }
@@ -61,12 +66,9 @@ describe('decodeTransaction', () => {
     }
 
     const encodedTx = transaction.encode(txBody)
-    const decoded = transaction.decode(encodedTx)
-    assert(decoded.inputs)
-    assert(decoded.outputs)
+    const decoded = transaction.decodeTxBytes(encodedTx)
     assert.isUndefined(decoded.sigs)
-    txBody.inputs.forEach(input => assert.deepInclude(decoded.inputs, input))
-    txBody.outputs.forEach(output => assert.deepInclude(decoded.outputs, output))
+    assert.deepEqual(txBody, decoded)
   })
 
   it('should decode an encoded unsigned transaction with only inputs', async () => {
@@ -88,7 +90,7 @@ describe('decodeTransaction', () => {
     }
 
     const encodedTx = transaction.encode(txBody)
-    const decoded = transaction.decode(encodedTx)
+    const decoded = transaction.decodeTxBytes(encodedTx)
     assert(decoded.inputs)
     assert(decoded.outputs)
     assert.isUndefined(decoded.sigs)
@@ -102,8 +104,9 @@ describe('decodeTransaction', () => {
     })
   })
 
-  it.skip('should decode an encoded signed transaction with only inputs', async () => {
+  it('should decode an encoded signed transaction with only inputs', async () => {
     const txBody = {
+      transactionType: 1,
       inputs: [
         {
           txindex: 0,
@@ -116,30 +119,36 @@ describe('decodeTransaction', () => {
           blknum: 9821314
         }
       ],
-      outputs: []
+      outputs: [],
+      metadata: transaction.NULL_METADATA
     }
+    const key =
+      'ea54bdc52d163f88c93ab0615782cf718a2efb9e51a7989aab1b08067e9c1c5f'
+    const plasmaContractAddress = '0xa1d683a00f63dda0cde68349ebfd38513d79433f'
+    const typedData = transaction.getTypedData(txBody, plasmaContractAddress)
+    const toSign = transaction.getToSignHash(typedData)
+    const signatures = sign(toSign, [key, key])
+    const toEndcode = [
+      signatures,
+      typedData.message.txType,
+      ...transaction.toArray(typedData.message)
+    ]
+    const signedEncoded = rlp.encode(toEndcode)
 
-    const encodedTx = transaction.encode(txBody)
-    const key = 'ea54bdc52d163f88c93ab0615782cf718a2efb9e51a7989aab1b08067e9c1c5f'
-    const signatures = sign(encodedTx, [key, key])
-    const decodedTx = rlp.decode(Buffer.from(encodedTx.replace('0x', ''), 'hex'))
-    const signedTx = [signatures, ...decodedTx]
-    const signedEncoded = rlp.encode(signedTx).toString('hex')
-
-    const decoded = transaction.decode(signedEncoded)
-    assert.hasAllKeys(decoded, ['sigs', 'inputs', 'outputs'])
-    txBody.inputs.forEach(input => assert.deepInclude(decoded.inputs, input))
-    decoded.outputs.forEach(output => {
-      assert.deepEqual(output, {
-        amount: 0,
-        owner: '0x0000000000000000000000000000000000000000',
-        currency: transaction.ETH_CURRENCY
-      })
-    })
+    const decoded = transaction.decodeTxBytes(signedEncoded)
+    assert.hasAllKeys(decoded, [
+      'sigs',
+      'inputs',
+      'outputs',
+      'transactionType',
+      'metadata'
+    ])
+    assert.deepEqual({ ...txBody, sigs: signatures }, decoded)
   })
 
-  it.skip('should decode an encoded signed transaction with inputs and outputs', async () => {
+  it('should decode an encoded signed transaction with inputs and outputs', async () => {
     const txBody = {
+      transactionType: 1,
       inputs: [
         {
           txindex: 0,
@@ -154,27 +163,77 @@ describe('decodeTransaction', () => {
       ],
       outputs: [
         {
-          owner: '0xf4ebbe787311bb955bb353b7a4d8b97af8ed1c9b',
+          outputType: 1,
+          outputGuard: '0xf4ebbe787311bb955bb353b7a4d8b97af8ed1c9b',
           currency: '0xf4ebbe787311bb955bb353b7a4d8b97af8ed1c9b',
           amount: 1
         },
         {
-          owner: '0xf4ebbe787311bb955bb353b7a4d8b97af8ed1c9b',
+          outputType: 1,
+          outputGuard: '0xf4ebbe787311bb955bb353b7a4d8b97af8ed1c9b',
           currency: '0x0000000000000000000000000000000000000000',
           amount: 4567
-        }]
+        }
+      ],
+      metadata: transaction.NULL_METADATA
     }
+    const key =
+      'ea54bdc52d163f88c93ab0615782cf718a2efb9e51a7989aab1b08067e9c1c5f'
+    const plasmaContractAddress = '0xa1d683a00f63dda0cde68349ebfd38513d79433f'
+    const typedData = transaction.getTypedData(txBody, plasmaContractAddress)
+    const toSign = transaction.getToSignHash(typedData)
+    const signatures = sign(toSign, [key, key])
+    const toEndcode = [
+      signatures,
+      typedData.message.txType,
+      ...transaction.toArray(typedData.message)
+    ]
+    const signedEncoded = rlp.encode(toEndcode)
 
-    const encodedTx = transaction.encode(txBody)
-    const key = 'ea54bdc52d163f88c93ab0615782cf718a2efb9e51a7989aab1b08067e9c1c5f'
-    const signatures = sign(encodedTx, [key, key])
-    const decodedTx = rlp.decode(Buffer.from(encodedTx.replace('0x', ''), 'hex'))
-    const signedTx = [signatures, ...decodedTx]
-    const signedEncoded = rlp.encode(signedTx).toString('hex')
+    const decoded = transaction.decodeTxBytes(signedEncoded)
+    assert.hasAllKeys(decoded, [
+      'sigs',
+      'inputs',
+      'outputs',
+      'transactionType',
+      'metadata'
+    ])
+    assert.deepEqual({ ...txBody, sigs: signatures }, decoded)
+  })
 
-    const decoded = transaction.decode(signedEncoded)
-    assert.hasAllKeys(decoded, ['sigs', 'inputs', 'outputs'])
-    txBody.inputs.forEach(input => assert.deepInclude(decoded.inputs, input))
-    txBody.outputs.forEach(output => assert.deepInclude(decoded.outputs, output))
+  it('should decode encoded deposit to raw', async () => {
+    const owner = '0xf4ebbe787311bb955bb353b7a4d8b97af8ed1c9b'
+    const amount = 10
+    const currency = '0x0000000000000000000000000000000000000000'
+
+    const encodedTx = transaction.encodeDeposit(owner, amount, currency)
+    const decoded = transaction.decodeTxBytes(encodedTx)
+    assert.deepEqual(decoded, {
+      transactionType: 1,
+      inputs: [],
+      outputs: [
+        {
+          outputType: 1,
+          amount: 10,
+          outputGuard: owner,
+          currency
+        }
+      ],
+      metadata:
+        '0x0000000000000000000000000000000000000000000000000000000000000000'
+    })
+  })
+
+  it('should decode encoded deposit', async () => {
+    const owner = '0xf4ebbe787311bb955bb353b7a4d8b97af8ed1c9b'
+    const amount = 10
+    const currency = '0x0000000000000000000000000000000000000000'
+    const encodedTx = transaction.encodeDeposit(owner, amount, currency)
+    const decoded = transaction.decodeDeposit(encodedTx)
+    assert.deepEqual(decoded, {
+      owner,
+      amount,
+      currency
+    })
   })
 })

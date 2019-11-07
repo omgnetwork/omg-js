@@ -118,7 +118,7 @@ async function inflightExitChildChain () {
   console.log(`Bob started inflight roothchain exit. Inflight exit receipt: ${JSON.stringify(startInflightExitReceipt, undefined, 2)}`)
 
   // decode the transaction to get the index of Bob's output
-  const decodedTxn = transaction.decode(signedTxn)
+  const decodedTxn = transaction.decodeTxBytes(signedTxn)
   const outputIndex = decodedTxn.outputs.findIndex(e => e.owner === bobAddress)
 
   // Bob needs to piggyback his output on the in-flight exit

@@ -118,7 +118,7 @@ describe('In-flight Exit Challenge Response tests', async () => {
       const bobSpentOnGas = await rcHelper.spentOnGas(web3, receipt)
 
       // Decode the transaction to get the index of Bob's output
-      const decodedTx = transaction.decode(bobTx)
+      const decodedTx = transaction.decodeTxBytes(bobTx)
       const outputIndex = decodedTx.outputs.findIndex(e => e.owner === bobAccount.address)
 
       // Bob piggybacks his output on the in-flight exit
@@ -150,7 +150,7 @@ describe('In-flight Exit Challenge Response tests', async () => {
       await ccHelper.waitForBalanceEq(childChain, bobAccount.address, TRANSFER_AMOUNT)
 
       // Carol sees that Bob is trying to exit the same input that Alice sent to her.
-      const carolTxDecoded = transaction.decode(carolTx)
+      const carolTxDecoded = transaction.decodeTxBytes(carolTx)
       const carolTxUnsigned = transaction.encode(carolTxDecoded)
 
       const cInput = carolTxDecoded.inputs[0]
@@ -158,7 +158,7 @@ describe('In-flight Exit Challenge Response tests', async () => {
         childChain,
         'in_flight_exits',
         e => {
-          const decoded = transaction.decode(e.txbytes)
+          const decoded = transaction.decodeTxBytes(e.txbytes)
           return decoded.inputs.find(input =>
             input.blknum === cInput.blknum &&
             input.txindex === cInput.txindex &&

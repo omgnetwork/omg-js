@@ -82,7 +82,6 @@ describe('Standard Exit tests', async () => {
       const utxoToExit = aliceUtxos[0]
       const exitData = await childChain.getExitData(utxoToExit)
       assert.hasAllKeys(exitData, ['txbytes', 'proof', 'utxo_pos'])
-
       // check if queue exists for this token
       const hasToken = await rootChain.hasToken(transaction.ETH_CURRENCY)
       if (!hasToken) {
