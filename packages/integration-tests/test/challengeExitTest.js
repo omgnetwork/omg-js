@@ -136,9 +136,10 @@ describe('Challenge exit tests', async () => {
 
       // ...and challenges the exit
       const challengeData = await childChain.getChallengeData(invalidExit.details.utxo_pos)
-      assert.hasAllKeys(challengeData, ['input_index', 'exit_id', 'sig', 'txbytes'])
+      assert.hasAllKeys(challengeData, ['input_index', 'exit_id', 'exiting_tx', 'sig', 'txbytes'])
       receipt = await rootChain.challengeStandardExit(
         challengeData.exit_id,
+        challengeData.exiting_tx,
         challengeData.txbytes,
         challengeData.input_index,
         challengeData.sig,
@@ -161,7 +162,7 @@ describe('Challenge exit tests', async () => {
       receipt = await rootChain.processExits(
         transaction.ETH_CURRENCY,
         0,
-        1,
+        20,
         {
           privateKey: aliceAccount.privateKey,
           from: aliceAccount.address

@@ -138,12 +138,12 @@ async function approveERC20 (
   return sendTransaction(web3, txDetails, ownerAccountPassword)
 }
 
-async function depositEth (rootChain, childChain, address, amount, privateKey) {
+async function depositEth (rootChain, address, amount, privateKey) {
   const depositTx = transaction.encodeDeposit(address, amount, transaction.ETH_CURRENCY)
   return rootChain.depositEth(depositTx, amount, { from: address, privateKey })
 }
 
-async function depositToken (rootChain, childChain, address, amount, currency, privateKey) {
+async function depositToken (rootChain, address, amount, currency, privateKey) {
   const depositTx = transaction.encodeDeposit(address, amount, currency)
   return rootChain.depositToken(depositTx, { from: address, privateKey })
 }
@@ -163,7 +163,7 @@ async function getTimeToExit (plasmaContract, blockTimestamp) {
   // time to exit need to be caculate properly, this is just for testing assume * 2 min exit period
   const minExitPeriod = await plasmaContract.methods.minExitPeriod().call() * 1000
   console.log('MIN_EXIT_PERIOD:', minExitPeriod)
-  return (Number(minExitPeriod) * 2) + 100000
+  return (Number(minExitPeriod) * 2)
 }
 
 const DEFAULT_INTERVAL = 1000

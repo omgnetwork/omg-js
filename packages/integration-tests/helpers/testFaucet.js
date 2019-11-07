@@ -19,7 +19,6 @@ const faucetFaucet = require('./faucetFaucet')
 const { transaction } = require('@omisego/omg-js-util')
 const numberToBN = require('number-to-bn')
 const erc20abi = require('human-standard-token-abi')
-
 const faucet = {
   init: async function (rootChain, childChain, web3, config) {
     if (this.initialised) {
@@ -92,7 +91,7 @@ const faucet = {
 
       try {
         console.log(`Not enough Child chain ETH in faucet ${this.address}, attempting to deposit ${needed.toString()} ETH from root chain`)
-        await rcHelper.depositEth(this.rootChain, this.childChain, this.address, needed, this.privateKey)
+        await rcHelper.depositEth(this.rootChain, this.address, needed, this.privateKey)
         await ccHelper.waitForBalance(
           this.childChain,
           this.address,
@@ -125,7 +124,6 @@ const faucet = {
     if (!ccCurrencyBalance || numberToBN(ccCurrencyBalance.amount).lt(numberToBN(minAmount))) {
       // If not, try to deposit more funds from the root chain
       const needed = ccCurrencyBalance ? numberToBN(minAmount).sub(numberToBN(ccCurrencyBalance.amount)) : numberToBN(minAmount)
-
       // Check if there are enough root chain funds in the faucet
       const erc20Balance = await rcHelper.getERC20Balance(web3, this.erc20Contract, this.address, this.privateKey)
       if (numberToBN(erc20Balance).lt(needed)) {
@@ -141,7 +139,7 @@ const faucet = {
         if (allowed === '0') {
           throw new Error('ERC20 approval failed!')
         }
-        await rcHelper.depositToken(this.rootChain, this.childChain, this.address, needed.toNumber(), this.erc20ContractAddress, this.privateKey)
+        await rcHelper.depositToken(this.rootChain, this.address, needed.toNumber(), this.erc20ContractAddress, this.privateKey)
         await ccHelper.waitForBalance(
           this.childChain,
           this.address,
@@ -180,7 +178,7 @@ const faucet = {
   },
 
   fundChildchain: async function (address, amount, currency) {
-    const ret = await ccHelper.sendSubmitTyped(
+    const ret = await ccHelper.send(
       this.childChain,
       this.address,
       address,

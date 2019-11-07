@@ -23,6 +23,7 @@ const ChildChain = require('@omisego/omg-js-childchain')
 const RootChain = require('@omisego/omg-js-rootchain')
 const { transaction } = require('@omisego/omg-js-util')
 const chai = require('chai')
+const numberToBN = require('number-to-bn')
 const assert = chai.assert
 
 const web3 = new Web3(new Web3.providers.HttpProvider(config.geth_url))
@@ -63,7 +64,7 @@ describe('Standard Exit tests', async () => {
 
     it('should succesfully exit a deposit', async () => {
       // Alice deposits ETH into the Plasma contract
-      let receipt = await rcHelper.depositEth(rootChain, childChain, aliceAccount.address, DEPOSIT_AMOUNT, aliceAccount.privateKey)
+      let receipt = await rcHelper.depositEth(rootChain, aliceAccount.address, DEPOSIT_AMOUNT, aliceAccount.privateKey)
       await ccHelper.waitForBalanceEq(childChain, aliceAccount.address, DEPOSIT_AMOUNT)
       console.log(`Alice deposited ${DEPOSIT_AMOUNT} into RootChain contract`)
 
@@ -222,6 +223,7 @@ describe('Standard Exit tests', async () => {
         bobSpentOnGas = await rcHelper.spentOnGas(web3, addTokenCall)
       } else {
         console.log(`Exit queue for ${transaction.ETH_CURRENCY} already exists`)
+        bobSpentOnGas = numberToBN(0)
       }
 
       const startStandardExitReceipt = await rootChain.startStandardExit(
