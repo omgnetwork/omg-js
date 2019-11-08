@@ -1,5 +1,4 @@
 const rlp = require('rlp')
-const { BN } = require('openzeppelin-test-helpers')
 const utils = require('web3-utils')
 
 const EMPTY_BYTES_32 =
@@ -50,7 +49,6 @@ class PaymentTransaction {
     tx.push(this.inputs)
     tx.push(PaymentTransaction.formatForRlpEncoding(this.outputs))
     tx.push(this.metaData)
-
     return rlp.encode(tx)
   }
 

@@ -15,6 +15,7 @@ limitations under the License. */
 
 const txUtils = require('./txUtils')
 const { transaction } = require('@omisego/omg-js-util')
+const webUtils = require('web3-utils')
 
 const STANDARD_EXIT_BOND = 14000000000000000
 const INFLIGHT_EXIT_BOND = 31415926535
@@ -82,7 +83,7 @@ class RootChain {
     const txDetails = {
       from: txOptions.from,
       to: ethVaultAddress,
-      value: amount,
+      value: webUtils.toHex(amount),
       data: txUtils.getTxData(
         this.web3,
         ethVaultContract,
