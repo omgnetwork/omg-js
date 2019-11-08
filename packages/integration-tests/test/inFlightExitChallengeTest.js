@@ -22,6 +22,7 @@ const ChildChain = require('@omisego/omg-js-childchain')
 const RootChain = require('@omisego/omg-js-rootchain')
 const { transaction } = require('@omisego/omg-js-util')
 const chai = require('chai')
+const numberToBN = require('number-to-bn')
 const assert = chai.assert
 
 const web3 = new Web3(new Web3.providers.HttpProvider(config.geth_url))
@@ -48,7 +49,6 @@ describe('In-flight Exit Challenge tests', async () => {
     let aliceAccount
     let bobAccount
     let carolAccount
-
     before(async () => {
       // Create Alice and Bob's accounts
       aliceAccount = rcHelper.createAccount(web3)
@@ -57,7 +57,7 @@ describe('In-flight Exit Challenge tests', async () => {
       console.log(`Created Bob account ${JSON.stringify(bobAccount)}`)
       carolAccount = rcHelper.createAccount(web3)
       console.log(`Created Carol account ${JSON.stringify(carolAccount)}`)
-
+      
       await Promise.all([
         // Give some ETH to Alice on the child chain
         faucet.fundChildchain(aliceAccount.address, INTIIAL_ALICE_AMOUNT, transaction.ETH_CURRENCY),
@@ -73,6 +73,7 @@ describe('In-flight Exit Challenge tests', async () => {
         rcHelper.waitForEthBalanceEq(web3, carolAccount.address, INTIIAL_CAROL_RC_AMOUNT),
         rcHelper.waitForEthBalanceEq(web3, bobAccount.address, INTIIAL_BOB_RC_AMOUNT)
       ])
+
     })
 
     after(async () => {
@@ -87,6 +88,7 @@ describe('In-flight Exit Challenge tests', async () => {
     })
 
     it.only('should challenge an in-flight exit by providing a competitor', async () => {
+      let bobSpentOnGas = numberToBN(0)
       // Alice creates a transaction to send funds to Bob
       const bobTx = await ccHelper.createTx(
         childChain,
@@ -105,6 +107,19 @@ describe('In-flight Exit Challenge tests', async () => {
       const exitData = await childChain.inFlightExitGetData(bobTx)
       const decodedTx = transaction.decodeTxBytes(bobTx)
       assert.hasAllKeys(exitData, ['in_flight_tx', 'in_flight_tx_sigs', 'input_txs', 'input_txs_inclusion_proofs', 'input_utxos_pos'])
+      
+
+      const hasToken = await rootChain.hasToken(transaction.ETH_CURRENCY)
+      if (!hasToken) {
+        console.log(`Adding a ${transaction.ETH_CURRENCY} exit queue`)
+        const addTokenCall = await rootChain.addToken(
+          transaction.ETH_CURRENCY,
+          { from: bobAccount.address, privateKey: bobAccount.privateKey }
+        )
+        bobSpentOnGas.iadd(await rcHelper.spentOnGas(web3, addTokenCall))
+      } else {
+        console.log(`Exit queue for ${transaction.ETH_CURRENCY} already exists`)
+      }
 
       // Starts the in-flight exit
       let receipt = await rootChain.startInFlightExit(
@@ -123,7 +138,7 @@ describe('In-flight Exit Challenge tests', async () => {
       )
       console.log(`Bob called RootChain.startInFlightExit(): txhash = ${receipt.transactionHash}`)
       // Keep track of how much Bob spends on gas
-      const bobSpentOnGas = await rcHelper.spentOnGas(web3, receipt)
+      bobSpentOnGas.iadd(await rcHelper.spentOnGas(web3, receipt))
       // Decode the transaction to get the index of Bob's output
       
       const outputIndex = decodedTx.outputs.findIndex(e => e.outputGuard === bobAccount.address)

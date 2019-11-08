@@ -417,7 +417,7 @@ class RootChain {
     const paymentExitGameContract = this.getContract(this.paymentExitGameAbi.abi, paymentExitGameAddress)
     const txDetails = {
       from: txOptions.from,
-      to: this.plasmaContractAddress,
+      to: paymentExitGameAddress,
       data: txUtils.getTxData(this.web3,
         paymentExitGameContract,
         'challengeInFlightExitNotCanonical',
