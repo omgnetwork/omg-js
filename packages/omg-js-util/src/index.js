@@ -18,5 +18,5 @@ module.exports = {
   transaction: require('./transaction'),
   sign: require('./sign'),
   hexToBytes: require('./hexToBytes'),
-  ArgTypes: require('./argTypes')
+  ArgTypes: require('./ArgTypes')
 }
