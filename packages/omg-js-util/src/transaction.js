@@ -116,8 +116,8 @@ const transaction = {
   encode: function ({ transactionType, inputs, outputs, metadata, signatures }) {
     const txArray = [transactionType]
     signatures && txArray.unshift(signatures)
-    let inputArray = []
-    let outputArray = []
+    const inputArray = []
+    const outputArray = []
     for (let i = 0; i < MAX_INPUTS; i++) {
       addInput(inputArray,
         i < inputs.length

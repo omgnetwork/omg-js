@@ -39,7 +39,7 @@ class RootChain {
     this.plasmaContractAddress = plasmaContractAddress
     this.isLegacyWeb3 = web3.version.api && web3.version.api.startsWith('0.2')
     // contracts abi
-    this.erc20VaultAbi = require('./contracts/ERC20Vault.json')
+    this.erc20VaultAbi = require('./contracts/Erc20Vault.json')
     this.ethVaultAbi = require('./contracts/EthVault.json')
     this.exitGameRegistryAbi = require('./contracts/ExitGameRegistry.json')
     this.paymentExitGameAbi = require('./contracts/PaymentExitGame.json')

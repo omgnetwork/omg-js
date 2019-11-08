@@ -19,7 +19,7 @@ const it = mocha.it
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 
-const ArgTypes = require('../src/argTypes')
+const ArgTypes = require('../src/ArgTypes')
 
 chai.use(chaiAsPromised)
 const assert = chai.assert
