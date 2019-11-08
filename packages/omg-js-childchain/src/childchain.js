@@ -129,12 +129,6 @@ class ChildChain {
     const toSign = Buffer.from(txData.sign_hash.replace('0x', ''), 'hex')
     txData.typed_data.signatures = sign(toSign, privateKeys)
 
-    // Convert any BigNumber amounts to Numbers
-    txData.typed_data.message.output0.amount = Number(txData.typed_data.message.output0.amount.toString())
-    txData.typed_data.message.output1.amount = Number(txData.typed_data.message.output1.amount.toString())
-    txData.typed_data.message.output2.amount = Number(txData.typed_data.message.output2.amount.toString())
-    txData.typed_data.message.output3.amount = Number(txData.typed_data.message.output3.amount.toString())
-
     return txData.typed_data
   }
 
