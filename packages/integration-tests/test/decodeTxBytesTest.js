@@ -70,7 +70,6 @@ describe.only('Decode txBytes onchain tests', async () => {
       // Alice deposits ETH into the Plasma contract
       await rcHelper.depositEth(
         rootChain,
-        childChain,
         aliceAccount.address,
         DEPOSIT_AMOUNT,
         aliceAccount.privateKey
