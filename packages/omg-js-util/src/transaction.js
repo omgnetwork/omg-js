@@ -85,12 +85,12 @@ const transaction = {
   *@returns the RLP encoded deposit transaction
   *
   */
- encodeDeposit: function (owner, amount, currency) {
-  const output = new PaymentTransactionOutput(1, amount, owner, currency)
-  const transaction = new PlasmaDepositTransaction(output)
-  const encoded = transaction.rlpEncoded()
-  return encoded
-},
+  encodeDeposit: function (owner, amount, currency) {
+    const output = new PaymentTransactionOutput(1, amount, owner, currency)
+    const transaction = new PlasmaDepositTransaction(output)
+    const encoded = transaction.rlpEncoded()
+    return encoded
+  },
 
   // TODO ADD js-doc
   decodeDeposit: function (encodedDeposit) {
