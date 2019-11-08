@@ -1,6 +1,6 @@
 {
   "name": "@omisego/omg-js-rootchain",
-  "version": "3.0.0-alpha.3",
+  "version": "3.0.0-alpha.4",
   "description": "Module to interact with the Ethereum RootChain",
   "keywords": [
     "OMG",
@@ -22,7 +22,7 @@
     "url": "https://github.com/omisego/omg-js/issues"
   },
   "dependencies": {
-    "@omisego/omg-js-util": "^3.0.0-alpha.3",
+    "@omisego/omg-js-util": "^3.0.0-alpha.4",
     "debug": "^4.0.1"
   },
   "publishConfig": {
