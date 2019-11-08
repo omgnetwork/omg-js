@@ -92,6 +92,50 @@ const transaction = {
     return encoded
   },
 
+  // TODO ADD js-doc
+  decodeDeposit: function (encodedDeposit) {
+    const { outputs } = transaction.decodeTxBytes(encodedDeposit)
+    const [{ outputGuard, amount, currency }] = outputs
+    return {
+      owner: outputGuard,
+      amount,
+      currency
+    }
+  },
+
+  /**
+  * RLP encodes a transaction
+  *
+  *@param {Number} transactionType the transaction type
+  *@param {Array} inputs the inputs of transaction
+  *@param {Array} outputs the outputs of transaction
+  *@param {string} metadata metadata
+  *@returns the RLP encoded transaction
+  *
+  */
+  encode: function ({ transactionType, inputs, outputs, metadata, signatures }) {
+    const txArray = [transactionType]
+    signatures && txArray.unshift(signatures)
+    let inputArray = []
+    let outputArray = []
+    for (let i = 0; i < MAX_INPUTS; i++) {
+      addInput(inputArray,
+        i < inputs.length
+          ? inputs[i]
+          : typedData.NULL_INPUT)
+    }
+    txArray.push(inputArray)
+    for (let i = 0; i < MAX_OUTPUTS; i++) {
+      addOutput(outputArray,
+        i < outputs.length
+          ? outputs[i]
+          : typedData.NULL_OUTPUT)
+    }
+    txArray.push(outputArray)
+    txArray.push(metadata)
+    return `0x${rlp.encode(txArray).toString('hex')}`
+  },
+
   /**
   * Decodes an RLP encoded transaction
   *
@@ -99,35 +143,32 @@ const transaction = {
   *@returns the transaction object
   *
   */
-  decode: function (tx) {
-    let inputs, outputs, sigs, metadata
-    const decoded = rlp.decode(Buffer.from(tx.replace('0x', ''), 'hex'))
-    if (decoded.length === 3) {
-      inputs = decoded[0]
-      outputs = decoded[1]
-      metadata = decoded[2]
-    } else if (decoded.length === 4) {
-      sigs = decoded[0]
-      inputs = decoded[1]
-      outputs = decoded[2]
-      metadata = decoded[3]
+  decodeTxBytes: function (tx) {
+    let inputs, outputs, transactionType, metadata, sigs
+    const rawTx = Buffer.isBuffer(tx) ? tx : Buffer.from(tx.replace('0x', ''), 'hex')
+    const decoded = rlp.decode(rawTx)
+    switch (decoded.length) {
+      case 4:
+        [transactionType, inputs, outputs, metadata] = decoded
+        break
+      case 5:
+        [sigs, transactionType, inputs, outputs, metadata] = decoded
+        break
+      default:
+        throw new Error(`error decoding txBytes, got ${decoded}`)
     }
-
     return {
-      sigs,
-      inputs: inputs.map(input => {
-        const blknum = parseNumber(input[0])
-        const txindex = parseNumber(input[1])
-        const oindex = parseNumber(input[2])
-        return { blknum, txindex, oindex }
-      }),
+      ...(sigs && { sigs: sigs.map(parseString) }),
+      transactionType: parseNumber(transactionType),
+      inputs: inputs.map(input => transaction.decodeUtxoPos(parseString(input))),
       outputs: outputs.map(output => {
-        const owner = parseString(output[0])
-        const currency = parseString(output[1])
-        const amount = parseNumber(output[2])
-        return { owner, currency, amount }
+        const outputType = parseNumber(output[0])
+        const outputGuard = parseString(output[1])
+        const currency = parseString(output[2])
+        const amount = parseNumber(output[3])
+        return { outputType, outputGuard, currency, amount }
       }),
-      metadata
+      metadata: parseString(metadata)
     }
   },
 

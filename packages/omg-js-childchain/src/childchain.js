@@ -116,7 +116,6 @@ class ChildChain {
     return rpcApi.post(`${this.watcherUrl}/transaction.create`, { owner, payments, fee, metadata })
   }
 
-
   /**
    * Signs the transaction's typed data that is returned from `createTransaction`
    *

@@ -5,7 +5,9 @@
   "description": "JavaScript Library to interact with OMG Network",
   "scripts": {
     "postinstall": "./node_modules/.bin/lerna bootstrap --hoist",
-    "test": "./node_modules/.bin/standard && ./node_modules/.bin/mocha packages/omg-js-childchain/test packages/omg-js-rootchain/test packages/omg-js-util/test",
+    "test": "./node_modules/.bin/mocha packages/omg-js-childchain/test packages/omg-js-rootchain/test packages/omg-js-util/test",
+    "lint": "./node_modules/.bin/standard",
+    "lint-fix": "./node_modules/.bin/standard --fix",
     "build": "browserify browserify.js -o dist/omg.js",
     "build-doc": "documentation build packages/omg-js/src/** packages/omg-js-childchain/src/** packages/omg-js-rootchain/src/** packages/omg-js-util/src/** --config documentation.yml -f html -o docs",
     "integration-test": "./node_modules/.bin/mocha --timeout=0 packages/integration-tests/test",

@@ -114,7 +114,7 @@ describe('In-flight Exit tests', async () => {
       const bobSpentOnGas = await rcHelper.spentOnGas(web3, receipt)
 
       // Decode the transaction to get the index of Bob's output
-      const decodedTx = transaction.decode(txbytes)
+      const decodedTx = transaction.decodeTxBytes(txbytes)
       const outputIndex = decodedTx.outputs.findIndex(e => e.owner === bobAccount.address)
 
       // Bob needs to piggyback his output on the in-flight exit
