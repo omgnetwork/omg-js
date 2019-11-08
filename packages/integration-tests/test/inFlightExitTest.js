@@ -31,7 +31,7 @@ let rootChain
 // NB This test waits for at least RootChain.MIN_EXIT_PERIOD so it should be run against a
 // modified RootChain contract with a shorter than normal MIN_EXIT_PERIOD.
 
-describe('In-flight Exit tests', async () => {
+describe.only('In-flight Exit tests', async () => {
   before(async () => {
     const plasmaContract = await rcHelper.getPlasmaContractAddress(config)
     rootChain = new RootChain(web3, plasmaContract.contract_addr)
@@ -93,16 +93,20 @@ describe('In-flight Exit tests', async () => {
       // and he wants to exit.
 
       // Get the exit data
+      const decodedTx = transaction.decodeTxBytes(txbytes)
       const exitData = await childChain.inFlightExitGetData(txbytes)
-
-      assert.hasAllKeys(exitData, ['in_flight_tx', 'in_flight_tx_sigs', 'input_txs', 'input_txs_inclusion_proofs'])
+      assert.hasAllKeys(exitData, ['in_flight_tx', 'in_flight_tx_sigs', 'input_txs', 'input_txs_inclusion_proofs', 'input_utxos_pos'])
 
       // Start an in-flight exit.
       let receipt = await rootChain.startInFlightExit(
         exitData.in_flight_tx,
         exitData.input_txs,
+        exitData.input_utxos_pos,
+        ['0x'],
         exitData.input_txs_inclusion_proofs,
         exitData.in_flight_tx_sigs,
+        decodedTx.sigs,
+        ['0x'],
         {
           privateKey: bobAccount.privateKey,
           from: bobAccount.address
@@ -114,13 +118,13 @@ describe('In-flight Exit tests', async () => {
       const bobSpentOnGas = await rcHelper.spentOnGas(web3, receipt)
 
       // Decode the transaction to get the index of Bob's output
-      const decodedTx = transaction.decodeTxBytes(txbytes)
       const outputIndex = decodedTx.outputs.findIndex(e => e.owner === bobAccount.address)
 
       // Bob needs to piggyback his output on the in-flight exit
-      receipt = await rootChain.piggybackInFlightExit(
+      receipt = await rootChain.piggybackInFlightExitOnOutput(
         exitData.in_flight_tx,
-        outputIndex + 4,
+        outputIndex,
+        '0x',
         {
           privateKey: bobAccount.privateKey,
           from: bobAccount.address
@@ -134,7 +138,7 @@ describe('In-flight Exit tests', async () => {
       receipt = await rootChain.processExits(
         transaction.ETH_CURRENCY,
         0,
-        1,
+        20,
         {
           privateKey: bobAccount.privateKey,
           from: bobAccount.address
@@ -158,11 +162,10 @@ describe('In-flight Exit tests', async () => {
       receipt = await rootChain.processExits(
         transaction.ETH_CURRENCY,
         0,
-        1,
+        20,
         {
           privateKey: bobAccount.privateKey,
-          from: bobAccount.address,
-          gas: 200000
+          from: bobAccount.address
         }
       )
       console.log(`Bob called RootChain.processExits() after challenge period: txhash = ${receipt.transactionHash}`)

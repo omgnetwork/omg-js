@@ -292,7 +292,7 @@ class RootChain {
    * @param {Object} txOptions transaction options, such as `from`, gas` and `privateKey`
    * @return {string} transaction hash of the call
    */
-  async startInFlightExit (inFlightTx, inputTxs, inputTxsInclusionProofs, inFlightTxSigs, inputUtxosPos, signatures, outputGuardPreimagesForInputs, inputSpendingConditionOptionalArgs, txOptions) {
+  async startInFlightExit (inFlightTx, inputTxs, inputUtxosPos, outputGuardPreimagesForInputs, inputTxsInclusionProofs, inFlightTxSigs, signatures, inputSpendingConditionOptionalArgs, txOptions) {
     const paymentExitGameAddress = await this.getPaymentExitGameAddress()
     const paymentExitGameContract = this.getContract(this.paymentExitGameAbi.abi, paymentExitGameAddress)
     const txDetails = {
@@ -303,7 +303,6 @@ class RootChain {
         paymentExitGameContract,
         'startInFlightExit',
         [
-          // 'startInFlightExit((bytes,bytes[],uint256[],uint256[],bytes[],bytes[],bytes[],bytes[],bytes[]))'
           inFlightTx,
           inputTxs,
           inputUtxosPos, //inputUtxosPos
@@ -331,16 +330,52 @@ class RootChain {
    * @param {Object} txOptions transaction options, such as `from`, gas` and `privateKey`
    * @return {string} transaction hash of the call
    */
-  async piggybackInFlightExit (inFlightTx, outputIndex, txOptions) {
+  async piggybackInFlightExitOnOutput (inFlightTx, outputIndex, txOptions) {
+    const paymentExitGameAddress = await this.getPaymentExitGameAddress()
+    const paymentExitGameContract = this.getContract(this.paymentExitGameAbi.abi, paymentExitGameAddress)
     const txDetails = {
       from: txOptions.from,
-      to: this.plasmaContractAddress,
+      to: paymentExitGameAddress,
       data: txUtils.getTxData(
         this.web3,
-        this.plasmaContract,
-        'piggybackInFlightExit',
+        paymentExitGameContract,
+        'piggybackInFlightExitOnOutput',
+        [
+          inFlightTx,
+          outputIndex,
+          inFlightTx
+        ]
+      ),
+      value: PIGGYBACK_BOND,
+      gas: txOptions.gas,
+      gasPrice: txOptions.gasPrice
+    }
+
+    return txUtils.sendTx(this.web3, txDetails, txOptions.privateKey)
+  }
+
+    /**
+   * Allows a user to piggyback onto an in-flight transaction.
+   *
+   * @method piggybackInFlightExit
+   * @param {string} inFlightTx RLP encoded in-flight transaction.
+   * @param {number} outputIndex Index of the input/output to piggyback (0-7).
+   * @param {Object} txOptions transaction options, such as `from`, gas` and `privateKey`
+   * @return {string} transaction hash of the call
+   */
+  async piggybackInFlightExitOnInput (inFlightTx, inputIndex, txOptions) {
+    const paymentExitGameAddress = await this.getPaymentExitGameAddress()
+    const paymentExitGameContract = this.getContract(this.paymentExitGameAbi.abi, paymentExitGameAddress)
+    const txDetails = {
+      from: txOptions.from,
+      to: paymentExitGameAddress,
+      data: txUtils.getTxData(
+        this.web3,
+        paymentExitGameContract,
+        'piggybackInFlightExitOnOutput',
         inFlightTx,
-        outputIndex
+        outputIndex,
+        inFlightTx
       ),
       value: PIGGYBACK_BOND,
       gas: txOptions.gas,
