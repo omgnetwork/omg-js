@@ -18,8 +18,8 @@ const { transaction } = require('@omisego/omg-js-util')
 const webUtils = require('web3-utils')
 
 const STANDARD_EXIT_BOND = 14000000000000000
-const INFLIGHT_EXIT_BOND = 31415926535
-const PIGGYBACK_BOND = 31415926535
+const INFLIGHT_EXIT_BOND = 37000000000000000
+const PIGGYBACK_BOND = 37000000000000000
 const ETH_VAULT_ID = 1
 const ERC20_VAULT_ID = 2
 const PAYMENT_TYPE = 1
@@ -292,18 +292,27 @@ class RootChain {
    * @param {Object} txOptions transaction options, such as `from`, gas` and `privateKey`
    * @return {string} transaction hash of the call
    */
-  async startInFlightExit (inFlightTx, inputTxs, inputTxsInclusionProofs, inFlightTxSigs, txOptions) {
+  async startInFlightExit (inFlightTx, inputTxs, inputTxsInclusionProofs, inFlightTxSigs, inputUtxosPos, signatures, outputGuardPreimagesForInputs, inputSpendingConditionOptionalArgs, txOptions) {
+    const paymentExitGameAddress = await this.getPaymentExitGameAddress()
+    const paymentExitGameContract = this.getContract(this.paymentExitGameAbi.abi, paymentExitGameAddress)
     const txDetails = {
       from: txOptions.from,
-      to: this.plasmaContractAddress,
+      to: paymentExitGameAddress,
       data: txUtils.getTxData(
         this.web3,
-        this.plasmaContract,
+        paymentExitGameContract,
         'startInFlightExit',
-        inFlightTx,
-        inputTxs,
-        inputTxsInclusionProofs,
-        inFlightTxSigs
+        [
+          // 'startInFlightExit((bytes,bytes[],uint256[],uint256[],bytes[],bytes[],bytes[],bytes[],bytes[]))'
+          inFlightTx,
+          inputTxs,
+          inputUtxosPos, //inputUtxosPos
+          outputGuardPreimagesForInputs, //outputGuardPreimagesForInputs
+          inputTxsInclusionProofs,
+          inFlightTxSigs,
+          signatures, //inFlightTxWitnesses
+          inputSpendingConditionOptionalArgs //inputSpendingConditionOptionalArgs
+        ]
       ),
       value: INFLIGHT_EXIT_BOND,
       gas: txOptions.gas,
