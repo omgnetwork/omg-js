@@ -67,8 +67,8 @@ function getTypedData (tx, verifyingContract) {
 
   // Sanitise Outputs
   const outputs = tx.outputs.map(o => ({
-    outputType: o.outputType,
-    outputGuard: o.outputGuard,
+    outputType: o.outputType || 1,
+    outputGuard: o.outputGuard || o.owner,
     currency: o.currency,
     amount: o.amount.toString()
   }))
