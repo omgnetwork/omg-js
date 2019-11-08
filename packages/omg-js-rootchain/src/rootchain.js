@@ -414,13 +414,15 @@ class RootChain {
       data: txUtils.getTxData(this.web3,
         this.plasmaContract,
         'challengeInFlightExitNotCanonical',
-        inFlightTx,
-        inFlightTxInputIndex,
-        competingTx,
-        competingTxInputIndex,
-        competingTxPos,
-        competingTxInclusionProof,
-        competingTxSig
+        [
+          inFlightTx,
+          inFlightTxInputIndex,
+          competingTx,
+          competingTxInputIndex,
+          competingTxPos,
+          competingTxInclusionProof,
+          competingTxSig
+        ]
       ),
       gas: txOptions.gas,
       gasPrice: txOptions.gasPrice

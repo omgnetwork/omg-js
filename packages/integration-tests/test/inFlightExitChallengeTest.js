@@ -28,7 +28,7 @@ const web3 = new Web3(new Web3.providers.HttpProvider(config.geth_url))
 const childChain = new ChildChain(config.watcher_url, config.childchain_url)
 let rootChain
 
-const INFLIGHT_EXIT_BOND = 31415926535
+const INFLIGHT_EXIT_BOND = 37000000000000000
 
 // NB This test waits for at least RootChain.MIN_EXIT_PERIOD so it should be run against a
 // modified RootChain contract with a shorter than normal MIN_EXIT_PERIOD.
@@ -109,8 +109,12 @@ describe('In-flight Exit Challenge tests', async () => {
       let receipt = await rootChain.startInFlightExit(
         exitData.in_flight_tx,
         exitData.input_txs,
+        exitData.input_utxos_pos,
+        ['0x'],
         exitData.input_txs_inclusion_proofs,
+        decodedTx.sigs,
         exitData.in_flight_tx_sigs,
+        ['0x'],
         {
           privateKey: bobAccount.privateKey,
           from: bobAccount.address
@@ -122,12 +126,13 @@ describe('In-flight Exit Challenge tests', async () => {
 
       // Decode the transaction to get the index of Bob's output
       const decodedTx = transaction.decodeTxBytes(bobTx)
-      const outputIndex = decodedTx.outputs.findIndex(e => e.owner === bobAccount.address)
+      const outputIndex = decodedTx.outputs.findIndex(e => e.outputGuard === bobAccount.address)
 
       // Bob piggybacks his output on the in-flight exit
-      receipt = await rootChain.piggybackInFlightExit(
+      receipt = await rootChain.piggybackInFlightExitOnOutput(
         exitData.in_flight_tx,
-        outputIndex + 4,
+        outputIndex,
+        '0x',
         {
           privateKey: bobAccount.privateKey,
           from: bobAccount.address
@@ -196,11 +201,10 @@ describe('In-flight Exit Challenge tests', async () => {
       receipt = await rootChain.processExits(
         transaction.ETH_CURRENCY,
         0,
-        1,
+        20,
         {
           privateKey: bobAccount.privateKey,
-          from: bobAccount.address,
-          gas: 200000
+          from: bobAccount.address
         }
       )
       console.log(`Bob called RootChain.processExits() after challenge period: txhash = ${receipt.transactionHash}`)
@@ -298,8 +302,12 @@ describe('In-flight Exit Challenge tests', async () => {
       let receipt = await rootChain.startInFlightExit(
         exitData.in_flight_tx,
         exitData.input_txs,
+        exitData.input_utxos_pos,
+        ['0x'],
         exitData.input_txs_inclusion_proofs,
+        decodedTx.sigs,
         exitData.in_flight_tx_sigs,
+        ['0x'],
         {
           privateKey: bobAccount.privateKey,
           from: bobAccount.address
@@ -312,12 +320,13 @@ describe('In-flight Exit Challenge tests', async () => {
 
       // Decode the transaction to get the index of Bob's output
       const decodedTx = transaction.decodeTxBytes(bobTx)
-      const outputIndex = decodedTx.outputs.findIndex(e => e.owner === bobAccount.address)
+      const outputIndex = decodedTx.outputs.findIndex(e => e.outputGuard === bobAccount.address)
 
       // Bob piggybacks his output on the in-flight exit
-      receipt = await rootChain.piggybackInFlightExit(
+      receipt = await rootChain.piggybackInFlightExitOnOutput(
         exitData.in_flight_tx,
-        outputIndex + 4,
+        outputIndex,
+        '0x',
         {
           privateKey: bobAccount.privateKey,
           from: bobAccount.address
