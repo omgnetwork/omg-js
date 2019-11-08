@@ -70,7 +70,7 @@ describe('Standard Exit tests', async () => {
       }
     })
 
-    it.only('should succesfully exit a deposit', async () => {
+    it('should succesfully exit a deposit', async () => {
       // Alice deposits ETH into the Plasma contract
       let receipt = await rcHelper.depositEth(
         rootChain,
