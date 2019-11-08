@@ -19,7 +19,7 @@ const webUtils = require('web3-utils')
 
 const STANDARD_EXIT_BOND = 14000000000000000
 const INFLIGHT_EXIT_BOND = 37000000000000000
-const PIGGYBACK_BOND = 37000000000000000
+const PIGGYBACK_BOND = 28000000000000000
 const ETH_VAULT_ID = 1
 const ERC20_VAULT_ID = 2
 const PAYMENT_TYPE = 1
@@ -148,7 +148,7 @@ class RootChain {
         [
           outputId.toString(),
           outputTx,
-          [],
+          '0x',
           inclusionProof
         ]
       ),
@@ -330,7 +330,7 @@ class RootChain {
    * @param {Object} txOptions transaction options, such as `from`, gas` and `privateKey`
    * @return {string} transaction hash of the call
    */
-  async piggybackInFlightExitOnOutput (inFlightTx, outputIndex, txOptions) {
+  async piggybackInFlightExitOnOutput (inFlightTx, outputIndex, outputGuardPreimage, txOptions) {
     const paymentExitGameAddress = await this.getPaymentExitGameAddress()
     const paymentExitGameContract = this.getContract(this.paymentExitGameAbi.abi, paymentExitGameAddress)
     const txDetails = {
@@ -343,7 +343,7 @@ class RootChain {
         [
           inFlightTx,
           outputIndex,
-          inFlightTx
+          outputGuardPreimage
         ]
       ),
       value: PIGGYBACK_BOND,
@@ -359,7 +359,7 @@ class RootChain {
    *
    * @method piggybackInFlightExit
    * @param {string} inFlightTx RLP encoded in-flight transaction.
-   * @param {number} outputIndex Index of the input/output to piggyback (0-7).
+   * @param {number} inputIndex Index of the input/output to piggyback (0-7).
    * @param {Object} txOptions transaction options, such as `from`, gas` and `privateKey`
    * @return {string} transaction hash of the call
    */
@@ -372,10 +372,9 @@ class RootChain {
       data: txUtils.getTxData(
         this.web3,
         paymentExitGameContract,
-        'piggybackInFlightExitOnOutput',
+        'piggybackInFlightExitOnInput',
         inFlightTx,
-        outputIndex,
-        inFlightTx
+        inputIndex,
       ),
       value: PIGGYBACK_BOND,
       gas: txOptions.gas,

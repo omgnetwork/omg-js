@@ -21,6 +21,7 @@ const Web3 = require('web3')
 const ChildChain = require('@omisego/omg-js-childchain')
 const RootChain = require('@omisego/omg-js-rootchain')
 const { transaction } = require('@omisego/omg-js-util')
+const numberToBN = require('number-to-bn')
 const chai = require('chai')
 const assert = chai.assert
 
@@ -31,7 +32,7 @@ let rootChain
 // NB This test waits for at least RootChain.MIN_EXIT_PERIOD so it should be run against a
 // modified RootChain contract with a shorter than normal MIN_EXIT_PERIOD.
 
-describe.only('In-flight Exit tests', async () => {
+describe('In-flight Exit tests', async () => {
   before(async () => {
     const plasmaContract = await rcHelper.getPlasmaContractAddress(config)
     rootChain = new RootChain(web3, plasmaContract.contract_addr)
@@ -77,6 +78,7 @@ describe.only('In-flight Exit tests', async () => {
 
     it('should succesfully exit a ChildChain transaction', async () => {
       // Send TRANSFER_AMOUNT from Alice to Bob
+      let bobSpentOnGas
       const { txbytes, result } = await ccHelper.sendAndWait(
         childChain,
         aliceAccount.address,
@@ -96,6 +98,19 @@ describe.only('In-flight Exit tests', async () => {
       const decodedTx = transaction.decodeTxBytes(txbytes)
       const exitData = await childChain.inFlightExitGetData(txbytes)
       assert.hasAllKeys(exitData, ['in_flight_tx', 'in_flight_tx_sigs', 'input_txs', 'input_txs_inclusion_proofs', 'input_utxos_pos'])
+      
+      const hasToken = await rootChain.hasToken(transaction.ETH_CURRENCY)
+      if (!hasToken) {
+        console.log(`Adding a ${transaction.ETH_CURRENCY} exit queue`)
+        const addTokenCall = await rootChain.addToken(
+          transaction.ETH_CURRENCY,
+          { from: bobAccount.address, privateKey: bobAccount.privateKey }
+        )
+        bobSpentOnGas = await rcHelper.spentOnGas(web3, addTokenCall)
+      } else {
+        console.log(`Exit queue for ${transaction.ETH_CURRENCY} already exists`)
+        bobSpentOnGas = numberToBN(0)
+      }
 
       // Start an in-flight exit.
       let receipt = await rootChain.startInFlightExit(
@@ -104,8 +119,8 @@ describe.only('In-flight Exit tests', async () => {
         exitData.input_utxos_pos,
         ['0x'],
         exitData.input_txs_inclusion_proofs,
-        exitData.in_flight_tx_sigs,
         decodedTx.sigs,
+        exitData.in_flight_tx_sigs,
         ['0x'],
         {
           privateKey: bobAccount.privateKey,
@@ -115,10 +130,10 @@ describe.only('In-flight Exit tests', async () => {
       console.log(`Bob called RootChain.startInFlightExit(): txhash = ${receipt.transactionHash}`)
 
       // Keep track of how much Bob spends on gas
-      const bobSpentOnGas = await rcHelper.spentOnGas(web3, receipt)
+      bobSpentOnGas.iadd(await rcHelper.spentOnGas(web3, receipt))
 
       // Decode the transaction to get the index of Bob's output
-      const outputIndex = decodedTx.outputs.findIndex(e => e.owner === bobAccount.address)
+      const outputIndex = decodedTx.outputs.findIndex(e => e.outputGuard === bobAccount.address)
 
       // Bob needs to piggyback his output on the in-flight exit
       receipt = await rootChain.piggybackInFlightExitOnOutput(
