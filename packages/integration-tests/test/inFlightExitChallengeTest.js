@@ -86,7 +86,7 @@ describe('In-flight Exit Challenge tests', async () => {
       }
     })
 
-    it('should challenge an in-flight exit by providing a competitor', async () => {
+    it.only('should challenge an in-flight exit by providing a competitor', async () => {
       // Alice creates a transaction to send funds to Bob
       const bobTx = await ccHelper.createTx(
         childChain,
@@ -103,7 +103,8 @@ describe('In-flight Exit Challenge tests', async () => {
 
       // Get the exit data
       const exitData = await childChain.inFlightExitGetData(bobTx)
-      assert.hasAllKeys(exitData, ['in_flight_tx', 'in_flight_tx_sigs', 'input_txs', 'input_txs_inclusion_proofs'])
+      const decodedTx = transaction.decodeTxBytes(bobTx)
+      assert.hasAllKeys(exitData, ['in_flight_tx', 'in_flight_tx_sigs', 'input_txs', 'input_txs_inclusion_proofs', 'input_utxos_pos'])
 
       // Starts the in-flight exit
       let receipt = await rootChain.startInFlightExit(
@@ -123,9 +124,8 @@ describe('In-flight Exit Challenge tests', async () => {
       console.log(`Bob called RootChain.startInFlightExit(): txhash = ${receipt.transactionHash}`)
       // Keep track of how much Bob spends on gas
       const bobSpentOnGas = await rcHelper.spentOnGas(web3, receipt)
-
       // Decode the transaction to get the index of Bob's output
-      const decodedTx = transaction.decodeTxBytes(bobTx)
+      
       const outputIndex = decodedTx.outputs.findIndex(e => e.outputGuard === bobAccount.address)
 
       // Bob piggybacks his output on the in-flight exit
@@ -157,6 +157,7 @@ describe('In-flight Exit Challenge tests', async () => {
       // Carol sees that Bob is trying to exit the same input that Alice sent to her.
       const carolTxDecoded = transaction.decodeTxBytes(carolTx.txbytes)
       const cInput = carolTxDecoded.inputs[0]
+      const utxoPos = transaction.encodeUtxoPos(cInput)
       const inflightExit = await ccHelper.waitForEvent(
         childChain,
         'in_flight_exits',
@@ -173,26 +174,41 @@ describe('In-flight Exit Challenge tests', async () => {
       // Carol gets the competitor of Bob's exit
       const competitor = await childChain.inFlightExitGetCompetitor(inflightExit.txbytes)
       console.log('Got competitor')
+      assert.hasAllKeys(competitor, [
+        'in_flight_txbytes', 
+        'in_flight_input_index', 
+        'competing_txbytes', 
+        'competing_input_index', 
+        'competing_tx_pos',
+        'competing_proof',
+        'competing_sig',
+        'input_tx',
+        'input_utxo_pos'
 
+      ])
       // Challenge the IFE as non canonical
-      receipt = await rootChain.challengeInFlightExitNotCanonical(
-        competitor.in_flight_txbytes,
-        competitor.in_flight_input_index,
-        competitor.competing_txbytes,
-        competitor.competing_input_index,
-        competitor.competing_tx_pos,
-        competitor.competing_proof,
-        competitor.competing_sig,
-        {
+      receipt = await rootChain.challengeInFlightExitNotCanonical({
+        inputTx: competitor.input_tx,
+        inputUtxoPos: competitor.input_utxo_pos,
+        inFlightTx: competitor.in_flight_txbytes,
+        inFlightTxInputIndex: competitor.in_flight_input_index,
+        competingTx: competitor.competing_txbytes,
+        competingTxInputIndex: competitor.competing_input_index,
+        outputGuardPreimage: '0x',
+        competingTxPos: competitor.competing_tx_pos,
+        competingTxInclusionProof: competitor.competing_proof,
+        competingTxWitness: competitor.competing_sig,
+        competingTxConfirmSig: competitor.competing_sig,
+        competingTxSpendingConditionOptionalArgs: '0x',
+        txOptions: {
           privateKey: carolAccount.privateKey,
           from: carolAccount.address
         }
-      )
+      })
       // Keep track of how much Carol spends on gas
       const carolSpentOnGas = await rcHelper.spentOnGas(web3, receipt)
-
       // Wait for challenge period
-      const utxoPos = transaction.encodeUtxoPos(cInput)
+      
       const toWait = await rcHelper.getTimeToExit(rootChain.plasmaContract, utxoPos)
       console.log(`Waiting for challenge period... ${toWait}ms`)
       await rcHelper.sleep(toWait)
