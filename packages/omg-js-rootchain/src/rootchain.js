@@ -399,13 +399,18 @@ class RootChain {
    * @return {string} transaction hash of the call
    */
   async challengeInFlightExitNotCanonical (
+    inputTx,
+    inputUtxoPos,
     inFlightTx,
     inFlightTxInputIndex,
     competingTx,
     competingTxInputIndex,
+    outputGuardPreimage,
     competingTxPos,
     competingTxInclusionProof,
-    competingTxSig,
+    competingTxWitness,
+    competingTxConfirmSig,
+    competingTxSpendingConditionOptionalArgs,
     txOptions
   ) {
     const txDetails = {
@@ -415,13 +420,18 @@ class RootChain {
         this.plasmaContract,
         'challengeInFlightExitNotCanonical',
         [
+          inputTx,
+          inputUtxoPos,
           inFlightTx,
           inFlightTxInputIndex,
           competingTx,
           competingTxInputIndex,
+          outputGuardPreimage,
           competingTxPos,
           competingTxInclusionProof,
-          competingTxSig
+          competingTxWitness,
+          competingTxConfirmSig,
+          competingTxSpendingConditionOptionalArgs
         ]
       ),
       gas: txOptions.gas,
