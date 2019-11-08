@@ -160,12 +160,7 @@ const transaction = {
     return {
       ...(sigs && { sigs: sigs.map(parseString) }),
       transactionType: parseNumber(transactionType),
-      inputs: inputs.map(input => {
-        const blknum = parseNumber(input[0])
-        const txindex = parseNumber(input[1])
-        const oindex = parseNumber(input[2])
-        return { blknum, txindex, oindex }
-      }),
+      inputs: inputs.map(input => transaction.decodeUtxoPos(parseString(input))),
       outputs: outputs.map(output => {
         const outputType = parseNumber(output[0])
         const outputGuard = parseString(output[1])

@@ -26,7 +26,7 @@ class PaymentTransactionOutput {
         utils.numberToHex(this.amount)
       ]
     }
-    return [this.outputType, this.outputGuard, this.token, +this.amount]
+    return [this.outputType, this.outputGuard, this.token, this.amount]
   }
 
   rlpEncoded () {
