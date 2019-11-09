@@ -480,19 +480,24 @@ describe('In-flight Exit Challenge tests', async () => {
       // Carol's tx was not put into a block so it can't be a competitor,
       // but she can still challenge Bob's IFE as non-canonical.
       const carolTxUnsigned = transaction.encode(carolTxDecoded)
-      receipt = await rootChain.challengeInFlightExitNotCanonical(
-        inflightExit.txbytes,
-        0,
-        carolTxUnsigned,
-        0,
-        0,
-        '0x0',
-        carolTxDecoded.sigs[0],
-        {
+      receipt = await rootChain.challengeInFlightExitNotCanonical({
+        inputTx: carolTx,
+        inputUtxoPos: 0,
+        inFlightTx: inflightExit.txbytes,
+        inFlightTxInputIndex: 0,
+        competingTx: '0x',
+        competingTxInputIndex: 0,
+        outputGuardPreimage: '0x',
+        competingTxPos: 0,
+        competingTxInclusionProof: '0x',
+        competingTxWitness: carolTxDecoded.sigs[0],
+        competingTxConfirmSig: carolTxDecoded.sigs[0],
+        competingTxSpendingConditionOptionalArgs: '0x',
+        txOptions: {
           privateKey: carolAccount.privateKey,
           from: carolAccount.address
         }
-      )
+      })
       // Keep track of how much Carol spends on gas
       const carolSpentOnGas = await rcHelper.spentOnGas(web3, receipt)
 
@@ -508,8 +513,7 @@ describe('In-flight Exit Challenge tests', async () => {
       // Call processExits again.
       receipt = await rootChain.processExits(transaction.ETH_CURRENCY, 0, 1, {
         privateKey: bobAccount.privateKey,
-        from: bobAccount.address,
-        gas: 200000
+        from: bobAccount.address
       })
       console.log(
         `Bob called RootChain.processExits() after challenge period: txhash = ${receipt.transactionHash}`
