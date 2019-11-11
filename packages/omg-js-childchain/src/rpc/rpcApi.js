@@ -48,8 +48,7 @@ async function post ({ url, body, proxyUrl }) {
       method: 'POST',
       uri: url,
       headers: { 'Content-Type': 'application/json' },
-      body,
-      json: true,
+      body: JSONBigNumber.stringify(body),
       ...proxyUrl && { proxy: proxyUrl }
     }
     const res = await request.post(options)
@@ -60,7 +59,7 @@ async function post ({ url, body, proxyUrl }) {
 }
 
 async function parseResponse (res) {
-  const body = JSON.stringify(res)
+  const body = JSONBigNumber.stringify(res)
   let json
   try {
     // Need to use a JSON parser capable of handling uint256
