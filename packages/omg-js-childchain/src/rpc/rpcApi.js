@@ -59,11 +59,10 @@ async function post ({ url, body, proxyUrl }) {
 }
 
 async function parseResponse (res) {
-  const body = JSONBigNumber.stringify(res)
   let json
   try {
     // Need to use a JSON parser capable of handling uint256
-    json = JSONBigNumber.parse(body)
+    json = JSONBigNumber.parse(res)
   } catch (err) {
     console.warn(err)
     throw new Error('Unknown server error')
