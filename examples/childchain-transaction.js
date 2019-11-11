@@ -27,7 +27,7 @@ const wait = require('./wait.js')
 const web3 = new Web3(new Web3.providers.HttpProvider(config.geth_url), null, { transactionConfirmationBlocks: 1 })
 
 const rootChainPlasmaContractAddress = config.rootchain_plasma_contract_address
-const childChain = new ChildChain({ watcherUrl: config.watcher_url })
+const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url })
 
 const aliceAddress = config.alice_eth_address
 const alicePrivateKey = config.alice_eth_address_private_key
