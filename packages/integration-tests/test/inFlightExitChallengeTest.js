@@ -517,9 +517,7 @@ describe('In-flight Exit Challenge tests', async () => {
         competingTxSpendingConditionOptionalArgs: '0x',
         txOptions: {
           privateKey: carolAccount.privateKey,
-          from: carolAccount.address,
-          gas: 7000000,
-          gasPrice: 2000000
+          from: carolAccount.address
         }
       })
       // Keep track of how much Carol spends on gas

@@ -459,12 +459,14 @@ class RootChain {
     inFlightTxInclusionProof,
     txOptions
   ) {
+    const paymentExitGameAddress = await this.getPaymentExitGameAddress()
+    const paymentExitGameContract = this.getContract(this.paymentExitGameAbi.abi, paymentExitGameAddress)
     const txDetails = {
       from: txOptions.from,
-      to: this.plasmaContractAddress,
+      to: paymentExitGameAddress,
       data: txUtils.getTxData(
         this.web3,
-        this.plasmaContract,
+        paymentExitGameContract,
         'respondToNonCanonicalChallenge',
         inFlightTx,
         inFlightTxPos,
