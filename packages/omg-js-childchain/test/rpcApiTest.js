@@ -102,6 +102,7 @@ describe('rpcApi integration test', () => {
   after(() => {
     rp.post.restore()
   })
+
   it('childchain should pass proxy url if it exists', async () => {
     const childchainWithProxy = new ChildChain({
       watcherUrl,
@@ -113,7 +114,8 @@ describe('rpcApi integration test', () => {
       uri: `${watcherUrl}/transaction.get`,
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id: 3, jsonrpc: '2.0' }),
-      proxy: proxyUrl
+      proxy: proxyUrl,
+      rejectUnauthorized: false
     }
     assert.equal(res, 'foobar')
     sinon.assert.calledWith(rp.post, expectedCall)
