@@ -36,7 +36,7 @@ const INFLIGHT_EXIT_BOND = 37000000000000000
 const PIGGYBACK_BOND = 28000000000000000
 let rootChain
 
-describe.only('In-flight Exit Challenge tests', async () => {
+describe('In-flight Exit Challenge tests', async () => {
   before(async () => {
     const plasmaContract = await rcHelper.getPlasmaContractAddress(config)
     rootChain = new RootChain(web3, plasmaContract.contract_addr)
@@ -384,7 +384,7 @@ describe.only('In-flight Exit Challenge tests', async () => {
       }
     })
 
-    it.only('should challenge an in-flight exit as non canonical', async () => {
+    it('should challenge an in-flight exit as non canonical', async () => {
       // Alice creates a transaction to send funds to Bob
       let bobSpentOnGas = numberToBN(0)
       const bobTx = await ccHelper.createTx(
@@ -499,7 +499,7 @@ describe.only('In-flight Exit Challenge tests', async () => {
         blknum: fundAliceTx.result.blknum,
         txindex: fundAliceTx.result.txindex,
         oindex: 0
-      }).toString()
+      }).toNumber()
       
       const unsignInput = transaction.encode(transaction.decodeTxBytes(fundAliceTx.txbytes), { signed: false })
       const unsignCarolTx = transaction.encode(carolTxDecoded, { signed: false })
@@ -518,7 +518,9 @@ describe.only('In-flight Exit Challenge tests', async () => {
         competingTxSpendingConditionOptionalArgs: '0x',
         txOptions: {
           privateKey: carolAccount.privateKey,
-          from: carolAccount.address
+          from: carolAccount.address,
+          gas: 7000000,
+          gasPrice: 2000000
         }
       })
       // Keep track of how much Carol spends on gas

@@ -4,16 +4,16 @@
   "private": true,
   "description": "JavaScript Library to interact with OMG Network",
   "scripts": {
-    "postinstall": "./node_modules/.bin/lerna bootstrap --hoist",
-    "test": "./node_modules/.bin/mocha packages/omg-js-childchain/test packages/omg-js-rootchain/test packages/omg-js-util/test",
-    "lint": "./node_modules/.bin/standard",
-    "lint-fix": "./node_modules/.bin/standard --fix",
+    "postinstall": "lerna bootstrap --hoist",
+    "test": "mocha packages/omg-js-childchain/test packages/omg-js-rootchain/test packages/omg-js-util/test",
+    "lint": "standard",
+    "lint-fix": "standard --fix",
     "build": "browserify browserify.js -o dist/omg.js",
     "build-doc": "documentation build packages/omg-js/src/** packages/omg-js-childchain/src/** packages/omg-js-rootchain/src/** packages/omg-js-util/src/** --config documentation.yml -f html -o docs",
-    "integration-test": "./node_modules/.bin/mocha --timeout=0 packages/integration-tests/test",
-    "mocha": "./node_modules/.bin/mocha --timeout=0",
-    "ci-test": "./node_modules/.bin/mocha --timeout=0 --grep ci-enabled packages/integration-tests/test",
-    "ci-test-fast": "./node_modules/.bin/mocha --timeout=0 --grep ci-enabled-fast packages/integration-tests/test"
+    "integration-test": "mocha --timeout=0 packages/integration-tests/test",
+    "mocha": "mocha --timeout=0",
+    "ci-test": "mocha --timeout=0 --grep ci-enabled packages/integration-tests/test",
+    "ci-test-fast": "mocha --timeout=0 --grep ci-enabled-fast packages/integration-tests/test"
   },
   "author": "OmiseGo",
   "contributors": [
