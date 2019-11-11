@@ -251,7 +251,6 @@ describe('In-flight Exit Challenge tests', async () => {
         'input_tx',
         'input_utxo_pos'
       ])
-      console.log(transaction.decodeTxBytes(competitor.input_tx))
       // Challenge the IFE as non canonical
       receipt = await rootChain.challengeInFlightExitNotCanonical({
         inputTx: competitor.input_tx,
