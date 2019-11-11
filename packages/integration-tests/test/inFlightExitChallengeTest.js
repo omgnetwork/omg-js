@@ -382,8 +382,9 @@ describe.only('In-flight Exit Challenge tests', async () => {
       }
     })
 
-    it.only('should challenge an in-flight exit as non canonical', async () => {
+    it('should challenge an in-flight exit as non canonical', async () => {
       // Alice creates a transaction to send funds to Bob
+      let bobSpentOnGas = numberToBN(0)
       const bobTx = await ccHelper.createTx(
         childChain,
         aliceAccount.address,
@@ -408,6 +409,19 @@ describe.only('In-flight Exit Challenge tests', async () => {
       ])
       // Decode the transaction to get the index of Bob's output
       const decodedTx = transaction.decodeTxBytes(bobTx)
+
+      const hasToken = await rootChain.hasToken(transaction.ETH_CURRENCY)
+      if (!hasToken) {
+        console.log(`Adding a ${transaction.ETH_CURRENCY} exit queue`)
+        const addTokenCall = await rootChain.addToken(
+          transaction.ETH_CURRENCY,
+          { from: bobAccount.address, privateKey: bobAccount.privateKey }
+        )
+        bobSpentOnGas.iadd(await rcHelper.spentOnGas(web3, addTokenCall))
+      } else {
+        console.log(`Exit queue for ${transaction.ETH_CURRENCY} already exists`)
+      }
+
       // Starts the in-flight exit
       let receipt = await rootChain.startInFlightExit(
         exitData.in_flight_tx,
@@ -428,7 +442,7 @@ describe.only('In-flight Exit Challenge tests', async () => {
       )
 
       // Keep track of how much Bob spends on gas
-      const bobSpentOnGas = await rcHelper.spentOnGas(web3, receipt)
+      bobSpentOnGas.iadd(await rcHelper.spentOnGas(web3, receipt))
       const outputIndex = decodedTx.outputs.findIndex(
         e => e.outputGuard === bobAccount.address
       )
