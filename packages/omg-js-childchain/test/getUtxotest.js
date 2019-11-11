@@ -35,7 +35,7 @@ describe('getUtxo', () => {
       .post('/account.get_utxos', { address, jsonrpc: '2.0', id: 0 })
       .reply(200, { success: true, data: expectedObject })
 
-    const childChain = new ChildChain(watcherUrl, '')
+    const childChain = new ChildChain({ watcherUrl })
     const returnUtxo = await childChain.getUtxos(address)
     assert.deepEqual(expectedObject, returnUtxo)
   })
@@ -51,7 +51,7 @@ describe('getUtxo', () => {
       .post('/account.get_utxos', { address, jsonrpc: '2.0', id: 0 })
       .reply(200, { success: false, data: errorObject })
 
-    const childChain = new ChildChain(watcherUrl, '')
+    const childChain = new ChildChain({ watcherUrl })
     return assert.isRejected(childChain.getUtxos(address), Error, errorObject.description)
   })
 })

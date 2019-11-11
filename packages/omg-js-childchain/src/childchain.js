@@ -23,13 +23,13 @@ class ChildChain {
   * Creates a ChildChain object
   *
   *@param {string} watcherUrl the url of the watcher server
-  *@param {string} childChainUrl the url of the childchain server
+  *@param {string} [watcherProxyUrl] *optional* the proxy url for requests made to the watcher server
   *@return {Object} ChildChain Object
   *
   */
-  constructor (watcherUrl, childChainUrl) {
+  constructor ({ watcherUrl, watcherProxyUrl }) {
     this.watcherUrl = watcherUrl
-    this.childChainUrl = childChainUrl
+    this.watcherProxyUrl = watcherProxyUrl
   }
 
   /**
@@ -41,7 +41,11 @@ class ChildChain {
    */
   async getUtxos (address) {
     validateAddress(address)
-    return rpcApi.post(`${this.watcherUrl}/account.get_utxos`, { address })
+    return rpcApi.post({
+      url: `${this.watcherUrl}/account.get_utxos`,
+      body: { address },
+      proxyUrl: this.watcherProxyUrl
+    })
   }
 
   /**
@@ -53,7 +57,11 @@ class ChildChain {
    */
   async getBalance (address) {
     validateAddress(address)
-    return rpcApi.post(`${this.watcherUrl}/account.get_balance`, { address })
+    return rpcApi.post({
+      url: `${this.watcherUrl}/account.get_balance`,
+      body: { address },
+      proxyUrl: this.watcherProxyUrl
+    })
   }
 
   /**
@@ -64,7 +72,11 @@ class ChildChain {
    * @return {Array} array of transactions
    */
   async getTransaction (id) {
-    return rpcApi.post(`${this.watcherUrl}/transaction.get`, { id })
+    return rpcApi.post({
+      url: `${this.watcherUrl}/transaction.get`,
+      body: { id },
+      proxyUrl: this.watcherProxyUrl
+    })
   }
 
   /**
@@ -75,7 +87,11 @@ class ChildChain {
    * @return {Array} array of transactions
    */
   async getTransactions (filters) {
-    return rpcApi.post(`${this.watcherUrl}/transaction.all`, filters)
+    return rpcApi.post({
+      url: `${this.watcherUrl}/transaction.all`,
+      body: filters,
+      proxyUrl: this.watcherProxyUrl
+    })
   }
 
   /**
@@ -88,7 +104,11 @@ class ChildChain {
   async getExitData (utxo) {
     // Calculate the utxoPos
     const utxoPos = transaction.encodeUtxoPos(utxo)
-    return rpcApi.post(`${this.watcherUrl}/utxo.get_exit_data`, { utxo_pos: Number(utxoPos.toString()) })
+    return rpcApi.post({
+      url: `${this.watcherUrl}/utxo.get_exit_data`,
+      body: { utxo_pos: Number(utxoPos.toString()) },
+      proxyUrl: this.watcherProxyUrl
+    })
   }
 
   /**
@@ -99,7 +119,11 @@ class ChildChain {
    * @return {string} challenge data for the UTXO
    */
   async getChallengeData (utxoPos) {
-    return rpcApi.post(`${this.watcherUrl}/utxo.get_challenge_data`, { utxo_pos: Number(utxoPos.toString()) })
+    return rpcApi.post({
+      url: `${this.watcherUrl}/utxo.get_challenge_data`,
+      body: { utxo_pos: Number(utxoPos.toString()) },
+      proxyUrl: this.watcherProxyUrl
+    })
   }
 
   /**
@@ -113,7 +137,11 @@ class ChildChain {
    * @return {Object} a object containing the list of transactions that will fullfil the required spend.
    */
   createTransaction (owner, payments, fee, metadata) {
-    return rpcApi.post(`${this.watcherUrl}/transaction.create`, { owner, payments, fee, metadata })
+    return rpcApi.post({
+      url: `${this.watcherUrl}/transaction.create`,
+      body: { owner, payments, fee, metadata },
+      proxyUrl: this.watcherProxyUrl
+    })
   }
 
   /**
@@ -140,7 +168,11 @@ class ChildChain {
    * @return {Object} a transaction
    */
   submitTyped (data) {
-    return rpcApi.post(`${this.watcherUrl}/transaction.submit_typed`, data)
+    return rpcApi.post({
+      url: `${this.watcherUrl}/transaction.submit_typed`,
+      body: data,
+      proxyUrl: this.watcherProxyUrl
+    })
   }
 
   /**
@@ -182,8 +214,10 @@ class ChildChain {
    */
   async submitTransaction (transaction) {
     // validateTxBody(transactionBody)
-    return rpcApi.post(`${this.watcherUrl}/transaction.submit`, {
-      transaction: transaction.startsWith('0x') ? transaction : `0x${transaction}`
+    return rpcApi.post({
+      url: `${this.watcherUrl}/transaction.submit`,
+      body: { transaction: transaction.startsWith('0x') ? transaction : `0x${transaction}` },
+      proxyUrl: this.watcherProxyUrl
     })
   }
 
@@ -241,7 +275,11 @@ class ChildChain {
    * @return {Object}
    */
   async status () {
-    return rpcApi.post(`${this.watcherUrl}/status.get`, {})
+    return rpcApi.post({
+      url: `${this.watcherUrl}/status.get`,
+      body: {},
+      proxyUrl: this.watcherProxyUrl
+    })
   }
 
   /**
@@ -252,7 +290,11 @@ class ChildChain {
    * @return {Object} exit data for the in-flight transaction
    */
   async inFlightExitGetData (txbytes) {
-    return rpcApi.post(`${this.watcherUrl}/in_flight_exit.get_data`, { txbytes: hexPrefix(txbytes) })
+    return rpcApi.post({
+      url: `${this.watcherUrl}/in_flight_exit.get_data`,
+      body: { txbytes: hexPrefix(txbytes) },
+      proxyUrl: this.watcherProxyUrl
+    })
   }
 
   /**
@@ -263,7 +305,11 @@ class ChildChain {
    * @return {Object} a competitor to the in-flight transaction
    */
   async inFlightExitGetCompetitor (txbytes) {
-    return rpcApi.post(`${this.watcherUrl}/in_flight_exit.get_competitor`, { txbytes: hexPrefix(txbytes) })
+    return rpcApi.post({
+      url: `${this.watcherUrl}/in_flight_exit.get_competitor`,
+      body: { txbytes: hexPrefix(txbytes) },
+      proxyUrl: this.watcherProxyUrl
+    })
   }
 
   /**
@@ -274,7 +320,11 @@ class ChildChain {
    * @return {Object} the inclusion proof of the transaction
    */
   async inFlightExitProveCanonical (txbytes) {
-    return rpcApi.post(`${this.watcherUrl}/in_flight_exit.prove_canonical`, { txbytes: hexPrefix(txbytes) })
+    return rpcApi.post({
+      url: `${this.watcherUrl}/in_flight_exit.prove_canonical`,
+      body: { txbytes: hexPrefix(txbytes) },
+      proxyUrl: this.watcherProxyUrl
+    })
   }
 }
 

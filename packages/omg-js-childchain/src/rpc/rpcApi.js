@@ -13,7 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License. */
 
-const fetch = require('node-fetch')
+const request = require('request-promise-native')
 const debug = require('debug')('omg.childchain.rpc')
 const JSONBigNumber = require('json-bigint')
 
@@ -24,23 +24,42 @@ class RpcError extends Error {
   }
 }
 
-async function get (url) {
-  return fetch(url).then(parseResponse)
+async function get ({ url, proxyUrl }) {
+  try {
+    const options = {
+      method: 'GET',
+      uri: url,
+      ...proxyUrl && { proxy: proxyUrl }
+    }
+
+    const res = await request.get(options)
+    return parseResponse(res)
+  } catch (err) {
+    throw new Error(err)
+  }
 }
 
-async function post (url, body) {
+async function post ({ url, body, proxyUrl }) {
   body.jsonrpc = body.jsonrpc || '2.0'
   body.id = body.id || 0
 
-  return fetch(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSONBigNumber.stringify(body)
-  }).then(parseResponse)
+  try {
+    const options = {
+      method: 'POST',
+      uri: url,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSONBigNumber.stringify(body),
+      ...proxyUrl && { proxy: proxyUrl }
+    }
+    const res = await request.post(options)
+    return parseResponse(res)
+  } catch (err) {
+    throw new Error(err)
+  }
 }
 
-async function parseResponse (resp) {
-  const body = await resp.text()
+async function parseResponse (res) {
+  const body = JSONBigNumber.stringify(res)
   let json
   try {
     // Need to use a JSON parser capable of handling uint256

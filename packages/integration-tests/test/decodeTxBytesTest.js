@@ -25,7 +25,7 @@ const chai = require('chai')
 const assert = chai.assert
 
 const web3 = new Web3(new Web3.providers.HttpProvider(config.geth_url))
-const childChain = new ChildChain(config.watcher_url, config.childchain_url)
+const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url })
 let rootChain
 
 describe('Decode txBytes onchain tests', async () => {
