@@ -69,7 +69,7 @@ describe.only('In-flight Exit Challenge tests', async () => {
         ),
         // Give some ETH to Bob on the root chain
         faucet.fundRootchainEth(web3, bobAccount.address, INTIIAL_BOB_RC_AMOUNT)
-      ]).then(([{ txbytes }]) => (fundAliceTx = txbytes))
+      ])
       // Give some ETH to Carol on the root chain
       await faucet.fundRootchainEth(
         web3,
@@ -251,6 +251,7 @@ describe.only('In-flight Exit Challenge tests', async () => {
         'input_tx',
         'input_utxo_pos'
       ])
+      console.log(transaction.decodeTxBytes(competitor.input_tx))
       // Challenge the IFE as non canonical
       receipt = await rootChain.challengeInFlightExitNotCanonical({
         inputTx: competitor.input_tx,
@@ -318,7 +319,7 @@ describe.only('In-flight Exit Challenge tests', async () => {
 
   describe('in-flight transaction challenge exit without competitor', async () => {
     const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.001', 'ether')
-    const INTIIAL_BOB_RC_AMOUNT = web3.utils.toWei('.5', 'ether')
+    const INTIIAL_BOB_RC_AMOUNT = web3.utils.toWei('1', 'ether')
     const INTIIAL_CAROL_RC_AMOUNT = web3.utils.toWei('.5', 'ether')
     const TRANSFER_AMOUNT = web3.utils.toWei('0.0002', 'ether')
     let aliceAccount
@@ -498,25 +499,26 @@ describe.only('In-flight Exit Challenge tests', async () => {
         blknum: fundAliceTx.result.blknum,
         txindex: fundAliceTx.result.txindex,
         oindex: 0
-      })
+      }).toString()
+      
+      const unsignInput = transaction.encode(transaction.decodeTxBytes(fundAliceTx.txbytes), { signed: false })
+      const unsignCarolTx = transaction.encode(carolTxDecoded, { signed: false })
       receipt = await rootChain.challengeInFlightExitNotCanonical({
-        inputTx: fundAliceTx.txbytes,
-        inputUtxoPos: utxoPosOutput.toNumber(),
+        inputTx: unsignInput,
+        inputUtxoPos: utxoPosOutput,
         inFlightTx: inflightExit.txbytes,
         inFlightTxInputIndex: 0,
-        competingTx: carolTx,
+        competingTx: unsignCarolTx,
         competingTxInputIndex: 0,
+        competingTxWitness: carolTxDecoded.sigs[0],
         outputGuardPreimage: '0x',
         competingTxPos: '0x',
         competingTxInclusionProof: '0x',
-        competingTxWitness: '0x',
         competingTxConfirmSig: '0x',
         competingTxSpendingConditionOptionalArgs: '0x',
         txOptions: {
           privateKey: carolAccount.privateKey,
-          from: carolAccount.address,
-          gas: 7000000,
-          gasPrice: 2000000
+          from: carolAccount.address
         }
       })
       // Keep track of how much Carol spends on gas
@@ -532,7 +534,7 @@ describe.only('In-flight Exit Challenge tests', async () => {
       await rcHelper.sleep(toWait)
 
       // Call processExits again.
-      receipt = await rootChain.processExits(transaction.ETH_CURRENCY, 0, 20, {
+      receipt = await rootChain.processExits(transaction.ETH_CURRENCY, 0, 5, {
         privateKey: bobAccount.privateKey,
         from: bobAccount.address
       })
