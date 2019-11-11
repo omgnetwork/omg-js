@@ -18,7 +18,7 @@ const ChildChain = require('../packages/omg-js-childchain/src/childchain')
 
 const config = require('./config.js')
 
-const childChain = new ChildChain({ watcherUrl: config.watcher_url });
+const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url });
 
 (async () => {
   try {
