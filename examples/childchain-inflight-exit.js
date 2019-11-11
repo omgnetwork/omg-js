@@ -104,7 +104,7 @@ async function inflightExitChildChain () {
   const exitData = await childChain.inFlightExitGetData(signedTxn)
 
   // start an in-flight exit
-  let startInflightExitReceipt = await rootChain.startInFlightExit(
+  const startInflightExitReceipt = await rootChain.startInFlightExit(
     exitData.in_flight_tx,
     exitData.input_txs,
     exitData.input_txs_inclusion_proofs,
@@ -118,7 +118,7 @@ async function inflightExitChildChain () {
   console.log(`Bob started inflight roothchain exit. Inflight exit receipt: ${JSON.stringify(startInflightExitReceipt, undefined, 2)}`)
 
   // decode the transaction to get the index of Bob's output
-  const decodedTxn = transaction.decode(signedTxn)
+  const decodedTxn = transaction.decodeTxBytes(signedTxn)
   const outputIndex = decodedTxn.outputs.findIndex(e => e.owner === bobAddress)
 
   // Bob needs to piggyback his output on the in-flight exit
@@ -131,7 +131,7 @@ async function inflightExitChildChain () {
     }
   )
 
-  console.log(`Bob called rootChain.piggybackInFlightExit(). piggybackInFlightExitReceipt = ` +
+  console.log('Bob called rootChain.piggybackInFlightExit(). piggybackInFlightExitReceipt = ' +
     `${JSON.stringify(piggybackInFlightExitReceipt)}`)
 
   // wait for challenge period to complete

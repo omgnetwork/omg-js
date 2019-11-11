@@ -1,5 +1,5 @@
 /*
-Copyright 2018 OmiseGO Pte Ltd
+Copyright 2019 OmiseGO Pte Ltd
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -118,10 +118,10 @@ describe('In-flight Exit Challenge tests', async () => {
       )
       console.log(`Bob called RootChain.startInFlightExit(): txhash = ${receipt.transactionHash}`)
       // Keep track of how much Bob spends on gas
-      let bobSpentOnGas = await rcHelper.spentOnGas(web3, receipt)
+      const bobSpentOnGas = await rcHelper.spentOnGas(web3, receipt)
 
       // Decode the transaction to get the index of Bob's output
-      const decodedTx = transaction.decode(bobTx)
+      const decodedTx = transaction.decodeTxBytes(bobTx)
       const outputIndex = decodedTx.outputs.findIndex(e => e.owner === bobAccount.address)
 
       // Bob piggybacks his output on the in-flight exit
@@ -150,13 +150,13 @@ describe('In-flight Exit Challenge tests', async () => {
       )
 
       // Carol sees that Bob is trying to exit the same input that Alice sent to her.
-      const carolTxDecoded = transaction.decode(carolTx.txbytes)
+      const carolTxDecoded = transaction.decodeTxBytes(carolTx.txbytes)
       const cInput = carolTxDecoded.inputs[0]
       const inflightExit = await ccHelper.waitForEvent(
         childChain,
         'in_flight_exits',
         e => {
-          const decoded = transaction.decode(e.txbytes)
+          const decoded = transaction.decodeTxBytes(e.txbytes)
           return decoded.inputs.find(input =>
             input.blknum === cInput.blknum &&
             input.txindex === cInput.txindex &&
@@ -167,7 +167,7 @@ describe('In-flight Exit Challenge tests', async () => {
 
       // Carol gets the competitor of Bob's exit
       const competitor = await childChain.inFlightExitGetCompetitor(inflightExit.txbytes)
-      console.log(`Got competitor`)
+      console.log('Got competitor')
 
       // Challenge the IFE as non canonical
       receipt = await rootChain.challengeInFlightExitNotCanonical(
@@ -184,7 +184,7 @@ describe('In-flight Exit Challenge tests', async () => {
         }
       )
       // Keep track of how much Carol spends on gas
-      let carolSpentOnGas = await rcHelper.spentOnGas(web3, receipt)
+      const carolSpentOnGas = await rcHelper.spentOnGas(web3, receipt)
 
       // Wait for challenge period
       const utxoPos = transaction.encodeUtxoPos(cInput)
@@ -209,7 +209,7 @@ describe('In-flight Exit Challenge tests', async () => {
       await rcHelper.awaitTx(web3, receipt.transactionHash)
 
       // Get Bob's ETH balance
-      let bobEthBalance = await web3.eth.getBalance(bobAccount.address)
+      const bobEthBalance = await web3.eth.getBalance(bobAccount.address)
       // Bob's IFE was not successful, so he loses his exit bond.
       // But he does not lose his piggyback bond, so expect his balance to be
       // INTIIAL_BOB_AMOUNT - INFLIGHT_EXIT_BOND - gas spent
@@ -219,7 +219,7 @@ describe('In-flight Exit Challenge tests', async () => {
       assert.equal(bobEthBalance.toString(), expected.toString())
 
       // Get carol's ETH balance
-      let carolEthBalance = await web3.eth.getBalance(carolAccount.address)
+      const carolEthBalance = await web3.eth.getBalance(carolAccount.address)
       // carol got Bob's exit bond, so expect her balance to be
       // INTIIAL_CAROL_AMOUNT + INFLIGHT_EXIT_BOND - gas spent
       const carolExpected = web3.utils.toBN(INTIIAL_CAROL_RC_AMOUNT)
@@ -308,10 +308,10 @@ describe('In-flight Exit Challenge tests', async () => {
       console.log(`Bob called RootChain.startInFlightExit(): txhash = ${receipt.transactionHash}`)
 
       // Keep track of how much Bob spends on gas
-      let bobSpentOnGas = await rcHelper.spentOnGas(web3, receipt)
+      const bobSpentOnGas = await rcHelper.spentOnGas(web3, receipt)
 
       // Decode the transaction to get the index of Bob's output
-      const decodedTx = transaction.decode(bobTx)
+      const decodedTx = transaction.decodeTxBytes(bobTx)
       const outputIndex = decodedTx.outputs.findIndex(e => e.owner === bobAccount.address)
 
       // Bob piggybacks his output on the in-flight exit
@@ -339,13 +339,13 @@ describe('In-flight Exit Challenge tests', async () => {
       )
 
       // Carol sees that Bob is trying to exit the same input that Alice sent to her.
-      const carolTxDecoded = transaction.decode(carolTx)
+      const carolTxDecoded = transaction.decodeTxBytes(carolTx)
       const cInput = carolTxDecoded.inputs[0]
       const inflightExit = await ccHelper.waitForEvent(
         childChain,
         'in_flight_exits',
         e => {
-          const decoded = transaction.decode(e.txbytes)
+          const decoded = transaction.decodeTxBytes(e.txbytes)
           return decoded.inputs.find(input =>
             input.blknum === cInput.blknum &&
             input.txindex === cInput.txindex &&
@@ -371,7 +371,7 @@ describe('In-flight Exit Challenge tests', async () => {
         }
       )
       // Keep track of how much Carol spends on gas
-      let carolSpentOnGas = await rcHelper.spentOnGas(web3, receipt)
+      const carolSpentOnGas = await rcHelper.spentOnGas(web3, receipt)
 
       // Wait for challenge period
       const utxoPos = transaction.encodeUtxoPos(cInput)
@@ -396,7 +396,7 @@ describe('In-flight Exit Challenge tests', async () => {
       await rcHelper.awaitTx(web3, receipt.transactionHash)
 
       // Get Bob's ETH balance
-      let bobEthBalance = await web3.eth.getBalance(bobAccount.address)
+      const bobEthBalance = await web3.eth.getBalance(bobAccount.address)
       // Bob's IFE was not successful, so he loses his exit bond.
       // But he does not lose his piggyback bond, so expect his balance to be
       // INTIIAL_BOB_AMOUNT - INFLIGHT_EXIT_BOND - gas spent
@@ -406,7 +406,7 @@ describe('In-flight Exit Challenge tests', async () => {
       assert.equal(bobEthBalance.toString(), expected.toString())
 
       // Get carol's ETH balance
-      let carolEthBalance = await web3.eth.getBalance(carolAccount.address)
+      const carolEthBalance = await web3.eth.getBalance(carolAccount.address)
       // carol got Bob's exit bond, so expect her balance to be
       // INTIIAL_CAROL_AMOUNT + INFLIGHT_EXIT_BOND - gas spent
       const carolExpected = web3.utils.toBN(INTIIAL_CAROL_RC_AMOUNT)

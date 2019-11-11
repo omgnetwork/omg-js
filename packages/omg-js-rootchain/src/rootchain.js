@@ -1,5 +1,5 @@
 /*
-Copyright 2018 OmiseGO Pte Ltd
+Copyright 2019 OmiseGO Pte Ltd
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -14,10 +14,15 @@ See the License for the specific language governing permissions and
 limitations under the License. */
 
 const txUtils = require('./txUtils')
+const { transaction } = require('@omisego/omg-js-util')
+const webUtils = require('web3-utils')
 
-const STANDARD_EXIT_BOND = 31415926535
+const STANDARD_EXIT_BOND = 14000000000000000
 const INFLIGHT_EXIT_BOND = 31415926535
 const PIGGYBACK_BOND = 31415926535
+const ETH_VAULT_ID = 1
+const ERC20_VAULT_ID = 2
+const PAYMENT_TYPE = 1
 
 class RootChain {
   /**
@@ -32,12 +37,34 @@ class RootChain {
   constructor (web3, plasmaContractAddress, plasmaAbi) {
     this.web3 = web3
     this.plasmaContractAddress = plasmaContractAddress
-    const contractAbi = plasmaAbi || require('./contracts/RootChain.json')
-    if (web3.version.api && web3.version.api.startsWith('0.2')) {
-      this.plasmaContract = this.web3.eth.contract(contractAbi.abi).at(plasmaContractAddress)
-    } else {
-      this.plasmaContract = new this.web3.eth.Contract(contractAbi.abi, plasmaContractAddress)
+    this.isLegacyWeb3 = web3.version.api && web3.version.api.startsWith('0.2')
+    // contracts abi
+    this.erc20VaultAbi = require('./contracts/Erc20Vault.json')
+    this.ethVaultAbi = require('./contracts/EthVault.json')
+    this.exitGameRegistryAbi = require('./contracts/ExitGameRegistry.json')
+    this.paymentExitGameAbi = require('./contracts/PaymentExitGame.json')
+    this.plasmaFrameworkAbi = plasmaAbi || require('./contracts/PlasmaFramework.json')
+
+    this.plasmaContract = this.getContract(this.plasmaFrameworkAbi.abi, plasmaContractAddress)
+  }
+
+  getEthVaultAddress () {
+    return this.plasmaContract.methods.vaults(ETH_VAULT_ID).call()
+  }
+
+  getErc20VaultAddress () {
+    return this.plasmaContract.methods.vaults(ERC20_VAULT_ID).call()
+  }
+
+  getPaymentExitGameAddress () {
+    return this.plasmaContract.methods.exitGames(PAYMENT_TYPE).call()
+  }
+
+  getContract (abi, address) {
+    if (this.isLegacyWeb3) {
+      return this.web3.eth.contract(abi).at(address)
     }
+    return new this.web3.eth.Contract(abi, address)
   }
 
   /**
@@ -47,24 +74,27 @@ class RootChain {
    * @param {string} depositTx RLP encoded childchain deposit transaction
    * @param {number} amount amount of ETH to deposit
    * @param {Object} txOptions transaction options, such as `from`, `gas` and `privateKey`
-   * @param {Object} [callBacks] callbacks to events from the transaction lifecycle
+   * @param {Object} [callbacks] callbacks to events from the transaction lifecycle
    * @return {Promise<{ transactionHash: string }>} promise that resolves with an object holding the transaction hash
    */
-  async depositEth (depositTx, amount, txOptions, callBacks) {
+  async depositEth (depositTx, amount, txOptions, callbacks) {
+    const ethVaultAddress = await this.getEthVaultAddress()
+    const ethVaultContract = this.getContract(this.ethVaultAbi.abi, ethVaultAddress)
     const txDetails = {
       from: txOptions.from,
-      to: this.plasmaContractAddress,
-      value: amount,
+      to: ethVaultAddress,
+      value: webUtils.toHex(amount),
       data: txUtils.getTxData(
         this.web3,
-        this.plasmaContract,
+        ethVaultContract,
         'deposit',
         depositTx
       ),
       gas: txOptions.gas,
       gasPrice: txOptions.gasPrice
     }
-    return txUtils.sendTx(this.web3, txDetails, txOptions.privateKey, callBacks)
+
+    return txUtils.sendTx(this.web3, txDetails, txOptions.privateKey, callbacks)
   }
 
   /**
@@ -76,13 +106,15 @@ class RootChain {
    * @return {string} transaction hash of the call
    */
   async depositToken (depositTx, txOptions) {
+    const erc20VaultAddress = await this.getErc20VaultAddress()
+    const erc20VaultContract = this.getContract(this.erc20VaultAbi.abi, erc20VaultAddress)
     const txDetails = {
       from: txOptions.from,
-      to: this.plasmaContractAddress,
+      to: erc20VaultAddress,
       data: txUtils.getTxData(
         this.web3,
-        this.plasmaContract,
-        'depositFrom',
+        erc20VaultContract,
+        'deposit',
         depositTx
       ),
       gas: txOptions.gas,
@@ -103,16 +135,22 @@ class RootChain {
    * @return {string} transaction hash of the call
    */
   async startStandardExit (outputId, outputTx, inclusionProof, txOptions) {
+    const paymentExitGameAddress = await this.getPaymentExitGameAddress()
+    const paymentExitGameContract = this.getContract(this.paymentExitGameAbi.abi, paymentExitGameAddress)
+
     const txDetails = {
       from: txOptions.from,
-      to: this.plasmaContractAddress,
+      to: paymentExitGameAddress,
       data: txUtils.getTxData(
         this.web3,
-        this.plasmaContract,
+        paymentExitGameContract,
         'startStandardExit',
-        outputId.toString(),
-        outputTx,
-        inclusionProof
+        [
+          outputId.toString(),
+          outputTx,
+          [],
+          inclusionProof
+        ]
       ),
       value: STANDARD_EXIT_BOND,
       gas: txOptions.gas,
@@ -133,22 +171,35 @@ class RootChain {
    * @param {Object} txOptions transaction options, such as `from`, gas` and `privateKey`
    * @return {string} transaction hash of the call
    */
-  async challengeStandardExit (standardExitId, challengeTx, inputIndex, challengeTxSig, txOptions) {
+  async challengeStandardExit (standardExitId, exitingTx, challengeTx, inputIndex, challengeTxSig, txOptions) {
     // standardExitId is an extremely large number as it uses the entire int192.
     // It's too big to be represented as a Number, so we convert it to a hex string
     const exitId = txUtils.int192toHex(standardExitId)
 
+    const paymentExitGameAddress = await this.getPaymentExitGameAddress()
+    const paymentExitGameContract = this.getContract(this.paymentExitGameAbi.abi, paymentExitGameAddress)
+
     const txDetails = {
       from: txOptions.from,
-      to: this.plasmaContractAddress,
+      to: paymentExitGameAddress,
       data: txUtils.getTxData(
         this.web3,
-        this.plasmaContract,
+        paymentExitGameContract,
         'challengeStandardExit',
-        exitId,
-        challengeTx,
-        inputIndex,
-        challengeTxSig),
+        [
+          exitId,
+          exitingTx,
+          challengeTx,
+          inputIndex,
+          challengeTxSig,
+          // below args not necessary for ALD but we pass empty values to keep the contract happy
+          '0x', // spendingConditionOptionalArgs
+          '0x', // outputGuardPreimage
+          0, // challengeTxPos
+          '0x', // challengeTxInclusionProof
+          '0x' // challengeTxConfirmSig
+        ]
+      ),
       gas: txOptions.gas,
       gasPrice: txOptions.gasPrice
     }
@@ -157,15 +208,17 @@ class RootChain {
   }
 
   /**
-   * Processes any exits that have completed the challenge period.
+   * Processes any exit that has completed the challenge period.
    * @method processExits
-   * @param {string} token Address of the token to process.
-   * @param {number} topUtxoPos First exit that should be processed. Set to zero to skip the check.
-   * @param {number} exitsToProcess Maximum number of exits to process.
+   * @param {string} token An address of the token to exit.
+   * @param {string} exitId An exit id returned from startStandardExit.
+   * @param {number} maxExitsToProcess The max number of exits to process
    * @param {Object} txOptions transaction options, such as `from`, gas` and `privateKey`
    * @return {string} transaction hash of the call
    */
-  async processExits (token, topUtxoPos, exitsToProcess, txOptions) {
+  async processExits (token, exitId, maxExitsToProcess, txOptions) {
+    const vaultId = token === transaction.ETH_CURRENCY ? 1 : 2
+
     const txDetails = {
       from: txOptions.from,
       to: this.plasmaContractAddress,
@@ -173,9 +226,10 @@ class RootChain {
         this.web3,
         this.plasmaContract,
         'processExits',
+        vaultId,
         token,
-        topUtxoPos,
-        exitsToProcess
+        exitId,
+        maxExitsToProcess
       ),
       gas: txOptions.gas,
       gasPrice: txOptions.gasPrice
@@ -190,6 +244,17 @@ class RootChain {
   }
 
   /**
+   * Checks if an exit queue exists for this token
+   * @method hasToken
+   * @param {string} token address of the token to check.
+   * @return {boolean} whether an exit queue exists for this token
+   */
+  hasToken (token) {
+    const vaultId = token === transaction.ETH_CURRENCY ? 1 : 2
+    return this.plasmaContract.methods.hasExitQueue(vaultId, token).call()
+  }
+
+  /**
    * Adds a token to the Plasma chain. Tokens must be added in order to be able to exit them.
    * @method addToken
    * @param {string} token Address of the token to process.
@@ -197,13 +262,16 @@ class RootChain {
    * @throws an exception if the token has already been added.
    */
   async addToken (token, txOptions) {
+    const vaultId = token === transaction.ETH_CURRENCY ? 1 : 2
+
     const txDetails = {
       from: txOptions.from,
       to: this.plasmaContractAddress,
       data: txUtils.getTxData(
         this.web3,
         this.plasmaContract,
-        'addToken',
+        'addExitQueue',
+        vaultId,
         token
       ),
       gas: txOptions.gas,

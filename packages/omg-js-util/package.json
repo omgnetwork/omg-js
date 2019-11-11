@@ -1,6 +1,6 @@
 {
   "name": "@omisego/omg-js-util",
-  "version": "2.0.0-v0.2",
+  "version": "3.0.0-alpha.4",
   "description": "OMG util module",
   "main": "src/index.js",
   "author": "OmiseGo",
@@ -24,6 +24,7 @@
     "ethereumjs-util": "^6.0.0",
     "js-sha3": "^0.8.0",
     "number-to-bn": "^1.7.0",
-    "rlp": "^2.2.2"
+    "rlp": "^2.2.2",
+    "web3-utils": "^1.2.1"
   }
 }

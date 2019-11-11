@@ -1,5 +1,5 @@
 /*
-Copyright 2018 OmiseGO Pte Ltd
+Copyright 2019 OmiseGO Pte Ltd
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -124,7 +124,7 @@ describe('Challenge exit tests', async () => {
         }
       )
       console.log(`Alice called RootChain.startExit(): txhash = ${receipt.transactionHash}`)
-      let aliceSpentOnGas = await rcHelper.spentOnGas(web3, receipt)
+      const aliceSpentOnGas = await rcHelper.spentOnGas(web3, receipt)
 
       // Bob calls watcher/status.get and sees the invalid exit attempt...
       const invalidExitUtxoPos = transaction.encodeUtxoPos(aliceDishonestUtxo).toString()
@@ -136,9 +136,10 @@ describe('Challenge exit tests', async () => {
 
       // ...and challenges the exit
       const challengeData = await childChain.getChallengeData(invalidExit.details.utxo_pos)
-      assert.hasAllKeys(challengeData, ['input_index', 'exit_id', 'sig', 'txbytes'])
+      assert.hasAllKeys(challengeData, ['input_index', 'exit_id', 'exiting_tx', 'sig', 'txbytes'])
       receipt = await rootChain.challengeStandardExit(
         challengeData.exit_id,
+        challengeData.exiting_tx,
         challengeData.txbytes,
         challengeData.input_index,
         challengeData.sig,
@@ -150,7 +151,7 @@ describe('Challenge exit tests', async () => {
       console.log(`Bob called RootChain.challengeExit(): txhash = ${receipt.transactionHash}`)
 
       // Keep track of how much Bob spends on gas
-      let bobSpentOnGas = await rcHelper.spentOnGas(web3, receipt)
+      const bobSpentOnGas = await rcHelper.spentOnGas(web3, receipt)
 
       // Alice waits for the challenge period to be over...
       const toWait = await rcHelper.getTimeToExit(rootChain.plasmaContract, exitData.utxo_pos)
@@ -161,7 +162,7 @@ describe('Challenge exit tests', async () => {
       receipt = await rootChain.processExits(
         transaction.ETH_CURRENCY,
         0,
-        1,
+        20,
         {
           privateKey: aliceAccount.privateKey,
           from: aliceAccount.address

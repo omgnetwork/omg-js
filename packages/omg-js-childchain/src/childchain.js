@@ -1,5 +1,5 @@
 /*
-Copyright 2018 OmiseGO Pte Ltd
+Copyright 2019 OmiseGO Pte Ltd
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -134,7 +134,7 @@ class ChildChain {
    * @param {Array} payments
    * @param {Object} fee
    * @param {string} metadata
-   * @return {Object} a transaction
+   * @return {Object} a object containing the list of transactions that will fullfil the required spend.
    */
   createTransaction (owner, payments, fee, metadata) {
     return rpcApi.post({
@@ -142,6 +142,33 @@ class ChildChain {
       body: { owner, payments, fee, metadata },
       proxyUrl: this.watcherProxyUrl
     })
+  }
+
+  /**
+   * Signs the transaction's typed data that is returned from `createTransaction`
+   *
+   * @method signTypedData
+   * @param {Object} txData the transaction data that is returned from `createTransaction`
+   * @param {Array} privateKeys An array of private keys to sign the inputs of the transaction
+   * @return {Object} a transaction typed data, including the signatures. This can be passed in to `submitTyped`
+   */
+  signTypedData (txData, privateKeys) {
+    // Sign the transaction
+    const toSign = Buffer.from(txData.sign_hash.replace('0x', ''), 'hex')
+    txData.typed_data.signatures = sign(toSign, privateKeys)
+
+    return txData.typed_data
+  }
+
+  /**
+   * Submits a transaction along with its typed data and signatures to the watcher.
+   *
+   * @method submitTyped
+   * @param {Object} data can be obtained by calling `signTypedData`
+   * @return {Object} a transaction
+   */
+  submitTyped (data) {
+    return rpcApi.post(`${this.watcherUrl}/transaction.submit_typed`, data)
   }
 
   /**
@@ -153,7 +180,6 @@ class ChildChain {
    * @return {Array} array of signatures
    */
   signTransaction (typedData, privateKeys) {
-    privateKeys.forEach(key => validatePrivateKey)
     const toSign = transaction.getToSignHash(typedData)
     return sign(toSign, privateKeys)
   }
@@ -170,7 +196,7 @@ class ChildChain {
     // Convert the data to an array
     const txArray = transaction.toArray(txData.message)
     // Prepend the signatures
-    const signedTx = [signatures, ...txArray]
+    const signedTx = [signatures, txData.message.txType, ...txArray]
     // rlp-encode the transaction + signatures
     return rlp.encode(signedTx).toString('hex')
   }
@@ -228,7 +254,6 @@ class ChildChain {
       currency,
       metadata
     )
-    // Get the transaction data
     const typedData = transaction.getTypedData(txBody, verifyingContract)
     // Sign it
     const signatures = this.signTransaction(typedData, fromPrivateKeys)

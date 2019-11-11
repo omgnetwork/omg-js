@@ -1,5 +1,5 @@
 /*
-Copyright 2018 OmiseGO Pte Ltd
+Copyright 2019 OmiseGO Pte Ltd
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -115,10 +115,10 @@ describe('In-flight Exit Challenge Response tests', async () => {
       console.log(`Bob called RootChain.startInFlightExit(): txhash = ${receipt.transactionHash}`)
 
       // Keep track of how much Bob spends on gas
-      let bobSpentOnGas = await rcHelper.spentOnGas(web3, receipt)
+      const bobSpentOnGas = await rcHelper.spentOnGas(web3, receipt)
 
       // Decode the transaction to get the index of Bob's output
-      const decodedTx = transaction.decode(bobTx)
+      const decodedTx = transaction.decodeTxBytes(bobTx)
       const outputIndex = decodedTx.outputs.findIndex(e => e.owner === bobAccount.address)
 
       // Bob piggybacks his output on the in-flight exit
@@ -150,7 +150,7 @@ describe('In-flight Exit Challenge Response tests', async () => {
       await ccHelper.waitForBalanceEq(childChain, bobAccount.address, TRANSFER_AMOUNT)
 
       // Carol sees that Bob is trying to exit the same input that Alice sent to her.
-      const carolTxDecoded = transaction.decode(carolTx)
+      const carolTxDecoded = transaction.decodeTxBytes(carolTx)
       const carolTxUnsigned = transaction.encode(carolTxDecoded)
 
       const cInput = carolTxDecoded.inputs[0]
@@ -158,7 +158,7 @@ describe('In-flight Exit Challenge Response tests', async () => {
         childChain,
         'in_flight_exits',
         e => {
-          const decoded = transaction.decode(e.txbytes)
+          const decoded = transaction.decodeTxBytes(e.txbytes)
           return decoded.inputs.find(input =>
             input.blknum === cInput.blknum &&
             input.txindex === cInput.txindex &&
@@ -229,7 +229,7 @@ describe('In-flight Exit Challenge Response tests', async () => {
       await rcHelper.awaitTx(web3, receipt.transactionHash)
 
       // Get Bob's ETH balance
-      let bobEthBalance = await web3.eth.getBalance(bobAccount.address)
+      const bobEthBalance = await web3.eth.getBalance(bobAccount.address)
       // Bob's IFE was successful, so expect his balance to be
       // INTIIAL_BOB_AMOUNT + TRANSFER_AMOUNT - gas spent
       const expected = web3.utils.toBN(INTIIAL_BOB_RC_AMOUNT)

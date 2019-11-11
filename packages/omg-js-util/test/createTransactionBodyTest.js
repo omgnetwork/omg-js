@@ -7,11 +7,11 @@ describe('createTransactionBody', () => {
     const fromAddress = '0xf4ebbe787311bb955bb353b7a4d8b97af8ed1c9b'
     const fromUtxos = [
       {
-        'txindex': 0,
-        'oindex': 0,
-        'currency': transaction.ETH_CURRENCY,
-        'blknum': 19774001,
-        'amount': 1000000000000000000
+        txindex: 0,
+        oindex: 0,
+        currency: transaction.ETH_CURRENCY,
+        blknum: 19774001,
+        amount: 1000000000000000000
       }
     ]
 
@@ -20,9 +20,9 @@ describe('createTransactionBody', () => {
 
     const txBody = transaction.createTransactionBody(fromAddress, fromUtxos, toAddress, toAmount, transaction.ETH_CURRENCY)
     assert.equal(txBody.outputs.length, 2)
-    assert.equal(txBody.outputs[0].owner, toAddress)
+    assert.equal(txBody.outputs[0].outputGuard, toAddress)
     assert.equal(txBody.outputs[0].amount.toString(), toAmount.toString())
-    assert.equal(txBody.outputs[1].owner, fromAddress)
+    assert.equal(txBody.outputs[1].outputGuard, fromAddress)
     const expectedChange = numberToBN(fromUtxos[0].amount).sub(numberToBN(toAmount))
     assert.equal(txBody.outputs[1].amount.toString(), expectedChange.toString())
   })
@@ -31,18 +31,18 @@ describe('createTransactionBody', () => {
     const fromAddress = '0xf4ebbe787311bb955bb353b7a4d8b97af8ed1c9b'
     const fromUtxos = [
       {
-        'txindex': 0,
-        'oindex': 0,
-        'currency': transaction.ETH_CURRENCY,
-        'blknum': 19774001,
-        'amount': 10
+        txindex: 0,
+        oindex: 0,
+        currency: transaction.ETH_CURRENCY,
+        blknum: 19774001,
+        amount: 10
       },
       {
-        'txindex': 0,
-        'oindex': 0,
-        'currency': transaction.ETH_CURRENCY,
-        'blknum': 19774001,
-        'amount': 10
+        txindex: 0,
+        oindex: 0,
+        currency: transaction.ETH_CURRENCY,
+        blknum: 19774001,
+        amount: 10
       }
     ]
 
@@ -51,9 +51,9 @@ describe('createTransactionBody', () => {
 
     const txBody = transaction.createTransactionBody(fromAddress, fromUtxos, toAddress, toAmount, transaction.ETH_CURRENCY)
     assert.equal(txBody.outputs.length, 2)
-    assert.equal(txBody.outputs[0].owner, toAddress)
+    assert.equal(txBody.outputs[0].outputGuard, toAddress)
     assert.equal(txBody.outputs[0].amount.toString(), toAmount.toString())
-    assert.equal(txBody.outputs[1].owner, fromAddress)
+    assert.equal(txBody.outputs[1].outputGuard, fromAddress)
     const expectedChange = numberToBN(fromUtxos[0].amount).add(numberToBN(fromUtxos[1].amount)).sub(numberToBN(toAmount))
     assert.equal(txBody.outputs[1].amount.toString(), expectedChange.toString())
   })
@@ -62,18 +62,18 @@ describe('createTransactionBody', () => {
     const fromAddress = '0xf4ebbe787311bb955bb353b7a4d8b97af8ed1c9b'
     const fromUtxos = [
       {
-        'txindex': 0,
-        'oindex': 0,
-        'currency': transaction.ETH_CURRENCY,
-        'blknum': 19774001,
-        'amount': 10
+        txindex: 0,
+        oindex: 0,
+        currency: transaction.ETH_CURRENCY,
+        blknum: 19774001,
+        amount: 10
       },
       {
-        'txindex': 0,
-        'oindex': 0,
-        'currency': transaction.ETH_CURRENCY,
-        'blknum': 19774001,
-        'amount': 10
+        txindex: 0,
+        oindex: 0,
+        currency: transaction.ETH_CURRENCY,
+        blknum: 19774001,
+        amount: 10
       }
     ]
 
@@ -82,7 +82,7 @@ describe('createTransactionBody', () => {
 
     const txBody = transaction.createTransactionBody(fromAddress, fromUtxos, toAddress, toAmount, transaction.ETH_CURRENCY)
     assert.equal(txBody.outputs.length, 1)
-    assert.equal(txBody.outputs[0].owner, toAddress)
+    assert.equal(txBody.outputs[0].outputGuard, toAddress)
     assert.equal(txBody.outputs[0].amount.toString(), toAmount.toString())
   })
 
@@ -90,11 +90,11 @@ describe('createTransactionBody', () => {
     const fromAddress = '0xf4ebbe787311bb955bb353b7a4d8b97af8ed1c9b'
     const fromUtxos = [
       {
-        'txindex': 0,
-        'oindex': 0,
-        'currency': transaction.ETH_CURRENCY,
-        'blknum': 19774001,
-        'amount': 1000000000000000000
+        txindex: 0,
+        oindex: 0,
+        currency: transaction.ETH_CURRENCY,
+        blknum: 19774001,
+        amount: 1000000000000000000
       }
     ]
 
@@ -103,7 +103,7 @@ describe('createTransactionBody', () => {
 
     const txBody = transaction.createTransactionBody(fromAddress, fromUtxos, toAddress, toAmount, transaction.ETH_CURRENCY)
     assert.equal(txBody.outputs.length, 1)
-    assert.equal(txBody.outputs[0].owner, toAddress)
+    assert.equal(txBody.outputs[0].outputGuard, toAddress)
     assert.equal(txBody.outputs[0].amount.toString(), toAmount.toString())
   })
 
@@ -111,11 +111,11 @@ describe('createTransactionBody', () => {
     const fromAddress = '0xf4ebbe787311bb955bb353b7a4d8b97af8ed1c9b'
     const fromUtxos = [
       {
-        'txindex': 0,
-        'oindex': 0,
-        'currency': transaction.ETH_CURRENCY,
-        'blknum': 19774001,
-        'amount': 10
+        txindex: 0,
+        oindex: 0,
+        currency: transaction.ETH_CURRENCY,
+        blknum: 19774001,
+        amount: 10
       }
     ]
 

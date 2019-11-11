@@ -1,5 +1,5 @@
 /*
-Copyright 2018 OmiseGO Pte Ltd
+Copyright 2019 OmiseGO Pte Ltd
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -111,10 +111,10 @@ describe('In-flight Exit tests', async () => {
       console.log(`Bob called RootChain.startInFlightExit(): txhash = ${receipt.transactionHash}`)
 
       // Keep track of how much Bob spends on gas
-      let bobSpentOnGas = await rcHelper.spentOnGas(web3, receipt)
+      const bobSpentOnGas = await rcHelper.spentOnGas(web3, receipt)
 
       // Decode the transaction to get the index of Bob's output
-      const decodedTx = transaction.decode(txbytes)
+      const decodedTx = transaction.decodeTxBytes(txbytes)
       const outputIndex = decodedTx.outputs.findIndex(e => e.owner === bobAccount.address)
 
       // Bob needs to piggyback his output on the in-flight exit

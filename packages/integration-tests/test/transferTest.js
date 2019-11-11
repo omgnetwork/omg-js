@@ -1,5 +1,5 @@
 /*
-Copyright 2018 OmiseGO Pte Ltd
+Copyright 2019 OmiseGO Pte Ltd
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -76,11 +76,13 @@ describe('Transfer tests', async () => {
       const txBody = {
         inputs: [utxos[0]],
         outputs: [{
-          owner: bobAccount.address,
+          outputType: 1,
+          outputGuard: bobAccount.address,
           currency: transaction.ETH_CURRENCY,
           amount: TRANSFER_AMOUNT
         }, {
-          owner: aliceAccount.address,
+          outputType: 1,
+          outputGuard: aliceAccount.address,
           currency: transaction.ETH_CURRENCY,
           amount: CHANGE_AMOUNT
         }]
@@ -173,22 +175,26 @@ describe('Transfer tests', async () => {
 
       const outputs = [
         {
-          owner: aliceAccount.address,
+          outputType: 1,
+          outputGuard: aliceAccount.address,
           currency: transaction.ETH_CURRENCY,
           amount: ALICE_OUTPUT_0
         },
         {
-          owner: aliceAccount.address,
+          outputType: 1,
+          outputGuard: aliceAccount.address,
           currency: transaction.ETH_CURRENCY,
           amount: ALICE_OUTPUT_1
         },
         {
-          owner: bobAccount.address,
+          outputType: 1,
+          outputGuard: bobAccount.address,
           currency: transaction.ETH_CURRENCY,
           amount: BOB_OUTPUT_0
         },
         {
-          owner: bobAccount.address,
+          outputType: 1,
+          outputGuard: bobAccount.address,
           currency: transaction.ETH_CURRENCY,
           amount: BOB_OUTPUT_1
         }
@@ -215,7 +221,7 @@ describe('Transfer tests', async () => {
 
       // Alice's balance should be ALICE_OUTPUT_0 + ALICE_OUTPUT_1
       const expected = web3.utils.toBN(ALICE_OUTPUT_0).add(web3.utils.toBN(ALICE_OUTPUT_1))
-      let balance = await ccHelper.waitForBalanceEq(childChain, aliceAccount.address, expected)
+      const balance = await ccHelper.waitForBalanceEq(childChain, aliceAccount.address, expected)
       assert.equal(balance[0].amount.toString(), expected.toString())
 
       // Check Alice's utxos on the child chain again
@@ -286,11 +292,13 @@ describe('Transfer tests', async () => {
       const txBody = {
         inputs: [erc20Utxo],
         outputs: [{
-          owner: bobAccount.address,
+          outputType: 1,
+          outputGuard: bobAccount.address,
           currency: ERC20_CURRENCY,
           amount: Number(TRANSFER_AMOUNT)
         }, {
-          owner: aliceAccount.address,
+          outputType: 1,
+          outputGuard: aliceAccount.address,
           currency: ERC20_CURRENCY,
           amount: CHANGE_AMOUNT
         }]
@@ -360,26 +368,30 @@ describe('Transfer tests', async () => {
       assert.equal(utxos[0].amount, INTIIAL_ALICE_AMOUNT_ETH)
       assert.equal(utxos[0].currency, transaction.ETH_CURRENCY)
       assert.equal(utxos[1].amount, INTIIAL_ALICE_AMOUNT_ERC20)
-      assert.equal(utxos[1].currency, ERC20_CURRENCY)
+      assert.equal(utxos[1].currency.toLowerCase(), ERC20_CURRENCY.toLowerCase())
 
       const CHANGE_AMOUNT_ETH = numberToBN(utxos[0].amount).sub(TRANSFER_AMOUNT_ETH)
       const CHANGE_AMOUNT_ERC20 = utxos[1].amount - TRANSFER_AMOUNT_ERC20
       const txBody = {
         inputs: [utxos[0], utxos[1]],
         outputs: [{
-          owner: bobAccount.address,
+          outputType: 1,
+          outputGuard: bobAccount.address,
           currency: transaction.ETH_CURRENCY,
           amount: TRANSFER_AMOUNT_ETH
         }, {
-          owner: aliceAccount.address,
+          outputType: 1,
+          outputGuard: aliceAccount.address,
           currency: transaction.ETH_CURRENCY,
           amount: CHANGE_AMOUNT_ETH
         }, {
-          owner: bobAccount.address,
+          outputType: 1,
+          outputGuard: bobAccount.address,
           currency: ERC20_CURRENCY,
           amount: TRANSFER_AMOUNT_ERC20
         }, {
-          owner: aliceAccount.address,
+          outputType: 1,
+          outputGuard: aliceAccount.address,
           currency: ERC20_CURRENCY,
           amount: CHANGE_AMOUNT_ERC20
         }]
@@ -400,15 +412,18 @@ describe('Transfer tests', async () => {
       let balance = await ccHelper.waitForBalanceEq(childChain, bobAccount.address, TRANSFER_AMOUNT_ETH)
       // Bob's ERC20 balance should be TRANSFER_AMOUNT_ERC20
       balance = await ccHelper.waitForBalanceEq(childChain, bobAccount.address, TRANSFER_AMOUNT_ERC20, ERC20_CURRENCY)
+      balance = balance.map(i => ({ ...i, currency: i.currency.toLowerCase() }))
       assert.equal(balance.length, 2)
       assert.deepInclude(balance, { currency: transaction.ETH_CURRENCY, amount: Number(TRANSFER_AMOUNT_ETH.toString()) })
-      assert.deepInclude(balance, { currency: ERC20_CURRENCY, amount: TRANSFER_AMOUNT_ERC20 })
+      assert.deepInclude(balance, { currency: ERC20_CURRENCY.toLowerCase(), amount: TRANSFER_AMOUNT_ERC20 })
 
       // Check Alice's balance
       balance = await childChain.getBalance(aliceAccount.address)
+      balance = balance.map(i => ({ ...i, currency: i.currency.toLowerCase() }))
+
       assert.equal(balance.length, 2)
       assert.deepInclude(balance, { currency: transaction.ETH_CURRENCY, amount: Number(CHANGE_AMOUNT_ETH.toString()) })
-      assert.deepInclude(balance, { currency: ERC20_CURRENCY, amount: CHANGE_AMOUNT_ERC20 })
+      assert.deepInclude(balance, { currency: ERC20_CURRENCY.toLowerCase(), amount: CHANGE_AMOUNT_ERC20 })
     })
   })
 
@@ -461,7 +476,7 @@ describe('Transfer tests', async () => {
       console.log(`Submitted transaction: ${JSON.stringify(result)}`)
 
       // Bob's balance should be TRANSFER_AMOUNT
-      let balance = await ccHelper.waitForBalanceEq(childChain, bobAccount.address, TRANSFER_AMOUNT)
+      const balance = await ccHelper.waitForBalanceEq(childChain, bobAccount.address, TRANSFER_AMOUNT)
       assert.equal(balance.length, 1)
       assert.equal(balance[0].amount.toString(), TRANSFER_AMOUNT)
     })

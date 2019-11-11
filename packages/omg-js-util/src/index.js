@@ -1,5 +1,5 @@
 /*
-Copyright 2018 OmiseGO Pte Ltd
+Copyright 2019 OmiseGO Pte Ltd
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -17,5 +17,6 @@ module.exports = {
   InvalidArgumentError: require('./InvalidArgumentError'),
   transaction: require('./transaction'),
   sign: require('./sign'),
-  hexToBytes: require('./hexToBytes')
+  hexToBytes: require('./hexToBytes'),
+  ArgTypes: require('./ArgTypes')
 }

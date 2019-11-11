@@ -1,5 +1,5 @@
 /*
-Copyright 2018 OmiseGO Pte Ltd
+Copyright 2019 OmiseGO Pte Ltd
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -19,7 +19,6 @@ const faucetFaucet = require('./faucetFaucet')
 const { transaction } = require('@omisego/omg-js-util')
 const numberToBN = require('number-to-bn')
 const erc20abi = require('human-standard-token-abi')
-
 const faucet = {
   init: async function (rootChain, childChain, web3, config) {
     if (this.initialised) {
@@ -27,7 +26,7 @@ const faucet = {
     }
     this.initialised = true
 
-    console.info(`----------------- Initialising Faucet -----------------------`)
+    console.info('----------------- Initialising Faucet -----------------------')
 
     this.rootChain = rootChain
     this.childChain = childChain
@@ -48,27 +47,27 @@ const faucet = {
       this.privateKey = faucetAccount.privateKey
     }
 
-    await this.initEthBalance(web3, web3.utils.toWei(config.minAmountEth || '2', 'ether'))
+    await this.initEthBalance(web3, web3.utils.toWei(config.minAmountEth || '3', 'ether'))
     await this.initERC20Balance(web3, config.minAmountERC20 || 20)
     await this.showInfo(web3)
   },
 
   showInfo: async function (web3) {
-    console.info(`----------------- Faucet -----------------------`)
+    console.info('----------------- Faucet -----------------------')
     console.info(`Address: ${this.address}`)
     console.info(`ERC20 token: ${this.erc20ContractAddress}`)
-    console.info(`----------------- `)
+    console.info('----------------- ')
     console.info(`Rootchain ETH balance: ${await web3.eth.getBalance(this.address)}`)
     console.info(`Rootchain ERC20 balance: ${await rcHelper.getERC20Balance(web3, this.erc20Contract, this.address)}`)
-    console.info(`----------------- `)
+    console.info('----------------- ')
 
     const ccBalance = await this.childChain.getBalance(this.address)
     const ccEthBalance = ccBalance.find(e => e.currency === transaction.ETH_CURRENCY)
-    const ccErc20Balance = ccBalance.find(e => e.currency === this.erc20ContractAddress)
+    const ccErc20Balance = ccBalance.find(e => e.currency.toLowerCase() === this.erc20ContractAddress.toLowerCase())
 
     console.info(`Childchain ETH balance: ${ccEthBalance ? ccEthBalance.amount.toString() : '0'}`)
     console.info(`Childchain ERC20 balance: ${ccErc20Balance ? ccErc20Balance.amount.toString() : '0'}`)
-    console.info(`----------------- Faucet -----------------------`)
+    console.info('----------------- Faucet -----------------------')
   },
 
   initEthBalance: async function (web3, minAmount) {
@@ -92,7 +91,7 @@ const faucet = {
 
       try {
         console.log(`Not enough Child chain ETH in faucet ${this.address}, attempting to deposit ${needed.toString()} ETH from root chain`)
-        await rcHelper.depositEth(this.rootChain, this.childChain, this.address, needed, this.privateKey)
+        await rcHelper.depositEth(this.rootChain, this.address, needed, this.privateKey)
         await ccHelper.waitForBalance(
           this.childChain,
           this.address,
@@ -125,7 +124,6 @@ const faucet = {
     if (!ccCurrencyBalance || numberToBN(ccCurrencyBalance.amount).lt(numberToBN(minAmount))) {
       // If not, try to deposit more funds from the root chain
       const needed = ccCurrencyBalance ? numberToBN(minAmount).sub(numberToBN(ccCurrencyBalance.amount)) : numberToBN(minAmount)
-
       // Check if there are enough root chain funds in the faucet
       const erc20Balance = await rcHelper.getERC20Balance(web3, this.erc20Contract, this.address, this.privateKey)
       if (numberToBN(erc20Balance).lt(needed)) {
@@ -135,8 +133,13 @@ const faucet = {
 
       try {
         console.log(`Not enough Child chain erc20 tokens in faucet ${this.address}, attempting to deposit ${needed.toString()} ${this.erc20ContractAddress} from root chain`)
-        await rcHelper.approveERC20(web3, this.erc20Contract, this.address, this.privateKey, this.rootChain.plasmaContractAddress, needed.toString())
-        await rcHelper.depositToken(this.rootChain, this.childChain, this.address, needed, this.erc20ContractAddress, this.privateKey)
+        const erc20VaultAddress = await this.rootChain.getErc20VaultAddress()
+        await rcHelper.approveERC20(web3, this.erc20Contract, this.address, this.privateKey, erc20VaultAddress, needed.toNumber())
+        const allowed = await this.erc20Contract.methods.allowance(this.address, erc20VaultAddress).call()
+        if (allowed === '0') {
+          throw new Error('ERC20 approval failed!')
+        }
+        await rcHelper.depositToken(this.rootChain, this.address, needed.toNumber(), this.erc20ContractAddress, this.privateKey)
         await ccHelper.waitForBalance(
           this.childChain,
           this.address,

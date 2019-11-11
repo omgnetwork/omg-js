@@ -1,5 +1,5 @@
 /*
-Copyright 2018 OmiseGO Pte Ltd
+Copyright 2019 OmiseGO Pte Ltd
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -21,12 +21,12 @@ const ethUtil = require('ethereumjs-util')
 function selectUtxos (utxos, amount, currency, includeFee) {
   // Filter by desired currency and sort in descending order
   const sorted = utxos
-    .filter(utxo => utxo.currency === currency)
+    .filter(utxo => utxo.currency.toLowerCase() === currency.toLowerCase())
     .sort((a, b) => numberToBN(b.amount).sub(numberToBN(a.amount)))
 
   if (sorted) {
     const selected = []
-    let currentBalance = numberToBN(0)
+    const currentBalance = numberToBN(0)
     for (let i = 0; i < Math.min(sorted.length, 4); i++) {
       selected.push(sorted[i])
       currentBalance.iadd(numberToBN(sorted[i].amount))
@@ -39,11 +39,11 @@ function selectUtxos (utxos, amount, currency, includeFee) {
       if (includeFee) {
         // Find the first ETH utxo (that's not selected)
         const ethUtxos = utxos.filter(
-          utxo => utxo.currency === transaction.ETH_CURRENCY
+          utxo => utxo.currency.toLowerCase() === transaction.ETH_CURRENCY.toLowerCase()
         )
         const feeUtxo = ethUtxos.find(utxo => utxo !== selected)
         if (!feeUtxo) {
-          console.warn(`Can't find a fee utxo, transaction may fail!`)
+          console.warn('Can\'t find a fee utxo, transaction may fail!')
         } else {
           selected.push(feeUtxo)
         }
@@ -57,12 +57,15 @@ function waitForBalance (childChain, address, currency, callback) {
   return promiseRetry(async (retry, number) => {
     console.log(`Waiting for childchain balance...  (${number})`)
     const resp = await childChain.getBalance(address)
-    if (
-      resp.length === 0 ||
-      !resp.find(item => item.currency === currency && callback(item))
-    ) {
-      retry()
+    if (resp.length === 0) retry()
+    const currencyExists = resp.find(item => item.currency.toLowerCase() === currency.toLowerCase())
+    if (!currencyExists) retry()
+
+    if (callback) {
+      const callbackPassed = callback(currencyExists)
+      if (!callbackPassed) retry()
     }
+
     return resp
   }, {
     minTimeout: 6000,
@@ -112,23 +115,24 @@ async function createTx (childChain, from, to, amount, currency, fromPrivateKey,
   if (!utxosToSpend || utxosToSpend.length === 0) {
     throw new Error(`Not enough funds in ${from} to cover ${amount} ${currency}`)
   }
-
   // Construct the tx body
   const txBody = {
     inputs: utxosToSpend,
     outputs: [{
-      owner: to,
+      outputType: 1,
+      outputGuard: to,
       currency,
       amount
     }]
   }
 
-  const bnAmount = numberToBN(utxosToSpend[0].amount)
-  if (bnAmount.gt(numberToBN(amount))) {
+  const utxoAmount = numberToBN(utxosToSpend[0].amount)
+  if (utxoAmount.gt(numberToBN(amount))) {
     // Need to add a 'change' output
-    const CHANGE_AMOUNT = bnAmount.sub(numberToBN(amount))
+    const CHANGE_AMOUNT = utxoAmount.sub(numberToBN(amount))
     txBody.outputs.push({
-      owner: from,
+      outputType: 1,
+      outputGuard: from,
       currency,
       amount: CHANGE_AMOUNT
     })
@@ -137,20 +141,32 @@ async function createTx (childChain, from, to, amount, currency, fromPrivateKey,
   if (this.transferZeroFee && utxosToSpend.length > 1) {
     // The fee input can be returned
     txBody.outputs.push({
-      owner: from,
+      outputType: 1,
+      outputGuard: from,
       currency: utxosToSpend[utxosToSpend.length - 1].currency,
       amount: utxosToSpend[utxosToSpend.length - 1].amount
     })
   }
 
-  // Create the unsigned transaction
-  const typedData = transaction.getTypedData(txBody, verifyingContract)
-
-  // Sign it
   const privateKeys = new Array(utxosToSpend.length).fill(fromPrivateKey)
+  const typedData = transaction.getTypedData(txBody, verifyingContract)
   const signatures = childChain.signTransaction(typedData, privateKeys)
-  // Build the signed transaction
+
   return childChain.buildSignedTransaction(typedData, signatures)
+}
+
+async function sendSubmitTyped (childChain, from, to, amount, currency, fromPrivateKey) {
+  if (amount <= 0) {
+    return
+  }
+
+  const payments = [{ amount: parseInt(amount), currency, owner: to }]
+  const fee = { amount: 1, currency: transaction.ETH_CURRENCY }
+
+  const createdTx = await childChain.createTransaction(from, payments, fee, transaction.NULL_METADATA)
+  const privateKeys = new Array(createdTx.transactions[0].inputs.length).fill(fromPrivateKey)
+  const txTypedData = childChain.signTypedData(createdTx.transactions[0], privateKeys)
+  return childChain.submitTyped(txTypedData)
 }
 
 async function send (childChain, from, to, amount, currency, fromPrivateKey, verifyingContract) {
@@ -216,6 +232,7 @@ module.exports = {
   waitForBalance,
   waitForBalanceEq,
   send,
+  sendSubmitTyped,
   createTx,
   sendAndWait,
   waitForEvent,

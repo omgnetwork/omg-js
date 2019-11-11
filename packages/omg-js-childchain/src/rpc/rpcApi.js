@@ -1,5 +1,5 @@
 /*
-Copyright 2018 OmiseGO Pte Ltd
+Copyright 2019 OmiseGO Pte Ltd
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -66,6 +66,7 @@ async function parseResponse (res) {
     // Need to use a JSON parser capable of handling uint256
     json = JSONBigNumber.parse(body)
   } catch (err) {
+    console.warn(err)
     throw new Error('Unknown server error')
   }
   debug(`rpc response is ${JSON.stringify(json)}`)

@@ -1,5 +1,5 @@
 /*
-Copyright 2018 OmiseGO Pte Ltd
+Copyright 2019 OmiseGO Pte Ltd
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -80,7 +80,7 @@ describe('Metadata tests (ci-enabled-fast)', async () => {
       console.log(`Submitted transaction: ${JSON.stringify(result)}`)
 
       // Bob's balance should be TRANSFER_AMOUNT
-      let balance = await ccHelper.waitForBalanceEq(childChain, bobAccount.address, TRANSFER_AMOUNT)
+      const balance = await ccHelper.waitForBalanceEq(childChain, bobAccount.address, TRANSFER_AMOUNT)
       assert.equal(balance.length, 1)
       assert.equal(balance[0].amount.toString(), TRANSFER_AMOUNT)
 
@@ -136,7 +136,7 @@ describe('Metadata tests (ci-enabled-fast)', async () => {
       console.log(`Submitted transaction: ${JSON.stringify(result)}`)
 
       // Bob's balance should be TRANSFER_AMOUNT
-      let balance = await ccHelper.waitForBalanceEq(childChain, bobAccount.address, TRANSFER_AMOUNT)
+      const balance = await ccHelper.waitForBalanceEq(childChain, bobAccount.address, TRANSFER_AMOUNT)
       assert.equal(balance.length, 1)
       assert.equal(balance[0].amount.toString(), TRANSFER_AMOUNT)
 
@@ -187,7 +187,7 @@ describe('Metadata tests (ci-enabled-fast)', async () => {
       console.log(`Submitted transaction: ${JSON.stringify(result)}`)
 
       // Bob's balance should be TRANSFER_AMOUNT
-      let balance = await ccHelper.waitForBalanceEq(childChain, bobAccount.address, TRANSFER_AMOUNT)
+      const balance = await ccHelper.waitForBalanceEq(childChain, bobAccount.address, TRANSFER_AMOUNT)
       assert.equal(balance.length, 1)
       assert.equal(balance[0].amount.toString(), TRANSFER_AMOUNT)
 
