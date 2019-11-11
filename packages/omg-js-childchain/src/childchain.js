@@ -168,7 +168,11 @@ class ChildChain {
    * @return {Object} a transaction
    */
   submitTyped (data) {
-    return rpcApi.post(`${this.watcherUrl}/transaction.submit_typed`, data)
+    return rpcApi.post({
+      url: `${this.watcherUrl}/transaction.submit_typed`,
+      body: data,
+      proxyUrl: this.watcherProxyUrl
+    })
   }
 
   /**
