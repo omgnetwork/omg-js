@@ -15,7 +15,7 @@ limitations under the License. */
 
 const rpcApi = require('./rpc/rpcApi')
 const rlp = require('rlp')
-const { InvalidArgumentError, transaction, sign } = require('@omisego/omg-js-util')
+const { InvalidArgumentError, transaction, sign, utils } = require('@omisego/omg-js-util')
 global.Buffer = global.Buffer || require('buffer').Buffer
 
 class ChildChain {
@@ -170,7 +170,7 @@ class ChildChain {
     // Prepend the signatures
     const signedTx = [signatures, txData.message.txType, ...txArray]
     // rlp-encode the transaction + signatures
-    return rlp.encode(signedTx).toString('hex')
+    return utils.hexPrefix(rlp.encode(signedTx).toString('hex'))
   }
 
   /**
