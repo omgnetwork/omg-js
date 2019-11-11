@@ -29,7 +29,7 @@ async function get ({ url, proxyUrl }) {
     const options = {
       method: 'GET',
       uri: url,
-      ...proxyUrl && { proxy: proxyUrl }
+      ...proxyUrl && { proxy: proxyUrl, rejectUnauthorized: false }
     }
 
     const res = await request.get(options)
@@ -49,7 +49,7 @@ async function post ({ url, body, proxyUrl }) {
       uri: url,
       headers: { 'Content-Type': 'application/json' },
       body: JSONBigNumber.stringify(body),
-      ...proxyUrl && { proxy: proxyUrl }
+      ...proxyUrl && { proxy: proxyUrl, rejectUnauthorized: false }
     }
     const res = await request.post(options)
     return parseResponse(res)

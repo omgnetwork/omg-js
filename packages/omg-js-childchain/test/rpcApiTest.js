@@ -28,14 +28,14 @@ const proxyUrl = 'http://omg-proxy'
 
 describe('rpcApi test', () => {
   before(() => {
-    sinon.stub(rp, 'get').resolves({
+    sinon.stub(rp, 'get').resolves(JSON.stringify({
       success: true,
       data: 'foobar'
-    })
-    sinon.stub(rp, 'post').resolves({
+    }))
+    sinon.stub(rp, 'post').resolves(JSON.stringify({
       success: true,
       data: 'foobar'
-    })
+    }))
   })
   after(() => {
     rp.post.restore()
@@ -60,8 +60,7 @@ describe('rpcApi test', () => {
       method: 'POST',
       uri: watcherUrl,
       headers: { 'Content-Type': 'application/json' },
-      body: { foo: 'bar', id: 10, jsonrpc: '2.0' },
-      json: true
+      body: JSON.stringify({ id: 10, foo: 'bar', jsonrpc: '2.0' })
     }
     assert.equal(res, 'foobar')
     sinon.assert.calledWith(rp.post, expectedCall)
@@ -70,10 +69,10 @@ describe('rpcApi test', () => {
 
 describe('rpcApi integration test', () => {
   before(() => {
-    sinon.stub(rp, 'post').resolves({
+    sinon.stub(rp, 'post').resolves(JSON.stringify({
       success: true,
       data: 'foobar'
-    })
+    }))
   })
   after(() => {
     rp.post.restore()
@@ -85,9 +84,9 @@ describe('rpcApi integration test', () => {
       method: 'POST',
       uri: `${watcherUrl}/transaction.get`,
       headers: { 'Content-Type': 'application/json' },
-      body: { id: 3, jsonrpc: '2.0' },
+      body: JSON.stringify({ id: 3, jsonrpc: '2.0' }),
       proxy: proxyUrl,
-      json: true
+      rejectUnauthorized: false
     }
     assert.equal(res, 'foobar')
     sinon.assert.calledWith(rp.post, expectedCall)
@@ -100,8 +99,7 @@ describe('rpcApi integration test', () => {
       method: 'POST',
       uri: `${watcherUrl}/transaction.get`,
       headers: { 'Content-Type': 'application/json' },
-      body: { id: 4, jsonrpc: '2.0' },
-      json: true
+      body: JSON.stringify({ id: 4, jsonrpc: '2.0' })
     }
     assert.equal(res, 'foobar')
     sinon.assert.calledWith(rp.post, expectedCall)
