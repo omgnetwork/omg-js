@@ -1,5 +1,5 @@
 /*
-Copyright 2018 OmiseGO Pte Ltd
+Copyright 2019 OmiseGO Pte Ltd
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -16,19 +16,20 @@ limitations under the License. */
 require('dotenv').config()
 
 const config = {
-  geth_url: process.env.GETH_URL || '',
-  watcher_url: process.env.WATCHER_URL || '',
-  childchain_url: process.env.CHILDCHAIN_URL || '',
-  rootchainContract: process.env.ROOTCHAIN_CONTRACT || '',
-  contract_exchanger_url: process.env.CONTRACT_EXCHANGER_URL || '',
-  testErc20Contract: process.env.TEST_ERC20_CONTRACT || '',
-  fundAccount: process.env.FUND_ACCOUNT || '',
-  fundAccountPrivateKey: process.env.FUND_ACCOUNT_PRIVATEKEY || '',
-  fundAccountPassword: process.env.FUND_ACCOUNT_PASSWORD || '',
-  testFaucetAddress: process.env.TEST_FAUCET_ADDRESS || '',
-  testFaucetPrivateKey: process.env.TEST_FAUCET_PRIVATEKEY || '',
-  minAmountEth: process.env.TEST_MIN_ETH || '',
-  minAmountERC20: process.env.TEST_MIN_ERC20 || ''
+  geth_url: process.env.GETH_URL,
+  watcher_url: process.env.WATCHER_URL,
+  watcher_proxy_url: process.env.WATCHER_PROXY_URL,
+  childchain_url: process.env.CHILDCHAIN_URL,
+  rootchainContract: process.env.ROOTCHAIN_CONTRACT,
+  contract_exchanger_url: process.env.CONTRACT_EXCHANGER_URL,
+  testErc20Contract: process.env.TEST_ERC20_CONTRACT,
+  fundAccount: process.env.FUND_ACCOUNT,
+  fundAccountPrivateKey: process.env.FUND_ACCOUNT_PRIVATEKEY,
+  fundAccountPassword: process.env.FUND_ACCOUNT_PASSWORD,
+  testFaucetAddress: process.env.TEST_FAUCET_ADDRESS,
+  testFaucetPrivateKey: process.env.TEST_FAUCET_PRIVATEKEY,
+  minAmountEth: process.env.TEST_MIN_ETH,
+  minAmountERC20: process.env.TEST_MIN_ERC20
 }
 
 module.exports = config

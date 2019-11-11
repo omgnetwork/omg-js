@@ -35,7 +35,7 @@ describe('getBalance', () => {
       .post('/account.get_balance', { address, jsonrpc: '2.0', id: 0 })
       .reply(200, { success: true, data: expectedObject })
 
-    const childChain = new ChildChain(watcherUrl, '')
+    const childChain = new ChildChain({ watcherUrl })
     const result = await childChain.getBalance(address)
     assert(Array.isArray(result))
     assert.equal(result.length, 1)
@@ -54,7 +54,7 @@ describe('getBalance', () => {
       .post('/account.get_balance', { address, jsonrpc: '2.0', id: 0 })
       .reply(200, { success: false, data: errorObject })
 
-    const childChain = new ChildChain(watcherUrl, '')
+    const childChain = new ChildChain({ watcherUrl })
     return assert.isRejected(childChain.getBalance(address), Error, errorObject.description)
   })
 })

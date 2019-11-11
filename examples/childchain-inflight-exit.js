@@ -30,7 +30,7 @@ const web3 = new Web3(new Web3.providers.HttpProvider(config.geth_url), null, { 
 const rootChain = new RootChain(web3, config.rootchain_plasma_contract_address)
 const rootChainPlasmaContractAddress = config.rootchain_plasma_contract_address
 
-const childChain = new ChildChain(config.watcher_url)
+const childChain = new ChildChain({ watcherUrl: config.watcher_url })
 
 const aliceAddress = config.alice_eth_address
 const alicePrivateKey = config.alice_eth_address_private_key

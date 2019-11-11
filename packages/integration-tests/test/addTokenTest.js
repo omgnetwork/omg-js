@@ -36,7 +36,7 @@ describe('AddExitQueue tests', async () => {
     console.log(`Created new account ${JSON.stringify(aliceAccount)}`)
     const plasmaContract = await rcHelper.getPlasmaContractAddress(config)
     rootChain = new RootChain(web3, plasmaContract.contract_addr)
-    childChain = new ChildChain(config.watcher_url, config.childchain_url)
+    childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url })
 
     await faucet.init(rootChain, childChain, web3, config)
     await faucet.fundRootchainEth(web3, aliceAccount.address, INTIIAL_ALICE_AMOUNT)
