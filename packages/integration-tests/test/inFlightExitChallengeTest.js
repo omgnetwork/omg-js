@@ -26,17 +26,17 @@ const numberToBN = require('number-to-bn')
 const assert = chai.assert
 
 const web3 = new Web3(new Web3.providers.HttpProvider(config.geth_url))
-const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url })
+const childChain = new ChildChain({
+  watcherUrl: config.watcher_url,
+  watcherProxyUrl: config.watcher_proxy_url
+})
 // NB This test waits for at least RootChain.MIN_EXIT_PERIOD so it should be run against a
 // modified RootChain contract with a shorter than normal MIN_EXIT_PERIOD.
 const INFLIGHT_EXIT_BOND = 37000000000000000
 const PIGGYBACK_BOND = 28000000000000000
 let rootChain
 
-
 describe.only('In-flight Exit Challenge tests', async () => {
-
-
   before(async () => {
     const plasmaContract = await rcHelper.getPlasmaContractAddress(config)
     rootChain = new RootChain(web3, plasmaContract.contract_addr)
@@ -69,7 +69,7 @@ describe.only('In-flight Exit Challenge tests', async () => {
         ),
         // Give some ETH to Bob on the root chain
         faucet.fundRootchainEth(web3, bobAccount.address, INTIIAL_BOB_RC_AMOUNT)
-      ])
+      ]).then(([{ txbytes }]) => (fundAliceTx = txbytes))
       // Give some ETH to Carol on the root chain
       await faucet.fundRootchainEth(
         web3,
@@ -318,12 +318,13 @@ describe.only('In-flight Exit Challenge tests', async () => {
 
   describe('in-flight transaction challenge exit without competitor', async () => {
     const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.001', 'ether')
-    const INTIIAL_BOB_RC_AMOUNT = web3.utils.toWei('.1', 'ether')
-    const INTIIAL_CAROL_RC_AMOUNT = web3.utils.toWei('.1', 'ether')
+    const INTIIAL_BOB_RC_AMOUNT = web3.utils.toWei('.5', 'ether')
+    const INTIIAL_CAROL_RC_AMOUNT = web3.utils.toWei('.5', 'ether')
     const TRANSFER_AMOUNT = web3.utils.toWei('0.0002', 'ether')
     let aliceAccount
     let bobAccount
     let carolAccount
+    let fundAliceTx
 
     before(async () => {
       // Create Alice and Bob's accounts
@@ -343,7 +344,7 @@ describe.only('In-flight Exit Challenge tests', async () => {
         ),
         // Give some ETH to Bob on the root chain
         faucet.fundRootchainEth(web3, bobAccount.address, INTIIAL_BOB_RC_AMOUNT)
-      ])
+      ]).then(([tx]) => (fundAliceTx = tx))
       // Give some ETH to Carol on the root chain
       await faucet.fundRootchainEth(
         web3,
@@ -382,7 +383,7 @@ describe.only('In-flight Exit Challenge tests', async () => {
       }
     })
 
-    it('should challenge an in-flight exit as non canonical', async () => {
+    it.only('should challenge an in-flight exit as non canonical', async () => {
       // Alice creates a transaction to send funds to Bob
       let bobSpentOnGas = numberToBN(0)
       const bobTx = await ccHelper.createTx(
@@ -493,22 +494,29 @@ describe.only('In-flight Exit Challenge tests', async () => {
 
       // Carol's tx was not put into a block so it can't be a competitor,
       // but she can still challenge Bob's IFE as non-canonical.
+      const utxoPosOutput = transaction.encodeUtxoPos({
+        blknum: fundAliceTx.result.blknum,
+        txindex: fundAliceTx.result.txindex,
+        oindex: 0
+      })
       receipt = await rootChain.challengeInFlightExitNotCanonical({
-        inputTx: carolTx,
-        inputUtxoPos: 0,
+        inputTx: fundAliceTx.txbytes,
+        inputUtxoPos: utxoPosOutput.toNumber(),
         inFlightTx: inflightExit.txbytes,
         inFlightTxInputIndex: 0,
         competingTx: carolTx,
         competingTxInputIndex: 0,
         outputGuardPreimage: '0x',
-        competingTxPos: 0,
+        competingTxPos: '0x',
         competingTxInclusionProof: '0x',
-        competingTxWitness: carolTxDecoded.sigs[0],
-        competingTxConfirmSig: carolTxDecoded.sigs[0],
+        competingTxWitness: '0x',
+        competingTxConfirmSig: '0x',
         competingTxSpendingConditionOptionalArgs: '0x',
         txOptions: {
           privateKey: carolAccount.privateKey,
-          from: carolAccount.address
+          from: carolAccount.address,
+          gas: 7000000,
+          gasPrice: 2000000
         }
       })
       // Keep track of how much Carol spends on gas

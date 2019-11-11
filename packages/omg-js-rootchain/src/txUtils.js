@@ -1,3 +1,4 @@
+const reason = require('./reason')
 /**
  * Send transaction using web3
  *
@@ -46,7 +47,17 @@ async function sendTx (web3, txDetails, privateKey, callbacks) {
         .on('error', reject)
     })
   }
-  return web3.eth.sendSignedTransaction(signedTx.rawTransaction)
+  return web3.eth.sendSignedTransaction(signedTx.rawTransaction).catch(err => {
+    let transactionHash
+    try {
+      transactionHash = JSON.parse(err.message.replace('Transaction has been reverted by the EVM:', '')).transactionHash
+    } catch {
+        throw(err)
+    }
+    reason({ web3, hash: transactionHash }).then(() => {
+      throw(err)
+    })
+  })
 }
 
 async function setGas (web3, txDetails) {
@@ -85,7 +96,7 @@ async function setGas (web3, txDetails) {
         txDetails.gas = await web3.eth.estimateGas(txDetails)
       }
     } catch (err) {
-      throw new Error(`Error estimating gas: ${err}`)
+      console.warn(`Error estimating gas: ${err}`)
     }
   }
 }
