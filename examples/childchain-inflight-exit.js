@@ -172,8 +172,9 @@ async function inflightExitChildChain() {
 
   // call processExits() after challenge period is over
   const processExitsPostChallengeReceipt = await rootChain.processExit(
-    0,
     transaction.ETH_CURRENCY,
+    0,
+    10,
     { privateKey: bobPrivateKey, from: bobAddress }
   )
 
