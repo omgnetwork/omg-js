@@ -317,7 +317,7 @@ describe('In-flight Exit Challenge tests', async () => {
   })
 
   describe('in-flight transaction challenge exit without competitor', async () => {
-    const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.001', 'ether')
+    const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.1', 'ether')
     const INTIIAL_BOB_RC_AMOUNT = web3.utils.toWei('1', 'ether')
     const INTIIAL_CAROL_RC_AMOUNT = web3.utils.toWei('.5', 'ether')
     const TRANSFER_AMOUNT = web3.utils.toWei('0.0002', 'ether')
