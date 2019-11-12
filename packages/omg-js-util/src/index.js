@@ -19,6 +19,7 @@ module.exports = {
   sign: require('./sign'),
   hexToBytes: require('./hexToBytes'),
   ArgTypes: require('./ArgTypes'),
-  utils: require('./utils')
+  hexPrefix: require('./hexPrefix'),
+  ethErrorReason: require('./ethErrorReason')
 }
 

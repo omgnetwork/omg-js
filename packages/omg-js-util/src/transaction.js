@@ -21,7 +21,7 @@ const numberToBN = require('number-to-bn')
 const rlp = require('rlp')
 const typedData = require('./typedData')
 const getToSignHash = require('./signHash')
-const { hexPrefix } = require('./utils')
+const hexPrefix = require('./hexPrefix')
 
 const MAX_INPUTS = 4
 const MAX_OUTPUTS = 4
