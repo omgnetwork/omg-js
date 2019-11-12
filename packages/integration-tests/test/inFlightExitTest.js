@@ -227,7 +227,7 @@ describe('In-flight Exit tests', async () => {
     })
 
     it('should succesfully exit a ChildChain transaction that is not included', async () => {
-      // Send TRANSFER_AMOUNT from Alice to Bob
+      // Create a transaction that sends TRANSFER_AMOUNT from Alice to Bob, but don't submit it to the childchain
       let bobSpentOnGas = numberToBN(0)
       const bobTx = await ccHelper.createTx(
         childChain,
