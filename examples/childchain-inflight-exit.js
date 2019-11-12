@@ -233,7 +233,7 @@ async function inflightExitChildChain() {
   console.log(`Bob's UTXOs = ${JSON.stringify(bobUtxoToExit, undefined, 2)}`)
 }
 
-;(async () => {
+(async () => {
   try {
     const result = await inflightExitChildChain()
     return Promise.resolve(result)
