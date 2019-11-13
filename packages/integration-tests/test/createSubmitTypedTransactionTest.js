@@ -34,13 +34,15 @@ describe('Create transaction tests with submitTyped (ci-enabled)', function () {
   })
 
   describe('create a single currency transaction with submitTyped', function () {
-    const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.000001', 'ether')
-    const TRANSFER_AMOUNT = web3.utils.toWei('.0000001', 'ether')
+    let INTIIAL_ALICE_AMOUNT
+    let TRANSFER_AMOUNT
     const FEE_AMOUNT = 10
     let aliceAccount
     let bobAccount
 
     before(async function () {
+      INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.000001', 'ether')
+      TRANSFER_AMOUNT = web3.utils.toWei('.0000001', 'ether')
       // Create Alice and Bob's accounts
       aliceAccount = rcHelper.createAccount(web3)
       console.log(`Created Alice account ${JSON.stringify(aliceAccount)}`)
