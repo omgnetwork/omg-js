@@ -60,7 +60,9 @@ describe('In-flight Exit Challenge Response tests', async () => {
         faucet.fundChildchain(aliceAccount.address, INTIIAL_ALICE_AMOUNT, transaction.ETH_CURRENCY),
         // Give some ETH to Bob on the root chain
         faucet.fundRootchainEth(web3, bobAccount.address, INTIIAL_BOB_RC_AMOUNT)
-      ]).then(([tx]) => fundAliceTx = tx)
+      ]).then(([tx]) => {
+        fundAliceTx = tx
+      })
       // Give some ETH to Carol on the root chain
       await faucet.fundRootchainEth(web3, carolAccount.address, INTIIAL_BOB_RC_AMOUNT)
 
@@ -85,7 +87,7 @@ describe('In-flight Exit Challenge Response tests', async () => {
 
     it('should respond to an invalid IFE challenge', async () => {
       // Alice creates a transaction to send funds to Bob
-      let bobSpentOnGas = numberToBN(0)
+      const bobSpentOnGas = numberToBN(0)
       const bobTx = await ccHelper.createTx(
         childChain,
         aliceAccount.address,
@@ -135,7 +137,7 @@ describe('In-flight Exit Challenge Response tests', async () => {
       console.log(`Bob called RootChain.startInFlightExit(): txhash = ${receipt.transactionHash}`)
 
       // Keep track of how much Bob spends on gas
-      bobSpentOnGas.iadd(await rcHelper.spentOnGas(web3, receipt))    
+      bobSpentOnGas.iadd(await rcHelper.spentOnGas(web3, receipt))
       const outputIndex = decodedTx.outputs.findIndex(e => e.outputGuard === bobAccount.address)
 
       // Bob piggybacks his output on the in-flight exit
@@ -189,7 +191,7 @@ describe('In-flight Exit Challenge Response tests', async () => {
         txindex: fundAliceTx.result.txindex,
         oindex: 0
       }).toNumber()
-      
+
       const unsignInput = transaction.encode(transaction.decodeTxBytes(fundAliceTx.txbytes), { signed: false })
       const unsignCarolTx = transaction.encode(carolTxDecoded, { signed: false })
       receipt = await rootChain.challengeInFlightExitNotCanonical({

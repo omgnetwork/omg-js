@@ -1,14 +1,14 @@
-/*	
-  Copyright 2019 OmiseGO Pte Ltd	
-  Licensed under the Apache License, Version 2.0 (the "License");	
-  you may not use this file except in compliance with the License.	
-  You may obtain a copy of the License at	
-  http://www.apache.org/licenses/LICENSE-2.0	
-  Unless required by applicable law or agreed to in writing, software	
-  distributed under the License is distributed on an "AS IS" BASIS,	
-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.	
-  See the License for the specific language governing permissions and	
-  limitations under the License.	
+/*
+  Copyright 2019 OmiseGO Pte Ltd
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  http://www.apache.org/licenses/LICENSE-2.0
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
 */
 
 const BigNumber = require('bignumber.js')
@@ -41,7 +41,7 @@ const transferAmount = BigNumber(
   web3.utils.toWei(config.alice_eth_transfer_amount, 'ether')
 )
 
-async function inflightExitChildChain() {
+async function inflightExitChildChain () {
   let aliceRootchainBalance = await web3.eth.getBalance(aliceAddress)
   let bobRootchainBalance = await web3.eth.getBalance(bobAddress)
 
@@ -130,7 +130,7 @@ async function inflightExitChildChain() {
   // start an in-flight exit
   const outputGuardPreimagesForInputs = ['0x']
   const inputSpendingConditionOptionalArgs = ['0x']
-  let startInflightExitReceipt = await rootChain.startInFlightExit(
+  const startInflightExitReceipt = await rootChain.startInFlightExit(
     exitData.in_flight_tx,
     exitData.input_txs,
     exitData.input_txs_inclusion_proofs,
@@ -163,7 +163,7 @@ async function inflightExitChildChain() {
   )
 
   console.log(
-    `Bob called piggybacked his output. piggybackInFlightExitReceipt = ` +
+    'Bob called piggybacked his output. piggybackInFlightExitReceipt = ' +
       `${JSON.stringify(piggybackInFlightExitReceipt)}`
   )
 
