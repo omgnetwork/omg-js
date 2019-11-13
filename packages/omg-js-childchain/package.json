@@ -1,6 +1,6 @@
 {
   "name": "@omisego/omg-js-childchain",
-  "version": "3.0.0-alpha.4",
+  "version": "3.0.0-alpha.5",
   "description": "Module to interact with OMG ChildChain",
   "keywords": [
     "OMG",
@@ -22,7 +22,7 @@
     "url": "https://github.com/omisego/omg-js/issues"
   },
   "dependencies": {
-    "@omisego/omg-js-util": "^3.0.0-alpha.4",
+    "@omisego/omg-js-util": "^3.0.0-alpha.5",
     "debug": "^4.0.1",
     "json-bigint": "^0.3.0",
     "request": "^2.88.0",
