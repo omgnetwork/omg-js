@@ -60,5 +60,6 @@
       "dist",
       "packages/integration-tests/tokens"
     ]
-  }
+  },
+  "dependencies": {}
 }

@@ -39,15 +39,19 @@ describe('Challenge exit tests', function () {
   })
 
   describe('Challenge a standard exit (ci-enabled)', function () {
-    const INTIIAL_ALICE_RC_AMOUNT = web3.utils.toWei('.1', 'ether')
-    const INTIIAL_BOB_RC_AMOUNT = web3.utils.toWei('.1', 'ether')
-    const INTIIAL_ALICE_CC_AMOUNT = web3.utils.toWei('.001', 'ether')
-    const TRANSFER_AMOUNT = web3.utils.toWei('0.0002', 'ether')
+    let INTIIAL_ALICE_RC_AMOUNT
+    let INTIIAL_BOB_RC_AMOUNT
+    let INTIIAL_ALICE_CC_AMOUNT
+    let TRANSFER_AMOUNT
     let aliceAccount
     let bobAccount
-
     before(async function () {
       // Create Alice and Bob's accounts
+      INTIIAL_ALICE_RC_AMOUNT = web3.utils.toWei('.1', 'ether')
+      INTIIAL_BOB_RC_AMOUNT = web3.utils.toWei('.1', 'ether')
+      INTIIAL_ALICE_CC_AMOUNT = web3.utils.toWei('.001', 'ether')
+      TRANSFER_AMOUNT = web3.utils.toWei('0.0002', 'ether')
+
       aliceAccount = rcHelper.createAccount(web3)
       console.log(`Created Alice account ${JSON.stringify(aliceAccount)}`)
       bobAccount = rcHelper.createAccount(web3)
