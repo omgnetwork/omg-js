@@ -21,6 +21,7 @@ const numberToBN = require('number-to-bn')
 const rlp = require('rlp')
 const typedData = require('./typedData')
 const getToSignHash = require('./signHash')
+const hexPrefix = require('./hexPrefix')
 
 const MAX_INPUTS = 4
 const MAX_OUTPUTS = 4
@@ -113,9 +114,9 @@ const transaction = {
   *@returns the RLP encoded transaction
   *
   */
-  encode: function ({ transactionType, inputs, outputs, metadata, signatures }) {
+  encode: function ({ transactionType, inputs, outputs, metadata, signatures }, { signed = true } = {}) {
     const txArray = [transactionType]
-    signatures && txArray.unshift(signatures)
+    signatures && signed && txArray.unshift(signatures)
     const inputArray = []
     const outputArray = []
     for (let i = 0; i < MAX_INPUTS; i++) {
@@ -133,7 +134,12 @@ const transaction = {
     }
     txArray.push(outputArray)
     txArray.push(metadata)
-    return `0x${rlp.encode(txArray).toString('hex')}`
+    return  hexPrefix(rlp.encode(txArray).toString('hex'))
+  },
+
+  rlpDecode: function (hash) {
+    const rawTx = Buffer.isBuffer(hash) ? hash : Buffer.from(hash.replace('0x', ''), 'hex')
+    return rlp.decode(rawTx)
   },
 
   /**

@@ -18,8 +18,8 @@ const { transaction } = require('@omisego/omg-js-util')
 const webUtils = require('web3-utils')
 
 const STANDARD_EXIT_BOND = 14000000000000000
-const INFLIGHT_EXIT_BOND = 31415926535
-const PIGGYBACK_BOND = 31415926535
+const INFLIGHT_EXIT_BOND = 37000000000000000
+const PIGGYBACK_BOND = 28000000000000000
 const ETH_VAULT_ID = 1
 const ERC20_VAULT_ID = 2
 const PAYMENT_TYPE = 1
@@ -148,7 +148,7 @@ class RootChain {
         [
           outputId.toString(),
           outputTx,
-          [],
+          '0x',
           inclusionProof
         ]
       ),
@@ -292,18 +292,26 @@ class RootChain {
    * @param {Object} txOptions transaction options, such as `from`, gas` and `privateKey`
    * @return {string} transaction hash of the call
    */
-  async startInFlightExit (inFlightTx, inputTxs, inputTxsInclusionProofs, inFlightTxSigs, txOptions) {
+  async startInFlightExit (inFlightTx, inputTxs, inputUtxosPos, outputGuardPreimagesForInputs, inputTxsInclusionProofs, inFlightTxSigs, signatures, inputSpendingConditionOptionalArgs, txOptions) {
+    const paymentExitGameAddress = await this.getPaymentExitGameAddress()
+    const paymentExitGameContract = this.getContract(this.paymentExitGameAbi.abi, paymentExitGameAddress)
     const txDetails = {
       from: txOptions.from,
-      to: this.plasmaContractAddress,
+      to: paymentExitGameAddress,
       data: txUtils.getTxData(
         this.web3,
-        this.plasmaContract,
+        paymentExitGameContract,
         'startInFlightExit',
-        inFlightTx,
-        inputTxs,
-        inputTxsInclusionProofs,
-        inFlightTxSigs
+        [
+          inFlightTx,
+          inputTxs,
+          inputUtxosPos,
+          outputGuardPreimagesForInputs,
+          inputTxsInclusionProofs,
+          inFlightTxSigs,
+          signatures,
+          inputSpendingConditionOptionalArgs
+        ]
       ),
       value: INFLIGHT_EXIT_BOND,
       gas: txOptions.gas,
@@ -322,16 +330,51 @@ class RootChain {
    * @param {Object} txOptions transaction options, such as `from`, gas` and `privateKey`
    * @return {string} transaction hash of the call
    */
-  async piggybackInFlightExit (inFlightTx, outputIndex, txOptions) {
+  async piggybackInFlightExitOnOutput (inFlightTx, outputIndex, outputGuardPreimage, txOptions) {
+    const paymentExitGameAddress = await this.getPaymentExitGameAddress()
+    const paymentExitGameContract = this.getContract(this.paymentExitGameAbi.abi, paymentExitGameAddress)
     const txDetails = {
       from: txOptions.from,
-      to: this.plasmaContractAddress,
+      to: paymentExitGameAddress,
       data: txUtils.getTxData(
         this.web3,
-        this.plasmaContract,
-        'piggybackInFlightExit',
+        paymentExitGameContract,
+        'piggybackInFlightExitOnOutput',
+        [
+          inFlightTx,
+          outputIndex,
+          outputGuardPreimage
+        ]
+      ),
+      value: PIGGYBACK_BOND,
+      gas: txOptions.gas,
+      gasPrice: txOptions.gasPrice
+    }
+
+    return txUtils.sendTx(this.web3, txDetails, txOptions.privateKey)
+  }
+
+    /**
+   * Allows a user to piggyback onto an in-flight transaction.
+   *
+   * @method piggybackInFlightExit
+   * @param {string} inFlightTx RLP encoded in-flight transaction.
+   * @param {number} inputIndex Index of the input/output to piggyback (0-7).
+   * @param {Object} txOptions transaction options, such as `from`, gas` and `privateKey`
+   * @return {string} transaction hash of the call
+   */
+  async piggybackInFlightExitOnInput (inFlightTx, inputIndex, txOptions) {
+    const paymentExitGameAddress = await this.getPaymentExitGameAddress()
+    const paymentExitGameContract = this.getContract(this.paymentExitGameAbi.abi, paymentExitGameAddress)
+    const txDetails = {
+      from: txOptions.from,
+      to: paymentExitGameAddress,
+      data: txUtils.getTxData(
+        this.web3,
+        paymentExitGameContract,
+        'piggybackInFlightExitOnInput',
         inFlightTx,
-        outputIndex
+        inputIndex,
       ),
       value: PIGGYBACK_BOND,
       gas: txOptions.gas,
@@ -355,29 +398,43 @@ class RootChain {
    * @param {Object} txOptions transaction options, such as `from`, gas` and `privateKey`
    * @return {string} transaction hash of the call
    */
-  async challengeInFlightExitNotCanonical (
+  async challengeInFlightExitNotCanonical ({
+    inputTx,
+    inputUtxoPos,
     inFlightTx,
     inFlightTxInputIndex,
     competingTx,
     competingTxInputIndex,
+    outputGuardPreimage,
     competingTxPos,
     competingTxInclusionProof,
-    competingTxSig,
+    competingTxWitness,
+    competingTxConfirmSig,
+    competingTxSpendingConditionOptionalArgs,
     txOptions
-  ) {
+  }) {
+    const paymentExitGameAddress = await this.getPaymentExitGameAddress()
+    const paymentExitGameContract = this.getContract(this.paymentExitGameAbi.abi, paymentExitGameAddress)
     const txDetails = {
       from: txOptions.from,
-      to: this.plasmaContractAddress,
+      to: paymentExitGameAddress,
       data: txUtils.getTxData(this.web3,
-        this.plasmaContract,
+        paymentExitGameContract,
         'challengeInFlightExitNotCanonical',
-        inFlightTx,
-        inFlightTxInputIndex,
-        competingTx,
-        competingTxInputIndex,
-        competingTxPos,
-        competingTxInclusionProof,
-        competingTxSig
+        [
+          inputTx,
+          inputUtxoPos,
+          inFlightTx,
+          inFlightTxInputIndex,
+          competingTx,
+          competingTxInputIndex,
+          outputGuardPreimage,
+          competingTxPos,
+          competingTxInclusionProof,
+          competingTxWitness,
+          competingTxConfirmSig,
+          competingTxSpendingConditionOptionalArgs
+        ]
       ),
       gas: txOptions.gas,
       gasPrice: txOptions.gasPrice
@@ -402,12 +459,14 @@ class RootChain {
     inFlightTxInclusionProof,
     txOptions
   ) {
+    const paymentExitGameAddress = await this.getPaymentExitGameAddress()
+    const paymentExitGameContract = this.getContract(this.paymentExitGameAbi.abi, paymentExitGameAddress)
     const txDetails = {
       from: txOptions.from,
-      to: this.plasmaContractAddress,
+      to: paymentExitGameAddress,
       data: txUtils.getTxData(
         this.web3,
-        this.plasmaContract,
+        paymentExitGameContract,
         'respondToNonCanonicalChallenge',
         inFlightTx,
         inFlightTxPos,

@@ -28,19 +28,42 @@ const proxyUrl = 'http://omg-proxy'
 
 describe('rpcApi test', () => {
   before(() => {
-    sinon.stub(rp, 'get').resolves(JSON.stringify({
-      success: true,
-      data: 'foobar'
-    }))
-    sinon.stub(rp, 'post').resolves(JSON.stringify({
-      success: true,
-      data: 'foobar'
-    }))
+    sinon.stub(rp, 'get').resolves(
+      JSON.stringify({
+        success: true,
+        data: 'foobar'
+      })
+    )
+    sinon.stub(rp, 'post').resolves(
+      JSON.stringify({
+        success: true,
+        data: 'foobar'
+      })
+    )
   })
   after(() => {
     rp.post.restore()
     rp.get.restore()
   })
+  it('should call body post as string', async () => {
+    const res = await rpcApi.post({
+      url: watcherUrl,
+      body: { test: 'object should call string' }
+    })
+    assert.equal(res, 'foobar')
+    const expectedCall = {
+      method: 'POST',
+      uri: 'http://omg-watcher',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        test: 'object should call string',
+        jsonrpc: '2.0',
+        id: 0
+      })
+    }
+    sinon.assert.calledWith(rp.post, expectedCall)
+  })
+
   it('should get to passed url', async () => {
     const res = await rpcApi.get({ url: watcherUrl })
     assert.equal(res, 'foobar')
@@ -69,16 +92,22 @@ describe('rpcApi test', () => {
 
 describe('rpcApi integration test', () => {
   before(() => {
-    sinon.stub(rp, 'post').resolves(JSON.stringify({
-      success: true,
-      data: 'foobar'
-    }))
+    sinon.stub(rp, 'post').resolves(
+      JSON.stringify({
+        success: true,
+        data: 'foobar'
+      })
+    )
   })
   after(() => {
     rp.post.restore()
   })
+
   it('childchain should pass proxy url if it exists', async () => {
-    const childchainWithProxy = new ChildChain({ watcherUrl, watcherProxyUrl: proxyUrl })
+    const childchainWithProxy = new ChildChain({
+      watcherUrl,
+      watcherProxyUrl: proxyUrl
+    })
     const res = await childchainWithProxy.getTransaction(3)
     const expectedCall = {
       method: 'POST',

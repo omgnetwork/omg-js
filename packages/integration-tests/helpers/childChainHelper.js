@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License. */
 
 const promiseRetry = require('promise-retry')
-const { transaction } = require('@omisego/omg-js-util')
+const { transaction, hexPrefix } = require('@omisego/omg-js-util')
 const numberToBN = require('number-to-bn')
 const ethUtil = require('ethereumjs-util')
 
@@ -173,7 +173,7 @@ async function send (childChain, from, to, amount, currency, fromPrivateKey, ver
   const signedTx = await createTx(childChain, from, to, amount, currency, fromPrivateKey, verifyingContract)
   // Submit the signed transaction to the childchain
   const result = await childChain.submitTransaction(signedTx)
-  return { result, txbytes: signedTx }
+  return { result, txbytes: hexPrefix(signedTx) }
 }
 
 function checkSig (web3, tx, sig, address) {

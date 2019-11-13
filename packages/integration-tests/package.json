@@ -5,8 +5,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "deploy-test-erc20": "cd tokens && ../../../node_modules/.bin/truffle deploy"
+    "test": "mocha --timeout=0 ./test/*",
+    "deploy-test-erc20": "cd tokens && truffle deploy"
   },
   "author": "",
   "license": "MIT",
@@ -19,5 +19,9 @@
     "node-fetch": "^2.6.0",
     "promise-retry": "^1.1.1",
     "web3": "1.0.0-beta.36"
+  },
+  "devDependencies": {
+    "truffle": "^4.1.14",
+    "mocha": "^5.2.0"
   }
 }
