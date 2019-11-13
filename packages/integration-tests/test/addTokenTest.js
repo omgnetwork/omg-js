@@ -30,8 +30,8 @@ let childChain
 let aliceAccount
 const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.1', 'ether')
 
-describe('AddExitQueue tests', async () => {
-  before(async () => {
+describe('AddExitQueue tests', function () {
+  before(async function () {
     aliceAccount = rcHelper.createAccount(web3)
     console.log(`Created new account ${JSON.stringify(aliceAccount)}`)
     const plasmaContract = await rcHelper.getPlasmaContractAddress(config)
@@ -43,14 +43,14 @@ describe('AddExitQueue tests', async () => {
     await rcHelper.waitForEthBalanceEq(web3, aliceAccount.address, INTIIAL_ALICE_AMOUNT)
   })
 
-  it('add token should add token if not added before', async () => {
+  it('add token should add token if not added before', async function () {
     const fakeErc20 = rcHelper.createAccount(web3)
     const hasToken = await rootChain.hasToken(fakeErc20.address)
     assert.isFalse(hasToken)
     return rootChain.addToken(fakeErc20.address, { from: aliceAccount.address, privateKey: aliceAccount.privateKey }).should.be.fulfilled
   })
 
-  it('add token should not add token if added before', async () => {
+  it('add token should not add token if added before', async function () {
     const fakeErc20 = rcHelper.createAccount(web3)
     await rootChain.addToken(fakeErc20.address, { from: aliceAccount.address, privateKey: aliceAccount.privateKey }).should.be.fulfilled
     const hasToken = await rootChain.hasToken(fakeErc20.address)

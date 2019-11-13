@@ -134,7 +134,7 @@ const transaction = {
     }
     txArray.push(outputArray)
     txArray.push(metadata)
-    return  hexPrefix(rlp.encode(txArray).toString('hex'))
+    return hexPrefix(rlp.encode(txArray).toString('hex'))
   },
 
   rlpDecode: function (hash) {

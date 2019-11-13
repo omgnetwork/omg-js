@@ -26,8 +26,8 @@ use(chaiAsPromised)
 const watcherUrl = 'http://omg-watcher'
 const proxyUrl = 'http://omg-proxy'
 
-describe('rpcApi test', () => {
-  before(() => {
+describe('rpcApi test', function () {
+  before(function () {
     sinon.stub(rp, 'get').resolves(
       JSON.stringify({
         success: true,
@@ -41,11 +41,11 @@ describe('rpcApi test', () => {
       })
     )
   })
-  after(() => {
+  after(function () {
     rp.post.restore()
     rp.get.restore()
   })
-  it('should call body post as string', async () => {
+  it('should call body post as string', async function () {
     const res = await rpcApi.post({
       url: watcherUrl,
       body: { test: 'object should call string' }
@@ -64,7 +64,7 @@ describe('rpcApi test', () => {
     sinon.assert.calledWith(rp.post, expectedCall)
   })
 
-  it('should get to passed url', async () => {
+  it('should get to passed url', async function () {
     const res = await rpcApi.get({ url: watcherUrl })
     assert.equal(res, 'foobar')
     const expectedCall = {
@@ -74,7 +74,7 @@ describe('rpcApi test', () => {
     sinon.assert.calledWith(rp.get, expectedCall)
   })
 
-  it('should post to passed url', async () => {
+  it('should post to passed url', async function () {
     const res = await rpcApi.post({
       url: watcherUrl,
       body: { id: 10, foo: 'bar' }
@@ -90,8 +90,8 @@ describe('rpcApi test', () => {
   })
 })
 
-describe('rpcApi integration test', () => {
-  before(() => {
+describe('rpcApi integration test', function () {
+  before(function () {
     sinon.stub(rp, 'post').resolves(
       JSON.stringify({
         success: true,
@@ -99,11 +99,11 @@ describe('rpcApi integration test', () => {
       })
     )
   })
-  after(() => {
+  after(function () {
     rp.post.restore()
   })
 
-  it('childchain should pass proxy url if it exists', async () => {
+  it('childchain should pass proxy url if it exists', async function () {
     const childchainWithProxy = new ChildChain({
       watcherUrl,
       watcherProxyUrl: proxyUrl
@@ -121,7 +121,7 @@ describe('rpcApi integration test', () => {
     sinon.assert.calledWith(rp.post, expectedCall)
   })
 
-  it('childchain should not pass proxy url if it doesnt exist', async () => {
+  it('childchain should not pass proxy url if it doesnt exist', async function () {
     const childchainNoProxy = new ChildChain({ watcherUrl })
     const res = await childchainNoProxy.getTransaction(4)
     const expectedCall = {

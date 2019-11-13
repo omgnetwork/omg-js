@@ -35,21 +35,21 @@ let rootChain
 // NB This test waits for at least RootChain.MIN_EXIT_PERIOD so it should be run against a
 // modified RootChain contract with a shorter than normal MIN_EXIT_PERIOD.
 
-describe('In-flight Exit tests', async () => {
-  before(async () => {
+describe('In-flight Exit tests', function () {
+  before(async function () {
     const plasmaContract = await rcHelper.getPlasmaContractAddress(config)
     rootChain = new RootChain(web3, plasmaContract.contract_addr)
     await faucet.init(rootChain, childChain, web3, config)
   })
 
-  describe('in-flight transaction exit (ci-enabled)', async () => {
+  describe('in-flight transaction exit (ci-enabled)', function () {
     const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.001', 'ether')
     const INTIIAL_BOB_RC_AMOUNT = web3.utils.toWei('.1', 'ether')
     const TRANSFER_AMOUNT = web3.utils.toWei('0.0002', 'ether')
     let aliceAccount
     let bobAccount
 
-    beforeEach(async () => {
+    beforeEach(async function () {
       // Create Alice and Bob's accounts
       aliceAccount = rcHelper.createAccount(web3)
       console.log(`Created Alice account ${JSON.stringify(aliceAccount)}`)
@@ -81,7 +81,7 @@ describe('In-flight Exit tests', async () => {
       ])
     })
 
-    after(async () => {
+    after(async function () {
       try {
         // Send any leftover funds back to the faucet
         await faucet.returnFunds(web3, aliceAccount)
@@ -91,7 +91,7 @@ describe('In-flight Exit tests', async () => {
       }
     })
 
-    it('should succesfully exit a ChildChain transaction', async () => {
+    it('should succesfully exit a ChildChain transaction', async function () {
       // Send TRANSFER_AMOUNT from Alice to Bob
       let bobSpentOnGas
       const { txbytes, result } = await ccHelper.sendAndWait(
@@ -226,7 +226,7 @@ describe('In-flight Exit tests', async () => {
       assert.equal(bobEthBalance.toString(), expected.toString())
     })
 
-    it('should succesfully exit a ChildChain transaction that is not included', async () => {
+    it('should succesfully exit a ChildChain transaction that is not included', async function () {
       // Create a transaction that sends TRANSFER_AMOUNT from Alice to Bob, but don't submit it to the childchain
       let bobSpentOnGas = numberToBN(0)
       const bobTx = await ccHelper.createTx(

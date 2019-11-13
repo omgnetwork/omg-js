@@ -1,9 +1,9 @@
 const { sign, transaction } = require('@omisego/omg-js-util')
 const assert = require('chai').assert
 
-describe('signTransaction', () => {
-  describe('signTransaction', () => {
-    it('should sign the entire transaction object correctly', () => {
+describe('signTransaction', function () {
+  describe('signTransaction', function () {
+    it('should sign the entire transaction object correctly', function () {
       const txBody = {
         inputs: [
           {

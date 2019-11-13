@@ -29,19 +29,19 @@ const web3 = new Web3(new Web3.providers.HttpProvider(config.geth_url))
 const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url })
 let rootChain
 
-describe('Deposit tests', async () => {
-  before(async () => {
+describe('Deposit tests', function () {
+  before(async function () {
     const plasmaContract = await rcHelper.getPlasmaContractAddress(config)
     rootChain = new RootChain(web3, plasmaContract.contract_addr)
     await faucet.init(rootChain, childChain, web3, config)
   })
 
-  describe('deposit ETH (ci-enabled)', async () => {
+  describe('deposit ETH (ci-enabled)', function () {
     const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.1', 'ether')
     const TEST_AMOUNT = web3.utils.toWei('.0001', 'ether')
     let aliceAccount
 
-    beforeEach(async () => {
+    beforeEach(async function () {
       // Create and fund a new account
       aliceAccount = rcHelper.createAccount(web3)
       console.log(`Created new account ${JSON.stringify(aliceAccount)}`)
@@ -49,7 +49,7 @@ describe('Deposit tests', async () => {
       await rcHelper.waitForEthBalanceEq(web3, aliceAccount.address, INTIIAL_ALICE_AMOUNT)
     })
 
-    afterEach(async () => {
+    afterEach(async function () {
       try {
         // Send any leftover funds back to the faucet
         await faucet.returnFunds(web3, aliceAccount)
@@ -58,7 +58,7 @@ describe('Deposit tests', async () => {
       }
     })
 
-    it('depositEth calls event emitter if passed', async () => {
+    it('depositEth calls event emitter if passed', async function () {
       const depositTx = transaction.encodeDeposit(aliceAccount.address, TEST_AMOUNT, transaction.ETH_CURRENCY)
       let confirmationNum
       let receipt
@@ -87,7 +87,7 @@ describe('Deposit tests', async () => {
       assert.isObject(receipt)
     })
 
-    it('deposit call resolves in an object containing the transaction hash', async () => {
+    it('deposit call resolves in an object containing the transaction hash', async function () {
       const depositTx = transaction.encodeDeposit(aliceAccount.address, TEST_AMOUNT, transaction.ETH_CURRENCY)
       const depositRes = await rootChain.depositEth(
         depositTx,
@@ -101,7 +101,7 @@ describe('Deposit tests', async () => {
       assert.isString(depositRes.transactionHash)
     })
 
-    it('should deposit ETH to the Plasma contract', async () => {
+    it('should deposit ETH to the Plasma contract', async function () {
       // The new account should have no initial balance
       const initialBalance = await childChain.getBalance(aliceAccount.address)
       assert.equal(initialBalance.length, 0)
@@ -129,14 +129,14 @@ describe('Deposit tests', async () => {
     })
   })
 
-  describe('deposit ERC20 (ci-enabled)', async () => {
+  describe('deposit ERC20 (ci-enabled)', function () {
     let aliceAccount
     const testErc20Contract = new web3.eth.Contract(erc20abi, config.testErc20Contract)
     const INTIIAL_AMOUNT_ETH = web3.utils.toWei('.1', 'ether')
     const INITIAL_AMOUNT_ERC20 = 3
     const TEST_AMOUNT = 2
 
-    before(async () => {
+    before(async function () {
       // Create and fund Alice's account
       aliceAccount = rcHelper.createAccount(web3)
       console.log(`Created Alice account ${JSON.stringify(aliceAccount)}`)
@@ -149,7 +149,7 @@ describe('Deposit tests', async () => {
       ])
     })
 
-    after(async () => {
+    after(async function () {
       try {
         // Send any leftover funds back to the faucet
         await faucet.returnFunds(web3, aliceAccount)
@@ -158,7 +158,7 @@ describe('Deposit tests', async () => {
       }
     })
 
-    it('should deposit ERC20 tokens to the Plasma contract', async () => {
+    it('should deposit ERC20 tokens to the Plasma contract', async function () {
       // The new account should have no initial balance
       const initialBalance = await childChain.getBalance(aliceAccount.address)
       assert.equal(initialBalance.length, 0)

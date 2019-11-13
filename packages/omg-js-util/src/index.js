@@ -22,4 +22,3 @@ module.exports = {
   hexPrefix: require('./hexPrefix'),
   ethErrorReason: require('./ethErrorReason')
 }
-

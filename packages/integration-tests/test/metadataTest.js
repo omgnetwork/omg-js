@@ -29,20 +29,20 @@ const web3 = new Web3(config.geth_url)
 const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url })
 let rootChain
 
-describe('Metadata tests (ci-enabled-fast)', async () => {
-  before(async () => {
+describe('Metadata tests (ci-enabled-fast)', function () {
+  before(async function () {
     const plasmaContract = await rcHelper.getPlasmaContractAddress(config)
     rootChain = new RootChain(web3, plasmaContract.contract_addr)
     await faucet.init(rootChain, childChain, web3, config)
   })
 
-  describe('String as metadata', async () => {
+  describe('String as metadata', function () {
     const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.000001', 'ether')
     const TRANSFER_AMOUNT = web3.utils.toWei('.0000001', 'ether')
     let aliceAccount
     let bobAccount
 
-    before(async () => {
+    before(async function () {
       // Create Alice and Bob's accounts
       aliceAccount = rcHelper.createAccount(web3)
       console.log(`Created Alice account ${JSON.stringify(aliceAccount)}`)
@@ -53,7 +53,7 @@ describe('Metadata tests (ci-enabled-fast)', async () => {
       await ccHelper.waitForBalanceEq(childChain, aliceAccount.address, INTIIAL_ALICE_AMOUNT)
     })
 
-    after(async () => {
+    after(async function () {
       try {
         // Send any leftover funds back to the faucet
         await faucet.returnFunds(web3, aliceAccount)
@@ -63,7 +63,7 @@ describe('Metadata tests (ci-enabled-fast)', async () => {
       }
     })
 
-    it('should add metadata to a transaction', async () => {
+    it('should add metadata to a transaction', async function () {
       const METADATA = 'Hello สวัสดี'
 
       const utxos = await childChain.getUtxos(aliceAccount.address)
@@ -90,13 +90,13 @@ describe('Metadata tests (ci-enabled-fast)', async () => {
     })
   })
 
-  describe('sha256 as metadata', async () => {
+  describe('sha256 as metadata', function () {
     const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.000001', 'ether')
     const TRANSFER_AMOUNT = web3.utils.toWei('.0000001', 'ether')
     let aliceAccount
     let bobAccount
 
-    before(async () => {
+    before(async function () {
       // Create Alice and Bob's accounts
       aliceAccount = rcHelper.createAccount(web3)
       console.log(`Created Alice account ${JSON.stringify(aliceAccount)}`)
@@ -107,7 +107,7 @@ describe('Metadata tests (ci-enabled-fast)', async () => {
       await ccHelper.waitForBalanceEq(childChain, aliceAccount.address, INTIIAL_ALICE_AMOUNT)
     })
 
-    after(async () => {
+    after(async function () {
       try {
         // Send any leftover funds back to the faucet
         await faucet.returnFunds(web3, aliceAccount)
@@ -117,7 +117,7 @@ describe('Metadata tests (ci-enabled-fast)', async () => {
       }
     })
 
-    it('should add 32 byte hash metadata to a transaction', async () => {
+    it('should add 32 byte hash metadata to a transaction', async function () {
       const METADATA = 'Hello สวัสดี'
       const hash = ethUtil.keccak256(METADATA)
       const hashString = `0x${hash.toString('hex')}`
@@ -145,13 +145,13 @@ describe('Metadata tests (ci-enabled-fast)', async () => {
     })
   })
 
-  describe('No metadata', async () => {
+  describe('No metadata', function () {
     const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.000001', 'ether')
     const TRANSFER_AMOUNT = web3.utils.toWei('.0000001', 'ether')
     let aliceAccount
     let bobAccount
 
-    before(async () => {
+    before(async function () {
       // Create Alice and Bob's accounts
       aliceAccount = rcHelper.createAccount(web3)
       console.log(`Created Alice account ${JSON.stringify(aliceAccount)}`)
@@ -162,7 +162,7 @@ describe('Metadata tests (ci-enabled-fast)', async () => {
       await ccHelper.waitForBalanceEq(childChain, aliceAccount.address, INTIIAL_ALICE_AMOUNT)
     })
 
-    after(async () => {
+    after(async function () {
       try {
         // Send any leftover funds back to the faucet
         await faucet.returnFunds(web3, aliceAccount)
@@ -172,7 +172,7 @@ describe('Metadata tests (ci-enabled-fast)', async () => {
       }
     })
 
-    it('should send a transaction with NO metadata', async () => {
+    it('should send a transaction with NO metadata', async function () {
       const utxos = await childChain.getUtxos(aliceAccount.address)
       const result = await childChain.sendTransaction(
         aliceAccount.address,

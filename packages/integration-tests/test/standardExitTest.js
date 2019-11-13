@@ -33,19 +33,19 @@ let rootChain
 // NB This test waits for at least RootChain.MIN_EXIT_PERIOD so it should be run against a
 // modified RootChain contract with a shorter than normal MIN_EXIT_PERIOD.
 
-describe('Standard Exit tests', async () => {
-  before(async () => {
+describe('Standard Exit tests', function () {
+  before(async function () {
     const plasmaContract = await rcHelper.getPlasmaContractAddress(config)
     rootChain = new RootChain(web3, plasmaContract.contract_addr)
     await faucet.init(rootChain, childChain, web3, config)
   })
 
-  describe('Deposit transaction exit (ci-enabled)', async () => {
+  describe('Deposit transaction exit (ci-enabled)', function () {
     const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.1', 'ether')
     const DEPOSIT_AMOUNT = web3.utils.toWei('.0001', 'ether')
     let aliceAccount
 
-    beforeEach(async () => {
+    beforeEach(async function () {
       // Create and fund Alice's account
       aliceAccount = rcHelper.createAccount(web3)
       console.log(`Created Alice account ${JSON.stringify(aliceAccount)}`)
@@ -61,7 +61,7 @@ describe('Standard Exit tests', async () => {
       )
     })
 
-    afterEach(async () => {
+    afterEach(async function () {
       try {
         // Send any leftover funds back to the faucet
         await faucet.returnFunds(web3, aliceAccount)
@@ -70,7 +70,7 @@ describe('Standard Exit tests', async () => {
       }
     })
 
-    it('should succesfully exit a deposit', async () => {
+    it('should succesfully exit a deposit', async function () {
       // Alice deposits ETH into the Plasma contract
       let receipt = await rcHelper.depositEth(
         rootChain,
@@ -168,14 +168,14 @@ describe('Standard Exit tests', async () => {
     })
   })
 
-  describe('childchain transaction exit (ci-enabled)', async () => {
+  describe('childchain transaction exit (ci-enabled)', function () {
     const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.001', 'ether')
     const INTIIAL_BOB_RC_AMOUNT = web3.utils.toWei('.1', 'ether')
     const TRANSFER_AMOUNT = web3.utils.toWei('0.0002', 'ether')
     let aliceAccount
     let bobAccount
 
-    before(async () => {
+    before(async function () {
       // Create Alice and Bob's accounts
       aliceAccount = rcHelper.createAccount(web3)
       console.log(`Created Alice account ${JSON.stringify(aliceAccount)}`)
@@ -207,7 +207,7 @@ describe('Standard Exit tests', async () => {
       ])
     })
 
-    after(async () => {
+    after(async function () {
       try {
         // Send any leftover funds back to the faucet
         await faucet.returnFunds(web3, aliceAccount)
@@ -217,7 +217,7 @@ describe('Standard Exit tests', async () => {
       }
     })
 
-    it('should succesfully exit a ChildChain transaction', async () => {
+    it('should succesfully exit a ChildChain transaction', async function () {
       // Track total gas used
       let bobSpentOnGas
 
@@ -329,7 +329,7 @@ describe('Standard Exit tests', async () => {
     })
   })
 
-  describe('ERC20 exit (ci-enabled)', async () => {
+  describe('ERC20 exit (ci-enabled)', function () {
     const ERC20_CURRENCY = config.testErc20Contract
     const testErc20Contract = new web3.eth.Contract(
       erc20abi,
@@ -339,7 +339,7 @@ describe('Standard Exit tests', async () => {
     const INTIIAL_ALICE_AMOUNT_ERC20 = 2
     let aliceAccount
 
-    before(async () => {
+    before(async function () {
       // Create and fund Alice's account
       aliceAccount = rcHelper.createAccount(web3)
       console.log(`Created Alice account ${JSON.stringify(aliceAccount)}`)
@@ -371,7 +371,7 @@ describe('Standard Exit tests', async () => {
       ])
     })
 
-    after(async () => {
+    after(async function () {
       try {
         // Send any leftover funds back to the faucet
         await faucet.returnFunds(web3, aliceAccount)
@@ -380,7 +380,7 @@ describe('Standard Exit tests', async () => {
       }
     })
 
-    it('should exit ERC20 tokens', async () => {
+    it('should exit ERC20 tokens', async function () {
       // Check utxos on the child chain
       const utxos = await childChain.getUtxos(aliceAccount.address)
       assert.equal(utxos.length, 1)
