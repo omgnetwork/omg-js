@@ -43,13 +43,16 @@ describe('In-flight Exit tests', function () {
   })
 
   describe('in-flight transaction exit (ci-enabled)', function () {
-    const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.001', 'ether')
-    const INTIIAL_BOB_RC_AMOUNT = web3.utils.toWei('.1', 'ether')
-    const TRANSFER_AMOUNT = web3.utils.toWei('0.0002', 'ether')
+    let INTIIAL_ALICE_AMOUNT
+    let INTIIAL_BOB_RC_AMOUNT
+    let TRANSFER_AMOUNT
     let aliceAccount
     let bobAccount
 
     beforeEach(async function () {
+      INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.001', 'ether')
+      INTIIAL_BOB_RC_AMOUNT = web3.utils.toWei('.1', 'ether')
+      TRANSFER_AMOUNT = web3.utils.toWei('0.0002', 'ether')
       // Create Alice and Bob's accounts
       aliceAccount = rcHelper.createAccount(web3)
       console.log(`Created Alice account ${JSON.stringify(aliceAccount)}`)

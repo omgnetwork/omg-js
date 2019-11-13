@@ -37,11 +37,13 @@ describe('Deposit tests', function () {
   })
 
   describe('deposit ETH (ci-enabled)', function () {
-    const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.1', 'ether')
-    const TEST_AMOUNT = web3.utils.toWei('.0001', 'ether')
+    let INTIIAL_ALICE_AMOUNT
+    let TEST_AMOUNT
     let aliceAccount
 
     beforeEach(async function () {
+      INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.1', 'ether')
+      TEST_AMOUNT = web3.utils.toWei('.0001', 'ether')
       // Create and fund a new account
       aliceAccount = rcHelper.createAccount(web3)
       console.log(`Created new account ${JSON.stringify(aliceAccount)}`)

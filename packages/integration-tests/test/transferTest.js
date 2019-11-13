@@ -37,13 +37,14 @@ describe('Transfer tests', function () {
   })
 
   describe('Simple ETH (ci-enabled-fast)', function () {
-    const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.1', 'ether')
+    let INTIIAL_ALICE_AMOUNT
     // TRANSFER_AMOUNT is deliberately bigger than Number.MAX_SAFE_INTEGER to cause rounding errors if not properly handled
     const TRANSFER_AMOUNT = '20000000000000123'
     let aliceAccount
     let bobAccount
 
     before(async function () {
+      INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.1', 'ether')
       // Create Alice and Bob's accounts
       aliceAccount = rcHelper.createAccount(web3)
       console.log(`Created Alice account ${JSON.stringify(aliceAccount)}`)
@@ -112,11 +113,12 @@ describe('Transfer tests', function () {
   })
 
   describe('Transfer with 4 inputs and 4 outputs  (ci-enabled-fast)', function () {
-    const UTXO_AMOUNT = web3.utils.toWei('.0001', 'ether')
+    let UTXO_AMOUNT
     let aliceAccount
     let bobAccount
 
     before(async function () {
+      UTXO_AMOUNT = web3.utils.toWei('.0001', 'ether')
       // Create Alice and Bob's accounts
       aliceAccount = rcHelper.createAccount(web3)
       console.log(`Created Alice account ${JSON.stringify(aliceAccount)}`)
@@ -245,14 +247,16 @@ describe('Transfer tests', function () {
   })
 
   describe('ERC20 transfer', function () {
-    const ERC20_CURRENCY = config.testErc20Contract
-    const INTIIAL_ALICE_AMOUNT_ETH = web3.utils.toWei('.00000001', 'ether')
+    let ERC20_CURRENCY
+    let INTIIAL_ALICE_AMOUNT_ETH
     const INTIIAL_ALICE_AMOUNT = 4
     const TRANSFER_AMOUNT = 3
     let aliceAccount
     let bobAccount
 
     before(async function () {
+      ERC20_CURRENCY = config.testErc20Contract
+      INTIIAL_ALICE_AMOUNT_ETH = web3.utils.toWei('.00000001', 'ether')
       // Create Alice and Bob's accounts
       aliceAccount = rcHelper.createAccount(web3)
       console.log(`Created Alice account ${JSON.stringify(aliceAccount)}`)
@@ -428,13 +432,14 @@ describe('Transfer tests', function () {
   })
 
   describe('sendTransaction test (ci-enabled-fast)', function () {
-    const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.1', 'ether')
+    let INTIIAL_ALICE_AMOUNT
     // TRANSFER_AMOUNT is deliberately bigger than Number.MAX_SAFE_INTEGER to cause rounding errors if not properly handled
     const TRANSFER_AMOUNT = '20000000000000123'
     let aliceAccount
     let bobAccount
 
     before(async function () {
+      INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.1', 'ether')
       // Create Alice and Bob's accounts
       aliceAccount = rcHelper.createAccount(web3)
       console.log(`Created Alice account ${JSON.stringify(aliceAccount)}`)

@@ -36,11 +36,13 @@ describe('Decode txBytes onchain tests', function () {
   })
 
   describe('Decode txBytes exit data', function () {
-    const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.1', 'ether')
-    const DEPOSIT_AMOUNT = web3.utils.toWei('.0001', 'ether')
+    let INTIIAL_ALICE_AMOUNT
+    let DEPOSIT_AMOUNT
     let aliceAccount
 
     beforeEach(async function () {
+      INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.1', 'ether')
+      DEPOSIT_AMOUNT = web3.utils.toWei('.0001', 'ether')
       // Create and fund Alice's account
       aliceAccount = rcHelper.createAccount(web3)
       console.log(`Created Alice account ${JSON.stringify(aliceAccount)}`)
