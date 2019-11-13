@@ -183,8 +183,7 @@ describe('In-flight Exit Challenge Response tests', async () => {
         }
       )
 
-      // Carol's tx was not put into a block so it can't be a competitor,
-      // but she can still challenge Bob's IFE as non-canonical.
+      // Carol's tx was not put into a block, but it can still be used to challenge Bob's IFE as non-canonical
       const utxoPosOutput = transaction.encodeUtxoPos({
         blknum: fundAliceTx.result.blknum,
         txindex: fundAliceTx.result.txindex,

@@ -305,12 +305,12 @@ class RootChain {
         [
           inFlightTx,
           inputTxs,
-          inputUtxosPos, //inputUtxosPos
-          outputGuardPreimagesForInputs, //outputGuardPreimagesForInputs
+          inputUtxosPos,
+          outputGuardPreimagesForInputs,
           inputTxsInclusionProofs,
           inFlightTxSigs,
-          signatures, //inFlightTxWitnesses
-          inputSpendingConditionOptionalArgs //inputSpendingConditionOptionalArgs
+          signatures,
+          inputSpendingConditionOptionalArgs
         ]
       ),
       value: INFLIGHT_EXIT_BOND,
