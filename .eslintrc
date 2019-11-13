@@ -8,5 +8,9 @@
     ],
     "env": {
         "mocha": true
+    },
+    "rules": {
+        "mocha/no-hooks-for-single-case": 0,
+        "mocha/max-top-level-suites": 0
     }
 }
