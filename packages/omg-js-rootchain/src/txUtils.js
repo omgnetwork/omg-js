@@ -1,4 +1,5 @@
-const reason = require('./reason')
+const { ethErrorReason } = require('@omisego/omg-js-util')
+
 /**
  * Send transaction using web3
  *
@@ -52,9 +53,9 @@ async function sendTx (web3, txDetails, privateKey, callbacks) {
     try {
       transactionHash = JSON.parse(err.message.replace('Transaction has been reverted by the EVM:', '')).transactionHash
     } catch {
-        throw(err)
+      throw(err)
     }
-    reason({ web3, hash: transactionHash }).then(() => {
+    ethErrorReason({ web3, hash: transactionHash }).then(() => {
       throw(err)
     })
   })
