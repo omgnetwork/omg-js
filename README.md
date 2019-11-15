@@ -12,7 +12,8 @@ This is a Javascript library that allows you to interact with OmiseGo's MoreVP i
 
 ## Compatibility
 
-This library is currently compatible with version 0.2 of the OMG Network
+This library is currently compatible with version 0.3 of the OMG Network.
+Use with caution as this is an alpha release and some features have not yet been fully tested.
 
 ### Getting Started
 

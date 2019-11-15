@@ -117,6 +117,17 @@ describe('Challenge exit tests', function () {
       console.log(`Transferred ${TRANSFER_AMOUNT} from Alice to Bob again`)
 
       // Now Alice wants to cheat and exit with the dishonest utxo
+      const hasToken = await rootChain.hasToken(transaction.ETH_CURRENCY)
+      if (!hasToken) {
+        console.log(`Adding a ${transaction.ETH_CURRENCY} exit queue`)
+        await rootChain.addToken(
+          transaction.ETH_CURRENCY,
+          { from: aliceAccount.address, privateKey: aliceAccount.privateKey }
+        )
+      } else {
+        console.log(`Exit queue for ${transaction.ETH_CURRENCY} already exists`)
+      }
+
       const exitData = await childChain.getExitData(aliceDishonestUtxo)
       let receipt = await rootChain.startStandardExit(
         exitData.utxo_pos,

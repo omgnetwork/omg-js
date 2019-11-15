@@ -1,4 +1,3 @@
-
 async function reason ({ web3, hash }) {
   const tx = await web3.eth.getTransaction(hash)
   if (!tx) {
