@@ -152,6 +152,11 @@ async function inflightExitChildChain () {
     )}`
   )
 
+  // Decode the transaction to get the index of Bob's output
+  const outputIndex = createdTxn.outputs.findIndex(
+    e => e.outputGuard === bobAddress.address
+  )
+
   // Bob needs to piggyback his output on the in-flight exit
   const piggybackInFlightExitReceipt = await rootChain.piggybackInFlightExit(
     exitData.in_flight_tx,
