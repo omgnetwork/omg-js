@@ -357,5 +357,101 @@ describe('In-flight Exit tests', function () {
         .sub(bobSpentOnGas)
       assert.equal(bobEthBalance.toString(), expected.toString())
     })
+
+    it.only('should succesfully exit a ChildChain with piggybacking input transaction that is not included', async function () {
+      // Create a transaction that sends TRANSFER_AMOUNT from Alice to Bob, but don't submit it to the childchain
+      const bobTx = await ccHelper.createTx(
+        childChain,
+        aliceAccount.address,
+        bobAccount.address,
+        TRANSFER_AMOUNT,
+        transaction.ETH_CURRENCY,
+        aliceAccount.privateKey,
+        rootChain.plasmaContractAddress
+      )
+      console.log(`Transferred ${TRANSFER_AMOUNT} from Alice to Bob`)
+
+      // For whatever reason, Bob hasn't seen the transaction get put into a block
+      // and he wants to exit.
+
+      // Get the exit data
+      const decodedTx = transaction.decodeTxBytes(bobTx)
+      const exitData = await childChain.inFlightExitGetData(bobTx)
+      assert.hasAllKeys(exitData, [
+        'in_flight_tx',
+        'in_flight_tx_sigs',
+        'input_txs',
+        'input_txs_inclusion_proofs',
+        'input_utxos_pos'
+      ])
+
+      const hasToken = await rootChain.hasToken(transaction.ETH_CURRENCY)
+      if (!hasToken) {
+        console.log(`Adding a ${transaction.ETH_CURRENCY} exit queue`)
+        await rootChain.addToken(
+          transaction.ETH_CURRENCY,
+          {
+            from: bobAccount.address,
+            privateKey: bobAccount.privateKey
+          }
+        )
+      } else {
+        console.log(`Exit queue for ${transaction.ETH_CURRENCY} already exists`)
+      }
+
+      // Start an in-flight exit.
+      let receipt = await rootChain.startInFlightExit(
+        exitData.in_flight_tx,
+        exitData.input_txs,
+        exitData.input_utxos_pos,
+        ['0x'],
+        exitData.input_txs_inclusion_proofs,
+        decodedTx.sigs,
+        exitData.in_flight_tx_sigs,
+        ['0x'],
+        {
+          privateKey: bobAccount.privateKey,
+          from: bobAccount.address
+        }
+      )
+      console.log(
+        `Bob called RootChain.startInFlightExit(): txhash = ${receipt.transactionHash}`
+      )
+
+      // Alice try to piggyback the input
+      receipt = await rootChain.piggybackInFlightExitOnInput(
+        exitData.in_flight_tx,
+        0,
+        {
+          privateKey: aliceAccount.privateKey,
+          from: aliceAccount.address
+        }
+      )
+
+      console.log(
+        `Alice called RootChain.piggybackInFlightExit() : txhash = ${receipt.transactionHash}`
+      )
+
+      // Wait for challenge period
+      const toWait = await rcHelper.getTimeToExit(rootChain.plasmaContract)
+      console.log(`Waiting for challenge period... ${toWait}ms`)
+      await rcHelper.sleep(toWait)
+
+      receipt = await rootChain.processExits(transaction.ETH_CURRENCY, 0, 20, {
+        privateKey: bobAccount.privateKey,
+        from: bobAccount.address
+      })
+      console.log(
+        `Bob called RootChain.processExits() after challenge period: txhash = ${receipt.transactionHash}`
+      )
+
+      await rcHelper.awaitTx(web3, receipt.transactionHash)
+
+      // Get Bob's ETH balance
+      const aliceBalance = await web3.eth.getBalance(aliceAccount.address)
+      const expected = web3.utils.toBN(INTIIAL_ALICE_AMOUNT)
+
+      assert.equal(aliceBalance.toString(), expected.toString())
+    })
   })
 })

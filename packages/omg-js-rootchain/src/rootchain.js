@@ -373,8 +373,10 @@ class RootChain {
         this.web3,
         paymentExitGameContract,
         'piggybackInFlightExitOnInput',
-        inFlightTx,
-        inputIndex
+        [
+          inFlightTx,
+          inputIndex
+        ]
       ),
       value: PIGGYBACK_BOND,
       gas: txOptions.gas,
