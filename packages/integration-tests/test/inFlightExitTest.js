@@ -123,19 +123,6 @@ describe('In-flight Exit tests', function () {
         'input_utxos_pos'
       ])
 
-      const hasToken = await rootChain.hasToken(transaction.ETH_CURRENCY)
-      if (!hasToken) {
-        console.log(`Adding a ${transaction.ETH_CURRENCY} exit queue`)
-        const addTokenCall = await rootChain.addToken(
-          transaction.ETH_CURRENCY,
-          { from: bobAccount.address, privateKey: bobAccount.privateKey }
-        )
-        bobSpentOnGas = await rcHelper.spentOnGas(web3, addTokenCall)
-      } else {
-        console.log(`Exit queue for ${transaction.ETH_CURRENCY} already exists`)
-        bobSpentOnGas = numberToBN(0)
-      }
-
       // Start an in-flight exit.
       let receipt = await rootChain.startInFlightExit(
         exitData.in_flight_tx,
@@ -231,7 +218,7 @@ describe('In-flight Exit tests', function () {
 
     it('should succesfully exit a ChildChain transaction that is not included', async function () {
       // Create a transaction that sends TRANSFER_AMOUNT from Alice to Bob, but don't submit it to the childchain
-      let bobSpentOnGas = numberToBN(0)
+      const bobSpentOnGas = numberToBN(0)
       const bobTx = await ccHelper.createTx(
         childChain,
         aliceAccount.address,
@@ -256,22 +243,6 @@ describe('In-flight Exit tests', function () {
         'input_txs_inclusion_proofs',
         'input_utxos_pos'
       ])
-
-      const hasToken = await rootChain.hasToken(transaction.ETH_CURRENCY)
-      if (!hasToken) {
-        console.log(`Adding a ${transaction.ETH_CURRENCY} exit queue`)
-        const addTokenCall = await rootChain.addToken(
-          transaction.ETH_CURRENCY,
-          {
-            from: bobAccount.address,
-            privateKey: bobAccount.privateKey
-          }
-        )
-        bobSpentOnGas = await rcHelper.spentOnGas(web3, addTokenCall)
-      } else {
-        console.log(`Exit queue for ${transaction.ETH_CURRENCY} already exists`)
-        bobSpentOnGas = numberToBN(0)
-      }
 
       // Start an in-flight exit.
       let receipt = await rootChain.startInFlightExit(
@@ -400,20 +371,6 @@ describe('In-flight Exit tests', function () {
       const signedTx = childChain.buildSignedTransaction(typedData, signatures)
 
       const exitData = await childChain.inFlightExitGetData(signedTx)
-
-      const hasToken = await rootChain.hasToken(transaction.ETH_CURRENCY)
-      if (!hasToken) {
-        console.log(`Adding a ${transaction.ETH_CURRENCY} exit queue`)
-        await rootChain.addToken(
-          transaction.ETH_CURRENCY,
-          {
-            from: bobAccount.address,
-            privateKey: bobAccount.privateKey
-          }
-        )
-      } else {
-        console.log(`Exit queue for ${transaction.ETH_CURRENCY} already exists`)
-      }
 
       // kelvin double spend its utxo to bob
       const kelvinToBobTx = ccHelper.createTx(

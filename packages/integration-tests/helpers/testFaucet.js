@@ -49,7 +49,21 @@ const faucet = {
 
     await this.initEthBalance(web3, web3.utils.toWei(config.minAmountEth || '3', 'ether'))
     await this.initERC20Balance(web3, config.minAmountERC20 || 20)
+    await this.addToken(transaction.ETH_CURRENCY)
     await this.showInfo(web3)
+  },
+
+  addToken: async (currency) => {
+    const hasToken = await this.rootChain.hasToken(currency)
+    if (!hasToken) {
+      console.log(`Adding a ${currency} exit queue`)
+      await this.rootChain.addToken(
+        currency,
+        { from: this.address, privateKey: this.privateKey }
+      )
+    } else {
+      console.log(`Exit queue for ${currency} already exists`)
+    }
   },
 
   showInfo: async function (web3) {
