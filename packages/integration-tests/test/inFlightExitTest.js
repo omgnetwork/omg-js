@@ -50,7 +50,7 @@ describe('In-flight Exit tests', function () {
     let bobAccount
 
     beforeEach(async function () {
-      INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.001', 'ether')
+      INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.1', 'ether')
       INTIIAL_BOB_RC_AMOUNT = web3.utils.toWei('.1', 'ether')
       TRANSFER_AMOUNT = web3.utils.toWei('0.0002', 'ether')
       // Create Alice and Bob's accounts
@@ -359,6 +359,17 @@ describe('In-flight Exit tests', function () {
     })
 
     it.only('should succesfully exit a ChildChain with piggybacking input transaction that is not included', async function () {
+      await Promise.all([
+        // Give some ETH to Alice on the root chain
+        faucet.fundRootchainEth(web3, aliceAccount.address, INTIIAL_ALICE_AMOUNT)
+      ])
+      await Promise.all([
+        rcHelper.waitForEthBalanceEq(
+          web3,
+          aliceAccount.address,
+          INTIIAL_ALICE_AMOUNT
+        )
+      ])
       // Create a transaction that sends TRANSFER_AMOUNT from Alice to Bob, but don't submit it to the childchain
       const bobTx = await ccHelper.createTx(
         childChain,
@@ -377,14 +388,6 @@ describe('In-flight Exit tests', function () {
       // Get the exit data
       const decodedTx = transaction.decodeTxBytes(bobTx)
       const exitData = await childChain.inFlightExitGetData(bobTx)
-      assert.hasAllKeys(exitData, [
-        'in_flight_tx',
-        'in_flight_tx_sigs',
-        'input_txs',
-        'input_txs_inclusion_proofs',
-        'input_utxos_pos'
-      ])
-
       const hasToken = await rootChain.hasToken(transaction.ETH_CURRENCY)
       if (!hasToken) {
         console.log(`Adding a ${transaction.ETH_CURRENCY} exit queue`)
@@ -418,7 +421,7 @@ describe('In-flight Exit tests', function () {
         `Bob called RootChain.startInFlightExit(): txhash = ${receipt.transactionHash}`
       )
 
-      // Alice try to piggyback the input
+      // Alice needs to piggyback his output on the in-flight exit
       receipt = await rootChain.piggybackInFlightExitOnInput(
         exitData.in_flight_tx,
         0,
@@ -427,6 +430,8 @@ describe('In-flight Exit tests', function () {
           from: aliceAccount.address
         }
       )
+
+      const aliceSpentOnGas = await rcHelper.spentOnGas(web3, receipt)
 
       console.log(
         `Alice called RootChain.piggybackInFlightExit() : txhash = ${receipt.transactionHash}`
@@ -437,6 +442,7 @@ describe('In-flight Exit tests', function () {
       console.log(`Waiting for challenge period... ${toWait}ms`)
       await rcHelper.sleep(toWait)
 
+      // Call processExits again.
       receipt = await rootChain.processExits(transaction.ETH_CURRENCY, 0, 20, {
         privateKey: bobAccount.privateKey,
         from: bobAccount.address
@@ -447,11 +453,13 @@ describe('In-flight Exit tests', function () {
 
       await rcHelper.awaitTx(web3, receipt.transactionHash)
 
-      // Get Bob's ETH balance
-      const aliceBalance = await web3.eth.getBalance(aliceAccount.address)
-      const expected = web3.utils.toBN(INTIIAL_ALICE_AMOUNT)
-
-      assert.equal(aliceBalance.toString(), expected.toString())
+      // Get Alice's ETH balance
+      const aliceEthBalance = await web3.eth.getBalance(aliceAccount.address)
+      // Expect Alice's balance to be INTIIAL_ALICE_AMOUNT - gas spent
+      const expected = web3.utils
+        .toBN(web3.utils.toBN(INTIIAL_ALICE_AMOUNT))
+        .sub(aliceSpentOnGas)
+      assert.equal(aliceEthBalance.toString(), expected.toString())
     })
   })
 })
