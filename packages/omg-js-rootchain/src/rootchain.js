@@ -354,7 +354,7 @@ class RootChain {
     return txUtils.sendTx(this.web3, txDetails, txOptions.privateKey)
   }
 
-    /**
+  /**
    * Allows a user to piggyback onto an in-flight transaction.
    *
    * @method piggybackInFlightExit
@@ -374,7 +374,7 @@ class RootChain {
         paymentExitGameContract,
         'piggybackInFlightExitOnInput',
         inFlightTx,
-        inputIndex,
+        inputIndex
       ),
       value: PIGGYBACK_BOND,
       gas: txOptions.gas,

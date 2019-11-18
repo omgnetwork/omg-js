@@ -23,8 +23,8 @@ const assert = chai.assert
 
 const watcherUrl = 'http://omg-watcher'
 
-describe('getBalance', () => {
-  it('should return the balance of an address', async () => {
+describe('getBalance', function () {
+  it('should return the balance of an address', async function () {
     const address = '0xd72afdfa06ae5857a639051444f7608fea1528d4'
     const expectedObject = [{
       currency: '00000000000000000000',
@@ -43,7 +43,7 @@ describe('getBalance', () => {
     assert.equal(expectedObject[0].amount.toString(), result[0].amount.toString())
   })
 
-  it('should throw an error on failure', async () => {
+  it('should throw an error on failure', async function () {
     const address = '0x01234'
     const errorObject = {
       code: 'the_error_code',

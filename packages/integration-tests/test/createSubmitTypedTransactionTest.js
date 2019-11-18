@@ -26,21 +26,23 @@ const web3 = new Web3(config.geth_url)
 const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url })
 let rootChain
 
-describe('Create transaction tests with submitTyped (ci-enabled)', async () => {
-  before(async () => {
+describe('Create transaction tests with submitTyped (ci-enabled)', function () {
+  before(async function () {
     const plasmaContract = await rcHelper.getPlasmaContractAddress(config)
     rootChain = new RootChain(web3, plasmaContract.contract_addr)
     await faucet.init(rootChain, childChain, web3, config)
   })
 
-  describe('create a single currency transaction with submitTyped', async () => {
-    const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.000001', 'ether')
-    const TRANSFER_AMOUNT = web3.utils.toWei('.0000001', 'ether')
+  describe('create a single currency transaction with submitTyped', function () {
+    let INTIIAL_ALICE_AMOUNT
+    let TRANSFER_AMOUNT
     const FEE_AMOUNT = 10
     let aliceAccount
     let bobAccount
 
-    before(async () => {
+    before(async function () {
+      INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.000001', 'ether')
+      TRANSFER_AMOUNT = web3.utils.toWei('.0000001', 'ether')
       // Create Alice and Bob's accounts
       aliceAccount = rcHelper.createAccount(web3)
       console.log(`Created Alice account ${JSON.stringify(aliceAccount)}`)
@@ -51,7 +53,7 @@ describe('Create transaction tests with submitTyped (ci-enabled)', async () => {
       await ccHelper.waitForBalanceEq(childChain, aliceAccount.address, INTIIAL_ALICE_AMOUNT)
     })
 
-    after(async () => {
+    after(async function () {
       try {
         // Send any leftover funds back to the faucet
         await faucet.returnFunds(web3, aliceAccount)
@@ -61,7 +63,7 @@ describe('Create transaction tests with submitTyped (ci-enabled)', async () => {
       }
     })
 
-    it('should create and submit a single currency transaction using submitTyped', async () => {
+    it('should create and submit a single currency transaction using submitTyped', async function () {
       const payments = [{
         owner: bobAccount.address,
         currency: transaction.ETH_CURRENCY,

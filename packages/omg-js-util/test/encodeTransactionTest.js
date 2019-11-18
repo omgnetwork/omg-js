@@ -17,8 +17,8 @@ const chai = require('chai')
 const assert = chai.assert
 const transaction = require('../src/transaction')
 
-describe('Transaction tests', () => {
-  it('should return an encoded transaction from 1 input and 1 output', async () => {
+describe('Transaction tests', function () {
+  it('should return an encoded transaction from 1 input and 1 output', async function () {
     const txBody = {
       inputs: [
         {
@@ -42,7 +42,7 @@ describe('Transaction tests', () => {
     assert.equal(unsignedTx, expectedTx)
   })
 
-  it('should create a hex-encoded unsigned transaction with 4 inputs and 4 outputs', () => {
+  it('should create a hex-encoded unsigned transaction with 4 inputs and 4 outputs', function () {
     const txBody = {
       inputs: [
         {
@@ -100,7 +100,7 @@ describe('Transaction tests', () => {
     assert.equal(unsignedTx, expectedTx)
   })
 
-  it('should encode a transaction with no outputs', () => {
+  it('should encode a transaction with no outputs', function () {
     const txBody = {
       inputs: [
         {
@@ -116,8 +116,8 @@ describe('Transaction tests', () => {
     assert.equal(unsignedTx, expectedTx)
   })
 
-  describe('encodeDeposit', () => {
-    it('should return an encoded deposit transaction', async () => {
+  describe('encodeDeposit', function () {
+    it('should return an encoded deposit transaction', async function () {
       const address = '0x854951e37c68a99a52d9e3ae15e0cb62184a613e'
       const amount = 333
       const expected =
@@ -132,7 +132,7 @@ describe('Transaction tests', () => {
       assert.equal(hexed, expected)
     })
 
-    it('should return an encoded deposit transaction when address does not start with 0x', async () => {
+    it('should return an encoded deposit transaction when address does not start with 0x', async function () {
       const address = '854951e37c68a99a52d9e3ae15e0cb62184a613e'
       const amount = 333
       const expected =
@@ -147,7 +147,7 @@ describe('Transaction tests', () => {
       assert.equal(hexed, expected)
     })
 
-    it('should return an encoded deposit transaction when amount as a string', async () => {
+    it('should return an encoded deposit transaction when amount as a string', async function () {
       const address = '0x60c5bc2de80acda5016c1e81f61620adbc730dd2'
       const amount = '1000000000000000000'
       const expected =
@@ -162,7 +162,7 @@ describe('Transaction tests', () => {
       assert.equal(hexed, expected)
     })
 
-    it('should return an encoded deposit transaction when currency does not start with 0x', async () => {
+    it('should return an encoded deposit transaction when currency does not start with 0x', async function () {
       const address = '0x60c5bc2de80acda5016c1e81f61620adbc730dd2'
       const amount = '3000000000000000000000'
       const expected =

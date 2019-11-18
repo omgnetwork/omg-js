@@ -19,8 +19,8 @@ const assert = chai.assert
 const transaction = require('../src/transaction')
 const InvalidArgumentError = require('../src/InvalidArgumentError')
 
-describe('Validate Transaction tests', () => {
-  it('should fail to create a transaction with non array inputs', () => {
+describe('Validate Transaction tests', function () {
+  it('should fail to create a transaction with non array inputs', function () {
     const txBody = {
       inputs: {
         txindex: 0,
@@ -33,7 +33,7 @@ describe('Validate Transaction tests', () => {
     return assert.throws(() => transaction.validate(txBody), InvalidArgumentError, /Inputs must be an array/)
   })
 
-  it('should fail to create a transaction with 0 inputs', () => {
+  it('should fail to create a transaction with 0 inputs', function () {
     const txBody = {
       inputs: [],
       outputs: []
@@ -41,7 +41,7 @@ describe('Validate Transaction tests', () => {
     return assert.throws(() => transaction.validate(txBody), InvalidArgumentError, /Inputs must be an array of size/)
   })
 
-  it('should fail to create a transaction with too many inputs', () => {
+  it('should fail to create a transaction with too many inputs', function () {
     const txBody = {
       inputs: [{}, {}, {}, {}, {}],
       outputs: []
@@ -49,7 +49,7 @@ describe('Validate Transaction tests', () => {
     return assert.throws(() => transaction.validate(txBody), InvalidArgumentError, /Inputs must be an array of size/)
   })
 
-  it('should fail to create a transaction with too many outputs', () => {
+  it('should fail to create a transaction with too many outputs', function () {
     const txBody = {
       inputs: [
         {

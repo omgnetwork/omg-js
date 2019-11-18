@@ -31,22 +31,25 @@ let rootChain
 
 // NB This test waits for at least RootChain.MIN_EXIT_PERIOD so it should be run against a
 // modified RootChain contract with a shorter than normal MIN_EXIT_PERIOD.
-describe('In-flight Exit Challenge Response tests', async () => {
-  before(async () => {
+describe('In-flight Exit Challenge Response tests', function () {
+  before(async function () {
     const plasmaContract = await rcHelper.getPlasmaContractAddress(config)
     rootChain = new RootChain(web3, plasmaContract.contract_addr)
     await faucet.init(rootChain, childChain, web3, config)
   })
 
-  describe('in-flight transaction challenge response', async () => {
-    const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.001', 'ether')
-    const INTIIAL_BOB_RC_AMOUNT = web3.utils.toWei('.5', 'ether')
-    const TRANSFER_AMOUNT = web3.utils.toWei('0.0002', 'ether')
+  describe('in-flight transaction challenge response', function () {
+    let INTIIAL_ALICE_AMOUNT
+    let INTIIAL_BOB_RC_AMOUNT
+    let TRANSFER_AMOUNT
     let aliceAccount
     let bobAccount
     let carolAccount
     let fundAliceTx
-    before(async () => {
+    before(async function () {
+      INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.001', 'ether')
+      INTIIAL_BOB_RC_AMOUNT = web3.utils.toWei('.5', 'ether')
+      TRANSFER_AMOUNT = web3.utils.toWei('0.0002', 'ether')
       // Create Alice and Bob's accounts
       aliceAccount = rcHelper.createAccount(web3)
       console.log(`Created Alice account ${JSON.stringify(aliceAccount)}`)
@@ -60,7 +63,9 @@ describe('In-flight Exit Challenge Response tests', async () => {
         faucet.fundChildchain(aliceAccount.address, INTIIAL_ALICE_AMOUNT, transaction.ETH_CURRENCY),
         // Give some ETH to Bob on the root chain
         faucet.fundRootchainEth(web3, bobAccount.address, INTIIAL_BOB_RC_AMOUNT)
-      ]).then(([tx]) => fundAliceTx = tx)
+      ]).then(([tx]) => {
+        fundAliceTx = tx
+      })
       // Give some ETH to Carol on the root chain
       await faucet.fundRootchainEth(web3, carolAccount.address, INTIIAL_BOB_RC_AMOUNT)
 
@@ -72,7 +77,7 @@ describe('In-flight Exit Challenge Response tests', async () => {
       ])
     })
 
-    after(async () => {
+    after(async function () {
       try {
         // Send any leftover funds back to the faucet
         await faucet.returnFunds(web3, aliceAccount)
@@ -83,9 +88,9 @@ describe('In-flight Exit Challenge Response tests', async () => {
       }
     })
 
-    it('should respond to an invalid IFE challenge', async () => {
+    it('should respond to an invalid IFE challenge', async function () {
       // Alice creates a transaction to send funds to Bob
-      let bobSpentOnGas = numberToBN(0)
+      const bobSpentOnGas = numberToBN(0)
       const bobTx = await ccHelper.createTx(
         childChain,
         aliceAccount.address,
@@ -135,7 +140,7 @@ describe('In-flight Exit Challenge Response tests', async () => {
       console.log(`Bob called RootChain.startInFlightExit(): txhash = ${receipt.transactionHash}`)
 
       // Keep track of how much Bob spends on gas
-      bobSpentOnGas.iadd(await rcHelper.spentOnGas(web3, receipt))    
+      bobSpentOnGas.iadd(await rcHelper.spentOnGas(web3, receipt))
       const outputIndex = decodedTx.outputs.findIndex(e => e.outputGuard === bobAccount.address)
 
       // Bob piggybacks his output on the in-flight exit
@@ -189,7 +194,7 @@ describe('In-flight Exit Challenge Response tests', async () => {
         txindex: fundAliceTx.result.txindex,
         oindex: 0
       }).toNumber()
-      
+
       const unsignInput = transaction.encode(transaction.decodeTxBytes(fundAliceTx.txbytes), { signed: false })
       const unsignCarolTx = transaction.encode(carolTxDecoded, { signed: false })
       receipt = await rootChain.challengeInFlightExitNotCanonical({

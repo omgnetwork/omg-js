@@ -20,8 +20,8 @@ const transaction = require('../src/transaction')
 const sign = require('../src/sign')
 const rlp = require('rlp')
 
-describe('decodeTransaction', () => {
-  it('should decode an encoded unsigned transaction with inputs and outputs', async () => {
+describe('decodeTransaction', function () {
+  it('should decode an encoded unsigned transaction with inputs and outputs', async function () {
     const txBody = {
       transactionType: 1,
       inputs: [
@@ -71,7 +71,7 @@ describe('decodeTransaction', () => {
     assert.deepEqual(txBody, decoded)
   })
 
-  it('should decode an encoded unsigned transaction with only inputs', async () => {
+  it('should decode an encoded unsigned transaction with only inputs', async function () {
     const txBody = {
       inputs: [
         {
@@ -104,7 +104,7 @@ describe('decodeTransaction', () => {
     })
   })
 
-  it('should decode an encoded signed transaction with only inputs', async () => {
+  it('should decode an encoded signed transaction with only inputs', async function () {
     const txBody = {
       transactionType: 1,
       inputs: [
@@ -146,7 +146,7 @@ describe('decodeTransaction', () => {
     assert.deepEqual({ ...txBody, sigs: signatures }, decoded)
   })
 
-  it('should decode an encoded signed transaction with inputs and outputs', async () => {
+  it('should decode an encoded signed transaction with inputs and outputs', async function () {
     const txBody = {
       transactionType: 1,
       inputs: [
@@ -201,7 +201,7 @@ describe('decodeTransaction', () => {
     assert.deepEqual({ ...txBody, sigs: signatures }, decoded)
   })
 
-  it('should decode encoded deposit to raw', async () => {
+  it('should decode encoded deposit to raw', async function () {
     const owner = '0xf4ebbe787311bb955bb353b7a4d8b97af8ed1c9b'
     const amount = 10
     const currency = '0x0000000000000000000000000000000000000000'
@@ -224,7 +224,7 @@ describe('decodeTransaction', () => {
     })
   })
 
-  it('should decode encoded deposit', async () => {
+  it('should decode encoded deposit', async function () {
     const owner = '0xf4ebbe787311bb955bb353b7a4d8b97af8ed1c9b'
     const amount = 10
     const currency = '0x0000000000000000000000000000000000000000'

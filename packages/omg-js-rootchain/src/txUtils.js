@@ -53,10 +53,10 @@ async function sendTx (web3, txDetails, privateKey, callbacks) {
     try {
       transactionHash = JSON.parse(err.message.replace('Transaction has been reverted by the EVM:', '')).transactionHash
     } catch {
-      throw(err)
+      throw (err)
     }
     ethErrorReason({ web3, hash: transactionHash }).then(() => {
-      throw(err)
+      throw (err)
     })
   })
 }
