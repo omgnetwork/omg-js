@@ -360,12 +360,13 @@ describe('In-flight Exit tests', function () {
 
     it.only('should succesfully exit a ChildChain with piggybacking input transaction that is not included', async function () {
       const aliceSpentOnGas = numberToBN(0)
-      const INTIIAL_KELVIN_AMOUNT = web3.utils.toWei('.1', 'ether')
 
       // fund some ETH for alice on rootchain so she can piggyback / challenge
       await faucet.fundRootchainEth(web3, aliceAccount.address, INTIIAL_ALICE_AMOUNT)
       await rcHelper.waitForEthBalanceEq(web3, aliceAccount.address, INTIIAL_ALICE_AMOUNT)
 
+      // we need the 3rd guy here, introducing kelvin which he will do a double spend
+      const INTIIAL_KELVIN_AMOUNT = web3.utils.toWei('.1', 'ether')
       const kelvinAccount = rcHelper.createAccount(web3)
       console.log(`Created Kelvin account ${JSON.stringify(bobAccount)}`)
       const fundKelvinTx = await faucet.fundChildchain(
