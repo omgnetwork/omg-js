@@ -32,78 +32,59 @@ const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxy
 const bobAddress = config.bob_eth_address
 const bobPrivateKey = config.bob_eth_address_private_key
 
-const aliceAddress = config.alice_eth_address
-
 async function exitChildChain () {
-  let aliceRootchainBalance = await web3.eth.getBalance(aliceAddress)
   let bobRootchainBalance = await web3.eth.getBalance(bobAddress)
-
-  let aliceChildchainBalanceArray = await childChain.getBalance(aliceAddress)
   let bobChildchainBalanceArray = await childChain.getBalance(bobAddress)
 
-  console.log(`Alice's rootchain balance: ${aliceRootchainBalance}`)
-  console.log(`Bob's rootchain balance: ${bobRootchainBalance}`)
-
-  console.log(`Alice's childchain balance: ${aliceChildchainBalanceArray.length === 0 ? 0 : aliceChildchainBalanceArray[0].amount}`)
-  console.log(`Bob's childchain balance: ${bobChildchainBalanceArray.length === 0 ? 0 : bobChildchainBalanceArray[0].amount}`)
+  console.log(`Bob's rootchain balance: ${web3.utils.fromWei(String(bobRootchainBalance), 'ether')} ETH`)
+  console.log(`Bob's childchain balance: ${bobChildchainBalanceArray.length === 0 ? 0 : web3.utils.fromWei(String(bobChildchainBalanceArray[0].amount))} ETH`)
+  console.log('-----')
 
   // get deposit UTXO and exit data
-  let aliceUtxos = await childChain.getUtxos(aliceAddress)
-  let aliceUtxoToExit = aliceUtxos[0]
-
   let bobUtxos = await childChain.getUtxos(bobAddress)
   let bobUtxoToExit = bobUtxos[0]
+  if (!bobUtxoToExit) {
+    console.log('Bob doesnt have any UTXOs to exit')
+    return
+  }
 
-  console.log(`Alice's UTXOS = ${JSON.stringify(aliceUtxoToExit, undefined, 2)}`)
-  console.log(`Bob's UTXOs = ${JSON.stringify(bobUtxoToExit, undefined, 2)}`)
+  console.log(`Bob's wants to exit ${web3.utils.fromWei(String(bobUtxoToExit.amount), 'ether')} ETH with this UTXO:\n${JSON.stringify(bobUtxoToExit, undefined, 2)}`)
 
-  const exitData = await childChain.getExitData(bobUtxoToExit)
+  // check if queue exists for this token
+  const hasToken = await rootChain.hasToken(transaction.ETH_CURRENCY)
+  if (!hasToken) {
+    console.log(`Adding a ${transaction.ETH_CURRENCY} exit queue`)
+    const addTokenCall = await rootChain.addToken(
+      transaction.ETH_CURRENCY,
+      { from: bobAddress, privateKey: bobPrivateKey }
+    )
+  }
 
   // start a standard exit
+  const exitData = await childChain.getExitData(bobUtxoToExit)
   const startExitReceipt = await rootChain.startStandardExit(
     exitData.utxo_pos,
     exitData.txbytes,
     exitData.proof,
     { privateKey: bobPrivateKey, from: bobAddress }
   )
+  console.log(`Bob started a standard exit`)
 
-  console.log(`Started standard childchain exit. Start standard exit receipt: ${JSON.stringify(startExitReceipt, undefined, 2)}`)
-
-  // wait for challenge period to complete
   await wait.waitForChallengePeriodToEnd(rootChain, exitData)
-
-  // call processExits() after challenge period is over
+  // call processExits after challenge period is over
   const processExitsPostChallengeReceipt = await rootChain.processExits(
-    transaction.ETH_CURRENCY, 0, 1,
+    transaction.ETH_CURRENCY, 0, 20,
     { privateKey: bobPrivateKey, from: bobAddress }
   )
+  console.log(`Exits processed`)
 
-  console.log(`Post-challenge process exits started. Process exits receipt: ${JSON.stringify(processExitsPostChallengeReceipt, undefined, 2)}`)
-
-  // get final ETH balance
-  aliceRootchainBalance = await web3.eth.getBalance(aliceAddress)
+  // get final ETH balances
   bobRootchainBalance = await web3.eth.getBalance(bobAddress)
-
-  aliceChildchainBalanceArray = await childChain.getBalance(aliceAddress)
   bobChildchainBalanceArray = await childChain.getBalance(bobAddress)
 
-  console.log(`Final alice rootchain balance: ${aliceRootchainBalance}`)
-  console.log(`Final bob rootchain balance: ${bobRootchainBalance}`)
-
-  console.log(`Final alice childchain balance: ${aliceChildchainBalanceArray.length === 0 ? 0 : aliceChildchainBalanceArray[0].amount}`)
-  console.log(`Final bob childchain balance: ${bobChildchainBalanceArray.length === 0 ? 0 : bobChildchainBalanceArray[0].amount}`)
-
-  bobUtxos = await childChain.getUtxos(bobAddress)
-  bobUtxoToExit = bobUtxos[0]
-
-  aliceUtxos = await childChain.getUtxos(aliceAddress)
-  aliceUtxoToExit = aliceUtxos[0]
-
-  console.log('Alice still has a UTXO as she has not exited yet. But Bob has no remaining UTXOs as he already exited his UTXO.')
-
-  console.log(`Alice's UTXOS = ${JSON.stringify(aliceUtxoToExit, undefined, 2)}`)
-  console.log(`Bob's UTXOs = ${JSON.stringify(bobUtxoToExit, undefined, 2)}`)
-
+  console.log('-----')
+  console.log(`Bob's rootchain balance: ${web3.utils.fromWei(String(bobRootchainBalance), 'ether')} ETH`)
+  console.log(`Bob's childchain balance: ${bobChildchainBalanceArray.length === 0 ? 0 : web3.utils.fromWei(String(bobChildchainBalanceArray[0].amount))} ETH`)
   return Promise.resolve()
 };
 

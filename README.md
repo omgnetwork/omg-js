@@ -76,16 +76,14 @@ From the `examples` folder run the scripts below in order to follow the story.
     
     `npm run childchain-transaction`
 
-Alice has now sent some ETH to Bob. You should see a UTXO for Alice and a UTXO for Bob as a result of this transaction.
+Alice has now sent some ETH to Bob. This should be reflected in Bob's childchain balance.
 
 3. [Get Alice's and Bob's Childchain UTXOs](examples/childchain-utxos.js)
 
     `npm run childchain-utxos`
 
-4. [Transfer (exit) all of Bob's Childchain funds to the Rootchain](examples/childchain-exit.js)
+4. [Exit one of Bob's Childchain UTXO to the Rootchain](examples/childchain-exit.js)
 
     `npm run childchain-exit`
 
 Checking Bob's final rootchain balance you will notice it will be a little less than expected. This is because of rootchain gas costs Bob had to pay to exit the childchain.
-
-

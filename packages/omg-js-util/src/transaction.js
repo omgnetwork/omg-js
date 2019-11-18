@@ -335,10 +335,6 @@ function validateInputs (arg) {
   if (!Array.isArray(arg)) {
     throw new InvalidArgumentError('Inputs must be an array')
   }
-
-  if (arg.length === 0 || arg.length > MAX_INPUTS) {
-    throw new InvalidArgumentError(`Inputs must be an array of size > 0 and < ${MAX_INPUTS}`)
-  }
 }
 
 function validateOutputs (arg) {

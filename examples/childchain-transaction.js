@@ -51,15 +51,14 @@ const fee = {
 async function createSignBuildAndSubmitTransaction () {
   let aliceRootchainBalance = await web3.eth.getBalance(aliceAddress)
   let bobRootchainBalance = await web3.eth.getBalance(bobAddress)
-
   let alicesBalanceArray = await childChain.getBalance(aliceAddress)
   let bobsBalanceArray = await childChain.getBalance(bobAddress)
 
-  console.log(`Alice's rootchain balance: ${aliceRootchainBalance}`)
-  console.log(`Bob's rootchain balance: ${bobRootchainBalance}`)
-
-  console.log(`Alice's childchain balance: ${alicesBalanceArray.length === 0 ? 0 : alicesBalanceArray[0].amount}`)
-  console.log(`Bob's childchain balance: ${bobsBalanceArray.length === 0 ? 0 : bobsBalanceArray[0].amount}`)
+  console.log(`Alice's rootchain balance: ${web3.utils.fromWei(String(aliceRootchainBalance), 'ether')} ETH`)
+  console.log(`Bob's rootchain balance: ${web3.utils.fromWei(String(bobRootchainBalance), 'ether')} ETH`)
+  console.log(`Alice's childchain balance: ${alicesBalanceArray.length === 0 ? 0 : web3.utils.fromWei(String(alicesBalanceArray[0].amount))} ETH`)
+  console.log(`Bob's childchain balance: ${bobsBalanceArray.length === 0 ? 0 : web3.utils.fromWei(String(bobsBalanceArray[0].amount))} ETH`)
+  console.log('-----')
 
   const createdTxn = await childChain.createTransaction(
     aliceAddress,
@@ -70,19 +69,12 @@ async function createSignBuildAndSubmitTransaction () {
 
   console.log(`Created a childchain transaction of ${web3.utils.fromWei(payments[0].amount.toString(), 'ether')} ETH from Alice to Bob.`)
 
-  // get the transaction data
+  // type/sign/build/submit
   const typedData = transaction.getTypedData(createdTxn.transactions[0], rootChainPlasmaContractAddress)
-
-  // sign the data
   const signatures = childChain.signTransaction(typedData, [alicePrivateKey])
-
-  // build the signed transaction
   const signedTxn = childChain.buildSignedTransaction(typedData, signatures)
-
-  // submit the signed transaction to the childchain
   const transactionReceipt = await childChain.submitTransaction(signedTxn)
-
-  console.log(`Submitted transaction. Transaction receipt: ${JSON.stringify(transactionReceipt, undefined, 2)}`)
+  console.log('Transaction submitted')
 
   // wait for transaction to be recorded by the watcher
   console.log('Waiting for transaction to be recorded by the watcher...')
@@ -90,16 +82,14 @@ async function createSignBuildAndSubmitTransaction () {
 
   aliceRootchainBalance = await web3.eth.getBalance(aliceAddress)
   bobRootchainBalance = await web3.eth.getBalance(bobAddress)
-
   alicesBalanceArray = await childChain.getBalance(aliceAddress)
   bobsBalanceArray = await childChain.getBalance(bobAddress)
 
-  console.log(`Alice's rootchain balance: ${aliceRootchainBalance}`)
-  console.log(`Bob's rootchain balance: ${bobRootchainBalance}`)
-
-  console.log(`Alice's childchain balance: ${alicesBalanceArray.length === 0 ? 0 : alicesBalanceArray[0].amount}`)
-  console.log(`Bob's childchain balance: ${bobsBalanceArray.length === 0 ? 0 : bobsBalanceArray[0].amount}`)
-
+  console.log('-----')
+  console.log(`Alice's rootchain balance: ${web3.utils.fromWei(String(aliceRootchainBalance), 'ether')} ETH`)
+  console.log(`Bob's rootchain balance: ${web3.utils.fromWei(String(bobRootchainBalance), 'ether')} ETH`)
+  console.log(`Alice's childchain balance: ${alicesBalanceArray.length === 0 ? 0 : web3.utils.fromWei(String(alicesBalanceArray[0].amount))} ETH`)
+  console.log(`Bob's childchain balance: ${bobsBalanceArray.length === 0 ? 0 : web3.utils.fromWei(String(bobsBalanceArray[0].amount))} ETH`)
   return Promise.resolve()
 }
 

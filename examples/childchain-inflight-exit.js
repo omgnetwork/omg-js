@@ -44,151 +44,98 @@ const transferAmount = BigNumber(
 async function inflightExitChildChain () {
   let aliceRootchainBalance = await web3.eth.getBalance(aliceAddress)
   let bobRootchainBalance = await web3.eth.getBalance(bobAddress)
-
   let aliceChildchainBalanceArray = await childChain.getBalance(aliceAddress)
   let bobChildchainBalanceArray = await childChain.getBalance(bobAddress)
 
-  console.log(`Alice's rootchain balance: ${aliceRootchainBalance}`)
-  console.log(`Bob's rootchain balance: ${bobRootchainBalance}`)
+  console.log(`Alice's rootchain balance: ${web3.utils.fromWei(String(aliceRootchainBalance), 'ether')} ETH`)
+  console.log(`Bob's rootchain balance: ${web3.utils.fromWei(String(bobRootchainBalance), 'ether')} ETH`)
+  console.log(`Alice's childchain balance: ${aliceChildchainBalanceArray.length === 0 ? 0 : web3.utils.fromWei(String(aliceChildchainBalanceArray[0].amount), 'ether')} ETH`)
+  console.log(`Bob's childchain balance: ${bobChildchainBalanceArray.length === 0 ? 0 : web3.utils.fromWei(String(bobChildchainBalanceArray[0].amount), 'ether')} ETH`)
+  console.log('-----')
 
-  console.log(
-    `Alice's childchain balance: ${
-      aliceChildchainBalanceArray.length === 0
-        ? 0
-        : aliceChildchainBalanceArray[0].amount
-    }`
-  )
-  console.log(
-    `Bob's childchain balance: ${
-      bobChildchainBalanceArray.length === 0
-        ? 0
-        : bobChildchainBalanceArray[0].amount
-    }`
-  )
-
-  const utxos = await childChain.getUtxos(aliceAddress)
-
-  console.log(`Alice's UTXOS = ${JSON.stringify(utxos, undefined, 2)}`)
-
-  const createdTxn = transaction.createTransactionBody(
+  const payments = [{
+    owner: bobAddress,
+    currency: transaction.ETH_CURRENCY,
+    amount: Number(transferAmount)
+  }]
+  const fee = {
+    currency: transaction.ETH_CURRENCY,
+    amount: 0
+  }
+  const createdTxn = await childChain.createTransaction(
     aliceAddress,
-    utxos,
-    bobAddress,
-    transferAmount,
-    transaction.ETH_CURRENCY
-  )
-
-  console.log(
-    `Created a childchain transaction of ${web3.utils.fromWei(
-      Number(transferAmount).toString(),
-      'ether'
-    )} ETH from Alice to Bob.`
+    payments,
+    fee,
+    transaction.NULL_METADATA
   )
   // get the transaction data
   const typedData = transaction.getTypedData(
-    createdTxn,
+    createdTxn.transactions[0],
     rootChainPlasmaContractAddress
   )
-  // sign the data
+  // sign/build/submit
   const signatures = childChain.signTransaction(typedData, [alicePrivateKey])
-
-  // build the signed transaction
   const signedTxn = childChain.buildSignedTransaction(typedData, signatures)
+  const receipt = await childChain.submitTransaction(signedTxn)
+  console.log(`Alice sends ${web3.utils.fromWei(Number(transferAmount).toString(), 'ether')} ETH to Bob on the childchain`)
 
-  // submit the signed transaction to the childchain
-  const transactionReceipt = await childChain.submitTransaction(signedTxn)
-
-  console.log(
-    `Submitted transaction. Transaction receipt: ${JSON.stringify(
-      transactionReceipt,
-      undefined,
-      2
-    )}`
-  )
-
-  // get deposit UTXO and exit data
-  let aliceUtxos = await childChain.getUtxos(aliceAddress)
-  let aliceUtxoToExit = aliceUtxos[0]
-
-  let bobUtxos = await childChain.getUtxos(bobAddress)
-  let bobUtxoToExit = bobUtxos[0]
-
-  console.log(
-    `Alice's UTXOS = ${JSON.stringify(aliceUtxoToExit, undefined, 2)}`
-  )
-  console.log(`Bob's UTXOs = ${JSON.stringify(bobUtxoToExit, undefined, 2)}`)
-
-  // Bob hasn't seen the transaction get put into a block and he wants to exit now.
-
-  console.log(`Alice's signed TX: ${signedTxn}`)
-
-  // get the exit data
-  const exitData = await childChain.inFlightExitGetData(signedTxn)
-
-  console.log(`Bob's exit data = ${JSON.stringify(exitData, undefined, 2)}`)
+  // Bob hasn't seen the transaction get put into a block and he wants to exit his output.
+  // check if queue exists for this token
+  const hasToken = await rootChain.hasToken(transaction.ETH_CURRENCY)
+  if (!hasToken) {
+    console.log(`Adding a ${transaction.ETH_CURRENCY} exit queue`)
+    const addTokenCall = await rootChain.addToken(
+      transaction.ETH_CURRENCY,
+      { from: bobAddress, privateKey: bobPrivateKey }
+    )
+  }
 
   // start an in-flight exit
+  const exitData = await childChain.inFlightExitGetData(signedTxn)
   const outputGuardPreimagesForInputs = ['0x']
   const inputSpendingConditionOptionalArgs = ['0x']
   const startInflightExitReceipt = await rootChain.startInFlightExit(
     exitData.in_flight_tx,
     exitData.input_txs,
-    exitData.input_txs_inclusion_proofs,
-    exitData.in_flight_tx_sigs,
     exitData.input_utxos_pos,
-    signatures,
     outputGuardPreimagesForInputs,
+    exitData.input_txs_inclusion_proofs,
+    signatures,
+    exitData.in_flight_tx_sigs,
     inputSpendingConditionOptionalArgs,
     {
       privateKey: bobPrivateKey,
       from: bobAddress
     }
   )
-  console.log(
-    `Bob started inflight roothchain exit. Inflight exit receipt: ${JSON.stringify(
-      startInflightExitReceipt,
-      undefined,
-      2
-    )}`
-  )
+  console.log('Bob starts an inflight exit')
 
   // Decode the transaction to get the index of Bob's output
-  const outputIndex = createdTxn.outputs.findIndex(
+  const outputIndex = createdTxn.transactions[0].outputs.findIndex(
     e => e.outputGuard === bobAddress.address
   )
 
   // Bob needs to piggyback his output on the in-flight exit
-  const piggybackInFlightExitReceipt = await rootChain.piggybackInFlightExit(
+  const piggybackInFlightExitReceipt = await rootChain.piggybackInFlightExitOnOutput(
     exitData.in_flight_tx,
     outputIndex,
+    '0x',
     {
       privateKey: bobPrivateKey,
       from: bobAddress
     }
   )
-
-  console.log(
-    'Bob called piggybacked his output. piggybackInFlightExitReceipt = ' +
-      `${JSON.stringify(piggybackInFlightExitReceipt)}`
-  )
+  console.log('Bob piggybacks his output')
 
   // wait for challenge period to complete
   await wait.waitForChallengePeriodToEnd(rootChain, exitData)
 
   // call processExits() after challenge period is over
-  const processExitsPostChallengeReceipt = await rootChain.processExit(
+  const processExitsPostChallengeReceipt = await rootChain.processExits(
     transaction.ETH_CURRENCY,
     0,
     10,
     { privateKey: bobPrivateKey, from: bobAddress }
-  )
-
-  console.log(
-    `Post-challenge process exits started. Process exits receipt: ${JSON.stringify(
-      processExitsPostChallengeReceipt,
-      undefined,
-      2
-    )}`
   )
 
   await wait.waitForTransaction(
@@ -197,46 +144,19 @@ async function inflightExitChildChain () {
     config.millis_to_wait_for_next_block,
     config.blocks_to_wait_for_txn
   )
+  console.log('Exits processed')
 
-  // get final ETH balance
+  // get final ETH balances
   aliceRootchainBalance = await web3.eth.getBalance(aliceAddress)
   bobRootchainBalance = await web3.eth.getBalance(bobAddress)
-
   aliceChildchainBalanceArray = await childChain.getBalance(aliceAddress)
   bobChildchainBalanceArray = await childChain.getBalance(bobAddress)
 
-  console.log(`Final alice rootchain balance: ${aliceRootchainBalance}`)
-  console.log(`Final bob rootchain balance: ${bobRootchainBalance}`)
-
-  console.log(
-    `Final alice childchain balance: ${
-      aliceChildchainBalanceArray.length === 0
-        ? 0
-        : aliceChildchainBalanceArray[0].amount
-    }`
-  )
-  console.log(
-    `Final bob childchain balance: ${
-      bobChildchainBalanceArray.length === 0
-        ? 0
-        : bobChildchainBalanceArray[0].amount
-    }`
-  )
-
-  bobUtxos = await childChain.getUtxos(bobAddress)
-  bobUtxoToExit = bobUtxos[0]
-
-  aliceUtxos = await childChain.getUtxos(aliceAddress)
-  aliceUtxoToExit = aliceUtxos[0]
-
-  console.log(
-    'Alice still has a UTXO as she has not exited yet. But Bob has no remaining UTXOs as he already exited his UTXO.'
-  )
-
-  console.log(
-    `Alice's UTXOS = ${JSON.stringify(aliceUtxoToExit, undefined, 2)}`
-  )
-  console.log(`Bob's UTXOs = ${JSON.stringify(bobUtxoToExit, undefined, 2)}`)
+  console.log('-----')
+  console.log(`Alice rootchain balance: ${web3.utils.fromWei(String(aliceRootchainBalance), 'ether')} ETH`)
+  console.log(`Bob rootchain balance: ${web3.utils.fromWei(String(bobRootchainBalance), 'ether')} ETH`)
+  console.log(`Alice childchain balance: ${aliceChildchainBalanceArray.length === 0 ? 0 : web3.utils.fromWei(String(aliceChildchainBalanceArray[0].amount), 'ether')} ETH`)
+  console.log(`Bob childchain balance: ${bobChildchainBalanceArray.length === 0 ? 0 : web3.utils.fromWei(String(bobChildchainBalanceArray[0].amount), 'ether')} ETH`)
 }
 
 (async () => {

@@ -1,21 +1,18 @@
-
 function wait (ms) {
   return new Promise((resolve, reject) => setTimeout(resolve, ms))
 }
 
-async function waitForChallengePeriodToEnd (rootChain, exitData) {
-  let waitMs = await rootChain.plasmaContract.methods.getExitableTimestamp(exitData.utxo_pos.toString()).call()
-  waitMs = (Number(waitMs) - Math.trunc(Date.now() / 1000)) * 1000
+async function waitForChallengePeriodToEnd (rootChain) {
+  const minExitPeriod = await rootChain.plasmaContract.methods.minExitPeriod().call() * 1000
+  const waitMs = (Number(minExitPeriod) * 2.1)
 
-  console.log(`Waiting for ${waitMs} millis for challenge period to end...`)
-
+  console.log(`Waiting for ${waitMs} ms for the challenge period to end...`)
   await wait(waitMs)
-
-  console.log('Challenge period to finished')
+  console.log('Challenge period finished')
 }
 
 async function waitForTransaction (web3, transactionHash, millisToWaitForTxn, blocksToWaitForTxn) {
-  var transactionReceiptAsync = async (transactionHash, resolve, reject) => {
+  const transactionReceiptAsync = async (transactionHash, resolve, reject) => {
     try {
       const transactionReceipt = await web3.eth.getTransactionReceipt(transactionHash)
 
@@ -23,13 +20,10 @@ async function waitForTransaction (web3, transactionHash, millisToWaitForTxn, bl
         try {
           const block = await web3.eth.getBlock(transactionReceipt.blockNumber)
           const current = await web3.eth.getBlock('latest')
-
-          console.log(`transaction block: ${block.number}`)
-          console.log(`current block:     ${current.number}`)
-
+          const remaining = blocksToWaitForTxn - (current.number - block.number)
+          console.log(`${remaining} more block confirmations`)
           if (current.number - block.number >= blocksToWaitForTxn) {
             const transaction = await web3.eth.getTransaction(transactionHash)
-
             if (transaction.blockNumber !== null) {
               return resolve(transactionReceipt)
             } else {
@@ -53,7 +47,7 @@ async function waitForTransaction (web3, transactionHash, millisToWaitForTxn, bl
 }
 
 module.exports = {
-  wait: wait,
-  waitForChallengePeriodToEnd: waitForChallengePeriodToEnd,
-  waitForTransaction: waitForTransaction
+  wait,
+  waitForChallengePeriodToEnd,
+  waitForTransaction
 }

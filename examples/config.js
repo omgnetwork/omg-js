@@ -15,8 +15,7 @@
 */
 
 require('dotenv').config()
-
-console.log('env: ', process.env.WATCHER_URL)
+const { hexPrefix } = require('../packages/omg-js-util/src')
 
 const config = {
   watcher_url: process.env.WATCHER_URL,
@@ -25,18 +24,13 @@ const config = {
   rootchain_plasma_contract_address: process.env.ROOTCHAIN_CONTRACT,
   geth_url: process.env.GETH_URL,
   alice_eth_address: process.env.ALICE_ETH_ADDRESS,
-  // Note: make sure this value is prefixed with '0x' or you may see nonce errors
-  alice_eth_address_private_key: process.env.ALICE_ETH_ADDRESS_PRIVATE_KEY,
-  // amount of ETH to deposit from rootchain to childchain
+  alice_eth_address_private_key: hexPrefix(process.env.ALICE_ETH_ADDRESS_PRIVATE_KEY),
   alice_eth_deposit_amount: process.env.ALICE_ETH_DEPOSIT_AMOUNT || '0.5',
-  // amount of ETH to transfer from Alice to Bob on the childchain
   alice_eth_transfer_amount: process.env.ALICE_ETH_TRANSFER_AMOUNT || '0.05',
   bob_eth_address: process.env.BOB_ETH_ADDRESS,
-  // Note: make sure this value is prefixed with '0x' or you may see nonce errors
-  bob_eth_address_private_key: process.env.BOB_ETH_ADDRESS_PRIVATE_KEY,
+  bob_eth_address_private_key: hexPrefix(process.env.BOB_ETH_ADDRESS_PRIVATE_KEY),
   millis_to_wait_for_next_block: process.env.MILLIS_TO_WAIT_FOR_NEXT_BLOCK || 1000,
-  // watcher will confirm the rootchain txn in 12 blocks
-  blocks_to_wait_for_txn: process.env.BLOCKS_TO_WAIT_FOR_TXN || 12
+  blocks_to_wait_for_txn: process.env.BLOCKS_TO_WAIT_FOR_TXN || 20
 }
 
 module.exports = config
