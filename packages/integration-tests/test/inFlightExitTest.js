@@ -359,7 +359,10 @@ describe('In-flight Exit tests', function () {
     })
 
     it.only('should succesfully exit a ChildChain with piggybacking input transaction that is not included', async function () {
+      const aliceSpentOnGas = numberToBN(0)
       const INTIIAL_KELVIN_AMOUNT = web3.utils.toWei('.1', 'ether')
+
+      // fund some ETH for alice on rootchain so she can piggyback / challenge
       await faucet.fundRootchainEth(web3, aliceAccount.address, INTIIAL_ALICE_AMOUNT)
       await rcHelper.waitForEthBalanceEq(web3, aliceAccount.address, INTIIAL_ALICE_AMOUNT)
 
@@ -379,6 +382,7 @@ describe('In-flight Exit tests', function () {
       const kelvinUtxos = await childChain.getUtxos(kelvinAccount.address)
       const aliceUtxos = await childChain.getUtxos(aliceAccount.address)
 
+      // kelvin and alice create a tx to send to bob
       const txBody = {
         inputs: [kelvinUtxos[0], aliceUtxos[0]],
         outputs: [{
@@ -394,9 +398,8 @@ describe('In-flight Exit tests', function () {
       const signatures = childChain.signTransaction(typedData, [kelvinAccount.privateKey, aliceAccount.privateKey])
       const signedTx = childChain.buildSignedTransaction(typedData, signatures)
 
-      // Get the exit data
-      const decodedTx = transaction.decodeTxBytes(signedTx)
       const exitData = await childChain.inFlightExitGetData(signedTx)
+
       const hasToken = await rootChain.hasToken(transaction.ETH_CURRENCY)
       if (!hasToken) {
         console.log(`Adding a ${transaction.ETH_CURRENCY} exit queue`)
@@ -411,7 +414,7 @@ describe('In-flight Exit tests', function () {
         console.log(`Exit queue for ${transaction.ETH_CURRENCY} already exists`)
       }
 
-      // kelvin double spend
+      // kelvin double spend its utxo to bob
       const kelvinToBobTx = ccHelper.createTx(
         childChain,
         kelvinAccount.address,
@@ -422,42 +425,26 @@ describe('In-flight Exit tests', function () {
         rootChain.plasmaContractAddress
       )
 
-      // Start an in-flight exit.
+      // kelvin Start an in-flight exit because he wants to cheat the system
       let receipt = await rootChain.startInFlightExit(
         exitData.in_flight_tx,
         exitData.input_txs,
         exitData.input_utxos_pos,
         ['0x'],
         exitData.input_txs_inclusion_proofs,
-        decodedTx.sigs,
+        signatures,
         exitData.in_flight_tx_sigs,
         ['0x'],
         {
-          privateKey: bobAccount.privateKey,
-          from: bobAccount.address
+          privateKey: kelvinAccount.privateKey,
+          from: kelvinAccount.address
         }
       )
       console.log(
-        `Bob called RootChain.startInFlightExit(): txhash = ${receipt.transactionHash}`
+        `Kelvin called RootChain.startInFlightExit(): txhash = ${receipt.transactionHash}`
       )
 
-      // Alice needs to piggyback his input on the in-flight exit
-      receipt = await rootChain.piggybackInFlightExitOnInput(
-        exitData.in_flight_tx,
-        1,
-        {
-          privateKey: aliceAccount.privateKey,
-          from: aliceAccount.address
-        }
-      )
-
-      const aliceSpentOnGas = await rcHelper.spentOnGas(web3, receipt)
-
-      console.log(
-        `Alice called RootChain.piggybackInFlightExitOnInput() : txhash = ${receipt.transactionHash}`
-      )
-
-      // Carol sees that Bob is trying to exit the same input that Alice sent to her.
+      // Alice sees that Kelvin is trying to exit the same input that Kelvin sent to bob.
       const kelvinToBobDecoded = transaction.decodeTxBytes(kelvinToBobTx)
       const kInput = kelvinToBobDecoded.inputs[0]
 
@@ -475,7 +462,23 @@ describe('In-flight Exit tests', function () {
         }
       )
 
-      // Carol's tx was not put into a block, but it can still be used to challenge Bob's IFE as non-canonical
+      // Alice needs to piggyback his input on the in-flight exit
+      receipt = await rootChain.piggybackInFlightExitOnInput(
+        exitData.in_flight_tx,
+        1, // inputIndex of alice
+        {
+          privateKey: aliceAccount.privateKey,
+          from: aliceAccount.address
+        }
+      )
+
+      aliceSpentOnGas.iadd(await rcHelper.spentOnGas(web3, receipt))
+
+      console.log(
+              `Alice called RootChain.piggybackInFlightExitOnInput() : txhash = ${receipt.transactionHash}`
+      )
+
+      // alice need to prove that the IFE is non-canonical so she the piggyback input works
       const utxoPosOutput = transaction.encodeUtxoPos({
         blknum: fundKelvinTx.result.blknum,
         txindex: fundKelvinTx.result.txindex,
@@ -503,12 +506,14 @@ describe('In-flight Exit tests', function () {
         }
       })
 
+      aliceSpentOnGas.iadd(await rcHelper.spentOnGas(web3, receipt))
+
       // Wait for challenge period
       const toWait = await rcHelper.getTimeToExit(rootChain.plasmaContract)
       console.log(`Waiting for challenge period... ${toWait}ms`)
       await rcHelper.sleep(toWait)
 
-      // Call processExits again.
+      // Call processExits.
       receipt = await rootChain.processExits(transaction.ETH_CURRENCY, 0, 20, {
         privateKey: bobAccount.privateKey,
         from: bobAccount.address
@@ -526,6 +531,10 @@ describe('In-flight Exit tests', function () {
         .toBN(web3.utils.toBN(INTIIAL_ALICE_AMOUNT))
         .sub(aliceSpentOnGas)
       assert.equal(aliceEthBalance.toString(), expected.toString())
+
+      // kelvin rootchain balance should be zero because he double spent, hence the utxo should still be in childchain
+      const kelvinEthBalance = await web3.eth.getBalance(kelvinAccount.address)
+      assert.equal(kelvinEthBalance.toString(), '0')
     })
   })
 })
