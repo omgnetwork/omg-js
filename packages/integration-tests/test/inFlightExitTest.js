@@ -51,7 +51,7 @@ describe('In-flight Exit tests', function () {
 
     beforeEach(async function () {
       INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.1', 'ether')
-      INTIIAL_BOB_RC_AMOUNT = web3.utils.toWei('.1', 'ether')
+      INTIIAL_BOB_RC_AMOUNT = web3.utils.toWei('.5', 'ether')
       TRANSFER_AMOUNT = web3.utils.toWei('0.0002', 'ether')
       // Create Alice and Bob's accounts
       aliceAccount = rcHelper.createAccount(web3)
@@ -359,35 +359,44 @@ describe('In-flight Exit tests', function () {
     })
 
     it.only('should succesfully exit a ChildChain with piggybacking input transaction that is not included', async function () {
-      await Promise.all([
-        // Give some ETH to Alice on the root chain
-        faucet.fundRootchainEth(web3, aliceAccount.address, INTIIAL_ALICE_AMOUNT)
-      ])
-      await Promise.all([
-        rcHelper.waitForEthBalanceEq(
-          web3,
-          aliceAccount.address,
-          INTIIAL_ALICE_AMOUNT
-        )
-      ])
-      // Create a transaction that sends TRANSFER_AMOUNT from Alice to Bob, but don't submit it to the childchain
-      const bobTx = await ccHelper.createTx(
-        childChain,
-        aliceAccount.address,
-        bobAccount.address,
-        TRANSFER_AMOUNT,
-        transaction.ETH_CURRENCY,
-        aliceAccount.privateKey,
-        rootChain.plasmaContractAddress
-      )
-      console.log(`Transferred ${TRANSFER_AMOUNT} from Alice to Bob`)
+      const INTIIAL_KELVIN_AMOUNT = web3.utils.toWei('.1', 'ether')
+      await faucet.fundRootchainEth(web3, aliceAccount.address, INTIIAL_ALICE_AMOUNT)
+      await rcHelper.waitForEthBalanceEq(web3, aliceAccount.address, INTIIAL_ALICE_AMOUNT)
 
-      // For whatever reason, Bob hasn't seen the transaction get put into a block
-      // and he wants to exit.
+      const kelvinAccount = rcHelper.createAccount(web3)
+      console.log(`Created Kelvin account ${JSON.stringify(bobAccount)}`)
+      const fundKelvinTx = await faucet.fundChildchain(
+        kelvinAccount.address,
+        INTIIAL_KELVIN_AMOUNT,
+        transaction.ETH_CURRENCY
+      )
+      await ccHelper.waitForBalanceEq(
+        childChain,
+        kelvinAccount.address,
+        INTIIAL_KELVIN_AMOUNT
+      )
+
+      const kelvinUtxos = await childChain.getUtxos(kelvinAccount.address)
+      const aliceUtxos = await childChain.getUtxos(aliceAccount.address)
+
+      const txBody = {
+        inputs: [kelvinUtxos[0], aliceUtxos[0]],
+        outputs: [{
+          outputType: 1,
+          outputGuard: bobAccount.address,
+          currency: transaction.ETH_CURRENCY,
+          amount: INTIIAL_KELVIN_AMOUNT + INTIIAL_ALICE_AMOUNT
+        }]
+      }
+
+      const typedData = transaction.getTypedData(txBody, rootChain.plasmaContractAddress)
+      // Sign it
+      const signatures = childChain.signTransaction(typedData, [kelvinAccount.privateKey, aliceAccount.privateKey])
+      const signedTx = childChain.buildSignedTransaction(typedData, signatures)
 
       // Get the exit data
-      const decodedTx = transaction.decodeTxBytes(bobTx)
-      const exitData = await childChain.inFlightExitGetData(bobTx)
+      const decodedTx = transaction.decodeTxBytes(signedTx)
+      const exitData = await childChain.inFlightExitGetData(signedTx)
       const hasToken = await rootChain.hasToken(transaction.ETH_CURRENCY)
       if (!hasToken) {
         console.log(`Adding a ${transaction.ETH_CURRENCY} exit queue`)
@@ -401,6 +410,17 @@ describe('In-flight Exit tests', function () {
       } else {
         console.log(`Exit queue for ${transaction.ETH_CURRENCY} already exists`)
       }
+
+      // kelvin double spend
+      const kelvinToBobTx = ccHelper.createTx(
+        childChain,
+        kelvinAccount.address,
+        bobAccount.address,
+        TRANSFER_AMOUNT,
+        transaction.ETH_CURRENCY,
+        kelvinAccount.privateKey,
+        rootChain.plasmaContractAddress
+      )
 
       // Start an in-flight exit.
       let receipt = await rootChain.startInFlightExit(
@@ -421,10 +441,10 @@ describe('In-flight Exit tests', function () {
         `Bob called RootChain.startInFlightExit(): txhash = ${receipt.transactionHash}`
       )
 
-      // Alice needs to piggyback his output on the in-flight exit
+      // Alice needs to piggyback his input on the in-flight exit
       receipt = await rootChain.piggybackInFlightExitOnInput(
         exitData.in_flight_tx,
-        0,
+        1,
         {
           privateKey: aliceAccount.privateKey,
           from: aliceAccount.address
@@ -434,8 +454,54 @@ describe('In-flight Exit tests', function () {
       const aliceSpentOnGas = await rcHelper.spentOnGas(web3, receipt)
 
       console.log(
-        `Alice called RootChain.piggybackInFlightExit() : txhash = ${receipt.transactionHash}`
+        `Alice called RootChain.piggybackInFlightExitOnInput() : txhash = ${receipt.transactionHash}`
       )
+
+      // Carol sees that Bob is trying to exit the same input that Alice sent to her.
+      const kelvinToBobDecoded = transaction.decodeTxBytes(kelvinToBobTx)
+      const kInput = kelvinToBobDecoded.inputs[0]
+
+      const inflightExit = await ccHelper.waitForEvent(
+        childChain,
+        'in_flight_exits',
+        e => {
+          const decoded = transaction.decodeTxBytes(e.txbytes)
+          return decoded.inputs.find(
+            input =>
+              input.blknum === kInput.blknum &&
+              input.txindex === kInput.txindex &&
+              input.oindex === kInput.oindex
+          )
+        }
+      )
+
+      // Carol's tx was not put into a block, but it can still be used to challenge Bob's IFE as non-canonical
+      const utxoPosOutput = transaction.encodeUtxoPos({
+        blknum: fundKelvinTx.result.blknum,
+        txindex: fundKelvinTx.result.txindex,
+        oindex: 0
+      }).toNumber()
+
+      const unsignInput = transaction.encode(transaction.decodeTxBytes(fundKelvinTx.txbytes), { signed: false })
+      const unsignKelvinToBobTx = transaction.encode(kelvinToBobDecoded, { signed: false })
+      receipt = await rootChain.challengeInFlightExitNotCanonical({
+        inputTx: unsignInput,
+        inputUtxoPos: utxoPosOutput,
+        inFlightTx: inflightExit.txbytes,
+        inFlightTxInputIndex: 0,
+        competingTx: unsignKelvinToBobTx,
+        competingTxInputIndex: 0,
+        competingTxWitness: kelvinToBobDecoded.sigs[0],
+        outputGuardPreimage: '0x',
+        competingTxPos: '0x',
+        competingTxInclusionProof: '0x',
+        competingTxConfirmSig: '0x',
+        competingTxSpendingConditionOptionalArgs: '0x',
+        txOptions: {
+          privateKey: aliceAccount.privateKey,
+          from: aliceAccount.address
+        }
+      })
 
       // Wait for challenge period
       const toWait = await rcHelper.getTimeToExit(rootChain.plasmaContract)
