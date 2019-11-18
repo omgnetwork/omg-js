@@ -64,9 +64,17 @@ To run the examples:
 - Run `npm install`.
 - Create `.env` file inside the root of the `examples` directory with the appropriate values (see `.env.example` for example)
 
-Let's run through a story between Alice and Bob. In this story, Alice will first deposit some ETH from the root chain into the child chain. Then Alice will transfer some of that ETH to Bob on the child chain. Finally, Bob will exit his funds from the child chain back into the root chain. His root chain balance will be reflected with the extra ETH that Alice sent to him on the child chain.
+Let's run through a story between Alice and Bob. In this story, Alice will first deposit some ETH from the root chain into the child chain. Then Alice will transfer some of that ETH to Bob on the child chain. Bob will then exit his funds from the child chain back into the root chain. His root chain balance will be reflected with the extra ETH that Alice sent to him on the child chain.
 
-From the `examples` folder run the scripts below in order to follow the story.
+From the `examples` folder run the following scripts:
+
+- [Get Alice's and Bob's balances](examples/balances.js)
+
+    `npm run balances`
+
+- [Get Alice's and Bob's Childchain UTXOs](examples/childchain-utxos.js)
+
+    `npm run childchain-utxos`
 
 1. [Deposit some ETH from Alice's Rootchain to the Childchain](examples/childchain-deposit.js)
     
@@ -78,12 +86,12 @@ From the `examples` folder run the scripts below in order to follow the story.
 
 Alice has now sent some ETH to Bob. This should be reflected in Bob's childchain balance.
 
-3. [Get Alice's and Bob's Childchain UTXOs](examples/childchain-utxos.js)
-
-    `npm run childchain-utxos`
-
-4. [Exit one of Bob's Childchain UTXO to the Rootchain](examples/childchain-exit.js)
+3. [Exit one of Bob's Childchain UTXOs to the Rootchain](examples/childchain-exit.js)
 
     `npm run childchain-exit`
 
 Checking Bob's final rootchain balance you will notice it will be a little less than expected. This is because of rootchain gas costs Bob had to pay to exit the childchain.
+
+4. [Bob starts and piggyback's an inflight exit for his ouput on a transaction sent by Alice](example/childchain-inflight-exit.js)
+
+    `npm run childchain-inflight-exit`
