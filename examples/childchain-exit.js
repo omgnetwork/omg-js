@@ -41,8 +41,8 @@ async function exitChildChain () {
   console.log('-----')
 
   // get deposit UTXO and exit data
-  let bobUtxos = await childChain.getUtxos(bobAddress)
-  let bobUtxoToExit = bobUtxos[0]
+  const bobUtxos = await childChain.getUtxos(bobAddress)
+  const bobUtxoToExit = bobUtxos[0]
   if (!bobUtxoToExit) {
     console.log('Bob doesnt have any UTXOs to exit')
     return
@@ -54,7 +54,7 @@ async function exitChildChain () {
   const hasToken = await rootChain.hasToken(transaction.ETH_CURRENCY)
   if (!hasToken) {
     console.log(`Adding a ${transaction.ETH_CURRENCY} exit queue`)
-    const addTokenCall = await rootChain.addToken(
+    await rootChain.addToken(
       transaction.ETH_CURRENCY,
       { from: bobAddress, privateKey: bobPrivateKey }
     )
@@ -62,21 +62,25 @@ async function exitChildChain () {
 
   // start a standard exit
   const exitData = await childChain.getExitData(bobUtxoToExit)
-  const startExitReceipt = await rootChain.startStandardExit(
+  await rootChain.startStandardExit(
     exitData.utxo_pos,
     exitData.txbytes,
     exitData.proof,
-    { privateKey: bobPrivateKey, from: bobAddress }
+    {
+      privateKey: bobPrivateKey,
+      from: bobAddress,
+      gas: 6000000
+    }
   )
-  console.log(`Bob started a standard exit`)
+  console.log('Bob started a standard exit')
 
   await wait.waitForChallengePeriodToEnd(rootChain, exitData)
   // call processExits after challenge period is over
-  const processExitsPostChallengeReceipt = await rootChain.processExits(
+  await rootChain.processExits(
     transaction.ETH_CURRENCY, 0, 20,
     { privateKey: bobPrivateKey, from: bobAddress }
   )
-  console.log(`Exits processed`)
+  console.log('Exits processed')
 
   // get final ETH balances
   bobRootchainBalance = await web3.eth.getBalance(bobAddress)

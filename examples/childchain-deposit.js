@@ -36,11 +36,11 @@ const alicePrivateKey = config.alice_eth_address_private_key
 const depositAmount = BigNumber(web3.utils.toWei(config.alice_eth_deposit_amount, 'ether'))
 
 async function depositEthIntoPlasmaContract () {
-  const start_rootchainBalance = await web3.eth.getBalance(aliceAddress)
-  const start_childchainBalanceArray = await childChain.getBalance(aliceAddress)
+  let rootchainBalance = await web3.eth.getBalance(aliceAddress)
+  let childchainBalanceArray = await childChain.getBalance(aliceAddress)
 
-  console.log(`Alice's rootchain balance: ${web3.utils.fromWei(String(start_rootchainBalance), 'ether')} ETH`)
-  console.log(`Alice's childchain balance: ${start_childchainBalanceArray.length === 0 ? 0 : web3.utils.fromWei(String(start_childchainBalanceArray[0].amount))} ETH`)
+  console.log(`Alice's rootchain balance: ${web3.utils.fromWei(String(rootchainBalance), 'ether')} ETH`)
+  console.log(`Alice's childchain balance: ${childchainBalanceArray.length === 0 ? 0 : web3.utils.fromWei(String(childchainBalanceArray[0].amount))} ETH`)
   console.log('-----')
 
   const depositTransaction = transaction.encodeDeposit(aliceAddress, depositAmount, transaction.ETH_CURRENCY)
@@ -57,11 +57,11 @@ async function depositEthIntoPlasmaContract () {
 
   await wait.waitForTransaction(web3, transactionReceipt.transactionHash, config.millis_to_wait_for_next_block, config.blocks_to_wait_for_txn)
 
-  const end_rootchainBalance = await web3.eth.getBalance(aliceAddress)
-  const end_childchainBalanceArray = await childChain.getBalance(aliceAddress)
+  rootchainBalance = await web3.eth.getBalance(aliceAddress)
+  childchainBalanceArray = await childChain.getBalance(aliceAddress)
   console.log('-----')
-  console.log(`Alice's rootchain balance: ${web3.utils.fromWei(String(end_rootchainBalance), 'ether')} ETH`)
-  console.log(`Alice's childchain balance: ${end_childchainBalanceArray.length === 0 ? 0 : web3.utils.fromWei(String(end_childchainBalanceArray[0].amount))} ETH`)
+  console.log(`Alice's rootchain balance: ${web3.utils.fromWei(String(rootchainBalance), 'ether')} ETH`)
+  console.log(`Alice's childchain balance: ${childchainBalanceArray.length === 0 ? 0 : web3.utils.fromWei(String(childchainBalanceArray[0].amount))} ETH`)
   return Promise.resolve()
 }
 

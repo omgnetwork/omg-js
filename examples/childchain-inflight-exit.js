@@ -16,7 +16,7 @@ const Web3 = require('web3')
 
 const RootChain = require('../packages/omg-js-rootchain/src/rootchain')
 const ChildChain = require('../packages/omg-js-childchain/src/childchain')
-const { transaction } = require('../packages/omg-js-util/src')
+const { transaction, hexPrefix } = require('../packages/omg-js-util/src')
 
 const config = require('./config.js')
 const wait = require('./wait.js')
@@ -76,7 +76,7 @@ async function inflightExitChildChain () {
   // sign/build/submit
   const signatures = childChain.signTransaction(typedData, [alicePrivateKey])
   const signedTxn = childChain.buildSignedTransaction(typedData, signatures)
-  const receipt = await childChain.submitTransaction(signedTxn)
+  await childChain.submitTransaction(signedTxn)
   console.log(`Alice sends ${web3.utils.fromWei(Number(transferAmount).toString(), 'ether')} ETH to Bob on the childchain`)
 
   // Bob hasn't seen the transaction get put into a block and he wants to exit his output.
@@ -84,17 +84,17 @@ async function inflightExitChildChain () {
   const hasToken = await rootChain.hasToken(transaction.ETH_CURRENCY)
   if (!hasToken) {
     console.log(`Adding a ${transaction.ETH_CURRENCY} exit queue`)
-    const addTokenCall = await rootChain.addToken(
+    await rootChain.addToken(
       transaction.ETH_CURRENCY,
       { from: bobAddress, privateKey: bobPrivateKey }
     )
   }
 
   // start an in-flight exit
-  const exitData = await childChain.inFlightExitGetData(signedTxn)
+  const exitData = await childChain.inFlightExitGetData(hexPrefix(signedTxn))
   const outputGuardPreimagesForInputs = ['0x']
   const inputSpendingConditionOptionalArgs = ['0x']
-  const startInflightExitReceipt = await rootChain.startInFlightExit(
+  await rootChain.startInFlightExit(
     exitData.in_flight_tx,
     exitData.input_txs,
     exitData.input_utxos_pos,
@@ -112,11 +112,11 @@ async function inflightExitChildChain () {
 
   // Decode the transaction to get the index of Bob's output
   const outputIndex = createdTxn.transactions[0].outputs.findIndex(
-    e => e.outputGuard === bobAddress.address
+    e => e.owner.toLowerCase() === bobAddress.toLowerCase()
   )
 
   // Bob needs to piggyback his output on the in-flight exit
-  const piggybackInFlightExitReceipt = await rootChain.piggybackInFlightExitOnOutput(
+  await rootChain.piggybackInFlightExitOnOutput(
     exitData.in_flight_tx,
     outputIndex,
     '0x',
