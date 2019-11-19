@@ -23,9 +23,9 @@ const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxy
 (async () => {
   try {
     const aliceUtxos = await childChain.getUtxos(config.alice_eth_address)
-    console.log(`Alice UTXOs: ${JSON.stringify(aliceUtxos, undefined, 2)}`)
-
     const bobUtxos = await childChain.getUtxos(config.bob_eth_address)
+
+    console.log(`Alice UTXOs: ${JSON.stringify(aliceUtxos, undefined, 2)}`)
     console.log(`Bob UTXOs: ${JSON.stringify(bobUtxos, undefined, 2)}`)
 
     return Promise.resolve()

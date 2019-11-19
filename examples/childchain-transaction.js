@@ -34,20 +34,6 @@ const alicePrivateKey = config.alice_eth_address_private_key
 
 const bobAddress = config.bob_eth_address
 
-const transferAmount = BigNumber(web3.utils.toWei(config.alice_eth_transfer_amount, 'ether'))
-const feeAmount = BigNumber(web3.utils.toWei('0.00000000000000001', 'ether'))
-
-const payments = [{
-  owner: bobAddress,
-  currency: transaction.ETH_CURRENCY,
-  amount: Number(transferAmount)
-}]
-
-const fee = {
-  currency: transaction.ETH_CURRENCY,
-  amount: Number(feeAmount)
-}
-
 async function createSignBuildAndSubmitTransaction () {
   let aliceRootchainBalance = await web3.eth.getBalance(aliceAddress)
   let bobRootchainBalance = await web3.eth.getBalance(bobAddress)
@@ -60,13 +46,24 @@ async function createSignBuildAndSubmitTransaction () {
   console.log(`Bob's childchain balance: ${bobsBalanceArray.length === 0 ? 0 : web3.utils.fromWei(String(bobsBalanceArray[0].amount))} ETH`)
   console.log('-----')
 
+  const transferAmount = BigNumber(web3.utils.toWei(config.alice_eth_transfer_amount, 'ether'))
+  const feeAmount = BigNumber(web3.utils.toWei('0.00000000000000001', 'ether'))
+
+  const payments = [{
+    owner: bobAddress,
+    currency: transaction.ETH_CURRENCY,
+    amount: Number(transferAmount)
+  }]
+  const fee = {
+    currency: transaction.ETH_CURRENCY,
+    amount: Number(feeAmount)
+  }
   const createdTxn = await childChain.createTransaction(
     aliceAddress,
     payments,
     fee,
     transaction.NULL_METADATA
   )
-
   console.log(`Created a childchain transaction of ${web3.utils.fromWei(payments[0].amount.toString(), 'ether')} ETH from Alice to Bob.`)
 
   // type/sign/build/submit

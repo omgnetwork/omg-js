@@ -28,18 +28,12 @@ const web3 = new Web3(new Web3.providers.HttpProvider(config.geth_url), null, {
 
 const rootChain = new RootChain(web3, config.rootchain_plasma_contract_address)
 const rootChainPlasmaContractAddress = config.rootchain_plasma_contract_address
-
 const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url })
 
 const aliceAddress = config.alice_eth_address
 const alicePrivateKey = config.alice_eth_address_private_key
-
 const bobAddress = config.bob_eth_address
 const bobPrivateKey = config.bob_eth_address_private_key
-
-const transferAmount = BigNumber(
-  web3.utils.toWei(config.alice_eth_transfer_amount, 'ether')
-)
 
 async function inflightExitChildChain () {
   let aliceRootchainBalance = await web3.eth.getBalance(aliceAddress)
@@ -53,6 +47,9 @@ async function inflightExitChildChain () {
   console.log(`Bob's childchain balance: ${bobChildchainBalanceArray.length === 0 ? 0 : web3.utils.fromWei(String(bobChildchainBalanceArray[0].amount), 'ether')} ETH`)
   console.log('-----')
 
+  const transferAmount = BigNumber(web3.utils.toWei(config.alice_eth_transfer_amount, 'ether'))
+  const feeAmount = BigNumber(web3.utils.toWei('0.00000000000000001', 'ether'))
+
   const payments = [{
     owner: bobAddress,
     currency: transaction.ETH_CURRENCY,
@@ -60,7 +57,7 @@ async function inflightExitChildChain () {
   }]
   const fee = {
     currency: transaction.ETH_CURRENCY,
-    amount: 0
+    amount: Number(feeAmount)
   }
   const createdTxn = await childChain.createTransaction(
     aliceAddress,
@@ -68,16 +65,18 @@ async function inflightExitChildChain () {
     fee,
     transaction.NULL_METADATA
   )
-  // get the transaction data
-  const typedData = transaction.getTypedData(
-    createdTxn.transactions[0],
-    rootChainPlasmaContractAddress
-  )
-  // sign/build/submit
+  console.log(`Created a childchain transaction of ${web3.utils.fromWei(payments[0].amount.toString(), 'ether')} ETH from Alice to Bob.`)
+
+  // type/sign/build/submit
+  const typedData = transaction.getTypedData(createdTxn.transactions[0], rootChainPlasmaContractAddress)
   const signatures = childChain.signTransaction(typedData, [alicePrivateKey])
   const signedTxn = childChain.buildSignedTransaction(typedData, signatures)
   await childChain.submitTransaction(signedTxn)
-  console.log(`Alice sends ${web3.utils.fromWei(Number(transferAmount).toString(), 'ether')} ETH to Bob on the childchain`)
+  console.log('Transaction submitted')
+
+  // wait for transaction to be recorded by the watcher
+  console.log('Waiting for transaction to be recorded by the watcher...')
+  await wait.wait(40000)
 
   // Bob hasn't seen the transaction get put into a block and he wants to exit his output.
   // check if queue exists for this token
