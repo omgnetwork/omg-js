@@ -98,7 +98,7 @@ Checking Bob's final rootchain balance you will notice it will be a little less 
     `npm run childchain-inflight-exit-eth`
 
 
-Now let's run through the same story above but for ERC20 deposit/transaction/exits.
+Now let's run through the same story above but for ERC20 deposit/transaction/exit.
 
 1. [Deposit some ERC20 from Alice's Rootchain to the Childchain](examples/childchain-deposit-erc20.js)
     
@@ -111,7 +111,3 @@ Now let's run through the same story above but for ERC20 deposit/transaction/exi
 3. [Exit one of Bob's Childchain ERC20 UTXOs to the Rootchain](examples/childchain-exit-erc20.js)
 
     `npm run childchain-exit-erc20`
-
-4. [Bob starts and piggyback's an inflight exit for his ouput on a transaction sent by Alice](example/childchain-inflight-exit-erc20.js)
-
-    `npm run childchain-inflight-exit-erc20` 
