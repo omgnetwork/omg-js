@@ -35,7 +35,7 @@ const alicePrivateKey = config.alice_eth_address_private_key
 
 const depositAmount = BigNumber(web3.utils.toWei(config.alice_eth_deposit_amount, 'ether'))
 
-async function depositEthIntoPlasmaContract () {
+async function depositErc20IntoPlasmaContract () {
   let rootchainBalance = await web3.eth.getBalance(aliceAddress)
   let childchainBalanceArray = await childChain.getBalance(aliceAddress)
 
@@ -67,7 +67,7 @@ async function depositEthIntoPlasmaContract () {
 
 (async () => {
   try {
-    const result = await depositEthIntoPlasmaContract()
+    const result = await depositErc20IntoPlasmaContract()
     return Promise.resolve(result)
   } catch (error) {
     console.log(error)

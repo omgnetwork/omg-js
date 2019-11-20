@@ -35,16 +35,19 @@ const bobPrivateKey = config.bob_eth_address_private_key
 async function exitChildChain () {
   let bobRootchainBalance = await web3.eth.getBalance(bobAddress)
   let bobChildchainBalanceArray = await childChain.getBalance(bobAddress)
+  let bobChildchainETHBalance = bobChildchainBalanceArray.length === 0
+    ? '0 ETH'
+    : `${web3.utils.fromWei(String(bobChildchainBalanceArray.find(i => i.currency === transaction.ETH_CURRENCY).amount))} ETH`
 
   console.log(`Bob's rootchain balance: ${web3.utils.fromWei(String(bobRootchainBalance), 'ether')} ETH`)
-  console.log(`Bob's childchain balance: ${bobChildchainBalanceArray.length === 0 ? 0 : web3.utils.fromWei(String(bobChildchainBalanceArray[0].amount))} ETH`)
+  console.log(`Bob's childchain balance: ${bobChildchainETHBalance}`)
   console.log('-----')
 
   // get deposit UTXO and exit data
   const bobUtxos = await childChain.getExitableUtxos(bobAddress)
-  const bobUtxoToExit = bobUtxos[0]
+  const bobUtxoToExit = bobUtxos.find(i => i.currency === transaction.ETH_CURRENCY)
   if (!bobUtxoToExit) {
-    console.log('Bob doesnt have any UTXOs to exit')
+    console.log('Bob doesnt have any ETH UTXOs to exit')
     return
   }
 
@@ -89,10 +92,13 @@ async function exitChildChain () {
   // get final ETH balances
   bobRootchainBalance = await web3.eth.getBalance(bobAddress)
   bobChildchainBalanceArray = await childChain.getBalance(bobAddress)
+  bobChildchainETHBalance = bobChildchainBalanceArray.length === 0
+    ? '0 ETH'
+    : `${web3.utils.fromWei(String(bobChildchainBalanceArray.find(i => i.currency === transaction.ETH_CURRENCY).amount))} ETH`
 
   console.log('-----')
   console.log(`Bob's rootchain balance: ${web3.utils.fromWei(String(bobRootchainBalance), 'ether')} ETH`)
-  console.log(`Bob's childchain balance: ${bobChildchainBalanceArray.length === 0 ? 0 : web3.utils.fromWei(String(bobChildchainBalanceArray[0].amount))} ETH`)
+  console.log(`Bob's childchain balance: ${bobChildchainETHBalance} ETH`)
   return Promise.resolve()
 };
 

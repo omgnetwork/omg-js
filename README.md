@@ -54,6 +54,7 @@ Copy the `dist/omg.js` file into your project and include it.
 #### Prerequisites
 
 Both Alice's and Bob's Ethereum accounts need to have some ETH in them. The ETH is used for gas costs on the rootchain, fees on the childchain and the actual ETH transferred from Alice to Bob.
+If you want to run the ERC20 examples, at least Alice's account will need an ERC20 balance to be able to deposit and transact on the childchain.
 
 #### Running the Examples
 
@@ -76,22 +77,41 @@ From the `examples` folder run the following scripts:
 
     `npm run childchain-utxos`
 
-1. [Deposit some ETH from Alice's Rootchain to the Childchain](examples/childchain-deposit.js)
+1. [Deposit some ETH from Alice's Rootchain to the Childchain](examples/childchain-deposit-eth.js)
     
-    `npm run childchain-deposit`
+    `npm run childchain-deposit-eth`
 
-2. [Send some ETH from Alice's Childchain to Bob's Childchain](examples/childchain-transaction.js)
+2. [Send some ETH from Alice's Childchain to Bob's Childchain](examples/childchain-transaction-eth.js)
     
-    `npm run childchain-transaction`
+    `npm run childchain-transaction-eth`
 
 Alice has now sent some ETH to Bob. This should be reflected in Bob's childchain balance.
 
-3. [Exit one of Bob's Childchain UTXOs to the Rootchain](examples/childchain-exit.js)
+3. [Exit one of Bob's Childchain UTXOs to the Rootchain](examples/childchain-exit-eth.js)
 
-    `npm run childchain-exit`
+    `npm run childchain-exit-eth`
 
 Checking Bob's final rootchain balance you will notice it will be a little less than expected. This is because of rootchain gas costs Bob had to pay to exit the childchain.
 
-4. [Bob starts and piggyback's an inflight exit for his ouput on a transaction sent by Alice](example/childchain-inflight-exit.js)
+4. [Bob starts and piggyback's an inflight exit for his ouput on a transaction sent by Alice](example/childchain-inflight-exit-eth.js)
 
-    `npm run childchain-inflight-exit`
+    `npm run childchain-inflight-exit-eth`
+
+
+Now let's run through the same story above but for ERC20 deposit/transaction/exits.
+
+1. [Deposit some ERC20 from Alice's Rootchain to the Childchain](examples/childchain-deposit-erc20.js)
+    
+    `npm run childchain-deposit-erc20`
+
+2. [Send some ERC20 from Alice's Childchain to Bob's Childchain](examples/childchain-transaction-erc20.js)
+    
+    `npm run childchain-transaction-erc20`
+
+3. [Exit one of Bob's Childchain ERC20 UTXOs to the Rootchain](examples/childchain-exit-erc20.js)
+
+    `npm run childchain-exit-erc20`
+
+4. [Bob starts and piggyback's an inflight exit for his ouput on a transaction sent by Alice](example/childchain-inflight-exit-erc20.js)
+
+    `npm run childchain-inflight-exit-erc20` 

@@ -38,13 +38,19 @@ const bobPrivateKey = config.bob_eth_address_private_key
 async function inflightExitChildChain () {
   let aliceRootchainBalance = await web3.eth.getBalance(aliceAddress)
   let bobRootchainBalance = await web3.eth.getBalance(bobAddress)
-  let aliceChildchainBalanceArray = await childChain.getBalance(aliceAddress)
-  let bobChildchainBalanceArray = await childChain.getBalance(bobAddress)
+  let alicesBalanceArray = await childChain.getBalance(aliceAddress)
+  let alicesChildchainETHBalance = alicesBalanceArray.length === 0
+    ? '0 ETH'
+    : `${web3.utils.fromWei(String(alicesBalanceArray.find(i => i.currency === transaction.ETH_CURRENCY).amount))} ETH`
+  let bobsBalanceArray = await childChain.getBalance(bobAddress)
+  let bobsChildchainETHBalance = bobsBalanceArray.length === 0
+    ? '0 ETH'
+    : `${web3.utils.fromWei(String(bobsBalanceArray.find(i => i.currency === transaction.ETH_CURRENCY).amount))} ETH`
 
-  console.log(`Alice's rootchain balance: ${web3.utils.fromWei(String(aliceRootchainBalance), 'ether')} ETH`)
-  console.log(`Bob's rootchain balance: ${web3.utils.fromWei(String(bobRootchainBalance), 'ether')} ETH`)
-  console.log(`Alice's childchain balance: ${aliceChildchainBalanceArray.length === 0 ? 0 : web3.utils.fromWei(String(aliceChildchainBalanceArray[0].amount), 'ether')} ETH`)
-  console.log(`Bob's childchain balance: ${bobChildchainBalanceArray.length === 0 ? 0 : web3.utils.fromWei(String(bobChildchainBalanceArray[0].amount), 'ether')} ETH`)
+  console.log(`Alice's rootchain ETH balance: ${web3.utils.fromWei(String(aliceRootchainBalance), 'ether')} ETH`)
+  console.log(`Bob's rootchain ETH balance: ${web3.utils.fromWei(String(bobRootchainBalance), 'ether')} ETH`)
+  console.log(`Alice's childchain ETH balance: ${alicesChildchainETHBalance}`)
+  console.log(`Bob's childchain ETH balance: ${bobsChildchainETHBalance}`)
   console.log('-----')
 
   const transferAmount = BigNumber(web3.utils.toWei(config.alice_eth_transfer_amount, 'ether'))
@@ -143,14 +149,20 @@ async function inflightExitChildChain () {
   // get final ETH balances
   aliceRootchainBalance = await web3.eth.getBalance(aliceAddress)
   bobRootchainBalance = await web3.eth.getBalance(bobAddress)
-  aliceChildchainBalanceArray = await childChain.getBalance(aliceAddress)
-  bobChildchainBalanceArray = await childChain.getBalance(bobAddress)
+  alicesBalanceArray = await childChain.getBalance(aliceAddress)
+  alicesChildchainETHBalance = alicesBalanceArray.length === 0
+    ? '0 ETH'
+    : `${web3.utils.fromWei(String(alicesBalanceArray.find(i => i.currency === transaction.ETH_CURRENCY).amount))} ETH`
+  bobsBalanceArray = await childChain.getBalance(bobAddress)
+  bobsChildchainETHBalance = bobsBalanceArray.length === 0
+    ? '0 ETH'
+    : `${web3.utils.fromWei(String(bobsBalanceArray.find(i => i.currency === transaction.ETH_CURRENCY).amount))} ETH`
 
   console.log('-----')
-  console.log(`Alice rootchain balance: ${web3.utils.fromWei(String(aliceRootchainBalance), 'ether')} ETH`)
-  console.log(`Bob rootchain balance: ${web3.utils.fromWei(String(bobRootchainBalance), 'ether')} ETH`)
-  console.log(`Alice childchain balance: ${aliceChildchainBalanceArray.length === 0 ? 0 : web3.utils.fromWei(String(aliceChildchainBalanceArray[0].amount), 'ether')} ETH`)
-  console.log(`Bob childchain balance: ${bobChildchainBalanceArray.length === 0 ? 0 : web3.utils.fromWei(String(bobChildchainBalanceArray[0].amount), 'ether')} ETH`)
+  console.log(`Alice's rootchain ETH balance: ${web3.utils.fromWei(String(aliceRootchainBalance), 'ether')} ETH`)
+  console.log(`Bob's rootchain ETH balance: ${web3.utils.fromWei(String(bobRootchainBalance), 'ether')} ETH`)
+  console.log(`Alice's childchain ETH balance: ${alicesChildchainETHBalance}`)
+  console.log(`Bob's childchain ETH balance: ${bobsChildchainETHBalance}`)
 }
 
 (async () => {

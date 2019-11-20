@@ -16,20 +16,70 @@
 const Web3 = require('web3')
 const config = require('./config.js')
 const ChildChain = require('../packages/omg-js-childchain/src/childchain')
+const { transaction } = require('../packages/omg-js-util/src')
+const erc20abi = require('human-standard-token-abi')
 
 const web3 = new Web3(new Web3.providers.HttpProvider(config.geth_url), null, { transactionConfirmationBlocks: 1 })
 const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url })
+const erc20Contract = new web3.eth.Contract(erc20abi, config.erc20_contract)
+
+async function getERC20Balance (address) {
+  const txDetails = {
+    from: address,
+    to: config.erc20_contract,
+    data: erc20Contract.methods.balanceOf(address).encodeABI()
+  }
+  return web3.eth.call(txDetails)
+}
 
 async function balances () {
-  const aliceRootchainBalance = await web3.eth.getBalance(config.alice_eth_address)
-  const bobRootchainBalance = await web3.eth.getBalance(config.bob_eth_address)
   const alicesBalanceArray = await childChain.getBalance(config.alice_eth_address)
-  const bobsBalanceArray = await childChain.getBalance(config.bob_eth_address)
+  const aliceChildchainBalance = alicesBalanceArray.map(i => {
+    return {
+      currency: i.currency === transaction.ETH_CURRENCY ? 'ETH' : i.currency,
+      amount: i.currency === transaction.ETH_CURRENCY ? `${web3.utils.fromWei(String(i.amount))} ETH` : i.amount
+    }
+  })
 
-  console.log(`Alice's rootchain balance: ${web3.utils.fromWei(String(aliceRootchainBalance), 'ether')} ETH`)
-  console.log(`Bob's rootchain balance: ${web3.utils.fromWei(String(bobRootchainBalance), 'ether')} ETH`)
-  console.log(`Alice's childchain balance: ${alicesBalanceArray.length === 0 ? 0 : web3.utils.fromWei(String(alicesBalanceArray[0].amount))} ETH`)
-  console.log(`Bob's childchain balance: ${bobsBalanceArray.length === 0 ? 0 : web3.utils.fromWei(String(bobsBalanceArray[0].amount))} ETH`)
+  const aliceRootchainBalance = await web3.eth.getBalance(config.alice_eth_address)
+  const aliceRootchainERC20Balance = await getERC20Balance(config.alice_eth_address)
+  const aliceRootchainBalances = [
+    {
+      currency: 'ETH',
+      amount: `${web3.utils.fromWei(String(aliceRootchainBalance), 'ether')} ETH`
+    },
+    {
+      currency: config.erc20_contract,
+      amount: web3.utils.hexToNumber(aliceRootchainERC20Balance)
+    }
+  ]
+
+  const bobsBalanceArray = await childChain.getBalance(config.bob_eth_address)
+  const bobChildchainBalance = bobsBalanceArray.map(i => {
+    return {
+      currency: i.currency === transaction.ETH_CURRENCY ? 'ETH' : i.currency,
+      amount: i.currency === transaction.ETH_CURRENCY ? `${web3.utils.fromWei(String(i.amount))} ETH` : i.amount
+    }
+  })
+
+  const bobRootchainBalance = await web3.eth.getBalance(config.bob_eth_address)
+  const bobRootchainERC20Balance = await getERC20Balance(config.bob_eth_address)
+  const bobRootchainBalances = [
+    {
+      currency: 'ETH',
+      amount: `${web3.utils.fromWei(String(bobRootchainBalance), 'ether')} ETH`
+    },
+    {
+      currency: config.erc20_contract,
+      amount: web3.utils.hexToNumber(bobRootchainERC20Balance)
+    }
+  ]
+
+  console.log(`Alice's rootchain balance: ${JSON.stringify(aliceRootchainBalances, null, 2)}`)
+  console.log(`Alice's childchain balance: ${JSON.stringify(aliceChildchainBalance, null, 2)}`)
+  console.log('----------')
+  console.log(`Bob's rootchain balance: ${JSON.stringify(bobRootchainBalances, null, 2)}`)
+  console.log(`Bob's childchain balance: ${JSON.stringify(bobChildchainBalance, null, 2)}`)
 }
 
 (async () => {

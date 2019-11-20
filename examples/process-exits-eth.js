@@ -41,13 +41,16 @@ async function processExits () {
       gas: 6000000
     }
   )
-  await wait.waitForTransaction(
-    web3,
-    processExitsPostChallengeReceipt.transactionHash,
-    config.millis_to_wait_for_next_block,
-    config.blocks_to_wait_for_txn
-  )
-  console.log('Exits processed')
+  if (processExitsPostChallengeReceipt) {
+    await wait.waitForTransaction(
+      web3,
+      processExitsPostChallengeReceipt.transactionHash,
+      config.millis_to_wait_for_next_block,
+      config.blocks_to_wait_for_txn
+    )
+    console.log('Exits processed')
+  }
+  return Promise.resolve()
 }
 
 (async () => {
