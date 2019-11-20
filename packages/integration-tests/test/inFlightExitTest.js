@@ -96,7 +96,7 @@ describe('In-flight Exit tests', function () {
 
     it('should succesfully exit a ChildChain transaction', async function () {
       // Send TRANSFER_AMOUNT from Alice to Bob
-      let bobSpentOnGas
+      const bobSpentOnGas = numberToBN(0)
       const { txbytes, result } = await ccHelper.sendAndWait(
         childChain,
         aliceAccount.address,
@@ -329,7 +329,7 @@ describe('In-flight Exit tests', function () {
       assert.equal(bobEthBalance.toString(), expected.toString())
     })
 
-    it.only('should succesfully exit a ChildChain with piggybacking input transaction that is not included', async function () {
+    it('should succesfully exit a ChildChain with piggybacking input transaction that is not included', async function () {
       const aliceSpentOnGas = numberToBN(0)
 
       // fund some ETH for alice on rootchain so she can piggyback / challenge
@@ -340,15 +340,32 @@ describe('In-flight Exit tests', function () {
       const INTIIAL_KELVIN_AMOUNT = web3.utils.toWei('.1', 'ether')
       const kelvinAccount = rcHelper.createAccount(web3)
       console.log(`Created Kelvin account ${JSON.stringify(bobAccount)}`)
+
+      await faucet.fundRootchainEth(web3, kelvinAccount.address, INTIIAL_KELVIN_AMOUNT)
+      await rcHelper.waitForEthBalanceEq(web3, kelvinAccount.address, INTIIAL_KELVIN_AMOUNT)
+
       const fundKelvinTx = await faucet.fundChildchain(
         kelvinAccount.address,
         INTIIAL_KELVIN_AMOUNT,
         transaction.ETH_CURRENCY
       )
+
       await ccHelper.waitForBalanceEq(
         childChain,
         kelvinAccount.address,
         INTIIAL_KELVIN_AMOUNT
+      )
+
+      await faucet.fundChildchain(
+        kelvinAccount.address,
+        1000000,
+        transaction.ETH_CURRENCY
+      )
+
+      await ccHelper.waitForBalanceEq(
+        childChain,
+        kelvinAccount.address,
+        numberToBN(INTIIAL_KELVIN_AMOUNT).add(numberToBN(1000000))
       )
 
       const kelvinUtxos = await childChain.getUtxos(kelvinAccount.address)
@@ -356,20 +373,19 @@ describe('In-flight Exit tests', function () {
 
       // kelvin and alice create a tx to send to bob
       const txBody = {
-        inputs: [kelvinUtxos[0], aliceUtxos[0]],
+        inputs: [kelvinUtxos[0], kelvinUtxos[1]],
         outputs: [{
           outputType: 1,
           outputGuard: bobAccount.address,
           currency: transaction.ETH_CURRENCY,
-          amount: INTIIAL_KELVIN_AMOUNT + INTIIAL_ALICE_AMOUNT
+          amount: 1000000
         }]
       }
 
       const typedData = transaction.getTypedData(txBody, rootChain.plasmaContractAddress)
       // Sign it
-      const signatures = childChain.signTransaction(typedData, [kelvinAccount.privateKey, aliceAccount.privateKey])
+      const signatures = childChain.signTransaction(typedData, [kelvinAccount.privateKey, kelvinAccount.privateKey])
       const signedTx = childChain.buildSignedTransaction(typedData, signatures)
-
       const exitData = await childChain.inFlightExitGetData(signedTx)
 
       // kelvin double spend its utxo to bob

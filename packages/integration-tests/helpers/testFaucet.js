@@ -49,6 +49,7 @@ const faucet = {
 
     await this.initEthBalance(web3, web3.utils.toWei(config.minAmountEth || '3', 'ether'))
     await this.initERC20Balance(web3, config.minAmountERC20 || 20)
+    await this.addToken(this.erc20ContractAddress)
     await this.addToken(transaction.ETH_CURRENCY)
     await this.showInfo(web3)
   },
