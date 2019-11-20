@@ -4,6 +4,7 @@
   "description": "",
   "main": "",
   "scripts": {
+    "process-exits": "node process-exits.js",
     "balances": "node balances.js",
     "childchain-deposit": "node childchain-deposit.js",
     "childchain-exit": "node childchain-exit.js",

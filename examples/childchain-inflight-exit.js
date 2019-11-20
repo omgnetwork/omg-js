@@ -71,12 +71,7 @@ async function inflightExitChildChain () {
   const typedData = transaction.getTypedData(createdTxn.transactions[0], rootChainPlasmaContractAddress)
   const signatures = childChain.signTransaction(typedData, [alicePrivateKey])
   const signedTxn = childChain.buildSignedTransaction(typedData, signatures)
-  await childChain.submitTransaction(signedTxn)
-  console.log('Transaction submitted')
-
-  // wait for transaction to be recorded by the watcher
-  console.log('Waiting for transaction to be recorded by the watcher...')
-  await wait.wait(40000)
+  console.log('Transaction created but not submitted')
 
   // Bob hasn't seen the transaction get put into a block and he wants to exit his output.
   // check if queue exists for this token
