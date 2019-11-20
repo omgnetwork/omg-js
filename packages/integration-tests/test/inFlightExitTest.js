@@ -331,13 +331,13 @@ describe('In-flight Exit tests', function () {
 
     it('should succesfully exit a ChildChain with piggybacking input transaction that is not included', async function () {
       const aliceSpentOnGas = numberToBN(0)
-
+      const kelvinSpentOnGas = numberToBN(0)
       // fund some ETH for alice on rootchain so she can piggyback / challenge
       await faucet.fundRootchainEth(web3, aliceAccount.address, INTIIAL_ALICE_AMOUNT)
       await rcHelper.waitForEthBalanceEq(web3, aliceAccount.address, INTIIAL_ALICE_AMOUNT)
 
       // we need the 3rd guy here, introducing kelvin which he will do a double spend
-      const INTIIAL_KELVIN_AMOUNT = web3.utils.toWei('.1', 'ether')
+      const INTIIAL_KELVIN_AMOUNT = web3.utils.toWei('.3', 'ether')
       const kelvinAccount = rcHelper.createAccount(web3)
       console.log(`Created Kelvin account ${JSON.stringify(bobAccount)}`)
 
@@ -356,40 +356,28 @@ describe('In-flight Exit tests', function () {
         INTIIAL_KELVIN_AMOUNT
       )
 
-      await faucet.fundChildchain(
-        kelvinAccount.address,
-        1000000,
-        transaction.ETH_CURRENCY
-      )
-
-      await ccHelper.waitForBalanceEq(
-        childChain,
-        kelvinAccount.address,
-        numberToBN(INTIIAL_KELVIN_AMOUNT).add(numberToBN(1000000))
-      )
-
       const kelvinUtxos = await childChain.getUtxos(kelvinAccount.address)
       const aliceUtxos = await childChain.getUtxos(aliceAccount.address)
 
       // kelvin and alice create a tx to send to bob
       const txBody = {
-        inputs: [kelvinUtxos[0], kelvinUtxos[1]],
+        inputs: [kelvinUtxos[0], aliceUtxos[0]],
         outputs: [{
           outputType: 1,
           outputGuard: bobAccount.address,
           currency: transaction.ETH_CURRENCY,
-          amount: 1000000
+          amount: numberToBN(INTIIAL_KELVIN_AMOUNT).add(numberToBN(INTIIAL_ALICE_AMOUNT))
         }]
       }
 
       const typedData = transaction.getTypedData(txBody, rootChain.plasmaContractAddress)
       // Sign it
-      const signatures = childChain.signTransaction(typedData, [kelvinAccount.privateKey, kelvinAccount.privateKey])
+      const signatures = childChain.signTransaction(typedData, [kelvinAccount.privateKey, aliceAccount.privateKey])
       const signedTx = childChain.buildSignedTransaction(typedData, signatures)
       const exitData = await childChain.inFlightExitGetData(signedTx)
 
       // kelvin double spend its utxo to bob
-      const kelvinToBobTx = ccHelper.createTx(
+      const kelvinToBobTx = await ccHelper.createTx(
         childChain,
         kelvinAccount.address,
         bobAccount.address,
@@ -404,11 +392,11 @@ describe('In-flight Exit tests', function () {
         exitData.in_flight_tx,
         exitData.input_txs,
         exitData.input_utxos_pos,
-        ['0x'],
+        ['0x', '0x'],
         exitData.input_txs_inclusion_proofs,
         signatures,
         exitData.in_flight_tx_sigs,
-        ['0x'],
+        ['0x', '0x'],
         {
           privateKey: kelvinAccount.privateKey,
           from: kelvinAccount.address
@@ -417,6 +405,8 @@ describe('In-flight Exit tests', function () {
       console.log(
         `Kelvin called RootChain.startInFlightExit(): txhash = ${receipt.transactionHash}`
       )
+
+      kelvinSpentOnGas.iadd(await rcHelper.spentOnGas(web3, receipt))
 
       // Alice sees that Kelvin is trying to exit the same input that Kelvin sent to bob.
       const kelvinToBobDecoded = transaction.decodeTxBytes(kelvinToBobTx)
@@ -502,13 +492,16 @@ describe('In-flight Exit tests', function () {
       const aliceEthBalance = await web3.eth.getBalance(aliceAccount.address)
       // Expect Alice's balance to be INTIIAL_ALICE_AMOUNT - gas spent
       const expected = web3.utils
-        .toBN(web3.utils.toBN(INTIIAL_ALICE_AMOUNT))
+        .toBN(INTIIAL_ALICE_AMOUNT) // ETH exited amount that funded to cc directly
+        .add(numberToBN(INTIIAL_ALICE_AMOUNT)) // ETH funded initially
         .sub(aliceSpentOnGas)
+        .add(numberToBN(rootChain.getInflightExitBond())) // since alice challenged the invalid IFE, she gets the bond
       assert.equal(aliceEthBalance.toString(), expected.toString())
 
-      // kelvin rootchain balance should be zero because he double spent, hence the utxo should still be in childchain
+      // kelvin rootchain balance should be equal to initial because he double spent, hence the utxo should still be in childchain
       const kelvinEthBalance = await web3.eth.getBalance(kelvinAccount.address)
-      assert.equal(kelvinEthBalance.toString(), '0')
+      const kelvinExpectedBalance = numberToBN(INTIIAL_KELVIN_AMOUNT).sub(kelvinSpentOnGas)
+      assert.equal(kelvinEthBalance.toString(), kelvinExpectedBalance.toString())
     })
   })
 })

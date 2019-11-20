@@ -57,7 +57,7 @@ const faucet = {
   addToken: async function (currency) {
     const hasToken = await this.rootChain.hasToken(currency)
     if (!hasToken) {
-      console.log('Adding {currency} to exit queue')
+      console.log(`Adding ${currency} to exit queue`)
       await this.rootChain.addToken(
         currency,
         { from: this.address, privateKey: this.privateKey }
