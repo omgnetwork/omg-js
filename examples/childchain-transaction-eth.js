@@ -35,8 +35,6 @@ const alicePrivateKey = config.alice_eth_address_private_key
 const bobAddress = config.bob_eth_address
 
 async function createSignBuildAndSubmitTransaction () {
-  let aliceRootchainBalance = await web3.eth.getBalance(aliceAddress)
-  let bobRootchainBalance = await web3.eth.getBalance(bobAddress)
   let alicesBalanceArray = await childChain.getBalance(aliceAddress)
   let alicesChildchainETHBalance = alicesBalanceArray.length === 0
     ? '0 ETH'
@@ -46,8 +44,6 @@ async function createSignBuildAndSubmitTransaction () {
     ? '0 ETH'
     : `${web3.utils.fromWei(String(bobsBalanceArray.find(i => i.currency === transaction.ETH_CURRENCY).amount))} ETH`
 
-  console.log(`Alice's rootchain ETH balance: ${web3.utils.fromWei(String(aliceRootchainBalance), 'ether')} ETH`)
-  console.log(`Bob's rootchain ETH balance: ${web3.utils.fromWei(String(bobRootchainBalance), 'ether')} ETH`)
   console.log(`Alice's childchain ETH balance: ${alicesChildchainETHBalance}`)
   console.log(`Bob's childchain ETH balance: ${bobsChildchainETHBalance}`)
   console.log('-----')
@@ -83,8 +79,6 @@ async function createSignBuildAndSubmitTransaction () {
   console.log('Waiting for transaction to be recorded by the watcher...')
   await wait.wait(40000)
 
-  aliceRootchainBalance = await web3.eth.getBalance(aliceAddress)
-  bobRootchainBalance = await web3.eth.getBalance(bobAddress)
   alicesBalanceArray = await childChain.getBalance(aliceAddress)
   alicesChildchainETHBalance = alicesBalanceArray.length === 0
     ? '0 ETH'
@@ -95,19 +89,9 @@ async function createSignBuildAndSubmitTransaction () {
     : `${web3.utils.fromWei(String(bobsBalanceArray.find(i => i.currency === transaction.ETH_CURRENCY).amount))} ETH`
 
   console.log('-----')
-  console.log(`Alice's rootchain ETH balance: ${web3.utils.fromWei(String(aliceRootchainBalance), 'ether')} ETH`)
-  console.log(`Bob's rootchain ETH balance: ${web3.utils.fromWei(String(bobRootchainBalance), 'ether')} ETH`)
   console.log(`Alice's childchain ETH balance: ${alicesChildchainETHBalance}`)
   console.log(`Bob's childchain ETH balance: ${bobsChildchainETHBalance}`)
   return Promise.resolve()
 }
 
-(async () => {
-  try {
-    const result = await createSignBuildAndSubmitTransaction()
-    return Promise.resolve(result)
-  } catch (error) {
-    console.log(error)
-    return Promise.reject(error)
-  }
-})()
+createSignBuildAndSubmitTransaction()

@@ -165,12 +165,4 @@ async function inflightExitChildChain () {
   console.log(`Bob's childchain ETH balance: ${bobsChildchainETHBalance}`)
 }
 
-(async () => {
-  try {
-    const result = await inflightExitChildChain()
-    return Promise.resolve(result)
-  } catch (error) {
-    console.log(error)
-    return Promise.reject(error)
-  }
-})()
+inflightExitChildChain()

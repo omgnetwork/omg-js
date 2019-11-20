@@ -58,9 +58,7 @@ async function depositERC20IntoPlasmaContract () {
   let rootchainERC20Balance = await getERC20Balance(aliceAddress)
   let childchainBalanceArray = await childChain.getBalance(aliceAddress)
   let erc20Object = childchainBalanceArray.find(i => i.currency === config.erc20_contract)
-  let childchainERC20Balance = erc20Object
-    ? erc20Object.amount
-    : 0
+  let childchainERC20Balance = erc20Object ? erc20Object.amount : 0
 
   console.log('ERC20 token used for this example: ', config.erc20_contract)
   console.log(`Alice's rootchain ERC20 balance: ${web3.utils.hexToNumber(rootchainERC20Balance)}`)
@@ -88,9 +86,7 @@ async function depositERC20IntoPlasmaContract () {
   rootchainERC20Balance = await getERC20Balance(aliceAddress)
   childchainBalanceArray = await childChain.getBalance(aliceAddress)
   erc20Object = childchainBalanceArray.find(i => i.currency === config.erc20_contract)
-  childchainERC20Balance = erc20Object
-    ? erc20Object.amount
-    : 0
+  childchainERC20Balance = erc20Object ? erc20Object.amount : 0
 
   console.log('-----')
   console.log(`Alice's rootchain ERC20 balance: ${web3.utils.hexToNumber(rootchainERC20Balance)}`)
@@ -98,12 +94,4 @@ async function depositERC20IntoPlasmaContract () {
   return Promise.resolve()
 }
 
-(async () => {
-  try {
-    const result = await depositERC20IntoPlasmaContract()
-    return Promise.resolve(result)
-  } catch (error) {
-    console.log(error)
-    return Promise.reject(error)
-  }
-})()
+depositERC20IntoPlasmaContract()

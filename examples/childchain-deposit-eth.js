@@ -71,12 +71,4 @@ async function depositEthIntoPlasmaContract () {
   return Promise.resolve()
 }
 
-(async () => {
-  try {
-    const result = await depositEthIntoPlasmaContract()
-    return Promise.resolve(result)
-  } catch (error) {
-    console.log(error)
-    return Promise.reject(error)
-  }
-})()
+depositEthIntoPlasmaContract()

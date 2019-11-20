@@ -82,12 +82,4 @@ async function balances () {
   console.log(`Bob's childchain balance: ${JSON.stringify(bobChildchainBalance, null, 2)}`)
 }
 
-(async () => {
-  try {
-    const result = await balances()
-    return Promise.resolve(result)
-  } catch (error) {
-    console.log(error)
-    return Promise.reject(error)
-  }
-})()
+balances()

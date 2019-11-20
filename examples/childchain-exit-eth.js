@@ -100,14 +100,6 @@ async function exitChildChain () {
   console.log(`Bob's rootchain balance: ${web3.utils.fromWei(String(bobRootchainBalance), 'ether')} ETH`)
   console.log(`Bob's childchain balance: ${bobChildchainETHBalance} ETH`)
   return Promise.resolve()
-};
+}
 
-(async () => {
-  try {
-    const result = await exitChildChain()
-    return Promise.resolve(result)
-  } catch (error) {
-    console.log(error)
-    return Promise.reject(error)
-  }
-})()
+exitChildChain()
