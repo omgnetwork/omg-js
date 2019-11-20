@@ -91,7 +91,6 @@ async function depositERC20IntoPlasmaContract () {
   console.log('-----')
   console.log(`Alice's rootchain ERC20 balance: ${web3.utils.hexToNumber(rootchainERC20Balance)}`)
   console.log(`Alice's childchain ERC20 balance: ${childchainERC20Balance}`)
-  return Promise.resolve()
 }
 
 depositERC20IntoPlasmaContract()

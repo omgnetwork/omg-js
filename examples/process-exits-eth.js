@@ -50,15 +50,6 @@ async function processExits () {
     )
     console.log('Exits processed')
   }
-  return Promise.resolve()
 }
 
-(async () => {
-  try {
-    const result = await processExits()
-    return Promise.resolve(result)
-  } catch (error) {
-    console.log(error)
-    return Promise.reject(error)
-  }
-})()
+processExits()

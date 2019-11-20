@@ -68,7 +68,6 @@ async function depositEthIntoPlasmaContract () {
   console.log('-----')
   console.log(`Alice's rootchain ETH balance: ${web3.utils.fromWei(String(rootchainBalance), 'ether')} ETH`)
   console.log(`Alice's childchain ETH balance: ${childchainETHBalance}`)
-  return Promise.resolve()
 }
 
 depositEthIntoPlasmaContract()

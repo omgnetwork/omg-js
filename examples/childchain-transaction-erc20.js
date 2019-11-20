@@ -80,7 +80,6 @@ async function erc20Transaction () {
   console.log('-----')
   console.log(`Alice's childchain ERC20 balance: ${alicesChildchainERC20Balance}`)
   console.log(`Bob's childchain ERC20 balance: ${bobsChildchainERC20Balance}`)
-  return Promise.resolve()
 }
 
 erc20Transaction()

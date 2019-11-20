@@ -91,7 +91,6 @@ async function createSignBuildAndSubmitTransaction () {
   console.log('-----')
   console.log(`Alice's childchain ETH balance: ${alicesChildchainETHBalance}`)
   console.log(`Bob's childchain ETH balance: ${bobsChildchainETHBalance}`)
-  return Promise.resolve()
 }
 
 createSignBuildAndSubmitTransaction()
