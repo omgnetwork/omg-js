@@ -500,7 +500,7 @@ describe('In-flight Exit tests', function () {
 
       // kelvin rootchain balance should be equal to initial because he double spent, hence the utxo should still be in childchain
       const kelvinEthBalance = await web3.eth.getBalance(kelvinAccount.address)
-      const kelvinExpectedBalance = numberToBN(INTIIAL_KELVIN_AMOUNT).sub(kelvinSpentOnGas)
+      const kelvinExpectedBalance = numberToBN(INTIIAL_KELVIN_AMOUNT).sub(kelvinSpentOnGas).sub(rootChain.getInflightExitBond())
       assert.equal(kelvinEthBalance.toString(), kelvinExpectedBalance.toString())
     })
   })
