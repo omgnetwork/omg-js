@@ -102,18 +102,6 @@ describe('Standard Exit tests', function () {
       const utxoToExit = aliceUtxos[0]
       const exitData = await childChain.getExitData(utxoToExit)
       assert.hasAllKeys(exitData, ['txbytes', 'proof', 'utxo_pos'])
-      // check if queue exists for this token
-      const hasToken = await rootChain.hasToken(transaction.ETH_CURRENCY)
-      if (!hasToken) {
-        console.log(`Adding a ${transaction.ETH_CURRENCY} exit queue`)
-        const addTokenCall = await rootChain.addToken(
-          transaction.ETH_CURRENCY,
-          { from: aliceAccount.address, privateKey: aliceAccount.privateKey }
-        )
-        aliceSpentOnGas.iadd(await rcHelper.spentOnGas(web3, addTokenCall))
-      } else {
-        console.log(`Exit queue for ${transaction.ETH_CURRENCY} already exists`)
-      }
 
       receipt = await rootChain.startStandardExit(
         exitData.utxo_pos,
