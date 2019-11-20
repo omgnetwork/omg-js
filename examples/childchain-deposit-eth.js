@@ -37,6 +37,10 @@ const depositAmount = BigNumber(web3.utils.toWei(config.alice_eth_deposit_amount
 
 async function depositEthIntoPlasmaContract () {
   let rootchainBalance = await web3.eth.getBalance(aliceAddress)
+  if (rootchainBalance === 0) {
+    console.log('Please make sure Alice has an ETH balance on the rootchain')
+    return
+  }
   let childchainBalanceArray = await childChain.getBalance(aliceAddress)
   let childchainETHBalance = childchainBalanceArray.length === 0
     ? '0 ETH'

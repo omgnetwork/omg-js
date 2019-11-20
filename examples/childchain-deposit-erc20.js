@@ -29,12 +29,12 @@ const web3 = new Web3(new Web3.providers.HttpProvider(config.geth_url), null, { 
 
 const rootChain = new RootChain(web3, config.rootchain_plasma_contract_address)
 const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url })
-const erc20Contract = new web3.eth.Contract(erc20abi, config.erc20_contract)
 
 const aliceAddress = config.alice_eth_address
 const alicePrivateKey = config.alice_eth_address_private_key
 
 async function getERC20Balance (address) {
+  const erc20Contract = new web3.eth.Contract(erc20abi, config.erc20_contract)
   const txDetails = {
     from: address,
     to: config.erc20_contract,
@@ -44,6 +44,7 @@ async function getERC20Balance (address) {
 }
 
 async function approveERC20 (ownerAccount, ownerPrivateKey, spender, value) {
+  const erc20Contract = new web3.eth.Contract(erc20abi, config.erc20_contract)
   const txDetails = {
     from: ownerAccount,
     to: config.erc20_contract,
@@ -55,9 +56,18 @@ async function approveERC20 (ownerAccount, ownerPrivateKey, spender, value) {
 }
 
 async function depositERC20IntoPlasmaContract () {
+  if (!config.erc20_contract) {
+    console.log('Please define an ERC20 contract in your .env')
+    return
+  }
+
   let rootchainERC20Balance = await getERC20Balance(aliceAddress)
+  if (web3.utils.hexToNumber(rootchainERC20Balance) === 0) {
+    console.log('Please make sure Alice has an ERC20 balance on the rootchain')
+    return
+  }
   let childchainBalanceArray = await childChain.getBalance(aliceAddress)
-  let erc20Object = childchainBalanceArray.find(i => i.currency === config.erc20_contract)
+  let erc20Object = childchainBalanceArray.find(i => i.currency.toLowerCase() === config.erc20_contract.toLowerCase())
   let childchainERC20Balance = erc20Object ? erc20Object.amount : 0
 
   console.log(`Alice's rootchain ERC20 balance: ${web3.utils.hexToNumber(rootchainERC20Balance)}`)
@@ -84,7 +94,7 @@ async function depositERC20IntoPlasmaContract () {
 
   rootchainERC20Balance = await getERC20Balance(aliceAddress)
   childchainBalanceArray = await childChain.getBalance(aliceAddress)
-  erc20Object = childchainBalanceArray.find(i => i.currency === config.erc20_contract)
+  erc20Object = childchainBalanceArray.find(i => i.currency.toLowerCase() === config.erc20_contract.toLowerCase())
   childchainERC20Balance = erc20Object ? erc20Object.amount : 0
 
   console.log('-----')

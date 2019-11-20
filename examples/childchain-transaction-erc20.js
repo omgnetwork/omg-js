@@ -29,12 +29,16 @@ const alicePrivateKey = config.alice_eth_address_private_key
 const bobAddress = config.bob_eth_address
 
 async function erc20Transaction () {
+  if (!config.erc20_contract) {
+    console.log('Please define an ERC20 contract in your .env')
+    return
+  }
   let alicesBalanceArray = await childChain.getBalance(aliceAddress)
-  let aliceErc20Object = alicesBalanceArray.find(i => i.currency === config.erc20_contract)
+  let aliceErc20Object = alicesBalanceArray.find(i => i.currency.toLowerCase() === config.erc20_contract.toLowerCase())
   let alicesChildchainERC20Balance = aliceErc20Object ? aliceErc20Object.amount : 0
 
   let bobsBalanceArray = await childChain.getBalance(bobAddress)
-  let bobErc20Object = bobsBalanceArray.find(i => i.currency === config.erc20_contract)
+  let bobErc20Object = bobsBalanceArray.find(i => i.currency.toLowerCase() === config.erc20_contract.toLowerCase())
   let bobsChildchainERC20Balance = bobErc20Object ? bobErc20Object.amount : 0
 
   console.log(`Alice's childchain ERC20 balance: ${alicesChildchainERC20Balance}`)
@@ -70,11 +74,11 @@ async function erc20Transaction () {
   await wait.wait(40000)
 
   alicesBalanceArray = await childChain.getBalance(aliceAddress)
-  aliceErc20Object = alicesBalanceArray.find(i => i.currency === config.erc20_contract)
+  aliceErc20Object = alicesBalanceArray.find(i => i.currency.toLowerCase() === config.erc20_contract.toLowerCase())
   alicesChildchainERC20Balance = aliceErc20Object ? aliceErc20Object.amount : 0
 
   bobsBalanceArray = await childChain.getBalance(bobAddress)
-  bobErc20Object = bobsBalanceArray.find(i => i.currency === config.erc20_contract)
+  bobErc20Object = bobsBalanceArray.find(i => i.currency.toLowerCase() === config.erc20_contract.toLowerCase())
   bobsChildchainERC20Balance = bobErc20Object ? bobErc20Object.amount : 0
 
   console.log('-----')

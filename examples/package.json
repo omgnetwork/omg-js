@@ -4,7 +4,7 @@
   "description": "",
   "main": "",
   "scripts": {
-    "process-exits-eth": "node process-exits-eth.js",
+    "process-exits": "node process-exits.js",
     "childchain-utxos": "node childchain-utxos.js",
     "balances": "node balances.js",
     "childchain-deposit-eth": "node childchain-deposit-eth.js",

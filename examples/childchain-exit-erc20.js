@@ -28,12 +28,12 @@ const web3 = new Web3(new Web3.providers.HttpProvider(config.geth_url), null, { 
 
 const rootChain = new RootChain(web3, config.rootchain_plasma_contract_address)
 const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url })
-const erc20Contract = new web3.eth.Contract(erc20abi, config.erc20_contract)
 
 const bobAddress = config.bob_eth_address
 const bobPrivateKey = config.bob_eth_address_private_key
 
 async function getERC20Balance (address) {
+  const erc20Contract = new web3.eth.Contract(erc20abi, config.erc20_contract)
   const txDetails = {
     from: address,
     to: config.erc20_contract,
@@ -43,9 +43,14 @@ async function getERC20Balance (address) {
 }
 
 async function exitChildChainErc20 () {
+  if (!config.erc20_contract) {
+    console.log('Please define an ERC20 contract in your .env')
+    return
+  }
+
   let bobRootchainBalance = await getERC20Balance(bobAddress)
   let bobChildchainBalanceArray = await childChain.getBalance(bobAddress)
-  let bobErc20Object = bobChildchainBalanceArray.find(i => i.currency === config.erc20_contract)
+  let bobErc20Object = bobChildchainBalanceArray.find(i => i.currency.toLowerCase() === config.erc20_contract.toLowerCase())
   let bobChildchainBalance = bobErc20Object ? bobErc20Object.amount : 0
 
   console.log(`Bob's rootchain ERC20 balance: ${web3.utils.hexToNumber(bobRootchainBalance)}`)
@@ -54,7 +59,7 @@ async function exitChildChainErc20 () {
 
   // get a ERC20 UTXO and exit data
   const bobUtxos = await childChain.getExitableUtxos(bobAddress)
-  const bobUtxoToExit = bobUtxos.find(i => i.currency === config.erc20_contract)
+  const bobUtxoToExit = bobUtxos.find(i => i.currency.toLowerCase() === config.erc20_contract.toLowerCase())
   if (!bobUtxoToExit) {
     console.log('Bob doesnt have any ERC20 UTXOs to exit')
     return
@@ -101,7 +106,7 @@ async function exitChildChainErc20 () {
   // get final balances
   bobRootchainBalance = await getERC20Balance(bobAddress)
   bobChildchainBalanceArray = await childChain.getBalance(bobAddress)
-  bobErc20Object = bobChildchainBalanceArray.find(i => i.currency === config.erc20_contract)
+  bobErc20Object = bobChildchainBalanceArray.find(i => i.currency.toLowerCase() === config.erc20_contract.toLowerCase())
   bobChildchainBalance = bobErc20Object ? bobErc20Object.amount : 0
 
   console.log('-----')

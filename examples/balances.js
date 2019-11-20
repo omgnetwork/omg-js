@@ -21,9 +21,10 @@ const erc20abi = require('human-standard-token-abi')
 
 const web3 = new Web3(new Web3.providers.HttpProvider(config.geth_url), null, { transactionConfirmationBlocks: 1 })
 const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url })
-const erc20Contract = new web3.eth.Contract(erc20abi, config.erc20_contract)
 
 async function getERC20Balance (address) {
+  if (!config.erc20_contract) return
+  const erc20Contract = new web3.eth.Contract(erc20abi, config.erc20_contract)
   const txDetails = {
     from: address,
     to: config.erc20_contract,
@@ -48,10 +49,10 @@ async function balances () {
       currency: 'ETH',
       amount: `${web3.utils.fromWei(String(aliceRootchainBalance), 'ether')} ETH`
     },
-    {
+    ...config.erc20_contract && ({
       currency: config.erc20_contract,
       amount: web3.utils.hexToNumber(aliceRootchainERC20Balance)
-    }
+    })
   ]
 
   const bobsBalanceArray = await childChain.getBalance(config.bob_eth_address)
@@ -69,10 +70,10 @@ async function balances () {
       currency: 'ETH',
       amount: `${web3.utils.fromWei(String(bobRootchainBalance), 'ether')} ETH`
     },
-    {
+    ...config.erc20_contract && ({
       currency: config.erc20_contract,
       amount: web3.utils.hexToNumber(bobRootchainERC20Balance)
-    }
+    })
   ]
 
   console.log(`Alice's rootchain balance: ${JSON.stringify(aliceRootchainBalances, null, 2)}`)
