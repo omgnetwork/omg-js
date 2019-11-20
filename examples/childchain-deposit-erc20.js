@@ -60,7 +60,6 @@ async function depositERC20IntoPlasmaContract () {
   let erc20Object = childchainBalanceArray.find(i => i.currency === config.erc20_contract)
   let childchainERC20Balance = erc20Object ? erc20Object.amount : 0
 
-  console.log('ERC20 token used for this example: ', config.erc20_contract)
   console.log(`Alice's rootchain ERC20 balance: ${web3.utils.hexToNumber(rootchainERC20Balance)}`)
   console.log(`Alice's childchain ERC20 balance: ${childchainERC20Balance}`)
   console.log('-----')

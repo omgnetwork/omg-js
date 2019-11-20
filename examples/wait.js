@@ -20,8 +20,6 @@ async function waitForTransaction (web3, transactionHash, millisToWaitForTxn, bl
         try {
           const block = await web3.eth.getBlock(transactionReceipt.blockNumber)
           const current = await web3.eth.getBlock('latest')
-          const remaining = blocksToWaitForTxn - (current.number - block.number)
-          console.log(`${remaining} more block confirmations`)
           if (current.number - block.number >= blocksToWaitForTxn) {
             const transaction = await web3.eth.getTransaction(transactionHash)
             if (transaction.blockNumber !== null) {
