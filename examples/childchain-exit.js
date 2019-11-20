@@ -41,7 +41,7 @@ async function exitChildChain () {
   console.log('-----')
 
   // get deposit UTXO and exit data
-  const bobUtxos = await childChain.getUtxos(bobAddress)
+  const bobUtxos = await childChain.getExitableUtxos(bobAddress)
   const bobUtxoToExit = bobUtxos[0]
   if (!bobUtxoToExit) {
     console.log('Bob doesnt have any UTXOs to exit')
