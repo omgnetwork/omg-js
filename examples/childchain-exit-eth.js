@@ -35,9 +35,10 @@ const bobPrivateKey = config.bob_eth_address_private_key
 async function exitChildChain () {
   let bobRootchainBalance = await web3.eth.getBalance(bobAddress)
   let bobChildchainBalanceArray = await childChain.getBalance(bobAddress)
-  let bobChildchainETHBalance = bobChildchainBalanceArray.length === 0
-    ? '0 ETH'
-    : `${web3.utils.fromWei(String(bobChildchainBalanceArray.find(i => i.currency === transaction.ETH_CURRENCY).amount))} ETH`
+  let bobsEthObject = bobChildchainBalanceArray.find(i => i.currency === transaction.ETH_CURRENCY)
+  let bobChildchainETHBalance = bobsEthObject
+    ? `${web3.utils.fromWei(String(bobsEthObject.amount))} ETH`
+    : '0 ETH'
 
   console.log(`Bob's rootchain balance: ${web3.utils.fromWei(String(bobRootchainBalance), 'ether')} ETH`)
   console.log(`Bob's childchain balance: ${bobChildchainETHBalance}`)
@@ -92,13 +93,14 @@ async function exitChildChain () {
   // get final ETH balances
   bobRootchainBalance = await web3.eth.getBalance(bobAddress)
   bobChildchainBalanceArray = await childChain.getBalance(bobAddress)
-  bobChildchainETHBalance = bobChildchainBalanceArray.length === 0
-    ? '0 ETH'
-    : `${web3.utils.fromWei(String(bobChildchainBalanceArray.find(i => i.currency === transaction.ETH_CURRENCY).amount))} ETH`
+  bobsEthObject = bobChildchainBalanceArray.find(i => i.currency === transaction.ETH_CURRENCY)
+  bobChildchainETHBalance = bobsEthObject
+    ? `${web3.utils.fromWei(String(bobsEthObject.amount))} ETH`
+    : '0 ETH'
 
   console.log('-----')
   console.log(`Bob's rootchain balance: ${web3.utils.fromWei(String(bobRootchainBalance), 'ether')} ETH`)
-  console.log(`Bob's childchain balance: ${bobChildchainETHBalance} ETH`)
+  console.log(`Bob's childchain balance: ${bobChildchainETHBalance}`)
 }
 
 exitChildChain()

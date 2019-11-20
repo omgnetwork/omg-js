@@ -42,9 +42,10 @@ async function depositEthIntoPlasmaContract () {
     return
   }
   let childchainBalanceArray = await childChain.getBalance(aliceAddress)
-  let childchainETHBalance = childchainBalanceArray.length === 0
-    ? '0 ETH'
-    : `${web3.utils.fromWei(String(childchainBalanceArray.find(i => i.currency === transaction.ETH_CURRENCY).amount))} ETH`
+  let ethObject = childchainBalanceArray.find(i => i.currency === transaction.ETH_CURRENCY)
+  let childchainETHBalance = ethObject
+    ? `${web3.utils.fromWei(String(ethObject.amount))} ETH`
+    : '0 ETH'
 
   console.log(`Alice's rootchain ETH balance: ${web3.utils.fromWei(String(rootchainBalance), 'ether')} ETH`)
   console.log(`Alice's childchain ETH balance: ${childchainETHBalance}`)
@@ -66,9 +67,10 @@ async function depositEthIntoPlasmaContract () {
 
   rootchainBalance = await web3.eth.getBalance(aliceAddress)
   childchainBalanceArray = await childChain.getBalance(aliceAddress)
-  childchainETHBalance = childchainBalanceArray.length === 0
-    ? '0 ETH'
-    : `${web3.utils.fromWei(String(childchainBalanceArray.find(i => i.currency === transaction.ETH_CURRENCY).amount))} ETH`
+  ethObject = childchainBalanceArray.find(i => i.currency === transaction.ETH_CURRENCY)
+  childchainETHBalance = ethObject
+    ? `${web3.utils.fromWei(String(ethObject.amount))} ETH`
+    : '0 ETH'
   console.log('-----')
   console.log(`Alice's rootchain ETH balance: ${web3.utils.fromWei(String(rootchainBalance), 'ether')} ETH`)
   console.log(`Alice's childchain ETH balance: ${childchainETHBalance}`)

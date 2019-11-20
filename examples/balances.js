@@ -49,10 +49,10 @@ async function balances () {
       currency: 'ETH',
       amount: `${web3.utils.fromWei(String(aliceRootchainBalance), 'ether')} ETH`
     },
-    ...config.erc20_contract && ({
+    ...config.erc20_contract && [{
       currency: config.erc20_contract,
       amount: web3.utils.hexToNumber(aliceRootchainERC20Balance)
-    })
+    }]
   ]
 
   const bobsBalanceArray = await childChain.getBalance(config.bob_eth_address)
@@ -70,10 +70,10 @@ async function balances () {
       currency: 'ETH',
       amount: `${web3.utils.fromWei(String(bobRootchainBalance), 'ether')} ETH`
     },
-    ...config.erc20_contract && ({
+    ...config.erc20_contract && [{
       currency: config.erc20_contract,
       amount: web3.utils.hexToNumber(bobRootchainERC20Balance)
-    })
+    }]
   ]
 
   console.log(`Alice's rootchain balance: ${JSON.stringify(aliceRootchainBalances, null, 2)}`)
