@@ -25,24 +25,27 @@ const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxy
 
 const aliceAddress = config.alice_eth_address
 const alicePrivateKey = config.alice_eth_address_private_key
-
 const bobAddress = config.bob_eth_address
+
+async function logBalances () {
+  const alicesBalanceArray = await childChain.getBalance(aliceAddress)
+  const aliceErc20Object = alicesBalanceArray.find(i => i.currency.toLowerCase() === config.erc20_contract.toLowerCase())
+  const alicesChildchainERC20Balance = aliceErc20Object ? aliceErc20Object.amount : 0
+
+  const bobsBalanceArray = await childChain.getBalance(bobAddress)
+  const bobErc20Object = bobsBalanceArray.find(i => i.currency.toLowerCase() === config.erc20_contract.toLowerCase())
+  const bobsChildchainERC20Balance = bobErc20Object ? bobErc20Object.amount : 0
+
+  console.log(`Alice's childchain ERC20 balance: ${alicesChildchainERC20Balance}`)
+  console.log(`Bob's childchain ERC20 balance: ${bobsChildchainERC20Balance}`)
+}
 
 async function erc20Transaction () {
   if (!config.erc20_contract) {
     console.log('Please define an ERC20 contract in your .env')
     return
   }
-  let alicesBalanceArray = await childChain.getBalance(aliceAddress)
-  let aliceErc20Object = alicesBalanceArray.find(i => i.currency.toLowerCase() === config.erc20_contract.toLowerCase())
-  let alicesChildchainERC20Balance = aliceErc20Object ? aliceErc20Object.amount : 0
-
-  let bobsBalanceArray = await childChain.getBalance(bobAddress)
-  let bobErc20Object = bobsBalanceArray.find(i => i.currency.toLowerCase() === config.erc20_contract.toLowerCase())
-  let bobsChildchainERC20Balance = bobErc20Object ? bobErc20Object.amount : 0
-
-  console.log(`Alice's childchain ERC20 balance: ${alicesChildchainERC20Balance}`)
-  console.log(`Bob's childchain ERC20 balance: ${bobsChildchainERC20Balance}`)
+  await logBalances()
   console.log('-----')
 
   const payments = [{
@@ -73,17 +76,8 @@ async function erc20Transaction () {
   console.log('Waiting for transaction to be recorded by the watcher...')
   await wait.wait(40000)
 
-  alicesBalanceArray = await childChain.getBalance(aliceAddress)
-  aliceErc20Object = alicesBalanceArray.find(i => i.currency.toLowerCase() === config.erc20_contract.toLowerCase())
-  alicesChildchainERC20Balance = aliceErc20Object ? aliceErc20Object.amount : 0
-
-  bobsBalanceArray = await childChain.getBalance(bobAddress)
-  bobErc20Object = bobsBalanceArray.find(i => i.currency.toLowerCase() === config.erc20_contract.toLowerCase())
-  bobsChildchainERC20Balance = bobErc20Object ? bobErc20Object.amount : 0
-
   console.log('-----')
-  console.log(`Alice's childchain ERC20 balance: ${alicesChildchainERC20Balance}`)
-  console.log(`Bob's childchain ERC20 balance: ${bobsChildchainERC20Balance}`)
+  await logBalances()
 }
 
 erc20Transaction()

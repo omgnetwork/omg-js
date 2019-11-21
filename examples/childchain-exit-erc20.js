@@ -22,6 +22,7 @@ const ChildChain = require('../packages/omg-js-childchain/src/childchain')
 
 const config = require('./config.js')
 const wait = require('./wait.js')
+const { getERC20Balance } = require('./util')
 
 // setup for only 1 transaction confirmation block for fast confirmations
 const web3 = new Web3(new Web3.providers.HttpProvider(config.geth_url), null, { transactionConfirmationBlocks: 1 })
@@ -32,14 +33,14 @@ const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxy
 const bobAddress = config.bob_eth_address
 const bobPrivateKey = config.bob_eth_address_private_key
 
-async function getERC20Balance (address) {
-  const erc20Contract = new web3.eth.Contract(erc20abi, config.erc20_contract)
-  const txDetails = {
-    from: address,
-    to: config.erc20_contract,
-    data: erc20Contract.methods.balanceOf(address).encodeABI()
-  }
-  return web3.eth.call(txDetails)
+async function logBalances () {
+  const bobRootchainBalance = await getERC20Balance(bobAddress)
+  const bobChildchainBalanceArray = await childChain.getBalance(bobAddress)
+  const bobErc20Object = bobChildchainBalanceArray.find(i => i.currency.toLowerCase() === config.erc20_contract.toLowerCase())
+  const bobChildchainBalance = bobErc20Object ? bobErc20Object.amount : 0
+
+  console.log(`Bob's rootchain ERC20 balance: ${web3.utils.hexToNumber(bobRootchainBalance)}`)
+  console.log(`Bob's childchain ERC20 balance: ${bobChildchainBalance}`)
 }
 
 async function exitChildChainErc20 () {
@@ -48,13 +49,7 @@ async function exitChildChainErc20 () {
     return
   }
 
-  let bobRootchainBalance = await getERC20Balance(bobAddress)
-  let bobChildchainBalanceArray = await childChain.getBalance(bobAddress)
-  let bobErc20Object = bobChildchainBalanceArray.find(i => i.currency.toLowerCase() === config.erc20_contract.toLowerCase())
-  let bobChildchainBalance = bobErc20Object ? bobErc20Object.amount : 0
-
-  console.log(`Bob's rootchain ERC20 balance: ${web3.utils.hexToNumber(bobRootchainBalance)}`)
-  console.log(`Bob's childchain ERC20 balance: ${bobChildchainBalance}`)
+  await logBalances()
   console.log('-----')
 
   // get a ERC20 UTXO and exit data
@@ -92,7 +87,6 @@ async function exitChildChainErc20 () {
   console.log('Bob started a standard exit')
 
   await wait.waitForChallengePeriodToEnd(rootChain, exitData)
-  // call processExits after challenge period is over
   await rootChain.processExits(
     config.erc20_contract, 0, 20,
     {
@@ -103,15 +97,8 @@ async function exitChildChainErc20 () {
   )
   console.log('Exits processed')
 
-  // get final balances
-  bobRootchainBalance = await getERC20Balance(bobAddress)
-  bobChildchainBalanceArray = await childChain.getBalance(bobAddress)
-  bobErc20Object = bobChildchainBalanceArray.find(i => i.currency.toLowerCase() === config.erc20_contract.toLowerCase())
-  bobChildchainBalance = bobErc20Object ? bobErc20Object.amount : 0
-
   console.log('-----')
-  console.log(`Bob's rootchain ERC20 balance: ${web3.utils.hexToNumber(bobRootchainBalance)}`)
-  console.log(`Bob's childchain ERC20 balance: ${bobChildchainBalance}`)
+  await logBalances()
 }
 
 exitChildChainErc20()

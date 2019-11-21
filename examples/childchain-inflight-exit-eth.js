@@ -21,11 +21,7 @@ const { transaction, hexPrefix } = require('../packages/omg-js-util/src')
 const config = require('./config.js')
 const wait = require('./wait.js')
 
-// setup for fast confirmations
-const web3 = new Web3(new Web3.providers.HttpProvider(config.geth_url), null, {
-  transactionConfirmationBlocks: 1
-})
-
+const web3 = new Web3(new Web3.providers.HttpProvider(config.geth_url), null, { transactionConfirmationBlocks: 1 })
 const rootChain = new RootChain(web3, config.rootchain_plasma_contract_address)
 const rootChainPlasmaContractAddress = config.rootchain_plasma_contract_address
 const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url })
@@ -35,19 +31,19 @@ const alicePrivateKey = config.alice_eth_address_private_key
 const bobAddress = config.bob_eth_address
 const bobPrivateKey = config.bob_eth_address_private_key
 
-async function inflightExitChildChain () {
-  let aliceRootchainBalance = await web3.eth.getBalance(aliceAddress)
-  let bobRootchainBalance = await web3.eth.getBalance(bobAddress)
+async function logBalances () {
+  const aliceRootchainBalance = await web3.eth.getBalance(aliceAddress)
+  const bobRootchainBalance = await web3.eth.getBalance(bobAddress)
 
-  let alicesBalanceArray = await childChain.getBalance(aliceAddress)
-  let alicesEthObject = alicesBalanceArray.find(i => i.currency === transaction.ETH_CURRENCY)
-  let alicesChildchainETHBalance = alicesEthObject
+  const alicesBalanceArray = await childChain.getBalance(aliceAddress)
+  const alicesEthObject = alicesBalanceArray.find(i => i.currency === transaction.ETH_CURRENCY)
+  const alicesChildchainETHBalance = alicesEthObject
     ? `${web3.utils.fromWei(String(alicesEthObject.amount))} ETH`
     : '0 ETH'
 
-  let bobsBalanceArray = await childChain.getBalance(bobAddress)
-  let bobsEthObject = bobsBalanceArray.find(i => i.currency === transaction.ETH_CURRENCY)
-  let bobsChildchainETHBalance = bobsEthObject
+  const bobsBalanceArray = await childChain.getBalance(bobAddress)
+  const bobsEthObject = bobsBalanceArray.find(i => i.currency === transaction.ETH_CURRENCY)
+  const bobsChildchainETHBalance = bobsEthObject
     ? `${web3.utils.fromWei(String(bobsEthObject.amount))} ETH`
     : '0 ETH'
 
@@ -55,6 +51,10 @@ async function inflightExitChildChain () {
   console.log(`Bob's rootchain ETH balance: ${web3.utils.fromWei(String(bobRootchainBalance), 'ether')} ETH`)
   console.log(`Alice's childchain ETH balance: ${alicesChildchainETHBalance}`)
   console.log(`Bob's childchain ETH balance: ${bobsChildchainETHBalance}`)
+}
+
+async function inflightExitChildChain () {
+  await logBalances()
   console.log('-----')
 
   const transferAmount = BigNumber(web3.utils.toWei(config.alice_eth_transfer_amount, 'ether'))
@@ -150,27 +150,8 @@ async function inflightExitChildChain () {
   )
   console.log('Exits processed')
 
-  // get final ETH balances
-  aliceRootchainBalance = await web3.eth.getBalance(aliceAddress)
-  bobRootchainBalance = await web3.eth.getBalance(bobAddress)
-
-  alicesBalanceArray = await childChain.getBalance(aliceAddress)
-  alicesEthObject = alicesBalanceArray.find(i => i.currency === transaction.ETH_CURRENCY)
-  alicesChildchainETHBalance = alicesEthObject
-    ? `${web3.utils.fromWei(String(alicesEthObject.amount))} ETH`
-    : '0 ETH'
-
-  bobsBalanceArray = await childChain.getBalance(bobAddress)
-  bobsEthObject = bobsBalanceArray.find(i => i.currency === transaction.ETH_CURRENCY)
-  bobsChildchainETHBalance = bobsEthObject
-    ? `${web3.utils.fromWei(String(bobsEthObject.amount))} ETH`
-    : '0 ETH'
-
   console.log('-----')
-  console.log(`Alice's rootchain ETH balance: ${web3.utils.fromWei(String(aliceRootchainBalance), 'ether')} ETH`)
-  console.log(`Bob's rootchain ETH balance: ${web3.utils.fromWei(String(bobRootchainBalance), 'ether')} ETH`)
-  console.log(`Alice's childchain ETH balance: ${alicesChildchainETHBalance}`)
-  console.log(`Bob's childchain ETH balance: ${bobsChildchainETHBalance}`)
+  await logBalances()
 }
 
 inflightExitChildChain()

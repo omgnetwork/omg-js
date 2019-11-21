@@ -15,7 +15,6 @@
 */
 
 const Web3 = require('web3')
-
 const RootChain = require('../packages/omg-js-rootchain/src/rootchain')
 const ChildChain = require('../packages/omg-js-childchain/src/childchain')
 const { transaction } = require('../packages/omg-js-util/src')
@@ -23,25 +22,27 @@ const { transaction } = require('../packages/omg-js-util/src')
 const config = require('./config.js')
 const wait = require('./wait.js')
 
-// setup for only 1 transaction confirmation block for fast confirmations
 const web3 = new Web3(new Web3.providers.HttpProvider(config.geth_url), null, { transactionConfirmationBlocks: 1 })
-
 const rootChain = new RootChain(web3, config.rootchain_plasma_contract_address)
 const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url })
 
 const bobAddress = config.bob_eth_address
 const bobPrivateKey = config.bob_eth_address_private_key
 
-async function exitChildChain () {
-  let bobRootchainBalance = await web3.eth.getBalance(bobAddress)
-  let bobChildchainBalanceArray = await childChain.getBalance(bobAddress)
-  let bobsEthObject = bobChildchainBalanceArray.find(i => i.currency === transaction.ETH_CURRENCY)
-  let bobChildchainETHBalance = bobsEthObject
+async function logBalances () {
+  const bobRootchainBalance = await web3.eth.getBalance(bobAddress)
+  const bobChildchainBalanceArray = await childChain.getBalance(bobAddress)
+  const bobsEthObject = bobChildchainBalanceArray.find(i => i.currency === transaction.ETH_CURRENCY)
+  const bobChildchainETHBalance = bobsEthObject
     ? `${web3.utils.fromWei(String(bobsEthObject.amount))} ETH`
     : '0 ETH'
 
   console.log(`Bob's rootchain balance: ${web3.utils.fromWei(String(bobRootchainBalance), 'ether')} ETH`)
   console.log(`Bob's childchain balance: ${bobChildchainETHBalance}`)
+}
+
+async function exitChildChain () {
+  await logBalances()
   console.log('-----')
 
   // get ETH UTXO and exit data
@@ -90,17 +91,8 @@ async function exitChildChain () {
   )
   console.log('Exits processed')
 
-  // get final ETH balances
-  bobRootchainBalance = await web3.eth.getBalance(bobAddress)
-  bobChildchainBalanceArray = await childChain.getBalance(bobAddress)
-  bobsEthObject = bobChildchainBalanceArray.find(i => i.currency === transaction.ETH_CURRENCY)
-  bobChildchainETHBalance = bobsEthObject
-    ? `${web3.utils.fromWei(String(bobsEthObject.amount))} ETH`
-    : '0 ETH'
-
   console.log('-----')
-  console.log(`Bob's rootchain balance: ${web3.utils.fromWei(String(bobRootchainBalance), 'ether')} ETH`)
-  console.log(`Bob's childchain balance: ${bobChildchainETHBalance}`)
+  await logBalances()
 }
 
 exitChildChain()

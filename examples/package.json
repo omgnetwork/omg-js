@@ -13,8 +13,7 @@
     "childchain-transaction-erc20": "node childchain-transaction-erc20.js",
     "childchain-exit-eth": "node childchain-exit-eth.js",
     "childchain-exit-erc20": "node childchain-exit-erc20.js",
-    "childchain-inflight-exit-eth": "node childchain-inflight-exit-eth.js",
-    "childchain-inflight-exit-erc20": "node childchain-inflight-exit-erc20.js"
+    "childchain-inflight-exit-eth": "node childchain-inflight-exit-eth.js"
   },
   "author": "",
   "license": "ISC",
