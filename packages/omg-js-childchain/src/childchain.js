@@ -33,7 +33,7 @@ class ChildChain {
   }
 
   /**
-   * Gets the UTXOs of an address
+   * Gets the UTXOs of an address (includes both spent and unspent UTXOs)
    *
    * @method getUtxos
    * @param {string} address
@@ -43,6 +43,22 @@ class ChildChain {
     validateAddress(address)
     return rpcApi.post({
       url: `${this.watcherUrl}/account.get_utxos`,
+      body: { address },
+      proxyUrl: this.watcherProxyUrl
+    })
+  }
+
+  /**
+   * Gets the exitable UTXOs of an address
+   *
+   * @method getUtxos
+   * @param {string} address
+   * @return {Array} array of UTXOs
+   */
+  async getExitableUtxos (address) {
+    validateAddress(address)
+    return rpcApi.post({
+      url: `${this.watcherUrl}/account.get_exitable_utxos`,
       body: { address },
       proxyUrl: this.watcherProxyUrl
     })
@@ -278,6 +294,44 @@ class ChildChain {
     return rpcApi.post({
       url: `${this.watcherUrl}/status.get`,
       body: {},
+      proxyUrl: this.watcherProxyUrl
+    })
+  }
+
+  /**
+   * Gets the data to challenge an invalid input piggybacked on an in-flight exit.
+   *
+   * @method inFlightExitGetInputChallengeData
+   * @param {string} txbytes the hex-encoded transaction
+   * @param {number} inputIndex invalid input index
+   * @return {Object} input challenge data for the in-flight transaction
+   */
+  async inFlightExitGetInputChallengeData (txbytes, inputIndex) {
+    return rpcApi.post({
+      url: `${this.watcherUrl}/in_flight_exit.get_input_challenge_data`,
+      body: {
+        txbytes: hexPrefix(txbytes),
+        input_index: inputIndex
+      },
+      proxyUrl: this.watcherProxyUrl
+    })
+  }
+
+  /**
+   * Gets the data to challenge an invalid output piggybacked on an in-flight exit.
+   *
+   * @method inFlightExitGetOutputChallengeData
+   * @param {string} txbytes the hex-encoded transaction
+   * @param {number} outputIndex invalid output index
+   * @return {Object} input challenge data for the in-flight transaction
+   */
+  async inFlightExitGetOutputChallengeData (txbytes, outputIndex) {
+    return rpcApi.post({
+      url: `${this.watcherUrl}/in_flight_exit.get_output_challenge_data`,
+      body: {
+        txbytes: hexPrefix(txbytes),
+        input_index: outputIndex
+      },
       proxyUrl: this.watcherProxyUrl
     })
   }

@@ -15,22 +15,16 @@
 */
 
 const ChildChain = require('../packages/omg-js-childchain/src/childchain')
-
 const config = require('./config.js')
 
-const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url });
+const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url })
 
-(async () => {
-  try {
-    const aliceUtxos = await childChain.getUtxos(config.alice_eth_address)
-    console.log(`Alice UTXOs: ${JSON.stringify(aliceUtxos, undefined, 2)}`)
+async function childchainUtxos () {
+  const aliceUtxos = await childChain.getExitableUtxos(config.alice_eth_address)
+  const bobUtxos = await childChain.getExitableUtxos(config.bob_eth_address)
 
-    const bobUtxos = await childChain.getUtxos(config.bob_eth_address)
-    console.log(`Bob UTXOs: ${JSON.stringify(bobUtxos, undefined, 2)}`)
+  console.log(`Alice UTXOs: ${JSON.stringify(aliceUtxos, undefined, 2)}`)
+  console.log(`Bob UTXOs: ${JSON.stringify(bobUtxos, undefined, 2)}`)
+}
 
-    return Promise.resolve()
-  } catch (error) {
-    console.log(error)
-    return Promise.reject(error)
-  }
-})()
+childchainUtxos()
