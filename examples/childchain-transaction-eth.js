@@ -16,7 +16,6 @@
 
 const BigNumber = require('bignumber.js')
 const Web3 = require('web3')
-
 const ChildChain = require('../packages/omg-js-childchain/src/childchain')
 const { transaction } = require('../packages/omg-js-util/src')
 
@@ -46,10 +45,11 @@ async function logBalances () {
 
   console.log(`Alice's childchain ETH balance: ${alicesChildchainETHBalance}`)
   console.log(`Bob's childchain ETH balance: ${bobsChildchainETHBalance}`)
+  return { bobETHBalance: bobsEthObject ? bobsEthObject.amount : 0 }
 }
 
 async function createSignBuildAndSubmitTransaction () {
-  await logBalances()
+  const { bobETHBalance } = await logBalances()
   console.log('-----')
 
   const transferAmount = BigNumber(web3.utils.toWei(config.alice_eth_transfer_amount, 'ether'))
@@ -81,7 +81,8 @@ async function createSignBuildAndSubmitTransaction () {
 
   // wait for transaction to be recorded by the watcher
   console.log('Waiting for transaction to be recorded by the watcher...')
-  await wait.wait(40000)
+  const expectedAmount = transferAmount.plus(bobETHBalance)
+  await wait.waitForBalanceEq(childChain, bobAddress, expectedAmount, transaction.ETH_CURRENCY)
 
   console.log('-----')
   await logBalances()

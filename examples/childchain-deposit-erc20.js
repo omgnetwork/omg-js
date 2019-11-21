@@ -56,14 +56,14 @@ async function depositERC20IntoPlasmaContract () {
   const depositTransaction = transaction.encodeDeposit(aliceAddress, config.alice_erc20_deposit_amount, config.erc20_contract)
 
   console.log(`Depositing ${config.alice_erc20_deposit_amount} ERC20 from the rootchain to the childchain`)
-  await rootChain.depositToken(depositTransaction, {
+  const depositReceipt = await rootChain.depositToken(depositTransaction, {
     from: aliceAddress,
     privateKey: alicePrivateKey,
     gas: 6000000
   })
   console.log('Deposit successful')
   console.log('Waiting for transaction to be recorded by the watcher...')
-  await wait.wait(40000)
+  await wait.waitForTransaction(web3, depositReceipt.transactionHash, config.millis_to_wait_for_next_block, config.blocks_to_wait_for_txn)
 
   console.log('-----')
   await logBalances()

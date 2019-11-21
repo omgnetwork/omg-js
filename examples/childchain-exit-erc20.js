@@ -15,8 +15,6 @@
 */
 
 const Web3 = require('web3')
-const erc20abi = require('human-standard-token-abi')
-
 const RootChain = require('../packages/omg-js-rootchain/src/rootchain')
 const ChildChain = require('../packages/omg-js-childchain/src/childchain')
 

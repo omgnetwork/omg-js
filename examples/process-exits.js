@@ -12,7 +12,6 @@
 */
 
 const Web3 = require('web3')
-
 const RootChain = require('../packages/omg-js-rootchain/src/rootchain')
 const { transaction } = require('../packages/omg-js-util/src')
 

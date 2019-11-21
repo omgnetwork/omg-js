@@ -38,6 +38,7 @@ async function logBalances () {
 
   console.log(`Alice's childchain ERC20 balance: ${alicesChildchainERC20Balance}`)
   console.log(`Bob's childchain ERC20 balance: ${bobsChildchainERC20Balance}`)
+  return { bobERC20Balance: bobsChildchainERC20Balance }
 }
 
 async function erc20Transaction () {
@@ -45,7 +46,7 @@ async function erc20Transaction () {
     console.log('Please define an ERC20 contract in your .env')
     return
   }
-  await logBalances()
+  const { bobERC20Balance } = await logBalances()
   console.log('-----')
 
   const payments = [{
@@ -70,11 +71,11 @@ async function erc20Transaction () {
   const signatures = childChain.signTransaction(typedData, privateKeys)
   const signedTxn = childChain.buildSignedTransaction(typedData, signatures)
   await childChain.submitTransaction(signedTxn)
-  console.log('Transaction submitted')
 
-  // wait for transaction to be recorded by the watcher
+  console.log('Transaction submitted')
   console.log('Waiting for transaction to be recorded by the watcher...')
-  await wait.wait(40000)
+  const expectedAmount = Number(config.alice_erc20_transfer_amount) + bobERC20Balance
+  await wait.waitForBalanceEq(childChain, bobAddress, expectedAmount, config.erc20_contract)
 
   console.log('-----')
   await logBalances()
