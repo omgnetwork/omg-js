@@ -110,18 +110,6 @@ describe('In-flight Exit Challenge Response tests', function () {
 
       assert.hasAllKeys(exitData, ['in_flight_tx', 'in_flight_tx_sigs', 'input_txs', 'input_txs_inclusion_proofs', 'input_utxos_pos'])
 
-      const hasToken = await rootChain.hasToken(transaction.ETH_CURRENCY)
-      if (!hasToken) {
-        console.log(`Adding a ${transaction.ETH_CURRENCY} exit queue`)
-        const addTokenCall = await rootChain.addToken(
-          transaction.ETH_CURRENCY,
-          { from: bobAccount.address, privateKey: bobAccount.privateKey }
-        )
-        bobSpentOnGas.iadd(await rcHelper.spentOnGas(web3, addTokenCall))
-      } else {
-        console.log(`Exit queue for ${transaction.ETH_CURRENCY} already exists`)
-      }
-
       // Starts the in-flight exit
       let receipt = await rootChain.startInFlightExit(
         exitData.in_flight_tx,

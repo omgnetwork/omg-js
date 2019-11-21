@@ -60,6 +60,14 @@ class RootChain {
     return this.plasmaContract.methods.exitGames(PAYMENT_TYPE).call()
   }
 
+  getPiggybackBond () {
+    return PIGGYBACK_BOND
+  }
+
+  getInflightExitBond () {
+    return INFLIGHT_EXIT_BOND
+  }
+
   getContract (abi, address) {
     if (this.isLegacyWeb3) {
       return this.web3.eth.contract(abi).at(address)
@@ -373,8 +381,10 @@ class RootChain {
         this.web3,
         paymentExitGameContract,
         'piggybackInFlightExitOnInput',
-        inFlightTx,
-        inputIndex
+        [
+          inFlightTx,
+          inputIndex
+        ]
       ),
       value: PIGGYBACK_BOND,
       gas: txOptions.gas,

@@ -102,18 +102,6 @@ describe('Standard Exit tests', function () {
       const utxoToExit = aliceUtxos[0]
       const exitData = await childChain.getExitData(utxoToExit)
       assert.hasAllKeys(exitData, ['txbytes', 'proof', 'utxo_pos'])
-      // check if queue exists for this token
-      const hasToken = await rootChain.hasToken(transaction.ETH_CURRENCY)
-      if (!hasToken) {
-        console.log(`Adding a ${transaction.ETH_CURRENCY} exit queue`)
-        const addTokenCall = await rootChain.addToken(
-          transaction.ETH_CURRENCY,
-          { from: aliceAccount.address, privateKey: aliceAccount.privateKey }
-        )
-        aliceSpentOnGas.iadd(await rcHelper.spentOnGas(web3, addTokenCall))
-      } else {
-        console.log(`Exit queue for ${transaction.ETH_CURRENCY} already exists`)
-      }
 
       receipt = await rootChain.startStandardExit(
         exitData.utxo_pos,
@@ -246,18 +234,6 @@ describe('Standard Exit tests', function () {
       const utxoToExit = bobUtxos[0]
       const exitData = await childChain.getExitData(utxoToExit)
       assert.hasAllKeys(exitData, ['txbytes', 'proof', 'utxo_pos'])
-      const hasToken = await rootChain.hasToken(transaction.ETH_CURRENCY)
-      if (!hasToken) {
-        console.log(`Adding a ${transaction.ETH_CURRENCY} exit queue`)
-        const addTokenCall = await rootChain.addToken(
-          transaction.ETH_CURRENCY,
-          { from: bobAccount.address, privateKey: bobAccount.privateKey }
-        )
-        bobSpentOnGas = await rcHelper.spentOnGas(web3, addTokenCall)
-      } else {
-        console.log(`Exit queue for ${transaction.ETH_CURRENCY} already exists`)
-        bobSpentOnGas = numberToBN(0)
-      }
 
       const startStandardExitReceipt = await rootChain.startStandardExit(
         exitData.utxo_pos,
@@ -405,17 +381,6 @@ describe('Standard Exit tests', function () {
       const utxoToExit = utxos[0]
       const exitData = await childChain.getExitData(utxoToExit)
       assert.hasAllKeys(exitData, ['txbytes', 'proof', 'utxo_pos'])
-
-      const hasToken = await rootChain.hasToken(config.testErc20Contract)
-      if (!hasToken) {
-        console.log(`Adding a ${config.testErc20Contract} exit queue`)
-        await rootChain.addToken(config.testErc20Contract, {
-          from: aliceAccount.address,
-          privateKey: aliceAccount.privateKey
-        })
-      } else {
-        console.log(`Exit queue for ${config.testErc20Contract} already exists`)
-      }
 
       let receipt = await rootChain.startStandardExit(
         exitData.utxo_pos,

@@ -139,18 +139,6 @@ describe('In-flight Exit Challenge tests', function () {
         'input_utxos_pos'
       ])
 
-      const hasToken = await rootChain.hasToken(transaction.ETH_CURRENCY)
-      if (!hasToken) {
-        console.log(`Adding a ${transaction.ETH_CURRENCY} exit queue`)
-        const addTokenCall = await rootChain.addToken(
-          transaction.ETH_CURRENCY,
-          { from: bobAccount.address, privateKey: bobAccount.privateKey }
-        )
-        bobSpentOnGas.iadd(await rcHelper.spentOnGas(web3, addTokenCall))
-      } else {
-        console.log(`Exit queue for ${transaction.ETH_CURRENCY} already exists`)
-      }
-
       // Starts the in-flight exit
       const bobEthBalanceBeforeIfe = await web3.eth.getBalance(
         bobAccount.address
@@ -418,18 +406,6 @@ describe('In-flight Exit Challenge tests', function () {
       ])
       // Decode the transaction to get the index of Bob's output
       const decodedTx = transaction.decodeTxBytes(bobTx)
-
-      const hasToken = await rootChain.hasToken(transaction.ETH_CURRENCY)
-      if (!hasToken) {
-        console.log(`Adding a ${transaction.ETH_CURRENCY} exit queue`)
-        const addTokenCall = await rootChain.addToken(
-          transaction.ETH_CURRENCY,
-          { from: bobAccount.address, privateKey: bobAccount.privateKey }
-        )
-        bobSpentOnGas.iadd(await rcHelper.spentOnGas(web3, addTokenCall))
-      } else {
-        console.log(`Exit queue for ${transaction.ETH_CURRENCY} already exists`)
-      }
 
       // Starts the in-flight exit
       let receipt = await rootChain.startInFlightExit(
