@@ -74,7 +74,8 @@ async function createSignBuildAndSubmitTransaction () {
 
   // type/sign/build/submit
   const typedData = transaction.getTypedData(createdTxn.transactions[0], rootChainPlasmaContractAddress)
-  const signatures = childChain.signTransaction(typedData, [alicePrivateKey])
+  const privateKeys = new Array(createdTxn.transactions[0].inputs.length).fill(alicePrivateKey)
+  const signatures = childChain.signTransaction(typedData, privateKeys)
   const signedTxn = childChain.buildSignedTransaction(typedData, signatures)
   const receipt = await childChain.submitTransaction(signedTxn)
   console.log('Transaction submitted: ', receipt.txhash)
