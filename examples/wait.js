@@ -58,6 +58,7 @@ async function waitForChallengePeriodToEnd (rootChain) {
 }
 
 async function waitForTransaction (web3, transactionHash, millisToWaitForTxn, blocksToWaitForTxn) {
+  let remaining
   const transactionReceiptAsync = async (transactionHash, resolve, reject) => {
     try {
       const transactionReceipt = await web3.eth.getTransactionReceipt(transactionHash)
@@ -66,6 +67,13 @@ async function waitForTransaction (web3, transactionHash, millisToWaitForTxn, bl
         try {
           const block = await web3.eth.getBlock(transactionReceipt.blockNumber)
           const current = await web3.eth.getBlock('latest')
+
+          const remainingCandidate = blocksToWaitForTxn - (current.number - block.number)
+          if (remainingCandidate !== remaining) {
+            remaining = remainingCandidate
+            console.log(`${remaining} blocks remaining before confirmation`)
+          }
+
           if (current.number - block.number >= blocksToWaitForTxn) {
             const transaction = await web3.eth.getTransaction(transactionHash)
             if (transaction.blockNumber !== null) {

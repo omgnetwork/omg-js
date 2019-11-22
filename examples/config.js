@@ -20,7 +20,6 @@ const { hexPrefix } = require('../packages/omg-js-util/src')
 const config = {
   watcher_url: process.env.WATCHER_URL,
   watcher_proxy_url: process.env.WATCHER_PROXY_URL,
-  childchain_url: process.env.CHILDCHAIN_URL,
   rootchain_plasma_contract_address: process.env.ROOTCHAIN_CONTRACT,
   geth_url: process.env.GETH_URL,
   alice_eth_address: process.env.ALICE_ETH_ADDRESS,

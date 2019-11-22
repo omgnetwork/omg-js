@@ -36,7 +36,7 @@ async function logBalances () {
   const erc20Object = childchainBalanceArray.find(i => i.currency.toLowerCase() === config.erc20_contract.toLowerCase())
   const childchainERC20Balance = erc20Object ? erc20Object.amount : 0
 
-  console.log(`Alice's rootchain ERC20 balance: ${web3.utils.hexToNumber(rootchainERC20Balance)}`)
+  console.log(`Alice's rootchain ERC20 balance: ${web3.utils.hexToNumberString(rootchainERC20Balance)}`)
   console.log(`Alice's childchain ERC20 balance: ${childchainERC20Balance}`)
 }
 
@@ -50,8 +50,8 @@ async function depositERC20IntoPlasmaContract () {
   console.log('-----')
 
   const erc20VaultAddress = await rootChain.getErc20VaultAddress()
-  await approveERC20(aliceAddress, alicePrivateKey, erc20VaultAddress, config.alice_erc20_deposit_amount)
-  console.log('ERC20 approved')
+  const approveRes = await approveERC20(aliceAddress, alicePrivateKey, erc20VaultAddress, config.alice_erc20_deposit_amount)
+  console.log('ERC20 approved: ', approveRes.transactionHash)
 
   const depositTransaction = transaction.encodeDeposit(aliceAddress, config.alice_erc20_deposit_amount, config.erc20_contract)
 
@@ -61,7 +61,7 @@ async function depositERC20IntoPlasmaContract () {
     privateKey: alicePrivateKey,
     gas: 6000000
   })
-  console.log('Deposit successful')
+  console.log('Deposit successful: ', depositReceipt.transactionHash)
   console.log('Waiting for transaction to be recorded by the watcher...')
   await wait.waitForTransaction(web3, depositReceipt.transactionHash, config.millis_to_wait_for_next_block, config.blocks_to_wait_for_txn)
 
