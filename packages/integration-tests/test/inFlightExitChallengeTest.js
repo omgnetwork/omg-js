@@ -300,7 +300,7 @@ describe('In-flight Exit Challenge tests', function () {
       // INTIIAL_CAROL_AMOUNT + INFLIGHT_EXIT_BOND - gas spent
       const carolExpected = web3.utils
         .toBN(INTIIAL_CAROL_RC_AMOUNT)
-        .add(web3.utils.toBN(rootChain.getInflightExitBond())
+        .add(web3.utils.toBN(rootChain.getInflightExitBond()))
         .sub(carolSpentOnGas)
       assert.equal(carolEthBalance.toString(), carolExpected.toString())
     })

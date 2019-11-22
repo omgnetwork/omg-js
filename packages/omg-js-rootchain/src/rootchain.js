@@ -503,23 +503,34 @@ class RootChain {
   async challengeInFlightExitInputSpent (
     inFlightTx,
     inFlightTxInputIndex,
-    spendingTx,
-    spendingTxInputIndex,
-    spendingTxSig,
+    challengingTx,
+    challengingTxInputIndex,
+    challengingTxWitness,
+    inputTx,
+    inputUtxoPos,
+    spendingConditionOptionalArgs,
     txOptions
   ) {
+    const paymentExitGameAddress = await this.getPaymentExitGameAddress()
+    const paymentExitGameContract = this.getContract(this.paymentExitGameAbi.abi, paymentExitGameAddress)
+
     const txDetails = {
       from: txOptions.from,
-      to: this.plasmaContractAddress,
+      to: paymentExitGameAddress,
       data: txUtils.getTxData(
         this.web3,
-        this.plasmaContract,
+        paymentExitGameContract,
         'challengeInFlightExitInputSpent',
-        inFlightTx,
-        inFlightTxInputIndex,
-        spendingTx,
-        spendingTxInputIndex,
-        spendingTxSig
+        [
+          inFlightTx,
+          inFlightTxInputIndex,
+          challengingTx,
+          challengingTxInputIndex,
+          challengingTxWitness,
+          inputTx,
+          inputUtxoPos,
+          spendingConditionOptionalArgs
+        ]
       ),
       gas: txOptions.gas,
       gasPrice: txOptions.gasPrice
@@ -549,12 +560,15 @@ class RootChain {
     spendingTxSig,
     txOptions
   ) {
+    const paymentExitGameAddress = await this.getPaymentExitGameAddress()
+    const paymentExitGameContract = this.getContract(this.paymentExitGameAbi.abi, paymentExitGameAddress)
+
     const txDetails = {
       from: txOptions.from,
-      to: this.plasmaContractAddress,
+      to: paymentExitGameAddress,
       data: txUtils.getTxData(
         this.web3,
-        this.plasmaContract,
+        paymentExitGameContract,
         'challengeInFlightExitOutputSpent',
         inFlightTx,
         inFlightTxOutputPos,
