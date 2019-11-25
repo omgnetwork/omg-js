@@ -199,16 +199,20 @@ const transaction = {
     toAddress,
     toAmount,
     currency,
-    metadata
+    metadata,
+    feeCurrency,
+    feeAmount = 0
   ) {
     validateInputs(fromUtxos)
     validateMetadata(metadata)
 
     const inputArr = fromUtxos.filter(utxo => utxo.currency === currency)
+    const feeArr = fromUtxos.filter(utxo => utxo.currency === feeCurrency)
     // Get the total value of the inputs
     const totalInputValue = inputArr.reduce((acc, curr) => acc.add(numberToBN(curr.amount.toString())), numberToBN(0))
-
+    const totalInputFee = feeArr.reduce((acc, curr) => acc.add(numberToBN(curr.amount.toString())), numberToBN(0))
     const bnAmount = numberToBN(toAmount)
+    const bnFeeAmount = numberToBN(feeAmount)
     // Check there is enough in the inputs to cover the amount
     if (totalInputValue.lt(bnAmount)) {
       throw new Error(`Insufficient funds for ${bnAmount.toString()}`)
@@ -228,6 +232,14 @@ const transaction = {
         outputGuard: fromAddress,
         currency,
         amount: totalInputValue.sub(bnAmount)
+      })
+    }
+    if (feeCurrency) {
+      outputArr.push({
+        outputType: 1,
+        outputGuard: fromAddress,
+        currency: feeCurrency,
+        amount: totalInputFee.sub(bnFeeAmount)
       })
     }
 
