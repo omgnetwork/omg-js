@@ -56,7 +56,7 @@ async function depositEthIntoPlasmaContract () {
     privateKey: alicePrivateKey,
     gas: 6000000
   })
-  console.log('Deposit successful')
+  console.log('Deposit successful: ', transactionReceipt.transactionHash)
   console.log('Waiting for transaction to be recorded by the watcher...')
   await wait.waitForTransaction(web3, transactionReceipt.transactionHash, config.millis_to_wait_for_next_block, config.blocks_to_wait_for_txn)
 

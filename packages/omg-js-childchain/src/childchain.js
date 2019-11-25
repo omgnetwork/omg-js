@@ -51,7 +51,7 @@ class ChildChain {
   /**
    * Gets the exitable UTXOs of an address
    *
-   * @method getUtxos
+   * @method getExitableUtxos
    * @param {string} address
    * @return {Array} array of UTXOs
    */
