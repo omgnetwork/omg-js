@@ -42,10 +42,10 @@ describe('Challenge in-flight exit input spent tests', function () {
   })
 
   describe('in-flight transaction challenge with a invalid input piggybacking', function () {
-    let INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.1', 'ether')
-    let INTIIAL_BOB_RC_AMOUNT = web3.utils.toWei('1', 'ether')
-    let INTIIAL_CAROL_RC_AMOUNT = web3.utils.toWei('.5', 'ether')
-    let TRANSFER_AMOUNT = web3.utils.toWei('0.0002', 'ether')
+    let INTIIAL_ALICE_AMOUNT
+    let INTIIAL_BOB_RC_AMOUNT
+    let INTIIAL_CAROL_RC_AMOUNT
+    let TRANSFER_AMOUNT
     let aliceAccount
     let bobAccount
     let carolAccount
@@ -123,7 +123,7 @@ describe('Challenge in-flight exit input spent tests', function () {
       }
     })
 
-    it.only('should challenge an in-flight exit as non canonical and challenge an invalid input piggyback', async function () {
+    it('should challenge an in-flight exit as non canonical and challenge an invalid input piggyback', async function () {
       // Alice creates a transaction to send funds to Bob
       const bobSpentOnGas = numberToBN(0)
       const carolSpentOnGas = numberToBN(0)
