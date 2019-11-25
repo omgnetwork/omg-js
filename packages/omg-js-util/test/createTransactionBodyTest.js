@@ -107,6 +107,37 @@ describe('createTransactionBody', function () {
     assert.equal(txBody.outputs[0].amount.toString(), toAmount.toString())
   })
 
+  it('should create a transaction body from two input included fee, and not give change for the erc20', function () {
+    const fromAddress = '0xf4ebbe787311bb955bb353b7a4d8b97af8ed1c9b'
+    const fakeErc20 = '0xFakeERc20'
+    const fromUtxos = [
+      {
+        txindex: 0,
+        oindex: 0,
+        currency: transaction.ETH_CURRENCY,
+        blknum: 19774001,
+        amount: 1000000000000000000
+      },
+      {
+        txindex: 1,
+        oindex: 0,
+        currency: fakeErc20,
+        blknum: 19774008,
+        amount: 1000
+      }
+    ]
+
+    const toAddress = '0x3272ee86d8192f59261960c9ae186063c8c9041f'
+    const toSendErc20Amount = 500
+
+    const txBody = transaction.createTransactionBody(fromAddress, fromUtxos, toAddress, toSendErc20Amount, fakeErc20)
+    assert.equal(txBody.outputs.length, 2)
+    assert.equal(txBody.outputs[0].outputGuard, toAddress)
+    assert.equal(txBody.outputs[1].outputGuard, fromAddress)
+    assert.equal(txBody.outputs[0].amount.toString(), toSendErc20Amount.toString())
+    assert.equal(txBody.outputs[1].amount.toString(), toSendErc20Amount.toString())
+  })
+
   it('should fail to create a transaction with insufficient funds', function () {
     const fromAddress = '0xf4ebbe787311bb955bb353b7a4d8b97af8ed1c9b'
     const fromUtxos = [

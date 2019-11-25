@@ -204,18 +204,7 @@ const transaction = {
     validateInputs(fromUtxos)
     validateMetadata(metadata)
 
-    let inputArr = fromUtxos.filter(utxo => utxo.currency === currency)
-
-    // We can use a maximum of 4 inputs, so just take the largest 4 inputs and try to cover the amount with them
-    // TODO Be more clever about this...
-    if (inputArr.length > 4) {
-      inputArr.sort((a, b) => {
-        const diff = numberToBN(a.amount).sub(numberToBN(b.amount))
-        return Number(diff.toString())
-      })
-      inputArr = inputArr.slice(0, 4)
-    }
-
+    const inputArr = fromUtxos.filter(utxo => utxo.currency === currency)
     // Get the total value of the inputs
     const totalInputValue = inputArr.reduce((acc, curr) => acc.add(numberToBN(curr.amount.toString())), numberToBN(0))
 
@@ -243,7 +232,7 @@ const transaction = {
     }
 
     const txBody = {
-      inputs: inputArr,
+      inputs: fromUtxos,
       outputs: outputArr,
       metadata
     }
@@ -334,6 +323,10 @@ const transaction = {
 function validateInputs (arg) {
   if (!Array.isArray(arg)) {
     throw new InvalidArgumentError('Inputs must be an array')
+  }
+
+  if (arg.length === 0 || arg.length > MAX_INPUTS) {
+    throw new InvalidArgumentError(`Inputs must be an array of size > 0 and < ${MAX_INPUTS}`)
   }
 }
 
