@@ -1,6 +1,6 @@
 {
   "name": "@omisego/omg-js-util",
-  "version": "3.0.0-alpha.6",
+  "version": "3.0.0-alpha.7",
   "description": "OMG util module",
   "main": "src/index.js",
   "author": "OmiseGo",
