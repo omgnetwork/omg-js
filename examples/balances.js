@@ -23,7 +23,6 @@ const web3 = new Web3(new Web3.providers.HttpProvider(config.geth_url), null, { 
 const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url })
 
 async function getERC20Balance (address) {
-  if (!config.erc20_contract) return
   const erc20Contract = new web3.eth.Contract(erc20abi, config.erc20_contract)
   const txDetails = {
     from: address,
@@ -41,19 +40,22 @@ async function balances () {
       amount: i.currency === transaction.ETH_CURRENCY ? `${web3.utils.fromWei(String(i.amount))} ETH` : i.amount
     }
   })
-
   const aliceRootchainBalance = await web3.eth.getBalance(config.alice_eth_address)
   const aliceRootchainERC20Balance = await getERC20Balance(config.alice_eth_address)
+
   const aliceRootchainBalances = [
     {
       currency: 'ETH',
       amount: `${web3.utils.fromWei(String(aliceRootchainBalance), 'ether')} ETH`
-    },
-    ...config.erc20_contract && [{
-      currency: config.erc20_contract,
-      amount: web3.utils.hexToNumber(aliceRootchainERC20Balance)
-    }]
+    }
   ]
+
+  if (config.erc20_contract) {
+    aliceRootchainBalances.push({
+      currency: config.erc20_contract,
+      amount: web3.utils.hexToNumberString(aliceRootchainERC20Balance)
+    })
+  }
 
   const bobsBalanceArray = await childChain.getBalance(config.bob_eth_address)
   const bobChildchainBalance = bobsBalanceArray.map(i => {
@@ -69,12 +71,15 @@ async function balances () {
     {
       currency: 'ETH',
       amount: `${web3.utils.fromWei(String(bobRootchainBalance), 'ether')} ETH`
-    },
-    ...config.erc20_contract && [{
-      currency: config.erc20_contract,
-      amount: web3.utils.hexToNumber(bobRootchainERC20Balance)
-    }]
+    }
   ]
+
+  if (config.erc20_contract) {
+    bobRootchainBalances.push({
+      currency: config.erc20_contract,
+      amount: web3.utils.hexToNumberString(bobRootchainERC20Balance)
+    })
+  }
 
   console.log(`Alice's rootchain balance: ${JSON.stringify(aliceRootchainBalances, null, 2)}`)
   console.log(`Alice's childchain balance: ${JSON.stringify(aliceChildchainBalance, null, 2)}`)

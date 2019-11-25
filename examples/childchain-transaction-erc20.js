@@ -70,9 +70,9 @@ async function erc20Transaction () {
   const privateKeys = new Array(createdTxn.transactions[0].inputs.length).fill(alicePrivateKey)
   const signatures = childChain.signTransaction(typedData, privateKeys)
   const signedTxn = childChain.buildSignedTransaction(typedData, signatures)
-  await childChain.submitTransaction(signedTxn)
+  const receipt = await childChain.submitTransaction(signedTxn)
+  console.log('Transaction submitted: ', receipt.txhash)
 
-  console.log('Transaction submitted')
   console.log('Waiting for transaction to be recorded by the watcher...')
   const expectedAmount = Number(config.alice_erc20_transfer_amount) + bobERC20Balance
   await wait.waitForBalanceEq(childChain, bobAddress, expectedAmount, config.erc20_contract)
