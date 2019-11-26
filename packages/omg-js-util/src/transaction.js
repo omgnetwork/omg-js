@@ -209,7 +209,7 @@ const transaction = {
       throw new Error('Fee currency not provided.')
     }
     if (fromUtxos.find(utxo => utxo.currency !== currency && utxo.currency !== feeCurrency)) {
-      throw new Error('Multiple currencies in the utxo array, only fee and to send currency is allowed.')
+      throw new Error('There are currencies in the utxo array that is not fee or currency.')
     }
     const inputArr = fromUtxos.filter(utxo => utxo.currency === currency)
     const feeArr = fromUtxos.filter(utxo => utxo.currency === feeCurrency)
