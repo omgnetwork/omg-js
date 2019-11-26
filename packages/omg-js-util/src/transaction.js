@@ -199,21 +199,32 @@ const transaction = {
     toAddress,
     toAmount,
     currency,
-    metadata
+    metadata,
+    feeAmount = 0,
+    feeCurrency
   ) {
     validateInputs(fromUtxos)
     validateMetadata(metadata)
-
+    if (!feeCurrency) {
+      throw new Error('Fee currency not provided.')
+    }
+    if (fromUtxos.find(utxo => utxo.currency !== currency && utxo.currency !== feeCurrency)) {
+      throw new Error('There are currencies in the utxo array that is not fee or currency.')
+    }
     const inputArr = fromUtxos.filter(utxo => utxo.currency === currency)
+    const feeArr = fromUtxos.filter(utxo => utxo.currency === feeCurrency)
+    const sum = arr => arr.reduce((acc, curr) => acc.add(numberToBN(curr.amount.toString())), numberToBN(0))
     // Get the total value of the inputs
-    const totalInputValue = inputArr.reduce((acc, curr) => acc.add(numberToBN(curr.amount.toString())), numberToBN(0))
-
+    const totalInputValue = sum(inputArr)
+    const totalInputFee = sum(feeArr)
     const bnAmount = numberToBN(toAmount)
+    const bnFeeAmount = numberToBN(feeAmount)
     // Check there is enough in the inputs to cover the amount
     if (totalInputValue.lt(bnAmount)) {
       throw new Error(`Insufficient funds for ${bnAmount.toString()}`)
     }
 
+    // to sender output
     const outputArr = [{
       outputType: 1,
       outputGuard: toAddress,
@@ -221,13 +232,31 @@ const transaction = {
       amount: bnAmount
     }]
 
-    if (totalInputValue.gt(bnAmount)) {
-      // If necessary add a 'change' output
+    if (feeCurrency !== currency && totalInputValue.gt(bnAmount)) {
       outputArr.push({
         outputType: 1,
         outputGuard: fromAddress,
         currency,
         amount: totalInputValue.sub(bnAmount)
+      })
+    }
+
+    if (feeCurrency === currency && totalInputValue.gt(bnAmount.add(bnFeeAmount))) {
+      outputArr.push({
+        outputType: 1,
+        outputGuard: fromAddress,
+        currency,
+        amount: totalInputValue.sub(bnAmount).sub(bnFeeAmount)
+      })
+    }
+
+    // fee change
+    if (feeCurrency !== currency) {
+      outputArr.push({
+        outputType: 1,
+        outputGuard: fromAddress,
+        currency: feeCurrency,
+        amount: totalInputFee.sub(bnFeeAmount)
       })
     }
 

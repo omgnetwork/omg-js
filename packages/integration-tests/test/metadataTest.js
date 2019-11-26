@@ -77,7 +77,9 @@ describe('Metadata tests (ci-enabled-fast)', function () {
         TRANSFER_AMOUNT,
         transaction.ETH_CURRENCY,
         transaction.encodeMetadata(METADATA),
-        rootChain.plasmaContractAddress
+        rootChain.plasmaContractAddress,
+        0,
+        transaction.ETH_CURRENCY
       )
       console.log(`Submitted transaction: ${JSON.stringify(result)}`)
 
@@ -135,7 +137,9 @@ describe('Metadata tests (ci-enabled-fast)', function () {
         TRANSFER_AMOUNT,
         transaction.ETH_CURRENCY,
         hashString,
-        rootChain.plasmaContractAddress
+        rootChain.plasmaContractAddress,
+        0,
+        transaction.ETH_CURRENCY
       )
       console.log(`Submitted transaction: ${JSON.stringify(result)}`)
 
@@ -188,7 +192,9 @@ describe('Metadata tests (ci-enabled-fast)', function () {
         TRANSFER_AMOUNT,
         transaction.ETH_CURRENCY,
         null,
-        rootChain.plasmaContractAddress
+        rootChain.plasmaContractAddress,
+        0,
+        transaction.ETH_CURRENCY
       )
       console.log(`Submitted transaction: ${JSON.stringify(result)}`)
 
