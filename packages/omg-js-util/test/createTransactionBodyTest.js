@@ -23,6 +23,9 @@ describe('createTransactionBody', function () {
       fromUtxos,
       toAddress,
       toAmount,
+      transaction.ETH_CURRENCY,
+      undefined,
+      0,
       transaction.ETH_CURRENCY
     )
     assert.equal(txBody.outputs.length, 2)
@@ -65,6 +68,9 @@ describe('createTransactionBody', function () {
       fromUtxos,
       toAddress,
       toAmount,
+      transaction.ETH_CURRENCY,
+      undefined,
+      0,
       transaction.ETH_CURRENCY
     )
     assert.equal(txBody.outputs.length, 2)
@@ -107,6 +113,9 @@ describe('createTransactionBody', function () {
       fromUtxos,
       toAddress,
       toAmount,
+      transaction.ETH_CURRENCY,
+      undefined,
+      0,
       transaction.ETH_CURRENCY
     )
     assert.equal(txBody.outputs.length, 1)
@@ -134,6 +143,9 @@ describe('createTransactionBody', function () {
       fromUtxos,
       toAddress,
       toAmount,
+      transaction.ETH_CURRENCY,
+      undefined,
+      0,
       transaction.ETH_CURRENCY
     )
     assert.equal(txBody.outputs.length, 1)
@@ -171,8 +183,8 @@ describe('createTransactionBody', function () {
       toSendErc20Amount,
       fakeErc20,
       undefined,
-      transaction.ETH_CURRENCY,
-      50
+      50,
+      transaction.ETH_CURRENCY
     )
     assert.equal(txBody.outputs.length, 3)
     assert.equal(txBody.outputs[0].outputGuard, toAddress)

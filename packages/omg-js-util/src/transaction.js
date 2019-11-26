@@ -200,8 +200,8 @@ const transaction = {
     toAmount,
     currency,
     metadata,
-    feeCurrency,
-    feeAmount = 0
+    feeAmount = 0,
+    feeCurrency
   ) {
     validateInputs(fromUtxos)
     validateMetadata(metadata)
@@ -221,6 +221,7 @@ const transaction = {
       throw new Error(`Insufficient funds for ${bnAmount.toString()}`)
     }
 
+    // to sender output
     const outputArr = [{
       outputType: 1,
       outputGuard: toAddress,
@@ -228,8 +229,7 @@ const transaction = {
       amount: bnAmount
     }]
 
-    if (totalInputValue.gt(bnAmount)) {
-      // If necessary add a 'change' output
+    if (feeCurrency !== currency && totalInputValue.gt(bnAmount)) {
       outputArr.push({
         outputType: 1,
         outputGuard: fromAddress,
@@ -238,7 +238,17 @@ const transaction = {
       })
     }
 
-    if (feeCurrency) {
+    if (feeCurrency === currency && totalInputValue.gt(bnAmount.add(bnFeeAmount))) {
+      outputArr.push({
+        outputType: 1,
+        outputGuard: fromAddress,
+        currency,
+        amount: totalInputValue.sub(bnAmount).sub(bnFeeAmount)
+      })
+    }
+
+    // fee change
+    if (feeCurrency !== currency) {
       outputArr.push({
         outputType: 1,
         outputGuard: fromAddress,

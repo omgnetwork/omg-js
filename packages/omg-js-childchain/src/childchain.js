@@ -275,8 +275,9 @@ class ChildChain {
       toAmount,
       currency,
       metadata,
-      feeCurrency,
-      feeAmount
+      feeAmount,
+      feeCurrency
+
     )
     const typedData = transaction.getTypedData(txBody, verifyingContract)
     // Sign it
