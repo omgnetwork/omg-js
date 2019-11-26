@@ -476,7 +476,9 @@ describe('Transfer tests', function () {
         TRANSFER_AMOUNT,
         transaction.ETH_CURRENCY,
         null,
-        rootChain.plasmaContractAddress
+        rootChain.plasmaContractAddress,
+        0,
+        transaction.ETH_CURRENCY
       )
       console.log(`Submitted transaction: ${JSON.stringify(result)}`)
 
