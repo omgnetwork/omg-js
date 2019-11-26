@@ -205,12 +205,15 @@ const transaction = {
   ) {
     validateInputs(fromUtxos)
     validateMetadata(metadata)
-
+    if (fromUtxos.find(utxo => utxo.currency !== currency && utxo.currency !== feeCurrency)) {
+      throw new Error('Multiple currencies in the utxo array, only fee and to send currency is allowed.')
+    }
     const inputArr = fromUtxos.filter(utxo => utxo.currency === currency)
     const feeArr = fromUtxos.filter(utxo => utxo.currency === feeCurrency)
+    const sum = arr => arr.reduce((acc, curr) => acc.add(numberToBN(curr.amount.toString())), numberToBN(0))
     // Get the total value of the inputs
-    const totalInputValue = inputArr.reduce((acc, curr) => acc.add(numberToBN(curr.amount.toString())), numberToBN(0))
-    const totalInputFee = feeArr.reduce((acc, curr) => acc.add(numberToBN(curr.amount.toString())), numberToBN(0))
+    const totalInputValue = sum(inputArr)
+    const totalInputFee = sum(feeArr)
     const bnAmount = numberToBN(toAmount)
     const bnFeeAmount = numberToBN(feeAmount)
     // Check there is enough in the inputs to cover the amount
@@ -234,6 +237,7 @@ const transaction = {
         amount: totalInputValue.sub(bnAmount)
       })
     }
+
     if (feeCurrency) {
       outputArr.push({
         outputType: 1,
