@@ -153,7 +153,7 @@ describe('createTransactionBody', function () {
     assert.equal(txBody.outputs[0].amount.toString(), toAmount.toString())
   })
 
-  it('should create a transaction body from two input included fee, and not give change for the erc20', function () {
+  it('should create a transaction body from two input included fee, and give change for the erc20', function () {
     const fromAddress = '0xf4ebbe787311bb955bb353b7a4d8b97af8ed1c9b'
     const fakeErc20 = '0xFakeERc20'
     const fromUtxos = [
