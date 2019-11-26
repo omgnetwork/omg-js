@@ -18,13 +18,24 @@ describe('createTransactionBody', function () {
     const toAddress = '0x3272ee86d8192f59261960c9ae186063c8c9041f'
     const toAmount = 600000000000000000
 
-    const txBody = transaction.createTransactionBody(fromAddress, fromUtxos, toAddress, toAmount, transaction.ETH_CURRENCY)
+    const txBody = transaction.createTransactionBody(
+      fromAddress,
+      fromUtxos,
+      toAddress,
+      toAmount,
+      transaction.ETH_CURRENCY
+    )
     assert.equal(txBody.outputs.length, 2)
     assert.equal(txBody.outputs[0].outputGuard, toAddress)
     assert.equal(txBody.outputs[0].amount.toString(), toAmount.toString())
     assert.equal(txBody.outputs[1].outputGuard, fromAddress)
-    const expectedChange = numberToBN(fromUtxos[0].amount).sub(numberToBN(toAmount))
-    assert.equal(txBody.outputs[1].amount.toString(), expectedChange.toString())
+    const expectedChange = numberToBN(fromUtxos[0].amount).sub(
+      numberToBN(toAmount)
+    )
+    assert.equal(
+      txBody.outputs[1].amount.toString(),
+      expectedChange.toString()
+    )
   })
 
   it('should create a transaction body from two inputs and give change', function () {
@@ -49,13 +60,24 @@ describe('createTransactionBody', function () {
     const toAddress = '0x3272ee86d8192f59261960c9ae186063c8c9041f'
     const toAmount = 16
 
-    const txBody = transaction.createTransactionBody(fromAddress, fromUtxos, toAddress, toAmount, transaction.ETH_CURRENCY)
+    const txBody = transaction.createTransactionBody(
+      fromAddress,
+      fromUtxos,
+      toAddress,
+      toAmount,
+      transaction.ETH_CURRENCY
+    )
     assert.equal(txBody.outputs.length, 2)
     assert.equal(txBody.outputs[0].outputGuard, toAddress)
     assert.equal(txBody.outputs[0].amount.toString(), toAmount.toString())
     assert.equal(txBody.outputs[1].outputGuard, fromAddress)
-    const expectedChange = numberToBN(fromUtxos[0].amount).add(numberToBN(fromUtxos[1].amount)).sub(numberToBN(toAmount))
-    assert.equal(txBody.outputs[1].amount.toString(), expectedChange.toString())
+    const expectedChange = numberToBN(fromUtxos[0].amount)
+      .add(numberToBN(fromUtxos[1].amount))
+      .sub(numberToBN(toAmount))
+    assert.equal(
+      txBody.outputs[1].amount.toString(),
+      expectedChange.toString()
+    )
   })
 
   it('should create a transaction body from two inputs for the exact amount, and not give change', function () {
@@ -80,7 +102,13 @@ describe('createTransactionBody', function () {
     const toAddress = '0x3272ee86d8192f59261960c9ae186063c8c9041f'
     const toAmount = 20
 
-    const txBody = transaction.createTransactionBody(fromAddress, fromUtxos, toAddress, toAmount, transaction.ETH_CURRENCY)
+    const txBody = transaction.createTransactionBody(
+      fromAddress,
+      fromUtxos,
+      toAddress,
+      toAmount,
+      transaction.ETH_CURRENCY
+    )
     assert.equal(txBody.outputs.length, 1)
     assert.equal(txBody.outputs[0].outputGuard, toAddress)
     assert.equal(txBody.outputs[0].amount.toString(), toAmount.toString())
@@ -101,7 +129,13 @@ describe('createTransactionBody', function () {
     const toAddress = '0x3272ee86d8192f59261960c9ae186063c8c9041f'
     const toAmount = fromUtxos[0].amount
 
-    const txBody = transaction.createTransactionBody(fromAddress, fromUtxos, toAddress, toAmount, transaction.ETH_CURRENCY)
+    const txBody = transaction.createTransactionBody(
+      fromAddress,
+      fromUtxos,
+      toAddress,
+      toAmount,
+      transaction.ETH_CURRENCY
+    )
     assert.equal(txBody.outputs.length, 1)
     assert.equal(txBody.outputs[0].outputGuard, toAddress)
     assert.equal(txBody.outputs[0].amount.toString(), toAmount.toString())
@@ -130,14 +164,32 @@ describe('createTransactionBody', function () {
     const toAddress = '0x3272ee86d8192f59261960c9ae186063c8c9041f'
     const toSendErc20Amount = 500
 
-    const txBody = transaction.createTransactionBody(fromAddress, fromUtxos, toAddress, toSendErc20Amount, fakeErc20, undefined, transaction.ETH_CURRENCY, 50)
+    const txBody = transaction.createTransactionBody(
+      fromAddress,
+      fromUtxos,
+      toAddress,
+      toSendErc20Amount,
+      fakeErc20,
+      undefined,
+      transaction.ETH_CURRENCY,
+      50
+    )
     assert.equal(txBody.outputs.length, 3)
     assert.equal(txBody.outputs[0].outputGuard, toAddress)
     assert.equal(txBody.outputs[1].outputGuard, fromAddress)
     assert.equal(txBody.outputs[2].outputGuard, fromAddress)
-    assert.equal(txBody.outputs[0].amount.toString(), toSendErc20Amount.toString())
-    assert.equal(txBody.outputs[1].amount.toString(), toSendErc20Amount.toString())
-    assert.equal(txBody.outputs[2].amount.toString(), (fromUtxos[0].amount - 50).toString())
+    assert.equal(
+      txBody.outputs[0].amount.toString(),
+      toSendErc20Amount.toString()
+    )
+    assert.equal(
+      txBody.outputs[1].amount.toString(),
+      toSendErc20Amount.toString()
+    )
+    assert.equal(
+      txBody.outputs[2].amount.toString(),
+      (fromUtxos[0].amount - 50).toString()
+    )
   })
 
   it('should fail to create a transaction with insufficient funds', function () {
@@ -155,7 +207,18 @@ describe('createTransactionBody', function () {
     const toAddress = '0x3272ee86d8192f59261960c9ae186063c8c9041f'
     const toAmount = 100
 
-    return assert.throws(() => transaction.createTransactionBody(fromAddress, fromUtxos, toAddress, toAmount, transaction.ETH_CURRENCY), Error, /Insufficient funds/)
+    return assert.throws(
+      () =>
+        transaction.createTransactionBody(
+          fromAddress,
+          fromUtxos,
+          toAddress,
+          toAmount,
+          transaction.ETH_CURRENCY
+        ),
+      Error,
+      /Insufficient funds/
+    )
   })
 
   it('should fail to create a transaction with multi currency', function () {
@@ -187,6 +250,17 @@ describe('createTransactionBody', function () {
     const toAddress = '0x3272ee86d8192f59261960c9ae186063c8c9041f'
     const toAmount = 100
 
-    return assert.throws(() => transaction.createTransactionBody(fromAddress, fromUtxos, toAddress, toAmount, transaction.ETH_CURRENCY), Error, /Multiple currencies in the utxo array, only fee and to send currency is allowed./)
+    return assert.throws(
+      () =>
+        transaction.createTransactionBody(
+          fromAddress,
+          fromUtxos,
+          toAddress,
+          toAmount,
+          transaction.ETH_CURRENCY
+        ),
+      Error,
+      /Multiple currencies in the utxo array, only fee and to send currency is allowed./
+    )
   })
 })
