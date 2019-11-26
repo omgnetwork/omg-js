@@ -226,6 +226,9 @@ describe('createTransactionBody', function () {
           fromUtxos,
           toAddress,
           toAmount,
+          transaction.ETH_CURRENCY,
+          undefined,
+          0,
           transaction.ETH_CURRENCY
         ),
       Error,
@@ -269,6 +272,9 @@ describe('createTransactionBody', function () {
           fromUtxos,
           toAddress,
           toAmount,
+          transaction.ETH_CURRENCY,
+          undefined,
+          0,
           transaction.ETH_CURRENCY
         ),
       Error,

@@ -205,6 +205,9 @@ const transaction = {
   ) {
     validateInputs(fromUtxos)
     validateMetadata(metadata)
+    if (!feeCurrency) {
+      throw new Error('Fee currency not provided.')
+    }
     if (fromUtxos.find(utxo => utxo.currency !== currency && utxo.currency !== feeCurrency)) {
       throw new Error('Multiple currencies in the utxo array, only fee and to send currency is allowed.')
     }
