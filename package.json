@@ -5,6 +5,7 @@
   "description": "JavaScript Library to interact with OMG Network",
   "scripts": {
     "lerna-reset": "lerna clean && lerna bootstrap",
+    "publish": "lerna publish",
     "postinstall": "lerna bootstrap --hoist",
     "test": "mocha packages/omg-js-childchain/test packages/omg-js-rootchain/test packages/omg-js-util/test",
     "lint": "eslint . --ext .js",
