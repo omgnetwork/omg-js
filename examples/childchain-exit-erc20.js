@@ -51,7 +51,7 @@ async function exitChildChainErc20 () {
   console.log('-----')
 
   // get a ERC20 UTXO and exit data
-  const bobUtxos = await childChain.getExitableUtxos(bobAddress)
+  const bobUtxos = await childChain.getUtxos(bobAddress)
   const bobUtxoToExit = bobUtxos.find(i => i.currency.toLowerCase() === config.erc20_contract.toLowerCase())
   if (!bobUtxoToExit) {
     console.log('Bob doesnt have any ERC20 UTXOs to exit')

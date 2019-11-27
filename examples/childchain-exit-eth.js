@@ -46,7 +46,7 @@ async function exitChildChain () {
   console.log('-----')
 
   // get ETH UTXO and exit data
-  const bobUtxos = await childChain.getExitableUtxos(bobAddress)
+  const bobUtxos = await childChain.getUtxos(bobAddress)
   const bobUtxoToExit = bobUtxos.find(i => i.currency === transaction.ETH_CURRENCY)
   if (!bobUtxoToExit) {
     console.log('Bob doesnt have any ETH UTXOs to exit')

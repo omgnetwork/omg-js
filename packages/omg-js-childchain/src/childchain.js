@@ -33,7 +33,7 @@ class ChildChain {
   }
 
   /**
-   * Gets the UTXOs of an address (includes both spent and unspent UTXOs)
+   * Gets the UTXOs of an address
    *
    * @method getUtxos
    * @param {string} address
@@ -43,22 +43,6 @@ class ChildChain {
     validateAddress(address)
     return rpcApi.post({
       url: `${this.watcherUrl}/account.get_utxos`,
-      body: { address },
-      proxyUrl: this.watcherProxyUrl
-    })
-  }
-
-  /**
-   * Gets the exitable UTXOs of an address
-   *
-   * @method getExitableUtxos
-   * @param {string} address
-   * @return {Array} array of UTXOs
-   */
-  async getExitableUtxos (address) {
-    validateAddress(address)
-    return rpcApi.post({
-      url: `${this.watcherUrl}/account.get_exitable_utxos`,
       body: { address },
       proxyUrl: this.watcherProxyUrl
     })
