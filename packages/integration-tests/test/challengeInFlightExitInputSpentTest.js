@@ -249,20 +249,20 @@ describe('Challenge in-flight exit input spent tests', function () {
       // now the IFE is non-canonical, if we process exit here then alice will get her utxo out which is wrong
       // carol need to challengeInFlightExitInputSpent to prevent alice getting her utxo out
 
-      receipt = await rootChain.challengeInFlightExitInputSpent(
-        inflightExit.txbytes,
-        0,
-        unsignCarolTx,
-        0,
-        carolTxDecoded.sigs[0],
-        unsignInput,
-        utxoPosOutput,
-        '0x',
-        {
+      receipt = await rootChain.challengeInFlightExitInputSpent({
+        inFlightTx: inflightExit.txbytes,
+        inFlightTxInputIndex: 0,
+        challengingTx: unsignCarolTx,
+        challengingTxInputIndex: 0,
+        challengingTxWitness: carolTxDecoded.sigs[0],
+        inputTx: unsignInput,
+        inputUtxoPos: utxoPosOutput,
+        spendingConditionOptionalArgs: '0x',
+        txOptions: {
           privateKey: carolAccount.privateKey,
           from: carolAccount.address
         }
-      )
+      })
       carolSpentOnGas.iadd(await rcHelper.spentOnGas(web3, receipt))
 
       // Wait for challenge period
