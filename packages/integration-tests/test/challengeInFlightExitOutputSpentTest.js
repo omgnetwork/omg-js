@@ -192,6 +192,9 @@ describe('Challenge in-flight exit output spent tests', function () {
         rootChain.plasmaContractAddress
       )
 
+      // utxo update from watcher have delay, balance updated first we need to wait a bit
+      await rcHelper.sleep(3000)
+
       // bob use his IFE piggyback output so this become the competitor tx
       await ccHelper.sendAndWait(
         childChain,
@@ -203,6 +206,8 @@ describe('Challenge in-flight exit output spent tests', function () {
         INTIIAL_ALICE_AMOUNT,
         rootChain.plasmaContractAddress
       )
+
+      await rcHelper.sleep(3000)
 
       const challengeData = await childChain.inFlightExitGetOutputChallengeData(exitData.in_flight_tx, 0)
 
