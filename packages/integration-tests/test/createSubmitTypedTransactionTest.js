@@ -75,12 +75,12 @@ describe('Create transaction tests with submitTyped (ci-enabled)', function () {
         amount: FEE_AMOUNT
       }
 
-      const createdTx = await childChain.createTransaction(
-        aliceAccount.address,
+      const createdTx = await childChain.createTransaction({
+        owner: aliceAccount.address,
         payments,
         fee,
-        transaction.NULL_METADATA
-      )
+        metadata: transaction.NULL_METADATA
+      })
       assert.equal(createdTx.result, 'complete')
       assert.equal(createdTx.transactions.length, 1)
 

@@ -68,12 +68,12 @@ async function inflightExitChildChain () {
     currency: transaction.ETH_CURRENCY,
     amount: Number(feeAmount)
   }
-  const createdTxn = await childChain.createTransaction(
-    aliceAddress,
+  const createdTxn = await childChain.createTransaction({
+    owner: aliceAddress,
     payments,
     fee,
-    transaction.NULL_METADATA
-  )
+    metadata: transaction.NULL_METADATA
+  })
   console.log(`Created a childchain transaction of ${web3.utils.fromWei(payments[0].amount.toString(), 'ether')} ETH from Alice to Bob.`)
 
   // type/sign/build/submit

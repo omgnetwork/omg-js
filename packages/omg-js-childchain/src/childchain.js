@@ -136,7 +136,7 @@ class ChildChain {
    * @param {string} metadata
    * @return {Object} a object containing the list of transactions that will fullfil the required spend.
    */
-  createTransaction (owner, payments, fee, metadata) {
+  createTransaction ({ owner, payments, fee, metadata }) {
     return rpcApi.post({
       url: `${this.watcherUrl}/transaction.create`,
       body: { owner, payments, fee, metadata },
