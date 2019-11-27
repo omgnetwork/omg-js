@@ -97,20 +97,20 @@ async function inflightExitChildChain () {
   const exitData = await childChain.inFlightExitGetData(hexPrefix(signedTxn))
   const outputGuardPreimagesForInputs = ['0x']
   const inputSpendingConditionOptionalArgs = ['0x']
-  await rootChain.startInFlightExit(
-    exitData.in_flight_tx,
-    exitData.input_txs,
-    exitData.input_utxos_pos,
-    outputGuardPreimagesForInputs,
-    exitData.input_txs_inclusion_proofs,
-    signatures,
-    exitData.in_flight_tx_sigs,
-    inputSpendingConditionOptionalArgs,
-    {
+  await rootChain.startInFlightExit({
+    inFlightTx: exitData.in_flight_tx,
+    inputTxs: exitData.input_txs,
+    inputUtxosPos: exitData.input_utxos_pos,
+    outputGuardPreimagesForInputs: outputGuardPreimagesForInputs,
+    inputTxsInclusionProofs: exitData.input_txs_inclusion_proofs,
+    inFlightTxSigs: signatures,
+    signatures: exitData.in_flight_tx_sigs,
+    inputSpendingConditionOptionalArgs: inputSpendingConditionOptionalArgs,
+    txOptions: {
       privateKey: bobPrivateKey,
       from: bobAddress
     }
-  )
+  })
   console.log('Bob starts an inflight exit')
 
   // Decode the transaction to get the index of Bob's output

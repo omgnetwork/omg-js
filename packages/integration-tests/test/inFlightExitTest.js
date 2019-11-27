@@ -124,20 +124,20 @@ describe('In-flight Exit tests', function () {
       ])
 
       // Start an in-flight exit.
-      let receipt = await rootChain.startInFlightExit(
-        exitData.in_flight_tx,
-        exitData.input_txs,
-        exitData.input_utxos_pos,
-        ['0x'],
-        exitData.input_txs_inclusion_proofs,
-        decodedTx.sigs,
-        exitData.in_flight_tx_sigs,
-        ['0x'],
-        {
+      let receipt = await rootChain.startInFlightExit({
+        inFlightTx: exitData.in_flight_tx,
+        inputTxs: exitData.input_txs,
+        inputUtxosPos: exitData.input_utxos_pos,
+        outputGuardPreimagesForInputs: ['0x'],
+        inputTxsInclusionProofs: exitData.input_txs_inclusion_proofs,
+        inFlightTxSigs: decodedTx.sigs,
+        signatures: exitData.in_flight_tx_sigs,
+        inputSpendingConditionOptionalArgs: ['0x'],
+        txOptions: {
           privateKey: bobAccount.privateKey,
           from: bobAccount.address
         }
-      )
+      })
       console.log(
         `Bob called RootChain.startInFlightExit(): txhash = ${receipt.transactionHash}`
       )
@@ -255,20 +255,20 @@ describe('In-flight Exit tests', function () {
       ])
 
       // Start an in-flight exit.
-      let receipt = await rootChain.startInFlightExit(
-        exitData.in_flight_tx,
-        exitData.input_txs,
-        exitData.input_utxos_pos,
-        ['0x'],
-        exitData.input_txs_inclusion_proofs,
-        decodedTx.sigs,
-        exitData.in_flight_tx_sigs,
-        ['0x'],
-        {
+      let receipt = await rootChain.startInFlightExit({
+        inFlightTx: exitData.in_flight_tx,
+        inputTxs: exitData.input_txs,
+        inputUtxosPos: exitData.input_utxos_pos,
+        outputGuardPreimagesForInputs: ['0x'],
+        inputTxsInclusionProofs: exitData.input_txs_inclusion_proofs,
+        inFlightTxSigs: decodedTx.sigs,
+        signatures: exitData.in_flight_tx_sigs,
+        inputSpendingConditionOptionalArgs: ['0x'],
+        txOptions: {
           privateKey: bobAccount.privateKey,
           from: bobAccount.address
         }
-      )
+      })
       console.log(
         `Bob called RootChain.startInFlightExit(): txhash = ${receipt.transactionHash}`
       )
@@ -408,20 +408,20 @@ describe('In-flight Exit tests', function () {
       )
 
       // kelvin Start an in-flight exit because he wants to cheat the system
-      let receipt = await rootChain.startInFlightExit(
-        exitData.in_flight_tx,
-        exitData.input_txs,
-        exitData.input_utxos_pos,
-        ['0x', '0x'],
-        exitData.input_txs_inclusion_proofs,
-        signatures,
-        exitData.in_flight_tx_sigs,
-        ['0x', '0x'],
-        {
+      let receipt = await rootChain.startInFlightExit({
+        inFlightTx: exitData.in_flight_tx,
+        inputTxs: exitData.input_txs,
+        inputUtxosPos: exitData.input_utxos_pos,
+        outputGuardPreimagesForInputs: ['0x', '0x'],
+        inputTxsInclusionProofs: exitData.input_txs_inclusion_proofs,
+        inFlightTxSigs: signatures,
+        signatures: exitData.in_flight_tx_sigs,
+        inputSpendingConditionOptionalArgs: ['0x', '0x'],
+        txOptions: {
           privateKey: kelvinAccount.privateKey,
           from: kelvinAccount.address
         }
-      )
+      })
       console.log(
         `Kelvin called RootChain.startInFlightExit(): txhash = ${receipt.transactionHash}`
       )
