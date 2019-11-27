@@ -167,9 +167,14 @@ describe('In-flight Exit tests', function () {
       bobSpentOnGas.iadd(await rcHelper.spentOnGas(web3, receipt))
 
       // Call processExits before the challenge period is over
-      receipt = await rootChain.processExits(transaction.ETH_CURRENCY, 0, 20, {
-        privateKey: bobAccount.privateKey,
-        from: bobAccount.address
+      receipt = await rootChain.processExits({
+        token: transaction.ETH_CURRENCY,
+        exitId: 0,
+        maxExitsToProcess: 20,
+        txOptions: {
+          privateKey: bobAccount.privateKey,
+          from: bobAccount.address
+        }
       })
       console.log(
         `Bob called RootChain.processExits() before challenge period: txhash = ${receipt.transactionHash}`
@@ -195,9 +200,14 @@ describe('In-flight Exit tests', function () {
       await rcHelper.sleep(toWait)
 
       // Call processExits again.
-      receipt = await rootChain.processExits(transaction.ETH_CURRENCY, 0, 20, {
-        privateKey: bobAccount.privateKey,
-        from: bobAccount.address
+      receipt = await rootChain.processExits({
+        token: transaction.ETH_CURRENCY,
+        exitId: 0,
+        maxExitsToProcess: 20,
+        txOptions: {
+          privateKey: bobAccount.privateKey,
+          from: bobAccount.address
+        }
       })
       console.log(
         `Bob called RootChain.processExits() after challenge period: txhash = ${receipt.transactionHash}`
@@ -288,9 +298,14 @@ describe('In-flight Exit tests', function () {
       bobSpentOnGas.iadd(await rcHelper.spentOnGas(web3, receipt))
 
       // Call processExits before the challenge period is over
-      receipt = await rootChain.processExits(transaction.ETH_CURRENCY, 0, 20, {
-        privateKey: bobAccount.privateKey,
-        from: bobAccount.address
+      receipt = await rootChain.processExits({
+        token: transaction.ETH_CURRENCY,
+        exitId: 0,
+        maxExitsToProcess: 20,
+        txOptions: {
+          privateKey: bobAccount.privateKey,
+          from: bobAccount.address
+        }
       })
       console.log(
         `Bob called RootChain.processExits() before challenge period: txhash = ${receipt.transactionHash}`
@@ -308,9 +323,14 @@ describe('In-flight Exit tests', function () {
       await rcHelper.sleep(toWait)
 
       // Call processExits again.
-      receipt = await rootChain.processExits(transaction.ETH_CURRENCY, 0, 20, {
-        privateKey: bobAccount.privateKey,
-        from: bobAccount.address
+      receipt = await rootChain.processExits({
+        token: transaction.ETH_CURRENCY,
+        exitId: 0,
+        maxExitsToProcess: 20,
+        txOptions: {
+          privateKey: bobAccount.privateKey,
+          from: bobAccount.address
+        }
       })
       console.log(
         `Bob called RootChain.processExits() after challenge period: txhash = ${receipt.transactionHash}`
@@ -478,9 +498,14 @@ describe('In-flight Exit tests', function () {
       await rcHelper.sleep(toWait)
 
       // Call processExits.
-      receipt = await rootChain.processExits(transaction.ETH_CURRENCY, 0, 20, {
-        privateKey: bobAccount.privateKey,
-        from: bobAccount.address
+      receipt = await rootChain.processExits({
+        token: transaction.ETH_CURRENCY,
+        exitId: 0,
+        maxExitsToProcess: 20,
+        txOptions: {
+          privateKey: bobAccount.privateKey,
+          from: bobAccount.address
+        }
       })
       console.log(
         `Bob called RootChain.processExits() after challenge period: txhash = ${receipt.transactionHash}`

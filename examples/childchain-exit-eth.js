@@ -81,14 +81,16 @@ async function exitChildChain () {
 
   await wait.waitForChallengePeriodToEnd(rootChain, exitData)
   // call processExits after challenge period is over
-  await rootChain.processExits(
-    transaction.ETH_CURRENCY, 0, 20,
-    {
+  await rootChain.processExits({
+    token: transaction.ETH_CURRENCY,
+    exitId: 0,
+    maxExitsToProcess: 20,
+    txOptions: {
       privateKey: bobPrivateKey,
       from: bobAddress,
       gas: 6000000
     }
-  )
+  })
   console.log('Exits processed')
 
   console.log('-----')

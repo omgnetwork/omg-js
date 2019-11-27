@@ -85,14 +85,16 @@ async function exitChildChainErc20 () {
   console.log('Bob started a standard exit')
 
   await wait.waitForChallengePeriodToEnd(rootChain, exitData)
-  await rootChain.processExits(
-    config.erc20_contract, 0, 20,
-    {
+  await rootChain.processExits({
+    token: config.erc20_contract,
+    exitId: 0,
+    maxExitsToProcess: 20,
+    txOptions: {
       privateKey: bobPrivateKey,
       from: bobAddress,
       gas: 6000000
     }
-  )
+  })
   console.log('Exits processed')
 
   console.log('-----')

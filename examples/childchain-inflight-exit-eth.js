@@ -134,12 +134,12 @@ async function inflightExitChildChain () {
   await wait.waitForChallengePeriodToEnd(rootChain, exitData)
 
   // call processExits() after challenge period is over
-  const processExitsPostChallengeReceipt = await rootChain.processExits(
-    transaction.ETH_CURRENCY,
-    0,
-    10,
-    { privateKey: bobPrivateKey, from: bobAddress }
-  )
+  const processExitsPostChallengeReceipt = await rootChain.processExits({
+    token: transaction.ETH_CURRENCY,
+    exitId: 0,
+    maxExitstToProcess: 10,
+    txOptions: { privateKey: bobPrivateKey, from: bobAddress }
+  })
 
   await wait.waitForTransaction(
     web3,

@@ -117,9 +117,14 @@ describe('Standard Exit tests', function () {
       aliceSpentOnGas.iadd(await rcHelper.spentOnGas(web3, receipt))
 
       // Call processExits before the challenge period is over
-      receipt = await rootChain.processExits(transaction.ETH_CURRENCY, 0, 20, {
-        privateKey: aliceAccount.privateKey,
-        from: aliceAccount.address
+      receipt = await rootChain.processExits({
+        token: transaction.ETH_CURRENCY,
+        exitId: 0,
+        maxExitsToProcess: 20,
+        txOptions: {
+          privateKey: aliceAccount.privateKey,
+          from: aliceAccount.address
+        }
       })
       console.log(
         `Alice called RootChain.processExits() before challenge period: txhash = ${receipt.transactionHash}`
@@ -138,9 +143,14 @@ describe('Standard Exit tests', function () {
       await rcHelper.sleep(toWait)
 
       // Call processExits again.
-      receipt = await rootChain.processExits(transaction.ETH_CURRENCY, 0, 20, {
-        privateKey: aliceAccount.privateKey,
-        from: aliceAccount.address
+      receipt = await rootChain.processExits({
+        token: transaction.ETH_CURRENCY,
+        exitId: 0,
+        maxExitsToProcess: 20,
+        txOptions: {
+          privateKey: aliceAccount.privateKey,
+          from: aliceAccount.address
+        }
       })
       console.log(
         `Alice called RootChain.processExits() after challenge period: txhash = ${receipt.transactionHash}`
@@ -252,15 +262,15 @@ describe('Standard Exit tests', function () {
       )
 
       // Call processExits before the challenge period is over
-      const processExitReceiptBefore = await rootChain.processExits(
-        transaction.ETH_CURRENCY,
-        0,
-        20,
-        {
+      const processExitReceiptBefore = await rootChain.processExits({
+        token: transaction.ETH_CURRENCY,
+        exitId: 0,
+        maxExitsToProcess: 20,
+        txOptions: {
           privateKey: bobAccount.privateKey,
           from: bobAccount.address
         }
-      )
+      })
       console.log(
         `Bob called RootChain.processExits() before challenge period: txhash = ${processExitReceiptBefore.transactionHash}`
       )
@@ -279,15 +289,15 @@ describe('Standard Exit tests', function () {
       await rcHelper.sleep(toWait)
 
       // Call processExits again.
-      const processExitReceiptAfter = await rootChain.processExits(
-        transaction.ETH_CURRENCY,
-        0,
-        20,
-        {
+      const processExitReceiptAfter = await rootChain.processExits({
+        token: transaction.ETH_CURRENCY,
+        exitId: 0,
+        maxExitsToProcess: 20,
+        txOptions: {
           privateKey: bobAccount.privateKey,
           from: bobAccount.address
         }
-      )
+      })
       console.log(
         `Bob called RootChain.processExits() after challenge period: txhash = ${processExitReceiptAfter.transactionHash}`
       )
@@ -395,9 +405,14 @@ describe('Standard Exit tests', function () {
       )
 
       // Call processExits before the challenge period is over
-      receipt = await rootChain.processExits(config.testErc20Contract, 0, 20, {
-        privateKey: aliceAccount.privateKey,
-        from: aliceAccount.address
+      receipt = await rootChain.processExits({
+        token: config.testErc20Contract,
+        exitId: 0,
+        maxExitsToProcess: 20,
+        txOptions: {
+          privateKey: aliceAccount.privateKey,
+          from: aliceAccount.address
+        }
       })
       console.log(
         `Alice called RootChain.processExits() before challenge period: txhash = ${receipt.transactionHash}`
@@ -413,9 +428,14 @@ describe('Standard Exit tests', function () {
       await rcHelper.sleep(toWait)
 
       // Call processExits again.
-      receipt = await rootChain.processExits(config.testErc20Contract, 0, 20, {
-        privateKey: aliceAccount.privateKey,
-        from: aliceAccount.address
+      receipt = await rootChain.processExits({
+        token: config.testErc20Contract,
+        exitId: 0,
+        maxExitsToProcess: 20,
+        txOptions: {
+          privateKey: aliceAccount.privateKey,
+          from: aliceAccount.address
+        }
       })
       console.log(
         `Alice called RootChain.processExits() after challenge period: txhash = ${receipt.transactionHash}`

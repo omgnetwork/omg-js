@@ -32,14 +32,16 @@ async function processExits () {
   console.log(`Bob's rootchain balance: ${web3.utils.fromWei(String(bobRootchainBalance), 'ether')} ETH`)
   console.log('-----')
 
-  const ethExitReceipt = await rootChain.processExits(
-    transaction.ETH_CURRENCY, 0, 20,
-    {
+  const ethExitReceipt = await rootChain.processExits({
+    token: transaction.ETH_CURRENCY,
+    exitId: 0,
+    maxExitsToProcess: 20,
+    txOptions: {
       privateKey: bobPrivateKey,
       from: bobAddress,
       gas: 6000000
     }
-  )
+  })
   if (ethExitReceipt) {
     await wait.waitForTransaction(
       web3,
@@ -54,14 +56,16 @@ async function processExits () {
     return
   }
 
-  const erc20ExitReceipt = await rootChain.processExits(
-    config.erc20_contract, 0, 20,
-    {
+  const erc20ExitReceipt = await rootChain.processExits({
+    token: config.erc20_contract,
+    exitId: 0,
+    maxExitsToProcess: 20,
+    txOptions: {
       privateKey: bobPrivateKey,
       from: bobAddress,
       gas: 6000000
     }
-  )
+  })
   if (erc20ExitReceipt) {
     await wait.waitForTransaction(
       web3,

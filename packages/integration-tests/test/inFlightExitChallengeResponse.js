@@ -234,16 +234,16 @@ describe('In-flight Exit Challenge Response tests', function () {
       await rcHelper.sleep(toWait)
 
       // Call processExits.
-      receipt = await rootChain.processExits(
-        transaction.ETH_CURRENCY,
-        0,
-        10,
-        {
+      receipt = await rootChain.processExits({
+        token: transaction.ETH_CURRENCY,
+        exitId: 0,
+        maxExitsToProcess: 10,
+        txOptions: {
           privateKey: bobAccount.privateKey,
           from: bobAccount.address,
           gas: 6000000
         }
-      )
+      })
       console.log(`Bob called RootChain.processExits() after challenge period: txhash = ${receipt.transactionHash}`)
       bobSpentOnGas.iadd(await rcHelper.spentOnGas(web3, receipt))
 

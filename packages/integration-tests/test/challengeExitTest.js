@@ -164,15 +164,15 @@ describe('Challenge exit tests', function () {
       await rcHelper.sleep(toWait)
 
       // ...and calls finalize exits.
-      receipt = await rootChain.processExits(
-        transaction.ETH_CURRENCY,
-        0,
-        20,
-        {
+      receipt = await rootChain.processExits({
+        token: transaction.ETH_CURRENCY,
+        exitId: 0,
+        maxExitsToProcess: 20,
+        txOptions: {
           privateKey: aliceAccount.privateKey,
           from: aliceAccount.address
         }
-      )
+      })
       console.log(`Alice called RootChain.processExits(): txhash = ${receipt.transactionHash}`)
       aliceSpentOnGas.iadd(await rcHelper.spentOnGas(web3, receipt))
 

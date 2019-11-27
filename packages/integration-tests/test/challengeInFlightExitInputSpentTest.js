@@ -273,9 +273,14 @@ describe('Challenge in-flight exit input spent tests', function () {
       await rcHelper.sleep(toWait)
 
       // Call processExits again.
-      receipt = await rootChain.processExits(transaction.ETH_CURRENCY, 0, 5, {
-        privateKey: bobAccount.privateKey,
-        from: bobAccount.address
+      receipt = await rootChain.processExits({
+        token: transaction.ETH_CURRENCY,
+        exitId: 0,
+        maxExitsToProcess: 5,
+        txOptions: {
+          privateKey: bobAccount.privateKey,
+          from: bobAccount.address
+        }
       })
       console.log(
         `Bob called RootChain.processExits() after challenge period: txhash = ${receipt.transactionHash}`
