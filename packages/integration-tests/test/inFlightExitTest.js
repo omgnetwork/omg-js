@@ -447,14 +447,14 @@ describe('In-flight Exit tests', function () {
       )
 
       // Alice needs to piggyback his input on the in-flight exit
-      receipt = await rootChain.piggybackInFlightExitOnInput(
-        exitData.in_flight_tx,
-        1, // inputIndex of alice
-        {
+      receipt = await rootChain.piggybackInFlightExitOnInput({
+        inFlightTx: exitData.in_flight_tx,
+        inputIndex: 1, // inputIndex of alice
+        txOptions: {
           privateKey: aliceAccount.privateKey,
           from: aliceAccount.address
         }
-      )
+      })
 
       aliceSpentOnGas.iadd(await rcHelper.spentOnGas(web3, receipt))
 

@@ -175,14 +175,14 @@ describe('Challenge in-flight exit input spent tests', function () {
       bobSpentOnGas.iadd(await rcHelper.spentOnGas(web3, receipt))
 
       // alice piggybacks his input on the in-flight exit
-      receipt = await rootChain.piggybackInFlightExitOnInput(
-        exitData.in_flight_tx,
-        0,
-        {
+      receipt = await rootChain.piggybackInFlightExitOnInput({
+        inFlightTx: exitData.in_flight_tx,
+        inputIndex: 0,
+        txOptions: {
           privateKey: aliceAccount.privateKey,
           from: aliceAccount.address
         }
-      )
+      })
       aliceSpentOnGas.iadd(await rcHelper.spentOnGas(web3, receipt))
       console.log(
         `Alice called RootChain.piggybackInFlightExit() : txhash = ${receipt.transactionHash}`
