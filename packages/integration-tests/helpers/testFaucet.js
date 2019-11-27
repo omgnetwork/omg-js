@@ -148,8 +148,16 @@ const faucet = {
 
       try {
         console.log(`Not enough Child chain erc20 tokens in faucet ${this.address}, attempting to deposit ${needed.toString()} ${this.erc20ContractAddress} from root chain`)
+        await this.rootChain.approveToken({
+          erc20Address: this.erc20ContractAddress,
+          amount: needed.toNumber(),
+          txOptions: {
+            from: this.address,
+            privateKey: this.privateKey,
+            gas: 6000000
+          }
+        })
         const erc20VaultAddress = await this.rootChain.getErc20VaultAddress()
-        await rcHelper.approveERC20(web3, this.erc20Contract, this.address, this.privateKey, erc20VaultAddress, needed.toNumber())
         const allowed = await this.erc20Contract.methods.allowance(this.address, erc20VaultAddress).call()
         if (allowed === '0') {
           throw new Error('ERC20 approval failed!')

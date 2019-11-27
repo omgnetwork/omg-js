@@ -16,6 +16,7 @@ limitations under the License. */
 const txUtils = require('./txUtils')
 const { transaction } = require('@omisego/omg-js-util')
 const webUtils = require('web3-utils')
+const erc20abi = require('human-standard-token-abi')
 
 const STANDARD_EXIT_BOND = 14000000000000000
 const INFLIGHT_EXIT_BOND = 37000000000000000
@@ -73,6 +74,33 @@ class RootChain {
       return this.web3.eth.contract(abi).at(address)
     }
     return new this.web3.eth.Contract(abi, address)
+  }
+
+  /**
+   * Approve ERC20 for deposit
+   *
+   * @method approveToken
+   * @param {string} erc20Address address of the ERC20 token
+   * @param {number} amount amount of ERC20 to approve to deposit
+   * @param {Object} txOptions transaction options, such as `from`, `gas` and `privateKey`
+   * @return {Promise<{ transactionHash: string }>} promise that resolves with an object holding the transaction hash
+   */
+  async approveToken ({
+    erc20Address,
+    amount,
+    txOptions
+  }) {
+    const spender = await this.getErc20VaultAddress()
+    const erc20Contract = this.getContract(erc20abi, erc20Address)
+    const txDetails = {
+      from: txOptions.from,
+      to: erc20Address,
+      data: erc20Contract.methods.approve(spender, amount).encodeABI(),
+      gas: txOptions.gas,
+      gasPrice: txOptions.gasPrice
+    }
+
+    return txUtils.sendTx(this.web3, txDetails, txOptions.privateKey)
   }
 
   /**

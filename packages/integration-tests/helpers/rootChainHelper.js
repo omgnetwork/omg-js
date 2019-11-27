@@ -109,23 +109,6 @@ function sleep (ms) {
   })
 }
 
-async function approveERC20 (
-  web3,
-  erc20Contract,
-  ownerAccount,
-  ownerAccountPassword,
-  spender,
-  value
-) {
-  const txDetails = {
-    from: ownerAccount,
-    to: erc20Contract._address,
-    data: erc20Contract.methods.approve(spender, value).encodeABI()
-  }
-
-  return sendTransaction(web3, txDetails, ownerAccountPassword)
-}
-
 async function depositEth (rootChain, address, amount, privateKey) {
   const depositTx = transaction.encodeDeposit(address, amount, transaction.ETH_CURRENCY)
   return rootChain.depositEth(depositTx, amount, { from: address, privateKey })
@@ -230,7 +213,6 @@ module.exports = {
   sendTransaction,
   depositEth,
   depositToken,
-  approveERC20,
   spentOnGas,
   getPlasmaContractAddress,
   getTimeToExit,

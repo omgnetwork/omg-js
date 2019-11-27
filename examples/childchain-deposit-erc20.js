@@ -21,7 +21,6 @@ const { transaction, getErc20Balance } = require('../packages/omg-js-util/src')
 
 const config = require('./config.js')
 const wait = require('./wait.js')
-const { approveERC20 } = require('./util')
 
 const web3 = new Web3(new Web3.providers.HttpProvider(config.geth_url), null, { transactionConfirmationBlocks: 1 })
 const rootChain = new RootChain(web3, config.rootchain_plasma_contract_address)
@@ -53,8 +52,15 @@ async function depositERC20IntoPlasmaContract () {
   await logBalances()
   console.log('-----')
 
-  const erc20VaultAddress = await rootChain.getErc20VaultAddress()
-  const approveRes = await approveERC20(aliceAddress, alicePrivateKey, erc20VaultAddress, config.alice_erc20_deposit_amount)
+  const approveRes = await rootChain.approveToken({
+    erc20Address: config.erc20_contract,
+    amount: config.alice_erc20_deposit_amount,
+    txOptions: {
+      from: aliceAddress,
+      privateKey: alicePrivateKey,
+      gas: 6000000
+    }
+  })
   console.log('ERC20 approved: ', approveRes.transactionHash)
 
   const depositTransaction = transaction.encodeDeposit(aliceAddress, config.alice_erc20_deposit_amount, config.erc20_contract)
