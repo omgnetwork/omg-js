@@ -69,18 +69,18 @@ describe('Metadata tests (ci-enabled-fast)', function () {
       const METADATA = 'Hello สวัสดี'
 
       const utxos = await childChain.getUtxos(aliceAccount.address)
-      const result = await childChain.sendTransaction(
-        aliceAccount.address,
-        utxos,
-        [aliceAccount.privateKey],
-        bobAccount.address,
-        TRANSFER_AMOUNT,
-        transaction.ETH_CURRENCY,
-        transaction.encodeMetadata(METADATA),
-        rootChain.plasmaContractAddress,
-        0,
-        transaction.ETH_CURRENCY
-      )
+      const result = await childChain.sendTransaction({
+        fromAddress: aliceAccount.address,
+        fromUtxos: utxos,
+        fromPrivateKeys: [aliceAccount.privateKey],
+        toAddress: bobAccount.address,
+        toAmount: TRANSFER_AMOUNT,
+        currency: transaction.ETH_CURRENCY,
+        metadata: transaction.encodeMetadata(METADATA),
+        verifyingContract: rootChain.plasmaContractAddress,
+        feeAmount: 0,
+        feeCurrency: transaction.ETH_CURRENCY
+      })
       console.log(`Submitted transaction: ${JSON.stringify(result)}`)
 
       // Bob's balance should be TRANSFER_AMOUNT
@@ -129,18 +129,18 @@ describe('Metadata tests (ci-enabled-fast)', function () {
       const hashString = `0x${hash.toString('hex')}`
 
       const utxos = await childChain.getUtxos(aliceAccount.address)
-      const result = await childChain.sendTransaction(
-        aliceAccount.address,
-        utxos,
-        [aliceAccount.privateKey],
-        bobAccount.address,
-        TRANSFER_AMOUNT,
-        transaction.ETH_CURRENCY,
-        hashString,
-        rootChain.plasmaContractAddress,
-        0,
-        transaction.ETH_CURRENCY
-      )
+      const result = await childChain.sendTransaction({
+        fromAddress: aliceAccount.address,
+        fromUtxos: utxos,
+        fromPrivateKeys: [aliceAccount.privateKey],
+        toAddress: bobAccount.address,
+        toAmount: TRANSFER_AMOUNT,
+        currency: transaction.ETH_CURRENCY,
+        metadata: hashString,
+        verifyingContract: rootChain.plasmaContractAddress,
+        feeAmount: 0,
+        feeCurrency: transaction.ETH_CURRENCY
+      })
       console.log(`Submitted transaction: ${JSON.stringify(result)}`)
 
       // Bob's balance should be TRANSFER_AMOUNT
@@ -184,18 +184,18 @@ describe('Metadata tests (ci-enabled-fast)', function () {
 
     it('should send a transaction with NO metadata', async function () {
       const utxos = await childChain.getUtxos(aliceAccount.address)
-      const result = await childChain.sendTransaction(
-        aliceAccount.address,
-        utxos,
-        [aliceAccount.privateKey],
-        bobAccount.address,
-        TRANSFER_AMOUNT,
-        transaction.ETH_CURRENCY,
-        null,
-        rootChain.plasmaContractAddress,
-        0,
-        transaction.ETH_CURRENCY
-      )
+      const result = await childChain.sendTransaction({
+        fromAddress: aliceAccount.address,
+        fromUtxos: utxos,
+        fromPrivateKeys: [aliceAccount.privateKey],
+        toAddress: bobAccount.address,
+        toAmount: TRANSFER_AMOUNT,
+        currency: transaction.ETH_CURRENCY,
+        metadata: null,
+        verifyingContract: rootChain.plasmaContractAddress,
+        feeAmount: 0,
+        feeCurrency: transaction.ETH_CURRENCY
+      })
       console.log(`Submitted transaction: ${JSON.stringify(result)}`)
 
       // Bob's balance should be TRANSFER_AMOUNT

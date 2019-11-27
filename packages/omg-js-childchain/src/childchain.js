@@ -235,7 +235,7 @@ class ChildChain {
    * @param {string} verifyingContract - address of the RootChain contract
    * @return {Object} the submitted transaction
    */
-  async sendTransaction (
+  async sendTransaction ({
     fromAddress,
     fromUtxos,
     fromPrivateKeys,
@@ -246,7 +246,7 @@ class ChildChain {
     verifyingContract,
     feeAmount,
     feeCurrency
-  ) {
+  }) {
     validateAddress(fromAddress)
     validateAddress(toAddress)
     validatePrivateKey(fromPrivateKeys)
