@@ -34,7 +34,7 @@ class RootChain {
   * @return {Object} a Rootchain object
   *
   */
-  constructor (web3, plasmaContractAddress, plasmaAbi) {
+  constructor ({ web3, plasmaContractAddress, plasmaAbi }) {
     this.web3 = web3
     this.plasmaContractAddress = plasmaContractAddress
     this.isLegacyWeb3 = web3.version.api && web3.version.api.startsWith('0.2')
@@ -85,7 +85,7 @@ class RootChain {
    * @param {Object} [callbacks] callbacks to events from the transaction lifecycle
    * @return {Promise<{ transactionHash: string }>} promise that resolves with an object holding the transaction hash
    */
-  async depositEth (depositTx, amount, txOptions, callbacks) {
+  async depositEth ({ depositTx, amount, txOptions, callbacks }) {
     const ethVaultAddress = await this.getEthVaultAddress()
     const ethVaultContract = this.getContract(this.ethVaultAbi.abi, ethVaultAddress)
     const txDetails = {

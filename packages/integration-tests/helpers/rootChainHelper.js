@@ -138,9 +138,13 @@ async function approveERC20 (
   return sendTransaction(web3, txDetails, ownerAccountPassword)
 }
 
-async function depositEth (rootChain, address, amount, privateKey) {
+async function depositEth ({ rootChain, address, amount, privateKey }) {
   const depositTx = transaction.encodeDeposit(address, amount, transaction.ETH_CURRENCY)
-  return rootChain.depositEth(depositTx, amount, { from: address, privateKey })
+  return rootChain.depositEth({
+    depositTx,
+    amount,
+    txOptions: { from: address, privateKey }
+  })
 }
 
 async function depositToken (rootChain, address, amount, currency, privateKey) {

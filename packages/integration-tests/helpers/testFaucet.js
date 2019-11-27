@@ -106,7 +106,12 @@ const faucet = {
 
       try {
         console.log(`Not enough Child chain ETH in faucet ${this.address}, attempting to deposit ${needed.toString()} ETH from root chain`)
-        await rcHelper.depositEth(this.rootChain, this.address, needed, this.privateKey)
+        await rcHelper.depositEth({
+          rootChain: this.rootChain,
+          address: this.address,
+          amount: needed,
+          privateKey: this.privateKey
+        })
         await ccHelper.waitForBalance(
           this.childChain,
           this.address,

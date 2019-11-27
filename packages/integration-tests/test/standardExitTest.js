@@ -23,7 +23,6 @@ const ChildChain = require('@omisego/omg-js-childchain')
 const RootChain = require('@omisego/omg-js-rootchain')
 const { transaction } = require('@omisego/omg-js-util')
 const chai = require('chai')
-const numberToBN = require('number-to-bn')
 const assert = chai.assert
 
 const web3 = new Web3(new Web3.providers.HttpProvider(config.geth_url))
@@ -36,7 +35,7 @@ let rootChain
 describe('Standard Exit tests', function () {
   before(async function () {
     const plasmaContract = await rcHelper.getPlasmaContractAddress(config)
-    rootChain = new RootChain(web3, plasmaContract.contract_addr)
+    rootChain = new RootChain({ web3, plasmaContractAddress: plasmaContract.contract_addr })
     await faucet.init(rootChain, childChain, web3, config)
   })
 
@@ -74,12 +73,12 @@ describe('Standard Exit tests', function () {
 
     it('should succesfully exit a deposit', async function () {
       // Alice deposits ETH into the Plasma contract
-      let receipt = await rcHelper.depositEth(
+      let receipt = await rcHelper.depositEth({
         rootChain,
-        aliceAccount.address,
-        DEPOSIT_AMOUNT,
-        aliceAccount.privateKey
-      )
+        address: aliceAccount.address,
+        amount: DEPOSIT_AMOUNT,
+        privateKey: aliceAccount.privateKey
+      })
       await ccHelper.waitForBalanceEq(
         childChain,
         aliceAccount.address,

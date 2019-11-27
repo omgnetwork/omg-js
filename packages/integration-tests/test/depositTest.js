@@ -32,7 +32,7 @@ let rootChain
 describe('Deposit tests', function () {
   before(async function () {
     const plasmaContract = await rcHelper.getPlasmaContractAddress(config)
-    rootChain = new RootChain(web3, plasmaContract.contract_addr)
+    rootChain = new RootChain({ web3, plasmaContractAddress: plasmaContract.contract_addr })
     await faucet.init(rootChain, childChain, web3, config)
   })
 
@@ -66,14 +66,14 @@ describe('Deposit tests', function () {
       let receipt
 
       await new Promise((resolve, reject) => {
-        rootChain.depositEth(
+        rootChain.depositEth({
           depositTx,
-          TEST_AMOUNT,
-          {
+          amount: TEST_AMOUNT,
+          txOptions: {
             from: aliceAccount.address,
             privateKey: aliceAccount.privateKey
           },
-          {
+          callbacks: {
             onConfirmation: res => {
               confirmationNum = res
             },
@@ -82,7 +82,7 @@ describe('Deposit tests', function () {
               resolve()
             }
           }
-        )
+        })
       })
 
       assert.isNumber(confirmationNum)
@@ -91,14 +91,14 @@ describe('Deposit tests', function () {
 
     it('deposit call resolves in an object containing the transaction hash', async function () {
       const depositTx = transaction.encodeDeposit(aliceAccount.address, TEST_AMOUNT, transaction.ETH_CURRENCY)
-      const depositRes = await rootChain.depositEth(
+      const depositRes = await rootChain.depositEth({
         depositTx,
-        TEST_AMOUNT,
-        {
+        amount: TEST_AMOUNT,
+        txOptions: {
           from: aliceAccount.address,
           privateKey: aliceAccount.privateKey
         }
-      )
+      })
       assert.isObject(depositRes)
       assert.isString(depositRes.transactionHash)
     })
@@ -112,7 +112,11 @@ describe('Deposit tests', function () {
       const depositTx = transaction.encodeDeposit(aliceAccount.address, TEST_AMOUNT, transaction.ETH_CURRENCY)
 
       // Deposit ETH into the Plasma contract
-      await rootChain.depositEth(depositTx, TEST_AMOUNT, { from: aliceAccount.address, privateKey: aliceAccount.privateKey })
+      await rootChain.depositEth({
+        depositTx,
+        amount: TEST_AMOUNT,
+        txOptions: { from: aliceAccount.address, privateKey: aliceAccount.privateKey }
+      })
 
       // Wait for transaction to be mined and reflected in the account's balance
       const balance = await ccHelper.waitForBalanceEq(childChain, aliceAccount.address, TEST_AMOUNT)

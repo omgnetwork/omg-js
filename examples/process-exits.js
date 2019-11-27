@@ -23,7 +23,7 @@ const web3 = new Web3(new Web3.providers.HttpProvider(config.geth_url), null, {
   transactionConfirmationBlocks: 1
 })
 
-const rootChain = new RootChain(web3, config.rootchain_plasma_contract_address)
+const rootChain = new RootChain({ web3, plasmaContractAddress: config.rootchain_plasma_contract_address })
 const bobAddress = config.bob_eth_address
 const bobPrivateKey = config.bob_eth_address_private_key
 

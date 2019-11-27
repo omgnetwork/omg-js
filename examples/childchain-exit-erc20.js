@@ -25,7 +25,7 @@ const { getERC20Balance } = require('./util')
 // setup for only 1 transaction confirmation block for fast confirmations
 const web3 = new Web3(new Web3.providers.HttpProvider(config.geth_url), null, { transactionConfirmationBlocks: 1 })
 
-const rootChain = new RootChain(web3, config.rootchain_plasma_contract_address)
+const rootChain = new RootChain({ web3, plasmaContractAddress: config.rootchain_plasma_contract_address })
 const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url })
 
 const bobAddress = config.bob_eth_address
