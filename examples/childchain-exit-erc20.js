@@ -17,10 +17,10 @@
 const Web3 = require('web3')
 const RootChain = require('../packages/omg-js-rootchain/src/rootchain')
 const ChildChain = require('../packages/omg-js-childchain/src/childchain')
+const { getErc20Balance } = require('../packages/omg-js-util/src')
 
 const config = require('./config.js')
 const wait = require('./wait.js')
-const { getERC20Balance } = require('./util')
 
 // setup for only 1 transaction confirmation block for fast confirmations
 const web3 = new Web3(new Web3.providers.HttpProvider(config.geth_url), null, { transactionConfirmationBlocks: 1 })
@@ -32,7 +32,11 @@ const bobAddress = config.bob_eth_address
 const bobPrivateKey = config.bob_eth_address_private_key
 
 async function logBalances () {
-  const bobRootchainBalance = await getERC20Balance(bobAddress)
+  const bobRootchainBalance = await getErc20Balance({
+    web3,
+    address: bobAddress,
+    erc20Address: config.erc20_contract
+  })
   const bobChildchainBalanceArray = await childChain.getBalance(bobAddress)
   const bobErc20Object = bobChildchainBalanceArray.find(i => i.currency.toLowerCase() === config.erc20_contract.toLowerCase())
   const bobChildchainBalance = bobErc20Object ? bobErc20Object.amount : 0

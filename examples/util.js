@@ -21,15 +21,6 @@ const config = require('./config.js')
 const web3 = new Web3(new Web3.providers.HttpProvider(config.geth_url), null, { transactionConfirmationBlocks: 1 })
 const erc20Contract = new web3.eth.Contract(erc20abi, config.erc20_contract)
 
-async function getERC20Balance (address) {
-  const txDetails = {
-    from: address,
-    to: config.erc20_contract,
-    data: erc20Contract.methods.balanceOf(address).encodeABI()
-  }
-  return web3.eth.call(txDetails)
-}
-
 async function approveERC20 (ownerAccount, ownerPrivateKey, spender, value) {
   const txDetails = {
     from: ownerAccount,
@@ -42,6 +33,5 @@ async function approveERC20 (ownerAccount, ownerPrivateKey, spender, value) {
 }
 
 module.exports = {
-  getERC20Balance,
   approveERC20
 }
