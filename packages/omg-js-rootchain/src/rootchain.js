@@ -113,7 +113,7 @@ class RootChain {
    * @param {Object} txOptions transaction options, such as `from`, gas` and `privateKey`
    * @return {string} transaction hash of the call
    */
-  async depositToken (depositTx, txOptions) {
+  async depositToken ({ depositTx, txOptions }) {
     const erc20VaultAddress = await this.getErc20VaultAddress()
     const erc20VaultContract = this.getContract(this.erc20VaultAbi.abi, erc20VaultAddress)
     const txDetails = {

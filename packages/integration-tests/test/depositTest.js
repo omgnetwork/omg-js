@@ -177,7 +177,10 @@ describe('Deposit tests', function () {
       const depositTx = transaction.encodeDeposit(aliceAccount.address, TEST_AMOUNT, config.testErc20Contract)
 
       // Deposit ERC20 tokens into the Plasma contract
-      await rootChain.depositToken(depositTx, { from: aliceAccount.address, privateKey: aliceAccount.privateKey })
+      await rootChain.depositToken({
+        depositTx,
+        txOptions: { from: aliceAccount.address, privateKey: aliceAccount.privateKey }
+      })
 
       // Wait for transaction to be mined and reflected in the account's balance
       const balance = await ccHelper.waitForBalanceEq(childChain, aliceAccount.address, TEST_AMOUNT, config.testErc20Contract)

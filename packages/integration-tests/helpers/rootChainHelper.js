@@ -147,9 +147,12 @@ async function depositEth ({ rootChain, address, amount, privateKey }) {
   })
 }
 
-async function depositToken (rootChain, address, amount, currency, privateKey) {
+async function depositToken ({ rootChain, address, amount, currency, privateKey }) {
   const depositTx = transaction.encodeDeposit(address, amount, currency)
-  return rootChain.depositToken(depositTx, { from: address, privateKey })
+  return rootChain.depositToken({
+    depositTx,
+    txOptions: { from: address, privateKey }
+  })
 }
 
 async function getPlasmaContractAddress (config) {
