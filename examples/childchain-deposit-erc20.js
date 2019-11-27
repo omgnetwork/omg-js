@@ -51,6 +51,7 @@ async function depositERC20IntoPlasmaContract () {
   await logBalances()
   console.log('-----')
 
+  console.log('Approving ERC20 for deposit...')
   const approveRes = await rootChain.approveToken({
     erc20Address: config.erc20_contract,
     amount: config.alice_erc20_deposit_amount,

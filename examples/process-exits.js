@@ -40,6 +40,7 @@ async function processExits () {
     }
   )
   if (ethExitReceipt) {
+    console.log(`ETH exits processing: ${ethExitReceipt.transactionHash}`)
     await waitForRootchainTransaction({
       web3,
       transactionHash: ethExitReceipt.transactionHash,
@@ -63,6 +64,7 @@ async function processExits () {
     }
   )
   if (erc20ExitReceipt) {
+    console.log(`ERC20 exits processing: ${erc20ExitReceipt.transactionHash}`)
     await waitForRootchainTransaction({
       web3,
       transactionHash: erc20ExitReceipt.transactionHash,
