@@ -17,10 +17,9 @@
 const Web3 = require('web3')
 const RootChain = require('../packages/omg-js-rootchain/src/rootchain')
 const ChildChain = require('../packages/omg-js-childchain/src/childchain')
-const { transaction, getErc20Balance } = require('../packages/omg-js-util/src')
+const { transaction, getErc20Balance, waitForRootchainTransaction } = require('../packages/omg-js-util/src')
 
 const config = require('./config.js')
-const wait = require('./wait.js')
 
 const web3 = new Web3(new Web3.providers.HttpProvider(config.geth_url), null, { transactionConfirmationBlocks: 1 })
 const rootChain = new RootChain(web3, config.rootchain_plasma_contract_address)
@@ -73,7 +72,13 @@ async function depositERC20IntoPlasmaContract () {
   })
   console.log('Deposit successful: ', depositReceipt.transactionHash)
   console.log('Waiting for transaction to be recorded by the watcher...')
-  await wait.waitForTransaction(web3, depositReceipt.transactionHash, config.millis_to_wait_for_next_block, config.blocks_to_wait_for_txn)
+  await waitForRootchainTransaction({
+    web3,
+    transactionHash: depositReceipt.transactionHash,
+    millisToWaitForTxn: config.millis_to_wait_for_next_block,
+    blocksToWaitForTxn: config.blocks_to_wait_for_txn,
+    onCountdown: (remaining) => console.log(`${remaining} blocks remaining before confirmation`)
+  })
 
   console.log('-----')
   await logBalances()

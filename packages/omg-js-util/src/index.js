@@ -21,5 +21,6 @@ module.exports = {
   ArgTypes: require('./ArgTypes'),
   hexPrefix: require('./hexPrefix'),
   ethErrorReason: require('./ethErrorReason'),
-  getErc20Balance: require('./getErc20Balance')
+  getErc20Balance: require('./getErc20Balance'),
+  waitForRootchainTransaction: require('./waitForRootchainTransaction')
 }
