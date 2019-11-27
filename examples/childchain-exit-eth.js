@@ -59,10 +59,10 @@ async function exitChildChain () {
   const hasToken = await rootChain.hasToken(transaction.ETH_CURRENCY)
   if (!hasToken) {
     console.log(`Adding a ${transaction.ETH_CURRENCY} exit queue`)
-    await rootChain.addToken(
-      transaction.ETH_CURRENCY,
-      { from: bobAddress, privateKey: bobPrivateKey }
-    )
+    await rootChain.addToken({
+      token: transaction.ETH_CURRENCY,
+      txOptions: { from: bobAddress, privateKey: bobPrivateKey }
+    })
   }
 
   // start a standard exit

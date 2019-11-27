@@ -64,10 +64,10 @@ async function exitChildChainErc20 () {
   const hasToken = await rootChain.hasToken(config.erc20_contract)
   if (!hasToken) {
     console.log(`Adding a ${config.erc20_contract} exit queue`)
-    await rootChain.addToken(
-      config.erc20_contract,
-      { from: bobAddress, privateKey: bobPrivateKey }
-    )
+    await rootChain.addToken({
+      token: config.erc20_contract,
+      txOptions: { from: bobAddress, privateKey: bobPrivateKey }
+    })
   }
 
   // start a standard exit

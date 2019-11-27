@@ -75,6 +75,11 @@ class RootChain {
     return new this.web3.eth.Contract(abi, address)
   }
 
+  getStandardExitBond () {
+    // TODO Get this from the contract
+    return STANDARD_EXIT_BOND
+  }
+
   /**
    * Deposit ETH to rootchain
    *
@@ -246,11 +251,6 @@ class RootChain {
     return txUtils.sendTx(this.web3, txDetails, txOptions.privateKey)
   }
 
-  getStandardExitBond () {
-    // TODO Get this from the contract
-    return STANDARD_EXIT_BOND
-  }
-
   /**
    * Checks if an exit queue exists for this token
    * @method hasToken
@@ -269,7 +269,7 @@ class RootChain {
    * @return {string} transaction hash of the call
    * @throws an exception if the token has already been added.
    */
-  async addToken (token, txOptions) {
+  async addToken ({ token, txOptions }) {
     const vaultId = token === transaction.ETH_CURRENCY ? 1 : 2
 
     const txDetails = {

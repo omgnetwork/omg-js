@@ -58,10 +58,10 @@ const faucet = {
     const hasToken = await this.rootChain.hasToken(currency)
     if (!hasToken) {
       console.log(`Adding ${currency} to exit queue`)
-      await this.rootChain.addToken(
-        currency,
-        { from: this.address, privateKey: this.privateKey }
-      )
+      await this.rootChain.addToken({
+        token: currency,
+        txOptions: { from: this.address, privateKey: this.privateKey }
+      })
     } else {
       console.log(`Exit queue for ${currency} already exists`)
     }
