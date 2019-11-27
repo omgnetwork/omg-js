@@ -17,7 +17,7 @@
 const Web3 = require('web3')
 const RootChain = require('../packages/omg-js-rootchain/src/rootchain')
 const ChildChain = require('../packages/omg-js-childchain/src/childchain')
-const { transaction } = require('../packages/omg-js-util/src')
+const { transaction, waitForRootchainTransaction } = require('../packages/omg-js-util/src')
 
 const config = require('./config.js')
 const wait = require('./wait.js')
@@ -81,7 +81,7 @@ async function exitChildChain () {
 
   await wait.waitForChallengePeriodToEnd(rootChain, exitData)
   // call processExits after challenge period is over
-  await rootChain.processExits(
+  const processExitReceipt = await rootChain.processExits(
     transaction.ETH_CURRENCY, 0, 20,
     {
       privateKey: bobPrivateKey,
@@ -89,6 +89,16 @@ async function exitChildChain () {
       gas: 6000000
     }
   )
+  if (processExitReceipt) {
+    console.log(`ETH exits processing: ${processExitReceipt.transactionHash}`)
+    await waitForRootchainTransaction({
+      web3,
+      transactionHash: processExitReceipt.transactionHash,
+      millisToWaitForTxn: config.millis_to_wait_for_next_block,
+      blocksToWaitForTxn: config.blocks_to_wait_for_txn,
+      onCountdown: (remaining) => console.log(`${remaining} blocks remaining before confirmation`)
+    })
+  }
   console.log('Exits processed')
 
   console.log('-----')

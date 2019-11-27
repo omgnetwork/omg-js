@@ -17,7 +17,7 @@
 const Web3 = require('web3')
 const RootChain = require('../packages/omg-js-rootchain/src/rootchain')
 const ChildChain = require('../packages/omg-js-childchain/src/childchain')
-const { getErc20Balance } = require('../packages/omg-js-util/src')
+const { getErc20Balance, waitForRootchainTransaction } = require('../packages/omg-js-util/src')
 
 const config = require('./config.js')
 const wait = require('./wait.js')
@@ -89,7 +89,7 @@ async function exitChildChainErc20 () {
   console.log('Bob started a standard exit')
 
   await wait.waitForChallengePeriodToEnd(rootChain, exitData)
-  await rootChain.processExits(
+  const processExitReceipt = await rootChain.processExits(
     config.erc20_contract, 0, 20,
     {
       privateKey: bobPrivateKey,
@@ -97,6 +97,16 @@ async function exitChildChainErc20 () {
       gas: 6000000
     }
   )
+  if (processExitReceipt) {
+    console.log(`ERC20 exits processing: ${processExitReceipt.transactionHash}`)
+    await waitForRootchainTransaction({
+      web3,
+      transactionHash: processExitReceipt.transactionHash,
+      millisToWaitForTxn: config.millis_to_wait_for_next_block,
+      blocksToWaitForTxn: config.blocks_to_wait_for_txn,
+      onCountdown: (remaining) => console.log(`${remaining} blocks remaining before confirmation`)
+    })
+  }
   console.log('Exits processed')
 
   console.log('-----')
