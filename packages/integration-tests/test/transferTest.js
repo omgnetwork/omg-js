@@ -460,7 +460,7 @@ describe('Transfer tests', function () {
       }
     })
 
-    it('should transfer funds on the childchain', async function () {
+    it('should transfer funds on the childchain with eth currency', async function () {
       // Check utxos on the child chain
       const utxos = await childChain.getUtxos(aliceAccount.address)
       assert.equal(utxos.length, 1)
@@ -476,7 +476,9 @@ describe('Transfer tests', function () {
         TRANSFER_AMOUNT,
         transaction.ETH_CURRENCY,
         null,
-        rootChain.plasmaContractAddress
+        rootChain.plasmaContractAddress,
+        0,
+        transaction.ETH_CURRENCY
       )
       console.log(`Submitted transaction: ${JSON.stringify(result)}`)
 

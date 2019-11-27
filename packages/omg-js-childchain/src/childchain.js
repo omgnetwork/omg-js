@@ -259,7 +259,9 @@ class ChildChain {
     toAmount,
     currency,
     metadata,
-    verifyingContract
+    verifyingContract,
+    feeAmount,
+    feeCurrency
   ) {
     validateAddress(fromAddress)
     validateAddress(toAddress)
@@ -272,7 +274,10 @@ class ChildChain {
       toAddress,
       toAmount,
       currency,
-      metadata
+      metadata,
+      feeAmount,
+      feeCurrency
+
     )
     const typedData = transaction.getTypedData(txBody, verifyingContract)
     // Sign it
