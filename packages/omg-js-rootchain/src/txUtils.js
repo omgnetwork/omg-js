@@ -11,7 +11,7 @@ const { ethErrorReason } = require('@omisego/omg-js-util')
  * @param {{ onReceipt: any, onConfirmation: any }} [callbacks] callbacks to use during transaction lifecycle
  * @return {Promise<{ transactionHash: string }>} promise that resolves with the transaction hash
  */
-async function sendTx (web3, txDetails, privateKey, callbacks) {
+async function sendTx ({ web3, txDetails, privateKey, callbacks }) {
   await setGas(web3, txDetails)
   if (!privateKey) {
     // No privateKey, caller will handle signing if necessary

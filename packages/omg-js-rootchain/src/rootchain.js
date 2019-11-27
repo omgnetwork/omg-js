@@ -107,7 +107,12 @@ class RootChain {
       gasPrice: txOptions.gasPrice
     }
 
-    return txUtils.sendTx(this.web3, txDetails, txOptions.privateKey, callbacks)
+    return txUtils.sendTx({
+      web3: this.web3,
+      txDetails,
+      privateKey: txOptions.privateKey,
+      callbacks
+    })
   }
 
   /**
@@ -134,7 +139,11 @@ class RootChain {
       gasPrice: txOptions.gasPrice
     }
 
-    return txUtils.sendTx(this.web3, txDetails, txOptions.privateKey)
+    return txUtils.sendTx({
+      web3: this.web3,
+      txDetails,
+      privateKey: txOptions.privateKey
+    })
   }
 
   /**
@@ -170,7 +179,11 @@ class RootChain {
       gasPrice: txOptions.gasPrice
     }
 
-    return txUtils.sendTx(this.web3, txDetails, txOptions.privateKey)
+    return txUtils.sendTx({
+      web3: this.web3,
+      txDetails,
+      privateKey: txOptions.privateKey
+    })
   }
 
   /**
@@ -217,7 +230,11 @@ class RootChain {
       gasPrice: txOptions.gasPrice
     }
 
-    return txUtils.sendTx(this.web3, txDetails, txOptions.privateKey)
+    return txUtils.sendTx({
+      web3: this.web3,
+      txDetails,
+      privateKey: txOptions.privateKey
+    })
   }
 
   /**
@@ -248,7 +265,11 @@ class RootChain {
       gasPrice: txOptions.gasPrice
     }
 
-    return txUtils.sendTx(this.web3, txDetails, txOptions.privateKey)
+    return txUtils.sendTx({
+      web3: this.web3,
+      txDetails,
+      privateKey: txOptions.privateKey
+    })
   }
 
   /**
@@ -286,7 +307,11 @@ class RootChain {
       gasPrice: txOptions.gasPrice
     }
 
-    return txUtils.sendTx(this.web3, txDetails, txOptions.privateKey)
+    return txUtils.sendTx({
+      web3: this.web3,
+      txDetails,
+      privateKey: txOptions.privateKey
+    })
   }
 
   /**
@@ -336,7 +361,11 @@ class RootChain {
       gasPrice: txOptions.gasPrice
     }
 
-    return txUtils.sendTx(this.web3, txDetails, txOptions.privateKey)
+    return txUtils.sendTx({
+      web3: this.web3,
+      txDetails,
+      privateKey: txOptions.privateKey
+    })
   }
 
   /**
@@ -374,7 +403,11 @@ class RootChain {
       gasPrice: txOptions.gasPrice
     }
 
-    return txUtils.sendTx(this.web3, txDetails, txOptions.privateKey)
+    return txUtils.sendTx({
+      web3: this.web3,
+      txDetails,
+      privateKey: txOptions.privateKey
+    })
   }
 
   /**
@@ -410,7 +443,11 @@ class RootChain {
       gasPrice: txOptions.gasPrice
     }
 
-    return txUtils.sendTx(this.web3, txDetails, txOptions.privateKey)
+    return txUtils.sendTx({
+      web3: this.web3,
+      txDetails,
+      privateKey: txOptions.privateKey
+    })
   }
 
   /**
@@ -469,7 +506,11 @@ class RootChain {
       gasPrice: txOptions.gasPrice
     }
 
-    return txUtils.sendTx(this.web3, txDetails, txOptions.privateKey)
+    return txUtils.sendTx({
+      web3: this.web3,
+      txDetails,
+      privateKey: txOptions.privateKey
+    })
   }
 
   /**
@@ -505,7 +546,11 @@ class RootChain {
       gasPrice: txOptions.gasPrice
     }
 
-    return txUtils.sendTx(this.web3, txDetails, txOptions.privateKey)
+    return txUtils.sendTx({
+      web3: this.web3,
+      txDetails,
+      privateKey: txOptions.privateKey
+    })
   }
 
   /**
@@ -555,7 +600,11 @@ class RootChain {
       gasPrice: txOptions.gasPrice
     }
 
-    return txUtils.sendTx(this.web3, txDetails, txOptions.privateKey)
+    return txUtils.sendTx({
+      web3: this.web3,
+      txDetails,
+      privateKey: txOptions.privateKey
+    })
   }
 
   /**
@@ -600,7 +649,11 @@ class RootChain {
       gasPrice: txOptions.gasPrice
     }
 
-    return txUtils.sendTx(this.web3, txDetails, txOptions.privateKey)
+    return txUtils.sendTx({
+      web3: this.web3,
+      txDetails,
+      privateKey: txOptions.privateKey
+    })
   }
 }
 
