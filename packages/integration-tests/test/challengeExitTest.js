@@ -142,17 +142,17 @@ describe('Challenge exit tests', function () {
       // ...and challenges the exit
       const challengeData = await childChain.getChallengeData(invalidExit.details.utxo_pos)
       assert.hasAllKeys(challengeData, ['input_index', 'exit_id', 'exiting_tx', 'sig', 'txbytes'])
-      receipt = await rootChain.challengeStandardExit(
-        challengeData.exit_id,
-        challengeData.exiting_tx,
-        challengeData.txbytes,
-        challengeData.input_index,
-        challengeData.sig,
-        {
+      receipt = await rootChain.challengeStandardExit({
+        standardExitId: challengeData.exit_id,
+        exitingTx: challengeData.exiting_tx,
+        challengeTx: challengeData.txbytes,
+        inputIndex: challengeData.input_index,
+        challengeTxSig: challengeData.sig,
+        txOptions: {
           privateKey: bobAccount.privateKey,
           from: bobAccount.address
         }
-      )
+      })
       console.log(`Bob called RootChain.challengeExit(): txhash = ${receipt.transactionHash}`)
 
       // Keep track of how much Bob spends on gas

@@ -179,7 +179,7 @@ class RootChain {
    * @param {Object} txOptions transaction options, such as `from`, gas` and `privateKey`
    * @return {string} transaction hash of the call
    */
-  async challengeStandardExit (standardExitId, exitingTx, challengeTx, inputIndex, challengeTxSig, txOptions) {
+  async challengeStandardExit ({ standardExitId, exitingTx, challengeTx, inputIndex, challengeTxSig, txOptions }) {
     // standardExitId is an extremely large number as it uses the entire int192.
     // It's too big to be represented as a Number, so we convert it to a hex string
     const exitId = txUtils.int192toHex(standardExitId)
