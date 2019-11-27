@@ -119,15 +119,15 @@ describe('Challenge exit tests', function () {
       // Now Alice wants to cheat and exit with the dishonest utxo
 
       const exitData = await childChain.getExitData(aliceDishonestUtxo)
-      let receipt = await rootChain.startStandardExit(
-        exitData.utxo_pos,
-        exitData.txbytes,
-        exitData.proof,
-        {
+      let receipt = await rootChain.startStandardExit({
+        outputId: exitData.utxo_pos,
+        outputTx: exitData.txbytes,
+        inclusionProof: exitData.proof,
+        txOptions: {
           privateKey: aliceAccount.privateKey,
           from: aliceAccount.address
         }
-      )
+      })
       console.log(`Alice called RootChain.startExit(): txhash = ${receipt.transactionHash}`)
       const aliceSpentOnGas = await rcHelper.spentOnGas(web3, receipt)
 

@@ -67,16 +67,16 @@ async function exitChildChain () {
 
   // start a standard exit
   const exitData = await childChain.getExitData(bobUtxoToExit)
-  await rootChain.startStandardExit(
-    exitData.utxo_pos,
-    exitData.txbytes,
-    exitData.proof,
-    {
+  await rootChain.startStandardExit({
+    outputId: exitData.utxo_pos,
+    outputTx: exitData.txbytes,
+    inclusionProof: exitData.proof,
+    txOptions: {
       privateKey: bobPrivateKey,
       from: bobAddress,
       gas: 6000000
     }
-  )
+  })
   console.log('Bob started a standard exit')
 
   await wait.waitForChallengePeriodToEnd(rootChain, exitData)

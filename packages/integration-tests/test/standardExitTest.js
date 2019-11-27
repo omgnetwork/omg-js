@@ -102,15 +102,15 @@ describe('Standard Exit tests', function () {
       const exitData = await childChain.getExitData(utxoToExit)
       assert.hasAllKeys(exitData, ['txbytes', 'proof', 'utxo_pos'])
 
-      receipt = await rootChain.startStandardExit(
-        exitData.utxo_pos,
-        exitData.txbytes,
-        exitData.proof,
-        {
+      receipt = await rootChain.startStandardExit({
+        outputId: exitData.utxo_pos,
+        outputTx: exitData.txbytes,
+        inclusionProof: exitData.proof,
+        txOptions: {
           privateKey: aliceAccount.privateKey,
           from: aliceAccount.address
         }
-      )
+      })
       console.log(
         `Alice called RootChain.startExit(): txhash = ${receipt.transactionHash}`
       )
@@ -234,15 +234,15 @@ describe('Standard Exit tests', function () {
       const exitData = await childChain.getExitData(utxoToExit)
       assert.hasAllKeys(exitData, ['txbytes', 'proof', 'utxo_pos'])
 
-      const startStandardExitReceipt = await rootChain.startStandardExit(
-        exitData.utxo_pos,
-        exitData.txbytes,
-        exitData.proof,
-        {
+      const startStandardExitReceipt = await rootChain.startStandardExit({
+        outputId: exitData.utxo_pos,
+        outputTx: exitData.txbytes,
+        inclusionProof: exitData.proof,
+        txOptions: {
           privateKey: bobAccount.privateKey,
           from: bobAccount.address
         }
-      )
+      })
       console.log(
         `Bob called RootChain.startExit(): txhash = ${startStandardExitReceipt.transactionHash}`
       )
@@ -381,15 +381,15 @@ describe('Standard Exit tests', function () {
       const exitData = await childChain.getExitData(utxoToExit)
       assert.hasAllKeys(exitData, ['txbytes', 'proof', 'utxo_pos'])
 
-      let receipt = await rootChain.startStandardExit(
-        exitData.utxo_pos,
-        exitData.txbytes,
-        exitData.proof,
-        {
+      let receipt = await rootChain.startStandardExit({
+        outputId: exitData.utxo_pos,
+        outputTx: exitData.txbytes,
+        inclusionProof: exitData.proof,
+        txOptions: {
           privateKey: aliceAccount.privateKey,
           from: aliceAccount.address
         }
-      )
+      })
       console.log(
         `Alice called RootChain.startExit(): txhash = ${receipt.transactionHash}`
       )

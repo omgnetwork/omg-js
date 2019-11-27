@@ -142,7 +142,7 @@ class RootChain {
    * @param {Object} txOptions transaction options, such as `from`, gas` and `privateKey`
    * @return {string} transaction hash of the call
    */
-  async startStandardExit (outputId, outputTx, inclusionProof, txOptions) {
+  async startStandardExit ({ outputId, outputTx, inclusionProof, txOptions }) {
     const paymentExitGameAddress = await this.getPaymentExitGameAddress()
     const paymentExitGameContract = this.getContract(this.paymentExitGameAbi.abi, paymentExitGameAddress)
 
