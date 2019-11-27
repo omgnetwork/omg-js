@@ -215,15 +215,15 @@ describe('In-flight Exit Challenge Response tests', function () {
       const proof = await childChain.inFlightExitProveCanonical(invalidChallenge.details.txbytes)
 
       // Bob responds to the challenge
-      receipt = await rootChain.respondToNonCanonicalChallenge(
-        proof.in_flight_txbytes,
-        proof.in_flight_tx_pos,
-        proof.in_flight_proof,
-        {
+      receipt = await rootChain.respondToNonCanonicalChallenge({
+        inFlightTx: proof.in_flight_txbytes,
+        inFlightTxPos: proof.in_flight_tx_pos,
+        inFlightTxInclusionProof: proof.in_flight_proof,
+        txOptions: {
           privateKey: bobAccount.privateKey,
           from: bobAccount.address
         }
-      )
+      })
       console.log(`Bob called RootChain.respondToNonCanonicalChallenge() txhash = ${receipt.transactionHash}`)
       bobSpentOnGas.iadd(await rcHelper.spentOnGas(web3, receipt))
 

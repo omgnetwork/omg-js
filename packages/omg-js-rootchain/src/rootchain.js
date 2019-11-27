@@ -482,12 +482,12 @@ class RootChain {
    * @param {Object} txOptions transaction options, such as `from`, gas` and `privateKey`
    * @return {string} transaction hash of the call
    */
-  async respondToNonCanonicalChallenge (
+  async respondToNonCanonicalChallenge ({
     inFlightTx,
     inFlightTxPos,
     inFlightTxInclusionProof,
     txOptions
-  ) {
+  }) {
     const paymentExitGameAddress = await this.getPaymentExitGameAddress()
     const paymentExitGameContract = this.getContract(this.paymentExitGameAbi.abi, paymentExitGameAddress)
     const txDetails = {
