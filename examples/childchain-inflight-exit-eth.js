@@ -119,15 +119,15 @@ async function inflightExitChildChain () {
   )
 
   // Bob needs to piggyback his output on the in-flight exit
-  await rootChain.piggybackInFlightExitOnOutput(
-    exitData.in_flight_tx,
-    outputIndex,
-    '0x',
-    {
+  await rootChain.piggybackInFlightExitOnOutput({
+    inFlightTx: exitData.in_flight_tx,
+    outputIndex: outputIndex,
+    outputGuardPreimage: '0x',
+    txOptions: {
       privateKey: bobPrivateKey,
       from: bobAddress
     }
-  )
+  })
   console.log('Bob piggybacks his output')
 
   // wait for challenge period to complete

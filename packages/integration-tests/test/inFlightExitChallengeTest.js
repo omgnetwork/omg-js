@@ -180,15 +180,15 @@ describe('In-flight Exit Challenge tests', function () {
       )
 
       // Bob piggybacks his output on the in-flight exit
-      receipt = await rootChain.piggybackInFlightExitOnOutput(
-        exitData.in_flight_tx,
-        outputIndex,
-        '0x',
-        {
+      receipt = await rootChain.piggybackInFlightExitOnOutput({
+        inFlightTx: exitData.in_flight_tx,
+        outputIndex: outputIndex,
+        outputGuardPreimage: '0x',
+        txOptions: {
           privateKey: bobAccount.privateKey,
           from: bobAccount.address
         }
-      )
+      })
 
       console.log(
         `Bob called RootChain.piggybackInFlightExit() : txhash = ${receipt.transactionHash}`
@@ -436,15 +436,15 @@ describe('In-flight Exit Challenge tests', function () {
       )
 
       // Bob piggybacks his output on the in-flight exit
-      receipt = await rootChain.piggybackInFlightExitOnOutput(
-        exitData.in_flight_tx,
-        outputIndex,
-        '0x',
-        {
+      receipt = await rootChain.piggybackInFlightExitOnOutput({
+        inFlightTx: exitData.in_flight_tx,
+        outputIndex: outputIndex,
+        outputGuardPreimage: '0x',
+        txOptions: {
           privateKey: bobAccount.privateKey,
           from: bobAccount.address
         }
-      )
+      })
 
       console.log(
         `Bob called RootChain.piggybackInFlightExit() : txhash = ${receipt.transactionHash}`

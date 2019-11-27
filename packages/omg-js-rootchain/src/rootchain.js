@@ -348,7 +348,12 @@ class RootChain {
    * @param {Object} txOptions transaction options, such as `from`, gas` and `privateKey`
    * @return {string} transaction hash of the call
    */
-  async piggybackInFlightExitOnOutput (inFlightTx, outputIndex, outputGuardPreimage, txOptions) {
+  async piggybackInFlightExitOnOutput ({
+    inFlightTx,
+    outputIndex,
+    outputGuardPreimage,
+    txOptions
+  }) {
     const paymentExitGameAddress = await this.getPaymentExitGameAddress()
     const paymentExitGameContract = this.getContract(this.paymentExitGameAbi.abi, paymentExitGameAddress)
     const txDetails = {
