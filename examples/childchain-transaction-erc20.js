@@ -15,10 +15,9 @@
 */
 
 const ChildChain = require('../packages/omg-js-childchain/src/childchain')
-const { transaction } = require('../packages/omg-js-util/src')
+const { transaction, waitForChildchainBalance } = require('../packages/omg-js-util/src')
 
 const config = require('./config.js')
-const wait = require('./wait.js')
 
 const rootChainPlasmaContractAddress = config.rootchain_plasma_contract_address
 const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url })
@@ -75,7 +74,12 @@ async function erc20Transaction () {
 
   console.log('Waiting for transaction to be recorded by the watcher...')
   const expectedAmount = Number(config.alice_erc20_transfer_amount) + bobERC20Balance
-  await wait.waitForBalanceEq(childChain, bobAddress, expectedAmount, config.erc20_contract)
+  await waitForChildchainBalance({
+    childChain,
+    address: bobAddress,
+    expectedAmount,
+    currency: config.erc20_contract
+  })
 
   console.log('-----')
   await logBalances()
