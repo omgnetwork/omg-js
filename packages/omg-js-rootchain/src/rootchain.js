@@ -17,7 +17,7 @@ const txUtils = require('./txUtils')
 const { transaction } = require('@omisego/omg-js-util')
 const webUtils = require('web3-utils')
 const erc20abi = require('human-standard-token-abi')
-const { approveTokenSchema } = require('./validators')
+const { approveTokenSchema, depositTokenSchema, depositEthSchema, startStandardExitSchema } = require('./validators')
 const Joi = require('@hapi/joi')
 const STANDARD_EXIT_BOND = 14000000000000000
 const INFLIGHT_EXIT_BOND = 37000000000000000
@@ -125,6 +125,7 @@ class RootChain {
    * @return {Promise<{ transactionHash: string }>} promise that resolves with an object holding the transaction hash
    */
   async depositEth ({ depositTx, amount, txOptions, callbacks }) {
+    Joi.assert({ depositTx, amount, txOptions, callbacks }, depositEthSchema)
     const ethVaultAddress = await this.getEthVaultAddress()
     const ethVaultContract = this.getContract(
       this.ethVaultAbi.abi,
@@ -161,6 +162,7 @@ class RootChain {
    * @return {string} transaction hash of the call
    */
   async depositToken ({ depositTx, txOptions }) {
+    Joi.assert({ depositTx, txOptions }, depositTokenSchema)
     const erc20VaultAddress = await this.getErc20VaultAddress()
     const erc20VaultContract = this.getContract(
       this.erc20VaultAbi.abi,
@@ -197,6 +199,7 @@ class RootChain {
    * @return {string} transaction hash of the call
    */
   async startStandardExit ({ outputId, outputTx, inclusionProof, txOptions }) {
+    Joi.assert({ outputId, outputTx, inclusionProof, txOptions }, startStandardExitSchema)
     const paymentExitGameAddress = await this.getPaymentExitGameAddress()
     const paymentExitGameContract = this.getContract(
       this.paymentExitGameAbi.abi,
