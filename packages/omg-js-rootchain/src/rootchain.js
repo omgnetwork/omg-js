@@ -78,9 +78,9 @@ class RootChain {
         contract,
         address,
         bonds: {
-          standardExit: bondSizes[0],
-          piggyback: bondSizes[1],
-          inflightExit: bondSizes[2]
+          standardExit: Number(bondSizes[0]),
+          piggyback: Number(bondSizes[1]),
+          inflightExit: Number(bondSizes[2])
         }
       }
     }
