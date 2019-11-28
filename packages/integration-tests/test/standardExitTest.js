@@ -23,7 +23,6 @@ const ChildChain = require('@omisego/omg-js-childchain')
 const RootChain = require('@omisego/omg-js-rootchain')
 const { transaction } = require('@omisego/omg-js-util')
 const chai = require('chai')
-const numberToBN = require('number-to-bn')
 const assert = chai.assert
 
 const web3 = new Web3(new Web3.providers.HttpProvider(config.geth_url))
@@ -36,7 +35,7 @@ let rootChain
 describe('Standard Exit tests', function () {
   before(async function () {
     const plasmaContract = await rcHelper.getPlasmaContractAddress(config)
-    rootChain = new RootChain(web3, plasmaContract.contract_addr)
+    rootChain = new RootChain({ web3, plasmaContractAddress: plasmaContract.contract_addr })
     await faucet.init(rootChain, childChain, web3, config)
   })
 
@@ -74,12 +73,12 @@ describe('Standard Exit tests', function () {
 
     it('should succesfully exit a deposit', async function () {
       // Alice deposits ETH into the Plasma contract
-      let receipt = await rcHelper.depositEth(
+      let receipt = await rcHelper.depositEth({
         rootChain,
-        aliceAccount.address,
-        DEPOSIT_AMOUNT,
-        aliceAccount.privateKey
-      )
+        address: aliceAccount.address,
+        amount: DEPOSIT_AMOUNT,
+        privateKey: aliceAccount.privateKey
+      })
       await ccHelper.waitForBalanceEq(
         childChain,
         aliceAccount.address,
@@ -103,24 +102,29 @@ describe('Standard Exit tests', function () {
       const exitData = await childChain.getExitData(utxoToExit)
       assert.hasAllKeys(exitData, ['txbytes', 'proof', 'utxo_pos'])
 
-      receipt = await rootChain.startStandardExit(
-        exitData.utxo_pos,
-        exitData.txbytes,
-        exitData.proof,
-        {
+      receipt = await rootChain.startStandardExit({
+        outputId: exitData.utxo_pos,
+        outputTx: exitData.txbytes,
+        inclusionProof: exitData.proof,
+        txOptions: {
           privateKey: aliceAccount.privateKey,
           from: aliceAccount.address
         }
-      )
+      })
       console.log(
         `Alice called RootChain.startExit(): txhash = ${receipt.transactionHash}`
       )
       aliceSpentOnGas.iadd(await rcHelper.spentOnGas(web3, receipt))
 
       // Call processExits before the challenge period is over
-      receipt = await rootChain.processExits(transaction.ETH_CURRENCY, 0, 20, {
-        privateKey: aliceAccount.privateKey,
-        from: aliceAccount.address
+      receipt = await rootChain.processExits({
+        token: transaction.ETH_CURRENCY,
+        exitId: 0,
+        maxExitsToProcess: 20,
+        txOptions: {
+          privateKey: aliceAccount.privateKey,
+          from: aliceAccount.address
+        }
       })
       console.log(
         `Alice called RootChain.processExits() before challenge period: txhash = ${receipt.transactionHash}`
@@ -139,9 +143,14 @@ describe('Standard Exit tests', function () {
       await rcHelper.sleep(toWait)
 
       // Call processExits again.
-      receipt = await rootChain.processExits(transaction.ETH_CURRENCY, 0, 20, {
-        privateKey: aliceAccount.privateKey,
-        from: aliceAccount.address
+      receipt = await rootChain.processExits({
+        token: transaction.ETH_CURRENCY,
+        exitId: 0,
+        maxExitsToProcess: 20,
+        txOptions: {
+          privateKey: aliceAccount.privateKey,
+          from: aliceAccount.address
+        }
       })
       console.log(
         `Alice called RootChain.processExits() after challenge period: txhash = ${receipt.transactionHash}`
@@ -235,15 +244,15 @@ describe('Standard Exit tests', function () {
       const exitData = await childChain.getExitData(utxoToExit)
       assert.hasAllKeys(exitData, ['txbytes', 'proof', 'utxo_pos'])
 
-      const startStandardExitReceipt = await rootChain.startStandardExit(
-        exitData.utxo_pos,
-        exitData.txbytes,
-        exitData.proof,
-        {
+      const startStandardExitReceipt = await rootChain.startStandardExit({
+        outputId: exitData.utxo_pos,
+        outputTx: exitData.txbytes,
+        inclusionProof: exitData.proof,
+        txOptions: {
           privateKey: bobAccount.privateKey,
           from: bobAccount.address
         }
-      )
+      })
       console.log(
         `Bob called RootChain.startExit(): txhash = ${startStandardExitReceipt.transactionHash}`
       )
@@ -253,15 +262,15 @@ describe('Standard Exit tests', function () {
       )
 
       // Call processExits before the challenge period is over
-      const processExitReceiptBefore = await rootChain.processExits(
-        transaction.ETH_CURRENCY,
-        0,
-        20,
-        {
+      const processExitReceiptBefore = await rootChain.processExits({
+        token: transaction.ETH_CURRENCY,
+        exitId: 0,
+        maxExitsToProcess: 20,
+        txOptions: {
           privateKey: bobAccount.privateKey,
           from: bobAccount.address
         }
-      )
+      })
       console.log(
         `Bob called RootChain.processExits() before challenge period: txhash = ${processExitReceiptBefore.transactionHash}`
       )
@@ -280,15 +289,15 @@ describe('Standard Exit tests', function () {
       await rcHelper.sleep(toWait)
 
       // Call processExits again.
-      const processExitReceiptAfter = await rootChain.processExits(
-        transaction.ETH_CURRENCY,
-        0,
-        20,
-        {
+      const processExitReceiptAfter = await rootChain.processExits({
+        token: transaction.ETH_CURRENCY,
+        exitId: 0,
+        maxExitsToProcess: 20,
+        txOptions: {
           privateKey: bobAccount.privateKey,
           from: bobAccount.address
         }
-      )
+      })
       console.log(
         `Bob called RootChain.processExits() after challenge period: txhash = ${processExitReceiptAfter.transactionHash}`
       )
@@ -382,23 +391,28 @@ describe('Standard Exit tests', function () {
       const exitData = await childChain.getExitData(utxoToExit)
       assert.hasAllKeys(exitData, ['txbytes', 'proof', 'utxo_pos'])
 
-      let receipt = await rootChain.startStandardExit(
-        exitData.utxo_pos,
-        exitData.txbytes,
-        exitData.proof,
-        {
+      let receipt = await rootChain.startStandardExit({
+        outputId: exitData.utxo_pos,
+        outputTx: exitData.txbytes,
+        inclusionProof: exitData.proof,
+        txOptions: {
           privateKey: aliceAccount.privateKey,
           from: aliceAccount.address
         }
-      )
+      })
       console.log(
         `Alice called RootChain.startExit(): txhash = ${receipt.transactionHash}`
       )
 
       // Call processExits before the challenge period is over
-      receipt = await rootChain.processExits(config.testErc20Contract, 0, 20, {
-        privateKey: aliceAccount.privateKey,
-        from: aliceAccount.address
+      receipt = await rootChain.processExits({
+        token: config.testErc20Contract,
+        exitId: 0,
+        maxExitsToProcess: 20,
+        txOptions: {
+          privateKey: aliceAccount.privateKey,
+          from: aliceAccount.address
+        }
       })
       console.log(
         `Alice called RootChain.processExits() before challenge period: txhash = ${receipt.transactionHash}`
@@ -414,9 +428,14 @@ describe('Standard Exit tests', function () {
       await rcHelper.sleep(toWait)
 
       // Call processExits again.
-      receipt = await rootChain.processExits(config.testErc20Contract, 0, 20, {
-        privateKey: aliceAccount.privateKey,
-        from: aliceAccount.address
+      receipt = await rootChain.processExits({
+        token: config.testErc20Contract,
+        exitId: 0,
+        maxExitsToProcess: 20,
+        txOptions: {
+          privateKey: aliceAccount.privateKey,
+          from: aliceAccount.address
+        }
       })
       console.log(
         `Alice called RootChain.processExits() after challenge period: txhash = ${receipt.transactionHash}`

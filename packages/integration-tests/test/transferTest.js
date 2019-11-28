@@ -32,7 +32,7 @@ let rootChain
 describe('Transfer tests', function () {
   before(async function () {
     const plasmaContract = await rcHelper.getPlasmaContractAddress(config)
-    rootChain = new RootChain(web3, plasmaContract.contract_addr)
+    rootChain = new RootChain({ web3, plasmaContractAddress: plasmaContract.contract_addr })
     await faucet.init(rootChain, childChain, web3, config)
   })
 
@@ -468,18 +468,18 @@ describe('Transfer tests', function () {
       assert.equal(utxos[0].amount.toString(), INTIIAL_ALICE_AMOUNT)
       assert.equal(utxos[0].currency, transaction.ETH_CURRENCY)
 
-      const result = await childChain.sendTransaction(
-        aliceAccount.address,
-        utxos,
-        [aliceAccount.privateKey],
-        bobAccount.address,
-        TRANSFER_AMOUNT,
-        transaction.ETH_CURRENCY,
-        null,
-        rootChain.plasmaContractAddress,
-        0,
-        transaction.ETH_CURRENCY
-      )
+      const result = await childChain.sendTransaction({
+        fromAddress: aliceAccount.address,
+        fromUtxos: utxos,
+        fromPrivateKeys: [aliceAccount.privateKey],
+        toAddress: bobAccount.address,
+        toAmount: TRANSFER_AMOUNT,
+        currency: transaction.ETH_CURRENCY,
+        metadata: null,
+        verifyingContract: rootChain.plasmaContractAddress,
+        feeAmount: 0,
+        feeCurrency: transaction.ETH_CURRENCY
+      })
       console.log(`Submitted transaction: ${JSON.stringify(result)}`)
 
       // Bob's balance should be TRANSFER_AMOUNT

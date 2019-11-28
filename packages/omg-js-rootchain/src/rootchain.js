@@ -16,6 +16,7 @@ limitations under the License. */
 const txUtils = require('./txUtils')
 const { transaction } = require('@omisego/omg-js-util')
 const webUtils = require('web3-utils')
+const erc20abi = require('human-standard-token-abi')
 
 const STANDARD_EXIT_BOND = 14000000000000000
 const INFLIGHT_EXIT_BOND = 37000000000000000
@@ -34,7 +35,7 @@ class RootChain {
   * @return {Object} a Rootchain object
   *
   */
-  constructor (web3, plasmaContractAddress, plasmaAbi) {
+  constructor ({ web3, plasmaContractAddress, plasmaAbi }) {
     this.web3 = web3
     this.plasmaContractAddress = plasmaContractAddress
     this.isLegacyWeb3 = web3.version.api && web3.version.api.startsWith('0.2')
@@ -75,6 +76,38 @@ class RootChain {
     return new this.web3.eth.Contract(abi, address)
   }
 
+  getStandardExitBond () {
+    // TODO Get this from the contract
+    return STANDARD_EXIT_BOND
+  }
+
+  /**
+   * Approve ERC20 for deposit
+   *
+   * @method approveToken
+   * @param {string} erc20Address address of the ERC20 token
+   * @param {number} amount amount of ERC20 to approve to deposit
+   * @param {Object} txOptions transaction options, such as `from`, `gas` and `privateKey`
+   * @return {Promise<{ transactionHash: string }>} promise that resolves with an object holding the transaction hash
+   */
+  async approveToken ({
+    erc20Address,
+    amount,
+    txOptions
+  }) {
+    const spender = await this.getErc20VaultAddress()
+    const erc20Contract = this.getContract(erc20abi, erc20Address)
+    const txDetails = {
+      from: txOptions.from,
+      to: erc20Address,
+      data: erc20Contract.methods.approve(spender, amount).encodeABI(),
+      gas: txOptions.gas,
+      gasPrice: txOptions.gasPrice
+    }
+
+    return txUtils.sendTx(this.web3, txDetails, txOptions.privateKey)
+  }
+
   /**
    * Deposit ETH to rootchain
    *
@@ -85,7 +118,7 @@ class RootChain {
    * @param {Object} [callbacks] callbacks to events from the transaction lifecycle
    * @return {Promise<{ transactionHash: string }>} promise that resolves with an object holding the transaction hash
    */
-  async depositEth (depositTx, amount, txOptions, callbacks) {
+  async depositEth ({ depositTx, amount, txOptions, callbacks }) {
     const ethVaultAddress = await this.getEthVaultAddress()
     const ethVaultContract = this.getContract(this.ethVaultAbi.abi, ethVaultAddress)
     const txDetails = {
@@ -102,7 +135,12 @@ class RootChain {
       gasPrice: txOptions.gasPrice
     }
 
-    return txUtils.sendTx(this.web3, txDetails, txOptions.privateKey, callbacks)
+    return txUtils.sendTx({
+      web3: this.web3,
+      txDetails,
+      privateKey: txOptions.privateKey,
+      callbacks
+    })
   }
 
   /**
@@ -113,7 +151,7 @@ class RootChain {
    * @param {Object} txOptions transaction options, such as `from`, gas` and `privateKey`
    * @return {string} transaction hash of the call
    */
-  async depositToken (depositTx, txOptions) {
+  async depositToken ({ depositTx, txOptions }) {
     const erc20VaultAddress = await this.getErc20VaultAddress()
     const erc20VaultContract = this.getContract(this.erc20VaultAbi.abi, erc20VaultAddress)
     const txDetails = {
@@ -129,7 +167,11 @@ class RootChain {
       gasPrice: txOptions.gasPrice
     }
 
-    return txUtils.sendTx(this.web3, txDetails, txOptions.privateKey)
+    return txUtils.sendTx({
+      web3: this.web3,
+      txDetails,
+      privateKey: txOptions.privateKey
+    })
   }
 
   /**
@@ -142,7 +184,7 @@ class RootChain {
    * @param {Object} txOptions transaction options, such as `from`, gas` and `privateKey`
    * @return {string} transaction hash of the call
    */
-  async startStandardExit (outputId, outputTx, inclusionProof, txOptions) {
+  async startStandardExit ({ outputId, outputTx, inclusionProof, txOptions }) {
     const paymentExitGameAddress = await this.getPaymentExitGameAddress()
     const paymentExitGameContract = this.getContract(this.paymentExitGameAbi.abi, paymentExitGameAddress)
 
@@ -165,7 +207,11 @@ class RootChain {
       gasPrice: txOptions.gasPrice
     }
 
-    return txUtils.sendTx(this.web3, txDetails, txOptions.privateKey)
+    return txUtils.sendTx({
+      web3: this.web3,
+      txDetails,
+      privateKey: txOptions.privateKey
+    })
   }
 
   /**
@@ -179,7 +225,7 @@ class RootChain {
    * @param {Object} txOptions transaction options, such as `from`, gas` and `privateKey`
    * @return {string} transaction hash of the call
    */
-  async challengeStandardExit (standardExitId, exitingTx, challengeTx, inputIndex, challengeTxSig, txOptions) {
+  async challengeStandardExit ({ standardExitId, exitingTx, challengeTx, inputIndex, challengeTxSig, txOptions }) {
     // standardExitId is an extremely large number as it uses the entire int192.
     // It's too big to be represented as a Number, so we convert it to a hex string
     const exitId = txUtils.int192toHex(standardExitId)
@@ -212,7 +258,11 @@ class RootChain {
       gasPrice: txOptions.gasPrice
     }
 
-    return txUtils.sendTx(this.web3, txDetails, txOptions.privateKey)
+    return txUtils.sendTx({
+      web3: this.web3,
+      txDetails,
+      privateKey: txOptions.privateKey
+    })
   }
 
   /**
@@ -224,7 +274,7 @@ class RootChain {
    * @param {Object} txOptions transaction options, such as `from`, gas` and `privateKey`
    * @return {string} transaction hash of the call
    */
-  async processExits (token, exitId, maxExitsToProcess, txOptions) {
+  async processExits ({ token, exitId, maxExitsToProcess, txOptions }) {
     const vaultId = token === transaction.ETH_CURRENCY ? 1 : 2
 
     const txDetails = {
@@ -243,12 +293,11 @@ class RootChain {
       gasPrice: txOptions.gasPrice
     }
 
-    return txUtils.sendTx(this.web3, txDetails, txOptions.privateKey)
-  }
-
-  getStandardExitBond () {
-    // TODO Get this from the contract
-    return STANDARD_EXIT_BOND
+    return txUtils.sendTx({
+      web3: this.web3,
+      txDetails,
+      privateKey: txOptions.privateKey
+    })
   }
 
   /**
@@ -269,7 +318,7 @@ class RootChain {
    * @return {string} transaction hash of the call
    * @throws an exception if the token has already been added.
    */
-  async addToken (token, txOptions) {
+  async addToken ({ token, txOptions }) {
     const vaultId = token === transaction.ETH_CURRENCY ? 1 : 2
 
     const txDetails = {
@@ -286,7 +335,11 @@ class RootChain {
       gasPrice: txOptions.gasPrice
     }
 
-    return txUtils.sendTx(this.web3, txDetails, txOptions.privateKey)
+    return txUtils.sendTx({
+      web3: this.web3,
+      txDetails,
+      privateKey: txOptions.privateKey
+    })
   }
 
   /**
@@ -300,7 +353,17 @@ class RootChain {
    * @param {Object} txOptions transaction options, such as `from`, gas` and `privateKey`
    * @return {string} transaction hash of the call
    */
-  async startInFlightExit (inFlightTx, inputTxs, inputUtxosPos, outputGuardPreimagesForInputs, inputTxsInclusionProofs, inFlightTxSigs, signatures, inputSpendingConditionOptionalArgs, txOptions) {
+  async startInFlightExit ({
+    inFlightTx,
+    inputTxs,
+    inputUtxosPos,
+    outputGuardPreimagesForInputs,
+    inputTxsInclusionProofs,
+    inFlightTxSigs,
+    signatures,
+    inputSpendingConditionOptionalArgs,
+    txOptions
+  }) {
     const paymentExitGameAddress = await this.getPaymentExitGameAddress()
     const paymentExitGameContract = this.getContract(this.paymentExitGameAbi.abi, paymentExitGameAddress)
     const txDetails = {
@@ -326,7 +389,11 @@ class RootChain {
       gasPrice: txOptions.gasPrice
     }
 
-    return txUtils.sendTx(this.web3, txDetails, txOptions.privateKey)
+    return txUtils.sendTx({
+      web3: this.web3,
+      txDetails,
+      privateKey: txOptions.privateKey
+    })
   }
 
   /**
@@ -338,7 +405,12 @@ class RootChain {
    * @param {Object} txOptions transaction options, such as `from`, gas` and `privateKey`
    * @return {string} transaction hash of the call
    */
-  async piggybackInFlightExitOnOutput (inFlightTx, outputIndex, outputGuardPreimage, txOptions) {
+  async piggybackInFlightExitOnOutput ({
+    inFlightTx,
+    outputIndex,
+    outputGuardPreimage,
+    txOptions
+  }) {
     const paymentExitGameAddress = await this.getPaymentExitGameAddress()
     const paymentExitGameContract = this.getContract(this.paymentExitGameAbi.abi, paymentExitGameAddress)
     const txDetails = {
@@ -359,7 +431,11 @@ class RootChain {
       gasPrice: txOptions.gasPrice
     }
 
-    return txUtils.sendTx(this.web3, txDetails, txOptions.privateKey)
+    return txUtils.sendTx({
+      web3: this.web3,
+      txDetails,
+      privateKey: txOptions.privateKey
+    })
   }
 
   /**
@@ -371,7 +447,11 @@ class RootChain {
    * @param {Object} txOptions transaction options, such as `from`, gas` and `privateKey`
    * @return {string} transaction hash of the call
    */
-  async piggybackInFlightExitOnInput (inFlightTx, inputIndex, txOptions) {
+  async piggybackInFlightExitOnInput ({
+    inFlightTx,
+    inputIndex,
+    txOptions
+  }) {
     const paymentExitGameAddress = await this.getPaymentExitGameAddress()
     const paymentExitGameContract = this.getContract(this.paymentExitGameAbi.abi, paymentExitGameAddress)
     const txDetails = {
@@ -391,7 +471,11 @@ class RootChain {
       gasPrice: txOptions.gasPrice
     }
 
-    return txUtils.sendTx(this.web3, txDetails, txOptions.privateKey)
+    return txUtils.sendTx({
+      web3: this.web3,
+      txDetails,
+      privateKey: txOptions.privateKey
+    })
   }
 
   /**
@@ -450,7 +534,11 @@ class RootChain {
       gasPrice: txOptions.gasPrice
     }
 
-    return txUtils.sendTx(this.web3, txDetails, txOptions.privateKey)
+    return txUtils.sendTx({
+      web3: this.web3,
+      txDetails,
+      privateKey: txOptions.privateKey
+    })
   }
 
   /**
@@ -463,12 +551,12 @@ class RootChain {
    * @param {Object} txOptions transaction options, such as `from`, gas` and `privateKey`
    * @return {string} transaction hash of the call
    */
-  async respondToNonCanonicalChallenge (
+  async respondToNonCanonicalChallenge ({
     inFlightTx,
     inFlightTxPos,
     inFlightTxInclusionProof,
     txOptions
-  ) {
+  }) {
     const paymentExitGameAddress = await this.getPaymentExitGameAddress()
     const paymentExitGameContract = this.getContract(this.paymentExitGameAbi.abi, paymentExitGameAddress)
     const txDetails = {
@@ -486,7 +574,11 @@ class RootChain {
       gasPrice: txOptions.gasPrice
     }
 
-    return txUtils.sendTx(this.web3, txDetails, txOptions.privateKey)
+    return txUtils.sendTx({
+      web3: this.web3,
+      txDetails,
+      privateKey: txOptions.privateKey
+    })
   }
 
   /**
@@ -500,7 +592,7 @@ class RootChain {
    * @param {Object} txOptions transaction options, such as `from`, gas` and `privateKey`
    * @return {string} transaction hash of the call
    */
-  async challengeInFlightExitInputSpent (
+  async challengeInFlightExitInputSpent ({
     inFlightTx,
     inFlightTxInputIndex,
     challengingTx,
@@ -510,7 +602,7 @@ class RootChain {
     inputUtxoPos,
     spendingConditionOptionalArgs,
     txOptions
-  ) {
+  }) {
     const paymentExitGameAddress = await this.getPaymentExitGameAddress()
     const paymentExitGameContract = this.getContract(this.paymentExitGameAbi.abi, paymentExitGameAddress)
 
@@ -536,7 +628,11 @@ class RootChain {
       gasPrice: txOptions.gasPrice
     }
 
-    return txUtils.sendTx(this.web3, txDetails, txOptions.privateKey)
+    return txUtils.sendTx({
+      web3: this.web3,
+      txDetails,
+      privateKey: txOptions.privateKey
+    })
   }
 
   /**
@@ -551,7 +647,7 @@ class RootChain {
    * @param {Object} txOptions transaction options, such as `from`, gas` and `privateKey`
    * @return {string} transaction hash of the call
    */
-  async challengeInFlightExitOutputSpent (
+  async challengeInFlightExitOutputSpent ({
     inFlightTx,
     inFlightTxInclusionProof,
     outputUtxoPos,
@@ -560,7 +656,7 @@ class RootChain {
     challengingTxWitness,
     spendingConditionOptionalArgs,
     txOptions
-  ) {
+  }) {
     const paymentExitGameAddress = await this.getPaymentExitGameAddress()
     const paymentExitGameContract = this.getContract(this.paymentExitGameAbi.abi, paymentExitGameAddress)
 
@@ -585,7 +681,11 @@ class RootChain {
       gasPrice: txOptions.gasPrice
     }
 
-    return txUtils.sendTx(this.web3, txDetails, txOptions.privateKey)
+    return txUtils.sendTx({
+      web3: this.web3,
+      txDetails,
+      privateKey: txOptions.privateKey
+    })
   }
 }
 

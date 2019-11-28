@@ -35,7 +35,7 @@ describe('AddExitQueue tests', function () {
     aliceAccount = rcHelper.createAccount(web3)
     console.log(`Created new account ${JSON.stringify(aliceAccount)}`)
     const plasmaContract = await rcHelper.getPlasmaContractAddress(config)
-    rootChain = new RootChain(web3, plasmaContract.contract_addr)
+    rootChain = new RootChain({ web3, plasmaContractAddress: plasmaContract.contract_addr })
     childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url })
 
     await faucet.init(rootChain, childChain, web3, config)
@@ -47,14 +47,23 @@ describe('AddExitQueue tests', function () {
     const fakeErc20 = rcHelper.createAccount(web3)
     const hasToken = await rootChain.hasToken(fakeErc20.address)
     assert.isFalse(hasToken)
-    return rootChain.addToken(fakeErc20.address, { from: aliceAccount.address, privateKey: aliceAccount.privateKey }).should.be.fulfilled
+    return rootChain.addToken({
+      token: fakeErc20.address,
+      txOptions: { from: aliceAccount.address, privateKey: aliceAccount.privateKey }
+    }).should.be.fulfilled
   })
 
   it('add token should not add token if added before', async function () {
     const fakeErc20 = rcHelper.createAccount(web3)
-    await rootChain.addToken(fakeErc20.address, { from: aliceAccount.address, privateKey: aliceAccount.privateKey }).should.be.fulfilled
+    await rootChain.addToken({
+      token: fakeErc20.address,
+      txOptions: { from: aliceAccount.address, privateKey: aliceAccount.privateKey }
+    }).should.be.fulfilled
     const hasToken = await rootChain.hasToken(fakeErc20.address)
     assert.isTrue(hasToken)
-    return rootChain.addToken(fakeErc20.address, { from: aliceAccount.address, privateKey: aliceAccount.privateKey }).should.be.rejected
+    return rootChain.addToken({
+      token: fakeErc20.address,
+      txOptions: { from: aliceAccount.address, privateKey: aliceAccount.privateKey }
+    }).should.be.rejected
   })
 })

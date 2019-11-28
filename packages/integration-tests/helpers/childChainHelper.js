@@ -163,7 +163,12 @@ async function sendSubmitTyped (childChain, from, to, amount, currency, fromPriv
   const payments = [{ amount: parseInt(amount), currency, owner: to }]
   const fee = { amount: 1, currency: transaction.ETH_CURRENCY }
 
-  const createdTx = await childChain.createTransaction(from, payments, fee, transaction.NULL_METADATA)
+  const createdTx = await childChain.createTransaction({
+    owner: from,
+    payments,
+    fee,
+    metadata: transaction.NULL_METADATA
+  })
   const privateKeys = new Array(createdTx.transactions[0].inputs.length).fill(fromPrivateKey)
   const txTypedData = childChain.signTypedData(createdTx.transactions[0], privateKeys)
   return childChain.submitTyped(txTypedData)

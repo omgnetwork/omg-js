@@ -33,7 +33,7 @@ class ChildChain {
   }
 
   /**
-   * Gets the UTXOs of an address (includes both spent and unspent UTXOs)
+   * Gets the UTXOs of an address
    *
    * @method getUtxos
    * @param {string} address
@@ -43,22 +43,6 @@ class ChildChain {
     validateAddress(address)
     return rpcApi.post({
       url: `${this.watcherUrl}/account.get_utxos`,
-      body: { address },
-      proxyUrl: this.watcherProxyUrl
-    })
-  }
-
-  /**
-   * Gets the exitable UTXOs of an address
-   *
-   * @method getExitableUtxos
-   * @param {string} address
-   * @return {Array} array of UTXOs
-   */
-  async getExitableUtxos (address) {
-    validateAddress(address)
-    return rpcApi.post({
-      url: `${this.watcherUrl}/account.get_exitable_utxos`,
       body: { address },
       proxyUrl: this.watcherProxyUrl
     })
@@ -152,7 +136,7 @@ class ChildChain {
    * @param {string} metadata
    * @return {Object} a object containing the list of transactions that will fullfil the required spend.
    */
-  createTransaction (owner, payments, fee, metadata) {
+  createTransaction ({ owner, payments, fee, metadata }) {
     return rpcApi.post({
       url: `${this.watcherUrl}/transaction.create`,
       body: { owner, payments, fee, metadata },
@@ -251,7 +235,7 @@ class ChildChain {
    * @param {string} verifyingContract - address of the RootChain contract
    * @return {Object} the submitted transaction
    */
-  async sendTransaction (
+  async sendTransaction ({
     fromAddress,
     fromUtxos,
     fromPrivateKeys,
@@ -262,7 +246,7 @@ class ChildChain {
     verifyingContract,
     feeAmount,
     feeCurrency
-  ) {
+  }) {
     validateAddress(fromAddress)
     validateAddress(toAddress)
     validatePrivateKey(fromPrivateKeys)

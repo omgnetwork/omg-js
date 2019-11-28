@@ -20,5 +20,8 @@ module.exports = {
   hexToBytes: require('./hexToBytes'),
   ArgTypes: require('./ArgTypes'),
   hexPrefix: require('./hexPrefix'),
-  ethErrorReason: require('./ethErrorReason')
+  ethErrorReason: require('./ethErrorReason'),
+  getErc20Balance: require('./getErc20Balance'),
+  waitForRootchainTransaction: require('./waitForRootchainTransaction'),
+  waitForChildchainBalance: require('./waitForChildchainBalance')
 }

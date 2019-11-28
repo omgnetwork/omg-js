@@ -31,7 +31,7 @@ let rootChain
 describe('Decode txBytes onchain tests', function () {
   before(async function () {
     const plasmaContract = await rcHelper.getPlasmaContractAddress(config)
-    rootChain = new RootChain(web3, plasmaContract.contract_addr)
+    rootChain = new RootChain({ web3, plasmaContractAddress: plasmaContract.contract_addr })
     await faucet.init(rootChain, childChain, web3, config)
   })
 
@@ -69,12 +69,12 @@ describe('Decode txBytes onchain tests', function () {
 
     it('should able to decode back the txBytesfrom exitData', async function () {
       // Alice deposits ETH into the Plasma contract
-      await rcHelper.depositEth(
+      await rcHelper.depositEth({
         rootChain,
-        aliceAccount.address,
-        DEPOSIT_AMOUNT,
-        aliceAccount.privateKey
-      )
+        address: aliceAccount.address,
+        amount: DEPOSIT_AMOUNT,
+        privateKey: aliceAccount.privateKey
+      })
       await ccHelper.waitForBalanceEq(
         childChain,
         aliceAccount.address,
