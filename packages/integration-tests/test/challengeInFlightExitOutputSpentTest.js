@@ -122,7 +122,7 @@ describe.only('Challenge in-flight exit output spent tests', function () {
       }
     })
 
-    it('should challenge an in-flight exit as non canonical and challenge an invalid input piggyback', async function () {
+    it('should challenge output from a canonical invalid output piggyback', async function () {
       // Alice creates a transaction to send funds to Bob
       const bobSpentOnGas = numberToBN(0)
       const carolSpentOnGas = numberToBN(0)
