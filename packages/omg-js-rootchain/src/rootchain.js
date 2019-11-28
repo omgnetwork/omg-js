@@ -650,7 +650,7 @@ class RootChain {
   async challengeInFlightExitOutputSpent ({
     inFlightTx,
     inFlightTxInclusionProof,
-    outputUtxoPos,
+    inFlightTxOutputPos,
     challengingTx,
     challengingTxInputIndex,
     challengingTxWitness,
@@ -670,7 +670,7 @@ class RootChain {
         [
           inFlightTx,
           inFlightTxInclusionProof,
-          outputUtxoPos,
+          inFlightTxOutputPos,
           challengingTx,
           challengingTxInputIndex,
           challengingTxWitness,

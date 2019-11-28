@@ -37,7 +37,7 @@ let rootChain
 describe.only('Challenge in-flight exit output spent tests', function () {
   before(async function () {
     const plasmaContract = await rcHelper.getPlasmaContractAddress(config)
-    rootChain = new RootChain(web3, plasmaContract.contract_addr)
+    rootChain = new RootChain({ web3, plasmaContractAddress: plasmaContract.contract_addr })
     await faucet.init(rootChain, childChain, web3, config)
   })
 
@@ -145,19 +145,21 @@ describe.only('Challenge in-flight exit output spent tests', function () {
       const decodedBobTx = transaction.decodeTxBytes(bobTxNotIncluded)
 
       // Starts the in-flight exit
-      let receipt = await rootChain.startInFlightExit(
-        exitData.in_flight_tx,
-        exitData.input_txs,
-        exitData.input_utxos_pos,
-        ['0x'],
-        exitData.input_txs_inclusion_proofs,
-        decodedBobTx.sigs,
-        exitData.in_flight_tx_sigs,
-        ['0x'],
-        {
+      let receipt = await rootChain.startInFlightExit({
+        inFlightTx: exitData.in_flight_tx,
+        inputTxs: exitData.input_txs,
+        inputUtxosPos: exitData.input_utxos_pos,
+        outputGuardPreimagesForInputs: ['0x'],
+        inputTxsInclusionProofs: exitData.input_txs_inclusion_proofs,
+        inFlightTxSigs: decodedBobTx.sigs,
+        signatures: exitData.in_flight_tx_sigs,
+        inputSpendingConditionOptionalArgs: ['0x'],
+        txOptions: {
           privateKey: bobAccount.privateKey,
           from: bobAccount.address
         }
+      }
+
       )
       console.log(
         `Bob called RootChain.startInFlightExit(): txhash = ${receipt.transactionHash}`
@@ -166,15 +168,15 @@ describe.only('Challenge in-flight exit output spent tests', function () {
       bobSpentOnGas.iadd(await rcHelper.spentOnGas(web3, receipt))
 
       // bob piggybacks his output on the in-flight exit
-      receipt = await rootChain.piggybackInFlightExitOnOutput(
-        exitData.in_flight_tx,
-        0,
-        '0x',
-        {
+      receipt = await rootChain.piggybackInFlightExitOnOutput({
+        inFlightTx: exitData.in_flight_tx,
+        outputIndex: 0,
+        outputGuardPreimage: '0x',
+        txOptions: {
           privateKey: bobAccount.privateKey,
           from: bobAccount.address
         }
-      )
+      })
       bobSpentOnGas.iadd(await rcHelper.spentOnGas(web3, receipt))
       console.log(
         `Bob called RootChain.piggybackInFlightExitOnOutput() : txhash = ${receipt.transactionHash}`
@@ -212,19 +214,19 @@ describe.only('Challenge in-flight exit output spent tests', function () {
 
       const challengeData = await childChain.inFlightExitGetOutputChallengeData(exitData.in_flight_tx, 0)
 
-      receipt = await rootChain.challengeInFlightExitOutputSpent(
-        challengeData.in_flight_txbytes,
-        challengeData.in_flight_proof,
-        challengeData.in_flight_output_pos,
-        challengeData.spending_txbytes,
-        challengeData.spending_input_index,
-        challengeData.spending_sig,
-        '0x',
-        {
+      receipt = await rootChain.challengeInFlightExitOutputSpent({
+        inFlightTx: challengeData.in_flight_txbytes,
+        inFlightTxInclusionProof: challengeData.in_flight_proof,
+        inFlightTxOutputPos: challengeData.in_flight_output_pos,
+        challengingTx: challengeData.spending_txbytes,
+        challengingTxInputIndex: challengeData.spending_input_index,
+        challengingTxWitness: challengeData.spending_sig,
+        spendingConditionOptionalArgs: '0x',
+        txOptions: {
           privateKey: carolAccount.privateKey,
           from: carolAccount.address
         }
-      )
+      })
       carolSpentOnGas.iadd(await rcHelper.spentOnGas(web3, receipt))
 
       // Wait for challenge period
@@ -234,9 +236,14 @@ describe.only('Challenge in-flight exit output spent tests', function () {
       console.log(`Waiting for challenge period... ${toWait}ms`)
       await rcHelper.sleep(toWait)
 
-      receipt = await rootChain.processExits(transaction.ETH_CURRENCY, 0, 10, {
-        privateKey: bobAccount.privateKey,
-        from: bobAccount.address
+      receipt = await rootChain.processExits({
+        token: transaction.ETH_CURRENCY,
+        exitId: 0,
+        maxExitsToProcess: 10,
+        txOptions: {
+          privateKey: bobAccount.privateKey,
+          from: bobAccount.address
+        }
       })
       console.log(
         `Bob called RootChain.processExits() after challenge period: txhash = ${receipt.transactionHash}`
