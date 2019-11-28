@@ -16,7 +16,7 @@ limitations under the License. */
 const rcHelper = require('./rootChainHelper')
 const ccHelper = require('./childChainHelper')
 const faucetFaucet = require('./faucetFaucet')
-const { transaction } = require('@omisego/omg-js-util')
+const { transaction, getErc20Balance } = require('@omisego/omg-js-util')
 const numberToBN = require('number-to-bn')
 const erc20abi = require('human-standard-token-abi')
 const faucet = {
@@ -73,7 +73,7 @@ const faucet = {
     console.info(`ERC20 token: ${this.erc20ContractAddress}`)
     console.info('----------------- ')
     console.info(`Rootchain ETH balance: ${await web3.eth.getBalance(this.address)}`)
-    console.info(`Rootchain ERC20 balance: ${await rcHelper.getERC20Balance(web3, this.erc20Contract, this.address)}`)
+    console.info(`Rootchain ERC20 balance: ${await getErc20Balance({ web3, erc20Address: this.erc20ContractAddress, address: this.address })}`)
     console.info('----------------- ')
 
     const ccBalance = await this.childChain.getBalance(this.address)
@@ -145,7 +145,7 @@ const faucet = {
       // If not, try to deposit more funds from the root chain
       const needed = ccCurrencyBalance ? numberToBN(minAmount).sub(numberToBN(ccCurrencyBalance.amount)) : numberToBN(minAmount)
       // Check if there are enough root chain funds in the faucet
-      const erc20Balance = await rcHelper.getERC20Balance(web3, this.erc20Contract, this.address, this.privateKey)
+      const erc20Balance = await getErc20Balance({ web3, erc20Address: this.erc20ContractAddress, address: this.address })
       if (numberToBN(erc20Balance).lt(needed)) {
         // For local testing, try to automatically top up the faucet
         await this.topUpERC20(web3, needed)
@@ -153,8 +153,16 @@ const faucet = {
 
       try {
         console.log(`Not enough Child chain erc20 tokens in faucet ${this.address}, attempting to deposit ${needed.toString()} ${this.erc20ContractAddress} from root chain`)
+        await this.rootChain.approveToken({
+          erc20Address: this.erc20ContractAddress,
+          amount: needed.toNumber(),
+          txOptions: {
+            from: this.address,
+            privateKey: this.privateKey,
+            gas: 6000000
+          }
+        })
         const erc20VaultAddress = await this.rootChain.getErc20VaultAddress()
-        await rcHelper.approveERC20(web3, this.erc20Contract, this.address, this.privateKey, erc20VaultAddress, needed.toNumber())
         const allowed = await this.erc20Contract.methods.allowance(this.address, erc20VaultAddress).call()
         if (allowed === '0') {
           throw new Error('ERC20 approval failed!')
@@ -237,7 +245,7 @@ const faucet = {
       return
     }
 
-    const balance = await rcHelper.getERC20Balance(web3, this.erc20Contract, this.address)
+    const balance = await getErc20Balance({ web3, erc20Address: this.erc20ContractAddress, address: this.address })
     if (numberToBN(balance).lt(numberToBN(amount))) {
       // For local testing, try to automatically top up the faucet
       await this.topUpERC20(web3, amount)

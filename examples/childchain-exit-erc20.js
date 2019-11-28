@@ -17,10 +17,10 @@
 const Web3 = require('web3')
 const RootChain = require('../packages/omg-js-rootchain/src/rootchain')
 const ChildChain = require('../packages/omg-js-childchain/src/childchain')
+const { getErc20Balance, waitForRootchainTransaction } = require('../packages/omg-js-util/src')
 
 const config = require('./config.js')
 const wait = require('./wait.js')
-const { getERC20Balance } = require('./util')
 
 // setup for only 1 transaction confirmation block for fast confirmations
 const web3 = new Web3(new Web3.providers.HttpProvider(config.geth_url), null, { transactionConfirmationBlocks: 1 })
@@ -32,7 +32,11 @@ const bobAddress = config.bob_eth_address
 const bobPrivateKey = config.bob_eth_address_private_key
 
 async function logBalances () {
-  const bobRootchainBalance = await getERC20Balance(bobAddress)
+  const bobRootchainBalance = await getErc20Balance({
+    web3,
+    address: bobAddress,
+    erc20Address: config.erc20_contract
+  })
   const bobChildchainBalanceArray = await childChain.getBalance(bobAddress)
   const bobErc20Object = bobChildchainBalanceArray.find(i => i.currency.toLowerCase() === config.erc20_contract.toLowerCase())
   const bobChildchainBalance = bobErc20Object ? bobErc20Object.amount : 0
@@ -85,7 +89,7 @@ async function exitChildChainErc20 () {
   console.log('Bob started a standard exit')
 
   await wait.waitForChallengePeriodToEnd(rootChain, exitData)
-  await rootChain.processExits({
+  const processExitReceipt = await rootChain.processExits({
     token: config.erc20_contract,
     exitId: 0,
     maxExitsToProcess: 20,
@@ -95,6 +99,16 @@ async function exitChildChainErc20 () {
       gas: 6000000
     }
   })
+  if (processExitReceipt) {
+    console.log(`ERC20 exits processing: ${processExitReceipt.transactionHash}`)
+    await waitForRootchainTransaction({
+      web3,
+      transactionHash: processExitReceipt.transactionHash,
+      checkIntervalMs: config.millis_to_wait_for_next_block,
+      blocksToWait: config.blocks_to_wait_for_txn,
+      onCountdown: (remaining) => console.log(`${remaining} blocks remaining before confirmation`)
+    })
+  }
   console.log('Exits processed')
 
   console.log('-----')

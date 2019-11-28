@@ -16,21 +16,10 @@
 const Web3 = require('web3')
 const config = require('./config.js')
 const ChildChain = require('../packages/omg-js-childchain/src/childchain')
-const { transaction } = require('../packages/omg-js-util/src')
-const erc20abi = require('human-standard-token-abi')
+const { transaction, getErc20Balance } = require('../packages/omg-js-util/src')
 
 const web3 = new Web3(new Web3.providers.HttpProvider(config.geth_url), null, { transactionConfirmationBlocks: 1 })
 const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url })
-
-async function getERC20Balance (address) {
-  const erc20Contract = new web3.eth.Contract(erc20abi, config.erc20_contract)
-  const txDetails = {
-    from: address,
-    to: config.erc20_contract,
-    data: erc20Contract.methods.balanceOf(address).encodeABI()
-  }
-  return web3.eth.call(txDetails)
-}
 
 async function balances () {
   const alicesBalanceArray = await childChain.getBalance(config.alice_eth_address)
@@ -41,7 +30,11 @@ async function balances () {
     }
   })
   const aliceRootchainBalance = await web3.eth.getBalance(config.alice_eth_address)
-  const aliceRootchainERC20Balance = await getERC20Balance(config.alice_eth_address)
+  const aliceRootchainERC20Balance = await getErc20Balance({
+    web3,
+    address: config.alice_eth_address,
+    erc20Address: config.erc20_contract
+  })
 
   const aliceRootchainBalances = [
     {
@@ -66,7 +59,11 @@ async function balances () {
   })
 
   const bobRootchainBalance = await web3.eth.getBalance(config.bob_eth_address)
-  const bobRootchainERC20Balance = await getERC20Balance(config.bob_eth_address)
+  const bobRootchainERC20Balance = await getErc20Balance({
+    web3,
+    address: config.bob_eth_address,
+    erc20Address: config.erc20_contract
+  })
   const bobRootchainBalances = [
     {
       currency: 'ETH',

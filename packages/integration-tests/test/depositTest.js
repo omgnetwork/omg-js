@@ -170,8 +170,15 @@ describe('Deposit tests', function () {
       assert.equal(initialBalance.length, 0)
 
       // Account must approve the Plasma contract
-      const erc20VaultAddress = await rootChain.getErc20VaultAddress()
-      await rcHelper.approveERC20(web3, testErc20Contract, aliceAccount.address, aliceAccount.privateKey, erc20VaultAddress, TEST_AMOUNT)
+      await rootChain.approveToken({
+        erc20Address: config.testErc20Contract,
+        amount: TEST_AMOUNT,
+        txOptions: {
+          from: aliceAccount.address,
+          privateKey: aliceAccount.privateKey,
+          gas: 6000000
+        }
+      })
 
       // Create the deposit transaction
       const depositTx = transaction.encodeDeposit(aliceAccount.address, TEST_AMOUNT, config.testErc20Contract)
