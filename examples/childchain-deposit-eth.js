@@ -23,7 +23,7 @@ const { transaction, waitForRootchainTransaction } = require('../packages/omg-js
 const config = require('./config.js')
 
 const web3 = new Web3(new Web3.providers.HttpProvider(config.geth_url), null, { transactionConfirmationBlocks: 1 })
-const rootChain = new RootChain(web3, config.rootchain_plasma_contract_address)
+const rootChain = new RootChain({ web3, plasmaContractAddress: config.rootchain_plasma_contract_address })
 const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url })
 
 const aliceAddress = config.alice_eth_address
@@ -47,13 +47,17 @@ async function depositEthIntoPlasmaContract () {
   await logBalances()
   console.log('-----')
 
-  const depositTransaction = transaction.encodeDeposit(aliceAddress, depositAmount, transaction.ETH_CURRENCY)
+  const depositTx = transaction.encodeDeposit(aliceAddress, depositAmount, transaction.ETH_CURRENCY)
 
   console.log(`Depositing ${web3.utils.fromWei(depositAmount.toString(), 'ether')} ETH from the rootchain to the childchain`)
-  const transactionReceipt = await rootChain.depositEth(depositTransaction, depositAmount, {
-    from: aliceAddress,
-    privateKey: alicePrivateKey,
-    gas: 6000000
+  const transactionReceipt = await rootChain.depositEth({
+    depositTx,
+    amount: depositAmount,
+    txOptions: {
+      from: aliceAddress,
+      privateKey: alicePrivateKey,
+      gas: 6000000
+    }
   })
   console.log('Deposit successful: ', transactionReceipt.transactionHash)
   console.log('Waiting for transaction to be recorded by the watcher...')

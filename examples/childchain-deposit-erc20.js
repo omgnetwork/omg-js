@@ -22,7 +22,7 @@ const { transaction, getErc20Balance, waitForRootchainTransaction } = require('.
 const config = require('./config.js')
 
 const web3 = new Web3(new Web3.providers.HttpProvider(config.geth_url), null, { transactionConfirmationBlocks: 1 })
-const rootChain = new RootChain(web3, config.rootchain_plasma_contract_address)
+const rootChain = new RootChain({ web3, plasmaContractAddress: config.rootchain_plasma_contract_address })
 const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url })
 
 const aliceAddress = config.alice_eth_address
@@ -63,13 +63,16 @@ async function depositERC20IntoPlasmaContract () {
   })
   console.log('ERC20 approved: ', approveRes.transactionHash)
 
-  const depositTransaction = transaction.encodeDeposit(aliceAddress, config.alice_erc20_deposit_amount, config.erc20_contract)
+  const depositTx = transaction.encodeDeposit(aliceAddress, config.alice_erc20_deposit_amount, config.erc20_contract)
 
   console.log(`Depositing ${config.alice_erc20_deposit_amount} ERC20 from the rootchain to the childchain`)
-  const depositReceipt = await rootChain.depositToken(depositTransaction, {
-    from: aliceAddress,
-    privateKey: alicePrivateKey,
-    gas: 6000000
+  const depositReceipt = await rootChain.depositToken({
+    depositTx,
+    txOptions: {
+      from: aliceAddress,
+      privateKey: alicePrivateKey,
+      gas: 6000000
+    }
   })
   console.log('Deposit successful: ', depositReceipt.transactionHash)
   console.log('Waiting for transaction to be recorded by the watcher...')

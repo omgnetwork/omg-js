@@ -109,14 +109,21 @@ function sleep (ms) {
   })
 }
 
-async function depositEth (rootChain, address, amount, privateKey) {
+async function depositEth ({ rootChain, address, amount, privateKey }) {
   const depositTx = transaction.encodeDeposit(address, amount, transaction.ETH_CURRENCY)
-  return rootChain.depositEth(depositTx, amount, { from: address, privateKey })
+  return rootChain.depositEth({
+    depositTx,
+    amount,
+    txOptions: { from: address, privateKey }
+  })
 }
 
-async function depositToken (rootChain, address, amount, currency, privateKey) {
+async function depositToken ({ rootChain, address, amount, currency, privateKey }) {
   const depositTx = transaction.encodeDeposit(address, amount, currency)
-  return rootChain.depositToken(depositTx, { from: address, privateKey })
+  return rootChain.depositToken({
+    depositTx,
+    txOptions: { from: address, privateKey }
+  })
 }
 
 async function getPlasmaContractAddress (config) {

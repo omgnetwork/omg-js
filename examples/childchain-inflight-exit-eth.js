@@ -21,7 +21,7 @@ const config = require('./config.js')
 const wait = require('./wait.js')
 
 const web3 = new Web3(new Web3.providers.HttpProvider(config.geth_url), null, { transactionConfirmationBlocks: 1 })
-const rootChain = new RootChain(web3, config.rootchain_plasma_contract_address)
+const rootChain = new RootChain({ web3, plasmaContractAddress: config.rootchain_plasma_contract_address })
 const rootChainPlasmaContractAddress = config.rootchain_plasma_contract_address
 const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url })
 
@@ -68,12 +68,12 @@ async function inflightExitChildChain () {
     currency: transaction.ETH_CURRENCY,
     amount: Number(feeAmount)
   }
-  const createdTxn = await childChain.createTransaction(
-    aliceAddress,
+  const createdTxn = await childChain.createTransaction({
+    owner: aliceAddress,
     payments,
     fee,
-    transaction.NULL_METADATA
-  )
+    metadata: transaction.NULL_METADATA
+  })
   console.log(`Created a childchain transaction of ${web3.utils.fromWei(payments[0].amount.toString(), 'ether')} ETH from Alice to Bob.`)
 
   // type/sign/build/submit
@@ -87,30 +87,30 @@ async function inflightExitChildChain () {
   const hasToken = await rootChain.hasToken(transaction.ETH_CURRENCY)
   if (!hasToken) {
     console.log(`Adding a ${transaction.ETH_CURRENCY} exit queue`)
-    await rootChain.addToken(
-      transaction.ETH_CURRENCY,
-      { from: bobAddress, privateKey: bobPrivateKey }
-    )
+    await rootChain.addToken({
+      token: transaction.ETH_CURRENCY,
+      txOptions: { from: bobAddress, privateKey: bobPrivateKey }
+    })
   }
 
   // start an in-flight exit
   const exitData = await childChain.inFlightExitGetData(hexPrefix(signedTxn))
   const outputGuardPreimagesForInputs = ['0x']
   const inputSpendingConditionOptionalArgs = ['0x']
-  await rootChain.startInFlightExit(
-    exitData.in_flight_tx,
-    exitData.input_txs,
-    exitData.input_utxos_pos,
-    outputGuardPreimagesForInputs,
-    exitData.input_txs_inclusion_proofs,
-    signatures,
-    exitData.in_flight_tx_sigs,
-    inputSpendingConditionOptionalArgs,
-    {
+  await rootChain.startInFlightExit({
+    inFlightTx: exitData.in_flight_tx,
+    inputTxs: exitData.input_txs,
+    inputUtxosPos: exitData.input_utxos_pos,
+    outputGuardPreimagesForInputs: outputGuardPreimagesForInputs,
+    inputTxsInclusionProofs: exitData.input_txs_inclusion_proofs,
+    inFlightTxSigs: signatures,
+    signatures: exitData.in_flight_tx_sigs,
+    inputSpendingConditionOptionalArgs: inputSpendingConditionOptionalArgs,
+    txOptions: {
       privateKey: bobPrivateKey,
       from: bobAddress
     }
-  )
+  })
   console.log('Bob starts an inflight exit')
 
   // Decode the transaction to get the index of Bob's output
@@ -119,27 +119,27 @@ async function inflightExitChildChain () {
   )
 
   // Bob needs to piggyback his output on the in-flight exit
-  await rootChain.piggybackInFlightExitOnOutput(
-    exitData.in_flight_tx,
-    outputIndex,
-    '0x',
-    {
+  await rootChain.piggybackInFlightExitOnOutput({
+    inFlightTx: exitData.in_flight_tx,
+    outputIndex: outputIndex,
+    outputGuardPreimage: '0x',
+    txOptions: {
       privateKey: bobPrivateKey,
       from: bobAddress
     }
-  )
+  })
   console.log('Bob piggybacks his output')
 
   // wait for challenge period to complete
   await wait.waitForChallengePeriodToEnd(rootChain, exitData)
 
   // call processExits() after challenge period is over
-  const processExitsPostChallengeReceipt = await rootChain.processExits(
-    transaction.ETH_CURRENCY,
-    0,
-    10,
-    { privateKey: bobPrivateKey, from: bobAddress }
-  )
+  const processExitsPostChallengeReceipt = await rootChain.processExits({
+    token: transaction.ETH_CURRENCY,
+    exitId: 0,
+    maxExitstToProcess: 10,
+    txOptions: { privateKey: bobPrivateKey, from: bobAddress }
+  })
 
   await waitForRootchainTransaction({
     web3,

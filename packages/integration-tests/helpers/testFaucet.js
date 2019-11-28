@@ -58,10 +58,10 @@ const faucet = {
     const hasToken = await this.rootChain.hasToken(currency)
     if (!hasToken) {
       console.log(`Adding ${currency} to exit queue`)
-      await this.rootChain.addToken(
-        currency,
-        { from: this.address, privateKey: this.privateKey }
-      )
+      await this.rootChain.addToken({
+        token: currency,
+        txOptions: { from: this.address, privateKey: this.privateKey }
+      })
     } else {
       console.log(`Exit queue for ${currency} already exists`)
     }
@@ -106,7 +106,12 @@ const faucet = {
 
       try {
         console.log(`Not enough Child chain ETH in faucet ${this.address}, attempting to deposit ${needed.toString()} ETH from root chain`)
-        await rcHelper.depositEth(this.rootChain, this.address, needed, this.privateKey)
+        await rcHelper.depositEth({
+          rootChain: this.rootChain,
+          address: this.address,
+          amount: needed,
+          privateKey: this.privateKey
+        })
         await ccHelper.waitForBalance(
           this.childChain,
           this.address,
@@ -162,7 +167,13 @@ const faucet = {
         if (allowed === '0') {
           throw new Error('ERC20 approval failed!')
         }
-        await rcHelper.depositToken(this.rootChain, this.address, needed.toNumber(), this.erc20ContractAddress, this.privateKey)
+        await rcHelper.depositToken({
+          rootChain: this.rootChain,
+          address: this.address,
+          amount: needed.toNumber(),
+          currency: this.erc20ContractAddress,
+          privateKey: this.privateKey
+        })
         await ccHelper.waitForBalance(
           this.childChain,
           this.address,

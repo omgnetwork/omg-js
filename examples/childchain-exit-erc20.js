@@ -25,7 +25,7 @@ const wait = require('./wait.js')
 // setup for only 1 transaction confirmation block for fast confirmations
 const web3 = new Web3(new Web3.providers.HttpProvider(config.geth_url), null, { transactionConfirmationBlocks: 1 })
 
-const rootChain = new RootChain(web3, config.rootchain_plasma_contract_address)
+const rootChain = new RootChain({ web3, plasmaContractAddress: config.rootchain_plasma_contract_address })
 const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url })
 
 const bobAddress = config.bob_eth_address
@@ -55,7 +55,7 @@ async function exitChildChainErc20 () {
   console.log('-----')
 
   // get a ERC20 UTXO and exit data
-  const bobUtxos = await childChain.getExitableUtxos(bobAddress)
+  const bobUtxos = await childChain.getUtxos(bobAddress)
   const bobUtxoToExit = bobUtxos.find(i => i.currency.toLowerCase() === config.erc20_contract.toLowerCase())
   if (!bobUtxoToExit) {
     console.log('Bob doesnt have any ERC20 UTXOs to exit')
@@ -68,35 +68,37 @@ async function exitChildChainErc20 () {
   const hasToken = await rootChain.hasToken(config.erc20_contract)
   if (!hasToken) {
     console.log(`Adding a ${config.erc20_contract} exit queue`)
-    await rootChain.addToken(
-      config.erc20_contract,
-      { from: bobAddress, privateKey: bobPrivateKey }
-    )
+    await rootChain.addToken({
+      token: config.erc20_contract,
+      txOptions: { from: bobAddress, privateKey: bobPrivateKey }
+    })
   }
 
   // start a standard exit
   const exitData = await childChain.getExitData(bobUtxoToExit)
-  await rootChain.startStandardExit(
-    exitData.utxo_pos,
-    exitData.txbytes,
-    exitData.proof,
-    {
+  await rootChain.startStandardExit({
+    outputId: exitData.utxo_pos,
+    outputTx: exitData.txbytes,
+    inclusionProof: exitData.proof,
+    txOptions: {
       privateKey: bobPrivateKey,
       from: bobAddress,
       gas: 6000000
     }
-  )
+  })
   console.log('Bob started a standard exit')
 
   await wait.waitForChallengePeriodToEnd(rootChain, exitData)
-  const processExitReceipt = await rootChain.processExits(
-    config.erc20_contract, 0, 20,
-    {
+  const processExitReceipt = await rootChain.processExits({
+    token: config.erc20_contract,
+    exitId: 0,
+    maxExitsToProcess: 20,
+    txOptions: {
       privateKey: bobPrivateKey,
       from: bobAddress,
       gas: 6000000
     }
-  )
+  })
   if (processExitReceipt) {
     console.log(`ERC20 exits processing: ${processExitReceipt.transactionHash}`)
     await waitForRootchainTransaction({

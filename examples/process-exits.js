@@ -22,7 +22,7 @@ const web3 = new Web3(new Web3.providers.HttpProvider(config.geth_url), null, {
   transactionConfirmationBlocks: 1
 })
 
-const rootChain = new RootChain(web3, config.rootchain_plasma_contract_address)
+const rootChain = new RootChain({ web3, plasmaContractAddress: config.rootchain_plasma_contract_address })
 const bobAddress = config.bob_eth_address
 const bobPrivateKey = config.bob_eth_address_private_key
 
@@ -31,14 +31,16 @@ async function processExits () {
   console.log(`Bob's rootchain balance: ${web3.utils.fromWei(String(bobRootchainBalance), 'ether')} ETH`)
   console.log('-----')
 
-  const ethExitReceipt = await rootChain.processExits(
-    transaction.ETH_CURRENCY, 0, 20,
-    {
+  const ethExitReceipt = await rootChain.processExits({
+    token: transaction.ETH_CURRENCY,
+    exitId: 0,
+    maxExitsToProcess: 20,
+    txOptions: {
       privateKey: bobPrivateKey,
       from: bobAddress,
       gas: 6000000
     }
-  )
+  })
   if (ethExitReceipt) {
     console.log(`ETH exits processing: ${ethExitReceipt.transactionHash}`)
     await waitForRootchainTransaction({
@@ -55,14 +57,16 @@ async function processExits () {
     return
   }
 
-  const erc20ExitReceipt = await rootChain.processExits(
-    config.erc20_contract, 0, 20,
-    {
+  const erc20ExitReceipt = await rootChain.processExits({
+    token: config.erc20_contract,
+    exitId: 0,
+    maxExitsToProcess: 20,
+    txOptions: {
       privateKey: bobPrivateKey,
       from: bobAddress,
       gas: 6000000
     }
-  )
+  })
   if (erc20ExitReceipt) {
     console.log(`ERC20 exits processing: ${erc20ExitReceipt.transactionHash}`)
     await waitForRootchainTransaction({

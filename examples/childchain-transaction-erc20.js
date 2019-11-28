@@ -57,12 +57,12 @@ async function erc20Transaction () {
     currency: transaction.ETH_CURRENCY,
     amount: 1
   }
-  const createdTxn = await childChain.createTransaction(
-    aliceAddress,
+  const createdTxn = await childChain.createTransaction({
+    owner: aliceAddress,
     payments,
     fee,
-    transaction.NULL_METADATA
-  )
+    metadata: transaction.NULL_METADATA
+  })
   console.log(`Created a childchain transaction of ${config.alice_erc20_transfer_amount} ERC20 from Alice to Bob.`)
   // type/sign/build/submit
   const typedData = transaction.getTypedData(createdTxn.transactions[0], rootChainPlasmaContractAddress)
