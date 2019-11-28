@@ -60,8 +60,8 @@ async function depositEthIntoPlasmaContract () {
   await waitForRootchainTransaction({
     web3,
     transactionHash: transactionReceipt.transactionHash,
-    millisToWaitForTxn: config.millis_to_wait_for_next_block,
-    blocksToWaitForTxn: config.blocks_to_wait_for_txn,
+    checkIntervalMs: config.millis_to_wait_for_next_block,
+    blocksToWait: config.blocks_to_wait_for_txn,
     onCountdown: (remaining) => console.log(`${remaining} blocks remaining before confirmation`)
   })
 

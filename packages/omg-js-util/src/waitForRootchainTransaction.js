@@ -13,26 +13,26 @@ limitations under the License. */
 async function waitForRootchainTransaction ({
   web3,
   transactionHash,
-  millisToWaitForTxn,
-  blocksToWaitForTxn,
+  checkIntervalMs,
+  blocksToWait,
   onCountdown
 }) {
   let remaining
   const transactionReceiptAsync = async (transactionHash, resolve, reject) => {
     try {
       const transactionReceipt = await web3.eth.getTransactionReceipt(transactionHash)
-      if (blocksToWaitForTxn > 0) {
+      if (blocksToWait > 0) {
         try {
           const block = await web3.eth.getBlock(transactionReceipt.blockNumber)
           const current = await web3.eth.getBlock('latest')
-          const remainingCandidate = blocksToWaitForTxn - (current.number - block.number)
+          const remainingCandidate = blocksToWait - (current.number - block.number)
           if (remainingCandidate !== remaining) {
             remaining = remainingCandidate
             if (onCountdown) {
               onCountdown(remaining)
             }
           }
-          if (current.number - block.number >= blocksToWaitForTxn) {
+          if (current.number - block.number >= blocksToWait) {
             const transaction = await web3.eth.getTransaction(transactionHash)
             if (transaction.blockNumber !== null) {
               return resolve(transactionReceipt)
@@ -40,10 +40,10 @@ async function waitForRootchainTransaction ({
               return reject(new Error('Transaction with hash: ' + transactionHash + ' ended up in an uncle block.'))
             }
           } else {
-            setTimeout(() => transactionReceiptAsync(transactionHash, resolve, reject), millisToWaitForTxn)
+            setTimeout(() => transactionReceiptAsync(transactionHash, resolve, reject), checkIntervalMs)
           }
         } catch (e) {
-          setTimeout(() => transactionReceiptAsync(transactionHash, resolve, reject), millisToWaitForTxn)
+          setTimeout(() => transactionReceiptAsync(transactionHash, resolve, reject), checkIntervalMs)
         }
       } else {
         return resolve(transactionReceipt)
