@@ -17,9 +17,6 @@ const txUtils = require('./txUtils')
 const { transaction } = require('@omisego/omg-js-util')
 const webUtils = require('web3-utils')
 
-const STANDARD_EXIT_BOND = 14000000000000000
-const INFLIGHT_EXIT_BOND = 37000000000000000
-const PIGGYBACK_BOND = 28000000000000000
 const ETH_VAULT_ID = 1
 const ERC20_VAULT_ID = 2
 const PAYMENT_TYPE = 1
@@ -60,12 +57,48 @@ class RootChain {
     return this.plasmaContract.methods.exitGames(PAYMENT_TYPE).call()
   }
 
-  getPiggybackBond () {
-    return PIGGYBACK_BOND
+  async getErc20Vault () {
+    if (!this.erc20Vault) {
+      const address = await this.getErc20VaultAddress()
+      const contract = this.getContract(this.erc20VaultAbi.abi, address)
+      this.erc20Vault = { contract, address }
+    }
+    return this.erc20Vault
   }
 
-  getInflightExitBond () {
-    return INFLIGHT_EXIT_BOND
+  async getEthVault () {
+    if (!this.ethVault) {
+      const address = await this.getEthVaultAddress()
+      const contract = this.getContract(this.ethVaultAbi.abi, address)
+      this.ethVault = { contract, address }
+    }
+    return this.ethVault
+  }
+
+  async getPaymentExitGame () {
+    if (!this.paymentExitGame) {
+      const paymentExitGameAddress = await this.getPaymentExitGameAddress()
+      this.paymentExitGame = {
+        contract: this.getContract(this.paymentExitGameAbi.abi, paymentExitGameAddress),
+        address: paymentExitGameAddress
+      }
+    }
+    return this.paymentExitGame
+  }
+
+  async getStandardExitBond () {
+    const { contract } = await this.getPaymentExitGame()
+    return contract.methods.startStandardExitBondSize().call()
+  }
+
+  async getPiggybackBond () {
+    const { contract } = await this.getPaymentExitGame()
+    return contract.methods.piggybackBondSize().call()
+  }
+
+  async getInflightExitBond () {
+    const { contract } = await this.getPaymentExitGame()
+    return contract.methods.startIFEBondSize().call()
   }
 
   getContract (abi, address) {
@@ -86,15 +119,15 @@ class RootChain {
    * @return {Promise<{ transactionHash: string }>} promise that resolves with an object holding the transaction hash
    */
   async depositEth (depositTx, amount, txOptions, callbacks) {
-    const ethVaultAddress = await this.getEthVaultAddress()
-    const ethVaultContract = this.getContract(this.ethVaultAbi.abi, ethVaultAddress)
+    const { contract, address } = await this.getEthVault()
+
     const txDetails = {
       from: txOptions.from,
-      to: ethVaultAddress,
+      to: address,
       value: webUtils.toHex(amount),
       data: txUtils.getTxData(
         this.web3,
-        ethVaultContract,
+        contract,
         'deposit',
         depositTx
       ),
@@ -143,15 +176,15 @@ class RootChain {
    * @return {string} transaction hash of the call
    */
   async startStandardExit (outputId, outputTx, inclusionProof, txOptions) {
-    const paymentExitGameAddress = await this.getPaymentExitGameAddress()
-    const paymentExitGameContract = this.getContract(this.paymentExitGameAbi.abi, paymentExitGameAddress)
+    const { contract, address } = await this.getPaymentExitGame()
+    const bondSize = await this.getStandardExitBond()
 
     const txDetails = {
       from: txOptions.from,
-      to: paymentExitGameAddress,
+      to: address,
       data: txUtils.getTxData(
         this.web3,
-        paymentExitGameContract,
+        contract,
         'startStandardExit',
         [
           outputId.toString(),
@@ -160,7 +193,7 @@ class RootChain {
           inclusionProof
         ]
       ),
-      value: STANDARD_EXIT_BOND,
+      value: bondSize,
       gas: txOptions.gas,
       gasPrice: txOptions.gasPrice
     }
@@ -246,11 +279,6 @@ class RootChain {
     return txUtils.sendTx(this.web3, txDetails, txOptions.privateKey)
   }
 
-  getStandardExitBond () {
-    // TODO Get this from the contract
-    return STANDARD_EXIT_BOND
-  }
-
   /**
    * Checks if an exit queue exists for this token
    * @method hasToken
@@ -303,6 +331,8 @@ class RootChain {
   async startInFlightExit (inFlightTx, inputTxs, inputUtxosPos, outputGuardPreimagesForInputs, inputTxsInclusionProofs, inFlightTxSigs, signatures, inputSpendingConditionOptionalArgs, txOptions) {
     const paymentExitGameAddress = await this.getPaymentExitGameAddress()
     const paymentExitGameContract = this.getContract(this.paymentExitGameAbi.abi, paymentExitGameAddress)
+    const bondSize = await this.getInflightExitBond()
+
     const txDetails = {
       from: txOptions.from,
       to: paymentExitGameAddress,
@@ -321,7 +351,7 @@ class RootChain {
           inputSpendingConditionOptionalArgs
         ]
       ),
-      value: INFLIGHT_EXIT_BOND,
+      value: bondSize,
       gas: txOptions.gas,
       gasPrice: txOptions.gasPrice
     }
@@ -341,6 +371,8 @@ class RootChain {
   async piggybackInFlightExitOnOutput (inFlightTx, outputIndex, outputGuardPreimage, txOptions) {
     const paymentExitGameAddress = await this.getPaymentExitGameAddress()
     const paymentExitGameContract = this.getContract(this.paymentExitGameAbi.abi, paymentExitGameAddress)
+    const bondSize = await this.getPiggybackBond()
+
     const txDetails = {
       from: txOptions.from,
       to: paymentExitGameAddress,
@@ -354,7 +386,7 @@ class RootChain {
           outputGuardPreimage
         ]
       ),
-      value: PIGGYBACK_BOND,
+      value: bondSize,
       gas: txOptions.gas,
       gasPrice: txOptions.gasPrice
     }
@@ -374,6 +406,8 @@ class RootChain {
   async piggybackInFlightExitOnInput (inFlightTx, inputIndex, txOptions) {
     const paymentExitGameAddress = await this.getPaymentExitGameAddress()
     const paymentExitGameContract = this.getContract(this.paymentExitGameAbi.abi, paymentExitGameAddress)
+    const bondSize = await this.getPiggybackBond()
+
     const txDetails = {
       from: txOptions.from,
       to: paymentExitGameAddress,
@@ -386,7 +420,7 @@ class RootChain {
           inputIndex
         ]
       ),
-      value: PIGGYBACK_BOND,
+      value: bondSize,
       gas: txOptions.gas,
       gasPrice: txOptions.gasPrice
     }
