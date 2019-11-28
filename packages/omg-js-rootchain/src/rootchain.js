@@ -60,7 +60,7 @@ class RootChain {
 
   async getErc20Vault () {
     if (!this.erc20Vault) {
-      const address = await this.getErc20VaultAddress()
+      const address = await this.plasmaContract.methods.vaults(ERC20_VAULT_ID).call()
       const contract = this.getContract(this.erc20VaultAbi.abi, address)
       this.erc20Vault = { contract, address }
     }
@@ -69,7 +69,7 @@ class RootChain {
 
   async getEthVault () {
     if (!this.ethVault) {
-      const address = await this.getEthVaultAddress()
+      const address = await this.plasmaContract.methods.vaults(ETH_VAULT_ID).call()
       const contract = this.getContract(this.ethVaultAbi.abi, address)
       this.ethVault = { contract, address }
     }
@@ -78,28 +78,26 @@ class RootChain {
 
   async getPaymentExitGame () {
     if (!this.paymentExitGame) {
-      const paymentExitGameAddress = await this.getPaymentExitGameAddress()
+      const address = await this.plasmaContract.methods.exitGames(PAYMENT_TYPE).call()
+      const contract = this.getContract(this.paymentExitGameAbi.abi, address)
+
+      const bondSizes = await Promise.all([
+        contract.methods.startStandardExitBondSize().call(),
+        contract.methods.piggybackBondSize().call(),
+        contract.methods.startIFEBondSize().call()
+      ])
+
       this.paymentExitGame = {
-        contract: this.getContract(this.paymentExitGameAbi.abi, paymentExitGameAddress),
-        address: paymentExitGameAddress
+        contract,
+        address,
+        bonds: {
+          standardExit: bondSizes[0],
+          piggyback: bondSizes[1],
+          inflightExit: bondSizes[2]
+        }
       }
     }
     return this.paymentExitGame
-  }
-
-  async getStandardExitBond () {
-    const { contract } = await this.getPaymentExitGame()
-    return contract.methods.startStandardExitBondSize().call()
-  }
-
-  async getPiggybackBond () {
-    const { contract } = await this.getPaymentExitGame()
-    return contract.methods.piggybackBondSize().call()
-  }
-
-  async getInflightExitBond () {
-    const { contract } = await this.getPaymentExitGame()
-    return contract.methods.startIFEBondSize().call()
   }
 
   getContract (abi, address) {
