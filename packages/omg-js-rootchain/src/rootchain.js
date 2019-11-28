@@ -649,11 +649,12 @@ class RootChain {
    */
   async challengeInFlightExitOutputSpent ({
     inFlightTx,
-    inFlightTxOutputPos,
     inFlightTxInclusionProof,
-    spendingTx,
-    spendingTxInputIndex,
-    spendingTxSig,
+    inFlightTxOutputPos,
+    challengingTx,
+    challengingTxInputIndex,
+    challengingTxWitness,
+    spendingConditionOptionalArgs,
     txOptions
   }) {
     const paymentExitGameAddress = await this.getPaymentExitGameAddress()
@@ -666,12 +667,15 @@ class RootChain {
         this.web3,
         paymentExitGameContract,
         'challengeInFlightExitOutputSpent',
-        inFlightTx,
-        inFlightTxOutputPos,
-        inFlightTxInclusionProof,
-        spendingTx,
-        spendingTxInputIndex,
-        spendingTxSig
+        [
+          inFlightTx,
+          inFlightTxInclusionProof,
+          inFlightTxOutputPos,
+          challengingTx,
+          challengingTxInputIndex,
+          challengingTxWitness,
+          spendingConditionOptionalArgs
+        ]
       ),
       gas: txOptions.gas,
       gasPrice: txOptions.gasPrice

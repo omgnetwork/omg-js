@@ -319,7 +319,7 @@ class ChildChain {
       url: `${this.watcherUrl}/in_flight_exit.get_output_challenge_data`,
       body: {
         txbytes: hexPrefix(txbytes),
-        input_index: outputIndex
+        output_index: outputIndex
       },
       proxyUrl: this.watcherProxyUrl
     })
