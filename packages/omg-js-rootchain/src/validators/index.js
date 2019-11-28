@@ -3,7 +3,7 @@ const { validateAddress, validateTxOption, validateBn } = require('./helpers')
 
 const approveTokenSchema = Joi.object({
   erc20Address: validateAddress.required(),
-  txOptions: validateTxOption,
+  txOptions: validateTxOption.required(),
   amount: [Joi.number(), validateBn]
 })
 
