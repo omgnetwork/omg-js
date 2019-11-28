@@ -14,10 +14,9 @@ See the License for the specific language governing permissions and
 limitations under the License. */
 
 const promiseRetry = require('promise-retry')
-const { transaction } = require('@omisego/omg-js-util')
+const { transaction, getErc20Balance } = require('@omisego/omg-js-util')
 const numberToBN = require('number-to-bn')
 const fetch = require('node-fetch')
-const erc20abi = require('human-standard-token-abi')
 const { parseLog } = require('ethereum-event-logs')
 const { utils } = require('web3')
 
@@ -84,21 +83,10 @@ function waitForEthBalanceEq (web3, address, expectedAmount) {
   return waitForEthBalance(web3, address, balance => numberToBN(balance).eq(expectedBn))
 }
 
-async function getERC20Balance (web3, contract, address) {
-  const txDetails = {
-    from: address,
-    to: contract._address,
-    data: contract.methods.balanceOf(address).encodeABI()
-  }
-
-  return web3.eth.call(txDetails)
-}
-
 function waitForERC20Balance (web3, address, contractAddress, callback) {
-  const contract = new web3.eth.Contract(erc20abi, contractAddress)
   return promiseRetry(async (retry, number) => {
     console.log(`Waiting for ERC20 balance...  (${number})`)
-    const resp = await getERC20Balance(web3, contract, address)
+    const resp = await getErc20Balance({ web3, erc20Address: contractAddress, address })
     if (!callback(resp)) {
       retry()
     }
@@ -119,23 +107,6 @@ function sleep (ms) {
   return new Promise(resolve => {
     setTimeout(resolve, ms)
   })
-}
-
-async function approveERC20 (
-  web3,
-  erc20Contract,
-  ownerAccount,
-  ownerAccountPassword,
-  spender,
-  value
-) {
-  const txDetails = {
-    from: ownerAccount,
-    to: erc20Contract._address,
-    data: erc20Contract.methods.approve(spender, value).encodeABI()
-  }
-
-  return sendTransaction(web3, txDetails, ownerAccountPassword)
 }
 
 async function depositEth (rootChain, address, amount, privateKey) {
@@ -242,8 +213,6 @@ module.exports = {
   sendTransaction,
   depositEth,
   depositToken,
-  approveERC20,
-  getERC20Balance,
   spentOnGas,
   getPlasmaContractAddress,
   getTimeToExit,

@@ -13,10 +13,9 @@
 
 const Web3 = require('web3')
 const RootChain = require('../packages/omg-js-rootchain/src/rootchain')
-const { transaction } = require('../packages/omg-js-util/src')
+const { transaction, waitForRootchainTransaction } = require('../packages/omg-js-util/src')
 
 const config = require('./config.js')
-const wait = require('./wait.js')
 
 // setup for fast confirmations
 const web3 = new Web3(new Web3.providers.HttpProvider(config.geth_url), null, {
@@ -41,12 +40,14 @@ async function processExits () {
     }
   )
   if (ethExitReceipt) {
-    await wait.waitForTransaction(
+    console.log(`ETH exits processing: ${ethExitReceipt.transactionHash}`)
+    await waitForRootchainTransaction({
       web3,
-      ethExitReceipt.transactionHash,
-      config.millis_to_wait_for_next_block,
-      config.blocks_to_wait_for_txn
-    )
+      transactionHash: ethExitReceipt.transactionHash,
+      checkIntervalMs: config.millis_to_wait_for_next_block,
+      blocksToWait: config.blocks_to_wait_for_txn,
+      onCountdown: (remaining) => console.log(`${remaining} blocks remaining before confirmation`)
+    })
     console.log('ETH exits processed')
   }
 
@@ -63,12 +64,14 @@ async function processExits () {
     }
   )
   if (erc20ExitReceipt) {
-    await wait.waitForTransaction(
+    console.log(`ERC20 exits processing: ${erc20ExitReceipt.transactionHash}`)
+    await waitForRootchainTransaction({
       web3,
-      erc20ExitReceipt.transactionHash,
-      config.millis_to_wait_for_next_block,
-      config.blocks_to_wait_for_txn
-    )
+      transactionHash: erc20ExitReceipt.transactionHash,
+      checkIntervalMs: config.millis_to_wait_for_next_block,
+      blocksToWait: config.blocks_to_wait_for_txn,
+      onCountdown: (remaining) => console.log(`${remaining} blocks remaining before confirmation`)
+    })
     console.log('ERC20 exits processed')
   }
 }

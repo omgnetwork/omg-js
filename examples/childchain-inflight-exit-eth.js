@@ -15,7 +15,7 @@ const BigNumber = require('bignumber.js')
 const Web3 = require('web3')
 const RootChain = require('../packages/omg-js-rootchain/src/rootchain')
 const ChildChain = require('../packages/omg-js-childchain/src/childchain')
-const { transaction, hexPrefix } = require('../packages/omg-js-util/src')
+const { transaction, hexPrefix, waitForRootchainTransaction } = require('../packages/omg-js-util/src')
 
 const config = require('./config.js')
 const wait = require('./wait.js')
@@ -141,12 +141,13 @@ async function inflightExitChildChain () {
     { privateKey: bobPrivateKey, from: bobAddress }
   )
 
-  await wait.waitForTransaction(
+  await waitForRootchainTransaction({
     web3,
-    processExitsPostChallengeReceipt.transactionHash,
-    config.millis_to_wait_for_next_block,
-    config.blocks_to_wait_for_txn
-  )
+    transactionHash: processExitsPostChallengeReceipt.transactionHash,
+    checkIntervalMs: config.millis_to_wait_for_next_block,
+    blocksToWait: config.blocks_to_wait_for_txn,
+    onCountdown: (remaining) => console.log(`${remaining} blocks remaining before confirmation`)
+  })
   console.log('Exits processed')
 
   console.log('-----')
