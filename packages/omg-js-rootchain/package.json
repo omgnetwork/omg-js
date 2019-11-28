@@ -11,7 +11,9 @@
   "author": "OmiseGo",
   "contributors": [
     "Pong Cheecharern <pong@omise.co>",
-    "Kevin Sullivan <kevinsul@omise.co>"
+    "Kevin Sullivan <kevinsul@omise.co>",
+    "Jarindr Thitadilaka <jarindr@omisego.co>",
+    "Nicholas Mueller <nicholas@omisego.co>"
   ],
   "license": "Apache-2.0",
   "repository": {
