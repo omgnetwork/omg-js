@@ -34,7 +34,7 @@ const childChain = new ChildChain({
 // modified RootChain contract with a shorter than normal MIN_EXIT_PERIOD.
 let rootChain
 
-describe('Challenge in-flight exit output spent tests', function () {
+describe.only('Challenge in-flight exit output spent tests', function () {
   before(async function () {
     const plasmaContract = await rcHelper.getPlasmaContractAddress(config)
     rootChain = new RootChain(web3, plasmaContract.contract_addr)
@@ -72,7 +72,7 @@ describe('Challenge in-flight exit output spent tests', function () {
         ),
         // Give some ETH to Bob on the root chain
         faucet.fundRootchainEth(web3, bobAccount.address, INTIIAL_BOB_RC_AMOUNT)
-      ]).then(([tx]) => (fundAliceTx = tx))
+      ])
       // Give some ETH to Carol on the root chain
       await faucet.fundRootchainEth(
         web3,
@@ -193,7 +193,7 @@ describe('Challenge in-flight exit output spent tests', function () {
       )
 
       // utxo update from watcher have delay, balance updated first we need to wait a bit
-      await rcHelper.sleep(10000)
+      await ccHelper.waitNumUtxos(childChain, bobAccount.address, 1)
 
       // bob use his IFE piggyback output so this become the competitor tx
       await ccHelper.sendAndWait(
@@ -207,6 +207,7 @@ describe('Challenge in-flight exit output spent tests', function () {
         rootChain.plasmaContractAddress
       )
 
+      // the second tx is sent, but it takes awhile before watcher can get the Challenge data...
       await rcHelper.sleep(10000)
 
       const challengeData = await childChain.inFlightExitGetOutputChallengeData(exitData.in_flight_tx, 0)
@@ -233,7 +234,7 @@ describe('Challenge in-flight exit output spent tests', function () {
       console.log(`Waiting for challenge period... ${toWait}ms`)
       await rcHelper.sleep(toWait)
 
-      receipt = await rootChain.processExits(transaction.ETH_CURRENCY, 0, 5, {
+      receipt = await rootChain.processExits(transaction.ETH_CURRENCY, 0, 10, {
         privateKey: bobAccount.privateKey,
         from: bobAccount.address
       })
