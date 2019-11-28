@@ -34,7 +34,7 @@ let rootChain
 describe('Challenge exit tests', function () {
   before(async function () {
     const plasmaContract = await rcHelper.getPlasmaContractAddress(config)
-    rootChain = new RootChain(web3, plasmaContract.contract_addr)
+    rootChain = new RootChain({ web3, plasmaContractAddress: plasmaContract.contract_addr })
     await faucet.init(rootChain, childChain, web3, config)
   })
 
@@ -119,15 +119,15 @@ describe('Challenge exit tests', function () {
       // Now Alice wants to cheat and exit with the dishonest utxo
 
       const exitData = await childChain.getExitData(aliceDishonestUtxo)
-      let receipt = await rootChain.startStandardExit(
-        exitData.utxo_pos,
-        exitData.txbytes,
-        exitData.proof,
-        {
+      let receipt = await rootChain.startStandardExit({
+        outputId: exitData.utxo_pos,
+        outputTx: exitData.txbytes,
+        inclusionProof: exitData.proof,
+        txOptions: {
           privateKey: aliceAccount.privateKey,
           from: aliceAccount.address
         }
-      )
+      })
       console.log(`Alice called RootChain.startExit(): txhash = ${receipt.transactionHash}`)
       const aliceSpentOnGas = await rcHelper.spentOnGas(web3, receipt)
 
@@ -142,17 +142,17 @@ describe('Challenge exit tests', function () {
       // ...and challenges the exit
       const challengeData = await childChain.getChallengeData(invalidExit.details.utxo_pos)
       assert.hasAllKeys(challengeData, ['input_index', 'exit_id', 'exiting_tx', 'sig', 'txbytes'])
-      receipt = await rootChain.challengeStandardExit(
-        challengeData.exit_id,
-        challengeData.exiting_tx,
-        challengeData.txbytes,
-        challengeData.input_index,
-        challengeData.sig,
-        {
+      receipt = await rootChain.challengeStandardExit({
+        standardExitId: challengeData.exit_id,
+        exitingTx: challengeData.exiting_tx,
+        challengeTx: challengeData.txbytes,
+        inputIndex: challengeData.input_index,
+        challengeTxSig: challengeData.sig,
+        txOptions: {
           privateKey: bobAccount.privateKey,
           from: bobAccount.address
         }
-      )
+      })
       console.log(`Bob called RootChain.challengeExit(): txhash = ${receipt.transactionHash}`)
 
       // Keep track of how much Bob spends on gas
@@ -164,15 +164,15 @@ describe('Challenge exit tests', function () {
       await rcHelper.sleep(toWait)
 
       // ...and calls finalize exits.
-      receipt = await rootChain.processExits(
-        transaction.ETH_CURRENCY,
-        0,
-        20,
-        {
+      receipt = await rootChain.processExits({
+        token: transaction.ETH_CURRENCY,
+        exitId: 0,
+        maxExitsToProcess: 20,
+        txOptions: {
           privateKey: aliceAccount.privateKey,
           from: aliceAccount.address
         }
-      )
+      })
       console.log(`Alice called RootChain.processExits(): txhash = ${receipt.transactionHash}`)
       aliceSpentOnGas.iadd(await rcHelper.spentOnGas(web3, receipt))
 

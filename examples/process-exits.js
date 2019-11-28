@@ -13,17 +13,16 @@
 
 const Web3 = require('web3')
 const RootChain = require('../packages/omg-js-rootchain/src/rootchain')
-const { transaction } = require('../packages/omg-js-util/src')
+const { transaction, waitForRootchainTransaction } = require('../packages/omg-js-util/src')
 
 const config = require('./config.js')
-const wait = require('./wait.js')
 
 // setup for fast confirmations
 const web3 = new Web3(new Web3.providers.HttpProvider(config.geth_url), null, {
   transactionConfirmationBlocks: 1
 })
 
-const rootChain = new RootChain(web3, config.rootchain_plasma_contract_address)
+const rootChain = new RootChain({ web3, plasmaContractAddress: config.rootchain_plasma_contract_address })
 const bobAddress = config.bob_eth_address
 const bobPrivateKey = config.bob_eth_address_private_key
 
@@ -32,21 +31,25 @@ async function processExits () {
   console.log(`Bob's rootchain balance: ${web3.utils.fromWei(String(bobRootchainBalance), 'ether')} ETH`)
   console.log('-----')
 
-  const ethExitReceipt = await rootChain.processExits(
-    transaction.ETH_CURRENCY, 0, 20,
-    {
+  const ethExitReceipt = await rootChain.processExits({
+    token: transaction.ETH_CURRENCY,
+    exitId: 0,
+    maxExitsToProcess: 20,
+    txOptions: {
       privateKey: bobPrivateKey,
       from: bobAddress,
       gas: 6000000
     }
-  )
+  })
   if (ethExitReceipt) {
-    await wait.waitForTransaction(
+    console.log(`ETH exits processing: ${ethExitReceipt.transactionHash}`)
+    await waitForRootchainTransaction({
       web3,
-      ethExitReceipt.transactionHash,
-      config.millis_to_wait_for_next_block,
-      config.blocks_to_wait_for_txn
-    )
+      transactionHash: ethExitReceipt.transactionHash,
+      checkIntervalMs: config.millis_to_wait_for_next_block,
+      blocksToWait: config.blocks_to_wait_for_txn,
+      onCountdown: (remaining) => console.log(`${remaining} blocks remaining before confirmation`)
+    })
     console.log('ETH exits processed')
   }
 
@@ -54,21 +57,25 @@ async function processExits () {
     return
   }
 
-  const erc20ExitReceipt = await rootChain.processExits(
-    config.erc20_contract, 0, 20,
-    {
+  const erc20ExitReceipt = await rootChain.processExits({
+    token: config.erc20_contract,
+    exitId: 0,
+    maxExitsToProcess: 20,
+    txOptions: {
       privateKey: bobPrivateKey,
       from: bobAddress,
       gas: 6000000
     }
-  )
+  })
   if (erc20ExitReceipt) {
-    await wait.waitForTransaction(
+    console.log(`ERC20 exits processing: ${erc20ExitReceipt.transactionHash}`)
+    await waitForRootchainTransaction({
       web3,
-      erc20ExitReceipt.transactionHash,
-      config.millis_to_wait_for_next_block,
-      config.blocks_to_wait_for_txn
-    )
+      transactionHash: erc20ExitReceipt.transactionHash,
+      checkIntervalMs: config.millis_to_wait_for_next_block,
+      blocksToWait: config.blocks_to_wait_for_txn,
+      onCountdown: (remaining) => console.log(`${remaining} blocks remaining before confirmation`)
+    })
     console.log('ERC20 exits processed')
   }
 }

@@ -17,10 +17,9 @@
 const BigNumber = require('bignumber.js')
 const Web3 = require('web3')
 const ChildChain = require('../packages/omg-js-childchain/src/childchain')
-const { transaction } = require('../packages/omg-js-util/src')
+const { transaction, waitForChildchainBalance } = require('../packages/omg-js-util/src')
 
 const config = require('./config.js')
-const wait = require('./wait.js')
 
 const web3 = new Web3(new Web3.providers.HttpProvider(config.geth_url), null, { transactionConfirmationBlocks: 1 })
 const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url })
@@ -64,12 +63,12 @@ async function createSignBuildAndSubmitTransaction () {
     currency: transaction.ETH_CURRENCY,
     amount: Number(feeAmount)
   }
-  const createdTxn = await childChain.createTransaction(
-    aliceAddress,
+  const createdTxn = await childChain.createTransaction({
+    owner: aliceAddress,
     payments,
     fee,
-    transaction.NULL_METADATA
-  )
+    metadata: transaction.NULL_METADATA
+  })
   console.log(`Created a childchain transaction of ${web3.utils.fromWei(payments[0].amount.toString(), 'ether')} ETH from Alice to Bob.`)
 
   // type/sign/build/submit
@@ -83,7 +82,11 @@ async function createSignBuildAndSubmitTransaction () {
   // wait for transaction to be recorded by the watcher
   console.log('Waiting for transaction to be recorded by the watcher...')
   const expectedAmount = transferAmount.plus(bobETHBalance)
-  await wait.waitForBalanceEq(childChain, bobAddress, expectedAmount, transaction.ETH_CURRENCY)
+  await waitForChildchainBalance({
+    childChain,
+    address: bobAddress,
+    expectedAmount
+  })
 
   console.log('-----')
   await logBalances()
