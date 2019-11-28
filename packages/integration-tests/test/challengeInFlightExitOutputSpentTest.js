@@ -256,12 +256,11 @@ describe('Challenge in-flight exit output spent tests', function () {
 
       // Get carol's ETH balance
       const bobEthBalance = await web3.eth.getBalance(bobAccount.address)
-      // Bob lose exit bond, and piggyback bond and gas
-      // INTIIAL_BOB_AMOUNT - INFLIGHT_EXIT_BOND - INFLIGHT_PIGGYBACK_BOND - gas spent
+      // Bob doesn't lose his exit bond hence he paid and get back, but lose the piggyback bond and gas
+      // INTIIAL_BOB_AMOUNT - INFLIGHT_EXIT_BOND + INFLIGHT_EXIT_BOND - INFLIGHT_PIGGYBACK_BOND - gas spent
       const bobExpected = web3.utils
         .toBN(INTIIAL_BOB_RC_AMOUNT)
         .sub(web3.utils.toBN(rootChain.getPiggybackBond()))
-        .sub(web3.utils.toBN(rootChain.getInflightExitBond()))
         .sub(bobSpentOnGas)
       assert.equal(bobEthBalance.toString(), bobExpected.toString())
     })
