@@ -141,7 +141,7 @@ async function inflightExitChildChain () {
   const processExitsPostChallengeReceipt = await rootChain.processExits({
     token: transaction.ETH_CURRENCY,
     exitId,
-    maxExitstToProcess: 10,
+    maxExitsToProcess: 20,
     txOptions: { privateKey: bobPrivateKey, from: bobAddress }
   })
 
