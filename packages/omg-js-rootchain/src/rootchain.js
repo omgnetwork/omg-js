@@ -25,9 +25,10 @@ class RootChain {
   /**
   * Create a RootChain object
   *
-  * @param {string} web3 the web3 object to access the Ethereum network
-  * @param {string} plasmaContractAddress the address of the RootChain contract
-  * @param {string} plasmaAbi the abi of the RootChain contract. If not set the default abi included in './contracts/Rootchain' will be used.
+  * @param {Object} config the rootchain configuration object
+  * @param {string} config.web3 the web3 object to access the Ethereum network
+  * @param {string} config.plasmaContractAddress the address of the PlasmaFramework contract
+  * @param {string} config.plasmaAbi the abi of the PlasmaFramework contract
   * @return {Object} a Rootchain object
   *
   */
@@ -98,10 +99,11 @@ class RootChain {
    * Approve ERC20 for deposit
    *
    * @method approveToken
-   * @param {string} erc20Address address of the ERC20 token
-   * @param {number} amount amount of ERC20 to approve to deposit
-   * @param {Object} txOptions transaction options, such as `from`, `gas` and `privateKey`
-   * @return {Promise<{ transactionHash: string }>} promise that resolves with an object holding the transaction hash
+   * @param {Object} args an arguments object
+   * @param {string} args.erc20Address address of the ERC20 token
+   * @param {number} args.amount amount of ERC20 to approve to deposit
+   * @param {Object} args.txOptions transaction options, such as `from`, `gas` and `privateKey`
+   * @return {Promise<Object>} promise that resolves with a transaction receipt
    */
   async approveToken ({
     erc20Address,
@@ -127,11 +129,12 @@ class RootChain {
    * Deposit ETH to rootchain
    *
    * @method depositEth
-   * @param {string} depositTx RLP encoded childchain deposit transaction
-   * @param {number} amount amount of ETH to deposit
-   * @param {Object} txOptions transaction options, such as `from`, `gas` and `privateKey`
-   * @param {Object} [callbacks] callbacks to events from the transaction lifecycle
-   * @return {Promise<{ transactionHash: string }>} promise that resolves with an object holding the transaction hash
+   * @param {Object} args an arguments object
+   * @param {string} args.depositTx RLP encoded childchain deposit transaction
+   * @param {number} args.amount amount of ETH to deposit
+   * @param {Object} args.txOptions transaction options, such as `from`, `gas` and `privateKey`
+   * @param {Object} args.[callbacks] callbacks to events from the transaction lifecycle
+   * @return {Promise<Object>} promise that resolves with a transaction receipt
    */
   async depositEth ({ depositTx, amount, txOptions, callbacks }) {
     const { contract, address } = await this.getEthVault()
@@ -157,12 +160,13 @@ class RootChain {
   }
 
   /**
-   * Deposit ERC20 Token to rootchain (caller must be token owner)
+   * Deposit ERC20 Token to rootchain (caller must be the token owner)
    *
    * @method depositToken
-   * @param {string} depositTx RLP encoded childchain deposit transaction
-   * @param {Object} txOptions transaction options, such as `from`, gas` and `privateKey`
-   * @return {string} transaction hash of the call
+   * @param {Object} args an arguments object
+   * @param {string} args.depositTx RLP encoded childchain deposit transaction
+   * @param {Object} args.txOptions transaction options, such as `from`, gas` and `privateKey`
+   * @return {Promise<Object>} promise that resolves with a transaction receipt
    */
   async depositToken ({ depositTx, txOptions }) {
     const { address, contract } = await this.getErc20Vault()
@@ -189,11 +193,12 @@ class RootChain {
    * Starts a standard withdrawal of a given output. Uses output-age priority.
    *
    * @method startStandardExit
-   * @param {number} outputId Identifier of the exiting output.
-   * @param {string} outputTx RLP encoded transaction that created the exiting output.
-   * @param {string} inclusionProof A Merkle proof showing that the transaction was included.
-   * @param {Object} txOptions transaction options, such as `from`, gas` and `privateKey`
-   * @return {string} transaction hash of the call
+   * @param {Object} args an arguments object
+   * @param {number} args.outputId identifier of the exiting output
+   * @param {string} args.outputTx RLP encoded transaction that created the exiting output
+   * @param {string} args.inclusionProof a Merkle proof showing that the transaction was included
+   * @param {Object} args.txOptions transaction options, such as `from`, gas` and `privateKey`
+   * @return {Promise<Object>} promise that resolves with a transaction receipt
    */
   async startStandardExit ({ outputId, outputTx, inclusionProof, txOptions }) {
     const { contract, address, bonds } = await this.getPaymentExitGame()
@@ -226,12 +231,14 @@ class RootChain {
    * Blocks a standard exit by showing the exiting output was spent.
    *
    * @method challengeStandardExit
-   * @param {number} standardExitId Identifier of the exiting output.
-   * @param {string} challengeTx RLP encoded transaction that spends the exiting output.
-   * @param {number} inputIndex Which input to the challenging tx corresponds to the exiting output.
-   * @param {string} challengeTxSig Signature from the exiting output owner over the spend.
-   * @param {Object} txOptions transaction options, such as `from`, gas` and `privateKey`
-   * @return {string} transaction hash of the call
+   * @param {Object} args an arguments object
+   * @param {number} args.standardExitId identifier of the exiting output
+   * @param {string} args.exitingTx RLP encoded transaction that is exiting
+   * @param {string} args.challengeTx RLP encoded transaction that spends the exiting output
+   * @param {number} args.inputIndex which input to the challenging tx corresponds to the exiting output
+   * @param {string} args.challengeTxSig signature from the exiting output owner over the spend
+   * @param {Object} args.txOptions transaction options, such as `from`, gas` and `privateKey`
+   * @return {Promise<Object>} promise that resolves with a transaction receipt
    */
   async challengeStandardExit ({ standardExitId, exitingTx, challengeTx, inputIndex, challengeTxSig, txOptions }) {
     // standardExitId is an extremely large number as it uses the entire int192.
@@ -272,11 +279,12 @@ class RootChain {
   /**
    * Processes any exit that has completed the challenge period.
    * @method processExits
-   * @param {string} token An address of the token to exit.
-   * @param {string} exitId An exit id returned from startStandardExit.
-   * @param {number} maxExitsToProcess The max number of exits to process
-   * @param {Object} txOptions transaction options, such as `from`, gas` and `privateKey`
-   * @return {string} transaction hash of the call
+   * @param {Object} args an arguments object
+   * @param {string} args.token an address of the token to exit
+   * @param {string} args.exitId the exit id
+   * @param {number} args.maxExitsToProcess the max number of exits to process
+   * @param {Object} args.txOptions transaction options, such as `from`, gas` and `privateKey`
+   * @return {Promise<Object>} promise that resolves with a transaction receipt
    */
   async processExits ({ token, exitId, maxExitsToProcess, txOptions }) {
     const vaultId = token === transaction.ETH_CURRENCY ? 1 : 2
@@ -307,8 +315,8 @@ class RootChain {
   /**
    * Checks if an exit queue exists for this token
    * @method hasToken
-   * @param {string} token address of the token to check.
-   * @return {boolean} whether an exit queue exists for this token
+   * @param {string} token address of the token to check
+   * @return {Promise<boolean>} promise that resolves with whether an exit queue exists for this token
    */
   hasToken (token) {
     const vaultId = token === transaction.ETH_CURRENCY ? 1 : 2
@@ -318,9 +326,11 @@ class RootChain {
   /**
    * Adds a token to the Plasma chain. Tokens must be added in order to be able to exit them.
    * @method addToken
-   * @param {string} token Address of the token to process.
-   * @return {string} transaction hash of the call
-   * @throws an exception if the token has already been added.
+   * @param {Object} args an arguments object
+   * @param {string} args.token Address of the token to process
+   * @param {Object} args.txOptions transaction options, such as `from`, `gas` and `privateKey`
+   * @return {Promise<Object>} promise that resolves with a transaction receipt
+   * @throws an exception if the token has already been added
    */
   async addToken ({ token, txOptions }) {
     const vaultId = token === transaction.ETH_CURRENCY ? 1 : 2
@@ -350,12 +360,17 @@ class RootChain {
    * Starts an exit for an in-flight transaction.
    *
    * @method startInFlightExit
-   * @param {string} inFlightTx RLP encoded in-flight transaction.
-   * @param {string} inputTxs Transactions that created the inputs to the in-flight transaction.
-   * @param {string} inputTxsInclusionProofs Merkle proofs that show the input-creating transactions are valid.
-   * @param {string} inFlightTxSigs Signatures from the owners of each input.
-   * @param {Object} txOptions transaction options, such as `from`, gas` and `privateKey`
-   * @return {string} transaction hash of the call
+   * @param {Object} args an arguments object
+   * @param {string} args.inFlightTx RLP encoded in-flight transaction.
+   * @param {string} args.inputTxs transaction that created the inputs to the in-flight transaction
+   * @param {string} args.inputUtxosPos
+   * @param {string} args.outputGuardPreimagesForInputs
+   * @param {string} args.inputTxsInclusionProofs merkle proofs that show the input-creating transactions are valid
+   * @param {string} args.inFlightTxSigs signatures from the owners of each input
+   * @param {string} args.signatures
+   * @param {string} args.inputSpendingConditionOptionalArgs
+   * @param {Object} args.txOptions transaction options, such as `from`, gas` and `privateKey`
+   * @return {Promise<Object>} promise that resolves with a transaction receipt
    */
   async startInFlightExit ({
     inFlightTx,
@@ -402,10 +417,12 @@ class RootChain {
    * Allows a user to piggyback onto an in-flight transaction.
    *
    * @method piggybackInFlightExit
-   * @param {string} inFlightTx RLP encoded in-flight transaction.
-   * @param {number} outputIndex Index of the input/output to piggyback (0-7).
-   * @param {Object} txOptions transaction options, such as `from`, gas` and `privateKey`
-   * @return {string} transaction hash of the call
+   * @param {Object} args an arguments object
+   * @param {string} args.inFlightTx RLP encoded in-flight transaction
+   * @param {number} args.outputIndex index of the input/output to piggyback (0-7)
+   * @param {number} args.outputGuardPreimage
+   * @param {Object} args.txOptions transaction options, such as `from`, gas` and `privateKey`
+   * @return {Promise<Object>} promise that resolves with a transaction receipt
    */
   async piggybackInFlightExitOnOutput ({
     inFlightTx,
@@ -442,10 +459,11 @@ class RootChain {
    * Allows a user to piggyback onto an in-flight transaction.
    *
    * @method piggybackInFlightExit
-   * @param {string} inFlightTx RLP encoded in-flight transaction.
-   * @param {number} inputIndex Index of the input/output to piggyback (0-7).
-   * @param {Object} txOptions transaction options, such as `from`, gas` and `privateKey`
-   * @return {string} transaction hash of the call
+   * @param {Object} args an arguments object
+   * @param {string} args.inFlightTx RLP encoded in-flight transaction
+   * @param {number} args.inputIndex index of the input/output to piggyback (0-7)
+   * @param {Object} args.txOptions transaction options, such as `from`, gas` and `privateKey`
+   * @return {Promise<Object>} promise that resolves with a transaction receipt
    */
   async piggybackInFlightExitOnInput ({
     inFlightTx,
@@ -480,15 +498,21 @@ class RootChain {
    * Attempts to prove that an in-flight exit is not canonical.
    *
    * @method challengeInFlightExitNotCanonical
-   * @param {string} inFlightTx RLP encoded in-flight transaction being exited.
-   * @param {number} inFlightTxInputIndex Index of the double-spent input in the in-flight transaction.
-   * @param {string} competingTx RLP encoded transaction that spent the input.
-   * @param {number} competingTxInputIndex Index of the double-spent input in the competing transaction.
-   * @param {number} competingTxPos Position of the competing transaction.
-   * @param {string} competingTxInclusionProof Proof that the competing transaction was included.
-   * @param {string} competingTxSig Signature proving that the owner of the input signed the competitor.
-   * @param {Object} txOptions transaction options, such as `from`, gas` and `privateKey`
-   * @return {string} transaction hash of the call
+   * @param {Object} args an arguments object
+   * @param {string} args.inputTx
+   * @param {string} args.inputUtxoPos
+   * @param {string} args.inFlightTx
+   * @param {number} args.inFlightTxInputIndex Index of the double-spent input in the in-flight transaction
+   * @param {string} args.competingTx RLP encoded transaction that spent the input
+   * @param {number} args.competingTxInputIndex Index of the double-spent input in the competing transaction
+   * @param {number} args.outputGuardPreimage
+   * @param {number} args.competingTxPos Position of the competing transaction
+   * @param {string} args.competingTxInclusionProof Proof that the competing transaction was included
+   * @param {string} args.competingTxWitness
+   * @param {string} args.competingTxConfirmSig
+   * @param {string} args.competingTxSpendingConditionOptionalArgs
+   * @param {Object} args.txOptions transaction options, such as `from`, gas` and `privateKey`
+   * @return {Promise<Object>} promise that resolves with a transaction receipt
    */
   async challengeInFlightExitNotCanonical ({
     inputTx,
@@ -541,11 +565,12 @@ class RootChain {
    * Allows a user to respond to competitors to an in-flight exit by showing the transaction is included.
    *
    * @method respondToNonCanonicalChallenge
-   * @param {string} inFlightTx RLP encoded in-flight transaction being exited.
-   * @param {number} inFlightTxPos Position of the in-flight transaction in the chain.
-   * @param {string} inFlightTxInclusionProof Proof that the in-flight transaction is included before the competitor.
-   * @param {Object} txOptions transaction options, such as `from`, gas` and `privateKey`
-   * @return {string} transaction hash of the call
+   * @param {Object} args an arguments object
+   * @param {string} args.inFlightTx RLP encoded in-flight transaction being exited
+   * @param {number} args.inFlightTxPos position of the in-flight transaction in the chain
+   * @param {string} args.inFlightTxInclusionProof proof that the in-flight transaction is included before the competitor
+   * @param {Object} args.txOptions transaction options, such as `from`, gas` and `privateKey`
+   * @return {Promise<Object>} promise that resolves with a transaction receipt
    */
   async respondToNonCanonicalChallenge ({
     inFlightTx,
@@ -577,14 +602,19 @@ class RootChain {
 
   /**
    * Removes an input from list of exitable outputs in an in-flight transaction.
+   *
    * @method challengeInFlightExitInputSpent
-   * @param {string} inFlightTx RLP encoded in-flight transaction being exited.
-   * @param {number} inFlightTxInputIndex Input that's been spent.
-   * @param {string} spendingTx RLP encoded transaction that spends the input.
-   * @param {number} spendingTxInputIndex Which input to the spending transaction spends the input.
-   * @param {string} spendingTxSig Signature that shows the input owner signed the spending transaction.
-   * @param {Object} txOptions transaction options, such as `from`, gas` and `privateKey`
-   * @return {string} transaction hash of the call
+   * @param {Object} args an arguments object
+   * @param {string} args.inFlightTx RLP encoded in-flight transaction being exited
+   * @param {number} args.inFlightTxInputIndex input that's been spent
+   * @param {string} args.challengingTx
+   * @param {number} args.challengingTxInputIndex
+   * @param {number} args.challengingTxWitness
+   * @param {number} args.inputTx
+   * @param {number} args.inputUtxoPos
+   * @param {string} args.spendingConditionOptionalArgs
+   * @param {Object} args.txOptions transaction options, such as `from`, gas` and `privateKey`
+   * @return {Promise<Object>} promise that resolves with a transaction receipt
    */
   async challengeInFlightExitInputSpent ({
     inFlightTx,
@@ -628,15 +658,18 @@ class RootChain {
 
   /**
    * Removes an output from list of exitable outputs in an in-flight transaction.
+   *
    * @method challengeInFlightExitOutputSpent
-   * @param {string} inFlightTx RLP encoded in-flight transaction being exited.
-   * @param {number} inFlightTxOutputPos Output that's been spent.
-   * @param {string} inFlightTxInclusionProof Proof that the in-flight transaction was included.
-   * @param {string} spendingTx RLP encoded transaction that spends the input.
-   * @param {number} spendingTxInputIndex Which input to the spending transaction spends the input.
-   * @param {string} spendingTxSig Signature that shows the input owner signed the spending transaction.
-   * @param {Object} txOptions transaction options, such as `from`, gas` and `privateKey`
-   * @return {string} transaction hash of the call
+   * @param {Object} args an arguments object
+   * @param {string} args.inFlightTx RLP encoded in-flight transaction being exited
+   * @param {string} args.inFlightTxInclusionProof
+   * @param {number} args.inFlightTxOutputPos Output that's been spent
+   * @param {string} args.challengingTx
+   * @param {string} args.challengingTxInputIndex
+   * @param {string} args.challengingTxWitness
+   * @param {string} args.spendingConditionOptionalArgs
+   * @param {Object} args.txOptions transaction options, such as `from`, gas` and `privateKey`
+   * @return {Promise<Object>} promise that resolves with a transaction receipt
    */
   async challengeInFlightExitOutputSpent ({
     inFlightTx,
