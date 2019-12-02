@@ -190,7 +190,7 @@ class RootChain {
   }
 
   /**
-   * Starts a standard withdrawal of a given output. Uses output-age priority.
+   * Starts a standard withdrawal of a given output. Uses output-age priority
    *
    * @method startStandardExit
    * @param {Object} args an arguments object
@@ -228,7 +228,7 @@ class RootChain {
   }
 
   /**
-   * Blocks a standard exit by showing the exiting output was spent.
+   * Blocks a standard exit by showing the exiting output was spent
    *
    * @method challengeStandardExit
    * @param {Object} args an arguments object
@@ -277,7 +277,8 @@ class RootChain {
   }
 
   /**
-   * Processes any exit that has completed the challenge period.
+   * Processes any exit that has completed the challenge period
+   *
    * @method processExits
    * @param {Object} args an arguments object
    * @param {string} args.token an address of the token to exit
@@ -314,6 +315,7 @@ class RootChain {
 
   /**
    * Checks if an exit queue exists for this token
+   *
    * @method hasToken
    * @param {string} token address of the token to check
    * @return {Promise<boolean>} promise that resolves with whether an exit queue exists for this token
@@ -324,7 +326,8 @@ class RootChain {
   }
 
   /**
-   * Adds a token to the Plasma chain. Tokens must be added in order to be able to exit them.
+   * Adds a token to the Plasma chain. Tokens must be added in order to be able to exit them
+   *
    * @method addToken
    * @param {Object} args an arguments object
    * @param {string} args.token Address of the token to process
@@ -357,11 +360,11 @@ class RootChain {
   }
 
   /**
-   * Starts an exit for an in-flight transaction.
+   * Starts an exit for an in-flight transaction
    *
    * @method startInFlightExit
    * @param {Object} args an arguments object
-   * @param {string} args.inFlightTx RLP encoded in-flight transaction.
+   * @param {string} args.inFlightTx RLP encoded in-flight transaction
    * @param {string} args.inputTxs transaction that created the inputs to the in-flight transaction
    * @param {string} args.inputUtxosPos
    * @param {string} args.outputGuardPreimagesForInputs
@@ -414,7 +417,7 @@ class RootChain {
   }
 
   /**
-   * Allows a user to piggyback onto an in-flight transaction.
+   * Allows a user to piggyback onto an in-flight transaction
    *
    * @method piggybackInFlightExit
    * @param {Object} args an arguments object
@@ -456,7 +459,7 @@ class RootChain {
   }
 
   /**
-   * Allows a user to piggyback onto an in-flight transaction.
+   * Allows a user to piggyback onto an in-flight transaction
    *
    * @method piggybackInFlightExit
    * @param {Object} args an arguments object
@@ -495,7 +498,7 @@ class RootChain {
   }
 
   /**
-   * Attempts to prove that an in-flight exit is not canonical.
+   * Attempts to prove that an in-flight exit is not canonical
    *
    * @method challengeInFlightExitNotCanonical
    * @param {Object} args an arguments object
@@ -562,7 +565,7 @@ class RootChain {
   }
 
   /**
-   * Allows a user to respond to competitors to an in-flight exit by showing the transaction is included.
+   * Allows a user to respond to competitors to an in-flight exit by showing the transaction is included
    *
    * @method respondToNonCanonicalChallenge
    * @param {Object} args an arguments object
@@ -601,7 +604,7 @@ class RootChain {
   }
 
   /**
-   * Removes an input from list of exitable outputs in an in-flight transaction.
+   * Removes an input from list of exitable outputs in an in-flight transaction
    *
    * @method challengeInFlightExitInputSpent
    * @param {Object} args an arguments object
@@ -657,7 +660,7 @@ class RootChain {
   }
 
   /**
-   * Removes an output from list of exitable outputs in an in-flight transaction.
+   * Removes an output from list of exitable outputs in an in-flight transaction
    *
    * @method challengeInFlightExitOutputSpent
    * @param {Object} args an arguments object
