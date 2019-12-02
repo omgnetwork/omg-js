@@ -76,7 +76,7 @@ async function exitChildChainErc20 () {
 
   // start a standard exit
   const exitData = await childChain.getExitData(bobUtxoToExit)
-  await rootChain.startStandardExit({
+  const standardExitReceipt = await rootChain.startStandardExit({
     outputId: exitData.utxo_pos,
     outputTx: exitData.txbytes,
     inclusionProof: exitData.proof,
@@ -86,12 +86,19 @@ async function exitChildChainErc20 () {
       gas: 6000000
     }
   })
-  console.log('Bob started a standard exit')
+  console.log('Bob started a standard exit: ', standardExitReceipt.transactionHash)
+
+  const exitId = await rootChain.getStandardExitId({
+    txBytes: exitData.txbytes,
+    utxoPos: exitData.utxo_pos,
+    isDeposit: bobUtxoToExit.blknum % 1000 !== 0
+  })
+  console.log('Exit id: ', exitId)
 
   await wait.waitForChallengePeriodToEnd(rootChain, exitData)
   const processExitReceipt = await rootChain.processExits({
     token: config.erc20_contract,
-    exitId: 0,
+    exitId,
     maxExitsToProcess: 20,
     txOptions: {
       privateKey: bobPrivateKey,
