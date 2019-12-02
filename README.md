@@ -28,7 +28,7 @@ You can use any of them separately, or all at once by importing the parent `@omi
 ### Installation
 
 #### Node
-Requires Node >= 8.11.3
+Requires Node >= 8.11.3 < 13.0.0
 ```
 npm install @omisego/omg-js
 ```

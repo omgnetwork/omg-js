@@ -162,7 +162,7 @@ const faucet = {
             gas: 6000000
           }
         })
-        const erc20VaultAddress = await this.rootChain.getErc20VaultAddress()
+        const { address: erc20VaultAddress } = await this.rootChain.getErc20Vault()
         const allowed = await this.erc20Contract.methods.allowance(this.address, erc20VaultAddress).call()
         if (allowed === '0') {
           throw new Error('ERC20 approval failed!')
