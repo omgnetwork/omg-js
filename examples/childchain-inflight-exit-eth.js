@@ -97,7 +97,7 @@ async function inflightExitChildChain () {
   const exitData = await childChain.inFlightExitGetData(hexPrefix(signedTxn))
   const outputGuardPreimagesForInputs = ['0x']
   const inputSpendingConditionOptionalArgs = ['0x']
-  await rootChain.startInFlightExit({
+  const exitReceipt = await rootChain.startInFlightExit({
     inFlightTx: exitData.in_flight_tx,
     inputTxs: exitData.input_txs,
     inputUtxosPos: exitData.input_utxos_pos,
@@ -108,10 +108,14 @@ async function inflightExitChildChain () {
     inputSpendingConditionOptionalArgs: inputSpendingConditionOptionalArgs,
     txOptions: {
       privateKey: bobPrivateKey,
-      from: bobAddress
+      from: bobAddress,
+      gas: 6000000
     }
   })
-  console.log('Bob starts an inflight exit')
+  console.log('Bob starts an inflight exit: ', exitReceipt.transactionHash)
+
+  const exitId = await rootChain.getInFlightExitId({ txBytes: exitData.in_flight_tx })
+  console.log('Exit id: ', exitId)
 
   // Decode the transaction to get the index of Bob's output
   const outputIndex = createdTxn.transactions[0].outputs.findIndex(
@@ -136,7 +140,7 @@ async function inflightExitChildChain () {
   // call processExits() after challenge period is over
   const processExitsPostChallengeReceipt = await rootChain.processExits({
     token: transaction.ETH_CURRENCY,
-    exitId: 0,
+    exitId,
     maxExitstToProcess: 10,
     txOptions: { privateKey: bobPrivateKey, from: bobAddress }
   })

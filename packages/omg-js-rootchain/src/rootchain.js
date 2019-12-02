@@ -188,7 +188,7 @@ class RootChain {
   }
 
   /**
-   * Get standard exit id to use when processing exits
+   * Get standard exit id to use when processing a standard exit
    *
    * @method getStandardExitId
    * @param {string} txBytes txBytes from the standard exit
@@ -198,6 +198,18 @@ class RootChain {
   async getStandardExitId ({ txBytes, utxoPos, isDeposit }) {
     const { contract } = await this.getPaymentExitGame()
     const exitId = await contract.methods.getStandardExitId(isDeposit, txBytes, utxoPos).call()
+    return exitId
+  }
+
+  /**
+   * Get inflight exit id to use when processing an inflight exit
+   *
+   * @method getInFlightExitId
+   * @param {string} txBytes txBytes from the inflight exit
+   */
+  async getInFlightExitId ({ txBytes }) {
+    const { contract } = await this.getPaymentExitGame()
+    const exitId = await contract.methods.getInFlightExitId(txBytes).call()
     return exitId
   }
 
