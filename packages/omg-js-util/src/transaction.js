@@ -91,8 +91,8 @@ const transaction = {
       inputs: [],
       outputs: [{
         outputType: 1,
-        outputGuard: owner,
-        currency,
+        outputGuard: hexPrefix(owner),
+        currency: hexPrefix(currency),
         amount
       }],
       metadata: typedData.NULL_METADATA

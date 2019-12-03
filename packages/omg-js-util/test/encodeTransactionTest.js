@@ -121,60 +121,42 @@ describe('Transaction tests', function () {
       const address = '0x854951e37c68a99a52d9e3ae15e0cb62184a613e'
       const amount = 333
       const expected =
-        '0xF85301C0EFEE0194854951E37C68A99A52D9E3AE15E0CB62184A613E94000000000000000000000000000000000000000082014DA00000000000000000000000000000000000000000000000000000000000000000'
+        '0xf85301c0efee0194854951e37c68a99a52d9e3ae15e0cb62184a613e94000000000000000000000000000000000000000082014da00000000000000000000000000000000000000000000000000000000000000000'
 
       const encoded = transaction.encodeDeposit(
         address,
         amount,
         transaction.ETH_CURRENCY
       )
-      const hexed = `0x${encoded.toString('hex').toUpperCase()}`
-      assert.equal(hexed, expected)
-    })
-
-    it('should return an encoded deposit transaction when address does not start with 0x', async function () {
-      const address = '854951e37c68a99a52d9e3ae15e0cb62184a613e'
-      const amount = 333
-      const expected =
-        '0xF86901C0F844F84201A83835343935316533376336386139396135326439653361653135653063623632313834613631336594000000000000000000000000000000000000000082014DA00000000000000000000000000000000000000000000000000000000000000000'
-
-      const encoded = transaction.encodeDeposit(
-        address,
-        amount,
-        transaction.ETH_CURRENCY
-      )
-      const hexed = `0x${encoded.toString('hex').toUpperCase()}`
-      assert.equal(hexed, expected)
+      assert.equal(encoded, expected)
     })
 
     it('should return an encoded deposit transaction when amount as a string', async function () {
       const address = '0x60c5bc2de80acda5016c1e81f61620adbc730dd2'
       const amount = '1000000000000000000'
       const expected =
-        '0xF85901C0F5F4019460C5BC2DE80ACDA5016C1E81F61620ADBC730DD2940000000000000000000000000000000000000000880DE0B6B3A7640000A00000000000000000000000000000000000000000000000000000000000000000'
+        '0xf85901c0f5f4019460c5bc2de80acda5016c1e81f61620adbc730dd2940000000000000000000000000000000000000000880de0b6b3a7640000a00000000000000000000000000000000000000000000000000000000000000000'
 
       const encoded = transaction.encodeDeposit(
         address,
         amount,
         transaction.ETH_CURRENCY
       )
-      const hexed = `0x${encoded.toString('hex').toUpperCase()}`
-      assert.equal(hexed, expected)
+      assert.equal(encoded, expected)
     })
 
     it('should return an encoded deposit transaction when currency does not start with 0x', async function () {
       const address = '0x60c5bc2de80acda5016c1e81f61620adbc730dd2'
       const amount = '3000000000000000000000'
       const expected =
-        '0xF87001C0F84BF849019460C5BC2DE80ACDA5016C1E81F61620ADBC730DD2A83030303030303030303030303030303030303030303030303030303030303030303030303030303089A2A15D09519BE00000A00000000000000000000000000000000000000000000000000000000000000000'
+        '0xf85a01c0f6f5019460c5bc2de80acda5016c1e81f61620adbc730dd294000000000000000000000000000000000000000089a2a15d09519be00000a00000000000000000000000000000000000000000000000000000000000000000'
 
       const encoded = transaction.encodeDeposit(
         address,
         amount,
         '0000000000000000000000000000000000000000'
       )
-      const hexed = `0x${encoded.toString('hex').toUpperCase()}`
-      assert.equal(hexed, expected)
+      assert.equal(encoded, expected)
     })
   })
 })
