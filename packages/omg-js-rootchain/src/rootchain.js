@@ -16,6 +16,7 @@ limitations under the License. */
 const txUtils = require('./txUtils')
 const { transaction } = require('@omisego/omg-js-util')
 const webUtils = require('web3-utils')
+const erc20abi = require('human-standard-token-abi')
 
 const ETH_VAULT_ID = 1
 const ERC20_VAULT_ID = 2
@@ -110,11 +111,12 @@ class RootChain {
     amount,
     txOptions
   }) {
-    const { contract, address } = await this.getErc20Vault()
+    const { address: spender } = await this.getErc20Vault()
+    const erc20Contract = this.getContract(erc20abi, erc20Address)
     const txDetails = {
       from: txOptions.from,
       to: erc20Address,
-      data: contract.methods.approve(address, amount).encodeABI(),
+      data: erc20Contract.methods.approve(spender, amount).encodeABI(),
       gas: txOptions.gas,
       gasPrice: txOptions.gasPrice
     }
@@ -190,7 +192,33 @@ class RootChain {
   }
 
   /**
-   * Starts a standard withdrawal of a given output. Uses output-age priority
+   * Get standard exit id to use when processing a standard exit
+   *
+   * @method getStandardExitId
+   * @param {string} txBytes txBytes from the standard exit
+   * @param {string} utxoPos the UTXO position of the UTXO being exited
+   * @param {boolean} isDeposit whether the standard exit is of a deposit UTXO
+   */
+  async getStandardExitId ({ txBytes, utxoPos, isDeposit }) {
+    const { contract } = await this.getPaymentExitGame()
+    const exitId = await contract.methods.getStandardExitId(isDeposit, txBytes, utxoPos).call()
+    return exitId
+  }
+
+  /**
+   * Get inflight exit id to use when processing an inflight exit
+   *
+   * @method getInFlightExitId
+   * @param {string} txBytes txBytes from the inflight exit
+   */
+  async getInFlightExitId ({ txBytes }) {
+    const { contract } = await this.getPaymentExitGame()
+    const exitId = await contract.methods.getInFlightExitId(txBytes).call()
+    return exitId
+  }
+
+  /**
+   * Starts a standard withdrawal of a given output. Uses output-age priority.
    *
    * @method startStandardExit
    * @param {Object} args an arguments object
