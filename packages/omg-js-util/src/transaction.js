@@ -173,12 +173,12 @@ const transaction = {
     return {
       ...(sigs && { sigs: sigs.map(parseString) }),
       transactionType: parseNumber(transactionType),
-      inputs: inputs.map(input => transaction.decodeUtxoPos(parseString(input))),
+      inputs: inputs.map(input => transaction.decodeUtxoPos(input.toString())),
       outputs: outputs.map(output => {
         const outputType = parseNumber(output[0])
         const outputGuard = parseString(output[1])
         const currency = parseString(output[2])
-        const amount = parseNumber(output[3])
+        const amount = numberToBN(output[3].toString('hex')).toString()
         return { outputType, outputGuard, currency, amount }
       }),
       metadata: parseString(metadata)
@@ -287,7 +287,7 @@ const transaction = {
   encodeUtxoPos: function (utxo) {
     const blk = numberToBN(utxo.blknum).mul(BLOCK_OFFSET)
     const tx = numberToBN(utxo.txindex).muln(TX_OFFSET)
-    return blk.add(tx).addn(utxo.oindex)
+    return blk.add(tx).addn(utxo.oindex).toString()
   },
 
   /**
@@ -404,9 +404,7 @@ function addOutput (array, output) {
       output.outputType,
       sanitiseAddress(output.outputGuard), // must start with '0x' to be encoded properly
       sanitiseAddress(output.currency), // must start with '0x' to be encoded properly
-      // If amount is 0 it should be encoded as '0x80' (empty byte array)
-      // If it's non zero, it should be a BN to avoid precision loss
-      output.amount === 0 ? 0 : numberToBN(output.amount)
+      hexPrefix(numberToBN(output.amount).toString(16))
     ])
   }
 }

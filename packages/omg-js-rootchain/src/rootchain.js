@@ -15,7 +15,6 @@ limitations under the License. */
 
 const txUtils = require('./txUtils')
 const { transaction } = require('@omisego/omg-js-util')
-const webUtils = require('web3-utils')
 const erc20abi = require('human-standard-token-abi')
 const {
   approveTokenSchema,
@@ -156,7 +155,7 @@ class RootChain {
     const txDetails = {
       from: txOptions.from,
       to: address,
-      value: webUtils.toHex(amount),
+      value: amount,
       data: txUtils.getTxData(this.web3, contract, 'deposit', depositTx),
       gas: txOptions.gas,
       gasPrice: txOptions.gasPrice

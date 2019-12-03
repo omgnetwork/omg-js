@@ -16,7 +16,6 @@ limitations under the License. */
 const chai = require('chai')
 const assert = chai.assert
 const transaction = require('../src/transaction')
-
 describe('Transaction tests', function () {
   it('should return an encoded transaction from 1 input and 1 output', async function () {
     const txBody = {
@@ -38,8 +37,54 @@ describe('Transaction tests', function () {
     }
     const unsignedTx = transaction.encode(txBody)
     const expectedTx =
-      '0xf84180c8874640596164aa00f5f40194f4ebbe787311bb955bb353b7a4d8b97af8ed1c9b9400000000000000000000000000000000000000008806f05b59d3b2006480'
+      '0xf84b80d2913139373734303031303030303030303030f5f40194f4ebbe787311bb955bb353b7a4d8b97af8ed1c9b9400000000000000000000000000000000000000008806f05b59d3b2006480'
     assert.equal(unsignedTx, expectedTx)
+  })
+
+  it('should return an encoded transaction from bn amount', async function () {
+    const txBody = {
+      transactionType: 1,
+      inputs: [
+        {
+          txindex: 0,
+          oindex: 0,
+          blknum: 19774001
+        }
+      ],
+      outputs: [
+        {
+          outputType: 1,
+          outputGuard: '0xf4ebbe787311bb955bb353b7a4d8b97af8ed1c9b',
+          currency: '0x0000000000000000000000000000000000000000',
+          amount: '123'
+        }
+      ]
+    }
+    const encodedTx = transaction.encode(txBody)
+    const decodedTx = transaction.decodeTxBytes(encodedTx)
+
+    assert.deepEqual(
+      {
+        transactionType: 1,
+        inputs: [
+          {
+            txindex: 0,
+            oindex: 0,
+            blknum: 19774001
+          }
+        ],
+        outputs: [
+          {
+            outputType: 1,
+            outputGuard: '0xf4ebbe787311bb955bb353b7a4d8b97af8ed1c9b',
+            currency: '0x0000000000000000000000000000000000000000',
+            amount: '123'
+          }
+        ],
+        metadata: '0x0000000000000000000000000000000000000000'
+      },
+      decodedTx
+    )
   })
 
   it('should create a hex-encoded unsigned transaction with 4 inputs and 4 outputs', function () {
@@ -96,7 +141,7 @@ describe('Transaction tests', function () {
 
     const unsignedTx = transaction.encode(txBody)
     const expectedTx =
-      '0xf8ed80e0874640596164aa00874640599cff7400874640599cff7401874640599d00faa0f8c8f40194f4ebbe787311bb955bb353b7a4d8b97af8ed1c9b940000000000000000000000000000000000000000880de0b6b3a7640000f401943272ee86d8192f59261960c9ae186063c8c9041f940000000000000000000000000000000000000000880de0b6b3a7640000f0019499d7b5c57c16acb24a327a37356a804a2f75dade9400000000000000000000000000000000000000008405f5e100ec0194bfdf85743ef16cfb1f8d4dd1dfc74c51dc4964349400000000000000000000000000000000000000006480'
+      '0xf9011680f848913139373734303031303030303030303030913139373734303032303030303030303030913139373734303032303030303030303031913139373734303032303030313030303030f8c8f40194f4ebbe787311bb955bb353b7a4d8b97af8ed1c9b940000000000000000000000000000000000000000880de0b6b3a7640000f401943272ee86d8192f59261960c9ae186063c8c9041f940000000000000000000000000000000000000000880de0b6b3a7640000f0019499d7b5c57c16acb24a327a37356a804a2f75dade9400000000000000000000000000000000000000008405f5e100ec0194bfdf85743ef16cfb1f8d4dd1dfc74c51dc4964349400000000000000000000000000000000000000006480'
     assert.equal(unsignedTx, expectedTx)
   })
 
@@ -112,7 +157,7 @@ describe('Transaction tests', function () {
       outputs: []
     }
     const unsignedTx = transaction.encode(txBody)
-    const expectedTx = '0xcc80c8874640596164aa00c080'
+    const expectedTx = '0xd680d2913139373734303031303030303030303030c080'
     assert.equal(unsignedTx, expectedTx)
   })
 
