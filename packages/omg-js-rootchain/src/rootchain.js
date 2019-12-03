@@ -17,6 +17,8 @@ const txUtils = require('./txUtils')
 const { transaction } = require('@omisego/omg-js-util')
 const webUtils = require('web3-utils')
 const erc20abi = require('human-standard-token-abi')
+const Joi = require('@hapi/joi')
+
 const ETH_VAULT_ID = 1
 const ERC20_VAULT_ID = 2
 const PAYMENT_TYPE = 1
