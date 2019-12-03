@@ -17,11 +17,6 @@ const txUtils = require('./txUtils')
 const { transaction } = require('@omisego/omg-js-util')
 const webUtils = require('web3-utils')
 const erc20abi = require('human-standard-token-abi')
-const { approveTokenSchema, depositTokenSchema, depositEthSchema, startStandardExitSchema } = require('./validators')
-const Joi = require('@hapi/joi')
-const STANDARD_EXIT_BOND = 14000000000000000
-const INFLIGHT_EXIT_BOND = 37000000000000000
-const PIGGYBACK_BOND = 28000000000000000
 const ETH_VAULT_ID = 1
 const ERC20_VAULT_ID = 2
 const PAYMENT_TYPE = 1
@@ -54,24 +49,46 @@ class RootChain {
     )
   }
 
-  getEthVaultAddress () {
-    return this.plasmaContract.methods.vaults(ETH_VAULT_ID).call()
+  async getErc20Vault () {
+    if (!this.erc20Vault) {
+      const address = await this.plasmaContract.methods.vaults(ERC20_VAULT_ID).call()
+      const contract = this.getContract(this.erc20VaultAbi.abi, address)
+      this.erc20Vault = { contract, address }
+    }
+    return this.erc20Vault
   }
 
-  getErc20VaultAddress () {
-    return this.plasmaContract.methods.vaults(ERC20_VAULT_ID).call()
+  async getEthVault () {
+    if (!this.ethVault) {
+      const address = await this.plasmaContract.methods.vaults(ETH_VAULT_ID).call()
+      const contract = this.getContract(this.ethVaultAbi.abi, address)
+      this.ethVault = { contract, address }
+    }
+    return this.ethVault
   }
 
-  getPaymentExitGameAddress () {
-    return this.plasmaContract.methods.exitGames(PAYMENT_TYPE).call()
-  }
+  async getPaymentExitGame () {
+    if (!this.paymentExitGame) {
+      const address = await this.plasmaContract.methods.exitGames(PAYMENT_TYPE).call()
+      const contract = this.getContract(this.paymentExitGameAbi.abi, address)
 
-  getPiggybackBond () {
-    return PIGGYBACK_BOND
-  }
+      const bondSizes = await Promise.all([
+        contract.methods.startStandardExitBondSize().call(),
+        contract.methods.piggybackBondSize().call(),
+        contract.methods.startIFEBondSize().call()
+      ])
 
-  getInflightExitBond () {
-    return INFLIGHT_EXIT_BOND
+      this.paymentExitGame = {
+        contract,
+        address,
+        bonds: {
+          standardExit: Number(bondSizes[0]),
+          piggyback: Number(bondSizes[1]),
+          inflightExit: Number(bondSizes[2])
+        }
+      }
+    }
+    return this.paymentExitGame
   }
 
   getContract (abi, address) {
@@ -79,11 +96,6 @@ class RootChain {
       return this.web3.eth.contract(abi).at(address)
     }
     return new this.web3.eth.Contract(abi, address)
-  }
-
-  getStandardExitBond () {
-    // TODO Get this from the contract
-    return STANDARD_EXIT_BOND
   }
 
   /**
@@ -95,9 +107,13 @@ class RootChain {
    * @param {Object} txOptions transaction options, such as `from`, `gas` and `privateKey`
    * @return {Promise<{ transactionHash: string }>} promise that resolves with an object holding the transaction hash
    */
-  async approveToken ({ erc20Address, amount, txOptions }) {
+  async approveToken ({
+    erc20Address,
+    amount,
+    txOptions
+  }) {
     Joi.assert({ erc20Address, amount, txOptions }, approveTokenSchema)
-    const spender = await this.getErc20VaultAddress()
+    const { address: spender } = await this.getErc20Vault()
     const erc20Contract = this.getContract(erc20abi, erc20Address)
     const txDetails = {
       from: txOptions.from,
@@ -106,7 +122,6 @@ class RootChain {
       gas: txOptions.gas,
       gasPrice: txOptions.gasPrice
     }
-
     return txUtils.sendTx({
       web3: this.web3,
       txDetails,
@@ -126,25 +141,20 @@ class RootChain {
    */
   async depositEth ({ depositTx, amount, txOptions, callbacks }) {
     Joi.assert({ depositTx, amount, txOptions, callbacks }, depositEthSchema)
-    const ethVaultAddress = await this.getEthVaultAddress()
-    const ethVaultContract = this.getContract(
-      this.ethVaultAbi.abi,
-      ethVaultAddress
-    )
+    const { contract, address } = await this.getEthVault()
     const txDetails = {
       from: txOptions.from,
-      to: ethVaultAddress,
+      to: address,
       value: webUtils.toHex(amount),
       data: txUtils.getTxData(
         this.web3,
-        ethVaultContract,
+        contract,
         'deposit',
         depositTx
       ),
       gas: txOptions.gas,
       gasPrice: txOptions.gasPrice
     }
-
     return txUtils.sendTx({
       web3: this.web3,
       txDetails,
@@ -163,29 +173,50 @@ class RootChain {
    */
   async depositToken ({ depositTx, txOptions }) {
     Joi.assert({ depositTx, txOptions }, depositTokenSchema)
-    const erc20VaultAddress = await this.getErc20VaultAddress()
-    const erc20VaultContract = this.getContract(
-      this.erc20VaultAbi.abi,
-      erc20VaultAddress
-    )
+    const { address, contract } = await this.getErc20Vault()
     const txDetails = {
       from: txOptions.from,
-      to: erc20VaultAddress,
+      to: address,
       data: txUtils.getTxData(
         this.web3,
-        erc20VaultContract,
+        contract,
         'deposit',
         depositTx
       ),
       gas: txOptions.gas,
       gasPrice: txOptions.gasPrice
     }
-
     return txUtils.sendTx({
       web3: this.web3,
       txDetails,
       privateKey: txOptions.privateKey
     })
+  }
+
+  /**
+   * Get standard exit id to use when processing a standard exit
+   *
+   * @method getStandardExitId
+   * @param {string} txBytes txBytes from the standard exit
+   * @param {string} utxoPos the UTXO position of the UTXO being exited
+   * @param {boolean} isDeposit whether the standard exit is of a deposit UTXO
+   */
+  async getStandardExitId ({ txBytes, utxoPos, isDeposit }) {
+    const { contract } = await this.getPaymentExitGame()
+    const exitId = await contract.methods.getStandardExitId(isDeposit, txBytes, utxoPos).call()
+    return exitId
+  }
+
+  /**
+   * Get inflight exit id to use when processing an inflight exit
+   *
+   * @method getInFlightExitId
+   * @param {string} txBytes txBytes from the inflight exit
+   */
+  async getInFlightExitId ({ txBytes }) {
+    const { contract } = await this.getPaymentExitGame()
+    const exitId = await contract.methods.getInFlightExitId(txBytes).call()
+    return exitId
   }
 
   /**
@@ -200,26 +231,20 @@ class RootChain {
    */
   async startStandardExit ({ outputId, outputTx, inclusionProof, txOptions }) {
     Joi.assert({ outputId, outputTx, inclusionProof, txOptions }, startStandardExitSchema)
-    const paymentExitGameAddress = await this.getPaymentExitGameAddress()
-    const paymentExitGameContract = this.getContract(
-      this.paymentExitGameAbi.abi,
-      paymentExitGameAddress
-    )
-
+    const { contract, address, bonds } = await this.getPaymentExitGame()
     const txDetails = {
       from: txOptions.from,
-      to: paymentExitGameAddress,
+      to: address,
       data: txUtils.getTxData(
         this.web3,
-        paymentExitGameContract,
+        contract,
         'startStandardExit',
         [outputId.toString(), outputTx, '0x', inclusionProof]
       ),
-      value: STANDARD_EXIT_BOND,
+      value: bonds.standardExit,
       gas: txOptions.gas,
       gasPrice: txOptions.gasPrice
     }
-
     return txUtils.sendTx({
       web3: this.web3,
       txDetails,
@@ -249,19 +274,13 @@ class RootChain {
     // standardExitId is an extremely large number as it uses the entire int192.
     // It's too big to be represented as a Number, so we convert it to a hex string
     const exitId = txUtils.int192toHex(standardExitId)
-
-    const paymentExitGameAddress = await this.getPaymentExitGameAddress()
-    const paymentExitGameContract = this.getContract(
-      this.paymentExitGameAbi.abi,
-      paymentExitGameAddress
-    )
-
+    const { address, contract } = await this.getPaymentExitGame()
     const txDetails = {
       from: txOptions.from,
-      to: paymentExitGameAddress,
+      to: address,
       data: txUtils.getTxData(
         this.web3,
-        paymentExitGameContract,
+        contract,
         'challengeStandardExit',
         [
           exitId,
@@ -280,7 +299,6 @@ class RootChain {
       gas: txOptions.gas,
       gasPrice: txOptions.gasPrice
     }
-
     return txUtils.sendTx({
       web3: this.web3,
       txDetails,
@@ -387,17 +405,13 @@ class RootChain {
     inputSpendingConditionOptionalArgs,
     txOptions
   }) {
-    const paymentExitGameAddress = await this.getPaymentExitGameAddress()
-    const paymentExitGameContract = this.getContract(
-      this.paymentExitGameAbi.abi,
-      paymentExitGameAddress
-    )
+    const { address, contract, bonds } = await this.getPaymentExitGame()
     const txDetails = {
       from: txOptions.from,
-      to: paymentExitGameAddress,
+      to: address,
       data: txUtils.getTxData(
         this.web3,
-        paymentExitGameContract,
+        contract,
         'startInFlightExit',
         [
           inFlightTx,
@@ -410,11 +424,10 @@ class RootChain {
           inputSpendingConditionOptionalArgs
         ]
       ),
-      value: INFLIGHT_EXIT_BOND,
+      value: bonds.inflightExit,
       gas: txOptions.gas,
       gasPrice: txOptions.gasPrice
     }
-
     return txUtils.sendTx({
       web3: this.web3,
       txDetails,
@@ -437,25 +450,20 @@ class RootChain {
     outputGuardPreimage,
     txOptions
   }) {
-    const paymentExitGameAddress = await this.getPaymentExitGameAddress()
-    const paymentExitGameContract = this.getContract(
-      this.paymentExitGameAbi.abi,
-      paymentExitGameAddress
-    )
+    const { address, contract, bonds } = await this.getPaymentExitGame()
     const txDetails = {
       from: txOptions.from,
-      to: paymentExitGameAddress,
+      to: address,
       data: txUtils.getTxData(
         this.web3,
-        paymentExitGameContract,
+        contract,
         'piggybackInFlightExitOnOutput',
         [inFlightTx, outputIndex, outputGuardPreimage]
       ),
-      value: PIGGYBACK_BOND,
+      value: bonds.piggyback,
       gas: txOptions.gas,
       gasPrice: txOptions.gasPrice
     }
-
     return txUtils.sendTx({
       web3: this.web3,
       txDetails,
@@ -472,26 +480,25 @@ class RootChain {
    * @param {Object} txOptions transaction options, such as `from`, gas` and `privateKey`
    * @return {string} transaction hash of the call
    */
-  async piggybackInFlightExitOnInput ({ inFlightTx, inputIndex, txOptions }) {
-    const paymentExitGameAddress = await this.getPaymentExitGameAddress()
-    const paymentExitGameContract = this.getContract(
-      this.paymentExitGameAbi.abi,
-      paymentExitGameAddress
-    )
+  async piggybackInFlightExitOnInput ({
+    inFlightTx,
+    inputIndex,
+    txOptions
+  }) {
+    const { address, contract, bonds } = await this.getPaymentExitGame()
     const txDetails = {
       from: txOptions.from,
-      to: paymentExitGameAddress,
+      to: address,
       data: txUtils.getTxData(
         this.web3,
-        paymentExitGameContract,
+        contract,
         'piggybackInFlightExitOnInput',
         [inFlightTx, inputIndex]
       ),
-      value: PIGGYBACK_BOND,
+      value: bonds.piggyback,
       gas: txOptions.gas,
       gasPrice: txOptions.gasPrice
     }
-
     return txUtils.sendTx({
       web3: this.web3,
       txDetails,
@@ -528,17 +535,12 @@ class RootChain {
     competingTxSpendingConditionOptionalArgs,
     txOptions
   }) {
-    const paymentExitGameAddress = await this.getPaymentExitGameAddress()
-    const paymentExitGameContract = this.getContract(
-      this.paymentExitGameAbi.abi,
-      paymentExitGameAddress
-    )
+    const { address, contract } = await this.getPaymentExitGame()
     const txDetails = {
       from: txOptions.from,
-      to: paymentExitGameAddress,
-      data: txUtils.getTxData(
-        this.web3,
-        paymentExitGameContract,
+      to: address,
+      data: txUtils.getTxData(this.web3,
+        contract,
         'challengeInFlightExitNotCanonical',
         [
           inputTx,
@@ -558,7 +560,6 @@ class RootChain {
       gas: txOptions.gas,
       gasPrice: txOptions.gasPrice
     }
-
     return txUtils.sendTx({
       web3: this.web3,
       txDetails,
@@ -582,17 +583,13 @@ class RootChain {
     inFlightTxInclusionProof,
     txOptions
   }) {
-    const paymentExitGameAddress = await this.getPaymentExitGameAddress()
-    const paymentExitGameContract = this.getContract(
-      this.paymentExitGameAbi.abi,
-      paymentExitGameAddress
-    )
+    const { address, contract } = await this.getPaymentExitGame()
     const txDetails = {
       from: txOptions.from,
-      to: paymentExitGameAddress,
+      to: address,
       data: txUtils.getTxData(
         this.web3,
-        paymentExitGameContract,
+        contract,
         'respondToNonCanonicalChallenge',
         inFlightTx,
         inFlightTxPos,
@@ -601,7 +598,6 @@ class RootChain {
       gas: txOptions.gas,
       gasPrice: txOptions.gasPrice
     }
-
     return txUtils.sendTx({
       web3: this.web3,
       txDetails,
@@ -631,18 +627,13 @@ class RootChain {
     spendingConditionOptionalArgs,
     txOptions
   }) {
-    const paymentExitGameAddress = await this.getPaymentExitGameAddress()
-    const paymentExitGameContract = this.getContract(
-      this.paymentExitGameAbi.abi,
-      paymentExitGameAddress
-    )
-
+    const { address, contract } = await this.getPaymentExitGame()
     const txDetails = {
       from: txOptions.from,
-      to: paymentExitGameAddress,
+      to: address,
       data: txUtils.getTxData(
         this.web3,
-        paymentExitGameContract,
+        contract,
         'challengeInFlightExitInputSpent',
         [
           inFlightTx,
@@ -658,7 +649,6 @@ class RootChain {
       gas: txOptions.gas,
       gasPrice: txOptions.gasPrice
     }
-
     return txUtils.sendTx({
       web3: this.web3,
       txDetails,
@@ -688,18 +678,13 @@ class RootChain {
     spendingConditionOptionalArgs,
     txOptions
   }) {
-    const paymentExitGameAddress = await this.getPaymentExitGameAddress()
-    const paymentExitGameContract = this.getContract(
-      this.paymentExitGameAbi.abi,
-      paymentExitGameAddress
-    )
-
+    const { address, contract } = await this.getPaymentExitGame()
     const txDetails = {
       from: txOptions.from,
-      to: paymentExitGameAddress,
+      to: address,
       data: txUtils.getTxData(
         this.web3,
-        paymentExitGameContract,
+        contract,
         'challengeInFlightExitOutputSpent',
         [
           inFlightTx,
@@ -714,7 +699,6 @@ class RootChain {
       gas: txOptions.gas,
       gasPrice: txOptions.gasPrice
     }
-
     return txUtils.sendTx({
       web3: this.web3,
       txDetails,

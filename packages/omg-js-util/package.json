@@ -1,12 +1,14 @@
 {
   "name": "@omisego/omg-js-util",
-  "version": "3.0.0-alpha.8",
+  "version": "3.0.0-alpha.10",
   "description": "OMG util module",
   "main": "src/index.js",
   "author": "OmiseGo",
   "contributors": [
     "Pong Cheecharern <pong@omise.co>",
-    "Kevin Sullivan <kevinsul@omise.co>"
+    "Kevin Sullivan <kevinsul@omise.co>",
+    "Jarindr Thitadilaka <jarindr@omisego.co>",
+    "Nicholas Mueller <nicholas@omisego.co>"
   ],
   "license": "Apache-2.0",
   "repository": {
