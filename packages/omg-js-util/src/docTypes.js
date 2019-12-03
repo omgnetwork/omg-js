@@ -36,3 +36,53 @@
  * @property {string} transactionHash
  * @property {number} transactionIndex
  */
+
+/**
+ * UTXO
+ * @typedef {Object} UTXO
+ * @property {number} txindex
+ * @property {number} oindex
+ * @property {number} blknum
+ */
+
+/**
+ * Decoded output
+ * @typedef {Object} Output
+ * @property {number} outputType
+ * @property {string} outputGuard
+ * @property {string} currency
+ * @property {number} amount
+ */
+
+/**
+ * A transaction body object
+ * @typedef {Object} TransactionBody
+ * @property {number} transactionType
+ * @property {UTXO[]} inputs
+ * @property {Output[]} outputs
+ * @property {string} metadata
+ */
+
+/**
+ * A deposit transaction object
+ * @typedef {Object} DepositTransaction
+ * @property {string} owner
+ * @property {number} amount
+ * @property {string} currency
+ */
+
+/**
+ * A BigNumber object
+ * @typedef {Object} BigNumber
+ * @property {Function} toString
+ * @property {Function} toNumber
+ */
+
+/**
+ * A typed data object
+ * @typedef {Object} TypedData
+ * @property {Object} types
+ * @property {Object} domain
+ * @property {string} primaryType
+ * @property {Object} message
+ */

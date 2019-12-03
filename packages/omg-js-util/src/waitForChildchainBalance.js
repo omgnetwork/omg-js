@@ -18,6 +18,17 @@ const promiseRetry = require('promise-retry')
 const numberToBN = require('number-to-bn')
 const transaction = require('./transaction')
 
+/**
+ * Helper that waits for a balance on the ChildChain to equal the expected amount
+ *
+ * @method waitForChildchainBalance
+ * @param {Object} args arguments object
+ * @param {ChildChain} args.childChain childchain instance
+ * @param {string} args.address address to check the balance of
+ * @param {number} args.expectedAmount the amount expected
+ * @param {string} [args.currency] the token address to check (defaults to ETH)
+ * @return {Promise<Object[]>} promise that resolves when the balance equals the expected amount
+ */
 function waitForChildchainBalance ({
   childChain,
   address,

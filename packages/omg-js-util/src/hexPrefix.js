@@ -14,6 +14,13 @@
   limitations under the License.
 */
 
+/**
+ * Helper to ensure passed value is hex prefixed
+ *
+ * @method hexPrefix
+ * @param {string} data string to prefix
+ * @return {string} hex prefixed string
+ */
 function hexPrefix (data) {
   return data.startsWith('0x') ? data : `0x${data}`
 }

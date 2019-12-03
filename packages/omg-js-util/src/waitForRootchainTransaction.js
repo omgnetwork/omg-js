@@ -14,6 +14,18 @@
   limitations under the License.
 */
 
+/**
+ * Helper that waits for RootChain confirmation of a transaction
+ *
+ * @method waitForRootchainTransaction
+ * @param {Object} args arguments object
+ * @param {Web3} args.web3 web3 instance
+ * @param {string} args.transactionHash hash of the transaction to wait for
+ * @param {number} args.checkIntervalMs interval in milliseconds to check the current block number
+ * @param {number} args.blocksToWait number of blocks to wait before transaction is confirmed
+ * @param {Function} args.onCountdown callback thats passed the remaining number of blocks before confirmation
+ * @return {Promise<TransactionReceipt>} promise that resolves with the transaction receipt of the transaction
+ */
 async function waitForRootchainTransaction ({
   web3,
   transactionHash,

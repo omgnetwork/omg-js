@@ -54,7 +54,7 @@ class ChildChain {
    *
    * @method getBalance
    * @param {string} address address to check
-   * @return {Promise<Array>} promise that resolves with an array of balances (one per currency)
+   * @return {Promise<Object[]>} promise that resolves with an array of balances (one per currency)
    */
   async getBalance (address) {
     validateAddress(address)

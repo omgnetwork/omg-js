@@ -14,6 +14,13 @@
   limitations under the License.
 */
 
+/**
+ * Helper to transform hex to bytes
+ *
+ * @method hexToBytes
+ * @param {string} hex hex string to transform
+ * @return {string} transformed value as bytes
+ */
 function hexToBytes (hex) {
   hex = hex.toString(16)
   hex = hex.replace(/^0x/i, '')

@@ -44,15 +44,21 @@ toc:
   - name: OMG Util
     children:
       - transaction
-      # - sign
-      # - hexToBytes
-      # - hexPrefix
+      - sign
+      - hexToBytes
+      - hexPrefix
       - ethErrorReason
       - getErc20Balance
-      # - waitForRootchainTransaction
-      # - waitForChildchainBalance
+      - waitForRootchainTransaction
+      - waitForChildchainBalance
 
   - name: Types
     children:
       - Web3
       - TransactionReceipt
+      - UTXO
+      - Output
+      - TransactionBody
+      - DepositTransaction
+      - BigNumber
+      - TypedData
