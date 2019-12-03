@@ -18,6 +18,11 @@ const { transaction } = require('@omisego/omg-js-util')
 const webUtils = require('web3-utils')
 const erc20abi = require('human-standard-token-abi')
 
+const erc20VaultAbi = require('./contracts/Erc20Vault.json')
+const ethVaultAbi = require('./contracts/EthVault.json')
+const paymentExitGameAbi = require('./contracts/PaymentExitGame.json')
+const plasmaFrameworkAbi = require('./contracts/PlasmaFramework.json')
+
 const ETH_VAULT_ID = 1
 const ERC20_VAULT_ID = 2
 const PAYMENT_TYPE = 1
@@ -29,28 +34,19 @@ class RootChain {
   * @param {Object} config the rootchain configuration object
   * @param {Web3} config.web3 a web3 instance
   * @param {string} config.plasmaContractAddress the address of the PlasmaFramework contract
-  * @param {string} config.plasmaAbi the abi of the PlasmaFramework contract
   * @return {RootChain} a Rootchain object
   *
   */
-  constructor ({ web3, plasmaContractAddress, plasmaAbi }) {
+  constructor ({ web3, plasmaContractAddress }) {
     this.web3 = web3
     this.plasmaContractAddress = plasmaContractAddress
-    this.isLegacyWeb3 = web3.version.api && web3.version.api.startsWith('0.2')
-    // contracts abi
-    this.erc20VaultAbi = require('./contracts/Erc20Vault.json')
-    this.ethVaultAbi = require('./contracts/EthVault.json')
-    this.exitGameRegistryAbi = require('./contracts/ExitGameRegistry.json')
-    this.paymentExitGameAbi = require('./contracts/PaymentExitGame.json')
-    this.plasmaFrameworkAbi = plasmaAbi || require('./contracts/PlasmaFramework.json')
-
-    this.plasmaContract = this.getContract(this.plasmaFrameworkAbi.abi, plasmaContractAddress)
+    this.plasmaContract = getContract(plasmaFrameworkAbi.abi, plasmaContractAddress)
   }
 
   async getErc20Vault () {
     if (!this.erc20Vault) {
       const address = await this.plasmaContract.methods.vaults(ERC20_VAULT_ID).call()
-      const contract = this.getContract(this.erc20VaultAbi.abi, address)
+      const contract = getContract(erc20VaultAbi.abi, address)
       this.erc20Vault = { contract, address }
     }
     return this.erc20Vault
@@ -59,7 +55,7 @@ class RootChain {
   async getEthVault () {
     if (!this.ethVault) {
       const address = await this.plasmaContract.methods.vaults(ETH_VAULT_ID).call()
-      const contract = this.getContract(this.ethVaultAbi.abi, address)
+      const contract = getContract(ethVaultAbi.abi, address)
       this.ethVault = { contract, address }
     }
     return this.ethVault
@@ -68,7 +64,7 @@ class RootChain {
   async getPaymentExitGame () {
     if (!this.paymentExitGame) {
       const address = await this.plasmaContract.methods.exitGames(PAYMENT_TYPE).call()
-      const contract = this.getContract(this.paymentExitGameAbi.abi, address)
+      const contract = getContract(paymentExitGameAbi.abi, address)
 
       const bondSizes = await Promise.all([
         contract.methods.startStandardExitBondSize().call(),
@@ -89,13 +85,6 @@ class RootChain {
     return this.paymentExitGame
   }
 
-  getContract (abi, address) {
-    if (this.isLegacyWeb3) {
-      return this.web3.eth.contract(abi).at(address)
-    }
-    return new this.web3.eth.Contract(abi, address)
-  }
-
   /**
    * Approve ERC20 for deposit
    *
@@ -103,8 +92,8 @@ class RootChain {
    * @param {Object} args an arguments object
    * @param {string} args.erc20Address address of the ERC20 token
    * @param {number} args.amount amount of ERC20 to approve to deposit
-   * @param {Object} args.txOptions transaction options, such as `from`, `gas` and `privateKey`
-   * @return {Promise<Object>} promise that resolves with a transaction receipt
+   * @param {TransactionOptions} args.txOptions transaction options
+   * @return {Promise<TransactionReceipt>} promise that resolves with a transaction receipt
    */
   async approveToken ({
     erc20Address,
@@ -112,7 +101,7 @@ class RootChain {
     txOptions
   }) {
     const { address: spender } = await this.getErc20Vault()
-    const erc20Contract = this.getContract(erc20abi, erc20Address)
+    const erc20Contract = getContract(erc20abi, erc20Address)
     const txDetails = {
       from: txOptions.from,
       to: erc20Address,
@@ -134,9 +123,9 @@ class RootChain {
    * @param {Object} args an arguments object
    * @param {string} args.depositTx RLP encoded childchain deposit transaction
    * @param {number} args.amount amount of ETH to deposit
-   * @param {Object} args.txOptions transaction options, such as `from`, `gas` and `privateKey`
-   * @param {Object} args.[callbacks] callbacks to events from the transaction lifecycle
-   * @return {Promise<Object>} promise that resolves with a transaction receipt
+   * @param {TransactionOptions} args.txOptions transaction options
+   * @param {TransactionCallbacks} [args.callbacks] callbacks to events from the transaction lifecycle
+   * @return {Promise<TransactionReceipt>} promise that resolves with a transaction receipt
    */
   async depositEth ({ depositTx, amount, txOptions, callbacks }) {
     const { contract, address } = await this.getEthVault()
@@ -167,8 +156,8 @@ class RootChain {
    * @method depositToken
    * @param {Object} args an arguments object
    * @param {string} args.depositTx RLP encoded childchain deposit transaction
-   * @param {Object} args.txOptions transaction options, such as `from`, gas` and `privateKey`
-   * @return {Promise<Object>} promise that resolves with a transaction receipt
+   * @param {TransactionOptions} args.txOptions transaction options
+   * @return {Promise<TransactionReceipt>} promise that resolves with a transaction receipt
    */
   async depositToken ({ depositTx, txOptions }) {
     const { address, contract } = await this.getErc20Vault()
@@ -195,9 +184,11 @@ class RootChain {
    * Get standard exit id to use when processing a standard exit
    *
    * @method getStandardExitId
-   * @param {string} txBytes txBytes from the standard exit
-   * @param {string} utxoPos the UTXO position of the UTXO being exited
-   * @param {boolean} isDeposit whether the standard exit is of a deposit UTXO
+   * @param {Object} args an arguments object
+   * @param {string} args.txBytes txBytes from the standard exit
+   * @param {number} args.utxoPos the UTXO position of the UTXO being exited
+   * @param {boolean} args.isDeposit whether the standard exit is of a deposit UTXO
+   * @return {Promise<string>} promise that resolves with the exitId
    */
   async getStandardExitId ({ txBytes, utxoPos, isDeposit }) {
     const { contract } = await this.getPaymentExitGame()
@@ -209,7 +200,9 @@ class RootChain {
    * Get inflight exit id to use when processing an inflight exit
    *
    * @method getInFlightExitId
-   * @param {string} txBytes txBytes from the inflight exit
+   * @param {Object} args an arguments object
+   * @param {string} args.txBytes txBytes from the inflight exit
+   * @return {Promise<string>} promise that resolves with the exitId
    */
   async getInFlightExitId ({ txBytes }) {
     const { contract } = await this.getPaymentExitGame()
@@ -218,15 +211,15 @@ class RootChain {
   }
 
   /**
-   * Starts a standard withdrawal of a given output. Uses output-age priority.
+   * Starts a standard withdrawal of a given output. Uses output-age priority
    *
    * @method startStandardExit
    * @param {Object} args an arguments object
    * @param {number} args.outputId identifier of the exiting output
    * @param {string} args.outputTx RLP encoded transaction that created the exiting output
    * @param {string} args.inclusionProof a Merkle proof showing that the transaction was included
-   * @param {Object} args.txOptions transaction options, such as `from`, gas` and `privateKey`
-   * @return {Promise<Object>} promise that resolves with a transaction receipt
+   * @param {TransactionOptions} args.txOptions transaction options
+   * @return {Promise<TransactionReceipt>} promise that resolves with a transaction receipt
    */
   async startStandardExit ({ outputId, outputTx, inclusionProof, txOptions }) {
     const { contract, address, bonds } = await this.getPaymentExitGame()
@@ -265,8 +258,8 @@ class RootChain {
    * @param {string} args.challengeTx RLP encoded transaction that spends the exiting output
    * @param {number} args.inputIndex which input to the challenging tx corresponds to the exiting output
    * @param {string} args.challengeTxSig signature from the exiting output owner over the spend
-   * @param {Object} args.txOptions transaction options, such as `from`, gas` and `privateKey`
-   * @return {Promise<Object>} promise that resolves with a transaction receipt
+   * @param {TransactionOptions} args.txOptions transaction options
+   * @return {Promise<TransactionReceipt>} promise that resolves with a transaction receipt
    */
   async challengeStandardExit ({ standardExitId, exitingTx, challengeTx, inputIndex, challengeTxSig, txOptions }) {
     // standardExitId is an extremely large number as it uses the entire int192.
@@ -286,7 +279,6 @@ class RootChain {
           challengeTx,
           inputIndex,
           challengeTxSig,
-          // below args not necessary for ALD but we pass empty values to keep the contract happy
           '0x', // spendingConditionOptionalArgs
           '0x', // outputGuardPreimage
           0, // challengeTxPos
@@ -312,8 +304,8 @@ class RootChain {
    * @param {string} args.token an address of the token to exit
    * @param {string} args.exitId the exit id
    * @param {number} args.maxExitsToProcess the max number of exits to process
-   * @param {Object} args.txOptions transaction options, such as `from`, gas` and `privateKey`
-   * @return {Promise<Object>} promise that resolves with a transaction receipt
+   * @param {TransactionOptions} args.txOptions transaction options
+   * @return {Promise<TransactionReceipt>} promise that resolves with a transaction receipt
    */
   async processExits ({ token, exitId, maxExitsToProcess, txOptions }) {
     const vaultId = token === transaction.ETH_CURRENCY ? 1 : 2
@@ -344,7 +336,6 @@ class RootChain {
   /**
    * Checks if an exit queue exists for this token
    *
-   * @memberOf RootChain
    * @method hasToken
    * @param {string} token address of the token to check
    * @return {Promise<boolean>} promise that resolves with whether an exit queue exists for this token
@@ -359,9 +350,9 @@ class RootChain {
    *
    * @method addToken
    * @param {Object} args an arguments object
-   * @param {string} args.token Address of the token to process
-   * @param {Object} args.txOptions transaction options, such as `from`, `gas` and `privateKey`
-   * @return {Promise<Object>} promise that resolves with a transaction receipt
+   * @param {string} args.token address of the token to process
+   * @param {TransactionOptions} args.txOptions transaction options
+   * @return {Promise<TransactionReceipt>} promise that resolves with a transaction receipt
    * @throws an exception if the token has already been added
    */
   async addToken ({ token, txOptions }) {
@@ -401,8 +392,8 @@ class RootChain {
    * @param {string} args.inFlightTxSigs signatures from the owners of each input
    * @param {string} args.signatures
    * @param {string} args.inputSpendingConditionOptionalArgs
-   * @param {Object} args.txOptions transaction options, such as `from`, gas` and `privateKey`
-   * @return {Promise<Object>} promise that resolves with a transaction receipt
+   * @param {TransactionOptions} args.txOptions transaction options
+   * @return {Promise<TransactionReceipt>} promise that resolves with a transaction receipt
    */
   async startInFlightExit ({
     inFlightTx,
@@ -453,8 +444,8 @@ class RootChain {
    * @param {string} args.inFlightTx RLP encoded in-flight transaction
    * @param {number} args.outputIndex index of the input/output to piggyback (0-7)
    * @param {number} args.outputGuardPreimage
-   * @param {Object} args.txOptions transaction options, such as `from`, gas` and `privateKey`
-   * @return {Promise<Object>} promise that resolves with a transaction receipt
+   * @param {TransactionOptions} args.txOptions transaction options
+   * @return {Promise<TransactionReceipt>} promise that resolves with a transaction receipt
    */
   async piggybackInFlightExitOnOutput ({
     inFlightTx,
@@ -494,8 +485,8 @@ class RootChain {
    * @param {Object} args an arguments object
    * @param {string} args.inFlightTx RLP encoded in-flight transaction
    * @param {number} args.inputIndex index of the input/output to piggyback (0-7)
-   * @param {Object} args.txOptions transaction options, such as `from`, gas` and `privateKey`
-   * @return {Promise<Object>} promise that resolves with a transaction receipt
+   * @param {TransactionOptions} args.txOptions transaction options
+   * @return {Promise<TransactionReceipt>} promise that resolves with a transaction receipt
    */
   async piggybackInFlightExitOnInput ({
     inFlightTx,
@@ -543,8 +534,8 @@ class RootChain {
    * @param {string} args.competingTxWitness
    * @param {string} args.competingTxConfirmSig
    * @param {string} args.competingTxSpendingConditionOptionalArgs
-   * @param {Object} args.txOptions transaction options, such as `from`, gas` and `privateKey`
-   * @return {Promise<Object>} promise that resolves with a transaction receipt
+   * @param {TransactionOptions} args.txOptions transaction options
+   * @return {Promise<TransactionReceipt>} promise that resolves with a transaction receipt
    */
   async challengeInFlightExitNotCanonical ({
     inputTx,
@@ -601,8 +592,8 @@ class RootChain {
    * @param {string} args.inFlightTx RLP encoded in-flight transaction being exited
    * @param {number} args.inFlightTxPos position of the in-flight transaction in the chain
    * @param {string} args.inFlightTxInclusionProof proof that the in-flight transaction is included before the competitor
-   * @param {Object} args.txOptions transaction options, such as `from`, gas` and `privateKey`
-   * @return {Promise<Object>} promise that resolves with a transaction receipt
+   * @param {TransactionOptions} args.txOptions transaction options
+   * @return {Promise<TransactionReceipt>} promise that resolves with a transaction receipt
    */
   async respondToNonCanonicalChallenge ({
     inFlightTx,
@@ -645,8 +636,8 @@ class RootChain {
    * @param {number} args.inputTx
    * @param {number} args.inputUtxoPos
    * @param {string} args.spendingConditionOptionalArgs
-   * @param {Object} args.txOptions transaction options, such as `from`, gas` and `privateKey`
-   * @return {Promise<Object>} promise that resolves with a transaction receipt
+   * @param {TransactionOptions} args.txOptions transaction options
+   * @return {Promise<TransactionReceipt>} promise that resolves with a transaction receipt
    */
   async challengeInFlightExitInputSpent ({
     inFlightTx,
@@ -700,8 +691,8 @@ class RootChain {
    * @param {string} args.challengingTxInputIndex
    * @param {string} args.challengingTxWitness
    * @param {string} args.spendingConditionOptionalArgs
-   * @param {Object} args.txOptions transaction options, such as `from`, gas` and `privateKey`
-   * @return {Promise<Object>} promise that resolves with a transaction receipt
+   * @param {TransactionOptions} args.txOptions transaction options
+   * @return {Promise<TransactionReceipt>} promise that resolves with a transaction receipt
    */
   async challengeInFlightExitOutputSpent ({
     inFlightTx,
@@ -740,6 +731,14 @@ class RootChain {
       privateKey: txOptions.privateKey
     })
   }
+}
+
+function getContract (web3, abi, address) {
+  const isLegacyWeb3 = web3.version.api && web3.version.api.startsWith('0.2')
+  if (isLegacyWeb3) {
+    return web3.eth.contract(abi).at(address)
+  }
+  return new web3.eth.Contract(abi, address)
 }
 
 module.exports = RootChain

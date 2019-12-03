@@ -86,3 +86,19 @@
  * @property {string} primaryType
  * @property {Object} message
  */
+
+/**
+ * A transaction options object
+ * @typedef {Object} TransactionOptions
+ * @property {string} from
+ * @property {number} gas
+ * @property {string} gasPrice
+ * @property {string} privateKey
+ */
+
+/**
+ * Transaction life cycle event callbacks
+ * @typedef {Object} TransactionCallbacks
+ * @property {Function} onConfirmation
+ * @property {Function} onReceipt
+ */

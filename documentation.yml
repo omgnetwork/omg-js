@@ -62,3 +62,5 @@ toc:
       - DepositTransaction
       - BigNumber
       - TypedData
+      - TransactionOptions
+      - TransactionCallbacks
