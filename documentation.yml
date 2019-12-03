@@ -8,25 +8,34 @@ toc:
       - getExitData
       - getChallengeData
       - createTransaction
+      - signTypedData
+      - submitTyped
       - signTransaction
       - buildSignedTransaction
       - submitTransaction
       - sendTransaction
       - status
+      - inFlightExitGetInputChallengeData
+      - inFlightExitGetOutputChallengeData
       - inFlightExitGetData
       - inFlightExitGetCompetitor
       - inFlightExitProveCanonical
 
   - name: RootChain
     children:
+      - approveToken
       - depositEth
       - depositToken
+      - getStandardExitId
+      - getInFlightExitId
       - startStandardExit
       - challengeStandardExit
       - processExits
+      - hasToken
       - addToken
       - startInFlightExit
-      - piggybackInFlightExit
+      - piggybackInFlightExitOnOutput
+      - piggybackInFlightExitOnInput
       - challengeInFlightExitNotCanonical
       - respondToNonCanonicalChallenge
       - challengeInFlightExitInputSpent

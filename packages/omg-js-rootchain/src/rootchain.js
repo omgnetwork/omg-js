@@ -448,7 +448,7 @@ class RootChain {
   /**
    * Allows a user to piggyback onto an in-flight transaction
    *
-   * @method piggybackInFlightExit
+   * @method piggybackInFlightExitOnOutput
    * @param {Object} args an arguments object
    * @param {string} args.inFlightTx RLP encoded in-flight transaction
    * @param {number} args.outputIndex index of the input/output to piggyback (0-7)
@@ -490,7 +490,7 @@ class RootChain {
   /**
    * Allows a user to piggyback onto an in-flight transaction
    *
-   * @method piggybackInFlightExit
+   * @method piggybackInFlightExitOnInput
    * @param {Object} args an arguments object
    * @param {string} args.inFlightTx RLP encoded in-flight transaction
    * @param {number} args.inputIndex index of the input/output to piggyback (0-7)
