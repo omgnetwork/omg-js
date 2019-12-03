@@ -41,7 +41,7 @@ async function logBalances () {
   const bobErc20Object = bobChildchainBalanceArray.find(i => i.currency.toLowerCase() === config.erc20_contract.toLowerCase())
   const bobChildchainBalance = bobErc20Object ? bobErc20Object.amount : 0
 
-  console.log(`Bob's rootchain ERC20 balance: ${web3.utils.hexToNumber(bobRootchainBalance)}`)
+  console.log(`Bob's rootchain ERC20 balance: ${bobRootchainBalance}`)
   console.log(`Bob's childchain ERC20 balance: ${bobChildchainBalance}`)
 }
 

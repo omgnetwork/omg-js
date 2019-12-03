@@ -27,7 +27,7 @@ class RootChain {
   * Create a RootChain object
   *
   * @param {Object} config the rootchain configuration object
-  * @param {string} config.web3 the web3 object to access the Ethereum network
+  * @param {Web3} config.web3 a web3 instance
   * @param {string} config.plasmaContractAddress the address of the PlasmaFramework contract
   * @param {string} config.plasmaAbi the abi of the PlasmaFramework contract
   * @return {RootChain} a Rootchain object

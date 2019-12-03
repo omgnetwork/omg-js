@@ -16,7 +16,16 @@
 
 const hexPrefix = require('./hexPrefix')
 
-async function reason ({ web3, hash }) {
+/**
+ * Retrieve EVM revert reason from the transaction hash
+ *
+ * @method ethErrorReason
+ * @param {Object} args an arguments object
+ * @param {Web3} args.web3 web3 instance
+ * @param {string} args.hash transaction hash
+ * @return {Promise<string>} promise that resolves with the error reason
+ */
+async function ethErrorReason ({ web3, hash }) {
   const tx = await web3.eth.getTransaction(hash)
   if (!tx) {
     console.log('Tx not found, cannot get reason')
@@ -28,4 +37,4 @@ async function reason ({ web3, hash }) {
   }
 }
 
-module.exports = reason
+module.exports = ethErrorReason
