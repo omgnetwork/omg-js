@@ -29,7 +29,7 @@ class RootChain {
   * @param {string} config.web3 the web3 object to access the Ethereum network
   * @param {string} config.plasmaContractAddress the address of the PlasmaFramework contract
   * @param {string} config.plasmaAbi the abi of the PlasmaFramework contract
-  * @return {Object} a Rootchain object
+  * @return {RootChain} a Rootchain object
   *
   */
   constructor ({ web3, plasmaContractAddress, plasmaAbi }) {
@@ -316,6 +316,7 @@ class RootChain {
   /**
    * Checks if an exit queue exists for this token
    *
+   * @memberOf RootChain
    * @method hasToken
    * @param {string} token address of the token to check
    * @return {Promise<boolean>} promise that resolves with whether an exit queue exists for this token

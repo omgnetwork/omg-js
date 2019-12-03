@@ -25,7 +25,7 @@ class ChildChain {
   * @param {Object} config the rootchain configuration object
   * @param {string} config.watcherUrl the url of the watcher server
   * @param {string} [config.watcherProxyUrl] *optional* the proxy url for requests made to the watcher server
-  * @return {Object} a ChildChain Object
+  * @return {ChildChain} a ChildChain Object
   *
   */
   constructor ({ watcherUrl, watcherProxyUrl }) {
