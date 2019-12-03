@@ -385,13 +385,13 @@ class RootChain {
    * @method startInFlightExit
    * @param {Object} args an arguments object
    * @param {string} args.inFlightTx RLP encoded in-flight transaction
-   * @param {string} args.inputTxs transaction that created the inputs to the in-flight transaction
-   * @param {string} args.inputUtxosPos
-   * @param {string} args.outputGuardPreimagesForInputs
-   * @param {string} args.inputTxsInclusionProofs merkle proofs that show the input-creating transactions are valid
-   * @param {string} args.inFlightTxSigs signatures from the owners of each input
-   * @param {string} args.signatures
-   * @param {string} args.inputSpendingConditionOptionalArgs
+   * @param {string[]} args.inputTxs transactions that created the inputs to the in-flight transaction
+   * @param {number[]} args.inputUtxosPos utxo positions of the inputs
+   * @param {string[]} args.outputGuardPreimagesForInputs output guard pre images for inputs
+   * @param {string[]} args.inputTxsInclusionProofs merkle proofs that show the input-creating transactions are valid
+   * @param {string[]} args.inFlightTxSigs signatures from the owners of each input
+   * @param {string[]} args.signatures inflight transaction witnesses
+   * @param {string[]} args.inputSpendingConditionOptionalArgs input spending condition optional arguments
    * @param {TransactionOptions} args.txOptions transaction options
    * @return {Promise<TransactionReceipt>} promise that resolves with a transaction receipt
    */
@@ -443,7 +443,7 @@ class RootChain {
    * @param {Object} args an arguments object
    * @param {string} args.inFlightTx RLP encoded in-flight transaction
    * @param {number} args.outputIndex index of the input/output to piggyback (0-7)
-   * @param {number} args.outputGuardPreimage
+   * @param {string} args.outputGuardPreimage the output guard pre image
    * @param {TransactionOptions} args.txOptions transaction options
    * @return {Promise<TransactionReceipt>} promise that resolves with a transaction receipt
    */
@@ -522,18 +522,18 @@ class RootChain {
    *
    * @method challengeInFlightExitNotCanonical
    * @param {Object} args an arguments object
-   * @param {string} args.inputTx
-   * @param {string} args.inputUtxoPos
-   * @param {string} args.inFlightTx
-   * @param {number} args.inFlightTxInputIndex Index of the double-spent input in the in-flight transaction
+   * @param {string} args.inputTx the input transaction
+   * @param {number} args.inputUtxoPos input utxo position
+   * @param {string} args.inFlightTx inflight transaction
+   * @param {number} args.inFlightTxInputIndex index of the double-spent input in the in-flight transaction
    * @param {string} args.competingTx RLP encoded transaction that spent the input
-   * @param {number} args.competingTxInputIndex Index of the double-spent input in the competing transaction
-   * @param {number} args.outputGuardPreimage
-   * @param {number} args.competingTxPos Position of the competing transaction
-   * @param {string} args.competingTxInclusionProof Proof that the competing transaction was included
-   * @param {string} args.competingTxWitness
-   * @param {string} args.competingTxConfirmSig
-   * @param {string} args.competingTxSpendingConditionOptionalArgs
+   * @param {number} args.competingTxInputIndex index of the double-spent input in the competing transaction
+   * @param {string} args.outputGuardPreimage the output guard pre image
+   * @param {number} args.competingTxPos position of the competing transaction
+   * @param {string} args.competingTxInclusionProof proof that the competing transaction was included
+   * @param {string} args.competingTxWitness competiting transaction witness
+   * @param {string} args.competingTxConfirmSig competiting transaction confirm signature
+   * @param {string} args.competingTxSpendingConditionOptionalArgs optional arguments for the competiting tranaction spending condition
    * @param {TransactionOptions} args.txOptions transaction options
    * @return {Promise<TransactionReceipt>} promise that resolves with a transaction receipt
    */
@@ -630,12 +630,12 @@ class RootChain {
    * @param {Object} args an arguments object
    * @param {string} args.inFlightTx RLP encoded in-flight transaction being exited
    * @param {number} args.inFlightTxInputIndex input that's been spent
-   * @param {string} args.challengingTx
-   * @param {number} args.challengingTxInputIndex
-   * @param {number} args.challengingTxWitness
-   * @param {number} args.inputTx
-   * @param {number} args.inputUtxoPos
-   * @param {string} args.spendingConditionOptionalArgs
+   * @param {string} args.challengingTx the challenging transaction
+   * @param {number} args.challengingTxInputIndex challenging transaction input index
+   * @param {string} args.challengingTxWitness challenging transaction witness
+   * @param {string} args.inputTx the input transaction
+   * @param {number} args.inputUtxoPos input utxo position
+   * @param {string} args.spendingConditionOptionalArgs spending condition optional arguments
    * @param {TransactionOptions} args.txOptions transaction options
    * @return {Promise<TransactionReceipt>} promise that resolves with a transaction receipt
    */
@@ -685,12 +685,12 @@ class RootChain {
    * @method challengeInFlightExitOutputSpent
    * @param {Object} args an arguments object
    * @param {string} args.inFlightTx RLP encoded in-flight transaction being exited
-   * @param {string} args.inFlightTxInclusionProof
-   * @param {number} args.inFlightTxOutputPos Output that's been spent
-   * @param {string} args.challengingTx
-   * @param {string} args.challengingTxInputIndex
-   * @param {string} args.challengingTxWitness
-   * @param {string} args.spendingConditionOptionalArgs
+   * @param {string} args.inFlightTxInclusionProof inclusion proof
+   * @param {number} args.inFlightTxOutputPos output that's been spent
+   * @param {string} args.challengingTx challenging transaction
+   * @param {number} args.challengingTxInputIndex input index of challenging transaction
+   * @param {string} args.challengingTxWitness witness of challenging transaction
+   * @param {string} args.spendingConditionOptionalArgs spending condition optional arguments
    * @param {TransactionOptions} args.txOptions transaction options
    * @return {Promise<TransactionReceipt>} promise that resolves with a transaction receipt
    */
