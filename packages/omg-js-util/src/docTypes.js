@@ -40,9 +40,13 @@
 /**
  * UTXO
  * @typedef {Object} UTXO
- * @property {number} txindex
- * @property {number} oindex
+ * @property {number} amount
  * @property {number} blknum
+ * @property {string} currency
+ * @property {number} oindex
+ * @property {string} owner
+ * @property {number} txindex
+ * @property {number} utxo_pos
  */
 
 /**
@@ -52,6 +56,18 @@
  * @property {string} outputGuard
  * @property {string} currency
  * @property {number} amount
+ */
+
+/**
+ * A transaction object returned from the Watcher
+ * @typedef {Object} TransactionData
+ * @property {number} txindex
+ * @property {string} txhash
+ * @property {string} metadata
+ * @property {string} txbytes
+ * @property {Object} block
+ * @property {Object[]} inputs
+ * @property {Object[]} outputs
  */
 
 /**
@@ -101,4 +117,19 @@
  * @typedef {Object} TransactionCallbacks
  * @property {Function} onConfirmation
  * @property {Function} onReceipt
+ */
+
+/**
+ * Balance returned from account.get_balance
+ * @typedef {Object} Balance
+ * @property {BigNumber} amount
+ * @property {string} currency
+ */
+
+/**
+ * Exit data for UTXO
+ * @typedef {Object} ExitData
+ * @property {string} proof
+ * @property {string} txbytes
+ * @property {number} utxo_pos
  */

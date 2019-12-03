@@ -58,9 +58,12 @@ toc:
       - TransactionReceipt
       - UTXO
       - Output
+      - TransactionData
       - TransactionBody
       - DepositTransaction
       - BigNumber
       - TypedData
       - TransactionOptions
       - TransactionCallbacks
+      - Balance
+      - ExitData

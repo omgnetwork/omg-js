@@ -38,7 +38,7 @@ class ChildChain {
    *
    * @method getUtxos
    * @param {string} address address to check
-   * @return {Promise<Array>} promise that resolves with an array of UTXOs
+   * @return {Promise<UTXO[]>} promise that resolves with an array of UTXOs
    */
   async getUtxos (address) {
     validateAddress(address)
@@ -54,7 +54,7 @@ class ChildChain {
    *
    * @method getBalance
    * @param {string} address address to check
-   * @return {Promise<Object[]>} promise that resolves with an array of balances (one per currency)
+   * @return {Promise<Balance[]>} promise that resolves with an array of balances (one per currency)
    */
   async getBalance (address) {
     validateAddress(address)
@@ -69,8 +69,8 @@ class ChildChain {
    * Get a transaction
    *
    * @method getTransaction
-   * @param {object} id the hash of the transaction to get
-   * @return {Promise<Array>} promise that resolves with an array of transactions
+   * @param {string} id the hash of the transaction to get
+   * @return {Promise<TransactionData>} promise that resolves with a transaction
    */
   async getTransaction (id) {
     return rpcApi.post({
@@ -84,8 +84,13 @@ class ChildChain {
    * Get transactions
    *
    * @method getTransactions
-   * @param {object} filters filter the results by `address`, `blknum` and `limit`
-   * @return {Promise<Array>} promise that resolves with an array of transactions
+   * @param {Object} filters filter object
+   * @param {string} filters.address address to filter by
+   * @param {string} filters.metadata metadata to filter by
+   * @param {number} filters.blknum blknum to filter by
+   * @param {number} filters.limit max number of transactions to return
+   * @param {number} filters.page page of paginated request
+   * @return {Promise<TransactionData[]>} promise that resolves with an array of transactions
    */
   async getTransactions (filters) {
     return rpcApi.post({
@@ -99,8 +104,8 @@ class ChildChain {
    * Get the exit data for a UTXO
    *
    * @method getExitData
-   * @param {Object} utxo utxo object
-   * @return {Promise<Object>} promise that resolves with the exit data for the UTXO
+   * @param {UTXO} utxo utxo object
+   * @return {Promise<ExitData>} promise that resolves with the exit data for the UTXO
    */
   async getExitData (utxo) {
     const utxoPos = transaction.encodeUtxoPos(utxo)
@@ -115,8 +120,8 @@ class ChildChain {
    * Get the challenge data for a UTXO
    *
    * @method getChallengeData
-   * @param {Object} utxo utxo object
-   * @return {Promise<Object>} promise that resolves with the challenge data for the UTXO
+   * @param {string} utxoPos utxo position
+   * @return {Promise<Object>} promise that resolves with the challenge data
    */
   async getChallengeData (utxoPos) {
     return rpcApi.post({
@@ -132,9 +137,9 @@ class ChildChain {
    * @method createTransaction
    * @param {Object} args an arguments object
    * @param {string} args.owner owner of the input utxos
-   * @param {Array} args.payments payments made as outputs
+   * @param {Object[]} args.payments payments made as outputs
    * @param {Object} args.fee fee paid
-   * @param {string} args.metadata metadata to include the transaction
+   * @param {string} args.metadata metadata to include in the transaction
    * @return {Promise<Object>} promise that resolves with an object containing the list of transactions that will fullfil the required spend
    */
   createTransaction ({ owner, payments, fee, metadata }) {
@@ -150,7 +155,7 @@ class ChildChain {
    *
    * @method signTypedData
    * @param {Object} txData the transaction data that is returned from `createTransaction`
-   * @param {Array} privateKeys an array of private keys to sign the inputs of the transaction
+   * @param {string[]} privateKeys an array of private keys to sign the inputs of the transaction
    * @return {Object} a transaction typed data, including the signatures. This can be passed in to `submitTyped`
    */
   signTypedData (txData, privateKeys) {
@@ -179,8 +184,8 @@ class ChildChain {
    *
    * @method signTransaction
    * @param {string} typedData the typedData of the transaction, as returned by transaction.getTypedData()
-   * @param {Array<string>} privateKeys an array of private keys to sign the inputs of the transaction
-   * @return {Array<string>} array of signatures
+   * @param {string[]} privateKeys an array of private keys to sign the inputs of the transaction
+   * @return {string[]} array of signatures
    */
   signTransaction (typedData, privateKeys) {
     const toSign = transaction.getToSignHash(typedData)
@@ -192,7 +197,7 @@ class ChildChain {
    *
    * @method buildSignedTransaction
    * @param {string} txData the typedData of the transaction, as returned by transaction.getTypedData
-   * @param {Array<string>} signatures an array of signatures, one for each input spent by the transaction
+   * @param {string[]} signatures an array of signatures, one for each input spent by the transaction
    * @return {string} a signed transaction
    */
   buildSignedTransaction (txData, signatures) {
