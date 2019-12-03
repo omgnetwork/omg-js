@@ -23,6 +23,7 @@ const ChildChain = require('@omisego/omg-js-childchain')
 const RootChain = require('@omisego/omg-js-rootchain')
 const { transaction } = require('@omisego/omg-js-util')
 const chai = require('chai')
+const numberToBN = require('number-to-bn')
 const assert = chai.assert
 
 const web3 = new Web3(new Web3.providers.HttpProvider(config.geth_url))
@@ -218,7 +219,7 @@ describe('Standard Exit tests', function () {
 
     it('should succesfully exit a ChildChain transaction', async function () {
       // Track total gas used
-      let bobSpentOnGas
+      const bobSpentOnGas = numberToBN(0)
 
       // Send TRANSFER_AMOUNT from Alice to Bob
       await ccHelper.sendAndWait(

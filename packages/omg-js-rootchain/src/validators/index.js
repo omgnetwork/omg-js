@@ -23,15 +23,24 @@ const depositTokenSchema = Joi.object({
 })
 
 const startStandardExitSchema = Joi.object({
-  outputId: Joi.string().required(),
+  outputId: [Joi.string().required(), Joi.number().required()],
   outputTx: Joi.string().required(),
   inclusionProof: Joi.string().required(),
   txOptions: validateTxOption.required()
 })
 
+const challengeStandardExitSchema = Joi.object({
+  standardExitId: [validateBn],
+  exitingTx: Joi.string().required(),
+  challengeTx: Joi.string().required(),
+  inputIndex: Joi.number(),
+  challengeTxSig: Joi.string().required(),
+  txOptions: validateTxOption.required()
+})
 module.exports = {
   approveTokenSchema,
   depositTokenSchema,
   depositEthSchema,
-  startStandardExitSchema
+  startStandardExitSchema,
+  challengeStandardExitSchema
 }

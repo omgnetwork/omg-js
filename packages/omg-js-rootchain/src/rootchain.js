@@ -17,6 +17,13 @@ const txUtils = require('./txUtils')
 const { transaction } = require('@omisego/omg-js-util')
 const webUtils = require('web3-utils')
 const erc20abi = require('human-standard-token-abi')
+const {
+  approveTokenSchema,
+  depositEthSchema,
+  depositTokenSchema,
+  startStandardExitSchema,
+  challengeStandardExitSchema
+} = require('./validators')
 const Joi = require('@hapi/joi')
 
 const ETH_VAULT_ID = 1
@@ -53,7 +60,9 @@ class RootChain {
 
   async getErc20Vault () {
     if (!this.erc20Vault) {
-      const address = await this.plasmaContract.methods.vaults(ERC20_VAULT_ID).call()
+      const address = await this.plasmaContract.methods
+        .vaults(ERC20_VAULT_ID)
+        .call()
       const contract = this.getContract(this.erc20VaultAbi.abi, address)
       this.erc20Vault = { contract, address }
     }
@@ -62,7 +71,9 @@ class RootChain {
 
   async getEthVault () {
     if (!this.ethVault) {
-      const address = await this.plasmaContract.methods.vaults(ETH_VAULT_ID).call()
+      const address = await this.plasmaContract.methods
+        .vaults(ETH_VAULT_ID)
+        .call()
       const contract = this.getContract(this.ethVaultAbi.abi, address)
       this.ethVault = { contract, address }
     }
@@ -71,7 +82,9 @@ class RootChain {
 
   async getPaymentExitGame () {
     if (!this.paymentExitGame) {
-      const address = await this.plasmaContract.methods.exitGames(PAYMENT_TYPE).call()
+      const address = await this.plasmaContract.methods
+        .exitGames(PAYMENT_TYPE)
+        .call()
       const contract = this.getContract(this.paymentExitGameAbi.abi, address)
 
       const bondSizes = await Promise.all([
@@ -109,11 +122,7 @@ class RootChain {
    * @param {Object} txOptions transaction options, such as `from`, `gas` and `privateKey`
    * @return {Promise<{ transactionHash: string }>} promise that resolves with an object holding the transaction hash
    */
-  async approveToken ({
-    erc20Address,
-    amount,
-    txOptions
-  }) {
+  async approveToken ({ erc20Address, amount, txOptions }) {
     Joi.assert({ erc20Address, amount, txOptions }, approveTokenSchema)
     const { address: spender } = await this.getErc20Vault()
     const erc20Contract = this.getContract(erc20abi, erc20Address)
@@ -148,12 +157,7 @@ class RootChain {
       from: txOptions.from,
       to: address,
       value: webUtils.toHex(amount),
-      data: txUtils.getTxData(
-        this.web3,
-        contract,
-        'deposit',
-        depositTx
-      ),
+      data: txUtils.getTxData(this.web3, contract, 'deposit', depositTx),
       gas: txOptions.gas,
       gasPrice: txOptions.gasPrice
     }
@@ -179,12 +183,7 @@ class RootChain {
     const txDetails = {
       from: txOptions.from,
       to: address,
-      data: txUtils.getTxData(
-        this.web3,
-        contract,
-        'deposit',
-        depositTx
-      ),
+      data: txUtils.getTxData(this.web3, contract, 'deposit', depositTx),
       gas: txOptions.gas,
       gasPrice: txOptions.gasPrice
     }
@@ -205,7 +204,9 @@ class RootChain {
    */
   async getStandardExitId ({ txBytes, utxoPos, isDeposit }) {
     const { contract } = await this.getPaymentExitGame()
-    const exitId = await contract.methods.getStandardExitId(isDeposit, txBytes, utxoPos).call()
+    const exitId = await contract.methods
+      .getStandardExitId(isDeposit, txBytes, utxoPos)
+      .call()
     return exitId
   }
 
@@ -232,17 +233,20 @@ class RootChain {
    * @return {string} transaction hash of the call
    */
   async startStandardExit ({ outputId, outputTx, inclusionProof, txOptions }) {
-    Joi.assert({ outputId, outputTx, inclusionProof, txOptions }, startStandardExitSchema)
+    Joi.assert(
+      { outputId, outputTx, inclusionProof, txOptions },
+      startStandardExitSchema
+    )
     const { contract, address, bonds } = await this.getPaymentExitGame()
     const txDetails = {
       from: txOptions.from,
       to: address,
-      data: txUtils.getTxData(
-        this.web3,
-        contract,
-        'startStandardExit',
-        [outputId.toString(), outputTx, '0x', inclusionProof]
-      ),
+      data: txUtils.getTxData(this.web3, contract, 'startStandardExit', [
+        outputId.toString(),
+        outputTx,
+        '0x',
+        inclusionProof
+      ]),
       value: bonds.standardExit,
       gas: txOptions.gas,
       gasPrice: txOptions.gasPrice
@@ -273,6 +277,14 @@ class RootChain {
     challengeTxSig,
     txOptions
   }) {
+    Joi.assert({
+      standardExitId,
+      exitingTx,
+      challengeTx,
+      inputIndex,
+      challengeTxSig,
+      txOptions
+    }, challengeStandardExitSchema)
     // standardExitId is an extremely large number as it uses the entire int192.
     // It's too big to be represented as a Number, so we convert it to a hex string
     const exitId = txUtils.int192toHex(standardExitId)
@@ -280,24 +292,19 @@ class RootChain {
     const txDetails = {
       from: txOptions.from,
       to: address,
-      data: txUtils.getTxData(
-        this.web3,
-        contract,
-        'challengeStandardExit',
-        [
-          exitId,
-          exitingTx,
-          challengeTx,
-          inputIndex,
-          challengeTxSig,
-          // below args not necessary for ALD but we pass empty values to keep the contract happy
-          '0x', // spendingConditionOptionalArgs
-          '0x', // outputGuardPreimage
-          0, // challengeTxPos
-          '0x', // challengeTxInclusionProof
-          '0x' // challengeTxConfirmSig
-        ]
-      ),
+      data: txUtils.getTxData(this.web3, contract, 'challengeStandardExit', [
+        exitId,
+        exitingTx,
+        challengeTx,
+        inputIndex,
+        challengeTxSig,
+        // below args not necessary for ALD but we pass empty values to keep the contract happy
+        '0x', // spendingConditionOptionalArgs
+        '0x', // outputGuardPreimage
+        0, // challengeTxPos
+        '0x', // challengeTxInclusionProof
+        '0x' // challengeTxConfirmSig
+      ]),
       gas: txOptions.gas,
       gasPrice: txOptions.gasPrice
     }
@@ -411,21 +418,16 @@ class RootChain {
     const txDetails = {
       from: txOptions.from,
       to: address,
-      data: txUtils.getTxData(
-        this.web3,
-        contract,
-        'startInFlightExit',
-        [
-          inFlightTx,
-          inputTxs,
-          inputUtxosPos,
-          outputGuardPreimagesForInputs,
-          inputTxsInclusionProofs,
-          inFlightTxSigs,
-          signatures,
-          inputSpendingConditionOptionalArgs
-        ]
-      ),
+      data: txUtils.getTxData(this.web3, contract, 'startInFlightExit', [
+        inFlightTx,
+        inputTxs,
+        inputUtxosPos,
+        outputGuardPreimagesForInputs,
+        inputTxsInclusionProofs,
+        inFlightTxSigs,
+        signatures,
+        inputSpendingConditionOptionalArgs
+      ]),
       value: bonds.inflightExit,
       gas: txOptions.gas,
       gasPrice: txOptions.gasPrice
@@ -482,11 +484,7 @@ class RootChain {
    * @param {Object} txOptions transaction options, such as `from`, gas` and `privateKey`
    * @return {string} transaction hash of the call
    */
-  async piggybackInFlightExitOnInput ({
-    inFlightTx,
-    inputIndex,
-    txOptions
-  }) {
+  async piggybackInFlightExitOnInput ({ inFlightTx, inputIndex, txOptions }) {
     const { address, contract, bonds } = await this.getPaymentExitGame()
     const txDetails = {
       from: txOptions.from,
@@ -541,7 +539,8 @@ class RootChain {
     const txDetails = {
       from: txOptions.from,
       to: address,
-      data: txUtils.getTxData(this.web3,
+      data: txUtils.getTxData(
+        this.web3,
         contract,
         'challengeInFlightExitNotCanonical',
         [

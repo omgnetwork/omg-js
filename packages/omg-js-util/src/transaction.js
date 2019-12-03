@@ -15,7 +15,6 @@ limitations under the License. */
 
 global.Buffer = global.Buffer || require('buffer').Buffer
 
-const { PlasmaDepositTransaction, PaymentTransactionOutput } = require('./transactionALD')
 const InvalidArgumentError = require('./InvalidArgumentError')
 const numberToBN = require('number-to-bn')
 const rlp = require('rlp')
@@ -87,9 +86,17 @@ const transaction = {
   *
   */
   encodeDeposit: function (owner, amount, currency) {
-    const output = new PaymentTransactionOutput(1, amount, owner, currency)
-    const transaction = new PlasmaDepositTransaction(output)
-    const encoded = transaction.rlpEncoded()
+    const encoded = transaction.encode({
+      transactionType: 1,
+      inputs: [],
+      outputs: [{
+        outputType: 1,
+        outputGuard: owner,
+        currency,
+        amount
+      }],
+      metadata: typedData.NULL_METADATA
+    })
     return encoded
   },
 
