@@ -227,8 +227,8 @@ class ChildChain {
    * @method sendTransaction
    * @param {Object} args an arguments object
    * @param {string} args.fromAddress the address of the sender
-   * @param {Array<Object>} args.fromUtxos array of utxos to spend
-   * @param {Array<string>} args.fromPrivateKeys private keys of the utxos to spend
+   * @param {Object[]} args.fromUtxos array of utxos to spend
+   * @param {string[]} args.fromPrivateKeys private keys of the utxos to spend
    * @param {string} args.toAddress the address of the recipient
    * @param {number} args.toAmount amount to transact
    * @param {string} args.currency address of the erc20 contract (or transaction.ETH_CURRENCY for ETH)

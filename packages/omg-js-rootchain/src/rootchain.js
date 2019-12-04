@@ -192,8 +192,7 @@ class RootChain {
    */
   async getStandardExitId ({ txBytes, utxoPos, isDeposit }) {
     const { contract } = await this.getPaymentExitGame()
-    const exitId = await contract.methods.getStandardExitId(isDeposit, txBytes, utxoPos).call()
-    return exitId
+    return contract.methods.getStandardExitId(isDeposit, txBytes, utxoPos).call()
   }
 
   /**
@@ -206,8 +205,7 @@ class RootChain {
    */
   async getInFlightExitId ({ txBytes }) {
     const { contract } = await this.getPaymentExitGame()
-    const exitId = await contract.methods.getInFlightExitId(txBytes).call()
-    return exitId
+    return contract.methods.getInFlightExitId(txBytes).call()
   }
 
   /**
@@ -524,16 +522,16 @@ class RootChain {
    * @param {Object} args an arguments object
    * @param {string} args.inputTx the input transaction
    * @param {number} args.inputUtxoPos input utxo position
-   * @param {string} args.inFlightTx inflight transaction
+   * @param {string} args.inFlightTx the in-flight transaction
    * @param {number} args.inFlightTxInputIndex index of the double-spent input in the in-flight transaction
    * @param {string} args.competingTx RLP encoded transaction that spent the input
    * @param {number} args.competingTxInputIndex index of the double-spent input in the competing transaction
    * @param {string} args.outputGuardPreimage the output guard pre image
    * @param {number} args.competingTxPos position of the competing transaction
    * @param {string} args.competingTxInclusionProof proof that the competing transaction was included
-   * @param {string} args.competingTxWitness competiting transaction witness
-   * @param {string} args.competingTxConfirmSig competiting transaction confirm signature
-   * @param {string} args.competingTxSpendingConditionOptionalArgs optional arguments for the competiting tranaction spending condition
+   * @param {string} args.competingTxWitness competing transaction witness
+   * @param {string} args.competingTxConfirmSig competing transaction confirm signature
+   * @param {string} args.competingTxSpendingConditionOptionalArgs optional arguments for the competing tranaction spending condition
    * @param {TransactionOptions} args.txOptions transaction options
    * @return {Promise<TransactionReceipt>} promise that resolves with a transaction receipt
    */
