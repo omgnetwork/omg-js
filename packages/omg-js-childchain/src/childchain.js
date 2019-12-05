@@ -22,9 +22,10 @@ class ChildChain {
   /**
   * Creates a ChildChain object
   *
-  *@param {string} watcherUrl the url of the watcher server
-  *@param {string} [watcherProxyUrl] *optional* the proxy url for requests made to the watcher server
-  *@return {Object} ChildChain Object
+  * @param {Object} config the rootchain configuration object
+  * @param {string} config.watcherUrl the url of the watcher server
+  * @param {string} [config.watcherProxyUrl] *optional* the proxy url for requests made to the watcher server
+  * @return {ChildChain} a ChildChain Object
   *
   */
   constructor ({ watcherUrl, watcherProxyUrl }) {
@@ -36,8 +37,8 @@ class ChildChain {
    * Gets the UTXOs of an address
    *
    * @method getUtxos
-   * @param {string} address
-   * @return {Array} array of UTXOs
+   * @param {string} address address to check
+   * @return {Promise<UTXO[]>} promise that resolves with an array of UTXOs
    */
   async getUtxos (address) {
     validateAddress(address)
@@ -52,8 +53,8 @@ class ChildChain {
    * Get the balance of an address
    *
    * @method getBalance
-   * @param {string} address
-   * @return {Array} array of balances (one per currency)
+   * @param {string} address address to check
+   * @return {Promise<Balance[]>} promise that resolves with an array of balances (one per currency)
    */
   async getBalance (address) {
     validateAddress(address)
@@ -68,8 +69,8 @@ class ChildChain {
    * Get a transaction
    *
    * @method getTransaction
-   * @param {object} id The hash of the transaction to get
-   * @return {Array} array of transactions
+   * @param {string} id the hash of the transaction to get
+   * @return {Promise<TransactionData>} promise that resolves with a transaction
    */
   async getTransaction (id) {
     return rpcApi.post({
@@ -83,8 +84,13 @@ class ChildChain {
    * Get transactions
    *
    * @method getTransactions
-   * @param {object} filters Filter the results by `address`, `blknum` and `limit`
-   * @return {Array} array of transactions
+   * @param {Object} filters filter object
+   * @param {string} filters.address address to filter by
+   * @param {string} filters.metadata metadata to filter by
+   * @param {number} filters.blknum blknum to filter by
+   * @param {number} filters.limit max number of transactions to return
+   * @param {number} filters.page page of paginated request
+   * @return {Promise<TransactionData[]>} promise that resolves with an array of transactions
    */
   async getTransactions (filters) {
     return rpcApi.post({
@@ -98,11 +104,10 @@ class ChildChain {
    * Get the exit data for a UTXO
    *
    * @method getExitData
-   * @param {Object} utxo
-   * @return {string} exit data for the UTXO
+   * @param {UTXO} utxo utxo object
+   * @return {Promise<ExitData>} promise that resolves with the exit data for the UTXO
    */
   async getExitData (utxo) {
-    // Calculate the utxoPos
     const utxoPos = transaction.encodeUtxoPos(utxo)
     return rpcApi.post({
       url: `${this.watcherUrl}/utxo.get_exit_data`,
@@ -115,8 +120,8 @@ class ChildChain {
    * Get the challenge data for a UTXO
    *
    * @method getChallengeData
-   * @param {Object} utxo
-   * @return {string} challenge data for the UTXO
+   * @param {string} utxoPos utxo position
+   * @return {Promise<Object>} promise that resolves with the challenge data
    */
   async getChallengeData (utxoPos) {
     return rpcApi.post({
@@ -130,11 +135,12 @@ class ChildChain {
    * Given currency, amount and spender, finds spender's inputs sufficient to perform a payment. If also provided with receiver's address, creates and encodes a transaction
    *
    * @method createTransaction
-   * @param {string} owner
-   * @param {Array} payments
-   * @param {Object} fee
-   * @param {string} metadata
-   * @return {Object} a object containing the list of transactions that will fullfil the required spend.
+   * @param {Object} args an arguments object
+   * @param {string} args.owner owner of the input utxos
+   * @param {Object[]} args.payments payments made as outputs
+   * @param {Object} args.fee fee paid
+   * @param {string} args.metadata metadata to include in the transaction
+   * @return {Promise<Object>} promise that resolves with an object containing the list of transactions that will fullfil the required spend
    */
   createTransaction ({ owner, payments, fee, metadata }) {
     return rpcApi.post({
@@ -149,14 +155,12 @@ class ChildChain {
    *
    * @method signTypedData
    * @param {Object} txData the transaction data that is returned from `createTransaction`
-   * @param {Array} privateKeys An array of private keys to sign the inputs of the transaction
+   * @param {string[]} privateKeys an array of private keys to sign the inputs of the transaction
    * @return {Object} a transaction typed data, including the signatures. This can be passed in to `submitTyped`
    */
   signTypedData (txData, privateKeys) {
-    // Sign the transaction
     const toSign = Buffer.from(txData.sign_hash.replace('0x', ''), 'hex')
     txData.typed_data.signatures = sign(toSign, privateKeys)
-
     return txData.typed_data
   }
 
@@ -165,7 +169,7 @@ class ChildChain {
    *
    * @method submitTyped
    * @param {Object} data can be obtained by calling `signTypedData`
-   * @return {Object} a transaction
+   * @return {Promise<Object>} promise that resolves with a transaction
    */
   submitTyped (data) {
     return rpcApi.post({
@@ -179,9 +183,9 @@ class ChildChain {
    * Sign a transaction
    *
    * @method signTransaction
-   * @param {string} typedData The typedData of the transaction, as returned by transaction.getTypedData()
-   * @param {Array} privateKeys An array of private keys to sign the inputs of the transaction
-   * @return {Array} array of signatures
+   * @param {string} typedData the typedData of the transaction, as returned by transaction.getTypedData()
+   * @param {string[]} privateKeys an array of private keys to sign the inputs of the transaction
+   * @return {string[]} array of signatures
    */
   signTransaction (typedData, privateKeys) {
     const toSign = transaction.getToSignHash(typedData)
@@ -192,16 +196,13 @@ class ChildChain {
    * Build a signed transaction into the format expected by submitTransaction
    *
    * @method buildSignedTransaction
-   * @param {string} txData The typedData of the transaction, as returned by transaction.getTypedData
-   * @param {Array} signatures An array of signatures, one for each input spent by the transaction
-   * @return {string} signed transaction
+   * @param {string} txData the typedData of the transaction, as returned by transaction.getTypedData
+   * @param {string[]} signatures an array of signatures, one for each input spent by the transaction
+   * @return {string} a signed transaction
    */
   buildSignedTransaction (txData, signatures) {
-    // Convert the data to an array
     const txArray = transaction.toArray(txData.message)
-    // Prepend the signatures
     const signedTx = [signatures, txData.message.txType, ...txArray]
-    // rlp-encode the transaction + signatures
     return hexPrefix(rlp.encode(signedTx).toString('hex'))
   }
 
@@ -210,10 +211,9 @@ class ChildChain {
    *
    * @method submitTransaction
    * @param {string} transaction the encoded signed transaction, as returned by buildSignedTransaction
-   * @return {Object} the submitted transaction
+   * @return {Promise<Object>} promise that resolves with the submitted transaction
    */
   async submitTransaction (transaction) {
-    // validateTxBody(transactionBody)
     return rpcApi.post({
       url: `${this.watcherUrl}/transaction.submit`,
       body: { transaction: transaction.startsWith('0x') ? transaction : `0x${transaction}` },
@@ -222,18 +222,21 @@ class ChildChain {
   }
 
   /**
-   * create, sign, build and submit a transaction to the childchain using raw privatekey
+   * Create, sign, build and submit a transaction to the childchain using raw privatekey
    *
    * @method sendTransaction
-   * @param {Array} fromAddress - the address of the sender
-   * @param {Array} fromUtxos - array of utxos to spend
-   * @param {Array} fromPrivateKeys - private keys of the utxos to spend
-   * @param {string} toAddress - the address of the recipient
-   * @param {number} toAmount - amount to transact
-   * @param {string} currency - address of the erc20 contract (or transaction.ETH_CURRENCY for ETH)
-   * @param {string} metadata - the metadata to include in the transaction. Must be a 32-byte hex string
-   * @param {string} verifyingContract - address of the RootChain contract
-   * @return {Object} the submitted transaction
+   * @param {Object} args an arguments object
+   * @param {string} args.fromAddress the address of the sender
+   * @param {Object[]} args.fromUtxos array of utxos to spend
+   * @param {string[]} args.fromPrivateKeys private keys of the utxos to spend
+   * @param {string} args.toAddress the address of the recipient
+   * @param {number} args.toAmount amount to transact
+   * @param {string} args.currency address of the erc20 contract (or transaction.ETH_CURRENCY for ETH)
+   * @param {string} args.metadata the metadata to include in the transaction. Must be a 32-byte hex string
+   * @param {string} args.verifyingContract address of the RootChain contract
+   * @param {number} args.feeAmount amount of fee to pay
+   * @param {string} args.feeCurrency currency of the fee
+   * @return {Promise<Object>} promise that resolves with the submitted transaction
    */
   async sendTransaction ({
     fromAddress,
@@ -251,7 +254,6 @@ class ChildChain {
     validateAddress(toAddress)
     validatePrivateKey(fromPrivateKeys)
 
-    // create the transaction body
     const txBody = transaction.createTransactionBody(
       fromAddress,
       fromUtxos,
@@ -261,23 +263,19 @@ class ChildChain {
       metadata,
       feeAmount,
       feeCurrency
-
     )
     const typedData = transaction.getTypedData(txBody, verifyingContract)
-    // Sign it
     const signatures = this.signTransaction(typedData, fromPrivateKeys)
-    // Build the signed transaction
     const signedTx = this.buildSignedTransaction(typedData, signatures)
-    // submit transaction
     return this.submitTransaction(signedTx)
   }
 
   /**
-   * Returns the current status of the Watcher.
-   * Should be called periodically to see if there are any byzantine_events to be acted on.
+   * Returns the current status of the Watcher
+   * Should be called periodically to see if there are any byzantine_events to be acted on
    *
    * @method status
-   * @return {Object}
+   * @return {Promise<Object>} promise that resolves with the status
    */
   async status () {
     return rpcApi.post({
@@ -288,12 +286,12 @@ class ChildChain {
   }
 
   /**
-   * Gets the data to challenge an invalid input piggybacked on an in-flight exit.
+   * Gets the data to challenge an invalid input piggybacked on an in-flight exit
    *
    * @method inFlightExitGetInputChallengeData
    * @param {string} txbytes the hex-encoded transaction
    * @param {number} inputIndex invalid input index
-   * @return {Object} input challenge data for the in-flight transaction
+   * @return {Promise<Object>} promise that resolves with input challenge data for the in-flight transaction
    */
   async inFlightExitGetInputChallengeData (txbytes, inputIndex) {
     return rpcApi.post({
@@ -312,7 +310,7 @@ class ChildChain {
    * @method inFlightExitGetOutputChallengeData
    * @param {string} txbytes the hex-encoded transaction
    * @param {number} outputIndex invalid output index
-   * @return {Object} input challenge data for the in-flight transaction
+   * @return {Promise<Object>} promise that resolves with the input challenge data for the in-flight transaction
    */
   async inFlightExitGetOutputChallengeData (txbytes, outputIndex) {
     return rpcApi.post({
@@ -330,7 +328,7 @@ class ChildChain {
    *
    * @method inFlightExitGetData
    * @param {string} txbytes the hex-encoded transaction
-   * @return {Object} exit data for the in-flight transaction
+   * @return {Promise<Object>} promise that resolves with exit data for the in-flight transaction
    */
   async inFlightExitGetData (txbytes) {
     return rpcApi.post({
@@ -345,7 +343,7 @@ class ChildChain {
    *
    * @method inFlightExitGetCompetitor
    * @param {string} txbytes the hex-encoded transaction
-   * @return {Object} a competitor to the in-flight transaction
+   * @return {Promise<Object>} promise that resolves with a competitor to the in-flight transaction
    */
   async inFlightExitGetCompetitor (txbytes) {
     return rpcApi.post({
@@ -356,11 +354,11 @@ class ChildChain {
   }
 
   /**
-   * Proves that a transaction has been put into a block (and therefore is canonical).
+   * Proves that a transaction has been put into a block (and therefore is canonical)
    *
    * @method inFlightExitProveCanonical
    * @param {string} txbytes the hex-encoded transaction
-   * @return {Object} the inclusion proof of the transaction
+   * @return {Promise<Object>} promise that resolves with the inclusion proof of the transaction
    */
   async inFlightExitProveCanonical (txbytes) {
     return rpcApi.post({

@@ -34,7 +34,7 @@ const childChain = new ChildChain({
 // modified RootChain contract with a shorter than normal MIN_EXIT_PERIOD.
 let rootChain
 
-describe.only('Challenge in-flight exit output spent tests', function () {
+describe('Challenge in-flight exit output spent tests', function () {
   before(async function () {
     const plasmaContract = await rcHelper.getPlasmaContractAddress(config)
     rootChain = new RootChain({ web3, plasmaContractAddress: plasmaContract.contract_addr })

@@ -16,14 +16,25 @@
 
 const erc20abi = require('human-standard-token-abi')
 
-async function getERC20Balance ({ web3, address, erc20Address }) {
+/**
+ * Retrieve the RootChain ERC20 balance for an address
+ *
+ * @method getErc20Balance
+ * @param {Object} args arguments object
+ * @param {Web3} args.web3 web3 instance
+ * @param {string} args.address the address to check
+ * @return {Promise<string>} promise that resolves with the balance
+ */
+async function getErc20Balance ({ web3, address, erc20Address }) {
   const erc20Contract = new web3.eth.Contract(erc20abi, erc20Address)
   const txDetails = {
     from: address,
     to: erc20Address,
     data: erc20Contract.methods.balanceOf(address).encodeABI()
   }
-  return web3.eth.call(txDetails)
+  const balance = await web3.eth.call(txDetails)
+  // return number as string in case of very large numbers
+  return web3.utils.hexToNumberString(balance)
 }
 
-module.exports = getERC20Balance
+module.exports = getErc20Balance

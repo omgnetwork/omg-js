@@ -1,15 +1,31 @@
 /*
-Copyright 2019 OmiseGO Pte Ltd
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-     http://www.apache.org/licenses/LICENSE-2.0
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License. */
+  Copyright 2019 OmiseGO Pte Ltd
 
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+*/
+
+/**
+ * Helper that waits for RootChain confirmation of a transaction
+ *
+ * @method waitForRootchainTransaction
+ * @param {Object} args arguments object
+ * @param {Web3} args.web3 web3 instance
+ * @param {string} args.transactionHash hash of the transaction to wait for
+ * @param {number} args.checkIntervalMs interval in milliseconds to check the current block number
+ * @param {number} args.blocksToWait number of blocks to wait before transaction is confirmed
+ * @param {Function} args.onCountdown callback thats passed the remaining number of blocks before confirmation
+ * @return {Promise<TransactionReceipt>} promise that resolves with the transaction receipt of the transaction
+ */
 async function waitForRootchainTransaction ({
   web3,
   transactionHash,
