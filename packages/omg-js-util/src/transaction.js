@@ -173,12 +173,12 @@ const transaction = {
     return {
       ...(sigs && { sigs: sigs.map(parseString) }),
       transactionType: parseNumber(transactionType),
-      inputs: inputs.map(input => transaction.decodeUtxoPos(input.toString())),
+      inputs: inputs.map(input => transaction.decodeUtxoPos(parseString(input))),
       outputs: outputs.map(output => {
         const outputType = parseNumber(output[0])
         const outputGuard = parseString(output[1])
         const currency = parseString(output[2])
-        const amount = numberToBN(output[3].toString('hex')).toString()
+        const amount = numberToBN(parseString(output[3])).toString()
         return { outputType, outputGuard, currency, amount }
       }),
       metadata: parseString(metadata)
@@ -287,7 +287,7 @@ const transaction = {
   encodeUtxoPos: function (utxo) {
     const blk = numberToBN(utxo.blknum).mul(BLOCK_OFFSET)
     const tx = numberToBN(utxo.txindex).muln(TX_OFFSET)
-    return blk.add(tx).addn(utxo.oindex).toString()
+    return blk.add(tx).addn(utxo.oindex)
   },
 
   /**
@@ -404,7 +404,7 @@ function addOutput (array, output) {
       output.outputType,
       sanitiseAddress(output.outputGuard), // must start with '0x' to be encoded properly
       sanitiseAddress(output.currency), // must start with '0x' to be encoded properly
-      hexPrefix(numberToBN(output.amount).toString(16))
+      numberToBN(output.amount)
     ])
   }
 }

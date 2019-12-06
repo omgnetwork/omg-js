@@ -106,7 +106,7 @@ class ChildChain {
     const utxoPos = transaction.encodeUtxoPos(utxo)
     return rpcApi.post({
       url: `${this.watcherUrl}/utxo.get_exit_data`,
-      body: { utxo_pos: Number(utxoPos.toString()) },
+      body: { utxo_pos: utxoPos },
       proxyUrl: this.watcherProxyUrl
     })
   }
@@ -121,7 +121,7 @@ class ChildChain {
   async getChallengeData (utxoPos) {
     return rpcApi.post({
       url: `${this.watcherUrl}/utxo.get_challenge_data`,
-      body: { utxo_pos: Number(utxoPos.toString()) },
+      body: { utxo_pos: utxoPos },
       proxyUrl: this.watcherProxyUrl
     })
   }
