@@ -281,8 +281,7 @@ describe('Transfer tests', function () {
       }
     })
 
-    // Skipped because it will only work if the ERC20 token is also a fee currency
-    it('should transfer ERC20 tokens on the childchain', async function () {
+    it.only('should transfer ERC20 tokens on the childchain', async function () {
       // Check utxos on the child chain
       const utxos = await childChain.getUtxos(aliceAccount.address)
       assert.equal(utxos.length, 2)
@@ -312,8 +311,7 @@ describe('Transfer tests', function () {
       // Get the transaction data
       const typedData = transaction.getTypedData(txBody, rootChain.plasmaContractAddress)
       // Sign it
-      const signatures = childChain.signTransaction(typedData, [aliceAccount.privateKey])
-      assert.equal(signatures.length, 1)
+      const signatures = childChain.signTransaction(typedData, [aliceAccount.privateKey, aliceAccount.privateKey])
       // Build the signed transaction
       const signedTx = childChain.buildSignedTransaction(typedData, signatures)
       // Submit the signed transaction to the childchain
