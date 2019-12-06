@@ -33,11 +33,12 @@ const childChain = new ChildChain({
 // NB This test waits for at least RootChain.MIN_EXIT_PERIOD so it should be run against a
 // modified RootChain contract with a shorter than normal MIN_EXIT_PERIOD.
 let rootChain
-
+let bonds
 describe('In-flight Exit Challenge tests', function () {
   before(async function () {
     const plasmaContract = await rcHelper.getPlasmaContractAddress(config)
     rootChain = new RootChain({ web3, plasmaContractAddress: plasmaContract.contract_addr })
+    bonds = (await rootChain.getPaymentExitGame()).bonds
     await faucet.init(rootChain, childChain, web3, config)
   })
 
@@ -170,7 +171,7 @@ describe('In-flight Exit Challenge tests', function () {
           .sub(web3.utils.toBN(bobEthBalanceAfterIfe))
           .sub(bobSpentOnGas)
           .toString(),
-        web3.utils.toBN(rootChain.getInflightExitBond()).toString()
+        web3.utils.toBN(bonds.inflightExit).toString()
       )
 
       // Decode the transaction to get the index of Bob's output
@@ -287,15 +288,14 @@ describe('In-flight Exit Challenge tests', function () {
       bobSpentOnGas.iadd(await rcHelper.spentOnGas(web3, receipt))
 
       await rcHelper.awaitTx(web3, receipt.transactionHash)
-
       // Get Bob's ETH balance
       const bobEthBalance = await web3.eth.getBalance(bobAccount.address)
       // Bob's IFE was not successful, so he loses his exit bond.
       // INTIIAL_BOB_AMOUNT - INFLIGHT_EXIT_BOND - PIGGYBACK_BOND - gas spent
       const expected = web3.utils
         .toBN(INTIIAL_BOB_RC_AMOUNT)
-        .sub(web3.utils.toBN(rootChain.getInflightExitBond()))
-        .sub(web3.utils.toBN(rootChain.getPiggybackBond()))
+        .sub(web3.utils.toBN(bonds.inflightExit))
+        .sub(web3.utils.toBN(bonds.piggyback))
         .sub(bobSpentOnGas)
       assert.equal(bobEthBalance.toString(), expected.toString())
 
@@ -305,7 +305,7 @@ describe('In-flight Exit Challenge tests', function () {
       // INTIIAL_CAROL_AMOUNT + INFLIGHT_EXIT_BOND - gas spent
       const carolExpected = web3.utils
         .toBN(INTIIAL_CAROL_RC_AMOUNT)
-        .add(web3.utils.toBN(rootChain.getInflightExitBond()))
+        .add(web3.utils.toBN(bonds.inflightExit))
         .sub(carolSpentOnGas)
       assert.equal(carolEthBalance.toString(), carolExpected.toString())
     })
@@ -541,8 +541,8 @@ describe('In-flight Exit Challenge tests', function () {
       // INTIIAL_BOB_AMOUNT - INFLIGHT_EXIT_BOND - PIGGYBACK_BOND - gas spent
       const expected = web3.utils
         .toBN(INTIIAL_BOB_RC_AMOUNT)
-        .sub(web3.utils.toBN(rootChain.getInflightExitBond()))
-        .sub(web3.utils.toBN(rootChain.getPiggybackBond()))
+        .sub(web3.utils.toBN(bonds.inflightExit))
+        .sub(web3.utils.toBN(bonds.piggyback))
         .sub(bobSpentOnGas)
       assert.equal(bobEthBalance.toString(), expected.toString())
 
@@ -552,7 +552,7 @@ describe('In-flight Exit Challenge tests', function () {
       // INTIIAL_CAROL_AMOUNT + INFLIGHT_EXIT_BOND - gas spent
       const carolExpected = web3.utils
         .toBN(INTIIAL_CAROL_RC_AMOUNT)
-        .add(web3.utils.toBN(rootChain.getInflightExitBond()))
+        .add(web3.utils.toBN(bonds.inflightExit))
         .sub(carolSpentOnGas)
       assert.equal(carolEthBalance.toString(), carolExpected.toString())
     })

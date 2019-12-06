@@ -251,14 +251,14 @@ describe('Challenge in-flight exit output spent tests', function () {
       bobSpentOnGas.iadd(await rcHelper.spentOnGas(web3, receipt))
 
       await rcHelper.awaitTx(web3, receipt.transactionHash)
-
+      const { bonds } = await rootChain.getPaymentExitGame()
       // Get carol's ETH balance
       const carolEthBalance = await web3.eth.getBalance(carolAccount.address)
       // carol got Bob's exit bond, and piggyback of bob's output so expect her balance to be
       // INTIIAL_CAROL_AMOUNT + INFLIGHT_EXIT_BOND  + INFLIGHT_PIGGYBACK_BOND - gas spent
       const carolExpected = web3.utils
         .toBN(INTIIAL_CAROL_RC_AMOUNT)
-        .add(web3.utils.toBN(rootChain.getPiggybackBond()))
+        .add(web3.utils.toBN(bonds.piggyback))
         .sub(carolSpentOnGas)
       assert.equal(carolEthBalance.toString(), carolExpected.toString())
 
@@ -268,7 +268,7 @@ describe('Challenge in-flight exit output spent tests', function () {
       // INTIIAL_BOB_AMOUNT - INFLIGHT_EXIT_BOND + INFLIGHT_EXIT_BOND - INFLIGHT_PIGGYBACK_BOND - gas spent
       const bobExpected = web3.utils
         .toBN(INTIIAL_BOB_RC_AMOUNT)
-        .sub(web3.utils.toBN(rootChain.getPiggybackBond()))
+        .sub(web3.utils.toBN(bonds.piggyback))
         .sub(bobSpentOnGas)
       assert.equal(bobEthBalance.toString(), bobExpected.toString())
     })

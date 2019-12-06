@@ -293,9 +293,10 @@ describe('Challenge in-flight exit input spent tests', function () {
       const bobEthBalance = await web3.eth.getBalance(bobAccount.address)
       // Bob's IFE was not successful, so he loses his exit bond.
       // INTIIAL_BOB_AMOUNT - INFLIGHT_EXIT_BOND - PIGGYBACK_BOND - gas spent
+      const { bonds } = await rootChain.getPaymentExitGame()
       const expected = web3.utils
         .toBN(INTIIAL_BOB_RC_AMOUNT)
-        .sub(web3.utils.toBN(rootChain.getInflightExitBond()))
+        .sub(web3.utils.toBN(bonds.inflightExit))
         .sub(bobSpentOnGas)
       assert.equal(bobEthBalance.toString(), expected.toString())
 
@@ -305,8 +306,8 @@ describe('Challenge in-flight exit input spent tests', function () {
       // INTIIAL_CAROL_AMOUNT + INFLIGHT_EXIT_BOND  + INFLIGHT_PIGGYBACK_BOND - gas spent
       const carolExpected = web3.utils
         .toBN(INTIIAL_CAROL_RC_AMOUNT)
-        .add(web3.utils.toBN(rootChain.getInflightExitBond()))
-        .add(web3.utils.toBN(rootChain.getPiggybackBond()))
+        .add(web3.utils.toBN(bonds.inflightExit))
+        .add(web3.utils.toBN(bonds.piggyback))
         .sub(carolSpentOnGas)
       assert.equal(carolEthBalance.toString(), carolExpected.toString())
 
@@ -314,7 +315,7 @@ describe('Challenge in-flight exit input spent tests', function () {
       const aliceEthBalance = await web3.eth.getBalance(aliceAccount.address)
       const aliceExpected = web3.utils
         .toBN(INTIIAL_ALICE_AMOUNT)
-        .sub(web3.utils.toBN(rootChain.getPiggybackBond()))
+        .sub(web3.utils.toBN(bonds.piggyback))
         .sub(aliceSpentOnGas)
       assert.equal(aliceEthBalance.toString(), aliceExpected.toString())
     })
