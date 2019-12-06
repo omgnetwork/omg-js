@@ -19,6 +19,10 @@ const faucetFaucet = require('./faucetFaucet')
 const { transaction, getErc20Balance } = require('@omisego/omg-js-util')
 const numberToBN = require('number-to-bn')
 const erc20abi = require('human-standard-token-abi')
+
+const currencyMap = {
+  '0x0000000000000000000000000000000000000000': 'ETH'
+}
 const faucet = {
   init: async function (rootChain, childChain, web3, config) {
     if (this.initialised) {
@@ -221,7 +225,7 @@ const faucet = {
       this.privateKey,
       this.rootChain.plasmaContractAddress
     )
-    console.log(`Faucet sent ${amount} ${currency} on childchain to ${address}`)
+    console.log(`Faucet sent ${amount} ${currencyMap[currency] || currency} on childchain to ${address}`)
     return ret
   },
 
@@ -236,7 +240,7 @@ const faucet = {
       value: amount
     }
     const ret = await rcHelper.sendTransaction(web3, txDetails, this.privateKey)
-    console.log(`Faucet sent ${amount} ETH on root chain to ${address}`)
+    console.log(`Faucet sent ${amount / 10 ** 18} ETH on root chain to ${address}`)
     return ret
   },
 

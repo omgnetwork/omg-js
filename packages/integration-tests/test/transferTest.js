@@ -289,12 +289,13 @@ describe('Transfer tests', function () {
       assert.hasAllKeys(utxos[0], ['utxo_pos', 'txindex', 'owner', 'oindex', 'currency', 'blknum', 'amount'])
 
       const erc20Utxo = utxos.find(utxo => utxo.currency === ERC20_CURRENCY)
+      const ethUtxo = utxos.find(utxo => utxo.currency === transaction.ETH_CURRENCY)
       assert.equal(erc20Utxo.amount, INTIIAL_ALICE_AMOUNT)
       assert.equal(erc20Utxo.currency, ERC20_CURRENCY)
 
       const CHANGE_AMOUNT = erc20Utxo.amount - TRANSFER_AMOUNT
       const txBody = {
-        inputs: [erc20Utxo],
+        inputs: [ethUtxo, erc20Utxo],
         outputs: [{
           outputType: 1,
           outputGuard: bobAccount.address,
