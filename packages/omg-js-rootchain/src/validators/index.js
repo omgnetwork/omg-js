@@ -96,7 +96,7 @@ const piggybackInFlightExitOnOutputSchema = Joi.object({
   txOptions: validateTxOption
 })
 
-const piggybackInFlightExitOnInput = Joi.object({
+const piggybackInFlightExitOnInputSchema = Joi.object({
   inFlightTx: Joi.string().required(),
   inputIndex: Joi.number(),
   txOptions: validateTxOption
@@ -161,7 +161,7 @@ module.exports = {
   getInFlightExitIdSchema,
   startInFlightExitSchema,
   piggybackInFlightExitOnOutputSchema,
-  piggybackInFlightExitOnInput,
+  piggybackInFlightExitOnInputSchema,
   challengeInFlightExitNotCanonicalSchema,
   respondToNonCanonicalChallengeSchema,
   challengeInFlightExitInputSpentSchema,

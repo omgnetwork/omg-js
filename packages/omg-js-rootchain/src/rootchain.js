@@ -28,7 +28,7 @@ const {
   getInFlightExitIdSchema,
   startInFlightExitSchema,
   piggybackInFlightExitOnOutputSchema,
-  piggybackInFlightExitOnInput,
+  piggybackInFlightExitOnInputSchema,
   challengeInFlightExitNotCanonicalSchema,
   respondToNonCanonicalChallengeSchema,
   challengeInFlightExitInputSpentSchema,
@@ -522,7 +522,7 @@ class RootChain {
    * @return {Promise<TransactionReceipt>} promise that resolves with a transaction receipt
    */
   async piggybackInFlightExitOnInput ({ inFlightTx, inputIndex, txOptions }) {
-    Joi.assert({ inFlightTx, inputIndex, txOptions }, piggybackInFlightExitOnInput)
+    Joi.assert({ inFlightTx, inputIndex, txOptions }, piggybackInFlightExitOnInputSchema)
     const { address, contract, bonds } = await this.getPaymentExitGame()
     const txDetails = {
       from: txOptions.from,
