@@ -108,6 +108,13 @@ const challengeInFlightExitNotCanonicalSchema = Joi.object({
   txOptions: validateTxOption
 })
 
+const respondToNonCanonicalChallengeSchema = Joi.object({
+  inFlightTx: Joi.string().required(),
+  inFlightTxPos: [Joi.number().required(), validateBn.required()],
+  inFlightTxInclusionProof: Joi.string().required(),
+  txOptions: validateTxOption
+})
+
 module.exports = {
   approveTokenSchema,
   depositTokenSchema,
@@ -122,5 +129,6 @@ module.exports = {
   startInFlightExitSchema,
   piggybackInFlightExitOnOutputSchema,
   piggybackInFlightExitOnInput,
-  challengeInFlightExitNotCanonicalSchema
+  challengeInFlightExitNotCanonicalSchema,
+  respondToNonCanonicalChallengeSchema
 }
