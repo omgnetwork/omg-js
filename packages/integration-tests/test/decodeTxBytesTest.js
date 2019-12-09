@@ -96,7 +96,7 @@ describe('Decode txBytes onchain tests', function () {
           inputs: [],
           outputs: [
             {
-              amount: Number(DEPOSIT_AMOUNT),
+              amount: DEPOSIT_AMOUNT,
               outputGuard: aliceAccount.address,
               outputType: 1,
               currency: '0x0000000000000000000000000000000000000000'
