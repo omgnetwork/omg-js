@@ -135,7 +135,7 @@ async function inflightExitChildChain () {
   console.log('Bob piggybacks his output')
 
   // wait for challenge period to complete
-  await wait.waitForChallengePeriodToEnd(rootChain, exitData)
+  await wait.waitForChallengePeriodToEnd(rootChain)
 
   // call processExits() after challenge period is over
   const processExitsPostChallengeReceipt = await rootChain.processExits({

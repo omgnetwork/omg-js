@@ -92,11 +92,13 @@ class RootChain {
    * @param {Object} args an arguments object
    * @param {number} args.exitRequestBlockNumber block number of the exit request
    * @param {number} args.submissionBlockNumber for regular exits: where the exiting UTXO was created in a child chain block, for in-flight exits: where the youngest input of the exiting transaction was created
+   * @param {number} args.isDeposit whether the utxo being exited was a deposit
    * @return {Promise<Object>} promise that resolves with the scheduled finalization unix time and the milliseconds until that time
    */
   async getExitTime ({
     exitRequestBlockNumber,
-    submissionBlockNumber
+    submissionBlockNumber,
+    isDeposit = false
   }) {
     const _minExitPeriodSeconds = await this.plasmaContract.methods.minExitPeriod().call()
     const minExitPeriodSeconds = Number(_minExitPeriodSeconds)
@@ -105,7 +107,7 @@ class RootChain {
     const submissionBlock = await this.plasmaContract.methods.blocks(submissionBlockNumber).call()
 
     let scheduledFinalizationTime
-    if (submissionBlockNumber % 1000 !== 0) {
+    if (isDeposit) {
       // if deposit, elevated exit priority
       scheduledFinalizationTime = Math.max(
         Number(exitBlock.timestamp) + minExitPeriodSeconds,
