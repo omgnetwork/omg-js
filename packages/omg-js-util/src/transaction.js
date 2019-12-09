@@ -1,17 +1,18 @@
 /*
-Copyright 2019 OmiseGO Pte Ltd
+  Copyright 2019 OmiseGO Pte Ltd
 
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+  http://www.apache.org/licenses/LICENSE-2.0
 
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License. */
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+*/
 
 global.Buffer = global.Buffer || require('buffer').Buffer
 
@@ -38,8 +39,8 @@ const transaction = {
   /**
   * Checks validity of a transaction
   *
-  *@param {Object} tx the url of the watcher server
-  *@throws an InvalidArgumentError exception if the transaction invalid
+  * @param {TransactionBody} tx transaction body
+  * @throws {Error} an Error exception if the transaction is invalid
   *
   */
   validate: function (tx) {
@@ -51,8 +52,8 @@ const transaction = {
   /**
   * Converts a transaction into an array suitable for RLP encoding
   *
-  *@param {Object} typedDataMessage the transaction object
-  *@returns the transaction as an array
+  * @param {Object} typedDataMessage the transaction object
+  * @return {Array[]} the transaction as an array
   *
   */
   toArray: function (typedDataMessage) {
@@ -79,10 +80,10 @@ const transaction = {
   /**
   * Creates and encodes a deposit transaction
   *
-  *@param {string} owner the address that is making the deposit
-  *@param {Object} amount the amount of the deposit
-  *@param {Object} currency the currency (token address) of the deposit
-  *@returns the RLP encoded deposit transaction
+  * @param {string} owner the address that is making the deposit
+  * @param {number} amount the amount of the deposit
+  * @param {string} currency the currency (token address) of the deposit
+  * @return {string} the RLP encoded deposit transaction
   *
   */
   encodeDeposit: function (owner, amount, currency) {
@@ -100,7 +101,13 @@ const transaction = {
     return encoded
   },
 
-  // TODO ADD js-doc
+  /**
+  * Decodes a deposit transaction
+  *
+  * @param {string} encodedDeposit the RLP encoded deposit transaction
+  * @return {DepositTransaction} the decoded deposit transaction
+  *
+  */
   decodeDeposit: function (encodedDeposit) {
     const { outputs } = transaction.decodeTxBytes(encodedDeposit)
     const [{ outputGuard, amount, currency }] = outputs
@@ -114,11 +121,10 @@ const transaction = {
   /**
   * RLP encodes a transaction
   *
-  *@param {Number} transactionType the transaction type
-  *@param {Array} inputs the inputs of transaction
-  *@param {Array} outputs the outputs of transaction
-  *@param {string} metadata metadata
-  *@returns the RLP encoded transaction
+  * @param {TransactionBody} transaction transaction object
+  * @param {Object} [signedArgs] arguments object defining whether transaction is signed
+  * @param {boolean} signedArgs.signed whether the transaction should be signed
+  * @return {string} the RLP encoded transaction
   *
   */
   encode: function ({ transactionType, inputs, outputs, metadata, signatures }, { signed = true } = {}) {
@@ -144,16 +150,11 @@ const transaction = {
     return hexPrefix(rlp.encode(txArray).toString('hex'))
   },
 
-  rlpDecode: function (hash) {
-    const rawTx = Buffer.isBuffer(hash) ? hash : Buffer.from(hash.replace('0x', ''), 'hex')
-    return rlp.decode(rawTx)
-  },
-
   /**
   * Decodes an RLP encoded transaction
   *
-  *@param {string} tx the RLP encoded transaction
-  *@returns the transaction object
+  * @param {string} tx the RLP encoded transaction
+  * @return {TransactionBody} transaction object
   *
   */
   decodeTxBytes: function (tx) {
@@ -189,15 +190,14 @@ const transaction = {
   * Creates a transaction object. It will select from the given utxos to cover the amount
   * of the transaction, sending any remainder back as change.
   *
-  *@param {string} fromAddress the address of the sender
-  *@param {array} fromUtxos the utxos to use as transaction inputs
-  *@param {string} toAddress the address of the receiver
-  *@param {string} toAmount the amount to send
-  *@param {string} currency the currency to send
-  *@param {string} metadata the currency to send
-  *@returns the transaction object
-  *@throws InvalidArgumentError if any of the args are invalid
-  *@throws Error if the given utxos cannot cover the amount
+  * @param {string} fromAddress the address of the sender
+  * @param {Object[]} fromUtxos the utxos to use as transaction inputs
+  * @param {string} toAddress the address of the receiver
+  * @param {number} toAmount the amount to send
+  * @param {string} currency the currency to send
+  * @param {string} metadata the currency to send
+  * @return {TransactionBody} transaction object
+  * @throws {Error} Error if any of the args are invalid or given utxos cannot cover the amount
   *
   */
   createTransactionBody: function (
@@ -280,8 +280,8 @@ const transaction = {
   * Encodes a utxo into the format used in the RootChain contract
   * i.e. blocknum * 1000000000 + txindex * 10000 + oindex
   *
-  *@param {string} utxo the utxo object
-  *@returns the encoded utxo position
+  * @param {UTXO} utxo a utxo object
+  * @return {BigNumber} the encoded utxo position as a Big Number
   *
   */
   encodeUtxoPos: function (utxo) {
@@ -294,8 +294,8 @@ const transaction = {
   * Decodes a utxo from the format used in the RootChain contract
   * i.e. blocknum * 1000000000 + txindex * 10000 + oindex
   *
-  *@param {string} utxoPos the utxo position
-  *@returns the utxo object
+  * @param {number} utxoPos the utxo position
+  * @return {UTXO} a utxo object
   *
   */
   decodeUtxoPos: function (utxoPos) {
@@ -309,9 +309,9 @@ const transaction = {
   /**
   * Returns the typed data for signing a transaction
   *
-  *@param {Object} tx the transaction body
-  *@param {string} verifyingContract the address of the RootChain contract
-  *@returns the typed data of the transaction
+  * @param {TransactionBody} tx the transaction body
+  * @param {string} verifyingContract the address of the RootChain contract
+  * @return {TypedData} the typed data of the transaction
   *
   */
   getTypedData: function (tx, verifyingContract) {
@@ -321,8 +321,8 @@ const transaction = {
   /**
   * Returns the hash of the typed data, to be signed by e.g. `ecsign`
   *
-  *@param {Object} typedData the transaction's typed data
-  *@returns the signing hash
+  * @param {TypedData} typedData the transaction's typed data
+  * @return {Buffer} the signing hash
   *
   */
   getToSignHash: function (typedData) {
@@ -333,8 +333,8 @@ const transaction = {
   * Transaction metadata is of type `bytes32`. To pass a string shorter than 32 bytes it must be hex encoded and padded.
   * This method is one way of doing that.
   *
-  *@param {string} str the string to be encoded and passed as metadata
-  *@returns the encoded metadata
+  * @param {string} str the string to be encoded and passed as metadata
+  * @return {string} the encoded metadata
   *
   */
   encodeMetadata: function (str) {
@@ -346,8 +346,8 @@ const transaction = {
   * Transaction metadata is of type `bytes32`. To pass a string shorter than 32 bytes it must be hex encoded and padded.
   * This method decodes a string that was encoded with encodeMetadata().
   *
-  *@param {string} str the metadata string to be decoded
-  *@returns the decoded metadata
+  * @param {string} str the metadata string to be decoded
+  * @return {string} the decoded metadata
   *
   */
   decodeMetadata: function (str) {

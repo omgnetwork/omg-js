@@ -8,25 +8,34 @@ toc:
       - getExitData
       - getChallengeData
       - createTransaction
+      - signTypedData
+      - submitTyped
       - signTransaction
       - buildSignedTransaction
       - submitTransaction
       - sendTransaction
       - status
+      - inFlightExitGetInputChallengeData
+      - inFlightExitGetOutputChallengeData
       - inFlightExitGetData
       - inFlightExitGetCompetitor
       - inFlightExitProveCanonical
 
   - name: RootChain
     children:
+      - approveToken
       - depositEth
       - depositToken
+      - getStandardExitId
+      - getInFlightExitId
       - startStandardExit
       - challengeStandardExit
       - processExits
+      - hasToken
       - addToken
       - startInFlightExit
-      - piggybackInFlightExit
+      - piggybackInFlightExitOnOutput
+      - piggybackInFlightExitOnInput
       - challengeInFlightExitNotCanonical
       - respondToNonCanonicalChallenge
       - challengeInFlightExitInputSpent
@@ -35,3 +44,26 @@ toc:
   - name: OMG Util
     children:
       - transaction
+      - sign
+      - hexToBytes
+      - hexPrefix
+      - ethErrorReason
+      - getErc20Balance
+      - waitForRootchainTransaction
+      - waitForChildchainBalance
+
+  - name: Types
+    children:
+      - Web3
+      - TransactionReceipt
+      - UTXO
+      - Output
+      - TransactionData
+      - TransactionBody
+      - DepositTransaction
+      - BigNumber
+      - TypedData
+      - TransactionOptions
+      - TransactionCallbacks
+      - Balance
+      - ExitData

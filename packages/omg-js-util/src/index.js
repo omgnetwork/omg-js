@@ -14,14 +14,14 @@ See the License for the specific language governing permissions and
 limitations under the License. */
 
 module.exports = {
-  InvalidArgumentError: require('./InvalidArgumentError'),
   transaction: require('./transaction'),
   sign: require('./sign'),
   hexToBytes: require('./hexToBytes'),
-  ArgTypes: require('./ArgTypes'),
   hexPrefix: require('./hexPrefix'),
   ethErrorReason: require('./ethErrorReason'),
   getErc20Balance: require('./getErc20Balance'),
   waitForRootchainTransaction: require('./waitForRootchainTransaction'),
-  waitForChildchainBalance: require('./waitForChildchainBalance')
+  waitForChildchainBalance: require('./waitForChildchainBalance'),
+  InvalidArgumentError: require('./InvalidArgumentError'),
+  ArgTypes: require('./ArgTypes')
 }

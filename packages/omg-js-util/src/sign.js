@@ -26,6 +26,14 @@ function ecSign (tosign, privateKey) {
   return sigUtil.concatSig(signed.v, signed.r, signed.s)
 }
 
+/**
+ * Sign a transaction with passed private keys
+ *
+ * @method sign
+ * @param {Buffer} tx hash of typedData to be signed
+ * @param {string[]} privateKeys array of private keys to sign with
+ * @return {string[]} array of signatures
+ */
 function sign (tx, privateKeys) {
   return privateKeys.map(key => ecSign(tx, key))
 }

@@ -13,14 +13,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License. */
 
-/**
-* Validates function arguments
-* @param {string} name the calling function's name for the error message
-* @param {array} passedArgs the calling functions arguments array
-* @param {object} validator either a list or object of validator methods
-* @throws {TypeError} if invalid input, will throw a TypeError
-* @returns {null} returns null if there is no input validation error
-*/
 function validate (name, passedArgs, validator) {
   const unnamedArgs = Array.isArray(validator)
 

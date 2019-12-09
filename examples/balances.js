@@ -46,7 +46,7 @@ async function balances () {
   if (config.erc20_contract) {
     aliceRootchainBalances.push({
       currency: config.erc20_contract,
-      amount: web3.utils.hexToNumberString(aliceRootchainERC20Balance)
+      amount: aliceRootchainERC20Balance
     })
   }
 
@@ -74,7 +74,7 @@ async function balances () {
   if (config.erc20_contract) {
     bobRootchainBalances.push({
       currency: config.erc20_contract,
-      amount: web3.utils.hexToNumberString(bobRootchainERC20Balance)
+      amount: bobRootchainERC20Balance
     })
   }
 

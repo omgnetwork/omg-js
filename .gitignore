@@ -1,6 +1,7 @@
 node_modules
 *.log
 .env
+.DS_Store
 
 # VS Code directories
 .vscode
