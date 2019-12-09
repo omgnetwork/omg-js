@@ -70,12 +70,14 @@ const getInFlightExitIdSchema = Joi.object({
 const startInFlightExitSchema = Joi.object({
   inFlightTx: Joi.string().required(),
   inputTxs: Joi.array().required(),
-  inputUtxosPos: [Joi.number().required(), validateBn.required()],
+  inputUtxosPos: Joi.array().items(
+    Joi.alternatives(Joi.number(), validateBn)
+  ).required(),
   outputGuardPreimagesForInputs: Joi.array().required(),
-  inputTxsInclusionProofs: Joi.string().required(),
-  inFlightTxSigs: Joi.string().required(),
-  signatures: Joi.string().required(),
-  inputSpendingConditionOptionalArgs: Joi.array().required(),
+  inputTxsInclusionProofs: Joi.array().items(Joi.string()).required(),
+  inFlightTxSigs: Joi.array().items(Joi.string()).required(),
+  signatures: Joi.array().items(Joi.string()).required(),
+  inputSpendingConditionOptionalArgs: Joi.array().items(Joi.string()).required(),
   txOptions: validateTxOption
 })
 
