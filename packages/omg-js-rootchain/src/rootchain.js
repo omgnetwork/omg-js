@@ -26,7 +26,10 @@ const {
   hasTokenSchema,
   addTokenSchema,
   getInFlightExitIdSchema,
-  startInFlightExitSchema
+  startInFlightExitSchema,
+  piggybackInFlightExitOnOutputSchema,
+  piggybackInFlightExitOnInput,
+  challengeInFlightExitNotCanonicalSchema
 } = require('./validators')
 const Joi = require('@hapi/joi')
 
@@ -477,6 +480,13 @@ class RootChain {
     outputGuardPreimage,
     txOptions
   }) {
+    Joi.assert({
+      inFlightTx,
+      outputIndex,
+      outputGuardPreimage,
+      txOptions
+    }, piggybackInFlightExitOnOutputSchema)
+
     const { address, contract, bonds } = await this.getPaymentExitGame()
     const txDetails = {
       from: txOptions.from,
@@ -509,6 +519,7 @@ class RootChain {
    * @return {Promise<TransactionReceipt>} promise that resolves with a transaction receipt
    */
   async piggybackInFlightExitOnInput ({ inFlightTx, inputIndex, txOptions }) {
+    Joi.assert({ inFlightTx, inputIndex, txOptions }, piggybackInFlightExitOnInput)
     const { address, contract, bonds } = await this.getPaymentExitGame()
     const txDetails = {
       from: txOptions.from,
@@ -565,6 +576,21 @@ class RootChain {
     competingTxSpendingConditionOptionalArgs,
     txOptions
   }) {
+    Joi.assert({
+      inputTx,
+      inputUtxoPos,
+      inFlightTx,
+      inFlightTxInputIndex,
+      competingTx,
+      competingTxInputIndex,
+      outputGuardPreimage,
+      competingTxPos,
+      competingTxInclusionProof,
+      competingTxWitness,
+      competingTxConfirmSig,
+      competingTxSpendingConditionOptionalArgs,
+      txOptions
+    }, challengeInFlightExitNotCanonicalSchema)
     const { address, contract } = await this.getPaymentExitGame()
     const txDetails = {
       from: txOptions.from,

@@ -40,7 +40,12 @@ const challengeStandardExitSchema = Joi.object({
 
 const processExitsSchema = Joi.object({
   token: validateAddress,
-  exitId: [Joi.number().equal(0).required(), Joi.string().required()],
+  exitId: [
+    Joi.number()
+      .equal(0)
+      .required(),
+    Joi.string().required()
+  ],
   maxExitsToProcess: Joi.number(),
   txOptions: validateTxOption.required()
 })
@@ -72,8 +77,36 @@ const startInFlightExitSchema = Joi.object({
   signatures: Joi.string().required(),
   inputSpendingConditionOptionalArgs: Joi.array().required(),
   txOptions: validateTxOption
-}
-)
+})
+
+const piggybackInFlightExitOnOutputSchema = Joi.object({
+  inFlightTx: Joi.string().required(),
+  outputIndex: Joi.number().required(),
+  outputGuardPreimage: Joi.string(),
+  txOptions: validateTxOption
+})
+
+const piggybackInFlightExitOnInput = Joi.object({
+  inFlightTx: Joi.string().required(),
+  inputIndex: Joi.number(),
+  txOptions: validateTxOption
+})
+
+const challengeInFlightExitNotCanonicalSchema = Joi.object({
+  inputTx: Joi.string().required(),
+  inputUtxoPos: [Joi.number().required(), validateBn.required()],
+  inFlightTx: Joi.string().required(),
+  inFlightTxInputIndex: Joi.number().required(),
+  competingTx: Joi.string().required(),
+  competingTxInputIndex: Joi.number().required(),
+  outputGuardPreimage: Joi.string(),
+  competingTxPos: [Joi.number().required(), validateBn.required()],
+  competingTxInclusionProof: Joi.string(),
+  competingTxWitness: Joi.string(),
+  competingTxConfirmSig: Joi.string(),
+  competingTxSpendingConditionOptionalArgs: Joi.string(),
+  txOptions: validateTxOption
+})
 
 module.exports = {
   approveTokenSchema,
@@ -86,5 +119,8 @@ module.exports = {
   addTokenSchema,
   getStandardExitIdSchema,
   getInFlightExitIdSchema,
-  startInFlightExitSchema
+  startInFlightExitSchema,
+  piggybackInFlightExitOnOutputSchema,
+  piggybackInFlightExitOnInput,
+  challengeInFlightExitNotCanonicalSchema
 }
