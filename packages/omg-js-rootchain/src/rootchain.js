@@ -21,7 +21,10 @@ const {
   depositEthSchema,
   depositTokenSchema,
   startStandardExitSchema,
-  challengeStandardExitSchema
+  challengeStandardExitSchema,
+  processExitsSchema,
+  hasTokenSchema,
+  addTokenSchema
 } = require('./validators')
 const Joi = require('@hapi/joi')
 
@@ -316,6 +319,7 @@ class RootChain {
    * @return {Promise<TransactionReceipt>} promise that resolves with a transaction receipt
    */
   async processExits ({ token, exitId, maxExitsToProcess, txOptions }) {
+    Joi.assert({ token, exitId, maxExitsToProcess, txOptions }, processExitsSchema)
     const vaultId = token === transaction.ETH_CURRENCY ? 1 : 2
 
     const txDetails = {
@@ -349,6 +353,7 @@ class RootChain {
    * @return {Promise<boolean>} promise that resolves with whether an exit queue exists for this token
    */
   hasToken (token) {
+    Joi.assert(token, hasTokenSchema)
     const vaultId = token === transaction.ETH_CURRENCY ? 1 : 2
     return this.plasmaContract.methods.hasExitQueue(vaultId, token).call()
   }
@@ -364,6 +369,7 @@ class RootChain {
    * @throws an exception if the token has already been added
    */
   async addToken ({ token, txOptions }) {
+    Joi.assert({ token, txOptions }, addTokenSchema)
     const vaultId = token === transaction.ETH_CURRENCY ? 1 : 2
 
     const txDetails = {

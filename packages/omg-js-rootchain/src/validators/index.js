@@ -37,10 +37,28 @@ const challengeStandardExitSchema = Joi.object({
   challengeTxSig: Joi.string().required(),
   txOptions: validateTxOption.required()
 })
+
+const processExitsSchema = Joi.object({
+  token: validateAddress,
+  exitId: [Joi.number().equal(0).required(), Joi.string().required()],
+  maxExitsToProcess: Joi.number(),
+  txOptions: validateTxOption.required()
+})
+
+const hasTokenSchema = validateAddress
+
+const addTokenSchema = Joi.object({
+  token: validateAddress,
+  txOptions: validateTxOption.required()
+})
+
 module.exports = {
   approveTokenSchema,
   depositTokenSchema,
   depositEthSchema,
   startStandardExitSchema,
-  challengeStandardExitSchema
+  challengeStandardExitSchema,
+  processExitsSchema,
+  hasTokenSchema,
+  addTokenSchema
 }
