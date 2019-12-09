@@ -95,7 +95,12 @@ async function exitChildChainErc20 () {
   })
   console.log('Exit id: ', exitId)
 
-  await wait.waitForChallengePeriodToEnd(rootChain, exitData)
+  const { msUntilFinalization } = await rootChain.getExitTime({
+    exitRequestBlockNumber: standardExitReceipt.blockNumber,
+    submissionBlockNumber: bobUtxoToExit.blknum
+  })
+
+  await wait.wait(msUntilFinalization)
   const processExitReceipt = await rootChain.processExits({
     token: config.erc20_contract,
     exitId,
