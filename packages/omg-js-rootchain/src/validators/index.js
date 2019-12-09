@@ -52,6 +52,29 @@ const addTokenSchema = Joi.object({
   txOptions: validateTxOption.required()
 })
 
+const getStandardExitIdSchema = Joi.object({
+  txBytes: Joi.string().required(),
+  utxoPos: [Joi.number().required(), validateBn.required()],
+  isDeposit: Joi.boolean().required()
+})
+
+const getInFlightExitIdSchema = Joi.object({
+  txBytes: Joi.string().required()
+})
+
+const startInFlightExitSchema = Joi.object({
+  inFlightTx: Joi.string().required(),
+  inputTxs: Joi.string().required(),
+  inputUtxosPos: [Joi.number().required(), validateBn.required()],
+  outputGuardPreimagesForInputs: Joi.array().required(),
+  inputTxsInclusionProofs: Joi.string().required(),
+  inFlightTxSigs: Joi.string().required(),
+  signatures: Joi.string().required(),
+  inputSpendingConditionOptionalArgs: Joi.array().required(),
+  txOptions: validateTxOption
+}
+)
+
 module.exports = {
   approveTokenSchema,
   depositTokenSchema,
@@ -60,5 +83,8 @@ module.exports = {
   challengeStandardExitSchema,
   processExitsSchema,
   hasTokenSchema,
-  addTokenSchema
+  addTokenSchema,
+  getStandardExitIdSchema,
+  getInFlightExitIdSchema,
+  startInFlightExitSchema
 }

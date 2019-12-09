@@ -24,7 +24,9 @@ const {
   challengeStandardExitSchema,
   processExitsSchema,
   hasTokenSchema,
-  addTokenSchema
+  addTokenSchema,
+  getInFlightExitIdSchema,
+  startInFlightExitSchema
 } = require('./validators')
 const Joi = require('@hapi/joi')
 
@@ -190,6 +192,7 @@ class RootChain {
    * @return {Promise<string>} promise that resolves with the exitId
    */
   async getStandardExitId ({ txBytes, utxoPos, isDeposit }) {
+    Joi.assert({ txBytes, utxoPos, isDeposit }, depositTokenSchema)
     const { contract } = await this.getPaymentExitGame()
     return contract.methods.getStandardExitId(isDeposit, txBytes, utxoPos).call()
   }
@@ -203,6 +206,7 @@ class RootChain {
    * @return {Promise<string>} promise that resolves with the exitId
    */
   async getInFlightExitId ({ txBytes }) {
+    Joi.assert({ txBytes }, getInFlightExitIdSchema)
     const { contract } = await this.getPaymentExitGame()
     return contract.methods.getInFlightExitId(txBytes).call()
   }
@@ -420,6 +424,17 @@ class RootChain {
     inputSpendingConditionOptionalArgs,
     txOptions
   }) {
+    Joi.assert({
+      inFlightTx,
+      inputTxs,
+      inputUtxosPos,
+      outputGuardPreimagesForInputs,
+      inputTxsInclusionProofs,
+      inFlightTxSigs,
+      signatures,
+      inputSpendingConditionOptionalArgs,
+      txOptions
+    }, startInFlightExitSchema)
     const { address, contract, bonds } = await this.getPaymentExitGame()
     const txDetails = {
       from: txOptions.from,
