@@ -30,7 +30,8 @@ const {
   piggybackInFlightExitOnOutputSchema,
   piggybackInFlightExitOnInput,
   challengeInFlightExitNotCanonicalSchema,
-  respondToNonCanonicalChallengeSchema
+  respondToNonCanonicalChallengeSchema,
+  challengeInFlightExitInputSpentSchema
 } = require('./validators')
 const Joi = require('@hapi/joi')
 
@@ -697,6 +698,17 @@ class RootChain {
     spendingConditionOptionalArgs,
     txOptions
   }) {
+    Joi.assert({
+      inFlightTx,
+      inFlightTxInputIndex,
+      challengingTx,
+      challengingTxInputIndex,
+      challengingTxWitness,
+      inputTx,
+      inputUtxoPos,
+      spendingConditionOptionalArgs,
+      txOptions
+    }, challengeInFlightExitInputSpentSchema)
     const { address, contract } = await this.getPaymentExitGame()
     const txDetails = {
       from: txOptions.from,
