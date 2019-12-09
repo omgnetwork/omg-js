@@ -110,7 +110,7 @@ const challengeInFlightExitNotCanonicalSchema = Joi.object({
   competingTx: Joi.string().required(),
   competingTxInputIndex: Joi.number().required(),
   outputGuardPreimage: Joi.string(),
-  competingTxPos: [Joi.number().required(), validateBn.required()],
+  competingTxPos: [Joi.number().required(), validateBn.required(), Joi.string().equal('0x')],
   competingTxInclusionProof: Joi.string(),
   competingTxWitness: Joi.string(),
   competingTxConfirmSig: Joi.string(),

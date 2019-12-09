@@ -512,20 +512,21 @@ describe('In-flight Exit tests', function () {
       )
 
       await rcHelper.awaitTx(web3, receipt.transactionHash)
-
+      const { bonds } = await rootChain.getPaymentExitGame()
       // Get Alice's ETH balance
       const aliceEthBalance = await web3.eth.getBalance(aliceAccount.address)
       // Expect Alice's balance to be INTIIAL_ALICE_AMOUNT - gas spent
+
       const expected = web3.utils
         .toBN(INTIIAL_ALICE_AMOUNT) // ETH exited amount that funded to cc directly
         .add(numberToBN(INTIIAL_ALICE_AMOUNT)) // ETH funded initially
         .sub(aliceSpentOnGas)
-        .add(numberToBN(rootChain.getInflightExitBond())) // since alice challenged the invalid IFE, she gets the bond
+        .add(numberToBN(bonds.inflightExit)) // since alice challenged the invalid IFE, she gets the bond
       assert.equal(aliceEthBalance.toString(), expected.toString())
 
       // kelvin rootchain balance should be equal to initial because he double spent, hence the utxo should still be in childchain
       const kelvinEthBalance = await web3.eth.getBalance(kelvinAccount.address)
-      const kelvinExpectedBalance = numberToBN(INTIIAL_KELVIN_AMOUNT).sub(kelvinSpentOnGas).sub(rootChain.getInflightExitBond())
+      const kelvinExpectedBalance = numberToBN(INTIIAL_KELVIN_AMOUNT).sub(kelvinSpentOnGas).sub(bonds.inflightExit)
       assert.equal(kelvinEthBalance.toString(), kelvinExpectedBalance.toString())
     })
   })
