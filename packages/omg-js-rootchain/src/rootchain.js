@@ -40,13 +40,13 @@ class RootChain {
   constructor ({ web3, plasmaContractAddress }) {
     this.web3 = web3
     this.plasmaContractAddress = plasmaContractAddress
-    this.plasmaContract = getContract(plasmaFrameworkAbi.abi, plasmaContractAddress)
+    this.plasmaContract = getContract(web3, plasmaFrameworkAbi.abi, plasmaContractAddress)
   }
 
   async getErc20Vault () {
     if (!this.erc20Vault) {
       const address = await this.plasmaContract.methods.vaults(ERC20_VAULT_ID).call()
-      const contract = getContract(erc20VaultAbi.abi, address)
+      const contract = getContract(this.web3, erc20VaultAbi.abi, address)
       this.erc20Vault = { contract, address }
     }
     return this.erc20Vault
@@ -55,7 +55,7 @@ class RootChain {
   async getEthVault () {
     if (!this.ethVault) {
       const address = await this.plasmaContract.methods.vaults(ETH_VAULT_ID).call()
-      const contract = getContract(ethVaultAbi.abi, address)
+      const contract = getContract(this.web3, ethVaultAbi.abi, address)
       this.ethVault = { contract, address }
     }
     return this.ethVault
@@ -64,7 +64,7 @@ class RootChain {
   async getPaymentExitGame () {
     if (!this.paymentExitGame) {
       const address = await this.plasmaContract.methods.exitGames(PAYMENT_TYPE).call()
-      const contract = getContract(paymentExitGameAbi.abi, address)
+      const contract = getContract(this.web3, paymentExitGameAbi.abi, address)
 
       const bondSizes = await Promise.all([
         contract.methods.startStandardExitBondSize().call(),
@@ -101,7 +101,7 @@ class RootChain {
     txOptions
   }) {
     const { address: spender } = await this.getErc20Vault()
-    const erc20Contract = getContract(erc20abi, erc20Address)
+    const erc20Contract = getContract(this.web3, erc20abi, erc20Address)
     const txDetails = {
       from: txOptions.from,
       to: erc20Address,
