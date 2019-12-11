@@ -18,6 +18,7 @@ const rcHelper = require('../helpers/rootChainHelper')
 const ccHelper = require('../helpers/childChainHelper')
 const faucet = require('../helpers/testFaucet')
 const Web3 = require('web3')
+const numberToBN = require('number-to-bn')
 const erc20abi = require('human-standard-token-abi')
 const ChildChain = require('@omisego/omg-js-childchain')
 const RootChain = require('@omisego/omg-js-rootchain')
@@ -102,7 +103,7 @@ describe('Standard Exit tests', function () {
       const exitData = await childChain.getExitData(utxoToExit)
       assert.hasAllKeys(exitData, ['txbytes', 'proof', 'utxo_pos'])
 
-      receipt = await rootChain.startStandardExit({
+      const standardExitReceipt = await rootChain.startStandardExit({
         outputId: exitData.utxo_pos,
         outputTx: exitData.txbytes,
         inclusionProof: exitData.proof,
@@ -112,9 +113,9 @@ describe('Standard Exit tests', function () {
         }
       })
       console.log(
-        `Alice called RootChain.startExit(): txhash = ${receipt.transactionHash}`
+        `Alice called RootChain.startExit(): txhash = ${standardExitReceipt.transactionHash}`
       )
-      aliceSpentOnGas.iadd(await rcHelper.spentOnGas(web3, receipt))
+      aliceSpentOnGas.iadd(await rcHelper.spentOnGas(web3, standardExitReceipt))
 
       // Call processExits before the challenge period is over
       receipt = await rootChain.processExits({
@@ -138,9 +139,13 @@ describe('Standard Exit tests', function () {
       assert.isBelow(Number(aliceEthBalance), Number(INTIIAL_ALICE_AMOUNT))
 
       // Wait for challenge period
-      const toWait = await rcHelper.getTimeToExit(rootChain.plasmaContract, 0)
-      console.log(`Waiting for challenge period... ${toWait}ms`)
-      await rcHelper.sleep(toWait)
+      const { msUntilFinalization } = await rootChain.getExitTime({
+        exitRequestBlockNumber: standardExitReceipt.blockNumber,
+        submissionBlockNumber: utxoToExit.blknum,
+        isDeposit: true
+      })
+      console.log(`Waiting for challenge period... ${msUntilFinalization}ms`)
+      await rcHelper.sleep(msUntilFinalization)
 
       // Call processExits again.
       receipt = await rootChain.processExits({
@@ -218,7 +223,7 @@ describe('Standard Exit tests', function () {
 
     it('should succesfully exit a ChildChain transaction', async function () {
       // Track total gas used
-      let bobSpentOnGas
+      const bobSpentOnGas = numberToBN(0)
 
       // Send TRANSFER_AMOUNT from Alice to Bob
       await ccHelper.sendAndWait(
@@ -284,9 +289,12 @@ describe('Standard Exit tests', function () {
       assert.isBelow(Number(bobEthBalance), Number(INTIIAL_BOB_RC_AMOUNT))
 
       // Wait for challenge period
-      const toWait = await rcHelper.getTimeToExit(rootChain.plasmaContract, 0)
-      console.log(`Waiting for challenge period... ${toWait}ms`)
-      await rcHelper.sleep(toWait)
+      const { msUntilFinalization } = await rootChain.getExitTime({
+        exitRequestBlockNumber: startStandardExitReceipt.blockNumber,
+        submissionBlockNumber: utxoToExit.blknum
+      })
+      console.log(`Waiting for challenge period... ${msUntilFinalization}ms`)
+      await rcHelper.sleep(msUntilFinalization)
 
       // Call processExits again.
       const processExitReceiptAfter = await rootChain.processExits({
@@ -391,7 +399,7 @@ describe('Standard Exit tests', function () {
       const exitData = await childChain.getExitData(utxoToExit)
       assert.hasAllKeys(exitData, ['txbytes', 'proof', 'utxo_pos'])
 
-      let receipt = await rootChain.startStandardExit({
+      const standardExitReceipt = await rootChain.startStandardExit({
         outputId: exitData.utxo_pos,
         outputTx: exitData.txbytes,
         inclusionProof: exitData.proof,
@@ -401,11 +409,11 @@ describe('Standard Exit tests', function () {
         }
       })
       console.log(
-        `Alice called RootChain.startExit(): txhash = ${receipt.transactionHash}`
+        `Alice called RootChain.startExit(): txhash = ${standardExitReceipt.transactionHash}`
       )
 
       // Call processExits before the challenge period is over
-      receipt = await rootChain.processExits({
+      let receipt = await rootChain.processExits({
         token: config.testErc20Contract,
         exitId: 0,
         maxExitsToProcess: 20,
@@ -423,9 +431,12 @@ describe('Standard Exit tests', function () {
       assert.equal(balance, 0)
 
       // Wait for challenge period
-      const toWait = await rcHelper.getTimeToExit(rootChain.plasmaContract, 0)
-      console.log(`Waiting for challenge period... ${toWait}ms`)
-      await rcHelper.sleep(toWait)
+      const { msUntilFinalization } = await rootChain.getExitTime({
+        exitRequestBlockNumber: standardExitReceipt.blockNumber,
+        submissionBlockNumber: utxoToExit.blknum
+      })
+      console.log(`Waiting for challenge period... ${msUntilFinalization}ms`)
+      await rcHelper.sleep(msUntilFinalization)
 
       // Call processExits again.
       receipt = await rootChain.processExits({
