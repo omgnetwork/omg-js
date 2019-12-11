@@ -154,7 +154,7 @@ describe('Challenge in-flight exit input spent tests', function () {
       const decodedTx = transaction.decodeTxBytes(bobTx)
 
       // Starts the in-flight exit
-      let receipt = await rootChain.startInFlightExit({
+      const ifeReceipt = await rootChain.startInFlightExit({
         inFlightTx: exitData.in_flight_tx,
         inputTxs: exitData.input_txs,
         inputUtxosPos: exitData.input_utxos_pos,
@@ -169,13 +169,13 @@ describe('Challenge in-flight exit input spent tests', function () {
         }
       })
       console.log(
-        `Bob called RootChain.startInFlightExit(): txhash = ${receipt.transactionHash}`
+        `Bob called RootChain.startInFlightExit(): txhash = ${ifeReceipt.transactionHash}`
       )
       // Keep track of how much Bob spends on gas
-      bobSpentOnGas.iadd(await rcHelper.spentOnGas(web3, receipt))
+      bobSpentOnGas.iadd(await rcHelper.spentOnGas(web3, ifeReceipt))
 
       // alice piggybacks his input on the in-flight exit
-      receipt = await rootChain.piggybackInFlightExitOnInput({
+      let receipt = await rootChain.piggybackInFlightExitOnInput({
         inFlightTx: exitData.in_flight_tx,
         inputIndex: 0,
         txOptions: {
@@ -266,11 +266,12 @@ describe('Challenge in-flight exit input spent tests', function () {
       carolSpentOnGas.iadd(await rcHelper.spentOnGas(web3, receipt))
 
       // Wait for challenge period
-      const toWait = await rcHelper.getTimeToExit(
-        rootChain.plasmaContract
-      )
-      console.log(`Waiting for challenge period... ${toWait}ms`)
-      await rcHelper.sleep(toWait)
+      const { msUntilFinalization } = await rootChain.getExitTime({
+        exitRequestBlockNumber: ifeReceipt.blockNumber,
+        submissionBlockNumber: fundAliceTx.result.blknum
+      })
+      console.log(`Waiting for challenge period... ${msUntilFinalization}ms`)
+      await rcHelper.sleep(msUntilFinalization)
 
       // Call processExits again.
       receipt = await rootChain.processExits({
@@ -289,13 +290,14 @@ describe('Challenge in-flight exit input spent tests', function () {
 
       await rcHelper.awaitTx(web3, receipt.transactionHash)
 
+      const { bonds } = await rootChain.getPaymentExitGame()
       // Get Bob's ETH balance
       const bobEthBalance = await web3.eth.getBalance(bobAccount.address)
       // Bob's IFE was not successful, so he loses his exit bond.
       // INTIIAL_BOB_AMOUNT - INFLIGHT_EXIT_BOND - PIGGYBACK_BOND - gas spent
       const expected = web3.utils
         .toBN(INTIIAL_BOB_RC_AMOUNT)
-        .sub(web3.utils.toBN(rootChain.getInflightExitBond()))
+        .sub(web3.utils.toBN(bonds.inflightExit))
         .sub(bobSpentOnGas)
       assert.equal(bobEthBalance.toString(), expected.toString())
 
@@ -305,8 +307,8 @@ describe('Challenge in-flight exit input spent tests', function () {
       // INTIIAL_CAROL_AMOUNT + INFLIGHT_EXIT_BOND  + INFLIGHT_PIGGYBACK_BOND - gas spent
       const carolExpected = web3.utils
         .toBN(INTIIAL_CAROL_RC_AMOUNT)
-        .add(web3.utils.toBN(rootChain.getInflightExitBond()))
-        .add(web3.utils.toBN(rootChain.getPiggybackBond()))
+        .add(web3.utils.toBN(bonds.inflightExit))
+        .add(web3.utils.toBN(bonds.piggyback))
         .sub(carolSpentOnGas)
       assert.equal(carolEthBalance.toString(), carolExpected.toString())
 
@@ -314,7 +316,7 @@ describe('Challenge in-flight exit input spent tests', function () {
       const aliceEthBalance = await web3.eth.getBalance(aliceAccount.address)
       const aliceExpected = web3.utils
         .toBN(INTIIAL_ALICE_AMOUNT)
-        .sub(web3.utils.toBN(rootChain.getPiggybackBond()))
+        .sub(web3.utils.toBN(bonds.piggyback))
         .sub(aliceSpentOnGas)
       assert.equal(aliceEthBalance.toString(), aliceExpected.toString())
     })
