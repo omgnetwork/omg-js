@@ -41,25 +41,25 @@ describe('decodeTransaction', function () {
           outputType: 1,
           outputGuard: '0xf4ebbe787311bb955bb353b7a4d8b97af8ed1c9b',
           currency: '0xf4ebbe787311bb955bb353b7a4d8b97af8ed1c9b',
-          amount: 1
+          amount: '1'
         },
         {
           outputType: 1,
           outputGuard: '0xf4ebbe787311bb955bb353b7a4d8b97af8ed1c9b',
           currency: '0x0000000000000000000000000000000000000000',
-          amount: 4567
+          amount: '4567'
         },
         {
           outputType: 1,
           outputGuard: '0xf4ebbe787311bb955bb353b7a4d8b97af8ed1c9b',
           currency: '0x0000000000000000000000000000000000000000',
-          amount: 89008900
+          amount: '89008900'
         },
         {
           outputType: 1,
           outputGuard: '0xf4ebbe787311bb955bb353b7a4d8b97af8ed1c9b',
           currency: '0x0000000000000000000000000000000000000000',
-          amount: 1234567890123456
+          amount: '1234567890123456'
         }
       ],
       metadata: transaction.NULL_METADATA
@@ -166,13 +166,13 @@ describe('decodeTransaction', function () {
           outputType: 1,
           outputGuard: '0xf4ebbe787311bb955bb353b7a4d8b97af8ed1c9b',
           currency: '0xf4ebbe787311bb955bb353b7a4d8b97af8ed1c9b',
-          amount: 1
+          amount: '1'
         },
         {
           outputType: 1,
           outputGuard: '0xf4ebbe787311bb955bb353b7a4d8b97af8ed1c9b',
           currency: '0x0000000000000000000000000000000000000000',
-          amount: 4567
+          amount: '4567'
         }
       ],
       metadata: transaction.NULL_METADATA
@@ -203,7 +203,7 @@ describe('decodeTransaction', function () {
 
   it('should decode encoded deposit to raw', async function () {
     const owner = '0xf4ebbe787311bb955bb353b7a4d8b97af8ed1c9b'
-    const amount = 10
+    const amount = '10'
     const currency = '0x0000000000000000000000000000000000000000'
 
     const encodedTx = transaction.encodeDeposit(owner, amount, currency)
@@ -214,7 +214,7 @@ describe('decodeTransaction', function () {
       outputs: [
         {
           outputType: 1,
-          amount: 10,
+          amount: '10',
           outputGuard: owner,
           currency
         }
@@ -226,7 +226,7 @@ describe('decodeTransaction', function () {
 
   it('should decode encoded deposit', async function () {
     const owner = '0xf4ebbe787311bb955bb353b7a4d8b97af8ed1c9b'
-    const amount = 10
+    const amount = '10'
     const currency = '0x0000000000000000000000000000000000000000'
     const encodedTx = transaction.encodeDeposit(owner, amount, currency)
     const decoded = transaction.decodeDeposit(encodedTx)

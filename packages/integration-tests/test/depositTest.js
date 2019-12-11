@@ -175,8 +175,7 @@ describe('Deposit tests', function () {
         amount: TEST_AMOUNT,
         txOptions: {
           from: aliceAccount.address,
-          privateKey: aliceAccount.privateKey,
-          gas: 6000000
+          privateKey: aliceAccount.privateKey
         }
       })
 

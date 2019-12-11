@@ -281,7 +281,6 @@ describe('Transfer tests', function () {
       }
     })
 
-    // Skipped because it will only work if the ERC20 token is also a fee currency
     it('should transfer ERC20 tokens on the childchain', async function () {
       // Check utxos on the child chain
       const utxos = await childChain.getUtxos(aliceAccount.address)
@@ -289,12 +288,13 @@ describe('Transfer tests', function () {
       assert.hasAllKeys(utxos[0], ['utxo_pos', 'txindex', 'owner', 'oindex', 'currency', 'blknum', 'amount'])
 
       const erc20Utxo = utxos.find(utxo => utxo.currency === ERC20_CURRENCY)
+      const ethUtxo = utxos.find(utxo => utxo.currency === transaction.ETH_CURRENCY)
       assert.equal(erc20Utxo.amount, INTIIAL_ALICE_AMOUNT)
       assert.equal(erc20Utxo.currency, ERC20_CURRENCY)
 
       const CHANGE_AMOUNT = erc20Utxo.amount - TRANSFER_AMOUNT
       const txBody = {
-        inputs: [erc20Utxo],
+        inputs: [ethUtxo, erc20Utxo],
         outputs: [{
           outputType: 1,
           outputGuard: bobAccount.address,
@@ -311,8 +311,7 @@ describe('Transfer tests', function () {
       // Get the transaction data
       const typedData = transaction.getTypedData(txBody, rootChain.plasmaContractAddress)
       // Sign it
-      const signatures = childChain.signTransaction(typedData, [aliceAccount.privateKey])
-      assert.equal(signatures.length, 1)
+      const signatures = childChain.signTransaction(typedData, [aliceAccount.privateKey, aliceAccount.privateKey])
       // Build the signed transaction
       const signedTx = childChain.buildSignedTransaction(typedData, signatures)
       // Submit the signed transaction to the childchain

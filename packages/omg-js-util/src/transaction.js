@@ -16,7 +16,6 @@
 
 global.Buffer = global.Buffer || require('buffer').Buffer
 
-const { PlasmaDepositTransaction, PaymentTransactionOutput } = require('./transactionALD')
 const InvalidArgumentError = require('./InvalidArgumentError')
 const numberToBN = require('number-to-bn')
 const rlp = require('rlp')
@@ -88,9 +87,17 @@ const transaction = {
   *
   */
   encodeDeposit: function (owner, amount, currency) {
-    const output = new PaymentTransactionOutput(1, amount, owner, currency)
-    const transaction = new PlasmaDepositTransaction(output)
-    const encoded = transaction.rlpEncoded()
+    const encoded = transaction.encode({
+      transactionType: 1,
+      inputs: [],
+      outputs: [{
+        outputType: 1,
+        outputGuard: hexPrefix(owner),
+        currency: hexPrefix(currency),
+        amount
+      }],
+      metadata: typedData.NULL_METADATA
+    })
     return encoded
   },
 
@@ -172,7 +179,7 @@ const transaction = {
         const outputType = parseNumber(output[0])
         const outputGuard = parseString(output[1])
         const currency = parseString(output[2])
-        const amount = parseNumber(output[3])
+        const amount = numberToBN(parseString(output[3])).toString()
         return { outputType, outputGuard, currency, amount }
       }),
       metadata: parseString(metadata)
@@ -397,9 +404,7 @@ function addOutput (array, output) {
       output.outputType,
       sanitiseAddress(output.outputGuard), // must start with '0x' to be encoded properly
       sanitiseAddress(output.currency), // must start with '0x' to be encoded properly
-      // If amount is 0 it should be encoded as '0x80' (empty byte array)
-      // If it's non zero, it should be a BN to avoid precision loss
-      output.amount === 0 ? 0 : numberToBN(output.amount)
+      numberToBN(output.amount)
     ])
   }
 }

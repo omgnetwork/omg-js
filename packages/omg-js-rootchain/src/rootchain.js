@@ -15,8 +15,26 @@ limitations under the License. */
 
 const txUtils = require('./txUtils')
 const { transaction } = require('@omisego/omg-js-util')
-const webUtils = require('web3-utils')
 const erc20abi = require('human-standard-token-abi')
+const {
+  approveTokenSchema,
+  depositEthSchema,
+  depositTokenSchema,
+  startStandardExitSchema,
+  challengeStandardExitSchema,
+  processExitsSchema,
+  hasTokenSchema,
+  addTokenSchema,
+  getInFlightExitIdSchema,
+  startInFlightExitSchema,
+  piggybackInFlightExitOnOutputSchema,
+  piggybackInFlightExitOnInputSchema,
+  challengeInFlightExitNotCanonicalSchema,
+  respondToNonCanonicalChallengeSchema,
+  challengeInFlightExitInputSpentSchema,
+  challengeInFlightExitOutputSpentSchema
+} = require('./validators')
+const Joi = require('@hapi/joi')
 
 const erc20VaultAbi = require('./contracts/Erc20Vault.json')
 const ethVaultAbi = require('./contracts/EthVault.json')
@@ -95,11 +113,8 @@ class RootChain {
    * @param {TransactionOptions} args.txOptions transaction options
    * @return {Promise<TransactionReceipt>} promise that resolves with a transaction receipt
    */
-  async approveToken ({
-    erc20Address,
-    amount,
-    txOptions
-  }) {
+  async approveToken ({ erc20Address, amount, txOptions }) {
+    Joi.assert({ erc20Address, amount, txOptions }, approveTokenSchema)
     const { address: spender } = await this.getErc20Vault()
     const erc20Contract = getContract(this.web3, erc20abi, erc20Address)
     const txDetails = {
@@ -128,17 +143,13 @@ class RootChain {
    * @return {Promise<TransactionReceipt>} promise that resolves with a transaction receipt
    */
   async depositEth ({ depositTx, amount, txOptions, callbacks }) {
+    Joi.assert({ depositTx, amount, txOptions, callbacks }, depositEthSchema)
     const { contract, address } = await this.getEthVault()
     const txDetails = {
       from: txOptions.from,
       to: address,
-      value: webUtils.toHex(amount),
-      data: txUtils.getTxData(
-        this.web3,
-        contract,
-        'deposit',
-        depositTx
-      ),
+      value: amount,
+      data: txUtils.getTxData(this.web3, contract, 'deposit', depositTx),
       gas: txOptions.gas,
       gasPrice: txOptions.gasPrice
     }
@@ -160,16 +171,12 @@ class RootChain {
    * @return {Promise<TransactionReceipt>} promise that resolves with a transaction receipt
    */
   async depositToken ({ depositTx, txOptions }) {
+    Joi.assert({ depositTx, txOptions }, depositTokenSchema)
     const { address, contract } = await this.getErc20Vault()
     const txDetails = {
       from: txOptions.from,
       to: address,
-      data: txUtils.getTxData(
-        this.web3,
-        contract,
-        'deposit',
-        depositTx
-      ),
+      data: txUtils.getTxData(this.web3, contract, 'deposit', depositTx),
       gas: txOptions.gas,
       gasPrice: txOptions.gasPrice
     }
@@ -191,6 +198,7 @@ class RootChain {
    * @return {Promise<string>} promise that resolves with the exitId
    */
   async getStandardExitId ({ txBytes, utxoPos, isDeposit }) {
+    Joi.assert({ txBytes, utxoPos, isDeposit }, depositTokenSchema)
     const { contract } = await this.getPaymentExitGame()
     return contract.methods.getStandardExitId(isDeposit, txBytes, utxoPos).call()
   }
@@ -204,6 +212,7 @@ class RootChain {
    * @return {Promise<string>} promise that resolves with the exitId
    */
   async getInFlightExitId ({ txBytes }) {
+    Joi.assert({ txBytes }, getInFlightExitIdSchema)
     const { contract } = await this.getPaymentExitGame()
     return contract.methods.getInFlightExitId(txBytes).call()
   }
@@ -220,21 +229,20 @@ class RootChain {
    * @return {Promise<TransactionReceipt>} promise that resolves with a transaction receipt
    */
   async startStandardExit ({ outputId, outputTx, inclusionProof, txOptions }) {
+    Joi.assert(
+      { outputId, outputTx, inclusionProof, txOptions },
+      startStandardExitSchema
+    )
     const { contract, address, bonds } = await this.getPaymentExitGame()
     const txDetails = {
       from: txOptions.from,
       to: address,
-      data: txUtils.getTxData(
-        this.web3,
-        contract,
-        'startStandardExit',
-        [
-          outputId.toString(),
-          outputTx,
-          '0x',
-          inclusionProof
-        ]
-      ),
+      data: txUtils.getTxData(this.web3, contract, 'startStandardExit', [
+        outputId.toString(),
+        outputTx,
+        '0x',
+        inclusionProof
+      ]),
       value: bonds.standardExit,
       gas: txOptions.gas,
       gasPrice: txOptions.gasPrice
@@ -259,7 +267,22 @@ class RootChain {
    * @param {TransactionOptions} args.txOptions transaction options
    * @return {Promise<TransactionReceipt>} promise that resolves with a transaction receipt
    */
-  async challengeStandardExit ({ standardExitId, exitingTx, challengeTx, inputIndex, challengeTxSig, txOptions }) {
+  async challengeStandardExit ({
+    standardExitId,
+    exitingTx,
+    challengeTx,
+    inputIndex,
+    challengeTxSig,
+    txOptions
+  }) {
+    Joi.assert({
+      standardExitId,
+      exitingTx,
+      challengeTx,
+      inputIndex,
+      challengeTxSig,
+      txOptions
+    }, challengeStandardExitSchema)
     // standardExitId is an extremely large number as it uses the entire int192.
     // It's too big to be represented as a Number, so we convert it to a hex string
     const exitId = txUtils.int192toHex(standardExitId)
@@ -306,6 +329,7 @@ class RootChain {
    * @return {Promise<TransactionReceipt>} promise that resolves with a transaction receipt
    */
   async processExits ({ token, exitId, maxExitsToProcess, txOptions }) {
+    Joi.assert({ token, exitId, maxExitsToProcess, txOptions }, processExitsSchema)
     const vaultId = token === transaction.ETH_CURRENCY ? 1 : 2
 
     const txDetails = {
@@ -339,6 +363,7 @@ class RootChain {
    * @return {Promise<boolean>} promise that resolves with whether an exit queue exists for this token
    */
   hasToken (token) {
+    Joi.assert(token, hasTokenSchema)
     const vaultId = token === transaction.ETH_CURRENCY ? 1 : 2
     return this.plasmaContract.methods.hasExitQueue(vaultId, token).call()
   }
@@ -354,6 +379,7 @@ class RootChain {
    * @throws an exception if the token has already been added
    */
   async addToken ({ token, txOptions }) {
+    Joi.assert({ token, txOptions }, addTokenSchema)
     const vaultId = token === transaction.ETH_CURRENCY ? 1 : 2
 
     const txDetails = {
@@ -404,25 +430,31 @@ class RootChain {
     inputSpendingConditionOptionalArgs,
     txOptions
   }) {
+    Joi.assert({
+      inFlightTx,
+      inputTxs,
+      inputUtxosPos,
+      outputGuardPreimagesForInputs,
+      inputTxsInclusionProofs,
+      inFlightTxSigs,
+      signatures,
+      inputSpendingConditionOptionalArgs,
+      txOptions
+    }, startInFlightExitSchema)
     const { address, contract, bonds } = await this.getPaymentExitGame()
     const txDetails = {
       from: txOptions.from,
       to: address,
-      data: txUtils.getTxData(
-        this.web3,
-        contract,
-        'startInFlightExit',
-        [
-          inFlightTx,
-          inputTxs,
-          inputUtxosPos,
-          outputGuardPreimagesForInputs,
-          inputTxsInclusionProofs,
-          inFlightTxSigs,
-          signatures,
-          inputSpendingConditionOptionalArgs
-        ]
-      ),
+      data: txUtils.getTxData(this.web3, contract, 'startInFlightExit', [
+        inFlightTx,
+        inputTxs,
+        inputUtxosPos,
+        outputGuardPreimagesForInputs,
+        inputTxsInclusionProofs,
+        inFlightTxSigs,
+        signatures,
+        inputSpendingConditionOptionalArgs
+      ]),
       value: bonds.inflightExit,
       gas: txOptions.gas,
       gasPrice: txOptions.gasPrice
@@ -451,6 +483,13 @@ class RootChain {
     outputGuardPreimage,
     txOptions
   }) {
+    Joi.assert({
+      inFlightTx,
+      outputIndex,
+      outputGuardPreimage,
+      txOptions
+    }, piggybackInFlightExitOnOutputSchema)
+
     const { address, contract, bonds } = await this.getPaymentExitGame()
     const txDetails = {
       from: txOptions.from,
@@ -459,11 +498,7 @@ class RootChain {
         this.web3,
         contract,
         'piggybackInFlightExitOnOutput',
-        [
-          inFlightTx,
-          outputIndex,
-          outputGuardPreimage
-        ]
+        [inFlightTx, outputIndex, outputGuardPreimage]
       ),
       value: bonds.piggyback,
       gas: txOptions.gas,
@@ -486,11 +521,8 @@ class RootChain {
    * @param {TransactionOptions} args.txOptions transaction options
    * @return {Promise<TransactionReceipt>} promise that resolves with a transaction receipt
    */
-  async piggybackInFlightExitOnInput ({
-    inFlightTx,
-    inputIndex,
-    txOptions
-  }) {
+  async piggybackInFlightExitOnInput ({ inFlightTx, inputIndex, txOptions }) {
+    Joi.assert({ inFlightTx, inputIndex, txOptions }, piggybackInFlightExitOnInputSchema)
     const { address, contract, bonds } = await this.getPaymentExitGame()
     const txDetails = {
       from: txOptions.from,
@@ -499,10 +531,7 @@ class RootChain {
         this.web3,
         contract,
         'piggybackInFlightExitOnInput',
-        [
-          inFlightTx,
-          inputIndex
-        ]
+        [inFlightTx, inputIndex]
       ),
       value: bonds.piggyback,
       gas: txOptions.gas,
@@ -550,11 +579,27 @@ class RootChain {
     competingTxSpendingConditionOptionalArgs,
     txOptions
   }) {
+    Joi.assert({
+      inputTx,
+      inputUtxoPos,
+      inFlightTx,
+      inFlightTxInputIndex,
+      competingTx,
+      competingTxInputIndex,
+      outputGuardPreimage,
+      competingTxPos,
+      competingTxInclusionProof,
+      competingTxWitness,
+      competingTxConfirmSig,
+      competingTxSpendingConditionOptionalArgs,
+      txOptions
+    }, challengeInFlightExitNotCanonicalSchema)
     const { address, contract } = await this.getPaymentExitGame()
     const txDetails = {
       from: txOptions.from,
       to: address,
-      data: txUtils.getTxData(this.web3,
+      data: txUtils.getTxData(
+        this.web3,
         contract,
         'challengeInFlightExitNotCanonical',
         [
@@ -599,6 +644,12 @@ class RootChain {
     inFlightTxInclusionProof,
     txOptions
   }) {
+    Joi.assert({
+      inFlightTx,
+      inFlightTxPos,
+      inFlightTxInclusionProof,
+      txOptions
+    }, respondToNonCanonicalChallengeSchema)
     const { address, contract } = await this.getPaymentExitGame()
     const txDetails = {
       from: txOptions.from,
@@ -648,6 +699,17 @@ class RootChain {
     spendingConditionOptionalArgs,
     txOptions
   }) {
+    Joi.assert({
+      inFlightTx,
+      inFlightTxInputIndex,
+      challengingTx,
+      challengingTxInputIndex,
+      challengingTxWitness,
+      inputTx,
+      inputUtxoPos,
+      spendingConditionOptionalArgs,
+      txOptions
+    }, challengeInFlightExitInputSpentSchema)
     const { address, contract } = await this.getPaymentExitGame()
     const txDetails = {
       from: txOptions.from,
@@ -702,6 +764,16 @@ class RootChain {
     spendingConditionOptionalArgs,
     txOptions
   }) {
+    Joi.assert({
+      inFlightTx,
+      inFlightTxInclusionProof,
+      inFlightTxOutputPos,
+      challengingTx,
+      challengingTxInputIndex,
+      challengingTxWitness,
+      spendingConditionOptionalArgs,
+      txOptions
+    }, challengeInFlightExitOutputSpentSchema)
     const { address, contract } = await this.getPaymentExitGame()
     const txDetails = {
       from: txOptions.from,
