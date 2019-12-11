@@ -119,7 +119,7 @@ describe('Challenge exit tests', function () {
       // Now Alice wants to cheat and exit with the dishonest utxo
 
       const exitData = await childChain.getExitData(aliceDishonestUtxo)
-      let receipt = await rootChain.startStandardExit({
+      const standardExitReceipt = await rootChain.startStandardExit({
         outputId: exitData.utxo_pos,
         outputTx: exitData.txbytes,
         inclusionProof: exitData.proof,
@@ -128,8 +128,8 @@ describe('Challenge exit tests', function () {
           from: aliceAccount.address
         }
       })
-      console.log(`Alice called RootChain.startExit(): txhash = ${receipt.transactionHash}`)
-      const aliceSpentOnGas = await rcHelper.spentOnGas(web3, receipt)
+      console.log(`Alice called RootChain.startExit(): txhash = ${standardExitReceipt.transactionHash}`)
+      const aliceSpentOnGas = await rcHelper.spentOnGas(web3, standardExitReceipt)
 
       // Bob calls watcher/status.get and sees the invalid exit attempt...
       const invalidExitUtxoPos = transaction.encodeUtxoPos(aliceDishonestUtxo).toString()
@@ -142,7 +142,7 @@ describe('Challenge exit tests', function () {
       // ...and challenges the exit
       const challengeData = await childChain.getChallengeData(invalidExit.details.utxo_pos)
       assert.hasAllKeys(challengeData, ['input_index', 'exit_id', 'exiting_tx', 'sig', 'txbytes'])
-      receipt = await rootChain.challengeStandardExit({
+      let receipt = await rootChain.challengeStandardExit({
         standardExitId: challengeData.exit_id,
         exitingTx: challengeData.exiting_tx,
         challengeTx: challengeData.txbytes,
@@ -159,9 +159,12 @@ describe('Challenge exit tests', function () {
       const bobSpentOnGas = await rcHelper.spentOnGas(web3, receipt)
 
       // Alice waits for the challenge period to be over...
-      const toWait = await rcHelper.getTimeToExit(rootChain.plasmaContract, exitData.utxo_pos)
-      console.log(`Waiting for challenge period... ${toWait}ms`)
-      await rcHelper.sleep(toWait)
+      const { msUntilFinalization } = await rootChain.getExitTime({
+        exitRequestBlockNumber: standardExitReceipt.blockNumber,
+        submissionBlockNumber: aliceDishonestUtxo.blknum
+      })
+      console.log(`Waiting for challenge period... ${msUntilFinalization}ms`)
+      await rcHelper.sleep(msUntilFinalization)
 
       // ...and calls finalize exits.
       receipt = await rootChain.processExits({
@@ -180,15 +183,16 @@ describe('Challenge exit tests', function () {
       const aliceEthBalance = await web3.eth.getBalance(aliceAccount.address)
       // Alice's dishonest exit did not successfully complete, so her balance should be
       // INTIIAL_ALICE_RC_AMOUNT - STANDARD_EXIT_BOND - gas spent
+      const { bonds: { standardExit } } = await rootChain.getPaymentExitGame()
       const expected = web3.utils.toBN(INTIIAL_ALICE_RC_AMOUNT)
-        .sub(web3.utils.toBN(rootChain.getStandardExitBond()))
+        .sub(web3.utils.toBN(standardExit))
         .sub(aliceSpentOnGas)
       assert.equal(aliceEthBalance.toString(), expected.toString())
 
       // Bob successfully challenged the exit, so he should have received the exit bond
       const bobEthBalance = await web3.eth.getBalance(bobAccount.address)
       const bobExpectedBalance = web3.utils.toBN(INTIIAL_BOB_RC_AMOUNT)
-        .add(web3.utils.toBN(rootChain.getStandardExitBond()))
+        .add(web3.utils.toBN(standardExit))
         .sub(bobSpentOnGas)
       assert.equal(bobEthBalance.toString(), bobExpectedBalance.toString())
     })

@@ -141,8 +141,7 @@ describe('Standard Exit tests', function () {
       // Wait for challenge period
       const { msUntilFinalization } = await rootChain.getExitTime({
         exitRequestBlockNumber: standardExitReceipt.blockNumber,
-        submissionBlockNumber: utxoToExit.blknum,
-        isDeposit: true
+        submissionBlockNumber: utxoToExit.blknum
       })
       console.log(`Waiting for challenge period... ${msUntilFinalization}ms`)
       await rcHelper.sleep(msUntilFinalization)
