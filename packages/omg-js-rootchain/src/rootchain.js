@@ -17,6 +17,7 @@ const txUtils = require('./txUtils')
 const { transaction } = require('@omisego/omg-js-util')
 const erc20abi = require('human-standard-token-abi')
 const {
+  getExitTimeSchema,
   approveTokenSchema,
   depositEthSchema,
   depositTokenSchema,
@@ -116,6 +117,7 @@ class RootChain {
     exitRequestBlockNumber,
     submissionBlockNumber
   }) {
+    Joi.assert({ exitRequestBlockNumber, submissionBlockNumber }, getExitTimeSchema)
     const bufferSeconds = 5
     const _minExitPeriodSeconds = await this.plasmaContract.methods.minExitPeriod().call()
     const minExitPeriodSeconds = Number(_minExitPeriodSeconds)

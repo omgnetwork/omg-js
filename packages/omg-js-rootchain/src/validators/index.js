@@ -1,6 +1,11 @@
 const Joi = require('@hapi/joi')
 const { validateAddress, validateTxOption, validateBn } = require('./helpers')
 
+const getExitTimeSchema = Joi.object({
+  exitRequestBlockNumber: Joi.number().required(),
+  submissionBlockNumber: Joi.number().required()
+})
+
 const approveTokenSchema = Joi.object({
   erc20Address: validateAddress.required(),
   txOptions: validateTxOption.required(),
@@ -149,6 +154,7 @@ const challengeInFlightExitOutputSpentSchema = Joi.object({
 })
 
 module.exports = {
+  getExitTimeSchema,
   approveTokenSchema,
   depositTokenSchema,
   depositEthSchema,
