@@ -446,7 +446,7 @@ describe('In-flight Exit tests', function () {
         }
       )
 
-      // Alice needs to piggyback his input on the in-flight exit
+      // Alice needs to piggyback her input on the in-flight exit
       receipt = await rootChain.piggybackInFlightExitOnInput({
         inFlightTx: exitData.in_flight_tx,
         inputIndex: 1, // inputIndex of alice
