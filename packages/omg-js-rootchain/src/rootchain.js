@@ -91,7 +91,7 @@ class RootChain {
    * @method getExitTime
    * @param {Object} args an arguments object
    * @param {number} args.exitRequestBlockNumber block number of the exit request
-   * @param {number} args.submissionBlockNumber for regular exits: where the exiting UTXO was created in a child chain block, for in-flight exits: where the youngest input of the exiting transaction was created
+   * @param {number} args.submissionBlockNumber for standard exits: the block that contains the exiting UTXO, for in-flight exits: the block that contains the youngest input of the exiting transaction
    * @param {number} args.isDeposit whether the utxo being exited was a deposit
    * @return {Promise<Object>} promise that resolves with the scheduled finalization unix time and the milliseconds until that time
    */
