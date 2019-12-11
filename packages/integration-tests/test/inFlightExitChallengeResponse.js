@@ -63,9 +63,8 @@ describe('In-flight Exit Challenge Response tests', function () {
         faucet.fundChildchain(aliceAccount.address, INTIIAL_ALICE_AMOUNT, transaction.ETH_CURRENCY),
         // Give some ETH to Bob on the root chain
         faucet.fundRootchainEth(web3, bobAccount.address, INTIIAL_BOB_RC_AMOUNT)
-      ]).then(([tx]) => {
-        fundAliceTx = tx
-      })
+      ]).then(([tx]) => (fundAliceTx = tx))
+
       // Give some ETH to Carol on the root chain
       await faucet.fundRootchainEth(web3, carolAccount.address, INTIIAL_BOB_RC_AMOUNT)
 
@@ -111,7 +110,7 @@ describe('In-flight Exit Challenge Response tests', function () {
       assert.hasAllKeys(exitData, ['in_flight_tx', 'in_flight_tx_sigs', 'input_txs', 'input_txs_inclusion_proofs', 'input_utxos_pos'])
 
       // Starts the in-flight exit
-      let receipt = await rootChain.startInFlightExit({
+      const ifeExitReceipt = await rootChain.startInFlightExit({
         inFlightTx: exitData.in_flight_tx,
         inputTxs: exitData.input_txs,
         inputUtxosPos: exitData.input_utxos_pos,
@@ -125,14 +124,14 @@ describe('In-flight Exit Challenge Response tests', function () {
           from: bobAccount.address
         }
       })
-      console.log(`Bob called RootChain.startInFlightExit(): txhash = ${receipt.transactionHash}`)
+      console.log(`Bob called RootChain.startInFlightExit(): txhash = ${ifeExitReceipt.transactionHash}`)
 
       // Keep track of how much Bob spends on gas
-      bobSpentOnGas.iadd(await rcHelper.spentOnGas(web3, receipt))
+      bobSpentOnGas.iadd(await rcHelper.spentOnGas(web3, ifeExitReceipt))
       const outputIndex = decodedTx.outputs.findIndex(e => e.outputGuard === bobAccount.address)
 
       // Bob piggybacks his output on the in-flight exit
-      receipt = await rootChain.piggybackInFlightExitOnOutput({
+      let receipt = await rootChain.piggybackInFlightExitOnOutput({
         inFlightTx: exitData.in_flight_tx,
         outputIndex: outputIndex,
         outputGuardPreimage: '0x',
@@ -228,10 +227,12 @@ describe('In-flight Exit Challenge Response tests', function () {
       bobSpentOnGas.iadd(await rcHelper.spentOnGas(web3, receipt))
 
       // Wait for challenge period
-      const utxoPos = transaction.encodeUtxoPos(cInput)
-      const toWait = await rcHelper.getTimeToExit(rootChain.plasmaContract, utxoPos)
-      console.log(`Waiting for challenge period... ${toWait}ms`)
-      await rcHelper.sleep(toWait)
+      const { msUntilFinalization } = await rootChain.getExitTime({
+        exitRequestBlockNumber: ifeExitReceipt.blockNumber,
+        submissionBlockNumber: fundAliceTx.result.blknum
+      })
+      console.log(`Waiting for challenge period... ${msUntilFinalization}ms`)
+      await rcHelper.sleep(msUntilFinalization)
 
       // Call processExits.
       receipt = await rootChain.processExits({
