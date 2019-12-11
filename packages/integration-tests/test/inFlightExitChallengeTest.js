@@ -33,11 +33,12 @@ const childChain = new ChildChain({
 // NB This test waits for at least RootChain.MIN_EXIT_PERIOD so it should be run against a
 // modified RootChain contract with a shorter than normal MIN_EXIT_PERIOD.
 let rootChain
-
+let bonds
 describe('In-flight Exit Challenge tests', function () {
   before(async function () {
     const plasmaContract = await rcHelper.getPlasmaContractAddress(config)
     rootChain = new RootChain({ web3, plasmaContractAddress: plasmaContract.contract_addr })
+    bonds = (await rootChain.getPaymentExitGame()).bonds
     await faucet.init(rootChain, childChain, web3, config)
   })
 
@@ -174,7 +175,7 @@ describe('In-flight Exit Challenge tests', function () {
           .sub(web3.utils.toBN(bobEthBalanceAfterIfe))
           .sub(bobSpentOnGas)
           .toString(),
-        web3.utils.toBN(bonds.inflightExit.toString())
+        web3.utils.toBN(bonds.inflightExit).toString()
       )
 
       // Decode the transaction to get the index of Bob's output
@@ -289,7 +290,6 @@ describe('In-flight Exit Challenge tests', function () {
       bobSpentOnGas.iadd(await rcHelper.spentOnGas(web3, receipt))
 
       await rcHelper.awaitTx(web3, receipt.transactionHash)
-
       // Get Bob's ETH balance
       const bobEthBalance = await web3.eth.getBalance(bobAccount.address)
       // Bob's IFE was not successful, so he loses his exit bond.
@@ -313,7 +313,7 @@ describe('In-flight Exit Challenge tests', function () {
     })
   })
 
-  describe.only('in-flight transaction challenge exit without competitor', function () {
+  describe('in-flight transaction challenge exit without competitor', function () {
     let INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.1', 'ether')
     let INTIIAL_BOB_RC_AMOUNT = web3.utils.toWei('1', 'ether')
     let INTIIAL_CAROL_RC_AMOUNT = web3.utils.toWei('.5', 'ether')

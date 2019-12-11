@@ -24,6 +24,8 @@
     "url": "https://github.com/omisego/omg-js/issues"
   },
   "dependencies": {
+    "@hapi/joi": "^16.1.8",
+    "bn.js": "^5.0.0",
     "@omisego/omg-js-util": "^3.0.0-alpha.10",
     "debug": "^4.0.1",
     "human-standard-token-abi": "^2.0.0",

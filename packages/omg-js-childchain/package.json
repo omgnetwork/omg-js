@@ -26,7 +26,7 @@
   "dependencies": {
     "@omisego/omg-js-util": "^3.0.0-alpha.10",
     "debug": "^4.0.1",
-    "json-bigint": "^0.3.0",
+    "json-bigint": "git+https://git@github.com/omisego/json-bigint.git",
     "request": "^2.88.0",
     "request-promise-native": "^1.0.7",
     "rlp": "^2.1.0"

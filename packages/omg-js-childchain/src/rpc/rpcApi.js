@@ -64,8 +64,7 @@ async function parseResponse (res) {
     // Need to use a JSON parser capable of handling uint256
     json = JSONBigNumber.parse(res)
   } catch (err) {
-    console.warn(err)
-    throw new Error('Unknown server error')
+    throw new Error(`Unable to parse response from server: ${err}`)
   }
   debug(`rpc response is ${JSON.stringify(json)}`)
 

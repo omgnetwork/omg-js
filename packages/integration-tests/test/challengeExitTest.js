@@ -183,16 +183,16 @@ describe('Challenge exit tests', function () {
       const aliceEthBalance = await web3.eth.getBalance(aliceAccount.address)
       // Alice's dishonest exit did not successfully complete, so her balance should be
       // INTIIAL_ALICE_RC_AMOUNT - STANDARD_EXIT_BOND - gas spent
-      const { bonds: { standardExit } } = await rootChain.getPaymentExitGame()
+      const { bonds } = await rootChain.getPaymentExitGame()
       const expected = web3.utils.toBN(INTIIAL_ALICE_RC_AMOUNT)
-        .sub(web3.utils.toBN(standardExit))
+        .sub(web3.utils.toBN(bonds.standardExit))
         .sub(aliceSpentOnGas)
       assert.equal(aliceEthBalance.toString(), expected.toString())
 
       // Bob successfully challenged the exit, so he should have received the exit bond
       const bobEthBalance = await web3.eth.getBalance(bobAccount.address)
       const bobExpectedBalance = web3.utils.toBN(INTIIAL_BOB_RC_AMOUNT)
-        .add(web3.utils.toBN(standardExit))
+        .add(web3.utils.toBN(bonds.standardExit))
         .sub(bobSpentOnGas)
       assert.equal(bobEthBalance.toString(), bobExpectedBalance.toString())
     })

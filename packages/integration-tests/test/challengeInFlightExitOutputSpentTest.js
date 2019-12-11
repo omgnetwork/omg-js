@@ -253,7 +253,6 @@ describe('Challenge in-flight exit output spent tests', function () {
       bobSpentOnGas.iadd(await rcHelper.spentOnGas(web3, receipt))
 
       await rcHelper.awaitTx(web3, receipt.transactionHash)
-
       const { bonds } = await rootChain.getPaymentExitGame()
       // Get carol's ETH balance
       const carolEthBalance = await web3.eth.getBalance(carolAccount.address)
