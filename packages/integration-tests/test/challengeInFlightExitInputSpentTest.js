@@ -290,7 +290,6 @@ describe('Challenge in-flight exit input spent tests', function () {
 
       await rcHelper.awaitTx(web3, receipt.transactionHash)
 
-      const { bonds } = await rootChain.getPaymentExitGame()
       // Get Bob's ETH balance
       const bobEthBalance = await web3.eth.getBalance(bobAccount.address)
       // Bob's IFE was not successful, so he loses his exit bond.
