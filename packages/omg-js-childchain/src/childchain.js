@@ -13,9 +13,14 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License. */
 
+const {
+  childchainConstructorSchema,
+  getUtxosSchema
+} = require('./validators')
+const Joi = require('@hapi/joi')
 const rpcApi = require('./rpc/rpcApi')
 const rlp = require('rlp')
-const { InvalidArgumentError, transaction, sign, hexPrefix } = require('@omisego/omg-js-util')
+const { transaction, sign, hexPrefix } = require('@omisego/omg-js-util')
 global.Buffer = global.Buffer || require('buffer').Buffer
 
 class ChildChain {
@@ -29,6 +34,7 @@ class ChildChain {
   *
   */
   constructor ({ watcherUrl, watcherProxyUrl }) {
+    Joi.assert({ watcherUrl, watcherProxyUrl }, childchainConstructorSchema)
     this.watcherUrl = watcherUrl
     this.watcherProxyUrl = watcherProxyUrl
   }
@@ -41,7 +47,7 @@ class ChildChain {
    * @return {Promise<UTXO[]>} promise that resolves with an array of UTXOs
    */
   async getUtxos (address) {
-    validateAddress(address)
+    Joi.assert(address, getUtxosSchema)
     return rpcApi.post({
       url: `${this.watcherUrl}/account.get_utxos`,
       body: { address },
@@ -57,7 +63,6 @@ class ChildChain {
    * @return {Promise<Balance[]>} promise that resolves with an array of balances (one per currency)
    */
   async getBalance (address) {
-    validateAddress(address)
     return rpcApi.post({
       url: `${this.watcherUrl}/account.get_balance`,
       body: { address },
@@ -250,10 +255,6 @@ class ChildChain {
     feeAmount,
     feeCurrency
   }) {
-    validateAddress(fromAddress)
-    validateAddress(toAddress)
-    validatePrivateKey(fromPrivateKeys)
-
     const txBody = transaction.createTransactionBody(
       fromAddress,
       fromUtxos,
@@ -366,22 +367,6 @@ class ChildChain {
       body: { txbytes: hexPrefix(txbytes) },
       proxyUrl: this.watcherProxyUrl
     })
-  }
-}
-
-function validatePrivateKey (arg) {
-  // TODO
-  const valid = true
-  if (!valid) {
-    throw new InvalidArgumentError()
-  }
-}
-
-function validateAddress (arg) {
-  // TODO
-  const valid = true
-  if (!valid) {
-    throw new InvalidArgumentError()
   }
 }
 
