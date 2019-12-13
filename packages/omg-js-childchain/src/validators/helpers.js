@@ -6,13 +6,6 @@ const validateAddress = Joi.string().custom(value => {
   return web3Utils.isAddress(value)
 })
 
-const validateTxOption = Joi.object({
-  gas: Joi.number(),
-  gasPrice: Joi.number(),
-  privateKey: Joi.string().required(),
-  from: validateAddress
-})
-
 const validateBn = Joi.any().custom((value, helpers) => {
   if (!BN.isBN(value)) {
     return helpers.message(`${value} is not an instance of BN.js`)
@@ -22,6 +15,5 @@ const validateBn = Joi.any().custom((value, helpers) => {
 
 module.exports = {
   validateAddress,
-  validateTxOption,
   validateBn
 }

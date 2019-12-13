@@ -13,9 +13,25 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License. */
 
+const {
+  childchainConstructorSchema,
+  getUtxosSchema,
+  getBalanceSchema,
+  getTransactionsSchema,
+  getExitDataSchema,
+  createTransactionSchema,
+  signTypedDataSchema,
+  submitTypedSchema,
+  signTransactionSchema,
+  buildSignedTransactionSchema,
+  sendTransactionSchema,
+  inFlightExitGetOutputChallengeDataSchema,
+  inFlightExitGetInputChallengeDataSchema
+} = require('./validators')
+const Joi = require('@hapi/joi')
 const rpcApi = require('./rpc/rpcApi')
 const rlp = require('rlp')
-const { InvalidArgumentError, transaction, sign, hexPrefix } = require('@omisego/omg-js-util')
+const { transaction, sign, hexPrefix } = require('@omisego/omg-js-util')
 global.Buffer = global.Buffer || require('buffer').Buffer
 
 class ChildChain {
@@ -29,6 +45,7 @@ class ChildChain {
   *
   */
   constructor ({ watcherUrl, watcherProxyUrl }) {
+    Joi.assert({ watcherUrl, watcherProxyUrl }, childchainConstructorSchema)
     this.watcherUrl = watcherUrl
     this.watcherProxyUrl = watcherProxyUrl
   }
@@ -41,7 +58,7 @@ class ChildChain {
    * @return {Promise<UTXO[]>} promise that resolves with an array of UTXOs
    */
   async getUtxos (address) {
-    validateAddress(address)
+    Joi.assert(address, getUtxosSchema)
     return rpcApi.post({
       url: `${this.watcherUrl}/account.get_utxos`,
       body: { address },
@@ -57,7 +74,7 @@ class ChildChain {
    * @return {Promise<Balance[]>} promise that resolves with an array of balances (one per currency)
    */
   async getBalance (address) {
-    validateAddress(address)
+    Joi.assert(address, getBalanceSchema)
     return rpcApi.post({
       url: `${this.watcherUrl}/account.get_balance`,
       body: { address },
@@ -73,6 +90,7 @@ class ChildChain {
    * @return {Promise<TransactionData>} promise that resolves with a transaction
    */
   async getTransaction (id) {
+    Joi.assert(id, Joi.string().required())
     return rpcApi.post({
       url: `${this.watcherUrl}/transaction.get`,
       body: { id },
@@ -85,14 +103,15 @@ class ChildChain {
    *
    * @method getTransactions
    * @param {Object} filters filter object
-   * @param {string} filters.address address to filter by
-   * @param {string} filters.metadata metadata to filter by
-   * @param {number} filters.blknum blknum to filter by
-   * @param {number} filters.limit max number of transactions to return
-   * @param {number} filters.page page of paginated request
+   * @param {string} [filters.address] address to filter by
+   * @param {string} [filters.metadata] metadata to filter by
+   * @param {number} [filters.blknum] blknum to filter by
+   * @param {number} [filters.limit] max number of transactions to return
+   * @param {number} [filters.page] page of paginated request
    * @return {Promise<TransactionData[]>} promise that resolves with an array of transactions
    */
   async getTransactions (filters) {
+    Joi.assert(filters, getTransactionsSchema)
     return rpcApi.post({
       url: `${this.watcherUrl}/transaction.all`,
       body: filters,
@@ -108,6 +127,7 @@ class ChildChain {
    * @return {Promise<ExitData>} promise that resolves with the exit data for the UTXO
    */
   async getExitData (utxo) {
+    Joi.assert(utxo, getExitDataSchema)
     const utxoPos = transaction.encodeUtxoPos(utxo)
     return rpcApi.post({
       url: `${this.watcherUrl}/utxo.get_exit_data`,
@@ -120,10 +140,11 @@ class ChildChain {
    * Get the challenge data for a UTXO
    *
    * @method getChallengeData
-   * @param {string} utxoPos utxo position
+   * @param {number} utxoPos utxo position
    * @return {Promise<Object>} promise that resolves with the challenge data
    */
   async getChallengeData (utxoPos) {
+    Joi.assert(utxoPos, Joi.number().required())
     return rpcApi.post({
       url: `${this.watcherUrl}/utxo.get_challenge_data`,
       body: { utxo_pos: utxoPos },
@@ -138,11 +159,12 @@ class ChildChain {
    * @param {Object} args an arguments object
    * @param {string} args.owner owner of the input utxos
    * @param {Object[]} args.payments payments made as outputs
-   * @param {Object} args.fee fee paid
-   * @param {string} args.metadata metadata to include in the transaction
+   * @param {Object} [args.fee] fee paid
+   * @param {string} [args.metadata] metadata to include in the transaction
    * @return {Promise<Object>} promise that resolves with an object containing the list of transactions that will fullfil the required spend
    */
   createTransaction ({ owner, payments, fee, metadata }) {
+    Joi.assert({ owner, payments, fee, metadata }, createTransactionSchema)
     return rpcApi.post({
       url: `${this.watcherUrl}/transaction.create`,
       body: { owner, payments, fee, metadata },
@@ -159,6 +181,7 @@ class ChildChain {
    * @return {Object} a transaction typed data, including the signatures. This can be passed in to `submitTyped`
    */
   signTypedData (txData, privateKeys) {
+    Joi.assert({ txData, privateKeys }, signTypedDataSchema)
     const toSign = Buffer.from(txData.sign_hash.replace('0x', ''), 'hex')
     txData.typed_data.signatures = sign(toSign, privateKeys)
     return txData.typed_data
@@ -172,6 +195,7 @@ class ChildChain {
    * @return {Promise<Object>} promise that resolves with a transaction
    */
   submitTyped (data) {
+    Joi.assert(data, submitTypedSchema)
     return rpcApi.post({
       url: `${this.watcherUrl}/transaction.submit_typed`,
       body: data,
@@ -183,11 +207,12 @@ class ChildChain {
    * Sign a transaction
    *
    * @method signTransaction
-   * @param {string} typedData the typedData of the transaction, as returned by transaction.getTypedData()
+   * @param {Object} typedData the typedData of the transaction, as returned by transaction.getTypedData()
    * @param {string[]} privateKeys an array of private keys to sign the inputs of the transaction
    * @return {string[]} array of signatures
    */
   signTransaction (typedData, privateKeys) {
+    Joi.assert({ typedData, privateKeys }, signTransactionSchema)
     const toSign = transaction.getToSignHash(typedData)
     return sign(toSign, privateKeys)
   }
@@ -196,13 +221,14 @@ class ChildChain {
    * Build a signed transaction into the format expected by submitTransaction
    *
    * @method buildSignedTransaction
-   * @param {string} txData the typedData of the transaction, as returned by transaction.getTypedData
+   * @param {Object} typedData the typedData of the transaction, as returned by transaction.getTypedData
    * @param {string[]} signatures an array of signatures, one for each input spent by the transaction
    * @return {string} a signed transaction
    */
-  buildSignedTransaction (txData, signatures) {
-    const txArray = transaction.toArray(txData.message)
-    const signedTx = [signatures, txData.message.txType, ...txArray]
+  buildSignedTransaction (typedData, signatures) {
+    Joi.assert({ typedData, signatures }, buildSignedTransactionSchema)
+    const txArray = transaction.toArray(typedData.message)
+    const signedTx = [signatures, typedData.message.txType, ...txArray]
     return hexPrefix(rlp.encode(signedTx).toString('hex'))
   }
 
@@ -214,6 +240,7 @@ class ChildChain {
    * @return {Promise<Object>} promise that resolves with the submitted transaction
    */
   async submitTransaction (transaction) {
+    Joi.assert(transaction, Joi.string().required())
     return rpcApi.post({
       url: `${this.watcherUrl}/transaction.submit`,
       body: { transaction: transaction.startsWith('0x') ? transaction : `0x${transaction}` },
@@ -250,10 +277,18 @@ class ChildChain {
     feeAmount,
     feeCurrency
   }) {
-    validateAddress(fromAddress)
-    validateAddress(toAddress)
-    validatePrivateKey(fromPrivateKeys)
-
+    Joi.assert({
+      fromAddress,
+      fromUtxos,
+      fromPrivateKeys,
+      toAddress,
+      toAmount,
+      currency,
+      metadata,
+      verifyingContract,
+      feeAmount,
+      feeCurrency
+    }, sendTransactionSchema)
     const txBody = transaction.createTransactionBody(
       fromAddress,
       fromUtxos,
@@ -294,6 +329,7 @@ class ChildChain {
    * @return {Promise<Object>} promise that resolves with input challenge data for the in-flight transaction
    */
   async inFlightExitGetInputChallengeData (txbytes, inputIndex) {
+    Joi.assert({ txbytes, inputIndex }, inFlightExitGetInputChallengeDataSchema)
     return rpcApi.post({
       url: `${this.watcherUrl}/in_flight_exit.get_input_challenge_data`,
       body: {
@@ -313,6 +349,7 @@ class ChildChain {
    * @return {Promise<Object>} promise that resolves with the input challenge data for the in-flight transaction
    */
   async inFlightExitGetOutputChallengeData (txbytes, outputIndex) {
+    Joi.assert({ txbytes, outputIndex }, inFlightExitGetOutputChallengeDataSchema)
     return rpcApi.post({
       url: `${this.watcherUrl}/in_flight_exit.get_output_challenge_data`,
       body: {
@@ -331,6 +368,7 @@ class ChildChain {
    * @return {Promise<Object>} promise that resolves with exit data for the in-flight transaction
    */
   async inFlightExitGetData (txbytes) {
+    Joi.assert(txbytes, Joi.string().required())
     return rpcApi.post({
       url: `${this.watcherUrl}/in_flight_exit.get_data`,
       body: { txbytes: hexPrefix(txbytes) },
@@ -344,8 +382,9 @@ class ChildChain {
    * @method inFlightExitGetCompetitor
    * @param {string} txbytes the hex-encoded transaction
    * @return {Promise<Object>} promise that resolves with a competitor to the in-flight transaction
-   */
+  */
   async inFlightExitGetCompetitor (txbytes) {
+    Joi.assert(txbytes, Joi.string().required())
     return rpcApi.post({
       url: `${this.watcherUrl}/in_flight_exit.get_competitor`,
       body: { txbytes: hexPrefix(txbytes) },
@@ -361,27 +400,12 @@ class ChildChain {
    * @return {Promise<Object>} promise that resolves with the inclusion proof of the transaction
    */
   async inFlightExitProveCanonical (txbytes) {
+    Joi.assert(txbytes, Joi.string().required())
     return rpcApi.post({
       url: `${this.watcherUrl}/in_flight_exit.prove_canonical`,
       body: { txbytes: hexPrefix(txbytes) },
       proxyUrl: this.watcherProxyUrl
     })
-  }
-}
-
-function validatePrivateKey (arg) {
-  // TODO
-  const valid = true
-  if (!valid) {
-    throw new InvalidArgumentError()
-  }
-}
-
-function validateAddress (arg) {
-  // TODO
-  const valid = true
-  if (!valid) {
-    throw new InvalidArgumentError()
   }
 }
 
