@@ -1,5 +1,5 @@
 const Joi = require('@hapi/joi')
-const { validateAddress } = require('./helpers')
+const { validateAddress, validateBn } = require('./helpers')
 
 const childchainConstructorSchema = Joi.object({
   watcherUrl: Joi.string().required(),
@@ -31,12 +31,12 @@ const getExitDataSchema = Joi.object({
 const createTransactionSchema = Joi.object({
   owner: validateAddress.required(),
   payments: Joi.array().items(Joi.object({
-    amount: Joi.number().required(),
+    amount: [Joi.number().required(), validateBn.required()],
     currency: Joi.string().required(),
     owner: validateAddress
   })).required(),
   fee: Joi.object({
-    amount: Joi.number().required(),
+    amount: [Joi.number().required(), validateBn.required()],
     currency: validateAddress.required()
   }).required(),
   metadata: Joi.string()
@@ -64,11 +64,11 @@ const sendTransactionSchema = Joi.object({
   fromUtxos: Joi.array().items(Joi.object()).required(),
   fromPrivateKeys: Joi.array().items(Joi.string()).required(),
   toAddress: validateAddress.required(),
-  toAmount: Joi.number().required(),
+  toAmount: [Joi.number().required(), validateBn.required()],
   currency: Joi.string().required(),
   metadata: Joi.string().required(),
   verifyingContract: validateAddress.required(),
-  feeAmount: Joi.number().required(),
+  feeAmount: [Joi.number().required(), validateBn.required()],
   feeCurrency: Joi.string().required()
 })
 

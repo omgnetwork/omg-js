@@ -26,6 +26,7 @@
   "dependencies": {
     "@hapi/joi": "^16.1.8",
     "@omisego/omg-js-util": "^3.0.0-alpha.10",
+    "bn.js": "^5.0.0",
     "debug": "^4.0.1",
     "json-bigint": "git+https://git@github.com/omisego/json-bigint.git",
     "request": "^2.88.0",
