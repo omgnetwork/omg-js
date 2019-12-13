@@ -87,8 +87,12 @@ async function exitChildChain () {
   })
   console.log('Exit id: ', exitId)
 
-  // call processExits after challenge period is over
-  await wait.waitForChallengePeriodToEnd(rootChain, exitData)
+  const { msUntilFinalization } = await rootChain.getExitTime({
+    exitRequestBlockNumber: standardExitReceipt.blockNumber,
+    submissionBlockNumber: bobUtxoToExit.blknum
+  })
+
+  await wait.wait(msUntilFinalization)
   const processExitReceipt = await rootChain.processExits({
     token: transaction.ETH_CURRENCY,
     exitId,

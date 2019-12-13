@@ -17,6 +17,7 @@ const txUtils = require('./txUtils')
 const { transaction } = require('@omisego/omg-js-util')
 const erc20abi = require('human-standard-token-abi')
 const {
+  getExitTimeSchema,
   approveTokenSchema,
   depositEthSchema,
   depositTokenSchema,
@@ -101,6 +102,49 @@ class RootChain {
       }
     }
     return this.paymentExitGame
+  }
+
+  /**
+   * Calculates the exit schedule required before exits can be processed and released
+   *
+   * @method getExitTime
+   * @param {Object} args an arguments object
+   * @param {number} args.exitRequestBlockNumber block number of the exit request
+   * @param {number} args.submissionBlockNumber for standard exits: the block that contains the exiting UTXO, for in-flight exits: the block that contains the youngest input of the exiting transaction
+   * @return {Promise<Object>} promise that resolves with the scheduled finalization unix time and the milliseconds until that time
+   */
+  async getExitTime ({
+    exitRequestBlockNumber,
+    submissionBlockNumber
+  }) {
+    Joi.assert({ exitRequestBlockNumber, submissionBlockNumber }, getExitTimeSchema)
+    const bufferSeconds = 5
+    const _minExitPeriodSeconds = await this.plasmaContract.methods.minExitPeriod().call()
+    const minExitPeriodSeconds = Number(_minExitPeriodSeconds)
+
+    const exitBlock = await this.web3.eth.getBlock(exitRequestBlockNumber)
+    const submissionBlock = await this.plasmaContract.methods.blocks(submissionBlockNumber).call()
+
+    let scheduledFinalizationTime
+    if (submissionBlockNumber % 1000 !== 0) {
+      // if deposit, elevated exit priority
+      scheduledFinalizationTime = Math.max(
+        Number(exitBlock.timestamp) + minExitPeriodSeconds,
+        Number(submissionBlock.timestamp) + minExitPeriodSeconds
+      )
+    } else {
+      scheduledFinalizationTime = Math.max(
+        Number(exitBlock.timestamp) + minExitPeriodSeconds,
+        Number(submissionBlock.timestamp) + (minExitPeriodSeconds * 2)
+      )
+    }
+
+    const currentUnix = Math.round((new Date()).getTime() / 1000)
+    const msUntilFinalization = (scheduledFinalizationTime + bufferSeconds - currentUnix) * 1000
+    return {
+      scheduledFinalizationTime: scheduledFinalizationTime + bufferSeconds,
+      msUntilFinalization
+    }
   }
 
   /**
