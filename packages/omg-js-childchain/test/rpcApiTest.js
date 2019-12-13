@@ -108,12 +108,12 @@ describe('rpcApi integration test', function () {
       watcherUrl,
       watcherProxyUrl: proxyUrl
     })
-    const res = await childchainWithProxy.getTransaction(3)
+    const res = await childchainWithProxy.getTransaction('0x123')
     const expectedCall = {
       method: 'POST',
       uri: `${watcherUrl}/transaction.get`,
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id: 3, jsonrpc: '2.0' }),
+      body: JSON.stringify({ id: '0x123', jsonrpc: '2.0' }),
       proxy: proxyUrl,
       rejectUnauthorized: false
     }
@@ -123,12 +123,12 @@ describe('rpcApi integration test', function () {
 
   it('childchain should not pass proxy url if it doesnt exist', async function () {
     const childchainNoProxy = new ChildChain({ watcherUrl })
-    const res = await childchainNoProxy.getTransaction(4)
+    const res = await childchainNoProxy.getTransaction('0xabc')
     const expectedCall = {
       method: 'POST',
       uri: `${watcherUrl}/transaction.get`,
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id: 4, jsonrpc: '2.0' })
+      body: JSON.stringify({ id: '0xabc', jsonrpc: '2.0' })
     }
     assert.equal(res, 'foobar')
     sinon.assert.calledWith(rp.post, expectedCall)

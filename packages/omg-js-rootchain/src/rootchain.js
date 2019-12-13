@@ -17,6 +17,7 @@ const txUtils = require('./txUtils')
 const { transaction } = require('@omisego/omg-js-util')
 const erc20abi = require('human-standard-token-abi')
 const {
+  rootchainConstructorSchema,
   approveTokenSchema,
   depositEthSchema,
   depositTokenSchema,
@@ -56,6 +57,7 @@ class RootChain {
   *
   */
   constructor ({ web3, plasmaContractAddress }) {
+    Joi.assert({ web3, plasmaContractAddress }, rootchainConstructorSchema)
     this.web3 = web3
     this.plasmaContractAddress = plasmaContractAddress
     this.plasmaContract = getContract(web3, plasmaFrameworkAbi.abi, plasmaContractAddress)

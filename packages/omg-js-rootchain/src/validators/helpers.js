@@ -10,7 +10,6 @@ const validateTxOption = Joi.object({
   privateKey: Joi.string().required(),
   from: validateAddress
 })
-
 const validateBn = Joi.any().custom((value, helpers) => {
   if (!BN.isBN(value)) {
     return helpers.message(`${value} is not an instance of BN.js`)

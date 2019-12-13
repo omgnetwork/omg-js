@@ -1,6 +1,11 @@
 const Joi = require('@hapi/joi')
 const { validateAddress, validateTxOption, validateBn } = require('./helpers')
 
+const rootchainConstructorSchema = Joi.object({
+  web3: Joi.any().required(),
+  plasmaContractAddress: validateAddress.required()
+})
+
 const approveTokenSchema = Joi.object({
   erc20Address: validateAddress.required(),
   txOptions: validateTxOption.required(),
@@ -149,6 +154,7 @@ const challengeInFlightExitOutputSpentSchema = Joi.object({
 })
 
 module.exports = {
+  rootchainConstructorSchema,
   approveTokenSchema,
   depositTokenSchema,
   depositEthSchema,
