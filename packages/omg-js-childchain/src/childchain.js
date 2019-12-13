@@ -140,11 +140,11 @@ class ChildChain {
    * Get the challenge data for a UTXO
    *
    * @method getChallengeData
-   * @param {string} utxoPos utxo position
+   * @param {number} utxoPos utxo position
    * @return {Promise<Object>} promise that resolves with the challenge data
    */
   async getChallengeData (utxoPos) {
-    Joi.assert(utxoPos, Joi.string().required())
+    Joi.assert(utxoPos, Joi.number().required())
     return rpcApi.post({
       url: `${this.watcherUrl}/utxo.get_challenge_data`,
       body: { utxo_pos: utxoPos },
@@ -207,7 +207,7 @@ class ChildChain {
    * Sign a transaction
    *
    * @method signTransaction
-   * @param {string} typedData the typedData of the transaction, as returned by transaction.getTypedData()
+   * @param {Object} typedData the typedData of the transaction, as returned by transaction.getTypedData()
    * @param {string[]} privateKeys an array of private keys to sign the inputs of the transaction
    * @return {string[]} array of signatures
    */
@@ -221,14 +221,14 @@ class ChildChain {
    * Build a signed transaction into the format expected by submitTransaction
    *
    * @method buildSignedTransaction
-   * @param {string} txData the typedData of the transaction, as returned by transaction.getTypedData
+   * @param {Object} typedData the typedData of the transaction, as returned by transaction.getTypedData
    * @param {string[]} signatures an array of signatures, one for each input spent by the transaction
    * @return {string} a signed transaction
    */
-  buildSignedTransaction (txData, signatures) {
-    Joi.assert({ txData, signatures }, buildSignedTransactionSchema)
-    const txArray = transaction.toArray(txData.message)
-    const signedTx = [signatures, txData.message.txType, ...txArray]
+  buildSignedTransaction (typedData, signatures) {
+    Joi.assert({ typedData, signatures }, buildSignedTransactionSchema)
+    const txArray = transaction.toArray(typedData.message)
+    const signedTx = [signatures, typedData.message.txType, ...txArray]
     return hexPrefix(rlp.encode(signedTx).toString('hex'))
   }
 

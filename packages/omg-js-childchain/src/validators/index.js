@@ -3,7 +3,7 @@ const { validateAddress } = require('./helpers')
 
 const childchainConstructorSchema = Joi.object({
   watcherUrl: Joi.string().required(),
-  watcherProxyUrl: Joi.string()
+  watcherProxyUrl: Joi.string().allow('')
 })
 
 const getUtxosSchema = validateAddress.required()
@@ -33,7 +33,7 @@ const createTransactionSchema = Joi.object({
   payments: Joi.array().items(Joi.object({
     amount: Joi.number().required(),
     currency: Joi.string().required(),
-    owner: validateAddress.required()
+    owner: validateAddress
   })).required(),
   fee: Joi.object({
     amount: Joi.number().required(),
@@ -50,19 +50,19 @@ const signTypedDataSchema = Joi.object({
 const submitTypedSchema = Joi.object().required()
 
 const signTransactionSchema = Joi.object({
-  typedData: Joi.string(),
+  typedData: Joi.object().required(),
   privateKeys: Joi.array().items(Joi.string()).required()
 })
 
 const buildSignedTransactionSchema = Joi.object({
-  txData: Joi.string().required(),
+  typedData: Joi.object().required(),
   signatures: Joi.array().items(Joi.string()).required()
 })
 
 const sendTransactionSchema = Joi.object({
   fromAddress: validateAddress.required(),
-  fromUtxos: Joi.string().required(),
-  fromPrivateKeys: Joi.string().required(),
+  fromUtxos: Joi.array().items(Joi.object()).required(),
+  fromPrivateKeys: Joi.array().items(Joi.string()).required(),
   toAddress: validateAddress.required(),
   toAmount: Joi.number().required(),
   currency: Joi.string().required(),
