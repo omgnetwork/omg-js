@@ -6,6 +6,11 @@ const rootchainConstructorSchema = Joi.object({
   plasmaContractAddress: validateAddress.required()
 })
 
+const getExitTimeSchema = Joi.object({
+  exitRequestBlockNumber: Joi.number().required(),
+  submissionBlockNumber: Joi.number().required()
+})
+
 const approveTokenSchema = Joi.object({
   erc20Address: validateAddress.required(),
   txOptions: validateTxOption.required(),
@@ -155,6 +160,7 @@ const challengeInFlightExitOutputSpentSchema = Joi.object({
 
 module.exports = {
   rootchainConstructorSchema,
+  getExitTimeSchema,
   approveTokenSchema,
   depositTokenSchema,
   depositEthSchema,

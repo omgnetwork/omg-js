@@ -137,12 +137,6 @@ async function getPlasmaContractAddress (config) {
   throw new Error('No ROOTCHAIN_CONTRACT or CONTRACT_EXCHANGER_URL configured')
 }
 
-async function getTimeToExit (plasmaContract, blockTimestamp) {
-  // time to exit need to be caculate properly, this is just for testing assume * 2 min exit period
-  const minExitPeriod = await plasmaContract.methods.minExitPeriod().call() * 1000
-  return (Number(minExitPeriod) * 2)
-}
-
 const DEFAULT_INTERVAL = 1000
 const DEFAULT_BLOCKS_TO_WAIT = 1
 
@@ -222,7 +216,6 @@ module.exports = {
   depositToken,
   spentOnGas,
   getPlasmaContractAddress,
-  getTimeToExit,
   setGas,
   awaitTx,
   printlogs

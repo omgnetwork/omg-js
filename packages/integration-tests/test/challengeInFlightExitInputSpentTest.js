@@ -154,7 +154,7 @@ describe('Challenge in-flight exit input spent tests', function () {
       const decodedTx = transaction.decodeTxBytes(bobTx)
 
       // Starts the in-flight exit
-      let receipt = await rootChain.startInFlightExit({
+      const ifeReceipt = await rootChain.startInFlightExit({
         inFlightTx: exitData.in_flight_tx,
         inputTxs: exitData.input_txs,
         inputUtxosPos: exitData.input_utxos_pos,
@@ -169,13 +169,13 @@ describe('Challenge in-flight exit input spent tests', function () {
         }
       })
       console.log(
-        `Bob called RootChain.startInFlightExit(): txhash = ${receipt.transactionHash}`
+        `Bob called RootChain.startInFlightExit(): txhash = ${ifeReceipt.transactionHash}`
       )
       // Keep track of how much Bob spends on gas
-      bobSpentOnGas.iadd(await rcHelper.spentOnGas(web3, receipt))
+      bobSpentOnGas.iadd(await rcHelper.spentOnGas(web3, ifeReceipt))
 
       // alice piggybacks his input on the in-flight exit
-      receipt = await rootChain.piggybackInFlightExitOnInput({
+      let receipt = await rootChain.piggybackInFlightExitOnInput({
         inFlightTx: exitData.in_flight_tx,
         inputIndex: 0,
         txOptions: {
@@ -266,11 +266,12 @@ describe('Challenge in-flight exit input spent tests', function () {
       carolSpentOnGas.iadd(await rcHelper.spentOnGas(web3, receipt))
 
       // Wait for challenge period
-      const toWait = await rcHelper.getTimeToExit(
-        rootChain.plasmaContract
-      )
-      console.log(`Waiting for challenge period... ${toWait}ms`)
-      await rcHelper.sleep(toWait)
+      const { msUntilFinalization } = await rootChain.getExitTime({
+        exitRequestBlockNumber: ifeReceipt.blockNumber,
+        submissionBlockNumber: fundAliceTx.result.blknum
+      })
+      console.log(`Waiting for challenge period... ${msUntilFinalization}ms`)
+      await rcHelper.sleep(msUntilFinalization)
 
       // Call processExits again.
       receipt = await rootChain.processExits({
