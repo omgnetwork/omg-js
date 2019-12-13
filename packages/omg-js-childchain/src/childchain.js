@@ -17,17 +17,16 @@ const {
   childchainConstructorSchema,
   getUtxosSchema,
   getBalanceSchema,
-  getTransactionSchema,
   getTransactionsSchema,
   getExitDataSchema,
-  getChallengeDataSchema,
   createTransactionSchema,
   signTypedDataSchema,
   submitTypedSchema,
   signTransactionSchema,
   buildSignedTransactionSchema,
-  submitTransactionSchema,
-  sendTransactionSchema
+  sendTransactionSchema,
+  inFlightExitGetOutputChallengeDataSchema,
+  inFlightExitGetInputChallengeDataSchema
 } = require('./validators')
 const Joi = require('@hapi/joi')
 const rpcApi = require('./rpc/rpcApi')
@@ -91,7 +90,7 @@ class ChildChain {
    * @return {Promise<TransactionData>} promise that resolves with a transaction
    */
   async getTransaction (id) {
-    Joi.assert(id, getTransactionSchema)
+    Joi.assert(id, Joi.string().required())
     return rpcApi.post({
       url: `${this.watcherUrl}/transaction.get`,
       body: { id },
@@ -145,7 +144,7 @@ class ChildChain {
    * @return {Promise<Object>} promise that resolves with the challenge data
    */
   async getChallengeData (utxoPos) {
-    Joi.assert(utxoPos, getChallengeDataSchema)
+    Joi.assert(utxoPos, Joi.string().required())
     return rpcApi.post({
       url: `${this.watcherUrl}/utxo.get_challenge_data`,
       body: { utxo_pos: utxoPos },
@@ -241,7 +240,7 @@ class ChildChain {
    * @return {Promise<Object>} promise that resolves with the submitted transaction
    */
   async submitTransaction (transaction) {
-    Joi.assert(transaction, submitTransactionSchema)
+    Joi.assert(transaction, Joi.string().required())
     return rpcApi.post({
       url: `${this.watcherUrl}/transaction.submit`,
       body: { transaction: transaction.startsWith('0x') ? transaction : `0x${transaction}` },
@@ -330,6 +329,7 @@ class ChildChain {
    * @return {Promise<Object>} promise that resolves with input challenge data for the in-flight transaction
    */
   async inFlightExitGetInputChallengeData (txbytes, inputIndex) {
+    Joi.assert({ txbytes, inputIndex }, inFlightExitGetInputChallengeDataSchema)
     return rpcApi.post({
       url: `${this.watcherUrl}/in_flight_exit.get_input_challenge_data`,
       body: {
@@ -349,6 +349,7 @@ class ChildChain {
    * @return {Promise<Object>} promise that resolves with the input challenge data for the in-flight transaction
    */
   async inFlightExitGetOutputChallengeData (txbytes, outputIndex) {
+    Joi.assert({ txbytes, outputIndex }, inFlightExitGetOutputChallengeDataSchema)
     return rpcApi.post({
       url: `${this.watcherUrl}/in_flight_exit.get_output_challenge_data`,
       body: {
@@ -367,6 +368,7 @@ class ChildChain {
    * @return {Promise<Object>} promise that resolves with exit data for the in-flight transaction
    */
   async inFlightExitGetData (txbytes) {
+    Joi.assert(txbytes, Joi.string().required())
     return rpcApi.post({
       url: `${this.watcherUrl}/in_flight_exit.get_data`,
       body: { txbytes: hexPrefix(txbytes) },
@@ -380,8 +382,9 @@ class ChildChain {
    * @method inFlightExitGetCompetitor
    * @param {string} txbytes the hex-encoded transaction
    * @return {Promise<Object>} promise that resolves with a competitor to the in-flight transaction
-   */
+  */
   async inFlightExitGetCompetitor (txbytes) {
+    Joi.assert(txbytes, Joi.string().required())
     return rpcApi.post({
       url: `${this.watcherUrl}/in_flight_exit.get_competitor`,
       body: { txbytes: hexPrefix(txbytes) },
@@ -397,6 +400,7 @@ class ChildChain {
    * @return {Promise<Object>} promise that resolves with the inclusion proof of the transaction
    */
   async inFlightExitProveCanonical (txbytes) {
+    Joi.assert(txbytes, Joi.string().required())
     return rpcApi.post({
       url: `${this.watcherUrl}/in_flight_exit.prove_canonical`,
       body: { txbytes: hexPrefix(txbytes) },
