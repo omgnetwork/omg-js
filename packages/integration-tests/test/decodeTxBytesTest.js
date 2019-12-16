@@ -92,7 +92,7 @@ describe('Decode txBytes onchain tests', function () {
       assert.hasAllKeys(exitData, ['txbytes', 'proof', 'utxo_pos'])
       assert.deepEqual(
         {
-          transactionType: 1,
+          txType: 1,
           inputs: [],
           outputs: [
             {

@@ -90,7 +90,7 @@ const transaction = {
   */
   encodeDeposit: function (owner, amount, currency) {
     const encoded = transaction.encode({
-      transactionType: 1,
+      txType: 1,
       inputs: [],
       outputs: [{
         outputType: 1,
@@ -130,8 +130,8 @@ const transaction = {
   * @return {string} the RLP encoded transaction
   *
   */
-  encode: function ({ transactionType, inputs, outputs, txData, metadata, signatures }, { signed = true } = {}) {
-    const txArray = [transactionType]
+  encode: function ({ txType, inputs, outputs, txData, metadata, signatures }, { signed = true } = {}) {
+    const txArray = [txType]
     signatures && signed && txArray.unshift(signatures)
     const inputArray = []
     const outputArray = []
@@ -162,22 +162,22 @@ const transaction = {
   *
   */
   decodeTxBytes: function (tx) {
-    let transactionType, inputs, outputs, txData, metadata, sigs
+    let txType, inputs, outputs, txData, metadata, sigs
     const rawTx = Buffer.isBuffer(tx) ? tx : Buffer.from(tx.replace('0x', ''), 'hex')
     const decoded = rlp.decode(rawTx)
     switch (decoded.length) {
       case 5:
-        [transactionType, inputs, outputs, txData, metadata] = decoded
+        [txType, inputs, outputs, txData, metadata] = decoded
         break
       case 6:
-        [sigs, transactionType, inputs, outputs, txData, metadata] = decoded
+        [sigs, txType, inputs, outputs, txData, metadata] = decoded
         break
       default:
         throw new Error(`error decoding txBytes, got ${decoded}`)
     }
     return {
       ...(sigs && { sigs: sigs.map(parseString) }),
-      transactionType: parseNumber(transactionType),
+      txType: parseNumber(txType),
       inputs: inputs.map(input => transaction.decodeUtxoPos(parseString(input))),
       outputs: outputs.map(output => {
         const outputType = parseNumber(output[0])
