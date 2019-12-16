@@ -72,6 +72,7 @@ const transaction = {
     addOutput(outputArray, typedDataMessage.output2)
     addOutput(outputArray, typedDataMessage.output3)
     txArray.push(outputArray)
+
     txArray.push(typedDataMessage.txData)
     txArray.push(typedDataMessage.metadata)
 
@@ -161,15 +162,15 @@ const transaction = {
   *
   */
   decodeTxBytes: function (tx) {
-    let inputs, outputs, transactionType, metadata, sigs
+    let transactionType, inputs, outputs, txData, metadata, sigs
     const rawTx = Buffer.isBuffer(tx) ? tx : Buffer.from(tx.replace('0x', ''), 'hex')
     const decoded = rlp.decode(rawTx)
     switch (decoded.length) {
-      case 4:
-        [transactionType, inputs, outputs, metadata] = decoded
-        break
       case 5:
-        [sigs, transactionType, inputs, outputs, metadata] = decoded
+        [transactionType, inputs, outputs, txData, metadata] = decoded
+        break
+      case 6:
+        [sigs, transactionType, inputs, outputs, txData, metadata] = decoded
         break
       default:
         throw new Error(`error decoding txBytes, got ${decoded}`)
@@ -185,6 +186,7 @@ const transaction = {
         const amount = numberToBN(parseString(output[3])).toString()
         return { outputType, outputGuard, currency, amount }
       }),
+      txData: parseNumber(txData),
       metadata: parseString(metadata)
     }
   },
@@ -273,6 +275,7 @@ const transaction = {
     const txBody = {
       inputs: fromUtxos,
       outputs: outputArr,
+      txData: 0,
       metadata
     }
 
