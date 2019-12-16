@@ -1,5 +1,5 @@
 /*
-Copyright 2018 OmiseGO Pte Ltd
+Copyright 2019 OmiseGO Pte Ltd
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -26,24 +26,24 @@ const chai = require('chai')
 const assert = chai.assert
 
 const web3 = new Web3(config.geth_url)
-const childChain = new ChildChain(config.watcher_url, config.childchain_url)
+const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url })
 let rootChain
 
-describe('Create transaction tests', async () => {
-  before(async () => {
+describe('Create transaction tests', function () {
+  before(async function () {
     const plasmaContract = await rcHelper.getPlasmaContractAddress(config)
-    rootChain = new RootChain(web3, plasmaContract.contract_addr)
+    rootChain = new RootChain({ web3, plasmaContractAddress: plasmaContract.contract_addr })
     await faucet.init(rootChain, childChain, web3, config)
   })
 
-  describe('create a single currency transaction', async () => {
+  describe('create a single currency transaction', function () {
     const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.000001', 'ether')
     const TRANSFER_AMOUNT = web3.utils.toWei('.0000001', 'ether')
     const FEE_AMOUNT = 10
     let aliceAccount
     let bobAccount
 
-    before(async () => {
+    before(async function () {
       // Create Alice and Bob's accounts
       aliceAccount = rcHelper.createAccount(web3)
       console.log(`Created Alice account ${JSON.stringify(aliceAccount)}`)
@@ -54,7 +54,7 @@ describe('Create transaction tests', async () => {
       await ccHelper.waitForBalanceEq(childChain, aliceAccount.address, INTIIAL_ALICE_AMOUNT)
     })
 
-    after(async () => {
+    after(async function () {
       try {
         // Send any leftover funds back to the faucet
         await faucet.returnFunds(web3, aliceAccount)
@@ -64,7 +64,7 @@ describe('Create transaction tests', async () => {
       }
     })
 
-    it('should create and submit a single currency transaction', async () => {
+    it('should create and submit a single currency transaction', async function () {
       const payments = [{
         owner: bobAccount.address,
         currency: transaction.ETH_CURRENCY,
@@ -76,12 +76,12 @@ describe('Create transaction tests', async () => {
         amount: FEE_AMOUNT
       }
 
-      const createdTx = await childChain.createTransaction(
-        aliceAccount.address,
+      const createdTx = await childChain.createTransaction({
+        owner: aliceAccount.address,
         payments,
         fee,
-        transaction.NULL_METADATA
-      )
+        metadata: transaction.NULL_METADATA
+      })
       assert.equal(createdTx.result, 'complete')
       assert.equal(createdTx.transactions.length, 1)
 
@@ -101,20 +101,20 @@ describe('Create transaction tests', async () => {
       assert.equal(bobBalance[0].amount.toString(), TRANSFER_AMOUNT)
 
       // Alice's balance should be INTIIAL_ALICE_AMOUNT - TRANSFER_AMOUNT - FEE_AMOUNT
-      let aliceBalance = await childChain.getBalance(aliceAccount.address)
+      const aliceBalance = await childChain.getBalance(aliceAccount.address)
       assert.equal(aliceBalance.length, 1)
       const expected = numberToBN(INTIIAL_ALICE_AMOUNT).sub(numberToBN(TRANSFER_AMOUNT)).subn(FEE_AMOUNT)
       assert.equal(aliceBalance[0].amount.toString(), expected.toString())
     })
   })
 
-  describe('create a single currency transaction with no receiver', async () => {
+  describe('create a single currency transaction with no receiver', function () {
     const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.000001', 'ether')
     const TRANSFER_AMOUNT = web3.utils.toWei('.0000001', 'ether')
     const FEE_AMOUNT = 10
     let aliceAccount
 
-    before(async () => {
+    before(async function () {
       // Create Alice and Bob's accounts
       aliceAccount = rcHelper.createAccount(web3)
       console.log(`Created Alice account ${JSON.stringify(aliceAccount)}`)
@@ -123,7 +123,7 @@ describe('Create transaction tests', async () => {
       await ccHelper.waitForBalanceEq(childChain, aliceAccount.address, INTIIAL_ALICE_AMOUNT)
     })
 
-    after(async () => {
+    after(async function () {
       try {
         // Send any leftover funds back to the faucet
         await faucet.returnFunds(web3, aliceAccount)
@@ -132,7 +132,7 @@ describe('Create transaction tests', async () => {
       }
     })
 
-    it('should create a single currency transaction', async () => {
+    it('should create a single currency transaction', async function () {
       const payments = [{
         currency: transaction.ETH_CURRENCY,
         amount: Number(TRANSFER_AMOUNT)
@@ -143,18 +143,18 @@ describe('Create transaction tests', async () => {
         amount: FEE_AMOUNT
       }
 
-      const createdTx = await childChain.createTransaction(
-        aliceAccount.address,
+      const createdTx = await childChain.createTransaction({
+        owner: aliceAccount.address,
         payments,
         fee,
-        transaction.NULL_METADATA
-      )
+        metadata: transaction.NULL_METADATA
+      })
       assert.equal(createdTx.result, 'complete')
       assert.equal(createdTx.transactions.length, 1)
     })
   })
 
-  describe('create a mixed currency transaction', async () => {
+  describe('create a mixed currency transaction', function () {
     const ERC20_CURRENCY = config.testErc20Contract
     const INTIIAL_ALICE_AMOUNT_ETH = web3.utils.toWei('0.001', 'ether')
     const INTIIAL_ALICE_AMOUNT_ERC20 = 3
@@ -164,7 +164,7 @@ describe('Create transaction tests', async () => {
     let aliceAccount
     let bobAccount
 
-    before(async () => {
+    before(async function () {
       // Create Alice and Bob's accounts
       aliceAccount = rcHelper.createAccount(web3)
       console.log(`Created Alice account ${JSON.stringify(aliceAccount)}`)
@@ -178,7 +178,7 @@ describe('Create transaction tests', async () => {
       await ccHelper.waitForBalanceEq(childChain, aliceAccount.address, INTIIAL_ALICE_AMOUNT_ERC20, ERC20_CURRENCY)
     })
 
-    after(async () => {
+    after(async function () {
       try {
         // Send any leftover funds back to the faucet
         await faucet.returnFunds(web3, aliceAccount)
@@ -188,7 +188,7 @@ describe('Create transaction tests', async () => {
       }
     })
 
-    it('should create and submit a mixed currency transaction', async () => {
+    it('should create and submit a mixed currency transaction', async function () {
       const payments = [{
         owner: bobAccount.address,
         currency: transaction.ETH_CURRENCY,
@@ -204,12 +204,12 @@ describe('Create transaction tests', async () => {
         amount: FEE_AMOUNT
       }
 
-      const createdTx = await childChain.createTransaction(
-        aliceAccount.address,
+      const createdTx = await childChain.createTransaction({
+        owner: aliceAccount.address,
         payments,
         fee,
-        transaction.NULL_METADATA
-      )
+        metadata: transaction.NULL_METADATA
+      })
       assert.equal(createdTx.result, 'complete')
       assert.equal(createdTx.transactions.length, 1)
 
@@ -241,14 +241,14 @@ describe('Create transaction tests', async () => {
     })
   })
 
-  describe('create an incomplete transaction', async () => {
+  describe('create an incomplete transaction', function () {
     const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.000001', 'ether')
     // const TRANSFER_AMOUNT = web3.utils.toWei('.0000001', 'ether')
     const FEE_AMOUNT = 0
     let aliceAccount
     let bobAccount
 
-    before(async () => {
+    before(async function () {
       // Create Alice and Bob's accounts
       aliceAccount = rcHelper.createAccount(web3)
       console.log(`Created Alice account ${JSON.stringify(aliceAccount)}`)
@@ -268,7 +268,7 @@ describe('Create transaction tests', async () => {
       await ccHelper.waitNumUtxos(childChain, aliceAccount.address, 8)
     })
 
-    after(async () => {
+    after(async function () {
       try {
         // Send any leftover funds back to the faucet
         await faucet.returnFunds(web3, aliceAccount)
@@ -278,7 +278,7 @@ describe('Create transaction tests', async () => {
       }
     })
 
-    it('should create an incomplete transaction', async () => {
+    it('should create an incomplete transaction', async function () {
       const payments = [{
         owner: bobAccount.address,
         currency: transaction.ETH_CURRENCY,
@@ -290,12 +290,12 @@ describe('Create transaction tests', async () => {
         amount: FEE_AMOUNT
       }
 
-      const createdTx = await childChain.createTransaction(
-        aliceAccount.address,
+      const createdTx = await childChain.createTransaction({
+        owner: aliceAccount.address,
         payments,
         fee,
-        transaction.NULL_METADATA
-      )
+        metadata: transaction.NULL_METADATA
+      })
       assert.equal(createdTx.result, 'intermediate')
       assert.equal(createdTx.transactions.length, 2)
 
@@ -316,12 +316,12 @@ describe('Create transaction tests', async () => {
       await ccHelper.waitNumUtxos(childChain, aliceAccount.address, 2)
 
       // Try createTransaction again
-      const createdTx2 = await childChain.createTransaction(
-        aliceAccount.address,
+      const createdTx2 = await childChain.createTransaction({
+        owner: aliceAccount.address,
         payments,
         fee,
-        transaction.NULL_METADATA
-      )
+        metadata: transaction.NULL_METADATA
+      })
       assert.equal(createdTx2.result, 'complete')
       assert.equal(createdTx2.transactions.length, 1)
 
@@ -342,16 +342,16 @@ describe('Create transaction tests', async () => {
       assert.equal(bobBalance[0].amount.toString(), INTIIAL_ALICE_AMOUNT)
 
       // Alice's balance should be 0
-      let aliceBalance = await childChain.getBalance(aliceAccount.address)
+      const aliceBalance = await childChain.getBalance(aliceAccount.address)
       assert.equal(aliceBalance.length, 0)
     })
   })
 
-  describe('create a transaction to split utxos', async () => {
+  describe('create a transaction to split utxos', function () {
     const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.000001', 'ether')
     let aliceAccount
 
-    before(async () => {
+    before(async function () {
       // Create Alice accounts
       aliceAccount = rcHelper.createAccount(web3)
       console.log(`Created Alice account ${JSON.stringify(aliceAccount)}`)
@@ -360,7 +360,7 @@ describe('Create transaction tests', async () => {
       await ccHelper.waitForBalanceEq(childChain, aliceAccount.address, INTIIAL_ALICE_AMOUNT)
     })
 
-    after(async () => {
+    after(async function () {
       try {
         // Send any leftover funds back to the faucet
         await faucet.returnFunds(web3, aliceAccount)
@@ -369,7 +369,7 @@ describe('Create transaction tests', async () => {
       }
     })
 
-    it('should split a utxo into 4', async () => {
+    it('should split a utxo into 4', async function () {
       const utxos = await childChain.getUtxos(aliceAccount.address)
       const utxo = utxos[0]
       const div = Math.floor(utxo.amount / 4)
@@ -384,12 +384,12 @@ describe('Create transaction tests', async () => {
         amount: 0
       }
 
-      const createdTx = await childChain.createTransaction(
-        aliceAccount.address,
+      const createdTx = await childChain.createTransaction({
+        owner: aliceAccount.address,
         payments,
         fee,
-        transaction.NULL_METADATA
-      )
+        metadata: transaction.NULL_METADATA
+      })
       assert.equal(createdTx.result, 'complete')
       assert.equal(createdTx.transactions.length, 1)
 

@@ -1,5 +1,5 @@
 /*
-Copyright 2018 OmiseGO Pte Ltd
+Copyright 2019 OmiseGO Pte Ltd
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -14,11 +14,11 @@ See the License for the specific language governing permissions and
 limitations under the License. */
 
 const promiseRetry = require('promise-retry')
-const { transaction } = require('@omisego/omg-js-util')
+const { transaction, getErc20Balance } = require('@omisego/omg-js-util')
 const numberToBN = require('number-to-bn')
 const fetch = require('node-fetch')
-const erc20abi = require('human-standard-token-abi')
 const { parseLog } = require('ethereum-event-logs')
+const { utils } = require('web3')
 
 function createAccount (web3) {
   const ret = web3.eth.accounts.create()
@@ -28,10 +28,19 @@ function createAccount (web3) {
 
 async function setGas (eth, txDetails) {
   if (!txDetails.gas) {
-    txDetails.gas = await eth.estimateGas(txDetails)
+    try {
+      txDetails.gas = await eth.estimateGas(txDetails)
+    } catch (err) {
+      throw new Error(`Error estimating gas: ${err}`)
+    }
   }
   if (!txDetails.gasPrice) {
-    txDetails.gasPrice = await eth.getGasPrice()
+    try {
+      txDetails.gasPrice = await eth.getGasPrice()
+    } catch (err) {
+      txDetails.gasPrice = '1000000000'
+      console.warn('Error getting gas price: ', err)
+    }
   }
 }
 
@@ -51,7 +60,7 @@ async function sendTransaction (web3, txDetails, privateKey) {
 
 async function spentOnGas (web3, receipt) {
   const tx = await web3.eth.getTransaction(receipt.transactionHash)
-  return web3.utils.toBN(tx.gasPrice).muln(receipt.gasUsed)
+  return utils.toBN(tx.gasPrice).muln(receipt.gasUsed)
 }
 
 function waitForEthBalance (web3, address, callback) {
@@ -74,21 +83,10 @@ function waitForEthBalanceEq (web3, address, expectedAmount) {
   return waitForEthBalance(web3, address, balance => numberToBN(balance).eq(expectedBn))
 }
 
-async function getERC20Balance (web3, contract, address) {
-  const txDetails = {
-    from: address,
-    to: contract._address,
-    data: contract.methods.balanceOf(address).encodeABI()
-  }
-
-  return web3.eth.call(txDetails)
-}
-
 function waitForERC20Balance (web3, address, contractAddress, callback) {
-  const contract = new web3.eth.Contract(erc20abi, contractAddress)
   return promiseRetry(async (retry, number) => {
     console.log(`Waiting for ERC20 balance...  (${number})`)
-    const resp = await getERC20Balance(web3, contract, address)
+    const resp = await getErc20Balance({ web3, erc20Address: contractAddress, address })
     if (!callback(resp)) {
       retry()
     }
@@ -111,31 +109,21 @@ function sleep (ms) {
   })
 }
 
-async function approveERC20 (
-  web3,
-  erc20Contract,
-  ownerAccount,
-  ownerAccountPassword,
-  spender,
-  value
-) {
-  const txDetails = {
-    from: ownerAccount,
-    to: erc20Contract._address,
-    data: erc20Contract.methods.approve(spender, value).encodeABI()
-  }
-
-  return sendTransaction(web3, txDetails, ownerAccountPassword)
-}
-
-async function depositEth (rootChain, childChain, address, amount, privateKey) {
+async function depositEth ({ rootChain, address, amount, privateKey }) {
   const depositTx = transaction.encodeDeposit(address, amount, transaction.ETH_CURRENCY)
-  return rootChain.depositEth(depositTx, amount, { from: address, privateKey })
+  return rootChain.depositEth({
+    depositTx,
+    amount,
+    txOptions: { from: address, privateKey }
+  })
 }
 
-async function depositToken (rootChain, childChain, address, amount, currency, privateKey) {
+async function depositToken ({ rootChain, address, amount, currency, privateKey }) {
   const depositTx = transaction.encodeDeposit(address, amount, currency)
-  return rootChain.depositToken(depositTx, { from: address, privateKey })
+  return rootChain.depositToken({
+    depositTx,
+    txOptions: { from: address, privateKey }
+  })
 }
 
 async function getPlasmaContractAddress (config) {
@@ -147,11 +135,6 @@ async function getPlasmaContractAddress (config) {
   }
 
   throw new Error('No ROOTCHAIN_CONTRACT or CONTRACT_EXCHANGER_URL configured')
-}
-
-async function getTimeToExit (plasmaContract, output) {
-  const exitableAt = await plasmaContract.methods.getExitableTimestamp(output.toString()).call()
-  return (Number(exitableAt) - Math.trunc(Date.now() / 1000)) * 1000
 }
 
 const DEFAULT_INTERVAL = 1000
@@ -231,11 +214,8 @@ module.exports = {
   sendTransaction,
   depositEth,
   depositToken,
-  approveERC20,
-  getERC20Balance,
   spentOnGas,
   getPlasmaContractAddress,
-  getTimeToExit,
   setGas,
   awaitTx,
   printlogs

@@ -1,5 +1,5 @@
 /*
-Copyright 2018 OmiseGO Pte Ltd
+Copyright 2019 OmiseGO Pte Ltd
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -26,22 +26,24 @@ const chai = require('chai')
 const assert = chai.assert
 
 const web3 = new Web3(new Web3.providers.HttpProvider(config.geth_url))
-const childChain = new ChildChain(config.watcher_url, config.childchain_url)
+const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url })
 let rootChain
 
-describe('Deposit tests', async () => {
-  before(async () => {
+describe('Deposit tests', function () {
+  before(async function () {
     const plasmaContract = await rcHelper.getPlasmaContractAddress(config)
-    rootChain = new RootChain(web3, plasmaContract.contract_addr)
+    rootChain = new RootChain({ web3, plasmaContractAddress: plasmaContract.contract_addr })
     await faucet.init(rootChain, childChain, web3, config)
   })
 
-  describe('deposit ETH (ci-enabled)', async () => {
-    const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.1', 'ether')
-    const TEST_AMOUNT = web3.utils.toWei('.0001', 'ether')
+  describe('deposit ETH (ci-enabled)', function () {
+    let INTIIAL_ALICE_AMOUNT
+    let TEST_AMOUNT
     let aliceAccount
 
-    before(async () => {
+    beforeEach(async function () {
+      INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.1', 'ether')
+      TEST_AMOUNT = web3.utils.toWei('.0001', 'ether')
       // Create and fund a new account
       aliceAccount = rcHelper.createAccount(web3)
       console.log(`Created new account ${JSON.stringify(aliceAccount)}`)
@@ -49,7 +51,7 @@ describe('Deposit tests', async () => {
       await rcHelper.waitForEthBalanceEq(web3, aliceAccount.address, INTIIAL_ALICE_AMOUNT)
     })
 
-    after(async () => {
+    afterEach(async function () {
       try {
         // Send any leftover funds back to the faucet
         await faucet.returnFunds(web3, aliceAccount)
@@ -58,59 +60,63 @@ describe('Deposit tests', async () => {
       }
     })
 
-    it('depositEth calls event emitter if passed', async () => {
+    it('depositEth calls event emitter if passed', async function () {
       const depositTx = transaction.encodeDeposit(aliceAccount.address, TEST_AMOUNT, transaction.ETH_CURRENCY)
-
       let confirmationNum
       let receipt
 
       await new Promise((resolve, reject) => {
-        rootChain.depositEth(
+        rootChain.depositEth({
           depositTx,
-          TEST_AMOUNT,
-          {
+          amount: TEST_AMOUNT,
+          txOptions: {
             from: aliceAccount.address,
             privateKey: aliceAccount.privateKey
           },
-          {
-            onConfirmation: res => confirmationNum = res,
+          callbacks: {
+            onConfirmation: res => {
+              confirmationNum = res
+            },
             onReceipt: res => {
               receipt = res
               resolve()
             }
           }
-        )
+        })
       })
 
       assert.isNumber(confirmationNum)
       assert.isObject(receipt)
     })
 
-    it('deposit call resolves in an object containing the transaction hash', async () => {
+    it('deposit call resolves in an object containing the transaction hash', async function () {
       const depositTx = transaction.encodeDeposit(aliceAccount.address, TEST_AMOUNT, transaction.ETH_CURRENCY)
-      const depositRes = await rootChain.depositEth(
+      const depositRes = await rootChain.depositEth({
         depositTx,
-        TEST_AMOUNT,
-        {
+        amount: TEST_AMOUNT,
+        txOptions: {
           from: aliceAccount.address,
           privateKey: aliceAccount.privateKey
         }
-      )
+      })
       assert.isObject(depositRes)
       assert.isString(depositRes.transactionHash)
     })
 
-    it('should deposit ETH to the Plasma contract', async () => {
+    it('should deposit ETH to the Plasma contract', async function () {
       // The new account should have no initial balance
       const initialBalance = await childChain.getBalance(aliceAccount.address)
       assert.equal(initialBalance.length, 0)
 
       // Create the deposit transaction
       const depositTx = transaction.encodeDeposit(aliceAccount.address, TEST_AMOUNT, transaction.ETH_CURRENCY)
-      console.log(depositTx)
 
       // Deposit ETH into the Plasma contract
-      await rootChain.depositEth(depositTx, TEST_AMOUNT, { from: aliceAccount.address, privateKey: aliceAccount.privateKey })
+      await rootChain.depositEth({
+        depositTx,
+        amount: TEST_AMOUNT,
+        txOptions: { from: aliceAccount.address, privateKey: aliceAccount.privateKey }
+      })
 
       // Wait for transaction to be mined and reflected in the account's balance
       const balance = await ccHelper.waitForBalanceEq(childChain, aliceAccount.address, TEST_AMOUNT)
@@ -129,14 +135,14 @@ describe('Deposit tests', async () => {
     })
   })
 
-  describe('deposit ERC20 (ci-enabled)', async () => {
+  describe('deposit ERC20 (ci-enabled)', function () {
     let aliceAccount
     const testErc20Contract = new web3.eth.Contract(erc20abi, config.testErc20Contract)
     const INTIIAL_AMOUNT_ETH = web3.utils.toWei('.1', 'ether')
     const INITIAL_AMOUNT_ERC20 = 3
     const TEST_AMOUNT = 2
 
-    before(async () => {
+    before(async function () {
       // Create and fund Alice's account
       aliceAccount = rcHelper.createAccount(web3)
       console.log(`Created Alice account ${JSON.stringify(aliceAccount)}`)
@@ -149,7 +155,7 @@ describe('Deposit tests', async () => {
       ])
     })
 
-    after(async () => {
+    after(async function () {
       try {
         // Send any leftover funds back to the faucet
         await faucet.returnFunds(web3, aliceAccount)
@@ -158,19 +164,29 @@ describe('Deposit tests', async () => {
       }
     })
 
-    it('should deposit ERC20 tokens to the Plasma contract', async () => {
+    it('should deposit ERC20 tokens to the Plasma contract', async function () {
       // The new account should have no initial balance
       const initialBalance = await childChain.getBalance(aliceAccount.address)
       assert.equal(initialBalance.length, 0)
 
       // Account must approve the Plasma contract
-      await rcHelper.approveERC20(web3, testErc20Contract, aliceAccount.address, aliceAccount.privateKey, rootChain.plasmaContractAddress, TEST_AMOUNT)
+      await rootChain.approveToken({
+        erc20Address: config.testErc20Contract,
+        amount: TEST_AMOUNT,
+        txOptions: {
+          from: aliceAccount.address,
+          privateKey: aliceAccount.privateKey
+        }
+      })
 
       // Create the deposit transaction
       const depositTx = transaction.encodeDeposit(aliceAccount.address, TEST_AMOUNT, config.testErc20Contract)
 
       // Deposit ERC20 tokens into the Plasma contract
-      await rootChain.depositToken(depositTx, { from: aliceAccount.address, privateKey: aliceAccount.privateKey })
+      await rootChain.depositToken({
+        depositTx,
+        txOptions: { from: aliceAccount.address, privateKey: aliceAccount.privateKey }
+      })
 
       // Wait for transaction to be mined and reflected in the account's balance
       const balance = await ccHelper.waitForBalanceEq(childChain, aliceAccount.address, TEST_AMOUNT, config.testErc20Contract)
@@ -184,7 +200,7 @@ describe('Deposit tests', async () => {
       assert.equal(utxos.length, 1)
       assert.hasAllKeys(utxos[0], ['utxo_pos', 'txindex', 'owner', 'oindex', 'currency', 'blknum', 'amount'])
       assert.equal(utxos[0].amount.toString(), TEST_AMOUNT)
-      assert.equal(utxos[0].currency, config.testErc20Contract)
+      assert.equal(utxos[0].currency.toLowerCase(), config.testErc20Contract.toLowerCase())
     })
   })
 })

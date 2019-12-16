@@ -1,5 +1,5 @@
 /*
-Copyright 2018 OmiseGO Pte Ltd
+Copyright 2019 OmiseGO Pte Ltd
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -23,8 +23,8 @@ const assert = chai.assert
 
 const watcherUrl = 'http://omg-watcher'
 
-describe('getBalance', () => {
-  it('should return the balance of an address', async () => {
+describe('getBalance', function () {
+  it('should return the balance of an address', async function () {
     const address = '0xd72afdfa06ae5857a639051444f7608fea1528d4'
     const expectedObject = [{
       currency: '00000000000000000000',
@@ -32,10 +32,10 @@ describe('getBalance', () => {
     }]
 
     nock(watcherUrl)
-      .post(`/account.get_balance`, { address, 'jsonrpc': '2.0', 'id': 0 })
+      .post('/account.get_balance', { address, jsonrpc: '2.0', id: 0 })
       .reply(200, { success: true, data: expectedObject })
 
-    const childChain = new ChildChain(watcherUrl, '')
+    const childChain = new ChildChain({ watcherUrl })
     const result = await childChain.getBalance(address)
     assert(Array.isArray(result))
     assert.equal(result.length, 1)
@@ -43,7 +43,7 @@ describe('getBalance', () => {
     assert.equal(expectedObject[0].amount.toString(), result[0].amount.toString())
   })
 
-  it('should throw an error on failure', async () => {
+  it('should throw an error on failure', async function () {
     const address = '0x01234'
     const errorObject = {
       code: 'the_error_code',
@@ -51,10 +51,10 @@ describe('getBalance', () => {
     }
 
     nock(watcherUrl)
-      .post(`/account.get_balance`, { address, 'jsonrpc': '2.0', 'id': 0 })
+      .post('/account.get_balance', { address, jsonrpc: '2.0', id: 0 })
       .reply(200, { success: false, data: errorObject })
 
-    const childChain = new ChildChain(watcherUrl, '')
+    const childChain = new ChildChain({ watcherUrl })
     return assert.isRejected(childChain.getBalance(address), Error, errorObject.description)
   })
 })

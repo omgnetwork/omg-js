@@ -1,5 +1,5 @@
 /*
-Copyright 2018 OmiseGO Pte Ltd
+Copyright 2019 OmiseGO Pte Ltd
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -32,10 +32,10 @@ describe('getUtxo', () => {
     const expectedObject = []
 
     nock(watcherUrl)
-      .post(`/account.get_utxos`, { address, 'jsonrpc': '2.0', 'id': 0 })
+      .post('/account.get_utxos', { address, jsonrpc: '2.0', id: 0 })
       .reply(200, { success: true, data: expectedObject })
 
-    const childChain = new ChildChain(watcherUrl, '')
+    const childChain = new ChildChain({ watcherUrl })
     const returnUtxo = await childChain.getUtxos(address)
     assert.deepEqual(expectedObject, returnUtxo)
   })
@@ -48,10 +48,10 @@ describe('getUtxo', () => {
     }
 
     nock(watcherUrl)
-      .post(`/account.get_utxos`, { address, 'jsonrpc': '2.0', 'id': 0 })
+      .post('/account.get_utxos', { address, jsonrpc: '2.0', id: 0 })
       .reply(200, { success: false, data: errorObject })
 
-    const childChain = new ChildChain(watcherUrl, '')
+    const childChain = new ChildChain({ watcherUrl })
     return assert.isRejected(childChain.getUtxos(address), Error, errorObject.description)
   })
 })

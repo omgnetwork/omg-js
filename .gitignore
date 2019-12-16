@@ -1,5 +1,7 @@
 node_modules
 *.log
+.env
+.DS_Store
 
 # VS Code directories
 .vscode
@@ -7,3 +9,5 @@ node_modules
 .idea
 
 build
+dist
+docs

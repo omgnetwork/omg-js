@@ -1,7 +1,22 @@
+/*
+  Copyright 2019 OmiseGO Pte Ltd
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+*/
 
 const NULL_ADDRESS = '0x0000000000000000000000000000000000000000'
 const NULL_INPUT = { blknum: 0, txindex: 0, oindex: 0 }
-const NULL_OUTPUT = { owner: NULL_ADDRESS, currency: NULL_ADDRESS, amount: 0 }
+const NULL_OUTPUT = { outputType: 0, outputGuard: NULL_ADDRESS, currency: NULL_ADDRESS, amount: 0 }
 const NULL_METADATA = '0x0000000000000000000000000000000000000000000000000000000000000000'
 
 const domainSpec = [
@@ -12,6 +27,7 @@ const domainSpec = [
 ]
 
 const txSpec = [
+  { name: 'txType', type: 'uint256' },
   { name: 'input0', type: 'Input' },
   { name: 'input1', type: 'Input' },
   { name: 'input2', type: 'Input' },
@@ -30,7 +46,8 @@ const inputSpec = [
 ]
 
 const outputSpec = [
-  { name: 'owner', type: 'address' },
+  { name: 'outputType', type: 'uint256' },
+  { name: 'outputGuard', type: 'bytes20' },
   { name: 'currency', type: 'address' },
   { name: 'amount', type: 'uint256' }
 ]
@@ -65,12 +82,14 @@ function getTypedData (tx, verifyingContract) {
 
   // Sanitise Outputs
   const outputs = tx.outputs.map(o => ({
-    owner: o.owner,
+    outputType: o.outputType || 1,
+    outputGuard: o.outputGuard || o.owner,
     currency: o.currency,
     amount: o.amount.toString()
   }))
 
   typedData.message = {
+    txType: 1,
     input0: inputs.length > 0 ? inputs[0] : NULL_INPUT,
     input1: inputs.length > 1 ? inputs[1] : NULL_INPUT,
     input2: inputs.length > 2 ? inputs[2] : NULL_INPUT,

@@ -1,5 +1,5 @@
 /*
-Copyright 2018 OmiseGO Pte Ltd
+Copyright 2019 OmiseGO Pte Ltd
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -17,16 +17,16 @@ const chai = require('chai')
 const assert = chai.assert
 const transaction = require('../src/transaction')
 
-describe('Encode metadata tests', () => {
-  it('should encode/decode a string', () => {
+describe('Encode metadata tests', function () {
+  it('should encode/decode a string 1', function () {
     const str = '00100'
     return assert.equal(transaction.decodeMetadata(transaction.encodeMetadata(str)), str)
   })
-  it('should encode/decode a string', () => {
+  it('should encode/decode a string 2', function () {
     const str = 'The quick brown fox'
     return assert.equal(transaction.decodeMetadata(transaction.encodeMetadata(str)), str)
   })
-  it('should encode/decode a string', () => {
+  it('should encode/decode a string 3', function () {
     const str = 'Unicode ₿itcoin, さとし'
     return assert.equal(transaction.decodeMetadata(transaction.encodeMetadata(str)), str)
   })

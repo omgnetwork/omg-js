@@ -12,7 +12,8 @@ This is a Javascript library that allows you to interact with OmiseGo's MoreVP i
 
 ## Compatibility
 
-This library is currently compatible with version 0.2 of the OMG Network
+This library is currently compatible with version 0.3 of the OMG Network.
+Use with caution as this is an alpha release and some features have not yet been fully tested.
 
 ### Getting Started
 
@@ -27,7 +28,7 @@ You can use any of them separately, or all at once by importing the parent `@omi
 ### Installation
 
 #### Node
-Requires Node >= 8.11.3
+Requires Node >= 8.11.3 < 13.0.0
 ```
 npm install @omisego/omg-js
 ```
@@ -53,33 +54,60 @@ Copy the `dist/omg.js` file into your project and include it.
 #### Prerequisites
 
 Both Alice's and Bob's Ethereum accounts need to have some ETH in them. The ETH is used for gas costs on the rootchain, fees on the childchain and the actual ETH transferred from Alice to Bob.
+If you want to run the ERC20 examples, at least Alice's account will need an ERC20 balance to be able to deposit and transact on the childchain.
 
 #### Running the Examples
 
-You can find example code inside `examples` folder. To run the examples, step inside the `examples` directory. Run `npm install`. Edit your `config.js` file to have to correct settings for your environment.
+You can find example code inside `examples` folder. 
 
-Let's run through a story between Alice and Bob. In this story, Alice will first deposit some ETH from the root chain into the child chain. Then Alice will transfer some of that ETH to Bob on the child chain. Finally, Bob will exit his funds from the child chain back into the root chain. His root chain balance will be reflected with the extra ETH that Alice sent to him on the child chain.
+To run the examples:
+- Step inside the `examples` directory.
+- Run `npm install`.
+- Create `.env` file inside the root of the `examples` directory with the appropriate values (see `.env.example` for example)
 
-From the `examples` folder run the scripts below in order to follow the story.
+Let's run through a story between Alice and Bob. In this story, Alice will first deposit some ETH from the root chain into the child chain. Then Alice will transfer some of that ETH to Bob on the child chain. Bob will then exit his funds from the child chain back into the root chain. His root chain balance will be reflected with the extra ETH that Alice sent to him on the child chain.
 
-1. [Deposit some ETH from Alice's Rootchain to the Childchain](examples/childchain-deposit.js)
-    
-    `npm run childchain-deposit`
+From the `examples` folder run the following scripts:
 
-2. [Send some ETH from Alice's Childchain to Bob's Childchain](examples/childchain-transaction.js)
-    
-    `npm run childchain-transaction`
+- [Get Alice's and Bob's balances](examples/balances.js)
 
-Alice has now sent some ETH to Bob. You should see a UTXO for Alice and a UTXO for Bob as a result of this transaction.
+    `npm run balances`
 
-3. [Get Alice's and Bob's Childchain UTXOs](examples/childchain-utxos.js)
+- [Get Alice's and Bob's Childchain UTXOs](examples/childchain-utxos.js)
 
     `npm run childchain-utxos`
 
-4. [Transfer (exit) all of Bob's Childchain funds to the Rootchain](examples/childchain-exit.js)
+1. [Deposit some ETH from Alice's Rootchain to the Childchain](examples/childchain-deposit-eth.js)
+    
+    `npm run childchain-deposit-eth`
 
-    `npm run childchain-exit`
+2. [Send some ETH from Alice's Childchain to Bob's Childchain](examples/childchain-transaction-eth.js)
+    
+    `npm run childchain-transaction-eth`
+
+Alice has now sent some ETH to Bob. This should be reflected in Bob's childchain balance.
+
+3. [Exit one of Bob's Childchain UTXOs to the Rootchain](examples/childchain-exit-eth.js)
+
+    `npm run childchain-exit-eth`
 
 Checking Bob's final rootchain balance you will notice it will be a little less than expected. This is because of rootchain gas costs Bob had to pay to exit the childchain.
 
+4. [Bob starts and piggyback's an inflight exit for his ouput on a transaction sent by Alice](example/childchain-inflight-exit-eth.js)
 
+    `npm run childchain-inflight-exit-eth`
+
+
+Now let's run through the same story above but for ERC20 deposit/transaction/exit.
+
+1. [Deposit some ERC20 from Alice's Rootchain to the Childchain](examples/childchain-deposit-erc20.js)
+    
+    `npm run childchain-deposit-erc20`
+
+2. [Send some ERC20 from Alice's Childchain to Bob's Childchain](examples/childchain-transaction-erc20.js)
+    
+    `npm run childchain-transaction-erc20`
+
+3. [Exit one of Bob's Childchain ERC20 UTXOs to the Rootchain](examples/childchain-exit-erc20.js)
+
+    `npm run childchain-exit-erc20`

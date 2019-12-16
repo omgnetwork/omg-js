@@ -1,59 +1,32 @@
+/*
+Copyright 2019 OmiseGO Pte Ltd
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License. */
 
 function wait (ms) {
+  console.log(`Waiting for ${ms * 0.00001667} min...`)
   return new Promise((resolve, reject) => setTimeout(resolve, ms))
 }
 
-async function waitForChallengePeriodToEnd (rootChain, exitData) {
-  let waitMs = await rootChain.plasmaContract.methods.getExitableTimestamp(exitData.utxo_pos.toString()).call()
-  waitMs = (Number(waitMs) - Math.trunc(Date.now() / 1000)) * 1000
-
-  console.log(`Waiting for ${waitMs} millis for challenge period to end...`)
+async function waitForChallengePeriodToEnd (rootChain) {
+  const minExitPeriod = await rootChain.plasmaContract.methods.minExitPeriod().call() * 1000
+  const waitMs = (Number(minExitPeriod) * 2)
 
   await wait(waitMs)
-
-  console.log(`Challenge period to finished`)
-}
-
-async function waitForTransaction (web3, transactionHash, millisToWaitForTxn, blocksToWaitForTxn) {
-  var transactionReceiptAsync = async (transactionHash, resolve, reject) => {
-    try {
-      let transactionReceipt = await web3.eth.getTransactionReceipt(transactionHash)
-
-      if (blocksToWaitForTxn > 0) {
-        try {
-          let block = await web3.eth.getBlock(transactionReceipt.blockNumber)
-          let current = await web3.eth.getBlock('latest')
-
-          console.log(`transaction block: ${block.number}`)
-          console.log(`current block:     ${current.number}`)
-
-          if (current.number - block.number >= blocksToWaitForTxn) {
-            let transaction = await web3.eth.getTransaction(transactionHash)
-
-            if (transaction.blockNumber !== null) {
-              return resolve(transactionReceipt)
-            } else {
-              return reject(new Error('Transaction with hash: ' + transactionHash + ' ended up in an uncle block.'))
-            }
-          } else {
-            setTimeout(() => transactionReceiptAsync(transactionHash, resolve, reject), millisToWaitForTxn)
-          }
-        } catch (e) {
-          setTimeout(() => transactionReceiptAsync(transactionHash, resolve, reject), millisToWaitForTxn)
-        }
-      } else {
-        return resolve(transactionReceipt)
-      }
-    } catch (e) {
-      return reject(e)
-    }
-  }
-
-  return new Promise((resolve, reject) => transactionReceiptAsync(transactionHash, resolve, reject))
+  console.log('Challenge period finished')
 }
 
 module.exports = {
-  wait: wait,
-  waitForChallengePeriodToEnd: waitForChallengePeriodToEnd,
-  waitForTransaction: waitForTransaction
+  waitForChallengePeriodToEnd,
+  wait
 }

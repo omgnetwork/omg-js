@@ -1,5 +1,5 @@
 /*
-Copyright 2018 OmiseGO Pte Ltd
+Copyright 2019 OmiseGO Pte Ltd
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -14,8 +14,13 @@ See the License for the specific language governing permissions and
 limitations under the License. */
 
 module.exports = {
-  InvalidArgumentError: require('./InvalidArgumentError'),
   transaction: require('./transaction'),
   sign: require('./sign'),
-  hexToBytes: require('./hexToBytes')
+  hexToBytes: require('./hexToBytes'),
+  hexPrefix: require('./hexPrefix'),
+  ethErrorReason: require('./ethErrorReason'),
+  getErc20Balance: require('./getErc20Balance'),
+  waitForRootchainTransaction: require('./waitForRootchainTransaction'),
+  waitForChildchainBalance: require('./waitForChildchainBalance'),
+  InvalidArgumentError: require('./InvalidArgumentError')
 }

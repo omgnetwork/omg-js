@@ -1,6 +1,6 @@
 {
   "name": "@omisego/omg-js",
-  "version": "2.0.0-v0.2",
+  "version": "3.0.0-alpha.10",
   "description": "JavaScript Library to interact with OMG Network",
   "keywords": [
     "OMG",
@@ -11,7 +11,9 @@
   "author": "OmiseGo",
   "contributors": [
     "Pong Cheecharern <pong@omise.co>",
-    "Kevin Sullivan <kevinsul@omise.co>"
+    "Kevin Sullivan <kevinsul@omise.co>",
+    "Jarindr Thitadilaka <jarindr@omisego.co>",
+    "Nicholas Mueller <nicholas@omisego.co>"
   ],
   "license": "Apache-2.0",
   "repository": {
@@ -22,9 +24,9 @@
     "url": "https://github.com/omisego/omg-js/issues"
   },
   "dependencies": {
-    "@omisego/omg-js-childchain": "^2.0.0-v0.2",
-    "@omisego/omg-js-rootchain": "^2.0.0-v0.2",
-    "@omisego/omg-js-util": "^2.0.0-v0.2"
+    "@omisego/omg-js-childchain": "^3.0.0-alpha.10",
+    "@omisego/omg-js-rootchain": "^3.0.0-alpha.10",
+    "@omisego/omg-js-util": "^3.0.0-alpha.10"
   },
   "publishConfig": {
     "access": "public"

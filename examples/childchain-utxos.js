@@ -1,5 +1,5 @@
 /*
-  Copyright 2018 OmiseGO Pte Ltd
+  Copyright 2019 OmiseGO Pte Ltd
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -15,22 +15,16 @@
 */
 
 const ChildChain = require('../packages/omg-js-childchain/src/childchain')
-
 const config = require('./config.js')
 
-const childChain = new ChildChain(config.watcher_url);
+const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url })
 
-(async () => {
-  try {
-    const aliceUtxos = await childChain.getUtxos(config.alice_eth_address)
-    console.log(`Alice UTXOs: ${JSON.stringify(aliceUtxos, undefined, 2)}`)
+async function childchainUtxos () {
+  const aliceUtxos = await childChain.getUtxos(config.alice_eth_address)
+  const bobUtxos = await childChain.getUtxos(config.bob_eth_address)
 
-    const bobUtxos = await childChain.getUtxos(config.bob_eth_address)
-    console.log(`Bob UTXOs: ${JSON.stringify(bobUtxos, undefined, 2)}`)
+  console.log(`Alice UTXOs: ${JSON.stringify(aliceUtxos, undefined, 2)}`)
+  console.log(`Bob UTXOs: ${JSON.stringify(bobUtxos, undefined, 2)}`)
+}
 
-    return Promise.resolve()
-  } catch (error) {
-    console.log(error)
-    return Promise.reject(error)
-  }
-})()
+childchainUtxos()

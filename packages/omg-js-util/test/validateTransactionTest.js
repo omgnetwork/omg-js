@@ -1,5 +1,5 @@
 /*
-Copyright 2018 OmiseGO Pte Ltd
+Copyright 2019 OmiseGO Pte Ltd
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -19,48 +19,48 @@ const assert = chai.assert
 const transaction = require('../src/transaction')
 const InvalidArgumentError = require('../src/InvalidArgumentError')
 
-describe('Validate Transaction tests', () => {
-  it('should fail to create a transaction with non array inputs', () => {
+describe('Validate Transaction tests', function () {
+  it('should fail to create a transaction with non array inputs', function () {
     const txBody = {
-      'inputs': {
-        'txindex': 0,
-        'oindex': 0,
-        'currency': '0000000000000000000000000000000000000000',
-        'blknum': 19774001
+      inputs: {
+        txindex: 0,
+        oindex: 0,
+        currency: '0000000000000000000000000000000000000000',
+        blknum: 19774001
       },
-      'outputs': []
+      outputs: []
     }
     return assert.throws(() => transaction.validate(txBody), InvalidArgumentError, /Inputs must be an array/)
   })
 
-  it('should fail to create a transaction with 0 inputs', () => {
+  it('should fail to create a transaction with 0 inputs', function () {
     const txBody = {
-      'inputs': [],
-      'outputs': []
+      inputs: [],
+      outputs: []
     }
     return assert.throws(() => transaction.validate(txBody), InvalidArgumentError, /Inputs must be an array of size/)
   })
 
-  it('should fail to create a transaction with too many inputs', () => {
+  it('should fail to create a transaction with too many inputs', function () {
     const txBody = {
-      'inputs': [{}, {}, {}, {}, {}],
-      'outputs': []
+      inputs: [{}, {}, {}, {}, {}],
+      outputs: []
     }
     return assert.throws(() => transaction.validate(txBody), InvalidArgumentError, /Inputs must be an array of size/)
   })
 
-  it('should fail to create a transaction with too many outputs', () => {
+  it('should fail to create a transaction with too many outputs', function () {
     const txBody = {
-      'inputs': [
+      inputs: [
         {
-          'txindex': 0,
-          'oindex': 0,
-          'currency': '0000000000000000000000000000000000000000',
-          'blknum': 19774001,
-          'amount': 1000000000000000000
+          txindex: 0,
+          oindex: 0,
+          currency: '0000000000000000000000000000000000000000',
+          blknum: 19774001,
+          amount: 1000000000000000000
         }
       ],
-      'outputs': [{}, {}, {}, {}, {}]
+      outputs: [{}, {}, {}, {}, {}]
     }
     return assert.throws(() => transaction.validate(txBody), InvalidArgumentError, /Outputs must be an array of size/)
   })
