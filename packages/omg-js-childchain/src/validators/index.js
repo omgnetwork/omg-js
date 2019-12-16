@@ -63,13 +63,17 @@ const sendTransactionSchema = Joi.object({
   fromAddress: validateAddress.required(),
   fromUtxos: Joi.array().items(Joi.object()).required(),
   fromPrivateKeys: Joi.array().items(Joi.string()).required(),
-  toAddress: validateAddress.required(),
-  toAmount: [Joi.number().required(), validateBn.required()],
-  currency: Joi.string().required(),
+  payments: Joi.array().items(Joi.object({
+    owner: validateAddress.required(),
+    currency: validateAddress.required(),
+    amount: [Joi.number().required(), validateBn.required()]
+  })).required(),
+  fee: Joi.object({
+    amount: [Joi.number().required(), validateBn.required()],
+    currency: validateAddress.required()
+  }).required(),
   metadata: Joi.string().required(),
-  verifyingContract: validateAddress.required(),
-  feeAmount: [Joi.number().required(), validateBn.required()],
-  feeCurrency: Joi.string().required()
+  verifyingContract: validateAddress.required()
 })
 
 const inFlightExitGetOutputChallengeDataSchema = Joi.object({

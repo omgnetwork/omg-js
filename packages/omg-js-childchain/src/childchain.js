@@ -256,49 +256,37 @@ class ChildChain {
    * @param {string} args.fromAddress the address of the sender
    * @param {Object[]} args.fromUtxos array of utxos to spend
    * @param {string[]} args.fromPrivateKeys private keys of the utxos to spend
-   * @param {string} args.toAddress the address of the recipient
-   * @param {number} args.toAmount amount to transact
-   * @param {string} args.currency address of the erc20 contract (or transaction.ETH_CURRENCY for ETH)
+   * @param {Object[]} args.payments array of one payment object
+   * @param {Object} args.fee fee object specifying amount and currency
    * @param {string} args.metadata the metadata to include in the transaction. Must be a 32-byte hex string
    * @param {string} args.verifyingContract address of the RootChain contract
-   * @param {number} args.feeAmount amount of fee to pay
-   * @param {string} args.feeCurrency currency of the fee
    * @return {Promise<Object>} promise that resolves with the submitted transaction
    */
   async sendTransaction ({
     fromAddress,
     fromUtxos,
     fromPrivateKeys,
-    toAddress,
-    toAmount,
-    currency,
+    payments,
+    fee,
     metadata,
-    verifyingContract,
-    feeAmount,
-    feeCurrency
+    verifyingContract
   }) {
     Joi.assert({
       fromAddress,
       fromUtxos,
       fromPrivateKeys,
-      toAddress,
-      toAmount,
-      currency,
+      payments,
+      fee,
       metadata,
-      verifyingContract,
-      feeAmount,
-      feeCurrency
+      verifyingContract
     }, sendTransactionSchema)
-    const txBody = transaction.createTransactionBody(
+    const txBody = transaction.createTransactionBody({
       fromAddress,
       fromUtxos,
-      toAddress,
-      toAmount,
-      currency,
-      metadata,
-      feeAmount,
-      feeCurrency
-    )
+      payment: payments[0],
+      fee,
+      metadata
+    })
     const typedData = transaction.getTypedData(txBody, verifyingContract)
     const signatures = this.signTransaction(typedData, fromPrivateKeys)
     const signedTx = this.buildSignedTransaction(typedData, signatures)
