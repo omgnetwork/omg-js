@@ -76,6 +76,7 @@
  * @property {number} transactionType
  * @property {UTXO[]} inputs
  * @property {Output[]} outputs
+ * @property {number} txData
  * @property {string} metadata
  */
 

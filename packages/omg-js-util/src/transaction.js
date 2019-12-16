@@ -72,6 +72,7 @@ const transaction = {
     addOutput(outputArray, typedDataMessage.output2)
     addOutput(outputArray, typedDataMessage.output3)
     txArray.push(outputArray)
+    txArray.push(typedDataMessage.txData)
     txArray.push(typedDataMessage.metadata)
 
     return txArray
@@ -96,6 +97,7 @@ const transaction = {
         currency: hexPrefix(currency),
         amount
       }],
+      txData: 0,
       metadata: typedData.NULL_METADATA
     })
     return encoded
@@ -127,7 +129,7 @@ const transaction = {
   * @return {string} the RLP encoded transaction
   *
   */
-  encode: function ({ transactionType, inputs, outputs, metadata, signatures }, { signed = true } = {}) {
+  encode: function ({ transactionType, inputs, outputs, txData, metadata, signatures }, { signed = true } = {}) {
     const txArray = [transactionType]
     signatures && signed && txArray.unshift(signatures)
     const inputArray = []
@@ -146,6 +148,7 @@ const transaction = {
           : typedData.NULL_OUTPUT)
     }
     txArray.push(outputArray)
+    txArray.push(txData)
     txArray.push(metadata)
     return hexPrefix(rlp.encode(txArray).toString('hex'))
   },

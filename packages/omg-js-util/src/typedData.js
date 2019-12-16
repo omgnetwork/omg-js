@@ -36,6 +36,7 @@ const txSpec = [
   { name: 'output1', type: 'Output' },
   { name: 'output2', type: 'Output' },
   { name: 'output3', type: 'Output' },
+  { name: 'txData', type: 'uint256' },
   { name: 'metadata', type: 'bytes32' }
 ]
 
@@ -89,7 +90,7 @@ function getTypedData (tx, verifyingContract) {
   }))
 
   typedData.message = {
-    txType: 1,
+    txType: tx.txType || 1,
     input0: inputs.length > 0 ? inputs[0] : NULL_INPUT,
     input1: inputs.length > 1 ? inputs[1] : NULL_INPUT,
     input2: inputs.length > 2 ? inputs[2] : NULL_INPUT,
@@ -98,6 +99,7 @@ function getTypedData (tx, verifyingContract) {
     output1: outputs.length > 1 ? outputs[1] : NULL_OUTPUT,
     output2: outputs.length > 2 ? outputs[2] : NULL_OUTPUT,
     output3: outputs.length > 3 ? outputs[3] : NULL_OUTPUT,
+    txData: tx.txData || 0,
     metadata: tx.metadata || NULL_METADATA
   }
 
