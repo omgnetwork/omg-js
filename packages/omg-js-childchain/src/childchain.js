@@ -268,7 +268,7 @@ class ChildChain {
     fromPrivateKeys,
     payments,
     fee,
-    metadata,
+    metadata = null,
     verifyingContract
   }) {
     Joi.assert({
