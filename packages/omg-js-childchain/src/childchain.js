@@ -158,8 +158,8 @@ class ChildChain {
    * @method createTransaction
    * @param {Object} args an arguments object
    * @param {string} args.owner owner of the input utxos
-   * @param {Object[]} args.payments payments made as outputs
-   * @param {Object} [args.fee] fee paid
+   * @param {Payment[]} args.payments payments made as outputs
+   * @param {Fee} [args.fee] fee paid
    * @param {string} [args.metadata] metadata to include in the transaction
    * @return {Promise<Object>} promise that resolves with an object containing the list of transactions that will fullfil the required spend
    */
@@ -256,8 +256,8 @@ class ChildChain {
    * @param {string} args.fromAddress the address of the sender
    * @param {Object[]} args.fromUtxos array of utxos to spend
    * @param {string[]} args.fromPrivateKeys private keys of the utxos to spend
-   * @param {Object[]} args.payments array of one payment object
-   * @param {Object} args.fee fee object specifying amount and currency
+   * @param {Payment[]} args.payments array of one payment object
+   * @param {Fee} args.fee fee object specifying amount and currency
    * @param {string} args.metadata the metadata to include in the transaction. Must be a 32-byte hex string
    * @param {string} args.verifyingContract address of the RootChain contract
    * @return {Promise<Object>} promise that resolves with the submitted transaction

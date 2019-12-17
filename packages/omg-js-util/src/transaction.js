@@ -193,8 +193,8 @@ const transaction = {
   * @param {Object} args an arguments object
   * @param {string} args.fromAddress the address of the sender
   * @param {Object[]} args.fromUtxos the utxos to use as transaction inputs
-  * @param {Object} args.payment payment object specifying the output
-  * @param {Object} args.fee fee object specifying amount and currency
+  * @param {Payment} args.payment payment object specifying the output
+  * @param {Fee} args.fee fee object specifying amount and currency
   * @param {string} args.metadata the currency to send
   * @return {TransactionBody} transaction object
   * @throws {Error} Error if any of the args are invalid or given utxos cannot cover the amount

@@ -133,3 +133,18 @@
  * @property {string} txbytes
  * @property {number} utxo_pos
  */
+
+/**
+ * Payment object used when sending or creating transactions
+ * @typedef {Object} Payment
+ * @property {string} owner
+ * @property {string} currency
+ * @property {number} amount
+ */
+
+/**
+ * Fee object used when sending or creating transactions
+ * @typedef {Object} Fee
+ * @property {string} currency
+ * @property {number} amount
+ */
