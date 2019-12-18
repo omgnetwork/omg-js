@@ -27,6 +27,7 @@ const {
   processExitsSchema,
   hasTokenSchema,
   addTokenSchema,
+  getStandardExitIdSchema,
   getInFlightExitIdSchema,
   startInFlightExitSchema,
   piggybackInFlightExitOnOutputSchema,
@@ -244,7 +245,7 @@ class RootChain {
    * @return {Promise<string>} promise that resolves with the exitId
    */
   async getStandardExitId ({ txBytes, utxoPos, isDeposit }) {
-    Joi.assert({ txBytes, utxoPos, isDeposit }, depositTokenSchema)
+    Joi.assert({ txBytes, utxoPos, isDeposit }, getStandardExitIdSchema)
     const { contract } = await this.getPaymentExitGame()
     return contract.methods.getStandardExitId(isDeposit, txBytes, utxoPos).call()
   }
