@@ -287,11 +287,7 @@ const transaction = {
   encodeUtxoPos: function (utxo) {
     const blk = numberToBN(utxo.blknum).mul(BLOCK_OFFSET)
     const tx = numberToBN(utxo.txindex).muln(TX_OFFSET)
-    const position = blk.add(tx).addn(utxo.oindex).toBuffer()
-
-    const toPad = 32 - position.length
-    const pads = Buffer.alloc(toPad, 0)
-    return Buffer.concat([pads, position])
+    return blk.add(tx).addn(utxo.oindex)
   },
 
   /**
