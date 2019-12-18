@@ -81,7 +81,7 @@ async function createSignBuildAndSubmitTransaction () {
 
   // wait for transaction to be recorded by the watcher
   console.log('Waiting for transaction to be recorded by the watcher...')
-  const expectedAmount = transferAmount.plus(bobETHBalance)
+  const expectedAmount = transferAmount.add(bobETHBalance)
   await waitForChildchainBalance({
     childChain,
     address: bobAddress,
