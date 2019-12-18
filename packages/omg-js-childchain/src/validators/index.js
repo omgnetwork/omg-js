@@ -19,7 +19,7 @@ const getTransactionsSchema = Joi.object({
 })
 
 const getExitDataSchema = Joi.object({
-  amount: Joi.number(),
+  amount: [Joi.string(), Joi.number(), validateBn],
   blknum: Joi.number(),
   currency: Joi.string(),
   oindex: Joi.number(),
