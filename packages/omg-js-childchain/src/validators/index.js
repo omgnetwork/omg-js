@@ -12,14 +12,14 @@ const getBalanceSchema = validateAddress.required()
 
 const getTransactionsSchema = Joi.object({
   address: validateAddress,
-  metadata: Joi.string(),
+  metadata: Joi.string().allow(null),
   blknum: Joi.number(),
   limit: Joi.number(),
   page: Joi.number()
 })
 
 const getExitDataSchema = Joi.object({
-  amount: Joi.number(),
+  amount: [Joi.string(), Joi.number(), validateBn],
   blknum: Joi.number(),
   currency: Joi.string(),
   oindex: Joi.number(),
@@ -39,7 +39,7 @@ const createTransactionSchema = Joi.object({
     amount: [Joi.number().required(), validateBn.required()],
     currency: validateAddress.required()
   }).required(),
-  metadata: Joi.string()
+  metadata: Joi.string().allow(null)
 })
 
 const signTypedDataSchema = Joi.object({
@@ -64,9 +64,9 @@ const sendTransactionSchema = Joi.object({
   fromUtxos: Joi.array().items(Joi.object()).required(),
   fromPrivateKeys: Joi.array().items(Joi.string()).required(),
   toAddress: validateAddress.required(),
-  toAmount: [Joi.number().required(), validateBn.required()],
+  toAmount: [Joi.string(), Joi.number(), validateBn],
   currency: Joi.string().required(),
-  metadata: Joi.string().required(),
+  metadata: Joi.string().allow(null),
   verifyingContract: validateAddress.required(),
   feeAmount: [Joi.number().required(), validateBn.required()],
   feeCurrency: Joi.string().required()

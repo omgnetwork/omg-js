@@ -123,6 +123,7 @@ describe('Challenge in-flight exit output spent tests', function () {
       }
     })
 
+    // failingtest
     it('should challenge output from a canonical invalid output piggyback', async function () {
       // Alice creates a transaction to send funds to Bob
       const bobSpentOnGas = numberToBN(0)
