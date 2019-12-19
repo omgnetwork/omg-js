@@ -94,11 +94,9 @@ const transaction = {
       inputs: [],
       outputs: [{
         outputType: 1,
-        outputData: {
-          outputGuard: hexPrefix(owner),
-          currency: hexPrefix(currency),
-          amount
-        }
+        outputGuard: hexPrefix(owner),
+        currency: hexPrefix(currency),
+        amount
       }],
       txData: 0,
       metadata: typedData.NULL_METADATA
@@ -413,13 +411,13 @@ function addInput (array, input) {
 }
 
 function addOutput (array, output) {
-  if (output.outputData.amount > 0) {
+  if (output.amount > 0) {
     array.push([
       output.outputType,
       [
-        sanitiseAddress(output.outputData.outputGuard),
-        sanitiseAddress(output.outputData.currency),
-        numberToBN(output.outputData.amount)
+        sanitiseAddress(output.outputGuard),
+        sanitiseAddress(output.currency),
+        numberToBN(output.amount)
       ]
     ])
   }

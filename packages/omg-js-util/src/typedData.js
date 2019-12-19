@@ -18,11 +18,9 @@ const NULL_ADDRESS = '0x0000000000000000000000000000000000000000'
 const NULL_INPUT = { blknum: 0, txindex: 0, oindex: 0 }
 const NULL_OUTPUT = {
   outputType: 0,
-  outputData: {
-    outputGuard: NULL_ADDRESS,
-    currency: NULL_ADDRESS,
-    amount: 0
-  }
+  outputGuard: NULL_ADDRESS,
+  currency: NULL_ADDRESS,
+  amount: 0
 }
 const NULL_METADATA = '0x0000000000000000000000000000000000000000000000000000000000000000'
 
