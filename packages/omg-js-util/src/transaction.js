@@ -180,10 +180,11 @@ const transaction = {
       txType: parseNumber(txType),
       inputs: inputs.map(input => transaction.decodeUtxoPos(parseString(input))),
       outputs: outputs.map(output => {
+        const outputData = output[1]
         const outputType = parseNumber(output[0])
-        const outputGuard = parseString(output[1])
-        const currency = parseString(output[2])
-        const amount = numberToBN(parseString(output[3])).toString()
+        const outputGuard = parseString(outputData[0])
+        const currency = parseString(outputData[1])
+        const amount = numberToBN(parseString(outputData[2])).toString()
         return { outputType, outputGuard, currency, amount }
       }),
       txData: parseNumber(txData),
