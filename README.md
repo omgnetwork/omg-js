@@ -13,9 +13,15 @@ This is a Javascript library that allows you to interact with OmiseGo's MoreVP i
 ## Compatibility
 
 This library is currently compatible with version 0.3 of the OMG Network.
-Use with caution as this is an alpha release and some features have not yet been fully tested.
+Below you can find a compatibility table of `omg-js` with `elixir-omg` and `plasma-contracts` SHAs
 
-### Getting Started
+| Version | elixir-omg | plasma-contracts |
+| --- | --- | --- |
+| 3.0.0-alpha.12 (current) | 40f899b | 835d10c |
+| 3.0.0-alpha.11 | 02e67bf | a7e8503 |
+| 3.0.0-alpha.6 | 70e9a68 | 1608296 |
+
+## Getting Started
 
 The project is organized into 3 submodules:
 
@@ -25,7 +31,7 @@ The project is organized into 3 submodules:
 
 You can use any of them separately, or all at once by importing the parent `@omisego/omg-js` package
 
-### Installation
+## Installation
 
 #### Node
 Requires Node >= 8.11.3 < 13.0.0
@@ -41,15 +47,15 @@ Copy the `dist/omg.js` file into your project and include it.
 ```
 
 
-### API Documentation
+## API Documentation
 
 [Documentation for omg-js ](http://omisego.github.io/omg-js)
 
-### Design Documentation
+## Design Documentation
 
 [How to sign a transaction](/integration-docs/signing-methods.md)
 
-### Examples
+## Examples
 
 #### Prerequisites
 
