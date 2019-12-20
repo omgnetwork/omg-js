@@ -85,7 +85,7 @@ async function depositERC20IntoPlasmaContract () {
     onCountdown: (remaining) => console.log(`${remaining} blocks remaining before confirmation`)
   })
 
-  await wait.wait(1000)
+  await wait.wait(5000)
   console.log('-----')
   await logBalances()
 }
