@@ -350,12 +350,7 @@ class RootChain {
           exitingTx,
           challengeTx,
           inputIndex,
-          challengeTxSig,
-          '0x', // spendingConditionOptionalArgs
-          '0x', // outputGuardPreimage
-          0, // challengeTxPos
-          '0x', // challengeTxInclusionProof
-          '0x' // challengeTxConfirmSig
+          challengeTxSig
         ]
       ),
       gas: txOptions.gas,
@@ -594,12 +589,9 @@ class RootChain {
    * @param {number} args.inFlightTxInputIndex index of the double-spent input in the in-flight transaction
    * @param {string} args.competingTx RLP encoded transaction that spent the input
    * @param {number} args.competingTxInputIndex index of the double-spent input in the competing transaction
-   * @param {string} args.outputGuardPreimage the output guard pre image
    * @param {number} args.competingTxPos position of the competing transaction
    * @param {string} args.competingTxInclusionProof proof that the competing transaction was included
    * @param {string} args.competingTxWitness competing transaction witness
-   * @param {string} args.competingTxConfirmSig competing transaction confirm signature
-   * @param {string} args.competingTxSpendingConditionOptionalArgs optional arguments for the competing tranaction spending condition
    * @param {TransactionOptions} args.txOptions transaction options
    * @return {Promise<TransactionReceipt>} promise that resolves with a transaction receipt
    */
@@ -610,12 +602,9 @@ class RootChain {
     inFlightTxInputIndex,
     competingTx,
     competingTxInputIndex,
-    outputGuardPreimage,
     competingTxPos,
     competingTxInclusionProof,
     competingTxWitness,
-    competingTxConfirmSig,
-    competingTxSpendingConditionOptionalArgs,
     txOptions
   }) {
     Joi.assert({
@@ -625,12 +614,9 @@ class RootChain {
       inFlightTxInputIndex,
       competingTx,
       competingTxInputIndex,
-      outputGuardPreimage,
       competingTxPos,
       competingTxInclusionProof,
       competingTxWitness,
-      competingTxConfirmSig,
-      competingTxSpendingConditionOptionalArgs,
       txOptions
     }, challengeInFlightExitNotCanonicalSchema)
     const { address, contract } = await this.getPaymentExitGame()
@@ -648,12 +634,9 @@ class RootChain {
           inFlightTxInputIndex,
           competingTx,
           competingTxInputIndex,
-          outputGuardPreimage,
           competingTxPos,
           competingTxInclusionProof,
-          competingTxWitness,
-          competingTxConfirmSig,
-          competingTxSpendingConditionOptionalArgs
+          competingTxWitness
         ]
       ),
       gas: txOptions.gas,
@@ -723,7 +706,6 @@ class RootChain {
    * @param {string} args.challengingTxWitness challenging transaction witness
    * @param {string} args.inputTx the input transaction
    * @param {number} args.inputUtxoPos input utxo position
-   * @param {string} args.spendingConditionOptionalArgs spending condition optional arguments
    * @param {TransactionOptions} args.txOptions transaction options
    * @return {Promise<TransactionReceipt>} promise that resolves with a transaction receipt
    */
@@ -735,7 +717,6 @@ class RootChain {
     challengingTxWitness,
     inputTx,
     inputUtxoPos,
-    spendingConditionOptionalArgs,
     txOptions
   }) {
     Joi.assert({
@@ -746,7 +727,6 @@ class RootChain {
       challengingTxWitness,
       inputTx,
       inputUtxoPos,
-      spendingConditionOptionalArgs,
       txOptions
     }, challengeInFlightExitInputSpentSchema)
     const { address, contract } = await this.getPaymentExitGame()
@@ -764,8 +744,7 @@ class RootChain {
           challengingTxInputIndex,
           challengingTxWitness,
           inputTx,
-          inputUtxoPos,
-          spendingConditionOptionalArgs
+          inputUtxoPos
         ]
       ),
       gas: txOptions.gas,
@@ -789,7 +768,6 @@ class RootChain {
    * @param {string} args.challengingTx challenging transaction
    * @param {number} args.challengingTxInputIndex input index of challenging transaction
    * @param {string} args.challengingTxWitness witness of challenging transaction
-   * @param {string} args.spendingConditionOptionalArgs spending condition optional arguments
    * @param {TransactionOptions} args.txOptions transaction options
    * @return {Promise<TransactionReceipt>} promise that resolves with a transaction receipt
    */
@@ -800,7 +778,6 @@ class RootChain {
     challengingTx,
     challengingTxInputIndex,
     challengingTxWitness,
-    spendingConditionOptionalArgs,
     txOptions
   }) {
     Joi.assert({
@@ -810,7 +787,6 @@ class RootChain {
       challengingTx,
       challengingTxInputIndex,
       challengingTxWitness,
-      spendingConditionOptionalArgs,
       txOptions
     }, challengeInFlightExitOutputSpentSchema)
     const { address, contract } = await this.getPaymentExitGame()
@@ -827,8 +803,7 @@ class RootChain {
           inFlightTxOutputPos,
           challengingTx,
           challengingTxInputIndex,
-          challengingTxWitness,
-          spendingConditionOptionalArgs
+          challengingTxWitness
         ]
       ),
       gas: txOptions.gas,

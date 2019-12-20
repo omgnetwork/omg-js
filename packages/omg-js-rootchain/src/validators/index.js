@@ -111,12 +111,9 @@ const challengeInFlightExitNotCanonicalSchema = Joi.object({
   inFlightTxInputIndex: Joi.number().required(),
   competingTx: Joi.string().required(),
   competingTxInputIndex: Joi.number().required(),
-  outputGuardPreimage: Joi.string(),
   competingTxPos: [Joi.number().required(), validateBn.required(), Joi.string().equal('0x')],
   competingTxInclusionProof: Joi.string(),
   competingTxWitness: Joi.string(),
-  competingTxConfirmSig: Joi.string(),
-  competingTxSpendingConditionOptionalArgs: Joi.string(),
   txOptions: validateTxOption
 })
 
@@ -135,7 +132,6 @@ const challengeInFlightExitInputSpentSchema = Joi.object({
   challengingTxWitness: Joi.string().required(),
   inputTx: Joi.string().required(),
   inputUtxoPos: [Joi.number().required(), validateBn.required()],
-  spendingConditionOptionalArgs: Joi.string(),
   txOptions: validateTxOption
 })
 
@@ -146,7 +142,6 @@ const challengeInFlightExitOutputSpentSchema = Joi.object({
   challengingTx: Joi.string().required(),
   challengingTxInputIndex: Joi.number().required(),
   challengingTxWitness: Joi.string().required(),
-  spendingConditionOptionalArgs: Joi.string().required(),
   txOptions: validateTxOption
 })
 
