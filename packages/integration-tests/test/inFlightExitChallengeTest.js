@@ -114,7 +114,6 @@ describe('In-flight Exit Challenge tests', function () {
       }
     })
 
-    // failingtest
     it('should challenge an in-flight exit by providing a competitor', async function () {
       const bobSpentOnGas = numberToBN(0)
       // Alice creates a transaction to send funds to Bob
@@ -377,7 +376,6 @@ describe('In-flight Exit Challenge tests', function () {
       }
     })
 
-    // failingtest
     it('should challenge an in-flight exit as non canonical', async function () {
       // Alice creates a transaction to send funds to Bob
       const bobSpentOnGas = numberToBN(0)

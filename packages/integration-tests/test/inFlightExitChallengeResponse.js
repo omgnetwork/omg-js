@@ -87,7 +87,6 @@ describe('In-flight Exit Challenge Response tests', function () {
       }
     })
 
-    // failingtest
     it('should respond to an invalid IFE challenge', async function () {
       // Alice creates a transaction to send funds to Bob
       const bobSpentOnGas = numberToBN(0)

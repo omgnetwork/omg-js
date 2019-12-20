@@ -50,7 +50,7 @@ describe('In-flight Exit tests', function () {
     let bobAccount
 
     beforeEach(async function () {
-      INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.1', 'ether')
+      INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.5', 'ether')
       INTIIAL_BOB_RC_AMOUNT = web3.utils.toWei('.5', 'ether')
       TRANSFER_AMOUNT = web3.utils.toWei('0.0002', 'ether')
       // Create Alice and Bob's accounts
@@ -340,7 +340,6 @@ describe('In-flight Exit tests', function () {
       assert.equal(bobEthBalance.toString(), expected.toString())
     })
 
-    // failingtest
     it('should succesfully exit a ChildChain with piggybacking input transaction that is not included', async function () {
       const aliceSpentOnGas = numberToBN(0)
       const kelvinSpentOnGas = numberToBN(0)

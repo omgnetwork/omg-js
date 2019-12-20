@@ -93,6 +93,7 @@ describe('Decode txBytes onchain tests', function () {
       assert.deepEqual(
         {
           txType: 1,
+          txData: 0,
           inputs: [],
           outputs: [
             {

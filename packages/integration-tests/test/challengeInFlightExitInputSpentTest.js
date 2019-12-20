@@ -123,7 +123,6 @@ describe('Challenge in-flight exit input spent tests', function () {
       }
     })
 
-    // failingtest
     it('should challenge an in-flight exit as non canonical and challenge an invalid input piggyback', async function () {
       // Alice creates a transaction to send funds to Bob
       const bobSpentOnGas = numberToBN(0)
