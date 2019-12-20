@@ -104,7 +104,7 @@ describe('Standard Exit tests', function () {
       assert.hasAllKeys(exitData, ['txbytes', 'proof', 'utxo_pos'])
 
       const standardExitReceipt = await rootChain.startStandardExit({
-        outputId: exitData.utxo_pos,
+        utxoPos: exitData.utxo_pos,
         outputTx: exitData.txbytes,
         inclusionProof: exitData.proof,
         txOptions: {
@@ -249,7 +249,7 @@ describe('Standard Exit tests', function () {
       assert.hasAllKeys(exitData, ['txbytes', 'proof', 'utxo_pos'])
 
       const startStandardExitReceipt = await rootChain.startStandardExit({
-        outputId: exitData.utxo_pos,
+        utxoPos: exitData.utxo_pos,
         outputTx: exitData.txbytes,
         inclusionProof: exitData.proof,
         txOptions: {
@@ -399,7 +399,7 @@ describe('Standard Exit tests', function () {
       assert.hasAllKeys(exitData, ['txbytes', 'proof', 'utxo_pos'])
 
       const standardExitReceipt = await rootChain.startStandardExit({
-        outputId: exitData.utxo_pos,
+        utxoPos: exitData.utxo_pos,
         outputTx: exitData.txbytes,
         inclusionProof: exitData.proof,
         txOptions: {

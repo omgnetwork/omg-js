@@ -106,8 +106,6 @@ describe('In-flight Exit Challenge Response tests', function () {
 
       // Get the exit data
       const exitData = await childChain.inFlightExitGetData(bobTx)
-      const decodedTx = transaction.decodeTxBytes(bobTx)
-
       assert.hasAllKeys(exitData, ['in_flight_tx', 'in_flight_tx_sigs', 'input_txs', 'input_txs_inclusion_proofs', 'input_utxos_pos'])
 
       // Starts the in-flight exit
@@ -115,11 +113,8 @@ describe('In-flight Exit Challenge Response tests', function () {
         inFlightTx: exitData.in_flight_tx,
         inputTxs: exitData.input_txs,
         inputUtxosPos: exitData.input_utxos_pos,
-        outputGuardPreimagesForInputs: ['0x'],
         inputTxsInclusionProofs: exitData.input_txs_inclusion_proofs,
-        inFlightTxSigs: decodedTx.sigs,
-        signatures: exitData.in_flight_tx_sigs,
-        inputSpendingConditionOptionalArgs: ['0x'],
+        inFlightTxSigs: exitData.in_flight_tx_sigs,
         txOptions: {
           privateKey: bobAccount.privateKey,
           from: bobAccount.address
@@ -129,13 +124,13 @@ describe('In-flight Exit Challenge Response tests', function () {
 
       // Keep track of how much Bob spends on gas
       bobSpentOnGas.iadd(await rcHelper.spentOnGas(web3, ifeExitReceipt))
+      const decodedTx = transaction.decodeTxBytes(bobTx)
       const outputIndex = decodedTx.outputs.findIndex(e => e.outputGuard === bobAccount.address)
 
       // Bob piggybacks his output on the in-flight exit
       let receipt = await rootChain.piggybackInFlightExitOnOutput({
         inFlightTx: exitData.in_flight_tx,
         outputIndex: outputIndex,
-        outputGuardPreimage: '0x',
         txOptions: {
           privateKey: bobAccount.privateKey,
           from: bobAccount.address
@@ -192,12 +187,9 @@ describe('In-flight Exit Challenge Response tests', function () {
         inFlightTxInputIndex: 0,
         competingTx: unsignCarolTx,
         competingTxInputIndex: 0,
-        competingTxWitness: carolTxDecoded.sigs[0],
-        outputGuardPreimage: '0x',
         competingTxPos: '0x',
         competingTxInclusionProof: '0x',
-        competingTxConfirmSig: '0x',
-        competingTxSpendingConditionOptionalArgs: '0x',
+        competingTxWitness: carolTxDecoded.sigs[0],
         txOptions: {
           privateKey: carolAccount.privateKey,
           from: carolAccount.address

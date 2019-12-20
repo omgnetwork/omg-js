@@ -151,19 +151,14 @@ describe('Challenge in-flight exit input spent tests', function () {
         'input_txs_inclusion_proofs',
         'input_utxos_pos'
       ])
-      // Decode the transaction to get the index of Bob's output
-      const decodedTx = transaction.decodeTxBytes(bobTx)
 
       // Starts the in-flight exit
       const ifeReceipt = await rootChain.startInFlightExit({
         inFlightTx: exitData.in_flight_tx,
         inputTxs: exitData.input_txs,
         inputUtxosPos: exitData.input_utxos_pos,
-        outputGuardPreimagesForInputs: ['0x'],
         inputTxsInclusionProofs: exitData.input_txs_inclusion_proofs,
-        inFlightTxSigs: decodedTx.sigs,
-        signatures: exitData.in_flight_tx_sigs,
-        inputSpendingConditionOptionalArgs: ['0x'],
+        inFlightTxSigs: exitData.in_flight_tx_sigs,
         txOptions: {
           privateKey: bobAccount.privateKey,
           from: bobAccount.address
@@ -234,12 +229,9 @@ describe('Challenge in-flight exit input spent tests', function () {
         inFlightTxInputIndex: 0,
         competingTx: unsignCarolTx,
         competingTxInputIndex: 0,
-        competingTxWitness: carolTxDecoded.sigs[0],
-        outputGuardPreimage: '0x',
         competingTxPos: '0x',
         competingTxInclusionProof: '0x',
-        competingTxConfirmSig: '0x',
-        competingTxSpendingConditionOptionalArgs: '0x',
+        competingTxWitness: carolTxDecoded.sigs[0],
         txOptions: {
           privateKey: carolAccount.privateKey,
           from: carolAccount.address
@@ -258,7 +250,6 @@ describe('Challenge in-flight exit input spent tests', function () {
         challengingTxWitness: carolTxDecoded.sigs[0],
         inputTx: unsignInput,
         inputUtxoPos: utxoPosOutput,
-        spendingConditionOptionalArgs: '0x',
         txOptions: {
           privateKey: carolAccount.privateKey,
           from: carolAccount.address

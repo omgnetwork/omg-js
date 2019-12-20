@@ -120,7 +120,7 @@ describe('Challenge exit tests', function () {
 
       const exitData = await childChain.getExitData(aliceDishonestUtxo)
       const standardExitReceipt = await rootChain.startStandardExit({
-        outputId: exitData.utxo_pos,
+        utxoPos: exitData.utxo_pos,
         outputTx: exitData.txbytes,
         inclusionProof: exitData.proof,
         txOptions: {
