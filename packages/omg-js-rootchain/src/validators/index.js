@@ -33,7 +33,7 @@ const depositTokenSchema = Joi.object({
 })
 
 const startStandardExitSchema = Joi.object({
-  outputId: [Joi.string().required(), Joi.number().required()],
+  utxoPos: [Joi.string().required(), Joi.number().required()],
   outputTx: Joi.string().required(),
   inclusionProof: Joi.string().required(),
   txOptions: validateTxOption.required()
@@ -83,17 +83,10 @@ const startInFlightExitSchema = Joi.object({
   inputUtxosPos: Joi.array()
     .items(Joi.alternatives(Joi.number(), validateBn))
     .required(),
-  outputGuardPreimagesForInputs: Joi.array().required(),
   inputTxsInclusionProofs: Joi.array()
     .items(Joi.string())
     .required(),
   inFlightTxSigs: Joi.array()
-    .items(Joi.string())
-    .required(),
-  signatures: Joi.array()
-    .items(Joi.string())
-    .required(),
-  inputSpendingConditionOptionalArgs: Joi.array()
     .items(Joi.string())
     .required(),
   txOptions: validateTxOption
@@ -102,7 +95,6 @@ const startInFlightExitSchema = Joi.object({
 const piggybackInFlightExitOnOutputSchema = Joi.object({
   inFlightTx: Joi.string().required(),
   outputIndex: Joi.number().required(),
-  outputGuardPreimage: Joi.string(),
   txOptions: validateTxOption
 })
 

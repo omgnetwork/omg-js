@@ -69,7 +69,7 @@ async function exitChildChain () {
   const exitData = await childChain.getExitData(bobUtxoToExit)
 
   const standardExitReceipt = await rootChain.startStandardExit({
-    outputId: exitData.utxo_pos,
+    utxoPos: exitData.utxo_pos,
     outputTx: exitData.txbytes,
     inclusionProof: exitData.proof,
     txOptions: {

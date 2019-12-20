@@ -73,6 +73,8 @@ To run the examples:
 
 Let's run through a story between Alice and Bob. In this story, Alice will first deposit some ETH from the root chain into the child chain. Then Alice will transfer some of that ETH to Bob on the child chain. Bob will then exit his funds from the child chain back into the root chain. His root chain balance will be reflected with the extra ETH that Alice sent to him on the child chain.
 
+#### Helpful Scripts
+
 From the `examples` folder run the following scripts:
 
 - [Get Alice's and Bob's balances](examples/balances.js)
@@ -82,6 +84,8 @@ From the `examples` folder run the following scripts:
 - [Get Alice's and Bob's Childchain UTXOs](examples/childchain-utxos.js)
 
     `npm run childchain-utxos`
+
+#### ETH Examples
 
 1. [Deposit some ETH from Alice's Rootchain to the Childchain](examples/childchain-deposit-eth.js)
     
@@ -103,6 +107,7 @@ Checking Bob's final rootchain balance you will notice it will be a little less 
 
     `npm run childchain-inflight-exit-eth`
 
+#### ERC20 Examples
 
 Now let's run through the same story above but for ERC20 deposit/transaction/exit.
 

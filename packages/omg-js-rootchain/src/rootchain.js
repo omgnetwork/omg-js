@@ -269,26 +269,31 @@ class RootChain {
    *
    * @method startStandardExit
    * @param {Object} args an arguments object
-   * @param {number} args.outputId identifier of the exiting output
+   * @param {number} args.utxoPos identifier of the exiting output
    * @param {string} args.outputTx RLP encoded transaction that created the exiting output
    * @param {string} args.inclusionProof a Merkle proof showing that the transaction was included
    * @param {TransactionOptions} args.txOptions transaction options
    * @return {Promise<TransactionReceipt>} promise that resolves with a transaction receipt
    */
-  async startStandardExit ({ outputId, outputTx, inclusionProof, txOptions }) {
+  async startStandardExit ({ utxoPos, outputTx, inclusionProof, txOptions }) {
     Joi.assert(
-      { outputId, outputTx, inclusionProof, txOptions },
+      { utxoPos, outputTx, inclusionProof, txOptions },
       startStandardExitSchema
     )
     const { contract, address, bonds } = await this.getPaymentExitGame()
     const txDetails = {
       from: txOptions.from,
       to: address,
-      data: txUtils.getTxData(this.web3, contract, 'startStandardExit', [
-        outputId.toString(),
-        outputTx,
-        inclusionProof
-      ]),
+      data: txUtils.getTxData(
+        this.web3,
+        contract,
+        'startStandardExit',
+        [
+          utxoPos.toString(),
+          outputTx,
+          inclusionProof
+        ]
+      ),
       value: bonds.standardExit,
       gas: txOptions.gas,
       gasPrice: txOptions.gasPrice
@@ -457,11 +462,8 @@ class RootChain {
    * @param {string} args.inFlightTx RLP encoded in-flight transaction
    * @param {string[]} args.inputTxs transactions that created the inputs to the in-flight transaction
    * @param {number[]} args.inputUtxosPos utxo positions of the inputs
-   * @param {string[]} args.outputGuardPreimagesForInputs output guard pre images for inputs
    * @param {string[]} args.inputTxsInclusionProofs merkle proofs that show the input-creating transactions are valid
-   * @param {string[]} args.inFlightTxSigs signatures from the owners of each input
-   * @param {string[]} args.signatures inflight transaction witnesses
-   * @param {string[]} args.inputSpendingConditionOptionalArgs input spending condition optional arguments
+   * @param {string[]} args.inFlightTxSigs in-flight transaction witnesses
    * @param {TransactionOptions} args.txOptions transaction options
    * @return {Promise<TransactionReceipt>} promise that resolves with a transaction receipt
    */
@@ -469,22 +471,16 @@ class RootChain {
     inFlightTx,
     inputTxs,
     inputUtxosPos,
-    outputGuardPreimagesForInputs,
     inputTxsInclusionProofs,
     inFlightTxSigs,
-    signatures,
-    inputSpendingConditionOptionalArgs,
     txOptions
   }) {
     Joi.assert({
       inFlightTx,
       inputTxs,
       inputUtxosPos,
-      outputGuardPreimagesForInputs,
       inputTxsInclusionProofs,
       inFlightTxSigs,
-      signatures,
-      inputSpendingConditionOptionalArgs,
       txOptions
     }, startInFlightExitSchema)
     const { address, contract, bonds } = await this.getPaymentExitGame()
@@ -495,11 +491,8 @@ class RootChain {
         inFlightTx,
         inputTxs,
         inputUtxosPos,
-        outputGuardPreimagesForInputs,
         inputTxsInclusionProofs,
-        inFlightTxSigs,
-        signatures,
-        inputSpendingConditionOptionalArgs
+        inFlightTxSigs
       ]),
       value: bonds.inflightExit,
       gas: txOptions.gas,
@@ -519,20 +512,17 @@ class RootChain {
    * @param {Object} args an arguments object
    * @param {string} args.inFlightTx RLP encoded in-flight transaction
    * @param {number} args.outputIndex index of the input/output to piggyback (0-7)
-   * @param {string} args.outputGuardPreimage the output guard pre image
    * @param {TransactionOptions} args.txOptions transaction options
    * @return {Promise<TransactionReceipt>} promise that resolves with a transaction receipt
    */
   async piggybackInFlightExitOnOutput ({
     inFlightTx,
     outputIndex,
-    outputGuardPreimage,
     txOptions
   }) {
     Joi.assert({
       inFlightTx,
       outputIndex,
-      outputGuardPreimage,
       txOptions
     }, piggybackInFlightExitOnOutputSchema)
 
@@ -544,7 +534,10 @@ class RootChain {
         this.web3,
         contract,
         'piggybackInFlightExitOnOutput',
-        [inFlightTx, outputIndex, outputGuardPreimage]
+        [
+          inFlightTx,
+          outputIndex
+        ]
       ),
       value: bonds.piggyback,
       gas: txOptions.gas,
