@@ -287,7 +287,6 @@ class RootChain {
       data: txUtils.getTxData(this.web3, contract, 'startStandardExit', [
         outputId.toString(),
         outputTx,
-        '0x',
         inclusionProof
       ]),
       value: bonds.standardExit,
