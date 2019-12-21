@@ -63,11 +63,15 @@ async function createSignBuildAndSubmitTransaction () {
     currency: transaction.ETH_CURRENCY,
     amount: Number(feeAmount)
   }
+
+  const metadata = transaction.NULL_METADATA
+  // or encode using transaction.encodeMetadata('hello')
+
   const createdTxn = await childChain.createTransaction({
     owner: aliceAddress,
     payments,
     fee,
-    metadata: transaction.NULL_METADATA
+    metadata
   })
   console.log(`Created a childchain transaction of ${web3.utils.fromWei(payments[0].amount.toString(), 'ether')} ETH from Alice to Bob.`)
 
