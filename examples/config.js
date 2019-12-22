@@ -32,7 +32,7 @@ const config = {
   alice_eth_transfer_amount: process.env.ALICE_ETH_TRANSFER_AMOUNT || '0.005',
   alice_erc20_transfer_amount: process.env.ALICE_ERC20_TRANSFER_AMOUNT || '5',
   millis_to_wait_for_next_block: process.env.MILLIS_TO_WAIT_FOR_NEXT_BLOCK || 1000,
-  blocks_to_wait_for_txn: process.env.BLOCKS_TO_WAIT_FOR_TXN || 13
+  blocks_to_wait_for_txn: process.env.BLOCKS_TO_WAIT_FOR_TXN || 20
 }
 
 module.exports = config

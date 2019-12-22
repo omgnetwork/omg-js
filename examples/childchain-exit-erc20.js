@@ -50,7 +50,12 @@ async function exitChildChainErc20 () {
     console.log('Please define an ERC20 contract in your .env')
     return
   }
-
+  const bobRootchainBalance = await web3.eth.getBalance(bobAddress)
+  const bobsEtherBalance = web3.utils.fromWei(String(bobRootchainBalance), 'ether')
+  if (bobsEtherBalance < 0.001) {
+    console.log('Bob doesnt have enough ETH on the rootchain to start an exit')
+    return
+  }
   await logBalances()
   console.log('-----')
 
