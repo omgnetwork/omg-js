@@ -45,7 +45,7 @@ async function logBalances () {
 
 async function depositERC20IntoPlasmaContract () {
   if (!config.erc20_contract) {
-    console.log('Please define an ERC20 contract in your .env')
+    console.log('Please define an ERC20 contract address in your .env')
     return
   }
 

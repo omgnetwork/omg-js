@@ -42,7 +42,7 @@ async function logBalances () {
 
 async function erc20Transaction () {
   if (!config.erc20_contract) {
-    console.log('Please define an ERC20 contract in your .env')
+    console.log('Please define an ERC20 contract address in your .env')
     return
   }
   const { bobERC20Balance } = await logBalances()

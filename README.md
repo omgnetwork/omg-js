@@ -67,15 +67,36 @@ If you want to run the ERC20 examples, at least Alice's account will need an ERC
 You can find example code inside `examples` folder. 
 
 To run the examples:
-- Step inside the `examples` directory.
+- `npm install` from root of `omg-js`.
+- `npm run lerna-reset` from root of `omg-js`.
+- Step inside the `/examples` directory.
 - Run `npm install`.
-- Create `.env` file inside the root of the `examples` directory with the appropriate values (see `.env.example` for example)
+- Create `.env` file inside the root of the `/examples` directory with the appropriate values (see `/examples/env.example` for an example)
+
+- Refer to below explanation of `.env` variables
+```
+GETH_URL=                       <entry point to an ethereum node>
+WATCHER_URL=                    <url of an informational watcher>
+WATCHER_PROXY_URL=              <*optional* proxy server to catch all watcher requests>
+PLASMA_FRAMEWORK=               <address of the plasma_framework contract>
+ERC20_CONTRACT=                 <*optional* address of the erc20 contract that Alice will deposit and transfer to Bob>
+ALICE_ETH_ADDRESS=              <address of Alice's account>
+ALICE_ETH_ADDRESS_PRIVATE_KEY=  <Alice's private key>
+ALICE_ETH_DEPOSIT_AMOUNT=       <ETH amount Alice will deposit into the childchain>
+ALICE_ERC20_DEPOSIT_AMOUNT=     <ERC20 amount Alice will deposit into the childchain>
+ALICE_ETH_TRANSFER_AMOUNT=      <ETH amount Alice will transfer to Bob>
+ALICE_ERC20_TRANSFER_AMOUNT=    <ERC20 amount Alice will transfer to Bob>
+BOB_ETH_ADDRESS=                <address of Bob's account>
+BOB_ETH_ADDRESS_PRIVATE_KEY=    <Bob's private key>
+MILLIS_TO_WAIT_FOR_NEXT_BLOCK=  <interval when checking for block confirmation>
+BLOCKS_TO_WAIT_FOR_TXN=         <amount of blocks to wait for confirmation>
+```
 
 Let's run through a story between Alice and Bob. In this story, Alice will first deposit some ETH from the root chain into the child chain. Then Alice will transfer some of that ETH to Bob on the child chain. Bob will then exit his funds from the child chain back into the root chain. His root chain balance will be reflected with the extra ETH that Alice sent to him on the child chain.
 
 #### Helpful Scripts
 
-From the `examples` folder run the following scripts:
+From the `/examples` folder run the following scripts:
 
 - [Get Alice's and Bob's balances](examples/balances.js)
 

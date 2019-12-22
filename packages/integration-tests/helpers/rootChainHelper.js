@@ -134,7 +134,7 @@ async function getPlasmaContractAddress (config) {
     return repsonse.json()
   }
 
-  throw new Error('No ROOTCHAIN_CONTRACT or CONTRACT_EXCHANGER_URL configured')
+  throw new Error('No PLASMA_FRAMEWORK or CONTRACT_EXCHANGER_URL configured')
 }
 
 const DEFAULT_INTERVAL = 1000
