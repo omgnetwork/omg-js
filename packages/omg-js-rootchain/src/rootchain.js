@@ -118,14 +118,27 @@ class RootChain {
    */
   async getExitTime ({
     exitRequestBlockNumber,
-    submissionBlockNumber
+    submissionBlockNumber,
+    retries = 10
   }) {
     Joi.assert({ exitRequestBlockNumber, submissionBlockNumber }, getExitTimeSchema)
     const bufferSeconds = 5
+    const retryInterval = 5000
+
     const _minExitPeriodSeconds = await this.plasmaContract.methods.minExitPeriod().call()
     const minExitPeriodSeconds = Number(_minExitPeriodSeconds)
 
     const exitBlock = await this.web3.eth.getBlock(exitRequestBlockNumber)
+    if (!exitBlock) {
+      if (retries > 0) {
+        setTimeout(() => {
+          return this.getExitTime({ exitRequestBlockNumber, submissionBlockNumber, retries: retries - 1 })
+        }, retryInterval)
+      } else {
+        throw Error(`Could not get exit request block data: ${exitRequestBlockNumber}`)
+      }
+    }
+
     const submissionBlock = await this.plasmaContract.methods.blocks(submissionBlockNumber).call()
 
     let scheduledFinalizationTime
