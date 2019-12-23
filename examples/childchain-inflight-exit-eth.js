@@ -11,7 +11,7 @@
   limitations under the License.
 */
 
-const BigNumber = require('bignumber.js')
+const BigNumber = require('bn.js')
 const Web3 = require('web3')
 const RootChain = require('../packages/omg-js-rootchain/src/rootchain')
 const ChildChain = require('../packages/omg-js-childchain/src/childchain')
@@ -56,8 +56,8 @@ async function inflightExitChildChain () {
   await logBalances()
   console.log('-----')
 
-  const transferAmount = BigNumber(web3.utils.toWei(config.alice_eth_transfer_amount, 'ether'))
-  const feeAmount = BigNumber(web3.utils.toWei('0.00000000000000001', 'ether'))
+  const transferAmount = new BigNumber(web3.utils.toWei(config.alice_eth_transfer_amount, 'ether'))
+  const feeAmount = new BigNumber(web3.utils.toWei('0.00000000000000001', 'ether'))
 
   const payments = [{
     owner: bobAddress,

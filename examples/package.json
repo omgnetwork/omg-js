@@ -18,7 +18,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "bignumber.js": "^9.0.0",
+    "bn.js": "^5.0.0",
     "human-standard-token-abi": "^2.0.0",
     "number-to-bn": "^1.7.0",
     "promise-retry": "^1.1.1",

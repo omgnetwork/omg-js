@@ -348,6 +348,7 @@ describe('In-flight Exit tests', function () {
       assert.equal(bobEthBalance.toString(), expected.toString())
     })
 
+    // failingtest
     it('should succesfully exit a ChildChain with piggybacking input transaction that is not included', async function () {
       const aliceSpentOnGas = numberToBN(0)
       const kelvinSpentOnGas = numberToBN(0)
