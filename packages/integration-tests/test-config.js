@@ -21,7 +21,6 @@ const config = {
   watcher_proxy_url: process.env.WATCHER_PROXY_URL,
   childchain_url: process.env.CHILDCHAIN_URL,
   rootchainContract: process.env.PLASMA_FRAMEWORK,
-  contract_exchanger_url: process.env.CONTRACT_EXCHANGER_URL,
   testErc20Contract: process.env.TEST_ERC20_CONTRACT,
   fundAccount: process.env.FUND_ACCOUNT,
   fundAccountPrivateKey: process.env.FUND_ACCOUNT_PRIVATEKEY,
