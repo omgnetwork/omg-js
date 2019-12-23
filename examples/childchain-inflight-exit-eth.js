@@ -53,6 +53,13 @@ async function logBalances () {
 }
 
 async function inflightExitChildChain () {
+  const bobRootchainBalance = await web3.eth.getBalance(bobAddress)
+  const bobsEtherBalance = web3.utils.fromWei(String(bobRootchainBalance), 'ether')
+  if (bobsEtherBalance < 0.001) {
+    console.log('Bob doesnt have enough ETH on the rootchain to start an exit')
+    return
+  }
+
   await logBalances()
   console.log('-----')
 
@@ -95,17 +102,12 @@ async function inflightExitChildChain () {
 
   // start an in-flight exit
   const exitData = await childChain.inFlightExitGetData(hexPrefix(signedTxn))
-  const outputGuardPreimagesForInputs = ['0x']
-  const inputSpendingConditionOptionalArgs = ['0x']
   const exitReceipt = await rootChain.startInFlightExit({
     inFlightTx: exitData.in_flight_tx,
     inputTxs: exitData.input_txs,
     inputUtxosPos: exitData.input_utxos_pos,
-    outputGuardPreimagesForInputs: outputGuardPreimagesForInputs,
     inputTxsInclusionProofs: exitData.input_txs_inclusion_proofs,
-    inFlightTxSigs: signatures,
-    signatures: exitData.in_flight_tx_sigs,
-    inputSpendingConditionOptionalArgs: inputSpendingConditionOptionalArgs,
+    inFlightTxSigs: exitData.in_flight_tx_sigs,
     txOptions: {
       privateKey: bobPrivateKey,
       from: bobAddress,
@@ -126,7 +128,6 @@ async function inflightExitChildChain () {
   await rootChain.piggybackInFlightExitOnOutput({
     inFlightTx: exitData.in_flight_tx,
     outputIndex: outputIndex,
-    outputGuardPreimage: '0x',
     txOptions: {
       privateKey: bobPrivateKey,
       from: bobAddress

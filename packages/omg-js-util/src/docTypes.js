@@ -73,9 +73,10 @@
 /**
  * A transaction body object
  * @typedef {Object} TransactionBody
- * @property {number} transactionType
+ * @property {number} txType
  * @property {UTXO[]} inputs
  * @property {Output[]} outputs
+ * @property {number} txData
  * @property {string} metadata
  */
 

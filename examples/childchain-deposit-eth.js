@@ -19,6 +19,7 @@ const Web3 = require('web3')
 const RootChain = require('../packages/omg-js-rootchain/src/rootchain')
 const ChildChain = require('../packages/omg-js-childchain/src/childchain')
 const { transaction, waitForRootchainTransaction } = require('../packages/omg-js-util/src')
+const wait = require('./wait.js')
 
 const config = require('./config.js')
 
@@ -69,6 +70,7 @@ async function depositEthIntoPlasmaContract () {
     onCountdown: (remaining) => console.log(`${remaining} blocks remaining before confirmation`)
   })
 
+  await wait.wait(5000)
   console.log('-----')
   await logBalances()
 }

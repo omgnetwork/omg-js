@@ -30,12 +30,6 @@ async function balances () {
     }
   })
   const aliceRootchainBalance = await web3.eth.getBalance(config.alice_eth_address)
-  const aliceRootchainERC20Balance = await getErc20Balance({
-    web3,
-    address: config.alice_eth_address,
-    erc20Address: config.erc20_contract
-  })
-
   const aliceRootchainBalances = [
     {
       currency: 'ETH',
@@ -44,6 +38,11 @@ async function balances () {
   ]
 
   if (config.erc20_contract) {
+    const aliceRootchainERC20Balance = await getErc20Balance({
+      web3,
+      address: config.alice_eth_address,
+      erc20Address: config.erc20_contract
+    })
     aliceRootchainBalances.push({
       currency: config.erc20_contract,
       amount: aliceRootchainERC20Balance
@@ -59,11 +58,6 @@ async function balances () {
   })
 
   const bobRootchainBalance = await web3.eth.getBalance(config.bob_eth_address)
-  const bobRootchainERC20Balance = await getErc20Balance({
-    web3,
-    address: config.bob_eth_address,
-    erc20Address: config.erc20_contract
-  })
   const bobRootchainBalances = [
     {
       currency: 'ETH',
@@ -72,6 +66,11 @@ async function balances () {
   ]
 
   if (config.erc20_contract) {
+    const bobRootchainERC20Balance = await getErc20Balance({
+      web3,
+      address: config.bob_eth_address,
+      erc20Address: config.erc20_contract
+    })
     bobRootchainBalances.push({
       currency: config.erc20_contract,
       amount: bobRootchainERC20Balance

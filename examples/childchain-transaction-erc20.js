@@ -42,7 +42,7 @@ async function logBalances () {
 
 async function erc20Transaction () {
   if (!config.erc20_contract) {
-    console.log('Please define an ERC20 contract in your .env')
+    console.log('Please define an ERC20 contract address in your .env')
     return
   }
   const { bobERC20Balance } = await logBalances()
@@ -57,11 +57,15 @@ async function erc20Transaction () {
     currency: transaction.ETH_CURRENCY,
     amount: 1
   }
+
+  const metadata = transaction.NULL_METADATA
+  // or encode using transaction.encodeMetadata('hello')
+
   const createdTxn = await childChain.createTransaction({
     owner: aliceAddress,
     payments,
     fee,
-    metadata: transaction.NULL_METADATA
+    metadata
   })
   console.log(`Created a childchain transaction of ${config.alice_erc20_transfer_amount} ERC20 from Alice to Bob.`)
   // type/sign/build/submit

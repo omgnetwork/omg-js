@@ -18,6 +18,7 @@ const Web3 = require('web3')
 const RootChain = require('../packages/omg-js-rootchain/src/rootchain')
 const ChildChain = require('../packages/omg-js-childchain/src/childchain')
 const { transaction, getErc20Balance, waitForRootchainTransaction } = require('../packages/omg-js-util/src')
+const wait = require('./wait.js')
 
 const config = require('./config.js')
 
@@ -44,7 +45,7 @@ async function logBalances () {
 
 async function depositERC20IntoPlasmaContract () {
   if (!config.erc20_contract) {
-    console.log('Please define an ERC20 contract in your .env')
+    console.log('Please define an ERC20 contract address in your .env')
     return
   }
 
@@ -84,6 +85,7 @@ async function depositERC20IntoPlasmaContract () {
     onCountdown: (remaining) => console.log(`${remaining} blocks remaining before confirmation`)
   })
 
+  await wait.wait(5000)
   console.log('-----')
   await logBalances()
 }

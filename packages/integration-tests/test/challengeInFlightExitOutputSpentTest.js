@@ -143,19 +143,14 @@ describe('Challenge in-flight exit output spent tests', function () {
 
       // Get the exit data
       const exitData = await childChain.inFlightExitGetData(bobTxNotIncluded)
-      // Decode the transaction to get the index of Bob's output
-      const decodedBobTx = transaction.decodeTxBytes(bobTxNotIncluded)
 
       // Starts the in-flight exit
       const ifeReceipt = await rootChain.startInFlightExit({
         inFlightTx: exitData.in_flight_tx,
         inputTxs: exitData.input_txs,
         inputUtxosPos: exitData.input_utxos_pos,
-        outputGuardPreimagesForInputs: ['0x'],
         inputTxsInclusionProofs: exitData.input_txs_inclusion_proofs,
-        inFlightTxSigs: decodedBobTx.sigs,
-        signatures: exitData.in_flight_tx_sigs,
-        inputSpendingConditionOptionalArgs: ['0x'],
+        inFlightTxSigs: exitData.in_flight_tx_sigs,
         txOptions: {
           privateKey: bobAccount.privateKey,
           from: bobAccount.address
@@ -173,7 +168,6 @@ describe('Challenge in-flight exit output spent tests', function () {
       let receipt = await rootChain.piggybackInFlightExitOnOutput({
         inFlightTx: exitData.in_flight_tx,
         outputIndex: 0,
-        outputGuardPreimage: '0x',
         txOptions: {
           privateKey: bobAccount.privateKey,
           from: bobAccount.address
@@ -223,7 +217,6 @@ describe('Challenge in-flight exit output spent tests', function () {
         challengingTx: challengeData.spending_txbytes,
         challengingTxInputIndex: challengeData.spending_input_index,
         challengingTxWitness: challengeData.spending_sig,
-        spendingConditionOptionalArgs: '0x',
         txOptions: {
           privateKey: carolAccount.privateKey,
           from: carolAccount.address

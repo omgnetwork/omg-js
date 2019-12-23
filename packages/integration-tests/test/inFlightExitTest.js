@@ -50,7 +50,7 @@ describe('In-flight Exit tests', function () {
     let bobAccount
 
     beforeEach(async function () {
-      INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.1', 'ether')
+      INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.5', 'ether')
       INTIIAL_BOB_RC_AMOUNT = web3.utils.toWei('.5', 'ether')
       TRANSFER_AMOUNT = web3.utils.toWei('0.0002', 'ether')
       // Create Alice and Bob's accounts
@@ -113,7 +113,6 @@ describe('In-flight Exit tests', function () {
       // and he wants to exit.
 
       // Get the exit data
-      const decodedTx = transaction.decodeTxBytes(txbytes)
       const exitData = await childChain.inFlightExitGetData(txbytes)
       assert.hasAllKeys(exitData, [
         'in_flight_tx',
@@ -128,11 +127,8 @@ describe('In-flight Exit tests', function () {
         inFlightTx: exitData.in_flight_tx,
         inputTxs: exitData.input_txs,
         inputUtxosPos: exitData.input_utxos_pos,
-        outputGuardPreimagesForInputs: ['0x'],
         inputTxsInclusionProofs: exitData.input_txs_inclusion_proofs,
-        inFlightTxSigs: decodedTx.sigs,
-        signatures: exitData.in_flight_tx_sigs,
-        inputSpendingConditionOptionalArgs: ['0x'],
+        inFlightTxSigs: exitData.in_flight_tx_sigs,
         txOptions: {
           privateKey: bobAccount.privateKey,
           from: bobAccount.address
@@ -146,6 +142,7 @@ describe('In-flight Exit tests', function () {
       bobSpentOnGas.iadd(await rcHelper.spentOnGas(web3, ifeReceipt))
 
       // Decode the transaction to get the index of Bob's output
+      const decodedTx = transaction.decodeTxBytes(txbytes)
       const outputIndex = decodedTx.outputs.findIndex(
         e => e.outputGuard === bobAccount.address
       )
@@ -154,7 +151,6 @@ describe('In-flight Exit tests', function () {
       let receipt = await rootChain.piggybackInFlightExitOnOutput({
         inFlightTx: exitData.in_flight_tx,
         outputIndex: outputIndex,
-        outputGuardPreimage: '0x',
         txOptions: {
           privateKey: bobAccount.privateKey,
           from: bobAccount.address
@@ -239,7 +235,6 @@ describe('In-flight Exit tests', function () {
       // and he wants to exit.
 
       // Get the exit data
-      const decodedTx = transaction.decodeTxBytes(bobTx)
       const exitData = await childChain.inFlightExitGetData(bobTx)
       assert.hasAllKeys(exitData, [
         'in_flight_tx',
@@ -254,11 +249,8 @@ describe('In-flight Exit tests', function () {
         inFlightTx: exitData.in_flight_tx,
         inputTxs: exitData.input_txs,
         inputUtxosPos: exitData.input_utxos_pos,
-        outputGuardPreimagesForInputs: ['0x'],
         inputTxsInclusionProofs: exitData.input_txs_inclusion_proofs,
-        inFlightTxSigs: decodedTx.sigs,
-        signatures: exitData.in_flight_tx_sigs,
-        inputSpendingConditionOptionalArgs: ['0x'],
+        inFlightTxSigs: exitData.in_flight_tx_sigs,
         txOptions: {
           privateKey: bobAccount.privateKey,
           from: bobAccount.address
@@ -272,6 +264,7 @@ describe('In-flight Exit tests', function () {
       bobSpentOnGas.iadd(await rcHelper.spentOnGas(web3, ifeReceipt))
 
       // Decode the transaction to get the index of Bob's output
+      const decodedTx = transaction.decodeTxBytes(bobTx)
       const outputIndex = decodedTx.outputs.findIndex(
         e => e.outputGuard === bobAccount.address
       )
@@ -280,7 +273,6 @@ describe('In-flight Exit tests', function () {
       let receipt = await rootChain.piggybackInFlightExitOnOutput({
         inFlightTx: exitData.in_flight_tx,
         outputIndex: outputIndex,
-        outputGuardPreimage: '0x',
         txOptions: {
           privateKey: bobAccount.privateKey,
           from: bobAccount.address
@@ -348,7 +340,6 @@ describe('In-flight Exit tests', function () {
       assert.equal(bobEthBalance.toString(), expected.toString())
     })
 
-    // failingtest
     it('should succesfully exit a ChildChain with piggybacking input transaction that is not included', async function () {
       const aliceSpentOnGas = numberToBN(0)
       const kelvinSpentOnGas = numberToBN(0)
@@ -412,11 +403,8 @@ describe('In-flight Exit tests', function () {
         inFlightTx: exitData.in_flight_tx,
         inputTxs: exitData.input_txs,
         inputUtxosPos: exitData.input_utxos_pos,
-        outputGuardPreimagesForInputs: ['0x', '0x'],
         inputTxsInclusionProofs: exitData.input_txs_inclusion_proofs,
-        inFlightTxSigs: signatures,
-        signatures: exitData.in_flight_tx_sigs,
-        inputSpendingConditionOptionalArgs: ['0x', '0x'],
+        inFlightTxSigs: exitData.in_flight_tx_sigs,
         txOptions: {
           privateKey: kelvinAccount.privateKey,
           from: kelvinAccount.address
@@ -478,12 +466,9 @@ describe('In-flight Exit tests', function () {
         inFlightTxInputIndex: 0,
         competingTx: unsignKelvinToBobTx,
         competingTxInputIndex: 0,
-        competingTxWitness: kelvinToBobDecoded.sigs[0],
-        outputGuardPreimage: '0x',
         competingTxPos: '0x',
         competingTxInclusionProof: '0x',
-        competingTxConfirmSig: '0x',
-        competingTxSpendingConditionOptionalArgs: '0x',
+        competingTxWitness: kelvinToBobDecoded.sigs[0],
         txOptions: {
           privateKey: aliceAccount.privateKey,
           from: aliceAccount.address
