@@ -256,7 +256,7 @@ class ChildChain {
    * @param {string} args.fromAddress the address of the sender
    * @param {Object[]} args.fromUtxos array of utxos to spend
    * @param {string[]} args.fromPrivateKeys private keys of the utxos to spend
-   * @param {Payment[]} args.payments array of one payment object
+   * @param {Payment} args.payment a payment object
    * @param {Fee} args.fee fee object specifying amount and currency
    * @param {string} [args.metadata] the metadata to include in the transaction. Must be a 32-byte hex string
    * @param {string} args.verifyingContract address of the RootChain contract
@@ -266,7 +266,7 @@ class ChildChain {
     fromAddress,
     fromUtxos,
     fromPrivateKeys,
-    payments,
+    payment,
     fee,
     metadata = null,
     verifyingContract
@@ -275,7 +275,7 @@ class ChildChain {
       fromAddress,
       fromUtxos,
       fromPrivateKeys,
-      payments,
+      payment,
       fee,
       metadata,
       verifyingContract
@@ -283,7 +283,7 @@ class ChildChain {
     const txBody = transaction.createTransactionBody({
       fromAddress,
       fromUtxos,
-      payment: payments[0],
+      payment,
       fee,
       metadata
     })

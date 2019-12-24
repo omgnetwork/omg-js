@@ -1,5 +1,5 @@
 const Joi = require('@hapi/joi')
-const { validateAddress, validatePayments, validateFee, validateBn } = require('./helpers')
+const { validateAddress, validatePayments, validatePayment, validateFee, validateBn } = require('./helpers')
 
 const childchainConstructorSchema = Joi.object({
   watcherUrl: Joi.string().required(),
@@ -56,7 +56,7 @@ const sendTransactionSchema = Joi.object({
   fromAddress: validateAddress.required(),
   fromUtxos: Joi.array().items(Joi.object()).required(),
   fromPrivateKeys: Joi.array().items(Joi.string()).required(),
-  payments: validatePayments.required(),
+  payment: validatePayment.required(),
   fee: validateFee.required(),
   metadata: Joi.string().allow(null),
   verifyingContract: validateAddress.required()
