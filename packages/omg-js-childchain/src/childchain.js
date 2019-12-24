@@ -258,7 +258,7 @@ class ChildChain {
    * @param {string[]} args.fromPrivateKeys private keys of the utxos to spend
    * @param {Payment[]} args.payments array of one payment object
    * @param {Fee} args.fee fee object specifying amount and currency
-   * @param {string} args.metadata the metadata to include in the transaction. Must be a 32-byte hex string
+   * @param {string} [args.metadata] the metadata to include in the transaction. Must be a 32-byte hex string
    * @param {string} args.verifyingContract address of the RootChain contract
    * @return {Promise<Object>} promise that resolves with the submitted transaction
    */

@@ -201,7 +201,7 @@ const transaction = {
   * @param {Object[]} args.fromUtxos the utxos to use as transaction inputs
   * @param {Payment} args.payment payment object specifying the output
   * @param {Fee} args.fee fee object specifying amount and currency
-  * @param {string} args.metadata the currency to send
+  * @param {string} args.metadata the metadata to send
   * @return {TransactionBody} transaction object
   * @throws {Error} Error if any of the args are invalid or given utxos cannot cover the amount
   *
