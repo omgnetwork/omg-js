@@ -24,6 +24,7 @@ toc:
   - name: RootChain
     children:
       - getExitTime
+      - getExitQueue
       - approveToken
       - depositEth
       - depositToken
