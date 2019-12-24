@@ -43,6 +43,7 @@ const erc20VaultAbi = require('./contracts/Erc20Vault.json')
 const ethVaultAbi = require('./contracts/EthVault.json')
 const paymentExitGameAbi = require('./contracts/PaymentExitGame.json')
 const plasmaFrameworkAbi = require('./contracts/PlasmaFramework.json')
+const priorityQueueAbi = require('./contracts/PriorityQueue.json')
 
 const ETH_VAULT_ID = 1
 const ERC20_VAULT_ID = 2
@@ -161,6 +162,21 @@ class RootChain {
       scheduledFinalizationTime: scheduledFinalizationTime + bufferSeconds,
       msUntilFinalization
     }
+  }
+
+  /**
+   * Retrieves the exit queue for a particular token
+   *
+   * @method getExitQueue
+   * @param {string} token relevant queue to retrieve (defaults to ETH)
+   * @return {Promise<string[]>} promise that resolves with the exit queue of the token
+   */
+  async getExitQueue (token = transaction.ETH_CURRENCY) {
+    const vaultId = token === transaction.ETH_CURRENCY ? 1 : 2
+    const hashed = this.web3.utils.sha3([vaultId, token])
+    const address = await this.plasmaContract.methods.exitsQueues(hashed).call()
+    const contract = getContract(this.web3, priorityQueueAbi.abi, address)
+    return contract.methods.heapList().call()
   }
 
   /**
