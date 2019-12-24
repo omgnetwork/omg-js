@@ -72,6 +72,8 @@ const transaction = {
     addOutput(outputArray, typedDataMessage.output2)
     addOutput(outputArray, typedDataMessage.output3)
     txArray.push(outputArray)
+
+    txArray.push(typedDataMessage.txData)
     txArray.push(typedDataMessage.metadata)
 
     return txArray
@@ -88,7 +90,7 @@ const transaction = {
   */
   encodeDeposit: function (owner, amount, currency) {
     const encoded = transaction.encode({
-      transactionType: 1,
+      txType: 1,
       inputs: [],
       outputs: [{
         outputType: 1,
@@ -96,6 +98,7 @@ const transaction = {
         currency: hexPrefix(currency),
         amount
       }],
+      txData: 0,
       metadata: typedData.NULL_METADATA
     })
     return encoded
@@ -127,8 +130,8 @@ const transaction = {
   * @return {string} the RLP encoded transaction
   *
   */
-  encode: function ({ transactionType, inputs, outputs, metadata, signatures }, { signed = true } = {}) {
-    const txArray = [transactionType]
+  encode: function ({ txType, inputs, outputs, txData, metadata, signatures }, { signed = true } = {}) {
+    const txArray = [txType]
     signatures && signed && txArray.unshift(signatures)
     const inputArray = []
     const outputArray = []
@@ -146,6 +149,7 @@ const transaction = {
           : typedData.NULL_OUTPUT)
     }
     txArray.push(outputArray)
+    txArray.push(txData)
     txArray.push(metadata)
     return hexPrefix(rlp.encode(txArray).toString('hex'))
   },
@@ -158,30 +162,32 @@ const transaction = {
   *
   */
   decodeTxBytes: function (tx) {
-    let inputs, outputs, transactionType, metadata, sigs
+    let txType, inputs, outputs, txData, metadata, sigs
     const rawTx = Buffer.isBuffer(tx) ? tx : Buffer.from(tx.replace('0x', ''), 'hex')
     const decoded = rlp.decode(rawTx)
     switch (decoded.length) {
-      case 4:
-        [transactionType, inputs, outputs, metadata] = decoded
-        break
       case 5:
-        [sigs, transactionType, inputs, outputs, metadata] = decoded
+        [txType, inputs, outputs, txData, metadata] = decoded
+        break
+      case 6:
+        [sigs, txType, inputs, outputs, txData, metadata] = decoded
         break
       default:
         throw new Error(`error decoding txBytes, got ${decoded}`)
     }
     return {
       ...(sigs && { sigs: sigs.map(parseString) }),
-      transactionType: parseNumber(transactionType),
+      txType: parseNumber(txType),
       inputs: inputs.map(input => transaction.decodeUtxoPos(parseString(input))),
       outputs: outputs.map(output => {
+        const outputData = output[1]
         const outputType = parseNumber(output[0])
-        const outputGuard = parseString(output[1])
-        const currency = parseString(output[2])
-        const amount = numberToBN(parseString(output[3])).toString()
+        const outputGuard = parseString(outputData[0])
+        const currency = parseString(outputData[1])
+        const amount = numberToBN(parseString(outputData[2])).toString()
         return { outputType, outputGuard, currency, amount }
       }),
+      txData: parseNumber(txData),
       metadata: parseString(metadata)
     }
   },
@@ -267,6 +273,7 @@ const transaction = {
     const txBody = {
       inputs: fromUtxos,
       outputs: outputArr,
+      txData: 0,
       metadata
     }
 
@@ -390,7 +397,13 @@ function validateMetadata (arg) {
 
 function addInput (array, input) {
   if (input.blknum !== 0) {
-    const encodedPosition = transaction.encodeUtxoPos(input)
+    const blk = numberToBN(input.blknum).mul(BLOCK_OFFSET)
+    const tx = numberToBN(input.txindex).muln(TX_OFFSET)
+    const position = blk.add(tx).addn(input.oindex).toBuffer()
+    const toPad = 32 - position.length
+    const pads = Buffer.alloc(toPad, 0)
+    const encodedPosition = Buffer.concat([pads, position])
+
     array.push(encodedPosition)
   }
 }
@@ -399,9 +412,11 @@ function addOutput (array, output) {
   if (output.amount > 0) {
     array.push([
       output.outputType,
-      sanitiseAddress(output.outputGuard), // must start with '0x' to be encoded properly
-      sanitiseAddress(output.currency), // must start with '0x' to be encoded properly
-      numberToBN(output.amount)
+      [
+        sanitiseAddress(output.outputGuard),
+        sanitiseAddress(output.currency),
+        numberToBN(output.amount)
+      ]
     ])
   }
 }

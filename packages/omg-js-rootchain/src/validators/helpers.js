@@ -8,8 +8,8 @@ const validateAddress = Joi.string().custom(value => {
 
 const validateTxOption = Joi.object({
   gas: Joi.number(),
-  gasPrice: Joi.number(),
-  privateKey: Joi.string().required(),
+  gasPrice: Joi.string(),
+  privateKey: Joi.string(),
   from: validateAddress
 })
 

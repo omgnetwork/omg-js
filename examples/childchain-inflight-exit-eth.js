@@ -11,7 +11,7 @@
   limitations under the License.
 */
 
-const BigNumber = require('bignumber.js')
+const BigNumber = require('bn.js')
 const Web3 = require('web3')
 const RootChain = require('../packages/omg-js-rootchain/src/rootchain')
 const ChildChain = require('../packages/omg-js-childchain/src/childchain')
@@ -53,11 +53,18 @@ async function logBalances () {
 }
 
 async function inflightExitChildChain () {
+  const bobRootchainBalance = await web3.eth.getBalance(bobAddress)
+  const bobsEtherBalance = web3.utils.fromWei(String(bobRootchainBalance), 'ether')
+  if (bobsEtherBalance < 0.001) {
+    console.log('Bob doesnt have enough ETH on the rootchain to start an exit')
+    return
+  }
+
   await logBalances()
   console.log('-----')
 
-  const transferAmount = BigNumber(web3.utils.toWei(config.alice_eth_transfer_amount, 'ether'))
-  const feeAmount = BigNumber(web3.utils.toWei('0.00000000000000001', 'ether'))
+  const transferAmount = new BigNumber(web3.utils.toWei(config.alice_eth_transfer_amount, 'ether'))
+  const feeAmount = new BigNumber(web3.utils.toWei('0.00000000000000001', 'ether'))
 
   const payments = [{
     owner: bobAddress,
@@ -95,17 +102,12 @@ async function inflightExitChildChain () {
 
   // start an in-flight exit
   const exitData = await childChain.inFlightExitGetData(hexPrefix(signedTxn))
-  const outputGuardPreimagesForInputs = ['0x']
-  const inputSpendingConditionOptionalArgs = ['0x']
   const exitReceipt = await rootChain.startInFlightExit({
     inFlightTx: exitData.in_flight_tx,
     inputTxs: exitData.input_txs,
     inputUtxosPos: exitData.input_utxos_pos,
-    outputGuardPreimagesForInputs: outputGuardPreimagesForInputs,
     inputTxsInclusionProofs: exitData.input_txs_inclusion_proofs,
-    inFlightTxSigs: signatures,
-    signatures: exitData.in_flight_tx_sigs,
-    inputSpendingConditionOptionalArgs: inputSpendingConditionOptionalArgs,
+    inFlightTxSigs: exitData.in_flight_tx_sigs,
     txOptions: {
       privateKey: bobPrivateKey,
       from: bobAddress,
@@ -126,7 +128,6 @@ async function inflightExitChildChain () {
   await rootChain.piggybackInFlightExitOnOutput({
     inFlightTx: exitData.in_flight_tx,
     outputIndex: outputIndex,
-    outputGuardPreimage: '0x',
     txOptions: {
       privateKey: bobPrivateKey,
       from: bobAddress

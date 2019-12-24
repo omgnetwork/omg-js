@@ -13,9 +13,15 @@ This is a Javascript library that allows you to interact with OmiseGo's MoreVP i
 ## Compatibility
 
 This library is currently compatible with version 0.3 of the OMG Network.
-Use with caution as this is an alpha release and some features have not yet been fully tested.
+Below you can find a compatibility table of `omg-js` with `elixir-omg` and `plasma-contracts` SHAs
 
-### Getting Started
+| Version | elixir-omg | plasma-contracts |
+| --- | --- | --- |
+| 3.0.0-alpha.13 (current) | 40f899b | 835d10c |
+| 3.0.0-alpha.12 | 02e67bf | a7e8503 |
+| 3.0.0-alpha.6 | 70e9a68 | 1608296 |
+
+## Getting Started
 
 The project is organized into 3 submodules:
 
@@ -25,7 +31,7 @@ The project is organized into 3 submodules:
 
 You can use any of them separately, or all at once by importing the parent `@omisego/omg-js` package
 
-### Installation
+## Installation
 
 #### Node
 Requires Node >= 8.11.3 < 13.0.0
@@ -41,15 +47,15 @@ Copy the `dist/omg.js` file into your project and include it.
 ```
 
 
-### API Documentation
+## API Documentation
 
 [Documentation for omg-js ](http://omisego.github.io/omg-js)
 
-### Design Documentation
+## Design Documentation
 
 [How to sign a transaction](/integration-docs/signing-methods.md)
 
-### Examples
+## Examples
 
 #### Prerequisites
 
@@ -61,13 +67,36 @@ If you want to run the ERC20 examples, at least Alice's account will need an ERC
 You can find example code inside `examples` folder. 
 
 To run the examples:
-- Step inside the `examples` directory.
+- `npm install` from root of `omg-js`.
+- `npm run lerna-reset` from root of `omg-js`.
+- Step inside the `/examples` directory.
 - Run `npm install`.
-- Create `.env` file inside the root of the `examples` directory with the appropriate values (see `.env.example` for example)
+- Create `.env` file inside the root of the `/examples` directory with the appropriate values (see `/examples/env.example` for an example)
+
+- Refer to below explanation of `.env` variables
+```
+GETH_URL=                       <entry point to an ethereum node>
+WATCHER_URL=                    <url of an informational watcher>
+WATCHER_PROXY_URL=              <*optional* proxy server to catch all watcher requests>
+PLASMA_FRAMEWORK=               <address of the plasma_framework contract>
+ERC20_CONTRACT=                 <*optional* address of the erc20 contract that Alice will deposit and transfer to Bob>
+ALICE_ETH_ADDRESS=              <address of Alice's account>
+ALICE_ETH_ADDRESS_PRIVATE_KEY=  <Alice's private key>
+ALICE_ETH_DEPOSIT_AMOUNT=       <ETH amount Alice will deposit into the childchain>
+ALICE_ERC20_DEPOSIT_AMOUNT=     <ERC20 amount Alice will deposit into the childchain>
+ALICE_ETH_TRANSFER_AMOUNT=      <ETH amount Alice will transfer to Bob>
+ALICE_ERC20_TRANSFER_AMOUNT=    <ERC20 amount Alice will transfer to Bob>
+BOB_ETH_ADDRESS=                <address of Bob's account>
+BOB_ETH_ADDRESS_PRIVATE_KEY=    <Bob's private key>
+MILLIS_TO_WAIT_FOR_NEXT_BLOCK=  <interval when checking for block confirmation>
+BLOCKS_TO_WAIT_FOR_TXN=         <amount of blocks to wait for confirmation>
+```
 
 Let's run through a story between Alice and Bob. In this story, Alice will first deposit some ETH from the root chain into the child chain. Then Alice will transfer some of that ETH to Bob on the child chain. Bob will then exit his funds from the child chain back into the root chain. His root chain balance will be reflected with the extra ETH that Alice sent to him on the child chain.
 
-From the `examples` folder run the following scripts:
+#### Helpful Scripts
+
+From the `/examples` folder run the following scripts:
 
 - [Get Alice's and Bob's balances](examples/balances.js)
 
@@ -76,6 +105,8 @@ From the `examples` folder run the following scripts:
 - [Get Alice's and Bob's Childchain UTXOs](examples/childchain-utxos.js)
 
     `npm run childchain-utxos`
+
+#### ETH Examples
 
 1. [Deposit some ETH from Alice's Rootchain to the Childchain](examples/childchain-deposit-eth.js)
     
@@ -97,6 +128,7 @@ Checking Bob's final rootchain balance you will notice it will be a little less 
 
     `npm run childchain-inflight-exit-eth`
 
+#### ERC20 Examples
 
 Now let's run through the same story above but for ERC20 deposit/transaction/exit.
 

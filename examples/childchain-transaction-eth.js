@@ -14,7 +14,7 @@
   limitations under the License.
 */
 
-const BigNumber = require('bignumber.js')
+const BigNumber = require('bn.js')
 const Web3 = require('web3')
 const ChildChain = require('../packages/omg-js-childchain/src/childchain')
 const { transaction, waitForChildchainBalance } = require('../packages/omg-js-util/src')
@@ -51,8 +51,8 @@ async function createSignBuildAndSubmitTransaction () {
   const { bobETHBalance } = await logBalances()
   console.log('-----')
 
-  const transferAmount = BigNumber(web3.utils.toWei(config.alice_eth_transfer_amount, 'ether'))
-  const feeAmount = BigNumber(web3.utils.toWei('0.00000000000000001', 'ether'))
+  const transferAmount = new BigNumber(web3.utils.toWei(config.alice_eth_transfer_amount, 'ether'))
+  const feeAmount = new BigNumber(web3.utils.toWei('0.00000000000000001', 'ether'))
 
   const payments = [{
     owner: bobAddress,
@@ -63,11 +63,15 @@ async function createSignBuildAndSubmitTransaction () {
     currency: transaction.ETH_CURRENCY,
     amount: Number(feeAmount)
   }
+
+  const metadata = transaction.NULL_METADATA
+  // or encode using transaction.encodeMetadata('hello')
+
   const createdTxn = await childChain.createTransaction({
     owner: aliceAddress,
     payments,
     fee,
-    metadata: transaction.NULL_METADATA
+    metadata
   })
   console.log(`Created a childchain transaction of ${web3.utils.fromWei(payments[0].amount.toString(), 'ether')} ETH from Alice to Bob.`)
 
@@ -81,7 +85,7 @@ async function createSignBuildAndSubmitTransaction () {
 
   // wait for transaction to be recorded by the watcher
   console.log('Waiting for transaction to be recorded by the watcher...')
-  const expectedAmount = transferAmount.plus(bobETHBalance)
+  const expectedAmount = transferAmount.add(new BigNumber(bobETHBalance))
   await waitForChildchainBalance({
     childChain,
     address: bobAddress,

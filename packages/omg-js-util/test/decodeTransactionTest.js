@@ -20,10 +20,10 @@ const transaction = require('../src/transaction')
 const sign = require('../src/sign')
 const rlp = require('rlp')
 
-describe('decodeTransaction', function () {
+describe('Decode transaction tests', function () {
   it('should decode an encoded unsigned transaction with inputs and outputs', async function () {
     const txBody = {
-      transactionType: 1,
+      txType: 1,
       inputs: [
         {
           txindex: 0,
@@ -62,6 +62,7 @@ describe('decodeTransaction', function () {
           amount: '1234567890123456'
         }
       ],
+      txData: 0,
       metadata: transaction.NULL_METADATA
     }
 
@@ -106,7 +107,7 @@ describe('decodeTransaction', function () {
 
   it('should decode an encoded signed transaction with only inputs', async function () {
     const txBody = {
-      transactionType: 1,
+      txType: 1,
       inputs: [
         {
           txindex: 0,
@@ -120,6 +121,7 @@ describe('decodeTransaction', function () {
         }
       ],
       outputs: [],
+      txData: 0,
       metadata: transaction.NULL_METADATA
     }
     const key =
@@ -140,7 +142,8 @@ describe('decodeTransaction', function () {
       'sigs',
       'inputs',
       'outputs',
-      'transactionType',
+      'txType',
+      'txData',
       'metadata'
     ])
     assert.deepEqual({ ...txBody, sigs: signatures }, decoded)
@@ -148,7 +151,7 @@ describe('decodeTransaction', function () {
 
   it('should decode an encoded signed transaction with inputs and outputs', async function () {
     const txBody = {
-      transactionType: 1,
+      txType: 1,
       inputs: [
         {
           txindex: 0,
@@ -175,6 +178,7 @@ describe('decodeTransaction', function () {
           amount: '4567'
         }
       ],
+      txData: 0,
       metadata: transaction.NULL_METADATA
     }
     const key =
@@ -195,7 +199,8 @@ describe('decodeTransaction', function () {
       'sigs',
       'inputs',
       'outputs',
-      'transactionType',
+      'txType',
+      'txData',
       'metadata'
     ])
     assert.deepEqual({ ...txBody, sigs: signatures }, decoded)
@@ -209,7 +214,7 @@ describe('decodeTransaction', function () {
     const encodedTx = transaction.encodeDeposit(owner, amount, currency)
     const decoded = transaction.decodeTxBytes(encodedTx)
     assert.deepEqual(decoded, {
-      transactionType: 1,
+      txType: 1,
       inputs: [],
       outputs: [
         {
@@ -219,6 +224,7 @@ describe('decodeTransaction', function () {
           currency
         }
       ],
+      txData: 0,
       metadata:
         '0x0000000000000000000000000000000000000000000000000000000000000000'
     })

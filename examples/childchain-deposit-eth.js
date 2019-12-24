@@ -14,11 +14,12 @@
   limitations under the License.
 */
 
-const BigNumber = require('bignumber.js')
+const BigNumber = require('bn.js')
 const Web3 = require('web3')
 const RootChain = require('../packages/omg-js-rootchain/src/rootchain')
 const ChildChain = require('../packages/omg-js-childchain/src/childchain')
 const { transaction, waitForRootchainTransaction } = require('../packages/omg-js-util/src')
+const wait = require('./wait.js')
 
 const config = require('./config.js')
 
@@ -29,7 +30,7 @@ const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxy
 const aliceAddress = config.alice_eth_address
 const alicePrivateKey = config.alice_eth_address_private_key
 
-const depositAmount = BigNumber(web3.utils.toWei(config.alice_eth_deposit_amount, 'ether'))
+const depositAmount = new BigNumber(web3.utils.toWei(config.alice_eth_deposit_amount, 'ether'))
 
 async function logBalances () {
   const rootchainBalance = await web3.eth.getBalance(aliceAddress)
@@ -69,6 +70,7 @@ async function depositEthIntoPlasmaContract () {
     onCountdown: (remaining) => console.log(`${remaining} blocks remaining before confirmation`)
   })
 
+  await wait.wait(5000)
   console.log('-----')
   await logBalances()
 }

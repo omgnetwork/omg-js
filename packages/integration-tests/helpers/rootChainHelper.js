@@ -16,7 +16,6 @@ limitations under the License. */
 const promiseRetry = require('promise-retry')
 const { transaction, getErc20Balance } = require('@omisego/omg-js-util')
 const numberToBN = require('number-to-bn')
-const fetch = require('node-fetch')
 const { parseLog } = require('ethereum-event-logs')
 const { utils } = require('web3')
 
@@ -129,12 +128,8 @@ async function depositToken ({ rootChain, address, amount, currency, privateKey 
 async function getPlasmaContractAddress (config) {
   if (config.rootchainContract && config.rootchainContract !== '') {
     return { contract_addr: config.rootchainContract }
-  } else if (config.contract_exchanger_url && config.contract_exchanger_url !== '') {
-    const repsonse = await fetch(config.contract_exchanger_url)
-    return repsonse.json()
   }
-
-  throw new Error('No ROOTCHAIN_CONTRACT or CONTRACT_EXCHANGER_URL configured')
+  throw new Error('No PLASMA_FRAMEWORK address configured')
 }
 
 const DEFAULT_INTERVAL = 1000
