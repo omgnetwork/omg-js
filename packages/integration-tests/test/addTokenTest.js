@@ -28,7 +28,7 @@ const web3 = new Web3(new Web3.providers.HttpProvider(config.geth_url))
 let rootChain
 let childChain
 let aliceAccount
-const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.1', 'ether')
+const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('0.5', 'ether')
 
 describe('AddExitQueue tests', function () {
   before(async function () {
