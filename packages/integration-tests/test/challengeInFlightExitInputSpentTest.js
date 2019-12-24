@@ -233,7 +233,9 @@ describe('Challenge in-flight exit input spent tests', function () {
         competingTxWitness: carolTxDecoded.sigs[0],
         txOptions: {
           privateKey: carolAccount.privateKey,
-          from: carolAccount.address
+          from: carolAccount.address,
+          gas: '7000000',
+          gasPrice: '7000000'
         }
       })
 
