@@ -69,7 +69,7 @@ describe('Transfer tests', function () {
       // Check utxos on the child chain
       const utxos = await childChain.getUtxos(aliceAccount.address)
       assert.equal(utxos.length, 1)
-      assert.hasAllKeys(utxos[0], ['utxo_pos', 'txindex', 'owner', 'oindex', 'currency', 'blknum', 'amount'])
+      assert.hasAllKeys(utxos[0], ['utxo_pos', 'txindex', 'owner', 'oindex', 'currency', 'blknum', 'amount', 'creating_txhash', 'spending_txhash'])
       assert.equal(utxos[0].amount.toString(), INTIIAL_ALICE_AMOUNT)
       assert.equal(utxos[0].currency, transaction.ETH_CURRENCY)
 
@@ -285,7 +285,7 @@ describe('Transfer tests', function () {
       // Check utxos on the child chain
       const utxos = await childChain.getUtxos(aliceAccount.address)
       assert.equal(utxos.length, 2)
-      assert.hasAllKeys(utxos[0], ['utxo_pos', 'txindex', 'owner', 'oindex', 'currency', 'blknum', 'amount'])
+      assert.hasAllKeys(utxos[0], ['utxo_pos', 'txindex', 'owner', 'oindex', 'currency', 'blknum', 'amount', 'creating_txhash', 'spending_txhash'])
 
       const erc20Utxo = utxos.find(utxo => utxo.currency === ERC20_CURRENCY)
       const ethUtxo = utxos.find(utxo => utxo.currency === transaction.ETH_CURRENCY)
@@ -367,7 +367,7 @@ describe('Transfer tests', function () {
       // Check utxos on the child chain
       const utxos = await childChain.getUtxos(aliceAccount.address)
       assert.equal(utxos.length, 2)
-      assert.hasAllKeys(utxos[0], ['utxo_pos', 'txindex', 'owner', 'oindex', 'currency', 'blknum', 'amount'])
+      assert.hasAllKeys(utxos[0], ['utxo_pos', 'txindex', 'owner', 'oindex', 'currency', 'blknum', 'amount', 'creating_txhash', 'spending_txhash'])
       assert.equal(utxos[0].amount, INTIIAL_ALICE_AMOUNT_ETH)
       assert.equal(utxos[0].currency, transaction.ETH_CURRENCY)
       assert.equal(utxos[1].amount, INTIIAL_ALICE_AMOUNT_ERC20)
@@ -463,7 +463,7 @@ describe('Transfer tests', function () {
       // Check utxos on the child chain
       const utxos = await childChain.getUtxos(aliceAccount.address)
       assert.equal(utxos.length, 1)
-      assert.hasAllKeys(utxos[0], ['utxo_pos', 'txindex', 'owner', 'oindex', 'currency', 'blknum', 'amount'])
+      assert.hasAllKeys(utxos[0], ['utxo_pos', 'txindex', 'owner', 'oindex', 'currency', 'blknum', 'amount', 'creating_txhash', 'spending_txhash'])
       assert.equal(utxos[0].amount.toString(), INTIIAL_ALICE_AMOUNT)
       assert.equal(utxos[0].currency, transaction.ETH_CURRENCY)
 

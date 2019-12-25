@@ -25,7 +25,9 @@ const getExitDataSchema = Joi.object({
   oindex: Joi.number(),
   owner: Joi.string(),
   txindex: Joi.number(),
-  utxo_pos: Joi.number()
+  utxo_pos: Joi.number(),
+  spending_txhash: [Joi.string(), Joi.allow(null)],
+  creating_txhash: [Joi.string(), Joi.allow(null)]
 })
 
 const createTransactionSchema = Joi.object({
