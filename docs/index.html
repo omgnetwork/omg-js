@@ -476,6 +476,26 @@
                 
                 </li>
               
+                
+                <li><a
+                  href='#payment'
+                  class="">
+                  Payment
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#fee'
+                  class="">
+                  Fee
+                  
+                </a>
+                
+                </li>
+              
             </ul>
           </div>
           <div class='mt1 h6 quiet'>
@@ -1060,7 +1080,7 @@
 
               
                 <tr>
-  <td class='break-word'><span class='code bold'>args.payments</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>></code>
+  <td class='break-word'><span class='code bold'>args.payments</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="#payment">Payment</a>></code>
   </td>
   <td class='break-word'><span>payments made as outputs
 </span></td>
@@ -1069,7 +1089,7 @@
 
               
                 <tr>
-  <td class='break-word'><span class='code bold'>args.fee</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>?</code>
+  <td class='break-word'><span class='code bold'>args.fee</span> <code class='quiet'><a href="#fee">Fee</a>?</code>
   </td>
   <td class='break-word'><span>fee paid
 </span></td>
@@ -1574,34 +1594,25 @@
 
               
                 <tr>
-  <td class='break-word'><span class='code bold'>args.toAddress</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
+  <td class='break-word'><span class='code bold'>args.payment</span> <code class='quiet'><a href="#payment">Payment</a></code>
   </td>
-  <td class='break-word'><span>the address of the recipient
+  <td class='break-word'><span>a payment object
 </span></td>
 </tr>
 
 
               
                 <tr>
-  <td class='break-word'><span class='code bold'>args.toAmount</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></code>
+  <td class='break-word'><span class='code bold'>args.fee</span> <code class='quiet'><a href="#fee">Fee</a></code>
   </td>
-  <td class='break-word'><span>amount to transact
+  <td class='break-word'><span>fee object specifying amount and currency
 </span></td>
 </tr>
 
 
               
                 <tr>
-  <td class='break-word'><span class='code bold'>args.currency</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
-  </td>
-  <td class='break-word'><span>address of the erc20 contract (or transaction.ETH_CURRENCY for ETH)
-</span></td>
-</tr>
-
-
-              
-                <tr>
-  <td class='break-word'><span class='code bold'>args.metadata</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
+  <td class='break-word'><span class='code bold'>args.metadata</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>?</code>
   </td>
   <td class='break-word'><span>the metadata to include in the transaction. Must be a 32-byte hex string
 </span></td>
@@ -1613,24 +1624,6 @@
   <td class='break-word'><span class='code bold'>args.verifyingContract</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
   </td>
   <td class='break-word'><span>address of the RootChain contract
-</span></td>
-</tr>
-
-
-              
-                <tr>
-  <td class='break-word'><span class='code bold'>args.feeAmount</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></code>
-  </td>
-  <td class='break-word'><span>amount of fee to pay
-</span></td>
-</tr>
-
-
-              
-                <tr>
-  <td class='break-word'><span class='code bold'>args.feeCurrency</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
-  </td>
-  <td class='break-word'><span>currency of the fee
 </span></td>
 </tr>
 
@@ -5070,7 +5063,7 @@ Should be called periodically to see if there are any byzantine_events to be act
       <div class="clearfix small pointer toggle-sibling">
         <div class="py1 contain">
             <a class='icon pin-right py1 dark-link caret-right'>▸</a>
-            <span class='code strong strong truncate'>createTransactionBody(fromAddress, fromUtxos, toAddress, toAmount, currency, metadata, feeAmount, feeCurrency)</span>
+            <span class='code strong strong truncate'>createTransactionBody(args)</span>
         </div>
       </div>
       <div class="clearfix display-none toggle-target">
@@ -5081,7 +5074,7 @@ Should be called periodically to see if there are any byzantine_events to be act
   <p>Creates a transaction object. It will select from the given utxos to cover the amount
 of the transaction, sending any remainder back as change.</p>
 
-    <div class='pre p1 fill-light mt0'>createTransactionBody(fromAddress: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, fromUtxos: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>>, toAddress: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, toAmount: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>, currency: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, metadata: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, feeAmount: any, feeCurrency: any): <a href="#transactionbody">TransactionBody</a></div>
+    <div class='pre p1 fill-light mt0'>createTransactionBody(args: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>): <a href="#transactionbody">TransactionBody</a></div>
   
   
 
@@ -5098,72 +5091,71 @@ of the transaction, sending any remainder back as change.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>fromAddress</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
-	    the address of the sender
+            <span class='code bold'>args</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>)</code>
+	    an arguments object
 
           </div>
           
-        </div>
-      
-        <div class='space-bottom0'>
-          <div>
-            <span class='code bold'>fromUtxos</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>>)</code>
-	    the utxos to use as transaction inputs
+          <table class='mt1 mb2 fixed-table h5 col-12'>
+            <colgroup>
+              <col width='30%' />
+              <col width='70%' />
+            </colgroup>
+            <thead>
+              <tr class='bold fill-light'>
+                <th>Name</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody class='mt1'>
+              
+                <tr>
+  <td class='break-word'><span class='code bold'>args.fromAddress</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
+  </td>
+  <td class='break-word'><span>the address of the sender
+</span></td>
+</tr>
 
-          </div>
-          
-        </div>
-      
-        <div class='space-bottom0'>
-          <div>
-            <span class='code bold'>toAddress</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
-	    the address of the receiver
 
-          </div>
-          
-        </div>
-      
-        <div class='space-bottom0'>
-          <div>
-            <span class='code bold'>toAmount</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)</code>
-	    the amount to send
+              
+                <tr>
+  <td class='break-word'><span class='code bold'>args.fromUtxos</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>></code>
+  </td>
+  <td class='break-word'><span>the utxos to use as transaction inputs
+</span></td>
+</tr>
 
-          </div>
-          
-        </div>
-      
-        <div class='space-bottom0'>
-          <div>
-            <span class='code bold'>currency</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
-	    the currency to send
 
-          </div>
-          
-        </div>
-      
-        <div class='space-bottom0'>
-          <div>
-            <span class='code bold'>metadata</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
-	    the currency to send
+              
+                <tr>
+  <td class='break-word'><span class='code bold'>args.payment</span> <code class='quiet'><a href="#payment">Payment</a></code>
+  </td>
+  <td class='break-word'><span>payment object specifying the output
+</span></td>
+</tr>
 
-          </div>
-          
-        </div>
-      
-        <div class='space-bottom0'>
-          <div>
-            <span class='code bold'>feeAmount</span> <code class='quiet'>(any
-            = <code>0</code>)</code>
-	    
-          </div>
-          
-        </div>
-      
-        <div class='space-bottom0'>
-          <div>
-            <span class='code bold'>feeCurrency</span> <code class='quiet'>(any)</code>
-	    
-          </div>
+
+              
+                <tr>
+  <td class='break-word'><span class='code bold'>args.fee</span> <code class='quiet'><a href="#fee">Fee</a></code>
+  </td>
+  <td class='break-word'><span>fee object specifying amount and currency
+</span></td>
+</tr>
+
+
+              
+                <tr>
+  <td class='break-word'><span class='code bold'>args.metadata</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
+  </td>
+  <td class='break-word'><span>the metadata to send
+</span></td>
+</tr>
+
+
+              
+            </tbody>
+          </table>
           
         </div>
       
@@ -7435,6 +7427,152 @@ This method decodes a string that was encoded with encodeMetadata().</p>
     </div>
   
 </div>
+
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+          <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='payment'>
+      Payment
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>Payment object used when sending or creating transactions</p>
+
+    <div class='pre p1 fill-light mt0'>Payment</div>
+  
+    <p>
+      Type:
+      <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>
+    </p>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Properties</div>
+    <div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>owner</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
+          
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>currency</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
+          
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>amount</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)</code>
+          
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+          <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='fee'>
+      Fee
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>Fee object used when sending or creating transactions</p>
+
+    <div class='pre p1 fill-light mt0'>Fee</div>
+  
+    <p>
+      Type:
+      <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>
+    </p>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Properties</div>
+    <div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>currency</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
+          
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>amount</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)</code>
+          
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+
+  
 
   
 

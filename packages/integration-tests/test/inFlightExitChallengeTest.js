@@ -33,7 +33,6 @@ const childChain = new ChildChain({
 // NB This test waits for at least RootChain.MIN_EXIT_PERIOD so it should be run against a
 // modified RootChain contract with a shorter than normal MIN_EXIT_PERIOD.
 let rootChain
-
 describe('In-flight Exit Challenge tests', function () {
   before(async function () {
     const plasmaContract = await rcHelper.getPlasmaContractAddress(config)

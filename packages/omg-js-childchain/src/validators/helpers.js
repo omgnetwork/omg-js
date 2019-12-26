@@ -13,7 +13,23 @@ const validateBn = Joi.any().custom((value, helpers) => {
   return value
 })
 
+const validatePayment = Joi.object({
+  amount: [Joi.number().required(), Joi.string().required(), validateBn.required()],
+  currency: validateAddress.required(),
+  owner: validateAddress.required()
+})
+
+const validatePayments = Joi.array().items(validatePayment)
+
+const validateFee = Joi.object({
+  amount: [Joi.number().required(), Joi.string().required(), validateBn.required()],
+  currency: validateAddress.required()
+})
+
 module.exports = {
   validateAddress,
+  validatePayments,
+  validatePayment,
+  validateFee,
   validateBn
 }
