@@ -21,7 +21,10 @@ const validatePayment = Joi.object({
 
 const validatePayments = Joi.array().items(validatePayment)
 
-const validateMetadata = Joi.any().custom((value, helpers) => {
+const validateMetadata = Joi.string().custom((value, helpers) => {
+  if (value.startsWith('0x')) {
+    return value
+  }
   const bytesSize = Buffer.from(value).length
   if (bytesSize > 32) {
     return helpers.message(`"${value}" is too large. metadata cannot be larger than 32 bytes`)
