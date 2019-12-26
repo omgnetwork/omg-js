@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License. */
 
 const promiseRetry = require('promise-retry')
-const { transaction, getErc20Balance } = require('@omisego/omg-js-util')
+const { getErc20Balance } = require('@omisego/omg-js-util')
 const numberToBN = require('number-to-bn')
 const { parseLog } = require('ethereum-event-logs')
 const { utils } = require('web3')
@@ -108,19 +108,11 @@ function sleep (ms) {
   })
 }
 
-async function depositEth ({ rootChain, address, amount, privateKey }) {
-  const depositTx = transaction.encodeDeposit(address, amount, transaction.ETH_CURRENCY)
-  return rootChain.depositEth({
-    depositTx,
+async function deposit ({ rootChain, address, amount, currency, privateKey }) {
+  return rootChain.deposit({
+    owner: address,
     amount,
-    txOptions: { from: address, privateKey }
-  })
-}
-
-async function depositToken ({ rootChain, address, amount, currency, privateKey }) {
-  const depositTx = transaction.encodeDeposit(address, amount, currency)
-  return rootChain.depositToken({
-    depositTx,
+    currency,
     txOptions: { from: address, privateKey }
   })
 }
@@ -207,8 +199,7 @@ module.exports = {
   waitForERC20BalanceEq,
   sleep,
   sendTransaction,
-  depositEth,
-  depositToken,
+  deposit,
   spentOnGas,
   getPlasmaContractAddress,
   setGas,

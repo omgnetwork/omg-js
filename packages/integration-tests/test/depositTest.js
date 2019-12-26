@@ -60,14 +60,13 @@ describe('Deposit tests', function () {
       }
     })
 
-    it('depositEth calls event emitter if passed', async function () {
-      const depositTx = transaction.encodeDeposit(aliceAccount.address, TEST_AMOUNT, transaction.ETH_CURRENCY)
+    it('deposit calls event emitter if passed', async function () {
       let confirmationNum
       let receipt
 
       await new Promise((resolve, reject) => {
-        rootChain.depositEth({
-          depositTx,
+        rootChain.deposit({
+          owner: aliceAccount.address,
           amount: TEST_AMOUNT,
           txOptions: {
             from: aliceAccount.address,
@@ -90,9 +89,8 @@ describe('Deposit tests', function () {
     })
 
     it('deposit call resolves in an object containing the transaction hash', async function () {
-      const depositTx = transaction.encodeDeposit(aliceAccount.address, TEST_AMOUNT, transaction.ETH_CURRENCY)
-      const depositRes = await rootChain.depositEth({
-        depositTx,
+      const depositRes = await rootChain.deposit({
+        owner: aliceAccount.address,
         amount: TEST_AMOUNT,
         txOptions: {
           from: aliceAccount.address,
@@ -108,12 +106,9 @@ describe('Deposit tests', function () {
       const initialBalance = await childChain.getBalance(aliceAccount.address)
       assert.equal(initialBalance.length, 0)
 
-      // Create the deposit transaction
-      const depositTx = transaction.encodeDeposit(aliceAccount.address, TEST_AMOUNT, transaction.ETH_CURRENCY)
-
       // Deposit ETH into the Plasma contract
-      await rootChain.depositEth({
-        depositTx,
+      await rootChain.deposit({
+        owner: aliceAccount.address,
         amount: TEST_AMOUNT,
         txOptions: { from: aliceAccount.address, privateKey: aliceAccount.privateKey }
       })
@@ -179,12 +174,11 @@ describe('Deposit tests', function () {
         }
       })
 
-      // Create the deposit transaction
-      const depositTx = transaction.encodeDeposit(aliceAccount.address, TEST_AMOUNT, config.testErc20Contract)
-
       // Deposit ERC20 tokens into the Plasma contract
-      await rootChain.depositToken({
-        depositTx,
+      await rootChain.deposit({
+        owner: aliceAccount.address,
+        amount: TEST_AMOUNT,
+        currency: config.testErc20Contract,
         txOptions: { from: aliceAccount.address, privateKey: aliceAccount.privateKey }
       })
 
