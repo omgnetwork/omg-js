@@ -26,8 +26,6 @@ toc:
       - getExitTime
       - approveToken
       - deposit
-      - depositEth
-      - depositToken
       - getStandardExitId
       - getInFlightExitId
       - startStandardExit

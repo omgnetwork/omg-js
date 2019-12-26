@@ -21,8 +21,6 @@ const {
   getExitTimeSchema,
   approveTokenSchema,
   depositSchema,
-  depositEthSchema,
-  depositTokenSchema,
   startStandardExitSchema,
   challengeStandardExitSchema,
   processExitsSchema,
@@ -218,7 +216,7 @@ class RootChain {
     const txDetails = {
       from: txOptions.from,
       to: address,
-      value: amount,
+      ...isEth ? { value: amount } : {},
       data: txUtils.getTxData(this.web3, contract, 'deposit', depositTx),
       gas: txOptions.gas,
       gasPrice: txOptions.gasPrice
@@ -228,62 +226,6 @@ class RootChain {
       txDetails,
       privateKey: txOptions.privateKey,
       callbacks
-    })
-  }
-
-  /**
-   * Deposit ETH to rootchain
-   *
-   * @method depositEth
-   * @param {Object} args an arguments object
-   * @param {string} args.depositTx RLP encoded childchain deposit transaction
-   * @param {number} args.amount amount of ETH to deposit
-   * @param {TransactionOptions} args.txOptions transaction options
-   * @param {TransactionCallbacks} [args.callbacks] callbacks to events from the transaction lifecycle
-   * @return {Promise<TransactionReceipt>} promise that resolves with a transaction receipt
-   */
-  async depositEth ({ depositTx, amount, txOptions, callbacks }) {
-    Joi.assert({ depositTx, amount, txOptions, callbacks }, depositEthSchema)
-    const { contract, address } = await this.getEthVault()
-    const txDetails = {
-      from: txOptions.from,
-      to: address,
-      value: amount,
-      data: txUtils.getTxData(this.web3, contract, 'deposit', depositTx),
-      gas: txOptions.gas,
-      gasPrice: txOptions.gasPrice
-    }
-    return txUtils.sendTx({
-      web3: this.web3,
-      txDetails,
-      privateKey: txOptions.privateKey,
-      callbacks
-    })
-  }
-
-  /**
-   * Deposit ERC20 Token to rootchain (caller must be the token owner)
-   *
-   * @method depositToken
-   * @param {Object} args an arguments object
-   * @param {string} args.depositTx RLP encoded childchain deposit transaction
-   * @param {TransactionOptions} args.txOptions transaction options
-   * @return {Promise<TransactionReceipt>} promise that resolves with a transaction receipt
-   */
-  async depositToken ({ depositTx, txOptions }) {
-    Joi.assert({ depositTx, txOptions }, depositTokenSchema)
-    const { address, contract } = await this.getErc20Vault()
-    const txDetails = {
-      from: txOptions.from,
-      to: address,
-      data: txUtils.getTxData(this.web3, contract, 'deposit', depositTx),
-      gas: txOptions.gas,
-      gasPrice: txOptions.gasPrice
-    }
-    return txUtils.sendTx({
-      web3: this.web3,
-      txDetails,
-      privateKey: txOptions.privateKey
     })
   }
 
