@@ -44,7 +44,7 @@ async function logBalances () {
   console.log(`Alice's childchain ETH balance: ${childchainETHBalance}`)
 }
 
-async function depositEthIntoPlasmaContract () {
+async function childchainDepositEth () {
   await logBalances()
   console.log('-----')
 
@@ -75,4 +75,4 @@ async function depositEthIntoPlasmaContract () {
   await logBalances()
 }
 
-depositEthIntoPlasmaContract()
+childchainDepositEth()

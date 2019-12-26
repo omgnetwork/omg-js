@@ -47,7 +47,7 @@ async function logBalances () {
   return { bobETHBalance: bobsEthObject ? bobsEthObject.amount : 0 }
 }
 
-async function createSignBuildAndSubmitTransaction () {
+async function childchainTransactionEth () {
   const { bobETHBalance } = await logBalances()
   console.log('-----')
 
@@ -96,4 +96,4 @@ async function createSignBuildAndSubmitTransaction () {
   await logBalances()
 }
 
-createSignBuildAndSubmitTransaction()
+childchainTransactionEth()
