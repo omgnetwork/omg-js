@@ -29,8 +29,7 @@ describe('createTransactionBody', function () {
       fee: {
         amount: 0,
         currency: transaction.ETH_CURRENCY
-      },
-      metadata: undefined
+      }
     })
     assert.equal(txBody.outputs.length, 2)
     assert.equal(txBody.outputs[0].outputGuard, toAddress)
@@ -78,8 +77,7 @@ describe('createTransactionBody', function () {
       fee: {
         amount: 0,
         currency: transaction.ETH_CURRENCY
-      },
-      metadata: undefined
+      }
     })
     assert.equal(txBody.outputs.length, 2)
     assert.equal(txBody.outputs[0].outputGuard, toAddress)
@@ -127,8 +125,7 @@ describe('createTransactionBody', function () {
       fee: {
         amount: 0,
         currency: transaction.ETH_CURRENCY
-      },
-      metadata: undefined
+      }
     })
     assert.equal(txBody.outputs.length, 1)
     assert.equal(txBody.outputs[0].outputGuard, toAddress)
@@ -161,8 +158,7 @@ describe('createTransactionBody', function () {
       fee: {
         amount: 0,
         currency: transaction.ETH_CURRENCY
-      },
-      metadata: undefined
+      }
     })
     assert.equal(txBody.outputs.length, 1)
     assert.equal(txBody.outputs[0].outputGuard, toAddress)
@@ -203,8 +199,7 @@ describe('createTransactionBody', function () {
       fee: {
         amount: 50,
         currency: transaction.ETH_CURRENCY
-      },
-      metadata: undefined
+      }
     })
     assert.equal(txBody.outputs.length, 3)
     assert.equal(txBody.outputs[0].outputGuard, toAddress)
@@ -258,8 +253,7 @@ describe('createTransactionBody', function () {
       fee: {
         amount: 50,
         currency: fakeErc20
-      },
-      metadata: undefined
+      }
     })
     assert.equal(txBody.outputs.length, 3)
     assert.equal(txBody.outputs[0].outputGuard, toAddress)
@@ -307,8 +301,7 @@ describe('createTransactionBody', function () {
           fee: {
             amount: 0,
             currency: transaction.ETH_CURRENCY
-          },
-          metadata: undefined
+          }
         }),
       Error,
       /Insufficient funds/
@@ -357,8 +350,7 @@ describe('createTransactionBody', function () {
           fee: {
             amount: 0,
             currency: transaction.ETH_CURRENCY
-          },
-          metadata: undefined
+          }
         }),
       Error,
       /There are currencies in the utxo array that is not fee or currency./
