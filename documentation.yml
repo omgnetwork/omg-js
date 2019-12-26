@@ -25,6 +25,7 @@ toc:
     children:
       - getExitTime
       - approveToken
+      - deposit
       - depositEth
       - depositToken
       - getStandardExitId

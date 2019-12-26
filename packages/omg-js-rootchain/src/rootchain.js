@@ -20,6 +20,7 @@ const {
   rootchainConstructorSchema,
   getExitTimeSchema,
   approveTokenSchema,
+  depositSchema,
   depositEthSchema,
   depositTokenSchema,
   startStandardExitSchema,
@@ -188,6 +189,45 @@ class RootChain {
       web3: this.web3,
       txDetails,
       privateKey: txOptions.privateKey
+    })
+  }
+
+  /**
+   * Deposit to the rootchain
+   *
+   * @method deposit
+   * @param {Object} args an arguments object
+   * @param {string} args.owner the address making the deposit
+   * @param {number} args.amount amount to deposit
+   * @param {string} [args.currency] the token address of the deposit (defaults to ETH)
+   * @param {TransactionOptions} args.txOptions transaction options
+   * @param {TransactionCallbacks} [args.callbacks] callbacks to events from the transaction lifecycle
+   * @return {Promise<TransactionReceipt>} promise that resolves with a transaction receipt
+   */
+  async deposit ({
+    owner,
+    amount,
+    currency = transaction.ETH_CURRENCY,
+    txOptions,
+    callbacks
+  }) {
+    Joi.assert({ owner, amount, currency, txOptions, callbacks }, depositSchema)
+    const isEth = currency === transaction.ETH_CURRENCY
+    const { address, contract } = isEth ? await this.getEthVault() : await this.getErc20Vault()
+    const depositTx = transaction.encodeDeposit(owner, amount, currency)
+    const txDetails = {
+      from: txOptions.from,
+      to: address,
+      value: amount,
+      data: txUtils.getTxData(this.web3, contract, 'deposit', depositTx),
+      gas: txOptions.gas,
+      gasPrice: txOptions.gasPrice
+    }
+    return txUtils.sendTx({
+      web3: this.web3,
+      txDetails,
+      privateKey: txOptions.privateKey,
+      callbacks
     })
   }
 
