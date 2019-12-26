@@ -196,42 +196,39 @@ const transaction = {
   * Creates a transaction object. It will select from the given utxos to cover the amount
   * of the transaction, sending any remainder back as change.
   *
-  * @param {string} fromAddress the address of the sender
-  * @param {Object[]} fromUtxos the utxos to use as transaction inputs
-  * @param {string} toAddress the address of the receiver
-  * @param {number} toAmount the amount to send
-  * @param {string} currency the currency to send
-  * @param {string} metadata the currency to send
+  * @param {Object} args an arguments object
+  * @param {string} args.fromAddress the address of the sender
+  * @param {Object[]} args.fromUtxos the utxos to use as transaction inputs
+  * @param {Payment} args.payment payment object specifying the output
+  * @param {Fee} args.fee fee object specifying amount and currency
+  * @param {string} args.metadata the metadata to send
   * @return {TransactionBody} transaction object
   * @throws {Error} Error if any of the args are invalid or given utxos cannot cover the amount
   *
   */
-  createTransactionBody: function (
+  createTransactionBody: function ({
     fromAddress,
     fromUtxos,
-    toAddress,
-    toAmount,
-    currency,
-    metadata,
-    feeAmount = 0,
-    feeCurrency
-  ) {
+    payment,
+    fee,
+    metadata
+  }) {
     validateInputs(fromUtxos)
     validateMetadata(metadata)
-    if (!feeCurrency) {
+    if (!fee.currency) {
       throw new Error('Fee currency not provided.')
     }
-    if (fromUtxos.find(utxo => utxo.currency !== currency && utxo.currency !== feeCurrency)) {
+    if (fromUtxos.find(utxo => utxo.currency !== payment.currency && utxo.currency !== fee.currency)) {
       throw new Error('There are currencies in the utxo array that is not fee or currency.')
     }
-    const inputArr = fromUtxos.filter(utxo => utxo.currency === currency)
-    const feeArr = fromUtxos.filter(utxo => utxo.currency === feeCurrency)
+    const inputArr = fromUtxos.filter(utxo => utxo.currency === payment.currency)
+    const feeArr = fromUtxos.filter(utxo => utxo.currency === fee.currency)
     const sum = arr => arr.reduce((acc, curr) => acc.add(numberToBN(curr.amount.toString())), numberToBN(0))
     // Get the total value of the inputs
     const totalInputValue = sum(inputArr)
     const totalInputFee = sum(feeArr)
-    const bnAmount = numberToBN(toAmount)
-    const bnFeeAmount = numberToBN(feeAmount)
+    const bnAmount = numberToBN(payment.amount)
+    const bnFeeAmount = numberToBN(fee.amount)
     // Check there is enough in the inputs to cover the amount
     if (totalInputValue.lt(bnAmount)) {
       throw new Error(`Insufficient funds for ${bnAmount.toString()}`)
@@ -240,35 +237,35 @@ const transaction = {
     // to sender output
     const outputArr = [{
       outputType: 1,
-      outputGuard: toAddress,
-      currency,
+      outputGuard: payment.owner,
+      currency: payment.currency,
       amount: bnAmount
     }]
 
-    if (feeCurrency !== currency && totalInputValue.gt(bnAmount)) {
+    if (fee.currency !== payment.currency && totalInputValue.gt(bnAmount)) {
       outputArr.push({
         outputType: 1,
         outputGuard: fromAddress,
-        currency,
+        currency: payment.currency,
         amount: totalInputValue.sub(bnAmount)
       })
     }
 
-    if (feeCurrency === currency && totalInputValue.gt(bnAmount.add(bnFeeAmount))) {
+    if (fee.currency === payment.currency && totalInputValue.gt(bnAmount.add(bnFeeAmount))) {
       outputArr.push({
         outputType: 1,
         outputGuard: fromAddress,
-        currency,
+        currency: payment.currency,
         amount: totalInputValue.sub(bnAmount).sub(bnFeeAmount)
       })
     }
 
     // fee change
-    if (feeCurrency !== currency) {
+    if (fee.currency !== payment.currency) {
       outputArr.push({
         outputType: 1,
         outputGuard: fromAddress,
-        currency: feeCurrency,
+        currency: fee.currency,
         amount: totalInputFee.sub(bnFeeAmount)
       })
     }
