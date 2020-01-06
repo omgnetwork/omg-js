@@ -219,40 +219,46 @@ const transaction = {
       throw new Error('Fee currency not provided.')
     }
 
-    // check if fromUtxos has sufficient amounts to cover payments and fees
-    const neededCurrencies = uniq([...payments.map(i => i.currency), fee.currency])
-    const allPayments = [...payments, fee]
+    function calculateChange (inputs) {
+      const allPayments = [...payments, fee]
+      const neededCurrencies = uniq([...payments.map(i => i.currency), fee.currency])
+      return neededCurrencies.map(currency => {
+        const needed = allPayments.reduce((acc, i) => {
+          return i.currency === currency
+            ? acc.add(numberToBN(i.amount))
+            : acc
+        }, numberToBN(0))
+        const supplied = inputs.reduce((acc, i) => {
+          return i.currency === currency
+            ? acc.add(numberToBN(i.amount))
+            : acc
+        }, numberToBN(0))
+        const change = supplied.sub(needed)
+        return {
+          currency,
+          needed,
+          supplied,
+          change
+        }
+      })
+    }
 
-    const neededVSsupplied = neededCurrencies.map(currency => {
-      const needed = allPayments.reduce((acc, i) => {
-        return i.currency === currency
-          ? acc.add(numberToBN(i.amount))
-          : acc
-      }, numberToBN(0))
-      const supplied = fromUtxos.reduce((acc, i) => {
-        return i.currency === currency
-          ? acc.add(numberToBN(i.amount))
-          : acc
-      }, numberToBN(0))
-      const change = supplied.sub(needed)
-      return {
-        currency,
-        needed,
-        supplied,
-        change
-      }
-    })
+    // check if fromUtxos has sufficient amounts to cover payments and fees
+    const neededVSsupplied = calculateChange(fromUtxos)
 
     // TODO: remove... just for testing
-    const stringNeeded = neededVSsupplied.map(i => {
-      return {
-        currency: i.currency,
-        needed: i.needed.toString(),
-        supplied: i.supplied.toString(),
-        change: i.change.toString()
-      }
-    })
-    console.log('initialNeeds: ', stringNeeded)
+    function stringifyChange (change) {
+      const stringNeeded = change.map(i => {
+        return {
+          currency: i.currency,
+          needed: i.needed.toString(),
+          supplied: i.supplied.toString(),
+          change: i.change.toString()
+        }
+      })
+      console.log('change: ', stringNeeded)
+    }
+    stringifyChange(neededVSsupplied)
 
     // compare how much we need vs how much supplied per currency
     for (const i of neededVSsupplied) {
@@ -278,9 +284,19 @@ const transaction = {
       return true
     })
     validateInputs(inputs)
-    console.log('_needed: ', _needed)
 
     // recalculate change with filtered fromUtxos array, and create outputs
+    const recalculatedChange = calculateChange(inputs)
+    stringifyChange(recalculatedChange)
+
+    // TODO: recalculatedChange is your outputs, and you already have your inputs!
+    // const txBody = {
+    //   inputs: fromUtxos,
+    //   outputs: outputArr,
+    //   txData: 0,
+    //   metadata
+    // }
+    // return txBody
 
     // const inputArr = fromUtxos.filter(utxo => utxo.currency === payment.currency)
     // const feeArr = fromUtxos.filter(utxo => utxo.currency === fee.currency)
@@ -330,14 +346,6 @@ const transaction = {
     //     amount: totalInputFee.sub(bnFeeAmount)
     //   })
     // }
-
-    // const txBody = {
-    //   inputs: fromUtxos,
-    //   outputs: outputArr,
-    //   txData: 0,
-    //   metadata
-    // }
-    // return txBody
   },
 
   /**

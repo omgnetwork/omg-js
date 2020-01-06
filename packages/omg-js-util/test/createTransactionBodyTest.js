@@ -17,6 +17,13 @@ describe('createTransactionBody', function () {
         {
           txindex: 0,
           oindex: 0,
+          currency: transaction.ETH_CURRENCY,
+          blknum: 2,
+          amount: 60
+        },
+        {
+          txindex: 0,
+          oindex: 0,
           currency: '0x123',
           blknum: 2,
           amount: 10
