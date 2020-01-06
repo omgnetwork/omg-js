@@ -169,7 +169,7 @@ class RootChain {
    *
    * @method getExitQueue
    * @param {string} token relevant queue to retrieve (defaults to ETH)
-   * @return {Promise<string[]>} promise that resolves with the exit queue of the token
+   * @return {Promise<string[]>} promise that resolves with the exit queue of the token (as priorities)
    */
   async getExitQueue (token = transaction.ETH_CURRENCY) {
     const vaultId = token === transaction.ETH_CURRENCY ? 1 : 2
@@ -179,7 +179,8 @@ class RootChain {
     )
     const address = await this.plasmaContract.methods.exitsQueues(hashed).call()
     const contract = getContract(this.web3, priorityQueueAbi.abi, address)
-    return contract.methods.heapList().call()
+    const exitQueue = await contract.methods.heapList().call()
+    return exitQueue.slice(1)
   }
 
   /**

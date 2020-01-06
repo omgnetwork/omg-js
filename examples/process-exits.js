@@ -32,12 +32,12 @@ async function processExits () {
   console.log('-----')
 
   const ethQueue = await rootChain.getExitQueue()
-  if (ethQueue.length > 1) {
+  if (ethQueue.length) {
     console.log('Current ETH exit queue: ', ethQueue)
     const ethExitReceipt = await rootChain.processExits({
       token: transaction.ETH_CURRENCY,
       exitId: 0,
-      maxExitsToProcess: 20,
+      maxExitsToProcess: ethQueue.length,
       txOptions: {
         privateKey: bobPrivateKey,
         from: bobAddress,
@@ -65,12 +65,12 @@ async function processExits () {
   }
 
   const erc20Queue = await rootChain.getExitQueue(config.erc20_contract)
-  if (erc20Queue.length > 1) {
+  if (erc20Queue.length) {
     console.log('Current ERC20 exit queue: ', erc20Queue)
     const erc20ExitReceipt = await rootChain.processExits({
       token: config.erc20_contract,
       exitId: 0,
-      maxExitsToProcess: 20,
+      maxExitsToProcess: erc20Queue.length,
       txOptions: {
         privateKey: bobPrivateKey,
         from: bobAddress,

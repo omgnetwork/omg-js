@@ -31,7 +31,6 @@ let childChain
 let aliceAccount
 const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.1', 'ether')
 const DEPOSIT_AMOUNT = web3.utils.toWei('.0001', 'ether')
-const emptyQueue = ['0']
 
 describe('getExitQueue tests', function () {
   beforeEach(async function () {
@@ -55,9 +54,10 @@ describe('getExitQueue tests', function () {
   })
 
   it.only('should be able to retrieve an ETH exit queue', async function () {
+    // process exit to clear the queue
+
     const beforeQueue = await rootChain.getExitQueue()
-    assert.lengthOf(beforeQueue, 1)
-    assert.deepEqual(beforeQueue, emptyQueue)
+    assert.lengthOf(beforeQueue, 0)
 
     await rcHelper.depositEth({
       rootChain,
@@ -94,15 +94,21 @@ describe('getExitQueue tests', function () {
     console.log(`Alice called RootChain.startExit(): txhash = ${standardExitReceipt.transactionHash}`)
 
     const afterQueue = await rootChain.getExitQueue()
-    assert.lengthOf(afterQueue, 2)
+    assert.lengthOf(afterQueue, 1)
+
+    // process exit to clear the queue
   })
 
   it('should be able to retrieve an ERC20 exit queue', async function () {
     const token = config.testErc20Contract
     const beforeQueue = await rootChain.getExitQueue(token)
-    assert.deepEqual(beforeQueue, emptyQueue)
+    assert.lengthOf(beforeQueue, 0)
 
     // TODO: add actual exit and test if it shows up in the queue
-    assert.isTrue(true)
+
+    const afterQueue = await rootChain.getExitQueue()
+    assert.lengthOf(afterQueue, 1)
+
+    // process exit to clear the queue
   })
 })
