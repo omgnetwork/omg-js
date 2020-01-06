@@ -173,7 +173,10 @@ class RootChain {
    */
   async getExitQueue (token = transaction.ETH_CURRENCY) {
     const vaultId = token === transaction.ETH_CURRENCY ? 1 : 2
-    const hashed = this.web3.utils.sha3([vaultId, token])
+    const hashed = this.web3.utils.soliditySha3(
+      { t: 'uint256', v: vaultId },
+      { t: 'address', v: token }
+    )
     const address = await this.plasmaContract.methods.exitsQueues(hashed).call()
     const contract = getContract(this.web3, priorityQueueAbi.abi, address)
     return contract.methods.heapList().call()

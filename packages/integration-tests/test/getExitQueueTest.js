@@ -19,6 +19,7 @@ const Web3 = require('web3')
 const faucet = require('../helpers/testFaucet')
 const config = require('../test-config')
 const rcHelper = require('../helpers/rootChainHelper')
+const ccHelper = require('../helpers/childChainHelper')
 
 should()
 use(chaiAsPromised)
@@ -29,9 +30,11 @@ let rootChain
 let childChain
 let aliceAccount
 const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.1', 'ether')
+const DEPOSIT_AMOUNT = web3.utils.toWei('.0001', 'ether')
+const emptyQueue = ['0']
 
-describe.only('getExitQueue tests', function () {
-  before(async function () {
+describe('getExitQueue tests', function () {
+  beforeEach(async function () {
     aliceAccount = rcHelper.createAccount(web3)
     console.log(`Created new account ${JSON.stringify(aliceAccount)}`)
     const plasmaContract = await rcHelper.getPlasmaContractAddress(config)
@@ -43,9 +46,61 @@ describe.only('getExitQueue tests', function () {
     await rcHelper.waitForEthBalanceEq(web3, aliceAccount.address, INTIIAL_ALICE_AMOUNT)
   })
 
-  it('should be able to retrieve the correct exit queue', async function () {
-    const queue = await rootChain.getExitQueue()
-    console.log(queue)
+  afterEach(async function () {
+    try {
+      await faucet.returnFunds(web3, aliceAccount)
+    } catch (err) {
+      console.warn(`Error trying to return funds to the faucet: ${err}`)
+    }
+  })
+
+  it.only('should be able to retrieve an ETH exit queue', async function () {
+    const beforeQueue = await rootChain.getExitQueue()
+    assert.lengthOf(beforeQueue, 1)
+    assert.deepEqual(beforeQueue, emptyQueue)
+
+    await rcHelper.depositEth({
+      rootChain,
+      address: aliceAccount.address,
+      amount: DEPOSIT_AMOUNT,
+      privateKey: aliceAccount.privateKey
+    })
+    await ccHelper.waitForBalanceEq(
+      childChain,
+      aliceAccount.address,
+      DEPOSIT_AMOUNT
+    )
+    console.log(`Alice deposited ${DEPOSIT_AMOUNT} into RootChain contract`)
+
+    // Get Alice's deposit utxo
+    const aliceUtxos = await childChain.getUtxos(aliceAccount.address)
+    assert.equal(aliceUtxos.length, 1)
+    assert.equal(aliceUtxos[0].amount.toString(), DEPOSIT_AMOUNT)
+
+    // Get the exit data
+    const utxoToExit = aliceUtxos[0]
+    const exitData = await childChain.getExitData(utxoToExit)
+    assert.hasAllKeys(exitData, ['txbytes', 'proof', 'utxo_pos'])
+
+    const standardExitReceipt = await rootChain.startStandardExit({
+      utxoPos: exitData.utxo_pos,
+      outputTx: exitData.txbytes,
+      inclusionProof: exitData.proof,
+      txOptions: {
+        privateKey: aliceAccount.privateKey,
+        from: aliceAccount.address
+      }
+    })
+    console.log(`Alice called RootChain.startExit(): txhash = ${standardExitReceipt.transactionHash}`)
+
+    const afterQueue = await rootChain.getExitQueue()
+    assert.lengthOf(afterQueue, 2)
+  })
+
+  it('should be able to retrieve an ERC20 exit queue', async function () {
+    const token = config.testErc20Contract
+    const beforeQueue = await rootChain.getExitQueue(token)
+    assert.deepEqual(beforeQueue, emptyQueue)
 
     // TODO: add actual exit and test if it shows up in the queue
     assert.isTrue(true)
