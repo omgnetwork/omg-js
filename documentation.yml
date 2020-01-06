@@ -69,3 +69,5 @@ toc:
       - TransactionCallbacks
       - Balance
       - ExitData
+      - Payment
+      - Fee
