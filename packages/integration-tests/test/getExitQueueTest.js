@@ -14,6 +14,7 @@ const { assert, should, use } = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 const RootChain = require('@omisego/omg-js-rootchain')
 const ChildChain = require('@omisego/omg-js-childchain')
+const { transaction, waitForRootchainTransaction } = require('@omisego/omg-js-util')
 const Web3 = require('web3')
 
 const faucet = require('../helpers/testFaucet')
@@ -53,11 +54,33 @@ describe('getExitQueue tests', function () {
     }
   })
 
-  it.only('should be able to retrieve an ETH exit queue', async function () {
-    // process exit to clear the queue
-
-    const beforeQueue = await rootChain.getExitQueue()
-    assert.lengthOf(beforeQueue, 0)
+  it('should be able to retrieve an ETH exit queue', async function () {
+    let queue = await rootChain.getExitQueue()
+    if (queue.length) {
+      const ethExitReceipt = await rootChain.processExits({
+        token: transaction.ETH_CURRENCY,
+        exitId: 0,
+        maxExitsToProcess: queue.length,
+        txOptions: {
+          privateKey: aliceAccount.privateKey,
+          from: aliceAccount.address,
+          gas: 6000000
+        }
+      })
+      if (ethExitReceipt) {
+        console.log(`ETH exits processing: ${ethExitReceipt.transactionHash}`)
+        await waitForRootchainTransaction({
+          web3,
+          transactionHash: ethExitReceipt.transactionHash,
+          checkIntervalMs: config.millis_to_wait_for_next_block,
+          blocksToWait: config.blocks_to_wait_for_txn,
+          onCountdown: (remaining) => console.log(`${remaining} blocks remaining before confirmation`)
+        })
+        console.log('ETH exits processed')
+      }
+    }
+    queue = await rootChain.getExitQueue()
+    assert.lengthOf(queue, 0)
 
     await rcHelper.depositEth({
       rootChain,
@@ -93,22 +116,30 @@ describe('getExitQueue tests', function () {
     })
     console.log(`Alice called RootChain.startExit(): txhash = ${standardExitReceipt.transactionHash}`)
 
-    const afterQueue = await rootChain.getExitQueue()
-    assert.lengthOf(afterQueue, 1)
+    queue = await rootChain.getExitQueue()
+    assert.lengthOf(queue, 1)
 
-    // process exit to clear the queue
-  })
+    // Wait for challenge period
+    const { msUntilFinalization } = await rootChain.getExitTime({
+      exitRequestBlockNumber: standardExitReceipt.blockNumber,
+      submissionBlockNumber: utxoToExit.blknum
+    })
+    console.log(`Waiting for challenge period... ${msUntilFinalization}ms`)
+    await rcHelper.sleep(msUntilFinalization)
+    const processReceipt = await rootChain.processExits({
+      token: transaction.ETH_CURRENCY,
+      exitId: 0,
+      maxExitsToProcess: queue.length,
+      txOptions: {
+        privateKey: aliceAccount.privateKey,
+        from: aliceAccount.address
+      }
+    })
+    console.log(
+      `Alice called RootChain.processExits() after challenge period: txhash = ${processReceipt.transactionHash}`
+    )
 
-  it('should be able to retrieve an ERC20 exit queue', async function () {
-    const token = config.testErc20Contract
-    const beforeQueue = await rootChain.getExitQueue(token)
-    assert.lengthOf(beforeQueue, 0)
-
-    // TODO: add actual exit and test if it shows up in the queue
-
-    const afterQueue = await rootChain.getExitQueue()
-    assert.lengthOf(afterQueue, 1)
-
-    // process exit to clear the queue
+    queue = await rootChain.getExitQueue()
+    assert.lengthOf(queue, 0)
   })
 })
