@@ -18,7 +18,7 @@ Create a transaction body
 For full control of the transaction
 1. create a transaction body using a method explained above
 2. `transaction.getTypedData` (sanitizes transaction into the correct typedData format)
-3. `childchain.signTransaction` (locally signs typedData with passed private keys, useful for multiple different signatures. can also use metamask to sign: see signing-methods.md)
+3. `childchain.signTransaction` (locally signs typedData with passed private keys, useful for multiple different signatures. can also use metamask to sign: see [signing-methods](./signing-methods.md))
 4. `childchain.buildSignedTransaction` (returns encoded and signed transaction ready to be submitted)
 5. `childchain.submitTransaction` (submits to the childchain)
 
