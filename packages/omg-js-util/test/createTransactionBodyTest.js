@@ -18,16 +18,20 @@ describe('createTransactionBody', function () {
     const toAddress = '0x3272ee86d8192f59261960c9ae186063c8c9041f'
     const toAmount = 600000000000000000
 
-    const txBody = transaction.createTransactionBody(
+    const txBody = transaction.createTransactionBody({
       fromAddress,
       fromUtxos,
-      toAddress,
-      toAmount,
-      transaction.ETH_CURRENCY,
-      undefined,
-      0,
-      transaction.ETH_CURRENCY
-    )
+      payment: {
+        owner: toAddress,
+        amount: toAmount,
+        currency: transaction.ETH_CURRENCY
+      },
+      fee: {
+        amount: 0,
+        currency: transaction.ETH_CURRENCY
+      },
+      metadata: undefined
+    })
     assert.equal(txBody.outputs.length, 2)
     assert.equal(txBody.outputs[0].outputGuard, toAddress)
     assert.equal(txBody.outputs[0].amount.toString(), toAmount.toString())
@@ -63,16 +67,20 @@ describe('createTransactionBody', function () {
     const toAddress = '0x3272ee86d8192f59261960c9ae186063c8c9041f'
     const toAmount = 16
 
-    const txBody = transaction.createTransactionBody(
+    const txBody = transaction.createTransactionBody({
       fromAddress,
       fromUtxos,
-      toAddress,
-      toAmount,
-      transaction.ETH_CURRENCY,
-      undefined,
-      0,
-      transaction.ETH_CURRENCY
-    )
+      payment: {
+        owner: toAddress,
+        amount: toAmount,
+        currency: transaction.ETH_CURRENCY
+      },
+      fee: {
+        amount: 0,
+        currency: transaction.ETH_CURRENCY
+      },
+      metadata: undefined
+    })
     assert.equal(txBody.outputs.length, 2)
     assert.equal(txBody.outputs[0].outputGuard, toAddress)
     assert.equal(txBody.outputs[0].amount.toString(), toAmount.toString())
@@ -108,16 +116,20 @@ describe('createTransactionBody', function () {
     const toAddress = '0x3272ee86d8192f59261960c9ae186063c8c9041f'
     const toAmount = 20
 
-    const txBody = transaction.createTransactionBody(
+    const txBody = transaction.createTransactionBody({
       fromAddress,
       fromUtxos,
-      toAddress,
-      toAmount,
-      transaction.ETH_CURRENCY,
-      undefined,
-      0,
-      transaction.ETH_CURRENCY
-    )
+      payment: {
+        owner: toAddress,
+        amount: toAmount,
+        currency: transaction.ETH_CURRENCY
+      },
+      fee: {
+        amount: 0,
+        currency: transaction.ETH_CURRENCY
+      },
+      metadata: undefined
+    })
     assert.equal(txBody.outputs.length, 1)
     assert.equal(txBody.outputs[0].outputGuard, toAddress)
     assert.equal(txBody.outputs[0].amount.toString(), toAmount.toString())
@@ -138,16 +150,20 @@ describe('createTransactionBody', function () {
     const toAddress = '0x3272ee86d8192f59261960c9ae186063c8c9041f'
     const toAmount = fromUtxos[0].amount
 
-    const txBody = transaction.createTransactionBody(
+    const txBody = transaction.createTransactionBody({
       fromAddress,
       fromUtxos,
-      toAddress,
-      toAmount,
-      transaction.ETH_CURRENCY,
-      undefined,
-      0,
-      transaction.ETH_CURRENCY
-    )
+      payment: {
+        owner: toAddress,
+        amount: toAmount,
+        currency: transaction.ETH_CURRENCY
+      },
+      fee: {
+        amount: 0,
+        currency: transaction.ETH_CURRENCY
+      },
+      metadata: undefined
+    })
     assert.equal(txBody.outputs.length, 1)
     assert.equal(txBody.outputs[0].outputGuard, toAddress)
     assert.equal(txBody.outputs[0].amount.toString(), toAmount.toString())
@@ -176,16 +192,20 @@ describe('createTransactionBody', function () {
     const toAddress = '0x3272ee86d8192f59261960c9ae186063c8c9041f'
     const toSendErc20Amount = 500
 
-    const txBody = transaction.createTransactionBody(
+    const txBody = transaction.createTransactionBody({
       fromAddress,
       fromUtxos,
-      toAddress,
-      toSendErc20Amount,
-      fakeErc20,
-      undefined,
-      50,
-      transaction.ETH_CURRENCY
-    )
+      payment: {
+        owner: toAddress,
+        amount: toSendErc20Amount,
+        currency: fakeErc20
+      },
+      fee: {
+        amount: 50,
+        currency: transaction.ETH_CURRENCY
+      },
+      metadata: undefined
+    })
     assert.equal(txBody.outputs.length, 3)
     assert.equal(txBody.outputs[0].outputGuard, toAddress)
     assert.equal(txBody.outputs[1].outputGuard, fromAddress)
@@ -227,16 +247,20 @@ describe('createTransactionBody', function () {
     const toAddress = '0x3272ee86d8192f59261960c9ae186063c8c9041f'
     const toSendEthAmount = 500
 
-    const txBody = transaction.createTransactionBody(
+    const txBody = transaction.createTransactionBody({
       fromAddress,
       fromUtxos,
-      toAddress,
-      toSendEthAmount,
-      transaction.ETH_CURRENCY,
-      undefined,
-      50,
-      fakeErc20
-    )
+      payment: {
+        owner: toAddress,
+        amount: toSendEthAmount,
+        currency: transaction.ETH_CURRENCY
+      },
+      fee: {
+        amount: 50,
+        currency: fakeErc20
+      },
+      metadata: undefined
+    })
     assert.equal(txBody.outputs.length, 3)
     assert.equal(txBody.outputs[0].outputGuard, toAddress)
     assert.equal(txBody.outputs[1].outputGuard, fromAddress)
@@ -272,16 +296,20 @@ describe('createTransactionBody', function () {
 
     return assert.throws(
       () =>
-        transaction.createTransactionBody(
+        transaction.createTransactionBody({
           fromAddress,
           fromUtxos,
-          toAddress,
-          toAmount,
-          transaction.ETH_CURRENCY,
-          undefined,
-          0,
-          transaction.ETH_CURRENCY
-        ),
+          payment: {
+            owner: toAddress,
+            amount: toAmount,
+            currency: transaction.ETH_CURRENCY
+          },
+          fee: {
+            amount: 0,
+            currency: transaction.ETH_CURRENCY
+          },
+          metadata: undefined
+        }),
       Error,
       /Insufficient funds/
     )
@@ -318,16 +346,20 @@ describe('createTransactionBody', function () {
 
     return assert.throws(
       () =>
-        transaction.createTransactionBody(
+        transaction.createTransactionBody({
           fromAddress,
           fromUtxos,
-          toAddress,
-          toAmount,
-          transaction.ETH_CURRENCY,
-          undefined,
-          0,
-          transaction.ETH_CURRENCY
-        ),
+          payment: {
+            owner: toAddress,
+            amount: toAmount,
+            currency: transaction.ETH_CURRENCY
+          },
+          fee: {
+            amount: 0,
+            currency: transaction.ETH_CURRENCY
+          },
+          metadata: undefined
+        }),
       Error,
       /There are currencies in the utxo array that is not fee or currency./
     )

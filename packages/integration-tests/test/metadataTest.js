@@ -73,13 +73,17 @@ describe('Metadata tests (ci-enabled-fast)', function () {
         fromAddress: aliceAccount.address,
         fromUtxos: utxos,
         fromPrivateKeys: [aliceAccount.privateKey],
-        toAddress: bobAccount.address,
-        toAmount: TRANSFER_AMOUNT,
-        currency: transaction.ETH_CURRENCY,
+        payment: {
+          owner: bobAccount.address,
+          currency: transaction.ETH_CURRENCY,
+          amount: TRANSFER_AMOUNT
+        },
+        fee: {
+          amount: 0,
+          currency: transaction.ETH_CURRENCY
+        },
         metadata: transaction.encodeMetadata(METADATA),
-        verifyingContract: rootChain.plasmaContractAddress,
-        feeAmount: 0,
-        feeCurrency: transaction.ETH_CURRENCY
+        verifyingContract: rootChain.plasmaContractAddress
       })
       console.log(`Submitted transaction: ${JSON.stringify(result)}`)
 
@@ -133,13 +137,17 @@ describe('Metadata tests (ci-enabled-fast)', function () {
         fromAddress: aliceAccount.address,
         fromUtxos: utxos,
         fromPrivateKeys: [aliceAccount.privateKey],
-        toAddress: bobAccount.address,
-        toAmount: TRANSFER_AMOUNT,
-        currency: transaction.ETH_CURRENCY,
+        payment: {
+          owner: bobAccount.address,
+          amount: TRANSFER_AMOUNT,
+          currency: transaction.ETH_CURRENCY
+        },
+        fee: {
+          amount: 0,
+          currency: transaction.ETH_CURRENCY
+        },
         metadata: hashString,
-        verifyingContract: rootChain.plasmaContractAddress,
-        feeAmount: 0,
-        feeCurrency: transaction.ETH_CURRENCY
+        verifyingContract: rootChain.plasmaContractAddress
       })
       console.log(`Submitted transaction: ${JSON.stringify(result)}`)
 
@@ -188,13 +196,16 @@ describe('Metadata tests (ci-enabled-fast)', function () {
         fromAddress: aliceAccount.address,
         fromUtxos: utxos,
         fromPrivateKeys: [aliceAccount.privateKey],
-        toAddress: bobAccount.address,
-        toAmount: TRANSFER_AMOUNT,
-        currency: transaction.ETH_CURRENCY,
-        metadata: null,
-        verifyingContract: rootChain.plasmaContractAddress,
-        feeAmount: 0,
-        feeCurrency: transaction.ETH_CURRENCY
+        payment: {
+          owner: bobAccount.address,
+          amount: TRANSFER_AMOUNT,
+          currency: transaction.ETH_CURRENCY
+        },
+        fee: {
+          amount: 0,
+          currency: transaction.ETH_CURRENCY
+        },
+        verifyingContract: rootChain.plasmaContractAddress
       })
       console.log(`Submitted transaction: ${JSON.stringify(result)}`)
 

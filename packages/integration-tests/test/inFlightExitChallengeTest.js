@@ -33,12 +33,10 @@ const childChain = new ChildChain({
 // NB This test waits for at least RootChain.MIN_EXIT_PERIOD so it should be run against a
 // modified RootChain contract with a shorter than normal MIN_EXIT_PERIOD.
 let rootChain
-let bonds
 describe('In-flight Exit Challenge tests', function () {
   before(async function () {
     const plasmaContract = await rcHelper.getPlasmaContractAddress(config)
     rootChain = new RootChain({ web3, plasmaContractAddress: plasmaContract.contract_addr })
-    bonds = (await rootChain.getPaymentExitGame()).bonds
     await faucet.init(rootChain, childChain, web3, config)
   })
 
