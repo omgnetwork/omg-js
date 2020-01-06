@@ -18,6 +18,7 @@ global.Buffer = global.Buffer || require('buffer').Buffer
 
 const InvalidArgumentError = require('./InvalidArgumentError')
 const numberToBN = require('number-to-bn')
+const { uniq } = require('lodash')
 const rlp = require('rlp')
 const typedData = require('./typedData')
 const getToSignHash = require('./signHash')
@@ -198,8 +199,8 @@ const transaction = {
   *
   * @param {Object} args an arguments object
   * @param {string} args.fromAddress the address of the sender
-  * @param {Object[]} args.fromUtxos the utxos to use as transaction inputs
-  * @param {Payment} args.payment payment object specifying the output
+  * @param {Object[]} args.fromUtxos the utxos to use as transaction inputs (in order of priority)
+  * @param {Payment[]} args.payments payment objects specifying the outputs
   * @param {Fee} args.fee fee object specifying amount and currency
   * @param {string} args.metadata the metadata to send
   * @return {TransactionBody} transaction object
@@ -209,75 +210,134 @@ const transaction = {
   createTransactionBody: function ({
     fromAddress,
     fromUtxos,
-    payment,
+    payments,
     fee,
     metadata
   }) {
-    validateInputs(fromUtxos)
     validateMetadata(metadata)
     if (!fee.currency) {
       throw new Error('Fee currency not provided.')
     }
-    if (fromUtxos.find(utxo => utxo.currency !== payment.currency && utxo.currency !== fee.currency)) {
-      throw new Error('There are currencies in the utxo array that is not fee or currency.')
-    }
-    const inputArr = fromUtxos.filter(utxo => utxo.currency === payment.currency)
-    const feeArr = fromUtxos.filter(utxo => utxo.currency === fee.currency)
-    const sum = arr => arr.reduce((acc, curr) => acc.add(numberToBN(curr.amount.toString())), numberToBN(0))
-    // Get the total value of the inputs
-    const totalInputValue = sum(inputArr)
-    const totalInputFee = sum(feeArr)
-    const bnAmount = numberToBN(payment.amount)
-    const bnFeeAmount = numberToBN(fee.amount)
-    // Check there is enough in the inputs to cover the amount
-    if (totalInputValue.lt(bnAmount)) {
-      throw new Error(`Insufficient funds for ${bnAmount.toString()}`)
-    }
 
-    // to sender output
-    const outputArr = [{
-      outputType: 1,
-      outputGuard: payment.owner,
-      currency: payment.currency,
-      amount: bnAmount
-    }]
+    // check if fromUtxos has sufficient amounts to cover payments and fees
+    const neededCurrencies = uniq([...payments.map(i => i.currency), fee.currency])
+    const allPayments = [...payments, fee]
 
-    if (fee.currency !== payment.currency && totalInputValue.gt(bnAmount)) {
-      outputArr.push({
-        outputType: 1,
-        outputGuard: fromAddress,
-        currency: payment.currency,
-        amount: totalInputValue.sub(bnAmount)
-      })
-    }
+    const neededVSsupplied = neededCurrencies.map(currency => {
+      const needed = allPayments.reduce((acc, i) => {
+        return i.currency === currency
+          ? acc.add(numberToBN(i.amount))
+          : acc
+      }, numberToBN(0))
+      const supplied = fromUtxos.reduce((acc, i) => {
+        return i.currency === currency
+          ? acc.add(numberToBN(i.amount))
+          : acc
+      }, numberToBN(0))
+      const change = supplied.sub(needed)
+      return {
+        currency,
+        needed,
+        supplied,
+        change
+      }
+    })
 
-    if (fee.currency === payment.currency && totalInputValue.gt(bnAmount.add(bnFeeAmount))) {
-      outputArr.push({
-        outputType: 1,
-        outputGuard: fromAddress,
-        currency: payment.currency,
-        amount: totalInputValue.sub(bnAmount).sub(bnFeeAmount)
-      })
-    }
+    // TODO: remove... just for testing
+    const stringNeeded = neededVSsupplied.map(i => {
+      return {
+        currency: i.currency,
+        needed: i.needed.toString(),
+        supplied: i.supplied.toString(),
+        change: i.change.toString()
+      }
+    })
+    console.log('initialNeeds: ', stringNeeded)
 
-    // fee change
-    if (fee.currency !== payment.currency) {
-      outputArr.push({
-        outputType: 1,
-        outputGuard: fromAddress,
-        currency: fee.currency,
-        amount: totalInputFee.sub(bnFeeAmount)
-      })
+    // compare how much we need vs how much supplied per currency
+    for (const i of neededVSsupplied) {
+      if (i.needed.gt(i.supplied)) {
+        const diff = i.needed.sub(i.supplied)
+        throw new Error(`Insufficient funds. Needs ${diff.toString()} more of ${i.currency} to cover payments and fees`)
+      }
     }
 
-    const txBody = {
-      inputs: fromUtxos,
-      outputs: outputArr,
-      txData: 0,
-      metadata
-    }
+    // get inputs array by filtering fromUtxos actually used (respecting order)
+    const _needed = [...neededVSsupplied]
+    const inputs = fromUtxos.filter(fromUtxo => {
+      const foundIndex = _needed.findIndex(i => i.currency === fromUtxo.currency)
+      const foundItem = _needed.find(i => i.currency === fromUtxo.currency)
+      if (!foundItem || foundItem.needed.lte(numberToBN(0))) {
+        return false
+      }
+      const diff = foundItem.needed.sub(numberToBN(fromUtxo.amount))
+      _needed[foundIndex] = {
+        ...foundItem,
+        needed: diff
+      }
+      return true
+    })
+    validateInputs(inputs)
+    console.log('_needed: ', _needed)
 
-    return txBody
+    // recalculate change with filtered fromUtxos array, and create outputs
+
+    // const inputArr = fromUtxos.filter(utxo => utxo.currency === payment.currency)
+    // const feeArr = fromUtxos.filter(utxo => utxo.currency === fee.currency)
+    // const sum = arr => arr.reduce((acc, curr) => acc.add(numberToBN(curr.amount.toString())), numberToBN(0))
+    // // Get the total value of the inputs
+    // const totalInputValue = sum(inputArr)
+    // const totalInputFee = sum(feeArr)
+    // const bnAmount = numberToBN(payment.amount)
+    // const bnFeeAmount = numberToBN(fee.amount)
+    // // Check there is enough in the inputs to cover the amount
+    // if (totalInputValue.lt(bnAmount)) {
+    //   throw new Error(`Insufficient funds for ${bnAmount.toString()}`)
+    // }
+
+    // // to sender output
+    // const outputArr = [{
+    //   outputType: 1,
+    //   outputGuard: payment.owner,
+    //   currency: payment.currency,
+    //   amount: bnAmount
+    // }]
+
+    // if (fee.currency !== payment.currency && totalInputValue.gt(bnAmount)) {
+    //   outputArr.push({
+    //     outputType: 1,
+    //     outputGuard: fromAddress,
+    //     currency: payment.currency,
+    //     amount: totalInputValue.sub(bnAmount)
+    //   })
+    // }
+
+    // if (fee.currency === payment.currency && totalInputValue.gt(bnAmount.add(bnFeeAmount))) {
+    //   outputArr.push({
+    //     outputType: 1,
+    //     outputGuard: fromAddress,
+    //     currency: payment.currency,
+    //     amount: totalInputValue.sub(bnAmount).sub(bnFeeAmount)
+    //   })
+    // }
+
+    // // fee change
+    // if (fee.currency !== payment.currency) {
+    //   outputArr.push({
+    //     outputType: 1,
+    //     outputGuard: fromAddress,
+    //     currency: fee.currency,
+    //     amount: totalInputFee.sub(bnFeeAmount)
+    //   })
+    // }
+
+    // const txBody = {
+    //   inputs: fromUtxos,
+    //   outputs: outputArr,
+    //   txData: 0,
+    //   metadata
+    // }
+    // return txBody
   },
 
   /**

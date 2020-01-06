@@ -3,6 +3,47 @@ const numberToBN = require('number-to-bn')
 const assert = require('chai').assert
 
 describe('createTransactionBody', function () {
+  it.only('toto', function () {
+    const txBody = transaction.createTransactionBody({
+      fromAddress: '0xf4ebbe787311bb955bb353b7a4d8b97af8ed1c9b',
+      fromUtxos: [
+        {
+          txindex: 0,
+          oindex: 0,
+          currency: transaction.ETH_CURRENCY,
+          blknum: 2,
+          amount: 60
+        },
+        {
+          txindex: 0,
+          oindex: 0,
+          currency: '0x123',
+          blknum: 2,
+          amount: 10
+        }
+      ],
+      payments: [
+        {
+          owner: '0x3272ee86d8192f59261960c9ae186063c8c9041f',
+          amount: 50,
+          currency: transaction.ETH_CURRENCY
+        },
+        {
+          owner: '0x3272ee86d8192f59261960c9ae186063c8c9041f',
+          amount: 10,
+          currency: '0x123'
+        }
+      ],
+      fee: {
+        amount: 0,
+        currency: transaction.ETH_CURRENCY
+      },
+      metadata: undefined
+    })
+
+    console.log(txBody)
+  })
+
   it('should create a transaction body from one input and give change', function () {
     const fromAddress = '0xf4ebbe787311bb955bb353b7a4d8b97af8ed1c9b'
     const fromUtxos = [
@@ -21,11 +62,11 @@ describe('createTransactionBody', function () {
     const txBody = transaction.createTransactionBody({
       fromAddress,
       fromUtxos,
-      payment: {
+      payments: [{
         owner: toAddress,
         amount: toAmount,
         currency: transaction.ETH_CURRENCY
-      },
+      }],
       fee: {
         amount: 0,
         currency: transaction.ETH_CURRENCY
@@ -70,11 +111,11 @@ describe('createTransactionBody', function () {
     const txBody = transaction.createTransactionBody({
       fromAddress,
       fromUtxos,
-      payment: {
+      payments: [{
         owner: toAddress,
         amount: toAmount,
         currency: transaction.ETH_CURRENCY
-      },
+      }],
       fee: {
         amount: 0,
         currency: transaction.ETH_CURRENCY
@@ -119,11 +160,11 @@ describe('createTransactionBody', function () {
     const txBody = transaction.createTransactionBody({
       fromAddress,
       fromUtxos,
-      payment: {
+      payments: [{
         owner: toAddress,
         amount: toAmount,
         currency: transaction.ETH_CURRENCY
-      },
+      }],
       fee: {
         amount: 0,
         currency: transaction.ETH_CURRENCY
@@ -153,11 +194,11 @@ describe('createTransactionBody', function () {
     const txBody = transaction.createTransactionBody({
       fromAddress,
       fromUtxos,
-      payment: {
+      payments: [{
         owner: toAddress,
         amount: toAmount,
         currency: transaction.ETH_CURRENCY
-      },
+      }],
       fee: {
         amount: 0,
         currency: transaction.ETH_CURRENCY
@@ -195,11 +236,11 @@ describe('createTransactionBody', function () {
     const txBody = transaction.createTransactionBody({
       fromAddress,
       fromUtxos,
-      payment: {
+      payments: [{
         owner: toAddress,
         amount: toSendErc20Amount,
         currency: fakeErc20
-      },
+      }],
       fee: {
         amount: 50,
         currency: transaction.ETH_CURRENCY
@@ -250,11 +291,11 @@ describe('createTransactionBody', function () {
     const txBody = transaction.createTransactionBody({
       fromAddress,
       fromUtxos,
-      payment: {
+      payments: [{
         owner: toAddress,
         amount: toSendEthAmount,
         currency: transaction.ETH_CURRENCY
-      },
+      }],
       fee: {
         amount: 50,
         currency: fakeErc20
@@ -299,11 +340,11 @@ describe('createTransactionBody', function () {
         transaction.createTransactionBody({
           fromAddress,
           fromUtxos,
-          payment: {
+          payments: [{
             owner: toAddress,
             amount: toAmount,
             currency: transaction.ETH_CURRENCY
-          },
+          }],
           fee: {
             amount: 0,
             currency: transaction.ETH_CURRENCY
@@ -349,11 +390,11 @@ describe('createTransactionBody', function () {
         transaction.createTransactionBody({
           fromAddress,
           fromUtxos,
-          payment: {
+          payments: [{
             owner: toAddress,
             amount: toAmount,
             currency: transaction.ETH_CURRENCY
-          },
+          }],
           fee: {
             amount: 0,
             currency: transaction.ETH_CURRENCY

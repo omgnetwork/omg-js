@@ -283,7 +283,7 @@ class ChildChain {
     const txBody = transaction.createTransactionBody({
       fromAddress,
       fromUtxos,
-      payment,
+      payments: [payment],
       fee,
       metadata
     })
