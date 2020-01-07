@@ -100,7 +100,7 @@ describe('createTransactionBody', function () {
     )
   })
 
-  it.only('should create a transaction body from two inputs for the exact amount, and not give change', function () {
+  it('should create a transaction body from two inputs for the exact amount, and not give change', function () {
     const fromAddress = '0xf4ebbe787311bb955bb353b7a4d8b97af8ed1c9b'
     const fromUtxos = [
       {
@@ -136,8 +136,7 @@ describe('createTransactionBody', function () {
       },
       metadata: undefined
     })
-    console.log(txBody)
-
+    assert.equal(txBody.inputs.length, 2)
     assert.equal(txBody.outputs.length, 1)
     assert.equal(txBody.outputs[0].outputGuard, toAddress)
     assert.equal(txBody.outputs[0].amount.toString(), toAmount.toString())
@@ -172,6 +171,7 @@ describe('createTransactionBody', function () {
       },
       metadata: undefined
     })
+    assert.equal(txBody.inputs.length, 1)
     assert.equal(txBody.outputs.length, 1)
     assert.equal(txBody.outputs[0].outputGuard, toAddress)
     assert.equal(txBody.outputs[0].amount.toString(), toAmount.toString())
@@ -214,21 +214,22 @@ describe('createTransactionBody', function () {
       },
       metadata: undefined
     })
+    assert.equal(txBody.inputs.length, 2)
     assert.equal(txBody.outputs.length, 3)
-    assert.equal(txBody.outputs[0].outputGuard, toAddress)
-    assert.equal(txBody.outputs[1].outputGuard, fromAddress)
-    assert.equal(txBody.outputs[2].outputGuard, fromAddress)
-    assert.equal(
-      txBody.outputs[0].amount.toString(),
-      toSendErc20Amount.toString()
+
+    const changeOutputs = txBody.outputs.filter(i => i.outputGuard === fromAddress)
+    const paymentOutputs = txBody.outputs.filter(i => i.outputGuard === toAddress)
+
+    assert.equal(changeOutputs.length, 2)
+    assert.equal(paymentOutputs.length, 1)
+    assert.exists(
+      paymentOutputs.find(i => i.amount.toString() === toSendErc20Amount.toString())
     )
-    assert.equal(
-      txBody.outputs[1].amount.toString(),
-      toSendErc20Amount.toString()
+    assert.exists(
+      changeOutputs.find(i => i.amount.toString() === (fromUtxos[0].amount - 50).toString())
     )
-    assert.equal(
-      txBody.outputs[2].amount.toString(),
-      (fromUtxos[0].amount - 50).toString()
+    assert.exists(
+      changeOutputs.find(i => i.amount.toString() === (fromUtxos[1].amount - toSendErc20Amount).toString())
     )
   })
 
@@ -269,25 +270,26 @@ describe('createTransactionBody', function () {
       },
       metadata: undefined
     })
+    assert.equal(txBody.inputs.length, 2)
     assert.equal(txBody.outputs.length, 3)
-    assert.equal(txBody.outputs[0].outputGuard, toAddress)
-    assert.equal(txBody.outputs[1].outputGuard, fromAddress)
-    assert.equal(txBody.outputs[2].outputGuard, fromAddress)
-    assert.equal(
-      txBody.outputs[0].amount.toString(),
-      toSendEthAmount.toString()
+
+    const changeOutputs = txBody.outputs.filter(i => i.outputGuard === fromAddress)
+    const paymentOutputs = txBody.outputs.filter(i => i.outputGuard === toAddress)
+    assert.equal(changeOutputs.length, 2)
+    assert.equal(paymentOutputs.length, 1)
+
+    assert.exists(
+      paymentOutputs.find(i => i.amount.toString() === toSendEthAmount.toString())
     )
-    assert.equal(
-      txBody.outputs[1].amount.toString(),
-      (fromUtxos[0].amount - toSendEthAmount).toString()
+    assert.exists(
+      changeOutputs.find(i => i.amount.toString() === (fromUtxos[0].amount - toSendEthAmount).toString())
     )
-    assert.equal(
-      txBody.outputs[2].amount.toString(),
-      (fromUtxos[1].amount - 50).toString()
+    assert.exists(
+      changeOutputs.find(i => i.amount.toString() === (fromUtxos[1].amount - 50).toString())
     )
   })
 
-  it('should fail to create a transaction with insufficient funds', function () {
+  it('should fail to create a transaction with insufficient funds and return correct required amount', function () {
     const fromAddress = '0xf4ebbe787311bb955bb353b7a4d8b97af8ed1c9b'
     const fromUtxos = [
       {
@@ -319,11 +321,11 @@ describe('createTransactionBody', function () {
           metadata: undefined
         }),
       Error,
-      /Insufficient funds/
+      /Insufficient funds. Needs 90 more of 0x0000000000000000000000000000000000000000 to cover payments and fees/
     )
   })
 
-  it('should fail to create a transaction with multi currency', function () {
+  it('should fail to create a transaction with multi currency insufficient funds', function () {
     const fromAddress = '0xf4ebbe787311bb955bb353b7a4d8b97af8ed1c9b'
     const fromUtxos = [
       {
@@ -369,7 +371,7 @@ describe('createTransactionBody', function () {
           metadata: undefined
         }),
       Error,
-      /There are currencies in the utxo array that is not fee or currency./
+      /Insufficient funds. Needs 90 more of 0x0000000000000000000000000000000000000000 to cover payments and fees/
     )
   })
 })

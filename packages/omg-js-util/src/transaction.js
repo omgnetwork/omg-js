@@ -273,13 +273,13 @@ const transaction = {
     // recalculate change with filtered fromUtxos array, and create outputs (payments + changeOutputs)
     const recalculatedChange = calculateChange(inputs)
     const changeOutputs = recalculatedChange
+      .filter(i => i.change.gt(numberToBN(0)))
       .map(i => ({
         outputType: 1,
         outputGuard: fromAddress,
         currency: i.currency,
         amount: i.change
       }))
-      .filter(i => i.amount.gt(numberToBN(0)))
     const paymentOutputs = payments.map(i => ({
       outputType: 1,
       outputGuard: i.owner,
