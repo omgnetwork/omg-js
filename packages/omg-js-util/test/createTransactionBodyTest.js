@@ -3,49 +3,6 @@ const numberToBN = require('number-to-bn')
 const assert = require('chai').assert
 
 describe('createTransactionBody', function () {
-  it.only('toto', function () {
-    const txBody = transaction.createTransactionBody({
-      fromAddress: '0xf4ebbe787311bb955bb353b7a4d8b97af8ed1c9b',
-      fromUtxos: [
-        {
-          txindex: 0,
-          oindex: 0,
-          currency: transaction.ETH_CURRENCY,
-          blknum: 2,
-          amount: 60
-        },
-        {
-          txindex: 0,
-          oindex: 0,
-          currency: transaction.ETH_CURRENCY,
-          blknum: 2,
-          amount: 60
-        },
-        {
-          txindex: 0,
-          oindex: 0,
-          currency: '0x123',
-          blknum: 2,
-          amount: 10
-        }
-      ],
-      payments: [
-        {
-          owner: '0x3272ee86d8192f59261960c9ae186063c8c9041f',
-          amount: 50,
-          currency: transaction.ETH_CURRENCY
-        }
-      ],
-      fee: {
-        amount: 5,
-        currency: transaction.ETH_CURRENCY
-      },
-      metadata: undefined
-    })
-
-    console.log(txBody)
-  })
-
   it('should create a transaction body from one input and give change', function () {
     const fromAddress = '0xf4ebbe787311bb955bb353b7a4d8b97af8ed1c9b'
     const fromUtxos = [
@@ -76,14 +33,17 @@ describe('createTransactionBody', function () {
       metadata: undefined
     })
     assert.equal(txBody.outputs.length, 2)
-    assert.equal(txBody.outputs[0].outputGuard, toAddress)
-    assert.equal(txBody.outputs[0].amount.toString(), toAmount.toString())
-    assert.equal(txBody.outputs[1].outputGuard, fromAddress)
+    assert.equal(txBody.inputs.length, 1)
+
+    const paymentOutput = txBody.outputs.find(i => i.outputGuard === toAddress)
+    const changeOutput = txBody.outputs.find(i => i.outputGuard === fromAddress)
+
+    assert.equal(paymentOutput.amount.toString(), toAmount.toString())
     const expectedChange = numberToBN(fromUtxos[0].amount).sub(
       numberToBN(toAmount)
     )
     assert.equal(
-      txBody.outputs[1].amount.toString(),
+      changeOutput.amount.toString(),
       expectedChange.toString()
     )
   })
@@ -124,20 +84,23 @@ describe('createTransactionBody', function () {
       },
       metadata: undefined
     })
+    assert.equal(txBody.inputs.length, 2)
     assert.equal(txBody.outputs.length, 2)
-    assert.equal(txBody.outputs[0].outputGuard, toAddress)
-    assert.equal(txBody.outputs[0].amount.toString(), toAmount.toString())
-    assert.equal(txBody.outputs[1].outputGuard, fromAddress)
+
+    const paymentOutput = txBody.outputs.find(i => i.outputGuard === toAddress)
+    const changeOutput = txBody.outputs.find(i => i.outputGuard === fromAddress)
+
+    assert.equal(paymentOutput.amount.toString(), toAmount.toString())
     const expectedChange = numberToBN(fromUtxos[0].amount)
       .add(numberToBN(fromUtxos[1].amount))
       .sub(numberToBN(toAmount))
     assert.equal(
-      txBody.outputs[1].amount.toString(),
+      changeOutput.amount.toString(),
       expectedChange.toString()
     )
   })
 
-  it('should create a transaction body from two inputs for the exact amount, and not give change', function () {
+  it.only('should create a transaction body from two inputs for the exact amount, and not give change', function () {
     const fromAddress = '0xf4ebbe787311bb955bb353b7a4d8b97af8ed1c9b'
     const fromUtxos = [
       {
@@ -173,6 +136,8 @@ describe('createTransactionBody', function () {
       },
       metadata: undefined
     })
+    console.log(txBody)
+
     assert.equal(txBody.outputs.length, 1)
     assert.equal(txBody.outputs[0].outputGuard, toAddress)
     assert.equal(txBody.outputs[0].amount.toString(), toAmount.toString())
