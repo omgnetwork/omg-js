@@ -1,5 +1,5 @@
 const Joi = require('@hapi/joi')
-const { validateAddress, validatePayments, validatePayment, validateFee, validateBn } = require('./helpers')
+const { validateAddress, validatePayments, validateFee, validateBn } = require('./helpers')
 
 const childchainConstructorSchema = Joi.object({
   watcherUrl: Joi.string().required(),
