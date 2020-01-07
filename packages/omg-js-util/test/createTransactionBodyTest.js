@@ -34,15 +34,10 @@ describe('createTransactionBody', function () {
           owner: '0x3272ee86d8192f59261960c9ae186063c8c9041f',
           amount: 50,
           currency: transaction.ETH_CURRENCY
-        },
-        {
-          owner: '0x3272ee86d8192f59261960c9ae186063c8c9041f',
-          amount: 10,
-          currency: '0x123'
         }
       ],
       fee: {
-        amount: 0,
+        amount: 5,
         currency: transaction.ETH_CURRENCY
       },
       metadata: undefined

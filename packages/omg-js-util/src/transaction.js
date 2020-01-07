@@ -219,9 +219,10 @@ const transaction = {
       throw new Error('Fee currency not provided.')
     }
 
+    const allPayments = [...payments, fee]
+    const neededCurrencies = uniq([...payments.map(i => i.currency), fee.currency])
+
     function calculateChange (inputs) {
-      const allPayments = [...payments, fee]
-      const neededCurrencies = uniq([...payments.map(i => i.currency), fee.currency])
       return neededCurrencies.map(currency => {
         const needed = allPayments.reduce((acc, i) => {
           return i.currency === currency
@@ -244,108 +245,55 @@ const transaction = {
     }
 
     // check if fromUtxos has sufficient amounts to cover payments and fees
-    const neededVSsupplied = calculateChange(fromUtxos)
-
-    // TODO: remove... just for testing
-    function stringifyChange (change) {
-      const stringNeeded = change.map(i => {
-        return {
-          currency: i.currency,
-          needed: i.needed.toString(),
-          supplied: i.supplied.toString(),
-          change: i.change.toString()
-        }
-      })
-      console.log('change: ', stringNeeded)
-    }
-    stringifyChange(neededVSsupplied)
-
     // compare how much we need vs how much supplied per currency
-    for (const i of neededVSsupplied) {
+    const change = calculateChange(fromUtxos)
+    for (const i of change) {
       if (i.needed.gt(i.supplied)) {
         const diff = i.needed.sub(i.supplied)
         throw new Error(`Insufficient funds. Needs ${diff.toString()} more of ${i.currency} to cover payments and fees`)
       }
     }
 
-    // get inputs array by filtering fromUtxos actually used (respecting order)
-    const _needed = [...neededVSsupplied]
+    // get inputs array by filtering the fromUtxos we will actually use (respecting order)
+    const changeCounter = [...change]
     const inputs = fromUtxos.filter(fromUtxo => {
-      const foundIndex = _needed.findIndex(i => i.currency === fromUtxo.currency)
-      const foundItem = _needed.find(i => i.currency === fromUtxo.currency)
+      const foundIndex = changeCounter.findIndex(i => i.currency === fromUtxo.currency)
+      const foundItem = changeCounter[foundIndex]
       if (!foundItem || foundItem.needed.lte(numberToBN(0))) {
         return false
       }
-      const diff = foundItem.needed.sub(numberToBN(fromUtxo.amount))
-      _needed[foundIndex] = {
+      changeCounter[foundIndex] = {
         ...foundItem,
-        needed: diff
+        needed: foundItem.needed.sub(numberToBN(fromUtxo.amount))
       }
       return true
     })
     validateInputs(inputs)
 
-    // recalculate change with filtered fromUtxos array, and create outputs
+    // recalculate change with filtered fromUtxos array, and create outputs (payments + changeOutputs)
     const recalculatedChange = calculateChange(inputs)
-    stringifyChange(recalculatedChange)
+    const changeOutputs = recalculatedChange.map(i => ({
+      outputType: 1,
+      outputGuard: fromAddress,
+      currency: i.currency,
+      amount: i.change
+    }))
+    const paymentOutputs = payments.map(i => ({
+      outputType: 1,
+      outputGuard: i.owner,
+      currency: i.currency,
+      amount: i.amount
+    }))
+    const outputs = [...changeOutputs, ...paymentOutputs]
+    validateOutputs(outputs)
 
-    // TODO: recalculatedChange is your outputs, and you already have your inputs!
-    // const txBody = {
-    //   inputs: fromUtxos,
-    //   outputs: outputArr,
-    //   txData: 0,
-    //   metadata
-    // }
-    // return txBody
-
-    // const inputArr = fromUtxos.filter(utxo => utxo.currency === payment.currency)
-    // const feeArr = fromUtxos.filter(utxo => utxo.currency === fee.currency)
-    // const sum = arr => arr.reduce((acc, curr) => acc.add(numberToBN(curr.amount.toString())), numberToBN(0))
-    // // Get the total value of the inputs
-    // const totalInputValue = sum(inputArr)
-    // const totalInputFee = sum(feeArr)
-    // const bnAmount = numberToBN(payment.amount)
-    // const bnFeeAmount = numberToBN(fee.amount)
-    // // Check there is enough in the inputs to cover the amount
-    // if (totalInputValue.lt(bnAmount)) {
-    //   throw new Error(`Insufficient funds for ${bnAmount.toString()}`)
-    // }
-
-    // // to sender output
-    // const outputArr = [{
-    //   outputType: 1,
-    //   outputGuard: payment.owner,
-    //   currency: payment.currency,
-    //   amount: bnAmount
-    // }]
-
-    // if (fee.currency !== payment.currency && totalInputValue.gt(bnAmount)) {
-    //   outputArr.push({
-    //     outputType: 1,
-    //     outputGuard: fromAddress,
-    //     currency: payment.currency,
-    //     amount: totalInputValue.sub(bnAmount)
-    //   })
-    // }
-
-    // if (fee.currency === payment.currency && totalInputValue.gt(bnAmount.add(bnFeeAmount))) {
-    //   outputArr.push({
-    //     outputType: 1,
-    //     outputGuard: fromAddress,
-    //     currency: payment.currency,
-    //     amount: totalInputValue.sub(bnAmount).sub(bnFeeAmount)
-    //   })
-    // }
-
-    // // fee change
-    // if (fee.currency !== payment.currency) {
-    //   outputArr.push({
-    //     outputType: 1,
-    //     outputGuard: fromAddress,
-    //     currency: fee.currency,
-    //     amount: totalInputFee.sub(bnFeeAmount)
-    //   })
-    // }
+    const txBody = {
+      inputs,
+      outputs,
+      txData: 0,
+      metadata
+    }
+    return txBody
   },
 
   /**
