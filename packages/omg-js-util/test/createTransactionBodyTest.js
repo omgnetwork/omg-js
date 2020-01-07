@@ -374,4 +374,286 @@ describe('createTransactionBody', function () {
       /Insufficient funds. Needs 90 more of 0x0000000000000000000000000000000000000000 to cover payments and fees/
     )
   })
+
+  it('should select relevant UTXOs as inputs and disregard unneccessary ones', function () {
+    const txBody = transaction.createTransactionBody({
+      fromAddress: '0xfromAddress',
+      fromUtxos: [
+        {
+          txindex: 0,
+          oindex: 0,
+          currency: '0xfakeErc20',
+          blknum: 3000,
+          amount: 1000
+        },
+        {
+          txindex: 0,
+          oindex: 0,
+          currency: transaction.ETH_CURRENCY,
+          blknum: 1,
+          amount: 10
+        },
+        {
+          txindex: 0,
+          oindex: 0,
+          currency: transaction.ETH_CURRENCY,
+          blknum: 2,
+          amount: 10
+        }
+      ],
+      payments: [{
+        owner: '0xtoAddress',
+        amount: 5,
+        currency: transaction.ETH_CURRENCY
+      }],
+      fee: {
+        amount: 0,
+        currency: transaction.ETH_CURRENCY
+      },
+      metadata: undefined
+    })
+    assert.equal(txBody.inputs.length, 1)
+    assert.equal(txBody.outputs.length, 2)
+
+    const changeOutputs = txBody.outputs.filter(i => i.outputGuard === '0xfromAddress')
+    const paymentOutputs = txBody.outputs.filter(i => i.outputGuard === '0xtoAddress')
+    assert.equal(changeOutputs.length, 1)
+    assert.equal(paymentOutputs.length, 1)
+  })
+
+  it('should select relevant UTXOs and respect the order of priority', function () {
+    const txBody = transaction.createTransactionBody({
+      fromAddress: '0xfromAddress',
+      fromUtxos: [
+        {
+          txindex: 0,
+          oindex: 0,
+          currency: transaction.ETH_CURRENCY,
+          blknum: 1,
+          amount: 5
+        },
+        {
+          txindex: 0,
+          oindex: 0,
+          currency: '0xfakeErc20',
+          blknum: 3000,
+          amount: 1000
+        },
+        {
+          txindex: 0,
+          oindex: 0,
+          currency: transaction.ETH_CURRENCY,
+          blknum: 2,
+          amount: 5
+        },
+        {
+          txindex: 0,
+          oindex: 0,
+          currency: transaction.ETH_CURRENCY,
+          blknum: 3,
+          amount: 10
+        }
+      ],
+      payments: [{
+        owner: '0xtoAddress',
+        amount: 10,
+        currency: transaction.ETH_CURRENCY
+      }],
+      fee: {
+        amount: 0,
+        currency: transaction.ETH_CURRENCY
+      },
+      metadata: undefined
+    })
+    console.log(txBody)
+    assert.equal(txBody.inputs.length, 2)
+    assert.equal(txBody.outputs.length, 1)
+
+    const inputUtxos = txBody.inputs.filter(i => i.amount === 5)
+    assert.equal(inputUtxos.length, 2)
+
+    const changeOutputs = txBody.outputs.filter(i => i.outputGuard === '0xfromAddress')
+    const paymentOutputs = txBody.outputs.filter(i => i.outputGuard === '0xtoAddress')
+    assert.equal(changeOutputs.length, 0)
+    assert.equal(paymentOutputs.length, 1)
+  })
+
+  it('should throw error if transaction will involve too many inputs, respecting priority', function () {
+    return assert.throws(
+      () =>
+        transaction.createTransactionBody({
+          fromAddress: '0xfromAddress',
+          fromUtxos: [
+            {
+              txindex: 0,
+              oindex: 0,
+              currency: transaction.ETH_CURRENCY,
+              blknum: 1,
+              amount: 1
+            },
+            {
+              txindex: 0,
+              oindex: 0,
+              currency: transaction.ETH_CURRENCY,
+              blknum: 2,
+              amount: 1
+            },
+            {
+              txindex: 0,
+              oindex: 0,
+              currency: transaction.ETH_CURRENCY,
+              blknum: 3,
+              amount: 1
+            },
+            {
+              txindex: 0,
+              oindex: 0,
+              currency: transaction.ETH_CURRENCY,
+              blknum: 4,
+              amount: 1
+            },
+            {
+              txindex: 0,
+              oindex: 0,
+              currency: transaction.ETH_CURRENCY,
+              blknum: 5,
+              amount: 1
+            },
+            {
+              txindex: 0,
+              oindex: 0,
+              currency: transaction.ETH_CURRENCY,
+              blknum: 6,
+              amount: 10
+            }
+          ],
+          payments: [{
+            owner: '0xtoAddress',
+            amount: 5,
+            currency: transaction.ETH_CURRENCY
+          }],
+          fee: {
+            amount: 0,
+            currency: transaction.ETH_CURRENCY
+          },
+          metadata: undefined
+        }),
+      Error,
+      /Inputs must be an array of size > 0 and < 4/
+    )
+  })
+
+  it('should throw error if transaction will involve too many outputs', function () {
+    return assert.throws(
+      () =>
+        transaction.createTransactionBody({
+          fromAddress: '0xfromAddress',
+          fromUtxos: [
+            {
+              txindex: 0,
+              oindex: 0,
+              currency: transaction.ETH_CURRENCY,
+              blknum: 1,
+              amount: 10
+            },
+            {
+              txindex: 0,
+              oindex: 0,
+              currency: '0xfakeerc20',
+              blknum: 2,
+              amount: 10
+            }
+          ],
+          payments: [
+            {
+              owner: '0xtoAddress1',
+              amount: 1,
+              currency: transaction.ETH_CURRENCY
+            },
+            {
+              owner: '0xtoAddress2',
+              amount: 1,
+              currency: transaction.ETH_CURRENCY
+            },
+            {
+              owner: '0xtoAddress3',
+              amount: 1,
+              currency: '0xfakeerc20'
+            }
+          ],
+          fee: {
+            amount: 1,
+            currency: '0xfakeerc20'
+          },
+          metadata: undefined
+        }),
+      Error,
+      /Outputs must be an array of size < 4/
+    )
+  })
+
+  it('should calculate correct change for multi-currency multi-payments', function () {
+    const fromUtxos = [
+      {
+        txindex: 0,
+        oindex: 0,
+        currency: transaction.ETH_CURRENCY,
+        blknum: 1,
+        amount: 10
+      },
+      {
+        txindex: 0,
+        oindex: 0,
+        currency: '0xfakeErc20',
+        blknum: 2,
+        amount: 1
+      },
+      {
+        txindex: 0,
+        oindex: 0,
+        currency: '0xfakeErc20',
+        blknum: 3,
+        amount: 1
+      }
+    ]
+    const payments = [
+      {
+        owner: '0xtoAddress1',
+        amount: 1,
+        currency: transaction.ETH_CURRENCY
+      },
+      {
+        owner: '0xtoAddress2',
+        amount: 1,
+        currency: '0xfakeErc20'
+      }
+    ]
+    const fee = {
+      amount: 1,
+      currency: transaction.ETH_CURRENCY
+    }
+    const txBody = transaction.createTransactionBody({
+      fromAddress: '0xfromAddress',
+      fromUtxos,
+      payments,
+      fee,
+      metadata: undefined
+    })
+    assert.equal(txBody.inputs.length, 2)
+    assert.equal(txBody.outputs.length, 3)
+
+    const inputUtxos = txBody.inputs.filter(i => i.currency === '0xfakeErc20')
+    assert.equal(inputUtxos.length, 1)
+
+    const changeOutputs = txBody.outputs.filter(i => i.outputGuard === '0xfromAddress')
+    const paymentOutputs = txBody.outputs.filter(i => i.outputGuard !== '0xfromAddress')
+    assert.equal(changeOutputs.length, 1)
+    assert.equal(paymentOutputs.length, 2)
+    assert.equal(
+      changeOutputs[0].amount.toString(),
+      fromUtxos[0].amount - payments[0].amount - fee.amount
+    )
+    assert.equal(paymentOutputs[0].amount.toString(), payments[0].amount.toString())
+    assert.equal(paymentOutputs[1].amount.toString(), payments[1].amount.toString())
+  })
 })
