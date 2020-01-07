@@ -471,11 +471,11 @@ describe('Transfer tests', function () {
         fromAddress: aliceAccount.address,
         fromUtxos: utxos,
         fromPrivateKeys: [aliceAccount.privateKey],
-        payment: {
+        payments: [{
           owner: bobAccount.address,
           currency: transaction.ETH_CURRENCY,
           amount: TRANSFER_AMOUNT
-        },
+        }],
         fee: {
           amount: 0,
           currency: transaction.ETH_CURRENCY

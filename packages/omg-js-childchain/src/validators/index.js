@@ -58,7 +58,7 @@ const sendTransactionSchema = Joi.object({
   fromAddress: validateAddress.required(),
   fromUtxos: Joi.array().items(Joi.object()).required(),
   fromPrivateKeys: Joi.array().items(Joi.string()).required(),
-  payment: validatePayment.required(),
+  payments: validatePayments.required(),
   fee: validateFee.required(),
   metadata: Joi.string().allow(null),
   verifyingContract: validateAddress.required()
