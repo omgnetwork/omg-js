@@ -16,7 +16,6 @@ limitations under the License. */
 const promiseRetry = require('promise-retry')
 const { getErc20Balance } = require('@omisego/omg-js-util')
 const numberToBN = require('number-to-bn')
-const { parseLog } = require('ethereum-event-logs')
 const { utils } = require('web3')
 
 function createAccount (web3) {
