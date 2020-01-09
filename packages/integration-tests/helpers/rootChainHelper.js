@@ -190,7 +190,6 @@ module.exports = {
   waitForERC20BalanceEq,
   sleep,
   sendTransaction,
-  deposit,
   spentOnGas,
   getPlasmaContractAddress,
   setGas,
