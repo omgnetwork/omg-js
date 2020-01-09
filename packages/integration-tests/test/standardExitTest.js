@@ -74,11 +74,13 @@ describe('Standard Exit tests', function () {
 
     it('should succesfully exit a deposit', async function () {
       // Alice deposits ETH into the Plasma contract
-      let receipt = await rcHelper.deposit({
-        rootChain,
-        address: aliceAccount.address,
+      let receipt = await rootChain.deposit({
+        owner: aliceAccount.address,
         amount: DEPOSIT_AMOUNT,
-        privateKey: aliceAccount.privateKey
+        txOptions: {
+          from: aliceAccount.address,
+          privateKey: aliceAccount.privateKey
+        }
       })
       await ccHelper.waitForBalanceEq(
         childChain,

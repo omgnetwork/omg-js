@@ -108,15 +108,6 @@ function sleep (ms) {
   })
 }
 
-async function deposit ({ rootChain, address, amount, currency, privateKey }) {
-  return rootChain.deposit({
-    owner: address,
-    amount,
-    currency,
-    txOptions: { from: address, privateKey }
-  })
-}
-
 async function getPlasmaContractAddress (config) {
   if (config.rootchainContract && config.rootchainContract !== '') {
     return { contract_addr: config.rootchainContract }
