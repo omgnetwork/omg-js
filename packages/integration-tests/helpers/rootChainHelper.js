@@ -177,11 +177,6 @@ function awaitTx (web3, txnHash, options) {
   }
 }
 
-function printlogs (receipt, abi) {
-  const events = parseLog(receipt.logs, abi)
-  events.forEach(e => console.log(`__ LOG__ ${e.name} : ${JSON.stringify(e.args)}`))
-}
-
 module.exports = {
   createAccount,
   waitForEthBalance,
@@ -193,6 +188,5 @@ module.exports = {
   spentOnGas,
   getPlasmaContractAddress,
   setGas,
-  awaitTx,
-  printlogs
+  awaitTx
 }
