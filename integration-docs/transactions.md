@@ -23,7 +23,7 @@ For full control of the transaction
 5. `childchain.submitTransaction` (submits to the childchain)
 
 ### METHOD B
-Relying on the childchain completely to create and send the transaction
+Relying on the childchain completely to create and send the transaction. Note that this method will choose the UTXO for you by using the largest utxo of that specific currency (also you won't able to do 2 transactions in the same block using this method).
 1. `childchain.createTransaction` (will construct a transaction body using the childchain)
 2. `childchain.signTypedData` (locally will sign a transaction selected from `childchain.createTransaction`)
 3. `childchain.submitTyped` (will submit the result of `childchain.signTypedData`)
