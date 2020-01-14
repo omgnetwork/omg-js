@@ -14,9 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License. */
 
 const promiseRetry = require('promise-retry')
-const { transaction, getErc20Balance } = require('@omisego/omg-js-util')
+const { getErc20Balance } = require('@omisego/omg-js-util')
 const numberToBN = require('number-to-bn')
-const { parseLog } = require('ethereum-event-logs')
 const { utils } = require('web3')
 
 function createAccount (web3) {
@@ -108,23 +107,6 @@ function sleep (ms) {
   })
 }
 
-async function depositEth ({ rootChain, address, amount, privateKey }) {
-  const depositTx = transaction.encodeDeposit(address, amount, transaction.ETH_CURRENCY)
-  return rootChain.depositEth({
-    depositTx,
-    amount,
-    txOptions: { from: address, privateKey }
-  })
-}
-
-async function depositToken ({ rootChain, address, amount, currency, privateKey }) {
-  const depositTx = transaction.encodeDeposit(address, amount, currency)
-  return rootChain.depositToken({
-    depositTx,
-    txOptions: { from: address, privateKey }
-  })
-}
-
 async function getPlasmaContractAddress (config) {
   if (config.rootchainContract && config.rootchainContract !== '') {
     return { contract_addr: config.rootchainContract }
@@ -194,11 +176,6 @@ function awaitTx (web3, txnHash, options) {
   }
 }
 
-function printlogs (receipt, abi) {
-  const events = parseLog(receipt.logs, abi)
-  events.forEach(e => console.log(`__ LOG__ ${e.name} : ${JSON.stringify(e.args)}`))
-}
-
 module.exports = {
   createAccount,
   waitForEthBalance,
@@ -207,11 +184,8 @@ module.exports = {
   waitForERC20BalanceEq,
   sleep,
   sendTransaction,
-  depositEth,
-  depositToken,
   spentOnGas,
   getPlasmaContractAddress,
   setGas,
-  awaitTx,
-  printlogs
+  awaitTx
 }
