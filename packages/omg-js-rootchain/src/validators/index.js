@@ -17,19 +17,15 @@ const approveTokenSchema = Joi.object({
   amount: [Joi.number(), validateBn]
 })
 
-const depositEthSchema = Joi.object({
-  depositTx: Joi.string().required(),
-  amount: [Joi.number(), validateBn],
+const depositSchema = Joi.object({
+  owner: validateAddress.required(),
+  amount: [Joi.number().required(), Joi.string().required(), validateBn.required()],
+  currency: validateAddress.required(),
   txOptions: validateTxOption.required(),
   callbacks: Joi.object({
     onReceipt: Joi.func(),
     onConfirmation: Joi.func()
   })
-})
-
-const depositTokenSchema = Joi.object({
-  depositTx: Joi.string().required(),
-  txOptions: validateTxOption.required()
 })
 
 const startStandardExitSchema = Joi.object({
@@ -149,8 +145,7 @@ module.exports = {
   rootchainConstructorSchema,
   getExitTimeSchema,
   approveTokenSchema,
-  depositTokenSchema,
-  depositEthSchema,
+  depositSchema,
   startStandardExitSchema,
   challengeStandardExitSchema,
   processExitsSchema,

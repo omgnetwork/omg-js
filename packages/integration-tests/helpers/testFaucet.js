@@ -110,11 +110,10 @@ const faucet = {
 
       try {
         console.log(`Not enough Child chain ETH in faucet ${this.address}, attempting to deposit ${needed.toString()} ETH from root chain`)
-        await rcHelper.depositEth({
-          rootChain: this.rootChain,
-          address: this.address,
+        await this.rootChain.deposit({
+          owner: this.address,
           amount: needed,
-          privateKey: this.privateKey
+          txOptions: { from: this.address, privateKey: this.privateKey }
         })
         await ccHelper.waitForBalance(
           this.childChain,
@@ -171,12 +170,11 @@ const faucet = {
         if (allowed === '0') {
           throw new Error('ERC20 approval failed!')
         }
-        await rcHelper.depositToken({
-          rootChain: this.rootChain,
-          address: this.address,
+        await this.rootChain.deposit({
+          owner: this.address,
           amount: needed.toNumber(),
           currency: this.erc20ContractAddress,
-          privateKey: this.privateKey
+          txOptions: { from: this.address, privateKey: this.privateKey }
         })
         await ccHelper.waitForBalance(
           this.childChain,
