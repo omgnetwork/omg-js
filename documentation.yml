@@ -24,6 +24,7 @@ toc:
   - name: RootChain
     children:
       - getExitTime
+      - getExitQueue
       - approveToken
       - deposit
       - getStandardExitId
@@ -67,3 +68,5 @@ toc:
       - TransactionCallbacks
       - Balance
       - ExitData
+      - Payment
+      - Fee
