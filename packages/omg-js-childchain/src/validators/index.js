@@ -1,5 +1,11 @@
 const Joi = require('@hapi/joi')
-const { validateAddress, validatePayments, validateFee, validateBn } = require('./helpers')
+const {
+  validateAddress,
+  validatePayments,
+  validateMetadata,
+  validateFee,
+  validateBn
+} = require('./helpers')
 
 const childchainConstructorSchema = Joi.object({
   watcherUrl: Joi.string().required(),
@@ -12,7 +18,7 @@ const getBalanceSchema = validateAddress.required()
 
 const getTransactionsSchema = Joi.object({
   address: validateAddress,
-  metadata: Joi.string().allow(null),
+  metadata: validateMetadata,
   blknum: Joi.number(),
   limit: Joi.number(),
   page: Joi.number()
@@ -34,7 +40,7 @@ const createTransactionSchema = Joi.object({
   owner: validateAddress.required(),
   payments: validatePayments.required(),
   fee: validateFee.required(),
-  metadata: Joi.string().allow(null)
+  metadata: validateMetadata
 })
 
 const signTypedDataSchema = Joi.object({
@@ -60,7 +66,7 @@ const sendTransactionSchema = Joi.object({
   fromPrivateKeys: Joi.array().items(Joi.string()).required(),
   payments: validatePayments.required(),
   fee: validateFee.required(),
-  metadata: Joi.string().allow(null),
+  metadata: validateMetadata,
   verifyingContract: validateAddress.required()
 })
 

@@ -48,11 +48,9 @@ async function childchainDepositEth () {
   await logBalances()
   console.log('-----')
 
-  const depositTx = transaction.encodeDeposit(aliceAddress, depositAmount, transaction.ETH_CURRENCY)
-
   console.log(`Depositing ${web3.utils.fromWei(depositAmount.toString(), 'ether')} ETH from the rootchain to the childchain`)
-  const transactionReceipt = await rootChain.depositEth({
-    depositTx,
+  const transactionReceipt = await rootChain.deposit({
+    owner: aliceAddress,
     amount: depositAmount,
     txOptions: {
       from: aliceAddress,
@@ -61,6 +59,7 @@ async function childchainDepositEth () {
     }
   })
   console.log('Deposit successful: ', transactionReceipt.transactionHash)
+
   console.log('Waiting for transaction to be recorded by the watcher...')
   await waitForRootchainTransaction({
     web3,

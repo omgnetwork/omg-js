@@ -16,7 +16,6 @@ limitations under the License. */
 const promiseRetry = require('promise-retry')
 const { transaction, hexPrefix } = require('@omisego/omg-js-util')
 const numberToBN = require('number-to-bn')
-const ethUtil = require('ethereumjs-util')
 
 function selectUtxos (utxos, amount, currency, includeFee) {
   // Filter by desired currency and sort in descending order
@@ -166,8 +165,7 @@ async function sendSubmitTyped (childChain, from, to, amount, currency, fromPriv
   const createdTx = await childChain.createTransaction({
     owner: from,
     payments,
-    fee,
-    metadata: transaction.NULL_METADATA
+    fee
   })
   const privateKeys = new Array(createdTx.transactions[0].inputs.length).fill(fromPrivateKey)
   const txTypedData = childChain.signTypedData(createdTx.transactions[0], privateKeys)
@@ -179,20 +177,6 @@ async function send (childChain, from, to, amount, currency, fromPrivateKey, ver
   // Submit the signed transaction to the childchain
   const result = await childChain.submitTransaction(signedTx)
   return { result, txbytes: hexPrefix(signedTx) }
-}
-
-function checkSig (web3, tx, sig, address) {
-  // Split the sig
-  const r = sig.slice(0, 66)
-  const s = `0x${sig.slice(66, 130)}`
-  const v = web3.utils.toDecimal(`0x${sig.slice(130, 132)}`)
-
-  const hashed = web3.utils.sha3(tx)
-  const signer = ethUtil.ecrecover(ethUtil.toBuffer(hashed), v, r, s)
-  const signerAddress = `0x${ethUtil.pubToAddress(signer).toString('hex')}`
-  if (signerAddress !== address) {
-    throw new Error(`Signer ${signerAddress} does not match address ${address}`)
-  }
 }
 
 async function splitUtxo (childChain, verifyingContract, account, utxo, split) {
@@ -237,12 +221,10 @@ module.exports = {
   waitForBalance,
   waitForBalanceEq,
   send,
-  sendSubmitTyped,
   createTx,
   sendAndWait,
   waitForEvent,
   selectUtxos,
-  checkSig,
   splitUtxo,
   waitNumUtxos
 }

@@ -79,8 +79,7 @@ describe('Create transaction tests', function () {
       const createdTx = await childChain.createTransaction({
         owner: aliceAccount.address,
         payments,
-        fee,
-        metadata: transaction.NULL_METADATA
+        fee
       })
       assert.equal(createdTx.result, 'complete')
       assert.equal(createdTx.transactions.length, 1)
@@ -113,11 +112,13 @@ describe('Create transaction tests', function () {
     const TRANSFER_AMOUNT = web3.utils.toWei('.0000001', 'ether')
     const FEE_AMOUNT = 10
     let aliceAccount
+    let bobAccount
 
     before(async function () {
       // Create Alice and Bob's accounts
       aliceAccount = rcHelper.createAccount(web3)
       console.log(`Created Alice account ${JSON.stringify(aliceAccount)}`)
+      bobAccount = rcHelper.createAccount(web3)
       // Give some ETH to Alice on the child chain
       await faucet.fundChildchain(aliceAccount.address, INTIIAL_ALICE_AMOUNT, transaction.ETH_CURRENCY)
       await ccHelper.waitForBalanceEq(childChain, aliceAccount.address, INTIIAL_ALICE_AMOUNT)
@@ -135,7 +136,8 @@ describe('Create transaction tests', function () {
     it('should create a single currency transaction', async function () {
       const payments = [{
         currency: transaction.ETH_CURRENCY,
-        amount: Number(TRANSFER_AMOUNT)
+        amount: Number(TRANSFER_AMOUNT),
+        owner: bobAccount.address
       }]
 
       const fee = {
@@ -146,8 +148,7 @@ describe('Create transaction tests', function () {
       const createdTx = await childChain.createTransaction({
         owner: aliceAccount.address,
         payments,
-        fee,
-        metadata: transaction.NULL_METADATA
+        fee
       })
       assert.equal(createdTx.result, 'complete')
       assert.equal(createdTx.transactions.length, 1)
@@ -207,8 +208,7 @@ describe('Create transaction tests', function () {
       const createdTx = await childChain.createTransaction({
         owner: aliceAccount.address,
         payments,
-        fee,
-        metadata: transaction.NULL_METADATA
+        fee
       })
       assert.equal(createdTx.result, 'complete')
       assert.equal(createdTx.transactions.length, 1)
@@ -293,8 +293,7 @@ describe('Create transaction tests', function () {
       const createdTx = await childChain.createTransaction({
         owner: aliceAccount.address,
         payments,
-        fee,
-        metadata: transaction.NULL_METADATA
+        fee
       })
       assert.equal(createdTx.result, 'intermediate')
       assert.equal(createdTx.transactions.length, 2)
@@ -319,8 +318,7 @@ describe('Create transaction tests', function () {
       const createdTx2 = await childChain.createTransaction({
         owner: aliceAccount.address,
         payments,
-        fee,
-        metadata: transaction.NULL_METADATA
+        fee
       })
       assert.equal(createdTx2.result, 'complete')
       assert.equal(createdTx2.transactions.length, 1)
@@ -387,8 +385,7 @@ describe('Create transaction tests', function () {
       const createdTx = await childChain.createTransaction({
         owner: aliceAccount.address,
         payments,
-        fee,
-        metadata: transaction.NULL_METADATA
+        fee
       })
       assert.equal(createdTx.result, 'complete')
       assert.equal(createdTx.transactions.length, 1)

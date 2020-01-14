@@ -17,7 +17,7 @@
 const Web3 = require('web3')
 const RootChain = require('../packages/omg-js-rootchain/src/rootchain')
 const ChildChain = require('../packages/omg-js-childchain/src/childchain')
-const { transaction, getErc20Balance, waitForRootchainTransaction } = require('../packages/omg-js-util/src')
+const { getErc20Balance, waitForRootchainTransaction } = require('../packages/omg-js-util/src')
 const wait = require('./wait.js')
 
 const config = require('./config.js')
@@ -64,22 +64,23 @@ async function childchainDepositErc20 () {
   })
   console.log('ERC20 approved: ', approveRes.transactionHash)
 
-  const depositTx = transaction.encodeDeposit(aliceAddress, config.alice_erc20_deposit_amount, config.erc20_contract)
-
   console.log(`Depositing ${config.alice_erc20_deposit_amount} ERC20 from the rootchain to the childchain`)
-  const depositReceipt = await rootChain.depositToken({
-    depositTx,
+  const transactionReceipt = await rootChain.deposit({
+    owner: aliceAddress,
+    amount: config.alice_erc20_deposit_amount,
+    currency: config.erc20_contract,
     txOptions: {
       from: aliceAddress,
       privateKey: alicePrivateKey,
       gas: 6000000
     }
   })
-  console.log('Deposit successful: ', depositReceipt.transactionHash)
+  console.log('Deposit successful: ', transactionReceipt.transactionHash)
+
   console.log('Waiting for transaction to be recorded by the watcher...')
   await waitForRootchainTransaction({
     web3,
-    transactionHash: depositReceipt.transactionHash,
+    transactionHash: transactionReceipt.transactionHash,
     checkIntervalMs: config.millis_to_wait_for_next_block,
     blocksToWait: config.blocks_to_wait_for_txn,
     onCountdown: (remaining) => console.log(`${remaining} blocks remaining before confirmation`)

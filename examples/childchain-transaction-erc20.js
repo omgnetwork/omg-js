@@ -58,14 +58,11 @@ async function childchainTransactionErc20 () {
     amount: 1
   }
 
-  const metadata = transaction.NULL_METADATA
-  // or encode using transaction.encodeMetadata('hello')
-
   const createdTxn = await childChain.createTransaction({
     owner: aliceAddress,
     payments,
     fee,
-    metadata
+    metadata: 'hello world'
   })
   console.log(`Created a childchain transaction of ${config.alice_erc20_transfer_amount} ERC20 from Alice to Bob.`)
   // type/sign/build/submit

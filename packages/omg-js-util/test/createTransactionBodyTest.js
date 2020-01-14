@@ -29,8 +29,7 @@ describe('createTransactionBody', function () {
       fee: {
         amount: 0,
         currency: transaction.ETH_CURRENCY
-      },
-      metadata: undefined
+      }
     })
     assert.equal(txBody.outputs.length, 2)
     assert.equal(txBody.inputs.length, 1)
@@ -81,8 +80,7 @@ describe('createTransactionBody', function () {
       fee: {
         amount: 0,
         currency: transaction.ETH_CURRENCY
-      },
-      metadata: undefined
+      }
     })
     assert.equal(txBody.inputs.length, 2)
     assert.equal(txBody.outputs.length, 2)
@@ -133,8 +131,7 @@ describe('createTransactionBody', function () {
       fee: {
         amount: 0,
         currency: transaction.ETH_CURRENCY
-      },
-      metadata: undefined
+      }
     })
     assert.equal(txBody.inputs.length, 2)
     assert.equal(txBody.outputs.length, 1)
@@ -168,8 +165,7 @@ describe('createTransactionBody', function () {
       fee: {
         amount: 0,
         currency: transaction.ETH_CURRENCY
-      },
-      metadata: undefined
+      }
     })
     assert.equal(txBody.inputs.length, 1)
     assert.equal(txBody.outputs.length, 1)
@@ -211,8 +207,7 @@ describe('createTransactionBody', function () {
       fee: {
         amount: 50,
         currency: transaction.ETH_CURRENCY
-      },
-      metadata: undefined
+      }
     })
     assert.equal(txBody.inputs.length, 2)
     assert.equal(txBody.outputs.length, 3)
@@ -267,8 +262,7 @@ describe('createTransactionBody', function () {
       fee: {
         amount: 50,
         currency: fakeErc20
-      },
-      metadata: undefined
+      }
     })
     assert.equal(txBody.inputs.length, 2)
     assert.equal(txBody.outputs.length, 3)
@@ -317,8 +311,7 @@ describe('createTransactionBody', function () {
           fee: {
             amount: 0,
             currency: transaction.ETH_CURRENCY
-          },
-          metadata: undefined
+          }
         }),
       Error,
       /Insufficient funds. Needs 90 more of 0x0000000000000000000000000000000000000000 to cover payments and fees/
@@ -534,8 +527,7 @@ describe('createTransactionBody', function () {
           fee: {
             amount: 0,
             currency: transaction.ETH_CURRENCY
-          },
-          metadata: undefined
+          }
         }),
       Error,
       /Inputs must be an array of size > 0 and < 4/

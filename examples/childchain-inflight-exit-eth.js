@@ -78,8 +78,7 @@ async function childchainInflightExitEth () {
   const createdTxn = await childChain.createTransaction({
     owner: aliceAddress,
     payments,
-    fee,
-    metadata: transaction.NULL_METADATA
+    fee
   })
   console.log(`Created a childchain transaction of ${web3.utils.fromWei(payments[0].amount.toString(), 'ether')} ETH from Alice to Bob.`)
 

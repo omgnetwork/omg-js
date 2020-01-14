@@ -360,6 +360,9 @@ const transaction = {
   *
   */
   encodeMetadata: function (str) {
+    if (str.startsWith('0x')) {
+      return str
+    }
     const encodedMetadata = Buffer.from(str).toString('hex').padStart(64, '0')
     return `0x${encodedMetadata}`
   },

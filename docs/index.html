@@ -191,21 +191,21 @@
                       </a></li>
                     
                       <li><a
+                        href='#getexitqueue'
+                        class='regular pre-open'>
+                        .getExitQueue
+                      </a></li>
+                    
+                      <li><a
                         href='#approvetoken'
                         class='regular pre-open'>
                         .approveToken
                       </a></li>
                     
                       <li><a
-                        href='#depositeth'
+                        href='#deposit'
                         class='regular pre-open'>
-                        .depositEth
-                      </a></li>
-                    
-                      <li><a
-                        href='#deposittoken'
-                        class='regular pre-open'>
-                        .depositToken
+                        .deposit
                       </a></li>
                     
                       <li><a
@@ -473,32 +473,24 @@
                         .ExitData
                       </a></li>
                     
+                      <li><a
+                        href='#payment'
+                        class='regular pre-open'>
+                        .Payment
+                      </a></li>
+                    
+                      <li><a
+                        href='#fee'
+                        class='regular pre-open'>
+                        .Fee
+                      </a></li>
+                    
                     </ul>
                   
                   
                   
                   
                 </div>
-                
-                </li>
-              
-                
-                <li><a
-                  href='#payment'
-                  class="">
-                  Payment
-                  
-                </a>
-                
-                </li>
-              
-                
-                <li><a
-                  href='#fee'
-                  class="">
-                  Fee
-                  
-                </a>
                 
                 </li>
               
@@ -1620,7 +1612,7 @@
                 <tr>
   <td class='break-word'><span class='code bold'>args.metadata</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>?</code>
   </td>
-  <td class='break-word'><span>the metadata to include in the transaction. Must be a 32-byte hex string
+  <td class='break-word'><span>the metadata to include in the transaction
 </span></td>
 </tr>
 
@@ -2357,6 +2349,75 @@ Should be called periodically to see if there are any byzantine_events to be act
       </div>
     </div>
   
+    <div class='border-bottom' id='getexitqueue'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>getExitQueue(token)</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>Retrieves the exit queue for a particular token</p>
+
+    <div class='pre p1 fill-light mt0'>getExitQueue(token: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>>></div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>token</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
+	    relevant queue to retrieve (defaults to ETH)
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>>></code>:
+        promise that resolves with the exit queue of the token (as priorities)
+
+      
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
     <div class='border-bottom' id='approvetoken'>
       <div class="clearfix small pointer toggle-sibling">
         <div class="py1 contain">
@@ -2469,11 +2530,11 @@ Should be called periodically to see if there are any byzantine_events to be act
       </div>
     </div>
   
-    <div class='border-bottom' id='depositeth'>
+    <div class='border-bottom' id='deposit'>
       <div class="clearfix small pointer toggle-sibling">
         <div class="py1 contain">
             <a class='icon pin-right py1 dark-link caret-right'>▸</a>
-            <span class='code strong strong truncate'>depositEth(args)</span>
+            <span class='code strong strong truncate'>deposit(args)</span>
         </div>
       </div>
       <div class="clearfix display-none toggle-target">
@@ -2481,9 +2542,9 @@ Should be called periodically to see if there are any byzantine_events to be act
 
   
 
-  <p>Deposit ETH to rootchain</p>
+  <p>Deposit to the rootchain</p>
 
-    <div class='pre p1 fill-light mt0'>depositEth(args: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="#transactionreceipt">TransactionReceipt</a>></div>
+    <div class='pre p1 fill-light mt0'>deposit(args: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="#transactionreceipt">TransactionReceipt</a>></div>
   
   
 
@@ -2519,9 +2580,9 @@ Should be called periodically to see if there are any byzantine_events to be act
             <tbody class='mt1'>
               
                 <tr>
-  <td class='break-word'><span class='code bold'>args.depositTx</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
+  <td class='break-word'><span class='code bold'>args.owner</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
   </td>
-  <td class='break-word'><span>RLP encoded childchain deposit transaction
+  <td class='break-word'><span>the address making the deposit
 </span></td>
 </tr>
 
@@ -2530,7 +2591,16 @@ Should be called periodically to see if there are any byzantine_events to be act
                 <tr>
   <td class='break-word'><span class='code bold'>args.amount</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></code>
   </td>
-  <td class='break-word'><span>amount of ETH to deposit
+  <td class='break-word'><span>amount to deposit
+</span></td>
+</tr>
+
+
+              
+                <tr>
+  <td class='break-word'><span class='code bold'>args.currency</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>?</code>
+  </td>
+  <td class='break-word'><span>the token address of the deposit (defaults to ETH)
 </span></td>
 </tr>
 
@@ -2549,109 +2619,6 @@ Should be called periodically to see if there are any byzantine_events to be act
   <td class='break-word'><span class='code bold'>args.callbacks</span> <code class='quiet'><a href="#transactioncallbacks">TransactionCallbacks</a>?</code>
   </td>
   <td class='break-word'><span>callbacks to events from the transaction lifecycle
-</span></td>
-</tr>
-
-
-              
-            </tbody>
-          </table>
-          
-        </div>
-      
-    </div>
-  
-
-  
-
-  
-    
-      <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="#transactionreceipt">TransactionReceipt</a>></code>:
-        promise that resolves with a transaction receipt
-
-      
-    
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-</section>
-
-      </div>
-    </div>
-  
-    <div class='border-bottom' id='deposittoken'>
-      <div class="clearfix small pointer toggle-sibling">
-        <div class="py1 contain">
-            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
-            <span class='code strong strong truncate'>depositToken(args)</span>
-        </div>
-      </div>
-      <div class="clearfix display-none toggle-target">
-        <section class='p2 mb2 clearfix bg-white minishadow'>
-
-  
-
-  <p>Deposit ERC20 Token to rootchain (caller must be the token owner)</p>
-
-    <div class='pre p1 fill-light mt0'>depositToken(args: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="#transactionreceipt">TransactionReceipt</a>></div>
-  
-  
-
-  
-  
-  
-  
-  
-  
-
-  
-    <div class='py1 quiet mt1 prose-big'>Parameters</div>
-    <div class='prose'>
-      
-        <div class='space-bottom0'>
-          <div>
-            <span class='code bold'>args</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>)</code>
-	    an arguments object
-
-          </div>
-          
-          <table class='mt1 mb2 fixed-table h5 col-12'>
-            <colgroup>
-              <col width='30%' />
-              <col width='70%' />
-            </colgroup>
-            <thead>
-              <tr class='bold fill-light'>
-                <th>Name</th>
-                <th>Description</th>
-              </tr>
-            </thead>
-            <tbody class='mt1'>
-              
-                <tr>
-  <td class='break-word'><span class='code bold'>args.depositTx</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
-  </td>
-  <td class='break-word'><span>RLP encoded childchain deposit transaction
-</span></td>
-</tr>
-
-
-              
-                <tr>
-  <td class='break-word'><span class='code bold'>args.txOptions</span> <code class='quiet'><a href="#transactionoptions">TransactionOptions</a></code>
-  </td>
-  <td class='break-word'><span>transaction options
 </span></td>
 </tr>
 
@@ -7526,31 +7493,16 @@ This method decodes a string that was encoded with encodeMetadata().</p>
       </div>
     </div>
   
-</div>
+    <div class='border-bottom' id='payment'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>Payment</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
 
-  
-
-  
-
-  
-
-  
-</section>
-
-          
-        
-          
-          <section class='p2 mb2 clearfix bg-white minishadow'>
-
-  
-  <div class='clearfix'>
-    
-    <h3 class='fl m0' id='payment'>
-      Payment
-    </h3>
-    
-    
-  </div>
   
 
   <p>Payment object used when sending or creating transactions</p>
@@ -7613,20 +7565,19 @@ This method decodes a string that was encoded with encodeMetadata().</p>
   
 </section>
 
-          
-        
-          
-          <section class='p2 mb2 clearfix bg-white minishadow'>
-
+      </div>
+    </div>
   
-  <div class='clearfix'>
-    
-    <h3 class='fl m0' id='fee'>
-      Fee
-    </h3>
-    
-    
-  </div>
+    <div class='border-bottom' id='fee'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>Fee</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
   
 
   <p>Fee object used when sending or creating transactions</p>
@@ -7673,6 +7624,20 @@ This method decodes a string that was encoded with encodeMetadata().</p>
   
 
   
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+</div>
 
   
 

@@ -82,7 +82,7 @@ describe('Metadata tests (ci-enabled-fast)', function () {
           amount: 0,
           currency: transaction.ETH_CURRENCY
         },
-        metadata: transaction.encodeMetadata(METADATA),
+        metadata: METADATA,
         verifyingContract: rootChain.plasmaContractAddress
       })
       console.log(`Submitted transaction: ${JSON.stringify(result)}`)
