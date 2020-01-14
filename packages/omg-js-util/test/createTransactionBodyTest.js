@@ -465,7 +465,6 @@ describe('createTransactionBody', function () {
       },
       metadata: undefined
     })
-    console.log(txBody)
     assert.equal(txBody.inputs.length, 2)
     assert.equal(txBody.outputs.length, 1)
 
