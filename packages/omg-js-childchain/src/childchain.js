@@ -165,9 +165,18 @@ class ChildChain {
    */
   createTransaction ({ owner, payments, fee, metadata }) {
     Joi.assert({ owner, payments, fee, metadata }, createTransactionSchema)
+    const _metadata = metadata
+      ? transaction.encodeMetadata(metadata)
+      : transaction.NULL_METADATA
+
     return rpcApi.post({
       url: `${this.watcherUrl}/transaction.create`,
-      body: { owner, payments, fee, metadata },
+      body: {
+        owner,
+        payments,
+        fee,
+        metadata: _metadata
+      },
       proxyUrl: this.watcherProxyUrl
     })
   }
@@ -258,7 +267,7 @@ class ChildChain {
    * @param {string[]} args.fromPrivateKeys private keys of the utxos to spend
    * @param {Payment} args.payment a payment object
    * @param {Fee} args.fee fee object specifying amount and currency
-   * @param {string} [args.metadata] the metadata to include in the transaction. Must be a 32-byte hex string
+   * @param {string} [args.metadata] the metadata to include in the transaction
    * @param {string} args.verifyingContract address of the RootChain contract
    * @return {Promise<Object>} promise that resolves with the submitted transaction
    */
@@ -268,7 +277,7 @@ class ChildChain {
     fromPrivateKeys,
     payment,
     fee,
-    metadata = null,
+    metadata,
     verifyingContract
   }) {
     Joi.assert({
@@ -280,12 +289,17 @@ class ChildChain {
       metadata,
       verifyingContract
     }, sendTransactionSchema)
+
+    const _metadata = metadata
+      ? transaction.encodeMetadata(metadata)
+      : transaction.NULL_METADATA
+
     const txBody = transaction.createTransactionBody({
       fromAddress,
       fromUtxos,
       payment,
       fee,
-      metadata
+      metadata: _metadata
     })
     const typedData = transaction.getTypedData(txBody, verifyingContract)
     const signatures = this.signTransaction(typedData, fromPrivateKeys)
