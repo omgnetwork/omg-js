@@ -73,11 +73,11 @@ describe('Metadata tests (ci-enabled-fast)', function () {
         fromAddress: aliceAccount.address,
         fromUtxos: utxos,
         fromPrivateKeys: [aliceAccount.privateKey],
-        payment: {
+        payments: [{
           owner: bobAccount.address,
           currency: transaction.ETH_CURRENCY,
           amount: TRANSFER_AMOUNT
-        },
+        }],
         fee: {
           amount: 0,
           currency: transaction.ETH_CURRENCY
@@ -137,11 +137,11 @@ describe('Metadata tests (ci-enabled-fast)', function () {
         fromAddress: aliceAccount.address,
         fromUtxos: utxos,
         fromPrivateKeys: [aliceAccount.privateKey],
-        payment: {
+        payments: [{
           owner: bobAccount.address,
           amount: TRANSFER_AMOUNT,
           currency: transaction.ETH_CURRENCY
-        },
+        }],
         fee: {
           amount: 0,
           currency: transaction.ETH_CURRENCY
@@ -196,11 +196,11 @@ describe('Metadata tests (ci-enabled-fast)', function () {
         fromAddress: aliceAccount.address,
         fromUtxos: utxos,
         fromPrivateKeys: [aliceAccount.privateKey],
-        payment: {
+        payments: [{
           owner: bobAccount.address,
           amount: TRANSFER_AMOUNT,
           currency: transaction.ETH_CURRENCY
-        },
+        }],
         fee: {
           amount: 0,
           currency: transaction.ETH_CURRENCY

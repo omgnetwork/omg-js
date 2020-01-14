@@ -49,10 +49,11 @@ Copy the `dist/omg.js` file into your project and include it.
 
 ## API Documentation
 
-[Documentation for omg-js ](http://omisego.github.io/omg-js)
+[Documentation for omg-js ](https://developer.omisego.co/omg-js/)
 
 ## Design Documentation
 
+[Sending a transaction](/integration-docs/transactions.md)  
 [How to sign a transaction](/integration-docs/signing-methods.md)
 
 ## Examples

@@ -41,7 +41,7 @@ async function logBalances () {
   console.log(`Bob's childchain balance: ${bobChildchainETHBalance}`)
 }
 
-async function exitChildChain () {
+async function childchainExitEth () {
   const bobRootchainBalance = await web3.eth.getBalance(bobAddress)
   const bobsEtherBalance = web3.utils.fromWei(String(bobRootchainBalance), 'ether')
   if (bobsEtherBalance < 0.001) {
@@ -125,4 +125,4 @@ async function exitChildChain () {
   await logBalances()
 }
 
-exitChildChain()
+childchainExitEth()

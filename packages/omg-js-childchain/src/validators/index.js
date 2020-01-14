@@ -2,7 +2,6 @@ const Joi = require('@hapi/joi')
 const {
   validateAddress,
   validatePayments,
-  validatePayment,
   validateMetadata,
   validateFee,
   validateBn
@@ -65,7 +64,7 @@ const sendTransactionSchema = Joi.object({
   fromAddress: validateAddress.required(),
   fromUtxos: Joi.array().items(Joi.object()).required(),
   fromPrivateKeys: Joi.array().items(Joi.string()).required(),
-  payment: validatePayment.required(),
+  payments: validatePayments.required(),
   fee: validateFee.required(),
   metadata: validateMetadata,
   verifyingContract: validateAddress.required()

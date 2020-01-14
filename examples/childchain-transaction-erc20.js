@@ -40,7 +40,7 @@ async function logBalances () {
   return { bobERC20Balance: bobsChildchainERC20Balance }
 }
 
-async function erc20Transaction () {
+async function childchainTransactionErc20 () {
   if (!config.erc20_contract) {
     console.log('Please define an ERC20 contract address in your .env')
     return
@@ -86,4 +86,4 @@ async function erc20Transaction () {
   await logBalances()
 }
 
-erc20Transaction()
+childchainTransactionErc20()

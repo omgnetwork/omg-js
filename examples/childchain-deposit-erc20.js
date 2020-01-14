@@ -43,7 +43,7 @@ async function logBalances () {
   console.log(`Alice's childchain ERC20 balance: ${childchainERC20Balance}`)
 }
 
-async function depositERC20IntoPlasmaContract () {
+async function childchainDepositErc20 () {
   if (!config.erc20_contract) {
     console.log('Please define an ERC20 contract address in your .env')
     return
@@ -91,4 +91,4 @@ async function depositERC20IntoPlasmaContract () {
   await logBalances()
 }
 
-depositERC20IntoPlasmaContract()
+childchainDepositErc20()

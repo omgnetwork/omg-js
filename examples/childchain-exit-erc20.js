@@ -45,7 +45,7 @@ async function logBalances () {
   console.log(`Bob's childchain ERC20 balance: ${bobChildchainBalance}`)
 }
 
-async function exitChildChainErc20 () {
+async function childchainExitErc20 () {
   if (!config.erc20_contract) {
     console.log('Please define an ERC20 contract in your .env')
     return
@@ -132,4 +132,4 @@ async function exitChildChainErc20 () {
   await logBalances()
 }
 
-exitChildChainErc20()
+childchainExitErc20()
