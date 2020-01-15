@@ -89,7 +89,7 @@
  */
 
 /**
- * A BigNumber object
+ * A BN.js instance
  * @typedef {Object} BigNumber
  * @property {Function} toString
  * @property {Function} toNumber
