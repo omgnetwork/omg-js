@@ -154,24 +154,6 @@ async function createTx (childChain, from, to, amount, currency, fromPrivateKey,
   return childChain.buildSignedTransaction(typedData, signatures)
 }
 
-async function sendSubmitTyped (childChain, from, to, amount, currency, fromPrivateKey) {
-  if (amount <= 0) {
-    return
-  }
-
-  const payments = [{ amount: parseInt(amount), currency, owner: to }]
-  const fee = { amount: 1, currency: transaction.ETH_CURRENCY }
-
-  const createdTx = await childChain.createTransaction({
-    owner: from,
-    payments,
-    fee
-  })
-  const privateKeys = new Array(createdTx.transactions[0].inputs.length).fill(fromPrivateKey)
-  const txTypedData = childChain.signTypedData(createdTx.transactions[0], privateKeys)
-  return childChain.submitTyped(txTypedData)
-}
-
 async function send (childChain, from, to, amount, currency, fromPrivateKey, verifyingContract) {
   const signedTx = await createTx(childChain, from, to, amount, currency, fromPrivateKey, verifyingContract)
   // Submit the signed transaction to the childchain

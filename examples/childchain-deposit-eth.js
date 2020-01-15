@@ -50,7 +50,6 @@ async function childchainDepositEth () {
 
   console.log(`Depositing ${web3.utils.fromWei(depositAmount.toString(), 'ether')} ETH from the rootchain to the childchain`)
   const transactionReceipt = await rootChain.deposit({
-    owner: aliceAddress,
     amount: depositAmount,
     txOptions: {
       from: aliceAddress,

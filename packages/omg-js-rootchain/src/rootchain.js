@@ -215,7 +215,6 @@ class RootChain {
    *
    * @method deposit
    * @param {Object} args an arguments object
-   * @param {string} args.owner the address making the deposit
    * @param {number} args.amount amount to deposit
    * @param {string} [args.currency] the token address of the deposit (defaults to ETH)
    * @param {TransactionOptions} args.txOptions transaction options
@@ -223,16 +222,15 @@ class RootChain {
    * @return {Promise<TransactionReceipt>} promise that resolves with a transaction receipt
    */
   async deposit ({
-    owner,
     amount,
     currency = transaction.ETH_CURRENCY,
     txOptions,
     callbacks
   }) {
-    Joi.assert({ owner, amount, currency, txOptions, callbacks }, depositSchema)
+    Joi.assert({ amount, currency, txOptions, callbacks }, depositSchema)
     const isEth = currency === transaction.ETH_CURRENCY
     const { address, contract } = isEth ? await this.getEthVault() : await this.getErc20Vault()
-    const depositTx = transaction.encodeDeposit(owner, amount, currency)
+    const depositTx = transaction.encodeDeposit(txOptions.from, amount, currency)
     const txDetails = {
       from: txOptions.from,
       to: address,

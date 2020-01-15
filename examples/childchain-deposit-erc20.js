@@ -66,7 +66,6 @@ async function childchainDepositErc20 () {
 
   console.log(`Depositing ${config.alice_erc20_deposit_amount} ERC20 from the rootchain to the childchain`)
   const transactionReceipt = await rootChain.deposit({
-    owner: aliceAddress,
     amount: config.alice_erc20_deposit_amount,
     currency: config.erc20_contract,
     txOptions: {

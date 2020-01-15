@@ -66,7 +66,6 @@ describe('Deposit tests', function () {
 
       await new Promise((resolve, reject) => {
         rootChain.deposit({
-          owner: aliceAccount.address,
           amount: TEST_AMOUNT,
           txOptions: {
             from: aliceAccount.address,
@@ -90,7 +89,6 @@ describe('Deposit tests', function () {
 
     it('deposit call resolves in an object containing the transaction hash', async function () {
       const depositRes = await rootChain.deposit({
-        owner: aliceAccount.address,
         amount: TEST_AMOUNT,
         txOptions: {
           from: aliceAccount.address,
@@ -108,7 +106,6 @@ describe('Deposit tests', function () {
 
       // Deposit ETH into the Plasma contract
       await rootChain.deposit({
-        owner: aliceAccount.address,
         amount: TEST_AMOUNT,
         txOptions: { from: aliceAccount.address, privateKey: aliceAccount.privateKey }
       })
@@ -176,7 +173,6 @@ describe('Deposit tests', function () {
 
       // Deposit ERC20 tokens into the Plasma contract
       await rootChain.deposit({
-        owner: aliceAccount.address,
         amount: TEST_AMOUNT,
         currency: config.testErc20Contract,
         txOptions: { from: aliceAccount.address, privateKey: aliceAccount.privateKey }

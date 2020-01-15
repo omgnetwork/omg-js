@@ -70,7 +70,6 @@ describe('Decode txBytes onchain tests', function () {
     it('should able to decode back the txBytesfrom exitData', async function () {
       // Alice deposits ETH into the Plasma contract
       await rootChain.deposit({
-        owner: aliceAccount.address,
         amount: DEPOSIT_AMOUNT,
         txOptions: {
           from: aliceAccount.address,
