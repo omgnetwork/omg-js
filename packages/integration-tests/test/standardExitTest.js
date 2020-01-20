@@ -75,7 +75,6 @@ describe('Standard Exit tests', function () {
     it('should succesfully exit a deposit', async function () {
       // Alice deposits ETH into the Plasma contract
       let receipt = await rootChain.deposit({
-        owner: aliceAccount.address,
         amount: DEPOSIT_AMOUNT,
         txOptions: {
           from: aliceAccount.address,

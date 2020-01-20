@@ -18,7 +18,6 @@ const approveTokenSchema = Joi.object({
 })
 
 const depositSchema = Joi.object({
-  owner: validateAddress.required(),
   amount: [Joi.number().required(), Joi.string().required(), validateBn.required()],
   currency: validateAddress.required(),
   txOptions: validateTxOption.required(),

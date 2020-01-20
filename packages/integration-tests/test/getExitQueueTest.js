@@ -82,11 +82,12 @@ describe('getExitQueue tests', function () {
     queue = await rootChain.getExitQueue()
     assert.lengthOf(queue, 0)
 
-    await rcHelper.depositEth({
-      rootChain,
-      address: aliceAccount.address,
+    await rootChain.deposit({
       amount: DEPOSIT_AMOUNT,
-      privateKey: aliceAccount.privateKey
+      txOptions: {
+        from: aliceAccount.address,
+        privateKey: aliceAccount.privateKey
+      }
     })
     await ccHelper.waitForBalanceEq(
       childChain,

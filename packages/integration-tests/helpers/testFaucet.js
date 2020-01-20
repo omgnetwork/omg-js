@@ -111,7 +111,6 @@ const faucet = {
       try {
         console.log(`Not enough Child chain ETH in faucet ${this.address}, attempting to deposit ${needed.toString()} ETH from root chain`)
         await this.rootChain.deposit({
-          owner: this.address,
           amount: needed,
           txOptions: { from: this.address, privateKey: this.privateKey }
         })
@@ -171,7 +170,6 @@ const faucet = {
           throw new Error('ERC20 approval failed!')
         }
         await this.rootChain.deposit({
-          owner: this.address,
           amount: needed.toNumber(),
           currency: this.erc20ContractAddress,
           txOptions: { from: this.address, privateKey: this.privateKey }
