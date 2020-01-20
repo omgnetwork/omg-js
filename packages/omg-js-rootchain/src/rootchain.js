@@ -113,7 +113,7 @@ class RootChain {
    *
    * @method getExitTime
    * @param {Object} args an arguments object
-   * @param {number} args.exitRequestBlockNumber block number of the exit request
+   * @param {number|string} args.exitRequestBlockNumber block number of the exit request
    * @param {number} args.submissionBlockNumber for standard exits: the block that contains the exiting UTXO, for in-flight exits: the block that contains the youngest input of the exiting transaction
    * @return {Promise<Object>} promise that resolves with the scheduled finalization unix time and the milliseconds until that time
    */
@@ -284,7 +284,7 @@ class RootChain {
    *
    * @method startStandardExit
    * @param {Object} args an arguments object
-   * @param {number} args.utxoPos identifier of the exiting output
+   * @param {string|number} args.utxoPos identifier of the exiting output
    * @param {string} args.outputTx RLP encoded transaction that created the exiting output
    * @param {string} args.inclusionProof a Merkle proof showing that the transaction was included
    * @param {TransactionOptions} args.txOptions transaction options
@@ -325,7 +325,7 @@ class RootChain {
    *
    * @method challengeStandardExit
    * @param {Object} args an arguments object
-   * @param {number} args.standardExitId identifier of the exiting output
+   * @param {string|number} args.standardExitId identifier of the exiting output
    * @param {string} args.exitingTx RLP encoded transaction that is exiting
    * @param {string} args.challengeTx RLP encoded transaction that spends the exiting output
    * @param {number} args.inputIndex which input to the challenging tx corresponds to the exiting output
@@ -384,7 +384,7 @@ class RootChain {
    * @method processExits
    * @param {Object} args an arguments object
    * @param {string} args.token an address of the token to exit
-   * @param {string} args.exitId the exit id
+   * @param {string|0} args.exitId the exit id
    * @param {number} args.maxExitsToProcess the max number of exits to process
    * @param {TransactionOptions} args.txOptions transaction options
    * @return {Promise<TransactionReceipt>} promise that resolves with a transaction receipt
@@ -521,7 +521,7 @@ class RootChain {
    * @method piggybackInFlightExitOnOutput
    * @param {Object} args an arguments object
    * @param {string} args.inFlightTx RLP encoded in-flight transaction
-   * @param {number} args.outputIndex index of the input/output to piggyback (0-7)
+   * @param {number} args.outputIndex index of the output to piggyback (0-3)
    * @param {TransactionOptions} args.txOptions transaction options
    * @return {Promise<TransactionReceipt>} promise that resolves with a transaction receipt
    */
@@ -566,7 +566,7 @@ class RootChain {
    * @method piggybackInFlightExitOnInput
    * @param {Object} args an arguments object
    * @param {string} args.inFlightTx RLP encoded in-flight transaction
-   * @param {number} args.inputIndex index of the input/output to piggyback (0-7)
+   * @param {number} args.inputIndex index of the input to piggyback (0-3)
    * @param {TransactionOptions} args.txOptions transaction options
    * @return {Promise<TransactionReceipt>} promise that resolves with a transaction receipt
    */

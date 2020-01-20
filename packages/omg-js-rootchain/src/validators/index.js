@@ -7,7 +7,7 @@ const rootchainConstructorSchema = Joi.object({
 })
 
 const getExitTimeSchema = Joi.object({
-  exitRequestBlockNumber: Joi.number().integer().required(),
+  exitRequestBlockNumber: [Joi.number().integer().required(), Joi.string().required()],
   submissionBlockNumber: Joi.number().integer().required()
 })
 
@@ -15,8 +15,8 @@ const getExitQueueSchema = validateAddress
 
 const approveTokenSchema = Joi.object({
   erc20Address: validateAddress.required(),
-  txOptions: validateTxOption.required(),
-  amount: [Joi.number().integer().required(), Joi.string().required()]
+  amount: [Joi.number().integer().required(), Joi.string().required()],
+  txOptions: validateTxOption.required()
 })
 
 const depositSchema = Joi.object({
@@ -37,7 +37,7 @@ const startStandardExitSchema = Joi.object({
 })
 
 const challengeStandardExitSchema = Joi.object({
-  standardExitId: [validateBn],
+  standardExitId: [Joi.string().required, Joi.number().integer().required()],
   exitingTx: Joi.string().required(),
   challengeTx: Joi.string().required(),
   inputIndex: Joi.number().integer(),
@@ -46,27 +46,25 @@ const challengeStandardExitSchema = Joi.object({
 })
 
 const processExitsSchema = Joi.object({
-  token: validateAddress,
+  token: validateAddress.required(),
   exitId: [
-    Joi.number()
-      .equal(0)
-      .required(),
+    Joi.number().equal(0).required(),
     Joi.string().required()
   ],
   maxExitsToProcess: Joi.number().integer(),
   txOptions: validateTxOption.required()
 })
 
-const hasTokenSchema = validateAddress
+const hasTokenSchema = validateAddress.required()
 
 const addTokenSchema = Joi.object({
-  token: validateAddress,
+  token: validateAddress.required(),
   txOptions: validateTxOption.required()
 })
 
 const getStandardExitIdSchema = Joi.object({
   txBytes: Joi.string().required(),
-  utxoPos: [Joi.number().integer().required(), validateBn.required()],
+  utxoPos: Joi.number().integer().required(),
   isDeposit: Joi.boolean().required()
 })
 
@@ -91,13 +89,13 @@ const startInFlightExitSchema = Joi.object({
 
 const piggybackInFlightExitOnOutputSchema = Joi.object({
   inFlightTx: Joi.string().required(),
-  outputIndex: Joi.number().integer().required(),
+  outputIndex: Joi.number().integer().biggerEquals(0).lowerEquals(3).required(),
   txOptions: validateTxOption
 })
 
 const piggybackInFlightExitOnInputSchema = Joi.object({
   inFlightTx: Joi.string().required(),
-  inputIndex: Joi.number().integer(),
+  inputIndex: Joi.number().integer().biggerEquals(0).lowerEquals(3).required(),
   txOptions: validateTxOption
 })
 
