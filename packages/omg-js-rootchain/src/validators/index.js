@@ -89,13 +89,13 @@ const startInFlightExitSchema = Joi.object({
 
 const piggybackInFlightExitOnOutputSchema = Joi.object({
   inFlightTx: Joi.string().required(),
-  outputIndex: Joi.number().integer().biggerEquals(0).lowerEquals(3).required(),
+  outputIndex: Joi.number().integer().required(),
   txOptions: validateTxOption
 })
 
 const piggybackInFlightExitOnInputSchema = Joi.object({
   inFlightTx: Joi.string().required(),
-  inputIndex: Joi.number().integer().biggerEquals(0).lowerEquals(3).required(),
+  inputIndex: Joi.number().integer().required(),
   txOptions: validateTxOption
 })
 
