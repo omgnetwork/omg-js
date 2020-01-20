@@ -11,10 +11,12 @@ const getExitTimeSchema = Joi.object({
   submissionBlockNumber: Joi.number().required()
 })
 
+const getExitQueueSchema = validateAddress
+
 const approveTokenSchema = Joi.object({
   erc20Address: validateAddress.required(),
   txOptions: validateTxOption.required(),
-  amount: [Joi.number(), validateBn]
+  amount: [Joi.number().required(), Joi.string().required()]
 })
 
 const depositSchema = Joi.object({
@@ -143,6 +145,7 @@ const challengeInFlightExitOutputSpentSchema = Joi.object({
 module.exports = {
   rootchainConstructorSchema,
   getExitTimeSchema,
+  getExitQueueSchema,
   approveTokenSchema,
   depositSchema,
   startStandardExitSchema,

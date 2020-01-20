@@ -19,6 +19,7 @@ const erc20abi = require('human-standard-token-abi')
 const {
   rootchainConstructorSchema,
   getExitTimeSchema,
+  getExitQueueSchema,
   approveTokenSchema,
   depositSchema,
   startStandardExitSchema,
@@ -171,6 +172,7 @@ class RootChain {
    * @return {Promise<string[]>} promise that resolves with the exit queue of the token (as priorities)
    */
   async getExitQueue (token = transaction.ETH_CURRENCY) {
+    Joi.assert(token, getExitQueueSchema)
     const vaultId = token === transaction.ETH_CURRENCY ? 1 : 2
     const hashed = this.web3.utils.soliditySha3(
       { t: 'uint256', v: vaultId },
@@ -188,7 +190,7 @@ class RootChain {
    * @method approveToken
    * @param {Object} args an arguments object
    * @param {string} args.erc20Address address of the ERC20 token
-   * @param {number} args.amount amount of ERC20 to approve to deposit
+   * @param {number|string} args.amount amount of ERC20 to approve to deposit
    * @param {TransactionOptions} args.txOptions transaction options
    * @return {Promise<TransactionReceipt>} promise that resolves with a transaction receipt
    */
