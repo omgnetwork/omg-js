@@ -217,7 +217,7 @@ class RootChain {
    *
    * @method deposit
    * @param {Object} args an arguments object
-   * @param {number} args.amount amount to deposit
+   * @param {number|string|BigNumber} args.amount amount to deposit
    * @param {string} [args.currency] the token address of the deposit (defaults to ETH)
    * @param {TransactionOptions} args.txOptions transaction options
    * @param {TransactionCallbacks} [args.callbacks] callbacks to events from the transaction lifecycle

@@ -50,10 +50,10 @@ describe('Amount type tests', function () {
     ])
   })
 
-  it.only('approveToken() should only accept safe numbers and strings for amount', async function () {
+  it('approveToken() should only accept safe integers and strings for amount', async function () {
     const numberReceipt = await rootChain.approveToken({
       erc20Address: config.testErc20Contract,
-      amount: 1,
+      amount: 10,
       txOptions: {
         from: aliceAccount.address,
         privateKey: aliceAccount.privateKey
@@ -92,7 +92,7 @@ describe('Amount type tests', function () {
     assert.isRejected(bnReceipt)
   })
 
-  it('deposit() should only accept numbers, strings, and BN', async function () {
+  it('deposit() should only accept safe integers, strings, and BN', async function () {
     const numberDeposit = await rootChain.deposit({
       amount: 1,
       txOptions: {
@@ -101,5 +101,41 @@ describe('Amount type tests', function () {
       }
     })
     assert.hasAnyKeys(numberDeposit, ['transactionHash'])
+
+    const stringDeposit = await rootChain.deposit({
+      amount: '1',
+      txOptions: {
+        from: aliceAccount.address,
+        privateKey: aliceAccount.privateKey
+      }
+    })
+    assert.hasAnyKeys(stringDeposit, ['transactionHash'])
+
+    const BNDeposit = await rootChain.deposit({
+      amount: web3.utils.toBN(1),
+      txOptions: {
+        from: aliceAccount.address,
+        privateKey: aliceAccount.privateKey
+      }
+    })
+    assert.hasAnyKeys(BNDeposit, ['transactionHash'])
+
+    const unsafeDeposit = rootChain.deposit({
+      amount: 99999999999999999999999999999999999,
+      txOptions: {
+        from: aliceAccount.address,
+        privateKey: aliceAccount.privateKey
+      }
+    })
+    assert.isRejected(unsafeDeposit)
+
+    const decimalDeposit = rootChain.deposit({
+      amount: 0.1,
+      txOptions: {
+        from: aliceAccount.address,
+        privateKey: aliceAccount.privateKey
+      }
+    })
+    assert.isRejected(decimalDeposit)
   })
 })
