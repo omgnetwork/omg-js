@@ -144,7 +144,7 @@ class ChildChain {
    * @return {Promise<Object>} promise that resolves with the challenge data
    */
   async getChallengeData (utxoPos) {
-    Joi.assert(utxoPos, Joi.number().required())
+    Joi.assert(utxoPos, Joi.number().integer().required())
     return rpcApi.post({
       url: `${this.watcherUrl}/utxo.get_challenge_data`,
       body: { utxo_pos: utxoPos },

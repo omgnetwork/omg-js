@@ -7,7 +7,7 @@ const validateAddress = Joi.string().custom(value => {
 })
 
 const validateTxOption = Joi.object({
-  gas: Joi.number(),
+  gas: Joi.number().integer(),
   gasPrice: Joi.string(),
   privateKey: Joi.string(),
   from: validateAddress

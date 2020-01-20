@@ -33,8 +33,8 @@ const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('0.5', 'ether')
 const INITIAL_AMOUNT_ERC20 = 3
 const testErc20Contract = new web3.eth.Contract(erc20abi, config.testErc20Contract)
 
-describe.only('Amount type tests', function () {
-  before(async function () {
+describe('Amount type tests', function () {
+  beforeEach(async function () {
     aliceAccount = rcHelper.createAccount(web3)
     console.log(`Created new account ${JSON.stringify(aliceAccount)}`)
     const plasmaContract = await rcHelper.getPlasmaContractAddress(config)
@@ -50,7 +50,7 @@ describe.only('Amount type tests', function () {
     ])
   })
 
-  it('approveToken should only accept numbers and strings for amount', async function () {
+  it.only('approveToken() should only accept safe numbers and strings for amount', async function () {
     const numberReceipt = await rootChain.approveToken({
       erc20Address: config.testErc20Contract,
       amount: 1,
@@ -63,13 +63,23 @@ describe.only('Amount type tests', function () {
 
     const stringReceipt = await rootChain.approveToken({
       erc20Address: config.testErc20Contract,
-      amount: '999999999999999999999999999999999999999999999999999999999999',
+      amount: '999999999999999999999999',
       txOptions: {
         from: aliceAccount.address,
         privateKey: aliceAccount.privateKey
       }
     })
     assert.hasAnyKeys(stringReceipt, ['transactionHash'])
+
+    const unsafeReceipt = rootChain.approveToken({
+      erc20Address: config.testErc20Contract,
+      amount: 999999999999999999999999999999999999999999999999999999999999,
+      txOptions: {
+        from: aliceAccount.address,
+        privateKey: aliceAccount.privateKey
+      }
+    })
+    assert.isRejected(unsafeReceipt)
 
     const bnReceipt = rootChain.approveToken({
       erc20Address: config.testErc20Contract,
@@ -80,5 +90,16 @@ describe.only('Amount type tests', function () {
       }
     })
     assert.isRejected(bnReceipt)
+  })
+
+  it('deposit() should only accept numbers, strings, and BN', async function () {
+    const numberDeposit = await rootChain.deposit({
+      amount: 1,
+      txOptions: {
+        from: aliceAccount.address,
+        privateKey: aliceAccount.privateKey
+      }
+    })
+    assert.hasAnyKeys(numberDeposit, ['transactionHash'])
   })
 })

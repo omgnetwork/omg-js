@@ -19,19 +19,19 @@ const getBalanceSchema = validateAddress.required()
 const getTransactionsSchema = Joi.object({
   address: validateAddress,
   metadata: validateMetadata,
-  blknum: Joi.number(),
-  limit: Joi.number(),
-  page: Joi.number()
+  blknum: Joi.number().integer(),
+  limit: Joi.number().integer(),
+  page: Joi.number().integer()
 })
 
 const getExitDataSchema = Joi.object({
-  amount: [Joi.string(), Joi.number(), validateBn],
-  blknum: Joi.number(),
+  amount: [Joi.string(), Joi.number().integer(), validateBn],
+  blknum: Joi.number().integer(),
   currency: Joi.string(),
-  oindex: Joi.number(),
+  oindex: Joi.number().integer(),
   owner: Joi.string(),
-  txindex: Joi.number(),
-  utxo_pos: Joi.number(),
+  txindex: Joi.number().integer(),
+  utxo_pos: Joi.number().integer(),
   spending_txhash: [Joi.string(), Joi.allow(null)],
   creating_txhash: [Joi.string(), Joi.allow(null)]
 })
@@ -72,12 +72,12 @@ const sendTransactionSchema = Joi.object({
 
 const inFlightExitGetOutputChallengeDataSchema = Joi.object({
   txbytes: Joi.string().required(),
-  outputIndex: Joi.number().required()
+  outputIndex: Joi.number().integer().required()
 })
 
 const inFlightExitGetInputChallengeDataSchema = Joi.object({
   txbytes: Joi.string().required(),
-  inputIndex: Joi.number().required()
+  inputIndex: Joi.number().integer().required()
 })
 
 module.exports = {
