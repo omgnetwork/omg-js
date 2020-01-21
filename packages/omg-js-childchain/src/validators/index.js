@@ -31,7 +31,7 @@ const getExitDataSchema = Joi.object({
   oindex: Joi.number().integer(),
   owner: Joi.string(),
   txindex: Joi.number().integer(),
-  utxo_pos: Joi.number().integer(),
+  utxo_pos: [Joi.number().integer(), Joi.string()],
   spending_txhash: [Joi.string(), Joi.allow(null)],
   creating_txhash: [Joi.string(), Joi.allow(null)]
 })
