@@ -37,7 +37,7 @@ const startStandardExitSchema = Joi.object({
 })
 
 const challengeStandardExitSchema = Joi.object({
-  standardExitId: [Joi.string().required, Joi.number().integer().required()],
+  standardExitId: [Joi.string().required(), Joi.number().integer().required()],
   exitingTx: Joi.string().required(),
   challengeTx: Joi.string().required(),
   inputIndex: Joi.number().integer(),
