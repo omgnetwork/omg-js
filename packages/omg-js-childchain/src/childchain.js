@@ -19,6 +19,7 @@ const {
   getBalanceSchema,
   getTransactionsSchema,
   getExitDataSchema,
+  getChallengeDataSchema,
   createTransactionSchema,
   signTypedDataSchema,
   submitTypedSchema,
@@ -144,7 +145,7 @@ class ChildChain {
    * @return {Promise<Object>} promise that resolves with the challenge data
    */
   async getChallengeData (utxoPos) {
-    Joi.assert(utxoPos, [Joi.number().integer().required(), Joi.string().required()])
+    Joi.assert({ utxoPos }, getChallengeDataSchema)
     return rpcApi.post({
       url: `${this.watcherUrl}/utxo.get_challenge_data`,
       body: { utxo_pos: utxoPos },

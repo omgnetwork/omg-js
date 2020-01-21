@@ -36,6 +36,10 @@ const getExitDataSchema = Joi.object({
   creating_txhash: [Joi.string(), Joi.allow(null)]
 })
 
+const getChallengeDataSchema = Joi.object({
+  utxoPos: [Joi.number().integer().required(), Joi.string().required(), validateBn.required()]
+})
+
 const createTransactionSchema = Joi.object({
   owner: validateAddress.required(),
   payments: validatePayments.required(),
@@ -86,6 +90,7 @@ module.exports = {
   getBalanceSchema,
   getTransactionsSchema,
   getExitDataSchema,
+  getChallengeDataSchema,
   createTransactionSchema,
   signTypedDataSchema,
   submitTypedSchema,

@@ -7,7 +7,7 @@ const rootchainConstructorSchema = Joi.object({
 })
 
 const getExitTimeSchema = Joi.object({
-  exitRequestBlockNumber: [Joi.number().integer().required(), Joi.string().required()],
+  exitRequestBlockNumber: [Joi.string().required(), Joi.number().integer().required(), validateBn.required()],
   submissionBlockNumber: Joi.number().integer().required()
 })
 
@@ -20,7 +20,7 @@ const approveTokenSchema = Joi.object({
 })
 
 const depositSchema = Joi.object({
-  amount: [Joi.number().integer().required(), Joi.string().required(), validateBn.required()],
+  amount: [Joi.string().required(), Joi.number().integer().required(), validateBn.required()],
   currency: validateAddress.required(),
   txOptions: validateTxOption.required(),
   callbacks: Joi.object({
@@ -30,14 +30,14 @@ const depositSchema = Joi.object({
 })
 
 const startStandardExitSchema = Joi.object({
-  utxoPos: [Joi.string().required(), Joi.number().integer().required()],
+  utxoPos: [Joi.string().required(), Joi.number().integer().required(), validateBn.required()],
   outputTx: Joi.string().required(),
   inclusionProof: Joi.string().required(),
   txOptions: validateTxOption.required()
 })
 
 const challengeStandardExitSchema = Joi.object({
-  standardExitId: [Joi.string().required(), Joi.number().integer().required()],
+  standardExitId: [Joi.string().required(), Joi.number().integer().required(), validateBn.required()],
   exitingTx: Joi.string().required(),
   challengeTx: Joi.string().required(),
   inputIndex: Joi.number().integer(),
