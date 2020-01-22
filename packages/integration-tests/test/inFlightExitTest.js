@@ -84,7 +84,7 @@ describe('In-flight Exit tests', function () {
       ])
     })
 
-    after(async function () {
+    afterEach(async function () {
       try {
         // Send any leftover funds back to the faucet
         await faucet.returnFunds(web3, aliceAccount)

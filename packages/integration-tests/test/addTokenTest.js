@@ -43,6 +43,15 @@ describe('AddExitQueue tests', function () {
     await rcHelper.waitForEthBalanceEq(web3, aliceAccount.address, INTIIAL_ALICE_AMOUNT)
   })
 
+  after(async function () {
+    try {
+      // Send any leftover funds back to the faucet
+      await faucet.returnFunds(web3, aliceAccount)
+    } catch (err) {
+      console.warn(`Error trying to return funds to the faucet: ${err}`)
+    }
+  })
+
   it('add token should add token if not added before', async function () {
     const fakeErc20 = rcHelper.createAccount(web3)
     const hasToken = await rootChain.hasToken(fakeErc20.address)

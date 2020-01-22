@@ -40,7 +40,7 @@ describe('Decode txBytes onchain tests', function () {
     let DEPOSIT_AMOUNT
     let aliceAccount
 
-    beforeEach(async function () {
+    before(async function () {
       INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.1', 'ether')
       DEPOSIT_AMOUNT = web3.utils.toWei('.0001', 'ether')
       // Create and fund Alice's account
@@ -58,7 +58,7 @@ describe('Decode txBytes onchain tests', function () {
       )
     })
 
-    afterEach(async function () {
+    after(async function () {
       try {
         // Send any leftover funds back to the faucet
         await faucet.returnFunds(web3, aliceAccount)
