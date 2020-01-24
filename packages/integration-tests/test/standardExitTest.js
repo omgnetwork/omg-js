@@ -33,14 +33,14 @@ let rootChain
 // NB This test waits for at least RootChain.MIN_EXIT_PERIOD so it should be run against a
 // modified RootChain contract with a shorter than normal MIN_EXIT_PERIOD.
 
-describe('Standard Exit tests', function () {
+describe('standardExitTest.js', function () {
   before(async function () {
     const plasmaContract = await rcHelper.getPlasmaContractAddress(config)
     rootChain = new RootChain({ web3, plasmaContractAddress: plasmaContract.contract_addr })
     await faucet.init(rootChain, childChain, web3, config)
   })
 
-  describe('Deposit transaction exit (ci-enabled)', function () {
+  describe('Deposit transaction exit', function () {
     let INTIIAL_ALICE_AMOUNT
     let DEPOSIT_AMOUNT
     let aliceAccount
@@ -172,7 +172,7 @@ describe('Standard Exit tests', function () {
     })
   })
 
-  describe('childchain transaction exit (ci-enabled)', function () {
+  describe('childchain transaction exit', function () {
     const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.001', 'ether')
     const INTIIAL_BOB_RC_AMOUNT = web3.utils.toWei('.1', 'ether')
     const TRANSFER_AMOUNT = web3.utils.toWei('0.0002', 'ether')
@@ -324,7 +324,7 @@ describe('Standard Exit tests', function () {
     })
   })
 
-  describe('ERC20 exit (ci-enabled)', function () {
+  describe('ERC20 exit', function () {
     const ERC20_CURRENCY = config.testErc20Contract
     const testErc20Contract = new web3.eth.Contract(
       erc20abi,

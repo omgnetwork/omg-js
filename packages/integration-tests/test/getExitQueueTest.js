@@ -33,7 +33,7 @@ let aliceAccount
 const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.1', 'ether')
 const DEPOSIT_AMOUNT = web3.utils.toWei('.0001', 'ether')
 
-describe('getExitQueue tests', function () {
+describe('getExitQueueTest.js', function () {
   beforeEach(async function () {
     aliceAccount = rcHelper.createAccount(web3)
     console.log(`Created new account ${JSON.stringify(aliceAccount)}`)

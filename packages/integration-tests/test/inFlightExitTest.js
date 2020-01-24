@@ -35,14 +35,14 @@ let rootChain
 // NB This test waits for at least RootChain.MIN_EXIT_PERIOD so it should be run against a
 // modified RootChain contract with a shorter than normal MIN_EXIT_PERIOD.
 
-describe('In-flight Exit tests', function () {
+describe('inFlightExitTest.js', function () {
   before(async function () {
     const plasmaContract = await rcHelper.getPlasmaContractAddress(config)
     rootChain = new RootChain({ web3, plasmaContractAddress: plasmaContract.contract_addr })
     await faucet.init(rootChain, childChain, web3, config)
   })
 
-  describe('in-flight transaction exit (ci-enabled)', function () {
+  describe('in-flight transaction exit', function () {
     let INTIIAL_ALICE_AMOUNT
     let INTIIAL_BOB_RC_AMOUNT
     let TRANSFER_AMOUNT

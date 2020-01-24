@@ -29,14 +29,14 @@ const web3 = new Web3(new Web3.providers.HttpProvider(config.geth_url))
 const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url })
 let rootChain
 
-describe('Deposit tests', function () {
+describe('depositTest.js (ci-enabled)', function () {
   before(async function () {
     const plasmaContract = await rcHelper.getPlasmaContractAddress(config)
     rootChain = new RootChain({ web3, plasmaContractAddress: plasmaContract.contract_addr })
     await faucet.init(rootChain, childChain, web3, config)
   })
 
-  describe('deposit ETH (ci-enabled)', function () {
+  describe('deposit ETH', function () {
     let INTIIAL_ALICE_AMOUNT
     let TEST_AMOUNT
     let aliceAccount
@@ -127,7 +127,7 @@ describe('Deposit tests', function () {
     })
   })
 
-  describe('deposit ERC20 (ci-enabled)', function () {
+  describe('deposit ERC20', function () {
     let aliceAccount
     const testErc20Contract = new web3.eth.Contract(erc20abi, config.testErc20Contract)
     const INTIIAL_AMOUNT_ETH = web3.utils.toWei('.1', 'ether')

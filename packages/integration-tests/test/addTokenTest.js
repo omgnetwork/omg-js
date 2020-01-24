@@ -30,7 +30,7 @@ let childChain
 let aliceAccount
 const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('0.5', 'ether')
 
-describe('AddExitQueue tests', function () {
+describe('addTokenTest.js (ci-enabled)', function () {
   before(async function () {
     aliceAccount = rcHelper.createAccount(web3)
     console.log(`Created new account ${JSON.stringify(aliceAccount)}`)
