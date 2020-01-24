@@ -25,17 +25,14 @@ const numberToBN = require('number-to-bn')
 const chai = require('chai')
 const assert = chai.assert
 
-const web3 = new Web3(new Web3.providers.HttpProvider(config.geth_url))
-const childChain = new ChildChain({
-  watcherUrl: config.watcher_url,
-  watcherProxyUrl: config.watcher_proxy_url
-})
-let rootChain
-
-// NB This test waits for at least RootChain.MIN_EXIT_PERIOD so it should be run against a
-// modified RootChain contract with a shorter than normal MIN_EXIT_PERIOD.
-
 describe('inFlightExitTest.js', function () {
+  const web3 = new Web3(new Web3.providers.HttpProvider(config.geth_url))
+  const childChain = new ChildChain({
+    watcherUrl: config.watcher_url,
+    watcherProxyUrl: config.watcher_proxy_url
+  })
+  let rootChain
+
   before(async function () {
     const plasmaContract = await rcHelper.getPlasmaContractAddress(config)
     rootChain = new RootChain({ web3, plasmaContractAddress: plasmaContract.contract_addr })

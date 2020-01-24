@@ -24,11 +24,11 @@ const { transaction } = require('@omisego/omg-js-util')
 const chai = require('chai')
 const assert = chai.assert
 
-const web3 = new Web3(new Web3.providers.HttpProvider(config.geth_url))
-const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url })
-let rootChain
-
 describe('decodeTxBytesTest.js (ci-enabled)', function () {
+  const web3 = new Web3(new Web3.providers.HttpProvider(config.geth_url))
+  const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url })
+  let rootChain
+
   before(async function () {
     const plasmaContract = await rcHelper.getPlasmaContractAddress(config)
     rootChain = new RootChain({ web3, plasmaContractAddress: plasmaContract.contract_addr })
@@ -40,7 +40,7 @@ describe('decodeTxBytesTest.js (ci-enabled)', function () {
     let DEPOSIT_AMOUNT
     let aliceAccount
 
-    before(async function () {
+    beforeEach(async function () {
       INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.1', 'ether')
       DEPOSIT_AMOUNT = web3.utils.toWei('.0001', 'ether')
       // Create and fund Alice's account
@@ -58,7 +58,7 @@ describe('decodeTxBytesTest.js (ci-enabled)', function () {
       )
     })
 
-    after(async function () {
+    afterEach(async function () {
       try {
         // Send any leftover funds back to the faucet
         await faucet.returnFunds(web3, aliceAccount)

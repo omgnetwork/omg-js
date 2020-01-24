@@ -25,15 +25,14 @@ const ccHelper = require('../helpers/childChainHelper')
 should()
 use(chaiAsPromised)
 
-const web3 = new Web3(new Web3.providers.HttpProvider(config.geth_url))
-
-let rootChain
-let childChain
-let aliceAccount
-const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.1', 'ether')
-const DEPOSIT_AMOUNT = web3.utils.toWei('.0001', 'ether')
-
 describe('getExitQueueTest.js', function () {
+  const web3 = new Web3(new Web3.providers.HttpProvider(config.geth_url))
+  let rootChain
+  let childChain
+  let aliceAccount
+  const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.1', 'ether')
+  const DEPOSIT_AMOUNT = web3.utils.toWei('.0001', 'ether')
+
   beforeEach(async function () {
     aliceAccount = rcHelper.createAccount(web3)
     console.log(`Created new account ${JSON.stringify(aliceAccount)}`)

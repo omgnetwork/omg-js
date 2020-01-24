@@ -25,11 +25,11 @@ const numberToBN = require('number-to-bn')
 const chai = require('chai')
 const assert = chai.assert
 
-const web3 = new Web3(config.geth_url)
-const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url })
-let rootChain
-
 describe('createTransactionTest.js (ci-enabled)', function () {
+  const web3 = new Web3(config.geth_url)
+  const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url })
+  let rootChain
+
   before(async function () {
     const plasmaContract = await rcHelper.getPlasmaContractAddress(config)
     rootChain = new RootChain({ web3, plasmaContractAddress: plasmaContract.contract_addr })
@@ -43,7 +43,7 @@ describe('createTransactionTest.js (ci-enabled)', function () {
     let aliceAccount
     let bobAccount
 
-    before(async function () {
+    beforeEach(async function () {
       // Create Alice and Bob's accounts
       aliceAccount = rcHelper.createAccount(web3)
       console.log(`Created Alice account ${JSON.stringify(aliceAccount)}`)
@@ -54,7 +54,7 @@ describe('createTransactionTest.js (ci-enabled)', function () {
       await ccHelper.waitForBalanceEq(childChain, aliceAccount.address, INTIIAL_ALICE_AMOUNT)
     })
 
-    after(async function () {
+    afterEach(async function () {
       try {
         // Send any leftover funds back to the faucet
         await faucet.returnFunds(web3, aliceAccount)
@@ -114,7 +114,7 @@ describe('createTransactionTest.js (ci-enabled)', function () {
     let aliceAccount
     let bobAccount
 
-    before(async function () {
+    beforeEach(async function () {
       // Create Alice and Bob's accounts
       aliceAccount = rcHelper.createAccount(web3)
       console.log(`Created Alice account ${JSON.stringify(aliceAccount)}`)
@@ -124,7 +124,7 @@ describe('createTransactionTest.js (ci-enabled)', function () {
       await ccHelper.waitForBalanceEq(childChain, aliceAccount.address, INTIIAL_ALICE_AMOUNT)
     })
 
-    after(async function () {
+    afterEach(async function () {
       try {
         // Send any leftover funds back to the faucet
         await faucet.returnFunds(web3, aliceAccount)
@@ -165,7 +165,7 @@ describe('createTransactionTest.js (ci-enabled)', function () {
     let aliceAccount
     let bobAccount
 
-    before(async function () {
+    beforeEach(async function () {
       // Create Alice and Bob's accounts
       aliceAccount = rcHelper.createAccount(web3)
       console.log(`Created Alice account ${JSON.stringify(aliceAccount)}`)
@@ -179,7 +179,7 @@ describe('createTransactionTest.js (ci-enabled)', function () {
       await ccHelper.waitForBalanceEq(childChain, aliceAccount.address, INTIIAL_ALICE_AMOUNT_ERC20, ERC20_CURRENCY)
     })
 
-    after(async function () {
+    afterEach(async function () {
       try {
         // Send any leftover funds back to the faucet
         await faucet.returnFunds(web3, aliceAccount)
@@ -248,7 +248,7 @@ describe('createTransactionTest.js (ci-enabled)', function () {
     let aliceAccount
     let bobAccount
 
-    before(async function () {
+    beforeEach(async function () {
       // Create Alice and Bob's accounts
       aliceAccount = rcHelper.createAccount(web3)
       console.log(`Created Alice account ${JSON.stringify(aliceAccount)}`)
@@ -268,7 +268,7 @@ describe('createTransactionTest.js (ci-enabled)', function () {
       await ccHelper.waitNumUtxos(childChain, aliceAccount.address, 8)
     })
 
-    after(async function () {
+    afterEach(async function () {
       try {
         // Send any leftover funds back to the faucet
         await faucet.returnFunds(web3, aliceAccount)
@@ -349,7 +349,7 @@ describe('createTransactionTest.js (ci-enabled)', function () {
     const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.000001', 'ether')
     let aliceAccount
 
-    before(async function () {
+    beforeEach(async function () {
       // Create Alice accounts
       aliceAccount = rcHelper.createAccount(web3)
       console.log(`Created Alice account ${JSON.stringify(aliceAccount)}`)
@@ -358,7 +358,7 @@ describe('createTransactionTest.js (ci-enabled)', function () {
       await ccHelper.waitForBalanceEq(childChain, aliceAccount.address, INTIIAL_ALICE_AMOUNT)
     })
 
-    after(async function () {
+    afterEach(async function () {
       try {
         // Send any leftover funds back to the faucet
         await faucet.returnFunds(web3, aliceAccount)

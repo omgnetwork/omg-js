@@ -26,14 +26,11 @@ const { transaction } = require('@omisego/omg-js-util')
 const chai = require('chai')
 const assert = chai.assert
 
-const web3 = new Web3(new Web3.providers.HttpProvider(config.geth_url))
-const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url })
-let rootChain
-
-// NB This test waits for at least RootChain.MIN_EXIT_PERIOD so it should be run against a
-// modified RootChain contract with a shorter than normal MIN_EXIT_PERIOD.
-
 describe('standardExitTest.js', function () {
+  const web3 = new Web3(new Web3.providers.HttpProvider(config.geth_url))
+  const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url })
+  let rootChain
+
   before(async function () {
     const plasmaContract = await rcHelper.getPlasmaContractAddress(config)
     rootChain = new RootChain({ web3, plasmaContractAddress: plasmaContract.contract_addr })
@@ -179,7 +176,7 @@ describe('standardExitTest.js', function () {
     let aliceAccount
     let bobAccount
 
-    before(async function () {
+    beforeEach(async function () {
       // Create Alice and Bob's accounts
       aliceAccount = rcHelper.createAccount(web3)
       console.log(`Created Alice account ${JSON.stringify(aliceAccount)}`)
@@ -211,7 +208,7 @@ describe('standardExitTest.js', function () {
       ])
     })
 
-    after(async function () {
+    afterEach(async function () {
       try {
         // Send any leftover funds back to the faucet
         await faucet.returnFunds(web3, aliceAccount)
@@ -334,7 +331,7 @@ describe('standardExitTest.js', function () {
     const INTIIAL_ALICE_AMOUNT_ERC20 = 2
     let aliceAccount
 
-    before(async function () {
+    beforeEach(async function () {
       // Create and fund Alice's account
       aliceAccount = rcHelper.createAccount(web3)
       console.log(`Created Alice account ${JSON.stringify(aliceAccount)}`)
@@ -366,7 +363,7 @@ describe('standardExitTest.js', function () {
       ])
     })
 
-    after(async function () {
+    afterEach(async function () {
       try {
         // Send any leftover funds back to the faucet
         await faucet.returnFunds(web3, aliceAccount)

@@ -24,14 +24,11 @@ const { transaction } = require('@omisego/omg-js-util')
 const chai = require('chai')
 const assert = chai.assert
 
-const web3 = new Web3(new Web3.providers.HttpProvider(config.geth_url))
-const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url })
-let rootChain
-
-// NB This test waits for at least RootChain.MIN_EXIT_PERIOD so it should be run against a
-// modified RootChain contract with a shorter than normal MIN_EXIT_PERIOD.
-
 describe('challengeExitTest.js', function () {
+  const web3 = new Web3(new Web3.providers.HttpProvider(config.geth_url))
+  const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url })
+  let rootChain
+
   before(async function () {
     const plasmaContract = await rcHelper.getPlasmaContractAddress(config)
     rootChain = new RootChain({ web3, plasmaContractAddress: plasmaContract.contract_addr })
@@ -45,7 +42,8 @@ describe('challengeExitTest.js', function () {
     let TRANSFER_AMOUNT
     let aliceAccount
     let bobAccount
-    before(async function () {
+
+    beforeEach(async function () {
       // Create Alice and Bob's accounts
       INTIIAL_ALICE_RC_AMOUNT = web3.utils.toWei('.1', 'ether')
       INTIIAL_BOB_RC_AMOUNT = web3.utils.toWei('.1', 'ether')
@@ -74,7 +72,7 @@ describe('challengeExitTest.js', function () {
       ])
     })
 
-    after(async function () {
+    afterEach(async function () {
       try {
         // Send any leftover funds back to the faucet
         await faucet.returnFunds(web3, aliceAccount)
