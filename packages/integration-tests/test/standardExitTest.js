@@ -141,7 +141,7 @@ describe('standardExitTest.js', function () {
         exitRequestBlockNumber: standardExitReceipt.blockNumber,
         submissionBlockNumber: utxoToExit.blknum
       })
-      console.log(`Waiting for challenge period... ${msUntilFinalization}ms`)
+      console.log(`Waiting for challenge period... ${msUntilFinalization / 60000} minutes`)
       await rcHelper.sleep(msUntilFinalization)
 
       // Call processExits again.
@@ -290,7 +290,7 @@ describe('standardExitTest.js', function () {
         exitRequestBlockNumber: startStandardExitReceipt.blockNumber,
         submissionBlockNumber: utxoToExit.blknum
       })
-      console.log(`Waiting for challenge period... ${msUntilFinalization}ms`)
+      console.log(`Waiting for challenge period... ${msUntilFinalization / 60000} minutes`)
       await rcHelper.sleep(msUntilFinalization)
 
       // Call processExits again.
@@ -434,7 +434,7 @@ describe('standardExitTest.js', function () {
         exitRequestBlockNumber: standardExitReceipt.blockNumber,
         submissionBlockNumber: utxoToExit.blknum
       })
-      console.log(`Waiting for challenge period... ${msUntilFinalization}ms`)
+      console.log(`Waiting for challenge period... ${msUntilFinalization / 60000} minutes`)
       await rcHelper.sleep(msUntilFinalization)
 
       // Call processExits again.

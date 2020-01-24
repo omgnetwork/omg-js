@@ -259,7 +259,7 @@ describe('challengeInFlightExitInputSpentTest.js', function () {
         exitRequestBlockNumber: ifeReceipt.blockNumber,
         submissionBlockNumber: fundAliceTx.result.blknum
       })
-      console.log(`Waiting for challenge period... ${msUntilFinalization}ms`)
+      console.log(`Waiting for challenge period... ${msUntilFinalization / 60000} minutes`)
       await rcHelper.sleep(msUntilFinalization)
 
       // Call processExits again.

@@ -184,7 +184,7 @@ describe('inFlightExitTest.js', function () {
         exitRequestBlockNumber: ifeReceipt.blockNumber,
         submissionBlockNumber: result.blknum
       })
-      console.log(`Waiting for challenge period... ${msUntilFinalization}ms`)
+      console.log(`Waiting for challenge period... ${msUntilFinalization / 60000} minutes`)
       await rcHelper.sleep(msUntilFinalization)
 
       // Call processExits again.
@@ -307,7 +307,7 @@ describe('inFlightExitTest.js', function () {
         exitRequestBlockNumber: ifeReceipt.blockNumber,
         submissionBlockNumber: aliceUtxos[0].blknum
       })
-      console.log(`Waiting for challenge period... ${msUntilFinalization}ms`)
+      console.log(`Waiting for challenge period... ${msUntilFinalization / 60000} minutes`)
       await rcHelper.sleep(msUntilFinalization)
 
       // Call processExits again.
@@ -479,7 +479,7 @@ describe('inFlightExitTest.js', function () {
         exitRequestBlockNumber: ifeReceipt.blockNumber,
         submissionBlockNumber: fundKelvinTx.result.blknum
       })
-      console.log(`Waiting for challenge period... ${msUntilFinalization}ms`)
+      console.log(`Waiting for challenge period... ${msUntilFinalization / 60000} minutes`)
       await rcHelper.sleep(msUntilFinalization)
 
       // Call processExits.

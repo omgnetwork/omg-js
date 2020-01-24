@@ -161,7 +161,7 @@ describe('challengeExitTest.js', function () {
         exitRequestBlockNumber: standardExitReceipt.blockNumber,
         submissionBlockNumber: aliceDishonestUtxo.blknum
       })
-      console.log(`Waiting for challenge period... ${msUntilFinalization}ms`)
+      console.log(`Waiting for challenge period... ${msUntilFinalization / 60000} minutes`)
       await rcHelper.sleep(msUntilFinalization)
 
       // ...and calls finalize exits.

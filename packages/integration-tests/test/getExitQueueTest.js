@@ -124,7 +124,7 @@ describe('getExitQueueTest.js', function () {
       exitRequestBlockNumber: standardExitReceipt.blockNumber,
       submissionBlockNumber: utxoToExit.blknum
     })
-    console.log(`Waiting for challenge period... ${msUntilFinalization}ms`)
+    console.log(`Waiting for challenge period... ${msUntilFinalization / 60000} minutes`)
     await rcHelper.sleep(msUntilFinalization)
     const processReceipt = await rootChain.processExits({
       token: transaction.ETH_CURRENCY,
