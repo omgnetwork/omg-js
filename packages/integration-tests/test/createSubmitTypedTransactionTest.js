@@ -22,11 +22,11 @@ const numberToBN = require('number-to-bn')
 const chai = require('chai')
 const assert = chai.assert
 
-const web3 = new Web3(config.eth_node)
-const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url })
-let rootChain
+describe('createSubmitTypedTransactionTest.js (ci-enabled)', function () {
+  const web3 = new Web3(config.eth_node)
+  const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url })
+  let rootChain
 
-describe('Create transaction tests with submitTyped (ci-enabled)', function () {
   before(async function () {
     const plasmaContract = await rcHelper.getPlasmaContractAddress(config)
     rootChain = new RootChain({ web3, plasmaContractAddress: plasmaContract.contract_addr })
@@ -40,7 +40,7 @@ describe('Create transaction tests with submitTyped (ci-enabled)', function () {
     let aliceAccount
     let bobAccount
 
-    before(async function () {
+    beforeEach(async function () {
       INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.000001', 'ether')
       TRANSFER_AMOUNT = web3.utils.toWei('.0000001', 'ether')
       // Create Alice and Bob's accounts
@@ -53,7 +53,7 @@ describe('Create transaction tests with submitTyped (ci-enabled)', function () {
       await ccHelper.waitForBalanceEq(childChain, aliceAccount.address, INTIIAL_ALICE_AMOUNT)
     })
 
-    after(async function () {
+    afterEach(async function () {
       try {
         // Send any leftover funds back to the faucet
         await faucet.returnFunds(web3, aliceAccount)
