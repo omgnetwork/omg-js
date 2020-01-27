@@ -15,7 +15,7 @@ const getExitQueueSchema = validateAddress
 
 const approveTokenSchema = Joi.object({
   erc20Address: validateAddress.required(),
-  amount: [Joi.number().integer().required(), Joi.string().required()],
+  amount: [Joi.string().required(), Joi.number().integer().required(), validateBn.required()],
   txOptions: validateTxOption.required()
 })
 

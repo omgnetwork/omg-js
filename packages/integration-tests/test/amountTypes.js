@@ -54,7 +54,7 @@ describe('amountTypes.js (ci-enabled)', function () {
     ])
   })
 
-  it('approveToken() should only accept safe integers and strings for amount', async function () {
+  it('approveToken() should only accept safe integers and strings and BN', async function () {
     const numberReceipt = await rootChain.approveToken({
       erc20Address: config.testErc20Contract,
       amount: 10,
@@ -75,6 +75,16 @@ describe('amountTypes.js (ci-enabled)', function () {
     })
     assert.hasAnyKeys(stringReceipt, ['transactionHash'])
 
+    const bnReceipt = await rootChain.approveToken({
+      erc20Address: config.testErc20Contract,
+      amount: web3.utils.toBN(1),
+      txOptions: {
+        from: aliceAccount.address,
+        privateKey: aliceAccount.privateKey
+      }
+    })
+    assert.hasAnyKeys(bnReceipt, ['transactionHash'])
+
     const unsafeReceipt = rootChain.approveToken({
       erc20Address: config.testErc20Contract,
       amount: 999999999999999999999999999999999999999999999999999999999999,
@@ -84,16 +94,6 @@ describe('amountTypes.js (ci-enabled)', function () {
       }
     })
     assert.isRejected(unsafeReceipt)
-
-    const bnReceipt = rootChain.approveToken({
-      erc20Address: config.testErc20Contract,
-      amount: web3.utils.toBN(1),
-      txOptions: {
-        from: aliceAccount.address,
-        privateKey: aliceAccount.privateKey
-      }
-    })
-    assert.isRejected(bnReceipt)
   })
 
   it('deposit() should only accept safe integers, strings, and BN', async function () {

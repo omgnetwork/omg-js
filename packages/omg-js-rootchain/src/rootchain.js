@@ -190,7 +190,7 @@ class RootChain {
    * @method approveToken
    * @param {Object} args an arguments object
    * @param {string} args.erc20Address address of the ERC20 token
-   * @param {number|string} args.amount amount of ERC20 to approve to deposit
+   * @param {number|string|BigNumber} args.amount amount of ERC20 to approve to deposit
    * @param {TransactionOptions} args.txOptions transaction options
    * @return {Promise<TransactionReceipt>} promise that resolves with a transaction receipt
    */
@@ -201,7 +201,7 @@ class RootChain {
     const txDetails = {
       from: txOptions.from,
       to: erc20Address,
-      data: erc20Contract.methods.approve(spender, amount).encodeABI(),
+      data: erc20Contract.methods.approve(spender, amount.toString()).encodeABI(),
       gas: txOptions.gas,
       gasPrice: txOptions.gasPrice
     }

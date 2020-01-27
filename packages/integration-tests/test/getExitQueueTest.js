@@ -27,20 +27,21 @@ use(chaiAsPromised)
 
 describe('getExitQueueTest.js', function () {
   const web3 = new Web3(new Web3.providers.HttpProvider(config.geth_url))
+  const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url })
   let rootChain
-  let childChain
   let aliceAccount
   const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.1', 'ether')
   const DEPOSIT_AMOUNT = web3.utils.toWei('.0001', 'ether')
 
+  before(async function () {
+    const plasmaContract = await rcHelper.getPlasmaContractAddress(config)
+    rootChain = new RootChain({ web3, plasmaContractAddress: plasmaContract.contract_addr })
+    await faucet.init(rootChain, childChain, web3, config)
+  })
+
   beforeEach(async function () {
     aliceAccount = rcHelper.createAccount(web3)
     console.log(`Created new account ${JSON.stringify(aliceAccount)}`)
-    const plasmaContract = await rcHelper.getPlasmaContractAddress(config)
-    rootChain = new RootChain({ web3, plasmaContractAddress: plasmaContract.contract_addr })
-    childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url })
-
-    await faucet.init(rootChain, childChain, web3, config)
     await faucet.fundRootchainEth(web3, aliceAccount.address, INTIIAL_ALICE_AMOUNT)
     await rcHelper.waitForEthBalanceEq(web3, aliceAccount.address, INTIIAL_ALICE_AMOUNT)
   })
@@ -62,8 +63,7 @@ describe('getExitQueueTest.js', function () {
         maxExitsToProcess: queue.length,
         txOptions: {
           privateKey: aliceAccount.privateKey,
-          from: aliceAccount.address,
-          gas: 6000000
+          from: aliceAccount.address
         }
       })
       if (ethExitReceipt) {
