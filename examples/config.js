@@ -18,7 +18,7 @@ require('dotenv').config()
 const { hexPrefix } = require('../packages/omg-js-util/src')
 
 const config = {
-  geth_url: process.env.GETH_URL,
+  eth_node: process.env.ETH_NODE,
   watcher_url: process.env.WATCHER_URL,
   watcher_proxy_url: process.env.WATCHER_PROXY_URL,
   rootchain_plasma_contract_address: hexPrefix(process.env.PLASMA_FRAMEWORK),

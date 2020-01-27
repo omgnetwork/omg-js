@@ -18,7 +18,7 @@ const { transaction, waitForRootchainTransaction } = require('../packages/omg-js
 const config = require('./config.js')
 
 // setup for fast confirmations
-const web3 = new Web3(new Web3.providers.HttpProvider(config.geth_url), null, {
+const web3 = new Web3(new Web3.providers.HttpProvider(config.eth_node), null, {
   transactionConfirmationBlocks: 1
 })
 

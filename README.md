@@ -76,7 +76,7 @@ To run the examples:
 
 - Refer to below explanation of `.env` variables
 ```
-GETH_URL=                       <entry point to an ethereum node>
+ETH_NODE=                       <entry point to an ethereum node>
 WATCHER_URL=                    <url of an informational watcher>
 WATCHER_PROXY_URL=              <*optional* proxy server to catch all watcher requests>
 PLASMA_FRAMEWORK=               <address of the plasma_framework contract>

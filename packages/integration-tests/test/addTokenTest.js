@@ -23,7 +23,7 @@ const rcHelper = require('../helpers/rootChainHelper')
 should()
 use(chaiAsPromised)
 
-const web3 = new Web3(new Web3.providers.HttpProvider(config.geth_url))
+const web3 = new Web3(new Web3.providers.HttpProvider(config.eth_node))
 
 let rootChain
 let childChain
