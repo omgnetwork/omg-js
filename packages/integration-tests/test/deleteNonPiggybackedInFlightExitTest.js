@@ -25,7 +25,7 @@ const numberToBN = require('number-to-bn')
 const chai = require('chai')
 const assert = chai.assert
 
-describe.only('deleteNonPiggybackedInFlightExitTest.js', function () {
+describe('deleteNonPiggybackedInFlightExitTest.js', function () {
   const web3 = new Web3(new Web3.providers.HttpProvider(config.geth_url))
   const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url })
   let rootChain
@@ -146,6 +146,7 @@ describe.only('deleteNonPiggybackedInFlightExitTest.js', function () {
           from: bobAccount.address
         }
       })
+      bobSpentOnGas.iadd(await rcHelper.spentOnGas(web3, deleteIFEReceipt))
       console.log('Bob called deleteNonPiggybackedInFlightExit: ', deleteIFEReceipt.transactionHash)
 
       // Bob started an ife and paid a bond, but after deleting the ife, he should get his bond back
