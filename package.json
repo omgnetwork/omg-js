@@ -16,7 +16,8 @@
     "mocha": "mocha --timeout=0 --bail --slow=0 --check-leaks --color --full-trace",
     "test": "mocha packages/omg-js-childchain/test packages/omg-js-rootchain/test packages/omg-js-util/test",
     "integration-test": "npm run mocha packages/integration-tests/tests",
-    "ci-integration-test": "npm run mocha --grep ci-enabled packages/integration-tests/tests"
+    "ci-integration-test": "npm run mocha --grep ci-enabled packages/integration-tests/tests",
+    "parallel-test": "node packages/integration-tests/parallel-test"
   },
   "author": "OmiseGo",
   "contributors": [
@@ -47,6 +48,7 @@
     "eslint-plugin-standard": "^4.0.1",
     "lerna": "^3.18.4",
     "mocha": "^5.2.0",
+    "mocha-parallel-tests": "^2.2.2",
     "nock": "^9.6.1",
     "request": "^2.88.0",
     "request-promise-native": "^1.0.7",
