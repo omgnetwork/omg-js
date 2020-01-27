@@ -25,15 +25,14 @@ const chai = require('chai')
 const numberToBN = require('number-to-bn')
 const assert = chai.assert
 
-const web3 = new Web3(new Web3.providers.HttpProvider(config.geth_url))
-const childChain = new ChildChain({
-  watcherUrl: config.watcher_url,
-  watcherProxyUrl: config.watcher_proxy_url
-})
-// NB This test waits for at least RootChain.MIN_EXIT_PERIOD so it should be run against a
-// modified RootChain contract with a shorter than normal MIN_EXIT_PERIOD.
-let rootChain
-describe('In-flight Exit Challenge tests', function () {
+describe('inFlightExitChallengeTest.js', function () {
+  const web3 = new Web3(new Web3.providers.HttpProvider(config.geth_url))
+  let rootChain
+  const childChain = new ChildChain({
+    watcherUrl: config.watcher_url,
+    watcherProxyUrl: config.watcher_proxy_url
+  })
+
   before(async function () {
     const plasmaContract = await rcHelper.getPlasmaContractAddress(config)
     rootChain = new RootChain({ web3, plasmaContractAddress: plasmaContract.contract_addr })
@@ -50,7 +49,7 @@ describe('In-flight Exit Challenge tests', function () {
     let carolAccount
     let fundAliceTx
 
-    before(async function () {
+    beforeEach(async function () {
       INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.001', 'ether')
       INTIIAL_BOB_RC_AMOUNT = web3.utils.toWei('1', 'ether')
       INTIIAL_CAROL_RC_AMOUNT = web3.utils.toWei('.1', 'ether')
@@ -101,7 +100,7 @@ describe('In-flight Exit Challenge tests', function () {
       ])
     })
 
-    after(async function () {
+    afterEach(async function () {
       try {
         // Send any leftover funds back to the faucet
         await faucet.returnFunds(web3, aliceAccount)
@@ -261,7 +260,7 @@ describe('In-flight Exit Challenge tests', function () {
         exitRequestBlockNumber: ifeReceipt.blockNumber,
         submissionBlockNumber: fundAliceTx.result.blknum
       })
-      console.log(`Waiting for challenge period... ${msUntilFinalization}ms`)
+      console.log(`Waiting for challenge period... ${msUntilFinalization / 60000} minutes`)
       await rcHelper.sleep(msUntilFinalization)
 
       // Call processExits again.
@@ -313,7 +312,7 @@ describe('In-flight Exit Challenge tests', function () {
     let carolAccount
     let fundAliceTx
 
-    before(async function () {
+    beforeEach(async function () {
       INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.1', 'ether')
       INTIIAL_BOB_RC_AMOUNT = web3.utils.toWei('1', 'ether')
       INTIIAL_CAROL_RC_AMOUNT = web3.utils.toWei('.5', 'ether')
@@ -363,7 +362,7 @@ describe('In-flight Exit Challenge tests', function () {
       ])
     })
 
-    after(async function () {
+    afterEach(async function () {
       try {
         // Send any leftover funds back to the faucet
         await faucet.returnFunds(web3, aliceAccount)
@@ -500,7 +499,7 @@ describe('In-flight Exit Challenge tests', function () {
         exitRequestBlockNumber: ifeReceipt.blockNumber,
         submissionBlockNumber: fundAliceTx.result.blknum
       })
-      console.log(`Waiting for challenge period... ${msUntilFinalization}ms`)
+      console.log(`Waiting for challenge period... ${msUntilFinalization / 60000} minutes`)
       await rcHelper.sleep(msUntilFinalization)
 
       // Call processExits again.
