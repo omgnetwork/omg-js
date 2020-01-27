@@ -325,10 +325,10 @@ describe('Standard Exit tests', function () {
   })
 
   describe('ERC20 exit (ci-enabled)', function () {
-    const ERC20_CURRENCY = config.testErc20Contract
+    const ERC20_CURRENCY = config.erc20ContractAddress
     const testErc20Contract = new web3.eth.Contract(
       erc20abi,
-      config.testErc20Contract
+      config.erc20ContractAddress
     )
     const INTIIAL_ALICE_AMOUNT_ETH = web3.utils.toWei('.1', 'ether')
     const INTIIAL_ALICE_AMOUNT_ERC20 = 2
@@ -416,7 +416,7 @@ describe('Standard Exit tests', function () {
 
       // Call processExits before the challenge period is over
       let receipt = await rootChain.processExits({
-        token: config.testErc20Contract,
+        token: config.erc20ContractAddress,
         exitId: 0,
         maxExitsToProcess: 20,
         txOptions: {
@@ -442,7 +442,7 @@ describe('Standard Exit tests', function () {
 
       // Call processExits again.
       receipt = await rootChain.processExits({
-        token: config.testErc20Contract,
+        token: config.erc20ContractAddress,
         exitId: 0,
         maxExitsToProcess: 20,
         txOptions: {

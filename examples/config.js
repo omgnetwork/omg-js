@@ -22,7 +22,7 @@ const config = {
   watcher_url: process.env.WATCHER_URL,
   watcher_proxy_url: process.env.WATCHER_PROXY_URL,
   plasmaframework_contract_address: hexPrefix(process.env.PLASMAFRAMEWORK_CONTRACT_ADDRESS),
-  erc20_contract: process.env.ERC20_CONTRACT ? hexPrefix(process.env.ERC20_CONTRACT) : undefined,
+  erc20_contract_address: process.env.ERC20_CONTRACT_ADDRESS ? hexPrefix(process.env.ERC20_CONTRACT_ADDRESS) : undefined,
   alice_eth_address: hexPrefix(process.env.ALICE_ETH_ADDRESS),
   alice_eth_address_private_key: hexPrefix(process.env.ALICE_ETH_ADDRESS_PRIVATE_KEY),
   bob_eth_address: hexPrefix(process.env.BOB_ETH_ADDRESS),

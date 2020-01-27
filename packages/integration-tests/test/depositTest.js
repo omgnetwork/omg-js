@@ -129,7 +129,7 @@ describe('Deposit tests', function () {
 
   describe('deposit ERC20 (ci-enabled)', function () {
     let aliceAccount
-    const testErc20Contract = new web3.eth.Contract(erc20abi, config.testErc20Contract)
+    const testErc20Contract = new web3.eth.Contract(erc20abi, config.erc20ContractAddress)
     const INTIIAL_AMOUNT_ETH = web3.utils.toWei('.1', 'ether')
     const INITIAL_AMOUNT_ERC20 = 3
     const TEST_AMOUNT = 2
@@ -143,7 +143,7 @@ describe('Deposit tests', function () {
 
       await Promise.all([
         rcHelper.waitForEthBalanceEq(web3, aliceAccount.address, INTIIAL_AMOUNT_ETH),
-        rcHelper.waitForERC20BalanceEq(web3, aliceAccount.address, config.testErc20Contract, INITIAL_AMOUNT_ERC20)
+        rcHelper.waitForERC20BalanceEq(web3, aliceAccount.address, config.erc20ContractAddress, INITIAL_AMOUNT_ERC20)
       ])
     })
 
@@ -163,7 +163,7 @@ describe('Deposit tests', function () {
 
       // Account must approve the Plasma contract
       await rootChain.approveToken({
-        erc20Address: config.testErc20Contract,
+        erc20Address: config.erc20ContractAddress,
         amount: TEST_AMOUNT,
         txOptions: {
           from: aliceAccount.address,
@@ -174,12 +174,12 @@ describe('Deposit tests', function () {
       // Deposit ERC20 tokens into the Plasma contract
       await rootChain.deposit({
         amount: TEST_AMOUNT,
-        currency: config.testErc20Contract,
+        currency: config.erc20ContractAddress,
         txOptions: { from: aliceAccount.address, privateKey: aliceAccount.privateKey }
       })
 
       // Wait for transaction to be mined and reflected in the account's balance
-      const balance = await ccHelper.waitForBalanceEq(childChain, aliceAccount.address, TEST_AMOUNT, config.testErc20Contract)
+      const balance = await ccHelper.waitForBalanceEq(childChain, aliceAccount.address, TEST_AMOUNT, config.erc20ContractAddress)
 
       // Check balance is correct
       assert.equal(balance[0].amount.toString(), TEST_AMOUNT)
@@ -190,7 +190,7 @@ describe('Deposit tests', function () {
       assert.equal(utxos.length, 1)
       assert.hasAllKeys(utxos[0], ['utxo_pos', 'txindex', 'owner', 'oindex', 'currency', 'blknum', 'amount', 'creating_txhash', 'spending_txhash'])
       assert.equal(utxos[0].amount.toString(), TEST_AMOUNT)
-      assert.equal(utxos[0].currency.toLowerCase(), config.testErc20Contract.toLowerCase())
+      assert.equal(utxos[0].currency.toLowerCase(), config.erc20ContractAddress.toLowerCase())
     })
   })
 })

@@ -36,7 +36,7 @@ const faucet = {
     this.childChain = childChain
     this.address = config.testFaucetAddress
     this.privateKey = config.testFaucetPrivateKey
-    this.erc20ContractAddress = config.testErc20Contract
+    this.erc20ContractAddress = config.erc20ContractAddress
     this.erc20Contract = new web3.eth.Contract(erc20abi, this.erc20ContractAddress)
 
     // The fundAccount is used to top up the faucet - useful for local testing

@@ -28,11 +28,11 @@ const bobAddress = config.bob_eth_address
 
 async function logBalances () {
   const alicesBalanceArray = await childChain.getBalance(aliceAddress)
-  const aliceErc20Object = alicesBalanceArray.find(i => i.currency.toLowerCase() === config.erc20_contract.toLowerCase())
+  const aliceErc20Object = alicesBalanceArray.find(i => i.currency.toLowerCase() === config.erc20_contract_address.toLowerCase())
   const alicesChildchainERC20Balance = aliceErc20Object ? aliceErc20Object.amount : 0
 
   const bobsBalanceArray = await childChain.getBalance(bobAddress)
-  const bobErc20Object = bobsBalanceArray.find(i => i.currency.toLowerCase() === config.erc20_contract.toLowerCase())
+  const bobErc20Object = bobsBalanceArray.find(i => i.currency.toLowerCase() === config.erc20_contract_address.toLowerCase())
   const bobsChildchainERC20Balance = bobErc20Object ? bobErc20Object.amount : 0
 
   console.log(`Alice's childchain ERC20 balance: ${alicesChildchainERC20Balance}`)
@@ -41,7 +41,7 @@ async function logBalances () {
 }
 
 async function childchainTransactionErc20 () {
-  if (!config.erc20_contract) {
+  if (!config.erc20_contract_address) {
     console.log('Please define an ERC20 contract address in your .env')
     return
   }
@@ -50,7 +50,7 @@ async function childchainTransactionErc20 () {
 
   const payments = [{
     owner: bobAddress,
-    currency: config.erc20_contract,
+    currency: config.erc20_contract_address,
     amount: Number(config.alice_erc20_transfer_amount)
   }]
   const fee = {
@@ -79,7 +79,7 @@ async function childchainTransactionErc20 () {
     childChain,
     address: bobAddress,
     expectedAmount,
-    currency: config.erc20_contract
+    currency: config.erc20_contract_address
   })
 
   console.log('-----')

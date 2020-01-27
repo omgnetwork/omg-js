@@ -33,10 +33,10 @@ async function logBalances () {
   const rootchainERC20Balance = await getErc20Balance({
     web3,
     address: aliceAddress,
-    erc20Address: config.erc20_contract
+    erc20Address: config.erc20_contract_address
   })
   const childchainBalanceArray = await childChain.getBalance(aliceAddress)
-  const erc20Object = childchainBalanceArray.find(i => i.currency.toLowerCase() === config.erc20_contract.toLowerCase())
+  const erc20Object = childchainBalanceArray.find(i => i.currency.toLowerCase() === config.erc20_contract_address.toLowerCase())
   const childchainERC20Balance = erc20Object ? erc20Object.amount : 0
 
   console.log(`Alice's rootchain ERC20 balance: ${rootchainERC20Balance}`)
@@ -44,7 +44,7 @@ async function logBalances () {
 }
 
 async function childchainDepositErc20 () {
-  if (!config.erc20_contract) {
+  if (!config.erc20_contract_address) {
     console.log('Please define an ERC20 contract address in your .env')
     return
   }
@@ -54,7 +54,7 @@ async function childchainDepositErc20 () {
 
   console.log('Approving ERC20 for deposit...')
   const approveRes = await rootChain.approveToken({
-    erc20Address: config.erc20_contract,
+    erc20Address: config.erc20_contract_address,
     amount: config.alice_erc20_deposit_amount,
     txOptions: {
       from: aliceAddress,
@@ -67,7 +67,7 @@ async function childchainDepositErc20 () {
   console.log(`Depositing ${config.alice_erc20_deposit_amount} ERC20 from the rootchain to the childchain`)
   const transactionReceipt = await rootChain.deposit({
     amount: config.alice_erc20_deposit_amount,
-    currency: config.erc20_contract,
+    currency: config.erc20_contract_address,
     txOptions: {
       from: aliceAddress,
       privateKey: alicePrivateKey,

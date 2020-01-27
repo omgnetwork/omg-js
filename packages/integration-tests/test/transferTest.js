@@ -255,7 +255,7 @@ describe('Transfer tests', function () {
     let bobAccount
 
     before(async function () {
-      ERC20_CURRENCY = config.testErc20Contract
+      ERC20_CURRENCY = config.erc20ContractAddress
       INTIIAL_ALICE_AMOUNT_ETH = web3.utils.toWei('.00000001', 'ether')
       // Create Alice and Bob's accounts
       aliceAccount = rcHelper.createAccount(web3)
@@ -331,7 +331,7 @@ describe('Transfer tests', function () {
   })
 
   describe('Mixed currency transfer (ci-enabled)', function () {
-    const ERC20_CURRENCY = config.testErc20Contract
+    const ERC20_CURRENCY = config.erc20ContractAddress
     const INTIIAL_ALICE_AMOUNT_ETH = web3.utils.toWei('0.001', 'ether')
     const INTIIAL_ALICE_AMOUNT_ERC20 = 3
     const TRANSFER_AMOUNT_ETH = numberToBN(web3.utils.toWei('0.0004', 'ether'))
