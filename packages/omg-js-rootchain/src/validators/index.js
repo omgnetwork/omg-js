@@ -140,6 +140,11 @@ const challengeInFlightExitOutputSpentSchema = Joi.object({
   txOptions: validateTxOption
 })
 
+const deleteNonPiggybackedInFlightExitSchema = Joi.object({
+  exitId: Joi.string().required(),
+  txOptions: validateTxOption
+})
+
 module.exports = {
   rootchainConstructorSchema,
   getExitTimeSchema,
@@ -158,5 +163,6 @@ module.exports = {
   challengeInFlightExitNotCanonicalSchema,
   respondToNonCanonicalChallengeSchema,
   challengeInFlightExitInputSpentSchema,
-  challengeInFlightExitOutputSpentSchema
+  challengeInFlightExitOutputSpentSchema,
+  deleteNonPiggybackedInFlightExitSchema
 }
