@@ -34,9 +34,9 @@ const faucet = {
 
     this.rootChain = rootChain
     this.childChain = childChain
-    this.address = config.testFaucetAddress
-    this.privateKey = config.testFaucetPrivateKey
-    this.erc20ContractAddress = config.erc20ContractAddress
+    this.address = config.test_faucet_address
+    this.privateKey = config.test_faucet_private_key
+    this.erc20ContractAddress = config.erc20_contract_address
     this.erc20Contract = new web3.eth.Contract(erc20abi, this.erc20ContractAddress)
 
     // The fundAccount is used to top up the faucet - useful for local testing
@@ -51,8 +51,8 @@ const faucet = {
       this.privateKey = faucetAccount.privateKey
     }
 
-    await this.initEthBalance(web3, web3.utils.toWei(config.minAmountEth || '3', 'ether'))
-    await this.initERC20Balance(web3, config.minAmountERC20 || 20)
+    await this.initEthBalance(web3, web3.utils.toWei(config.test_min_eth || '3', 'ether'))
+    await this.initERC20Balance(web3, config.test_min_erc20 || 20)
     await this.addToken(this.erc20ContractAddress)
     await this.addToken(transaction.ETH_CURRENCY)
     await this.showInfo(web3)
@@ -304,12 +304,12 @@ const faucet = {
 
 async function getFundAccount (web3, config) {
   const fundAccount = {
-    privateKey: config.fundAccountPrivateKey,
-    password: config.fundAccountPassword
+    privateKey: config.fund_account_private_key,
+    password: config.fund_account_password
   }
 
-  if (config.fundAccount && config.fundAccount !== '') {
-    fundAccount.address = config.fundAccount
+  if (config.fund_account && config.fund_account !== '') {
+    fundAccount.address = config.fund_account
   } else {
     // Default to using eth.accounts[0]
     const accounts = await web3.eth.getAccounts()

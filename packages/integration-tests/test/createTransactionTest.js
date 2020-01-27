@@ -156,7 +156,7 @@ describe('Create transaction tests', function () {
   })
 
   describe('create a mixed currency transaction', function () {
-    const ERC20_CURRENCY = config.erc20ContractAddress
+    const ERC20_CURRENCY = config.erc20_contract_address
     const INTIIAL_ALICE_AMOUNT_ETH = web3.utils.toWei('0.001', 'ether')
     const INTIIAL_ALICE_AMOUNT_ERC20 = 3
     const TRANSFER_AMOUNT_ETH = numberToBN(web3.utils.toWei('0.0004', 'ether'))
