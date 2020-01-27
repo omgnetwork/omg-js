@@ -25,18 +25,18 @@ const { transaction } = require('@omisego/omg-js-util')
 const chai = require('chai')
 const assert = chai.assert
 
-const web3 = new Web3(new Web3.providers.HttpProvider(config.geth_url))
-const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url })
-let rootChain
+describe('depositTest.js (ci-enabled)', function () {
+  const web3 = new Web3(new Web3.providers.HttpProvider(config.geth_url))
+  const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url })
+  let rootChain
 
-describe('Deposit tests', function () {
   before(async function () {
     const plasmaContract = await rcHelper.getPlasmaContractAddress(config)
     rootChain = new RootChain({ web3, plasmaContractAddress: plasmaContract.contract_addr })
     await faucet.init(rootChain, childChain, web3, config)
   })
 
-  describe('deposit ETH (ci-enabled)', function () {
+  describe('deposit ETH', function () {
     let INTIIAL_ALICE_AMOUNT
     let TEST_AMOUNT
     let aliceAccount
@@ -127,14 +127,14 @@ describe('Deposit tests', function () {
     })
   })
 
-  describe('deposit ERC20 (ci-enabled)', function () {
+  describe('deposit ERC20', function () {
     let aliceAccount
     const testErc20Contract = new web3.eth.Contract(erc20abi, config.testErc20Contract)
     const INTIIAL_AMOUNT_ETH = web3.utils.toWei('.1', 'ether')
     const INITIAL_AMOUNT_ERC20 = 3
     const TEST_AMOUNT = 2
 
-    before(async function () {
+    beforeEach(async function () {
       // Create and fund Alice's account
       aliceAccount = rcHelper.createAccount(web3)
       console.log(`Created Alice account ${JSON.stringify(aliceAccount)}`)
@@ -147,7 +147,7 @@ describe('Deposit tests', function () {
       ])
     })
 
-    after(async function () {
+    afterEach(async function () {
       try {
         // Send any leftover funds back to the faucet
         await faucet.returnFunds(web3, aliceAccount)

@@ -23,15 +23,14 @@ const rcHelper = require('../helpers/rootChainHelper')
 should()
 use(chaiAsPromised)
 
-const web3 = new Web3(new Web3.providers.HttpProvider(config.geth_url))
+describe('addTokenTest.js (ci-enabled)', function () {
+  const web3 = new Web3(new Web3.providers.HttpProvider(config.geth_url))
+  let rootChain
+  let childChain
+  let aliceAccount
+  const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('0.5', 'ether')
 
-let rootChain
-let childChain
-let aliceAccount
-const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('0.5', 'ether')
-
-describe('AddExitQueue tests', function () {
-  before(async function () {
+  beforeEach(async function () {
     aliceAccount = rcHelper.createAccount(web3)
     console.log(`Created new account ${JSON.stringify(aliceAccount)}`)
     const plasmaContract = await rcHelper.getPlasmaContractAddress(config)
@@ -41,6 +40,15 @@ describe('AddExitQueue tests', function () {
     await faucet.init(rootChain, childChain, web3, config)
     await faucet.fundRootchainEth(web3, aliceAccount.address, INTIIAL_ALICE_AMOUNT)
     await rcHelper.waitForEthBalanceEq(web3, aliceAccount.address, INTIIAL_ALICE_AMOUNT)
+  })
+
+  afterEach(async function () {
+    try {
+      // Send any leftover funds back to the faucet
+      await faucet.returnFunds(web3, aliceAccount)
+    } catch (err) {
+      console.warn(`Error trying to return funds to the faucet: ${err}`)
+    }
   })
 
   it('add token should add token if not added before', async function () {

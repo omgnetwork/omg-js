@@ -24,6 +24,7 @@
   "dependencies": {
     "eth-sig-util": "^2.1.1",
     "ethereumjs-util": "^6.0.0",
+    "human-standard-token-abi": "^2.0.0",
     "js-sha3": "^0.8.0",
     "lodash": "^4.17.15",
     "number-to-bn": "^1.7.0",

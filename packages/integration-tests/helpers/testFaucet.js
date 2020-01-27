@@ -21,11 +21,12 @@ const numberToBN = require('number-to-bn')
 const erc20abi = require('human-standard-token-abi')
 
 const currencyMap = {
-  '0x0000000000000000000000000000000000000000': 'ETH'
+  '0x0000000000000000000000000000000000000000': 'wei'
 }
 const faucet = {
   init: async function (rootChain, childChain, web3, config) {
     if (this.initialised) {
+      await this.showChildchainInfo(web3)
       return
     }
     this.initialised = true
@@ -51,7 +52,7 @@ const faucet = {
       this.privateKey = faucetAccount.privateKey
     }
 
-    await this.initEthBalance(web3, web3.utils.toWei(config.minAmountEth || '3', 'ether'))
+    await this.initEthBalance(web3, web3.utils.toWei(config.minAmountEth || '4', 'ether'))
     await this.initERC20Balance(web3, config.minAmountERC20 || 20)
     await this.addToken(this.erc20ContractAddress)
     await this.addToken(transaction.ETH_CURRENCY)
@@ -71,6 +72,16 @@ const faucet = {
     }
   },
 
+  showChildchainInfo: async function (web3) {
+    console.info('-------------- Faucet Childchain Balance --------------------')
+    const ccBalance = await this.childChain.getBalance(this.address)
+    const ccEthBalance = ccBalance.find(e => e.currency === transaction.ETH_CURRENCY)
+    const ccErc20Balance = ccBalance.find(e => e.currency.toLowerCase() === this.erc20ContractAddress.toLowerCase())
+    console.info(`Childchain ETH balance: ${ccEthBalance ? ccEthBalance.amount.toString() : '0'}`)
+    console.info(`Childchain ERC20 balance: ${ccErc20Balance ? ccErc20Balance.amount.toString() : '0'}`)
+    console.info('------------------------------------------------------------')
+  },
+
   showInfo: async function (web3) {
     console.info('----------------- Faucet -----------------------')
     console.info(`Address: ${this.address}`)
@@ -86,7 +97,7 @@ const faucet = {
 
     console.info(`Childchain ETH balance: ${ccEthBalance ? ccEthBalance.amount.toString() : '0'}`)
     console.info(`Childchain ERC20 balance: ${ccErc20Balance ? ccErc20Balance.amount.toString() : '0'}`)
-    console.info('----------------- Faucet -----------------------')
+    console.info('------------------------------------------------')
   },
 
   initEthBalance: async function (web3, minAmount) {
