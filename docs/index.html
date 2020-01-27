@@ -2296,7 +2296,7 @@ Should be called periodically to see if there are any byzantine_events to be act
             <tbody class='mt1'>
               
                 <tr>
-  <td class='break-word'><span class='code bold'>args.exitRequestBlockNumber</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></code>
+  <td class='break-word'><span class='code bold'>args.exitRequestBlockNumber</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
   </td>
   <td class='break-word'><span>block number of the exit request
 </span></td>
@@ -2477,7 +2477,7 @@ Should be called periodically to see if there are any byzantine_events to be act
 
               
                 <tr>
-  <td class='break-word'><span class='code bold'>args.amount</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></code>
+  <td class='break-word'><span class='code bold'>args.amount</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
   </td>
   <td class='break-word'><span>amount of ERC20 to approve to deposit
 </span></td>
@@ -2580,7 +2580,7 @@ Should be called periodically to see if there are any byzantine_events to be act
             <tbody class='mt1'>
               
                 <tr>
-  <td class='break-word'><span class='code bold'>args.amount</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></code>
+  <td class='break-word'><span class='code bold'>args.amount</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a> | <a href="#bignumber">BigNumber</a>)</code>
   </td>
   <td class='break-word'><span>amount to deposit
 </span></td>
@@ -2907,7 +2907,7 @@ Should be called periodically to see if there are any byzantine_events to be act
             <tbody class='mt1'>
               
                 <tr>
-  <td class='break-word'><span class='code bold'>args.utxoPos</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></code>
+  <td class='break-word'><span class='code bold'>args.utxoPos</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)</code>
   </td>
   <td class='break-word'><span>identifier of the exiting output
 </span></td>
@@ -3028,7 +3028,7 @@ Should be called periodically to see if there are any byzantine_events to be act
             <tbody class='mt1'>
               
                 <tr>
-  <td class='break-word'><span class='code bold'>args.standardExitId</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></code>
+  <td class='break-word'><span class='code bold'>args.standardExitId</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)</code>
   </td>
   <td class='break-word'><span>identifier of the exiting output
 </span></td>
@@ -3176,7 +3176,7 @@ Should be called periodically to see if there are any byzantine_events to be act
 
               
                 <tr>
-  <td class='break-word'><span class='code bold'>args.exitId</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
+  <td class='break-word'><span class='code bold'>args.exitId</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a> | <code>0</code>)</code>
   </td>
   <td class='break-word'><span>the exit id
 </span></td>
@@ -3618,7 +3618,7 @@ Should be called periodically to see if there are any byzantine_events to be act
                 <tr>
   <td class='break-word'><span class='code bold'>args.outputIndex</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></code>
   </td>
-  <td class='break-word'><span>index of the input/output to piggyback (0-7)
+  <td class='break-word'><span>index of the output to piggyback (0-3)
 </span></td>
 </tr>
 
@@ -3730,7 +3730,7 @@ Should be called periodically to see if there are any byzantine_events to be act
                 <tr>
   <td class='break-word'><span class='code bold'>args.inputIndex</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></code>
   </td>
-  <td class='break-word'><span>index of the input/output to piggyback (0-7)
+  <td class='break-word'><span>index of the input to piggyback (0-3)
 </span></td>
 </tr>
 
