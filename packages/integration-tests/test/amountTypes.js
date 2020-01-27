@@ -24,22 +24,26 @@ const rcHelper = require('../helpers/rootChainHelper')
 should()
 use(chaiAsPromised)
 
-const web3 = new Web3(new Web3.providers.HttpProvider(config.geth_url))
+describe('amountTypes.js (ci-enabled)', function () {
+  const web3 = new Web3(new Web3.providers.HttpProvider(config.geth_url))
+  const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url })
+  let rootChain
+  let aliceAccount
+  const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('0.5', 'ether')
+  const INITIAL_AMOUNT_ERC20 = 3
+  const testErc20Contract = new web3.eth.Contract(erc20abi, config.testErc20Contract)
 
-let rootChain
-let childChain
-let aliceAccount
-const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('0.5', 'ether')
-const INITIAL_AMOUNT_ERC20 = 3
-const testErc20Contract = new web3.eth.Contract(erc20abi, config.testErc20Contract)
+  before(async function () {
+    const plasmaContract = await rcHelper.getPlasmaContractAddress(config)
+    rootChain = new RootChain({ web3, plasmaContractAddress: plasmaContract.contract_addr })
+    await faucet.init(rootChain, childChain, web3, config)
+  })
 
-describe('Amount type tests', function () {
   beforeEach(async function () {
     aliceAccount = rcHelper.createAccount(web3)
     console.log(`Created new account ${JSON.stringify(aliceAccount)}`)
     const plasmaContract = await rcHelper.getPlasmaContractAddress(config)
     rootChain = new RootChain({ web3, plasmaContractAddress: plasmaContract.contract_addr })
-    childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url })
 
     await faucet.init(rootChain, childChain, web3, config)
     await faucet.fundRootchainEth(web3, aliceAccount.address, INTIIAL_ALICE_AMOUNT)

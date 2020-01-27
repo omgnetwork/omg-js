@@ -3,6 +3,7 @@
 
 require('./test/CORSHeaderTest')
 require('./test/metadataTest')
+require('./test/amountTypes')
 require('./test/decodeTxBytesTest')
 require('./test/addTokenTest')
 require('./test/depositTest')
