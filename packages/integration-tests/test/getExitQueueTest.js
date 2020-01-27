@@ -25,15 +25,14 @@ const ccHelper = require('../helpers/childChainHelper')
 should()
 use(chaiAsPromised)
 
-const web3 = new Web3(new Web3.providers.HttpProvider(config.geth_url))
+describe('getExitQueueTest.js', function () {
+  const web3 = new Web3(new Web3.providers.HttpProvider(config.geth_url))
+  let rootChain
+  let childChain
+  let aliceAccount
+  const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.1', 'ether')
+  const DEPOSIT_AMOUNT = web3.utils.toWei('.0001', 'ether')
 
-let rootChain
-let childChain
-let aliceAccount
-const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.1', 'ether')
-const DEPOSIT_AMOUNT = web3.utils.toWei('.0001', 'ether')
-
-describe('getExitQueue tests', function () {
   beforeEach(async function () {
     aliceAccount = rcHelper.createAccount(web3)
     console.log(`Created new account ${JSON.stringify(aliceAccount)}`)
@@ -125,7 +124,7 @@ describe('getExitQueue tests', function () {
       exitRequestBlockNumber: standardExitReceipt.blockNumber,
       submissionBlockNumber: utxoToExit.blknum
     })
-    console.log(`Waiting for challenge period... ${msUntilFinalization}ms`)
+    console.log(`Waiting for challenge period... ${msUntilFinalization / 60000} minutes`)
     await rcHelper.sleep(msUntilFinalization)
     const processReceipt = await rootChain.processExits({
       token: transaction.ETH_CURRENCY,

@@ -26,21 +26,18 @@ const { transaction } = require('@omisego/omg-js-util')
 const chai = require('chai')
 const assert = chai.assert
 
-const web3 = new Web3(new Web3.providers.HttpProvider(config.geth_url))
-const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url })
-let rootChain
+describe('standardExitTest.js', function () {
+  const web3 = new Web3(new Web3.providers.HttpProvider(config.geth_url))
+  const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url })
+  let rootChain
 
-// NB This test waits for at least RootChain.MIN_EXIT_PERIOD so it should be run against a
-// modified RootChain contract with a shorter than normal MIN_EXIT_PERIOD.
-
-describe('Standard Exit tests', function () {
   before(async function () {
     const plasmaContract = await rcHelper.getPlasmaContractAddress(config)
     rootChain = new RootChain({ web3, plasmaContractAddress: plasmaContract.contract_addr })
     await faucet.init(rootChain, childChain, web3, config)
   })
 
-  describe('Deposit transaction exit (ci-enabled)', function () {
+  describe('Deposit transaction exit', function () {
     let INTIIAL_ALICE_AMOUNT
     let DEPOSIT_AMOUNT
     let aliceAccount
@@ -144,7 +141,7 @@ describe('Standard Exit tests', function () {
         exitRequestBlockNumber: standardExitReceipt.blockNumber,
         submissionBlockNumber: utxoToExit.blknum
       })
-      console.log(`Waiting for challenge period... ${msUntilFinalization}ms`)
+      console.log(`Waiting for challenge period... ${msUntilFinalization / 60000} minutes`)
       await rcHelper.sleep(msUntilFinalization)
 
       // Call processExits again.
@@ -172,14 +169,14 @@ describe('Standard Exit tests', function () {
     })
   })
 
-  describe('childchain transaction exit (ci-enabled)', function () {
+  describe('childchain transaction exit', function () {
     const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.001', 'ether')
     const INTIIAL_BOB_RC_AMOUNT = web3.utils.toWei('.1', 'ether')
     const TRANSFER_AMOUNT = web3.utils.toWei('0.0002', 'ether')
     let aliceAccount
     let bobAccount
 
-    before(async function () {
+    beforeEach(async function () {
       // Create Alice and Bob's accounts
       aliceAccount = rcHelper.createAccount(web3)
       console.log(`Created Alice account ${JSON.stringify(aliceAccount)}`)
@@ -211,7 +208,7 @@ describe('Standard Exit tests', function () {
       ])
     })
 
-    after(async function () {
+    afterEach(async function () {
       try {
         // Send any leftover funds back to the faucet
         await faucet.returnFunds(web3, aliceAccount)
@@ -293,7 +290,7 @@ describe('Standard Exit tests', function () {
         exitRequestBlockNumber: startStandardExitReceipt.blockNumber,
         submissionBlockNumber: utxoToExit.blknum
       })
-      console.log(`Waiting for challenge period... ${msUntilFinalization}ms`)
+      console.log(`Waiting for challenge period... ${msUntilFinalization / 60000} minutes`)
       await rcHelper.sleep(msUntilFinalization)
 
       // Call processExits again.
@@ -324,7 +321,7 @@ describe('Standard Exit tests', function () {
     })
   })
 
-  describe('ERC20 exit (ci-enabled)', function () {
+  describe('ERC20 exit', function () {
     const ERC20_CURRENCY = config.testErc20Contract
     const testErc20Contract = new web3.eth.Contract(
       erc20abi,
@@ -334,7 +331,7 @@ describe('Standard Exit tests', function () {
     const INTIIAL_ALICE_AMOUNT_ERC20 = 2
     let aliceAccount
 
-    before(async function () {
+    beforeEach(async function () {
       // Create and fund Alice's account
       aliceAccount = rcHelper.createAccount(web3)
       console.log(`Created Alice account ${JSON.stringify(aliceAccount)}`)
@@ -366,7 +363,7 @@ describe('Standard Exit tests', function () {
       ])
     })
 
-    after(async function () {
+    afterEach(async function () {
       try {
         // Send any leftover funds back to the faucet
         await faucet.returnFunds(web3, aliceAccount)
@@ -437,7 +434,7 @@ describe('Standard Exit tests', function () {
         exitRequestBlockNumber: standardExitReceipt.blockNumber,
         submissionBlockNumber: utxoToExit.blknum
       })
-      console.log(`Waiting for challenge period... ${msUntilFinalization}ms`)
+      console.log(`Waiting for challenge period... ${msUntilFinalization / 60000} minutes`)
       await rcHelper.sleep(msUntilFinalization)
 
       // Call processExits again.
