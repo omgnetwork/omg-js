@@ -19,7 +19,7 @@ const { transaction, waitForChildchainBalance } = require('../packages/omg-js-ut
 
 const config = require('./config.js')
 
-const rootChainPlasmaContractAddress = config.rootchain_plasma_contract_address
+const rootChainPlasmaContractAddress = config.plasmaframework_contract_address
 const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url })
 
 const aliceAddress = config.alice_eth_address

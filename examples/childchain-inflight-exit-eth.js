@@ -21,8 +21,8 @@ const config = require('./config.js')
 const wait = require('./wait.js')
 
 const web3 = new Web3(new Web3.providers.HttpProvider(config.eth_node), null, { transactionConfirmationBlocks: 1 })
-const rootChain = new RootChain({ web3, plasmaContractAddress: config.rootchain_plasma_contract_address })
-const rootChainPlasmaContractAddress = config.rootchain_plasma_contract_address
+const rootChain = new RootChain({ web3, plasmaContractAddress: config.plasmaframework_contract_address })
+const rootChainPlasmaContractAddress = config.plasmaframework_contract_address
 const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url })
 
 const aliceAddress = config.alice_eth_address

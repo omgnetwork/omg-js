@@ -79,7 +79,7 @@ To run the examples:
 ETH_NODE=                       <entry point to an ethereum node>
 WATCHER_URL=                    <url of an informational watcher>
 WATCHER_PROXY_URL=              <*optional* proxy server to catch all watcher requests>
-PLASMA_FRAMEWORK=               <address of the plasma_framework contract>
+PLASMAFRAMEWORK_CONTRACT_ADDRESS=               <address of the plasma_framework contract>
 ERC20_CONTRACT=                 <*optional* address of the erc20 contract that Alice will deposit and transfer to Bob>
 ALICE_ETH_ADDRESS=              <address of Alice's account>
 ALICE_ETH_ADDRESS_PRIVATE_KEY=  <Alice's private key>
