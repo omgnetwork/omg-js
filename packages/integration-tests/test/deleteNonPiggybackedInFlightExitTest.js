@@ -16,7 +16,7 @@ limitations under the License. */
 const config = require('../test-config')
 const rcHelper = require('../helpers/rootChainHelper')
 const ccHelper = require('../helpers/childChainHelper')
-const faucet = require('../helpers/testFaucet')
+const faucet = require('../helpers/faucet')
 const Web3 = require('web3')
 const ChildChain = require('@omisego/omg-js-childchain')
 const RootChain = require('@omisego/omg-js-rootchain')
@@ -25,33 +25,29 @@ const numberToBN = require('number-to-bn')
 const chai = require('chai')
 const assert = chai.assert
 
+const path = require('path')
+const scriptName = path.basename(__filename)
+
 describe('deleteNonPiggybackedInFlightExitTest.js', function () {
   const web3 = new Web3(new Web3.providers.HttpProvider(config.geth_url))
   const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url })
-  let rootChain
+  const rootChain = new RootChain({ web3, plasmaContractAddress: config.rootchainContract })
 
   before(async function () {
-    const plasmaContract = await rcHelper.getPlasmaContractAddress(config)
-    rootChain = new RootChain({ web3, plasmaContractAddress: plasmaContract.contract_addr })
-    await faucet.init(rootChain, childChain, web3, config)
+    await faucet.init(rootChain, childChain, web3, config, scriptName)
   })
 
   describe('delete ife if not piggybacked', function () {
-    let INTIIAL_ALICE_AMOUNT
-    let INTIIAL_BOB_RC_AMOUNT
-    let TRANSFER_AMOUNT
+    const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.1', 'ether')
+    const INTIIAL_BOB_RC_AMOUNT = web3.utils.toWei('.1', 'ether')
+    const TRANSFER_AMOUNT = web3.utils.toWei('0.0002', 'ether')
+
     let aliceAccount
     let bobAccount
 
     beforeEach(async function () {
-      INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.5', 'ether')
-      INTIIAL_BOB_RC_AMOUNT = web3.utils.toWei('.5', 'ether')
-      TRANSFER_AMOUNT = web3.utils.toWei('0.0002', 'ether')
-      // Create Alice and Bob's accounts
       aliceAccount = rcHelper.createAccount(web3)
-      console.log(`Created Alice account ${JSON.stringify(aliceAccount)}`)
       bobAccount = rcHelper.createAccount(web3)
-      console.log(`Created Bob account ${JSON.stringify(bobAccount)}`)
 
       await Promise.all([
         // Give some ETH to Alice on the child chain
@@ -61,7 +57,7 @@ describe('deleteNonPiggybackedInFlightExitTest.js', function () {
           transaction.ETH_CURRENCY
         ),
         // Give some ETH to Bob on the root chain
-        faucet.fundRootchainEth(web3, bobAccount.address, INTIIAL_BOB_RC_AMOUNT)
+        faucet.fundRootchainEth(bobAccount.address, INTIIAL_BOB_RC_AMOUNT)
       ])
       // Wait for finality
       await Promise.all([
@@ -80,9 +76,8 @@ describe('deleteNonPiggybackedInFlightExitTest.js', function () {
 
     afterEach(async function () {
       try {
-        // Send any leftover funds back to the faucet
-        await faucet.returnFunds(web3, aliceAccount)
-        await faucet.returnFunds(web3, bobAccount)
+        await faucet.returnFunds(aliceAccount)
+        await faucet.returnFunds(bobAccount)
       } catch (err) {
         console.warn(`Error trying to return funds to the faucet: ${err}`)
       }
