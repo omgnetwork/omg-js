@@ -31,11 +31,13 @@ describe('addTokenTest.js (ci-enabled)', function () {
   let aliceAccount
   const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('0.5', 'ether')
 
+  before(async function () {
+    await faucet.init(rootChain, childChain, web3, config)
+  })
+
   beforeEach(async function () {
     aliceAccount = rcHelper.createAccount(web3)
     console.log(`Created new account ${JSON.stringify(aliceAccount)}`)
-
-    await faucet.init(rootChain, childChain, web3, config)
     await faucet.fundRootchainEth(web3, aliceAccount.address, INTIIAL_ALICE_AMOUNT)
     await rcHelper.waitForEthBalanceEq(web3, aliceAccount.address, INTIIAL_ALICE_AMOUNT)
   })
