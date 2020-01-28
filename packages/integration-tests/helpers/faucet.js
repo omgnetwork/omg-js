@@ -34,8 +34,8 @@ const faucet = {
     this.erc20Contract = new web3.eth.Contract(erc20abi, this.erc20ContractAddress)
     this.faucetAccount = this.filenameToAccount(faucet)
 
-    await this.initEthBalance(this.web3.utils.toWei(config.minAmountEthPerTest, 'ether'))
-    await this.initERC20Balance(config.minAmountERC20PerTest)
+    await this.initEthBalance(this.web3.utils.toWei(config.minAmountEthPerTest, 'ether'), config.topupMultipler)
+    await this.initERC20Balance(config.minAmountERC20PerTest, config.topupMultipler)
     await this.addToken(this.erc20ContractAddress)
     await this.addToken(transaction.ETH_CURRENCY)
     await this.showInfo()
@@ -79,17 +79,19 @@ const faucet = {
     console.info('------------------------------------------------')
   },
 
-  initEthBalance: async function (minAmount) {
+  initEthBalance: async function (minAmount, topupMultipler) {
     if (numberToBN(minAmount).eqn(0)) {
       return
     }
+
+    const topupAmount = numberToBN(minAmount * topupMultipler)
 
     // Check that the faucet has enough childchain funds to run the tests
     const ccBalance = await this.childChain.getBalance(this.faucetAccount.address)
     const ccEthBalance = ccBalance.find(e => e.currency === transaction.ETH_CURRENCY)
     if (!ccEthBalance || numberToBN(ccEthBalance.amount).lt(numberToBN(minAmount))) {
       // If not, try to deposit more funds from the root chain
-      const needed = ccEthBalance ? numberToBN(minAmount).sub(numberToBN(ccEthBalance.amount)) : numberToBN(minAmount)
+      const needed = ccEthBalance ? topupAmount.sub(numberToBN(ccEthBalance.amount)) : topupAmount
 
       // Check if there are enough root chain funds in the faucet
       const rcEthBalance = await this.web3.eth.getBalance(this.faucetAccount.address)
@@ -111,7 +113,7 @@ const faucet = {
           this.childChain,
           this.faucetAccount.address,
           transaction.ETH_CURRENCY,
-          balance => numberToBN(balance.amount).gte(numberToBN(minAmount))
+          balance => numberToBN(balance.amount).gte(numberToBN(topupAmount))
         )
         console.log(`Test faucet ${this.faucetAccount.address} topped up with ${needed.toString()} ETH`)
       } catch (err) {
@@ -124,21 +126,23 @@ const faucet = {
     const rcEthBalance = await this.web3.eth.getBalance(this.faucetAccount.address)
     if (numberToBN(rcEthBalance).lt(numberToBN(minAmount))) {
       // For local testing, try to automatically top up the faucet
-      await this.topUpEth(minAmount, this.faucetAccount.address)
+      await this.topUpEth(topupAmount, this.faucetAccount.address)
     }
   },
 
-  initERC20Balance: async function (minAmount) {
+  initERC20Balance: async function (minAmount, topupMultipler) {
     if (numberToBN(minAmount).eqn(0)) {
       return
     }
+
+    const topupAmount = numberToBN(minAmount * topupMultipler)
 
     // Check that the faucet has enough funds to run the tests
     const ccBalances = await this.childChain.getBalance(this.faucetAccount.address)
     const ccCurrencyBalance = ccBalances.find(e => e.currency === this.erc20ContractAddress)
     if (!ccCurrencyBalance || numberToBN(ccCurrencyBalance.amount).lt(numberToBN(minAmount))) {
       // If not, try to deposit more funds from the root chain
-      const needed = ccCurrencyBalance ? numberToBN(minAmount).sub(numberToBN(ccCurrencyBalance.amount)) : numberToBN(minAmount)
+      const needed = ccCurrencyBalance ? topupAmount.sub(numberToBN(ccCurrencyBalance.amount)) : topupAmount
       // Check if there are enough root chain funds in the faucet
       const erc20Balance = await getErc20Balance({ web3: this.web3, erc20Address: this.erc20ContractAddress, address: this.faucetAccount.address })
       if (numberToBN(erc20Balance).lt(needed)) {
@@ -174,7 +178,7 @@ const faucet = {
           this.childChain,
           this.faucetAccount.address,
           this.erc20ContractAddress,
-          balance => numberToBN(balance.amount).gte(numberToBN(minAmount))
+          balance => numberToBN(balance.amount).gte(numberToBN(topupAmount))
         )
         console.log(`Test faucet ${this.faucetAccount.address} topped up with ${needed.toString()} ${this.erc20ContractAddress}`)
       } catch (err) {

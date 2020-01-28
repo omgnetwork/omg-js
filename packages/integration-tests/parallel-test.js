@@ -30,12 +30,12 @@ const mochaParallel = new MochaParallel({
   reporter: 'list'
 })
 
-const _files = fs.readdirSync(`${__dirname}/test/`)
-
-// filter tests TODO: remove
-const files = _files.filter(i => {
+const allFiles = fs.readdirSync(`${__dirname}/test/`)
+const files = allFiles.filter(i => {
+  // skipped since testing exit queues is impossible with parallel tests calling processExits
   return i !== 'getExitQueueTest.js'
 })
+
 for (const test of files) {
   mochaParallel.addFile(`${__dirname}/test/${test}`)
 }
@@ -45,15 +45,17 @@ async function setup () {
   const rootChain = new RootChain({ web3, plasmaContractAddress: config.rootchainContract })
   const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url })
 
-  // pre fund individual test faucets
+  const start = new Date()
   for (const filename of files) {
     await faucet.init(rootChain, childChain, web3, config, filename)
     console.log(`💰 Test faucet funded for ${filename}`)
     console.log('\n')
   }
+  const end = new Date()
+  console.log(`⏳ Total funding time: ${(end - start) / 60000} min`)
 }
 
 setup().then(() => {
-  console.log('🚀 Beginning parallel tests...')
+  console.log(`🚀 Running ${files.length} tests in parallel...`)
   mochaParallel.run()
 })
