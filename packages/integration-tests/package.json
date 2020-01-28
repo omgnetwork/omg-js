@@ -5,7 +5,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "mocha --timeout=0 --bail --slow=0 --check-leaks --color --full-trace ./tests",
+    "mocha": "mocha --timeout=0 --bail --slow=0 --check-leaks --full-trace",
     "deploy-test-erc20": "cd tokens && truffle deploy"
   },
   "author": "",

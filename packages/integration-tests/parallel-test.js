@@ -18,7 +18,7 @@ const ChildChain = require('@omisego/omg-js-childchain')
 const Web3 = require('web3')
 const fs = require('fs')
 
-const faucet = require('./helpers/testFaucet')
+const faucet = require('./helpers/faucet')
 const config = require('./test-config')
 
 const MochaParallel = require('mocha-parallel-tests').default

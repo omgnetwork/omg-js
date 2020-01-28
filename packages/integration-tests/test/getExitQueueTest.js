@@ -17,7 +17,7 @@ const ChildChain = require('@omisego/omg-js-childchain')
 const { transaction, waitForRootchainTransaction } = require('@omisego/omg-js-util')
 const Web3 = require('web3')
 
-const faucet = require('../helpers/testFaucet')
+const faucet = require('../helpers/faucet')
 const config = require('../test-config')
 const rcHelper = require('../helpers/rootChainHelper')
 const ccHelper = require('../helpers/childChainHelper')
