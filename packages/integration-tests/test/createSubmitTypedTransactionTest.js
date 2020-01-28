@@ -28,7 +28,7 @@ describe('createSubmitTypedTransactionTest.js (ci-enabled)', function () {
   const rootChain = new RootChain({ web3, plasmaContractAddress: config.rootchainContract })
 
   before(async function () {
-    await faucet.init(rootChain, childChain, web3, config)
+    await faucet.init(rootChain, childChain, web3, config, 'createSubmitTypedTransactionTest')
   })
 
   describe('create a single currency transaction with submitTyped', function () {
@@ -41,18 +41,15 @@ describe('createSubmitTypedTransactionTest.js (ci-enabled)', function () {
 
     beforeEach(async function () {
       aliceAccount = rcHelper.createAccount(web3)
-      console.log(`Created Alice account ${JSON.stringify(aliceAccount)}`)
       bobAccount = rcHelper.createAccount(web3)
-      console.log(`Created Bob account ${JSON.stringify(bobAccount)}`)
-      // Give some ETH to Alice on the child chain
       await faucet.fundChildchain(aliceAccount.address, INTIIAL_ALICE_AMOUNT, transaction.ETH_CURRENCY)
       await ccHelper.waitForBalanceEq(childChain, aliceAccount.address, INTIIAL_ALICE_AMOUNT)
     })
 
     afterEach(async function () {
       try {
-        await faucet.returnFunds(web3, aliceAccount)
-        await faucet.returnFunds(web3, bobAccount)
+        await faucet.returnFunds(aliceAccount)
+        await faucet.returnFunds(bobAccount)
       } catch (err) {
         console.warn(`Error trying to return funds to the faucet: ${err}`)
       }

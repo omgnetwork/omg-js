@@ -35,17 +35,17 @@ const testFiles = [
   'decodeTxBytesTest',
   'addTokenTest',
   'depositTest',
-  'createTransactionTest'
-  // 'transferTest',
-  // 'createSubmitTypedTransactionTest',
-  // 'getExitQueueTest',
-  // 'standardExitTest',
-  // 'challengeExitTest',
-  // 'inFlightExitTest',
-  // 'inFlightExitChallengeTest',
-  // 'inFlightExitChallengeResponseTest',
-  // 'challengeInFlightExitInputSpentTest',
-  // 'challengeInFlightExitOutputSpentTest'
+  'createTransactionTest',
+  'transferTest',
+  'createSubmitTypedTransactionTest',
+  'getExitQueueTest',
+  'standardExitTest',
+  'challengeExitTest',
+  'inFlightExitTest',
+  'inFlightExitChallengeTest',
+  'inFlightExitChallengeResponseTest',
+  'challengeInFlightExitInputSpentTest',
+  'challengeInFlightExitOutputSpentTest'
 ]
 
 for (const test of testFiles) {
@@ -61,10 +61,11 @@ async function setup () {
   for (const filename of testFiles) {
     await faucet.init(rootChain, childChain, web3, config, filename)
     console.log(`Test faucet funded for ${filename}.js`)
+    console.log('\n')
   }
 }
 
 setup().then(() => {
-  console.log('setup complete... running parallel tests...')
+  console.log('🚀 Running tests in parallel...')
   mochaParallel.run()
 })

@@ -31,7 +31,7 @@ describe('challengeInFlightExitInputSpentTest.js', function () {
   const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url })
 
   before(async function () {
-    await faucet.init(rootChain, childChain, web3, config)
+    await faucet.init(rootChain, childChain, web3, config, 'challengeInFlightExitInputSpentTest')
   })
 
   describe('in-flight transaction challenge with a invalid input piggybacking', function () {
@@ -47,11 +47,8 @@ describe('challengeInFlightExitInputSpentTest.js', function () {
 
     beforeEach(async function () {
       aliceAccount = rcHelper.createAccount(web3)
-      console.log(`Created Alice account ${JSON.stringify(aliceAccount)}`)
       bobAccount = rcHelper.createAccount(web3)
-      console.log(`Created Bob account ${JSON.stringify(bobAccount)}`)
       carolAccount = rcHelper.createAccount(web3)
-      console.log(`Created Carol account ${JSON.stringify(carolAccount)}`)
 
       await Promise.all([
         // Give some ETH to Alice on the child chain
@@ -61,20 +58,11 @@ describe('challengeInFlightExitInputSpentTest.js', function () {
           transaction.ETH_CURRENCY
         ),
         // Give some ETH to Bob on the root chain
-        faucet.fundRootchainEth(web3, bobAccount.address, INTIIAL_BOB_RC_AMOUNT)
+        faucet.fundRootchainEth(bobAccount.address, INTIIAL_BOB_RC_AMOUNT)
       ]).then(([tx]) => (fundAliceTx = tx))
       // Give some ETH to Carol on the root chain
-      await faucet.fundRootchainEth(
-        web3,
-        carolAccount.address,
-        INTIIAL_CAROL_RC_AMOUNT
-      )
-
-      await faucet.fundRootchainEth(
-        web3,
-        aliceAccount.address,
-        INTIIAL_ALICE_AMOUNT
-      )
+      await faucet.fundRootchainEth(carolAccount.address, INTIIAL_CAROL_RC_AMOUNT)
+      await faucet.fundRootchainEth(aliceAccount.address, INTIIAL_ALICE_AMOUNT)
 
       // Wait for finality
       await Promise.all([
@@ -103,9 +91,9 @@ describe('challengeInFlightExitInputSpentTest.js', function () {
 
     afterEach(async function () {
       try {
-        await faucet.returnFunds(web3, aliceAccount)
-        await faucet.returnFunds(web3, bobAccount)
-        await faucet.returnFunds(web3, carolAccount)
+        await faucet.returnFunds(aliceAccount)
+        await faucet.returnFunds(bobAccount)
+        await faucet.returnFunds(carolAccount)
       } catch (err) {
         console.warn(`Error trying to return funds to the faucet: ${err}`)
       }

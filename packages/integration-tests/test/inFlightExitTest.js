@@ -31,7 +31,7 @@ describe('inFlightExitTest.js', function () {
   const rootChain = new RootChain({ web3, plasmaContractAddress: config.rootchainContract })
 
   before(async function () {
-    await faucet.init(rootChain, childChain, web3, config)
+    await faucet.init(rootChain, childChain, web3, config, 'inFlightExitTest')
   })
 
   describe('in-flight transaction exit', function () {
@@ -44,9 +44,7 @@ describe('inFlightExitTest.js', function () {
 
     beforeEach(async function () {
       aliceAccount = rcHelper.createAccount(web3)
-      console.log(`Created Alice account ${JSON.stringify(aliceAccount)}`)
       bobAccount = rcHelper.createAccount(web3)
-      console.log(`Created Bob account ${JSON.stringify(bobAccount)}`)
 
       await Promise.all([
         // Give some ETH to Alice on the child chain
@@ -56,7 +54,7 @@ describe('inFlightExitTest.js', function () {
           transaction.ETH_CURRENCY
         ),
         // Give some ETH to Bob on the root chain
-        faucet.fundRootchainEth(web3, bobAccount.address, INTIIAL_BOB_RC_AMOUNT)
+        faucet.fundRootchainEth(bobAccount.address, INTIIAL_BOB_RC_AMOUNT)
       ])
       // Wait for finality
       await Promise.all([
@@ -75,8 +73,8 @@ describe('inFlightExitTest.js', function () {
 
     afterEach(async function () {
       try {
-        await faucet.returnFunds(web3, aliceAccount)
-        await faucet.returnFunds(web3, bobAccount)
+        await faucet.returnFunds(aliceAccount)
+        await faucet.returnFunds(bobAccount)
       } catch (err) {
         console.warn(`Error trying to return funds to the faucet: ${err}`)
       }
@@ -332,7 +330,7 @@ describe('inFlightExitTest.js', function () {
       const aliceSpentOnGas = numberToBN(0)
       const kelvinSpentOnGas = numberToBN(0)
       // fund some ETH for alice on rootchain so she can piggyback / challenge
-      await faucet.fundRootchainEth(web3, aliceAccount.address, INTIIAL_ALICE_AMOUNT)
+      await faucet.fundRootchainEth(aliceAccount.address, INTIIAL_ALICE_AMOUNT)
       await rcHelper.waitForEthBalanceEq(web3, aliceAccount.address, INTIIAL_ALICE_AMOUNT)
 
       // we need the 3rd guy here, introducing kelvin which he will do a double spend
@@ -340,7 +338,7 @@ describe('inFlightExitTest.js', function () {
       const kelvinAccount = rcHelper.createAccount(web3)
       console.log(`Created Kelvin account ${JSON.stringify(bobAccount)}`)
 
-      await faucet.fundRootchainEth(web3, kelvinAccount.address, INTIIAL_KELVIN_AMOUNT)
+      await faucet.fundRootchainEth(kelvinAccount.address, INTIIAL_KELVIN_AMOUNT)
       await rcHelper.waitForEthBalanceEq(web3, kelvinAccount.address, INTIIAL_KELVIN_AMOUNT)
 
       const fundKelvinTx = await faucet.fundChildchain(

@@ -31,7 +31,7 @@ describe('transferTest.js (ci-enabled)', function () {
   const rootChain = new RootChain({ web3, plasmaContractAddress: config.rootchainContract })
 
   before(async function () {
-    await faucet.init(rootChain, childChain, web3, config)
+    await faucet.init(rootChain, childChain, web3, config, 'transferTest')
   })
 
   describe('Simple ETH', function () {
@@ -44,18 +44,15 @@ describe('transferTest.js (ci-enabled)', function () {
 
     beforeEach(async function () {
       aliceAccount = rcHelper.createAccount(web3)
-      console.log(`Created Alice account ${JSON.stringify(aliceAccount)}`)
       bobAccount = rcHelper.createAccount(web3)
-      console.log(`Created Bob account ${JSON.stringify(bobAccount)}`)
-      // Give some ETH to Alice on the child chain
       await faucet.fundChildchain(aliceAccount.address, INTIIAL_ALICE_AMOUNT, transaction.ETH_CURRENCY)
       await ccHelper.waitForBalanceEq(childChain, aliceAccount.address, INTIIAL_ALICE_AMOUNT)
     })
 
     afterEach(async function () {
       try {
-        await faucet.returnFunds(web3, aliceAccount)
-        await faucet.returnFunds(web3, bobAccount)
+        await faucet.returnFunds(aliceAccount)
+        await faucet.returnFunds(bobAccount)
       } catch (err) {
         console.warn(`Error trying to return funds to the faucet: ${err}`)
       }
@@ -109,17 +106,13 @@ describe('transferTest.js (ci-enabled)', function () {
   })
 
   describe('Transfer with 4 inputs and 4 outputs', function () {
-    let UTXO_AMOUNT
+    const UTXO_AMOUNT = web3.utils.toWei('.0001', 'ether')
     let aliceAccount
     let bobAccount
 
     beforeEach(async function () {
-      UTXO_AMOUNT = web3.utils.toWei('.0001', 'ether')
-      // Create Alice and Bob's accounts
       aliceAccount = rcHelper.createAccount(web3)
-      console.log(`Created Alice account ${JSON.stringify(aliceAccount)}`)
       bobAccount = rcHelper.createAccount(web3)
-      console.log(`Created Bob account ${JSON.stringify(bobAccount)}`)
 
       // Alice and Bob want 2 utxos each
       await faucet.fundChildchain(aliceAccount.address, UTXO_AMOUNT, transaction.ETH_CURRENCY)
@@ -135,9 +128,8 @@ describe('transferTest.js (ci-enabled)', function () {
 
     afterEach(async function () {
       try {
-        // Send any leftover funds back to the faucet
-        await faucet.returnFunds(web3, aliceAccount)
-        await faucet.returnFunds(web3, bobAccount)
+        await faucet.returnFunds(aliceAccount)
+        await faucet.returnFunds(bobAccount)
       } catch (err) {
         console.warn(`Error trying to return funds to the faucet: ${err}`)
       }
@@ -243,21 +235,17 @@ describe('transferTest.js (ci-enabled)', function () {
   })
 
   describe('ERC20 transfer', function () {
-    let ERC20_CURRENCY
-    let INTIIAL_ALICE_AMOUNT_ETH
+    const ERC20_CURRENCY = config.testErc20Contract
+    const INTIIAL_ALICE_AMOUNT_ETH = web3.utils.toWei('.00000001', 'ether')
     const INTIIAL_ALICE_AMOUNT = 4
     const TRANSFER_AMOUNT = 3
+
     let aliceAccount
     let bobAccount
 
     beforeEach(async function () {
-      ERC20_CURRENCY = config.testErc20Contract
-      INTIIAL_ALICE_AMOUNT_ETH = web3.utils.toWei('.00000001', 'ether')
-      // Create Alice and Bob's accounts
       aliceAccount = rcHelper.createAccount(web3)
-      console.log(`Created Alice account ${JSON.stringify(aliceAccount)}`)
       bobAccount = rcHelper.createAccount(web3)
-      console.log(`Created Bob account ${JSON.stringify(bobAccount)}`)
 
       // Give some ETH to Alice on the childchain to pay fees
       await faucet.fundChildchain(aliceAccount.address, INTIIAL_ALICE_AMOUNT_ETH, transaction.ETH_CURRENCY)
@@ -269,9 +257,8 @@ describe('transferTest.js (ci-enabled)', function () {
 
     afterEach(async function () {
       try {
-        // Send any leftover funds back to the faucet
-        await faucet.returnFunds(web3, aliceAccount)
-        await faucet.returnFunds(web3, bobAccount)
+        await faucet.returnFunds(aliceAccount)
+        await faucet.returnFunds(bobAccount)
       } catch (err) {
         console.warn(`Error trying to return funds to the faucet: ${err}`)
       }
@@ -336,12 +323,8 @@ describe('transferTest.js (ci-enabled)', function () {
     let bobAccount
 
     beforeEach(async function () {
-      // Create Alice and Bob's accounts
       aliceAccount = rcHelper.createAccount(web3)
-      console.log(`Created Alice account ${JSON.stringify(aliceAccount)}`)
       bobAccount = rcHelper.createAccount(web3)
-      console.log(`Created Bob account ${JSON.stringify(bobAccount)}`)
-      // Give some ETH to Alice on the child chain
       await faucet.fundChildchain(aliceAccount.address, INTIIAL_ALICE_AMOUNT_ETH, transaction.ETH_CURRENCY)
       await ccHelper.waitForBalanceEq(childChain, aliceAccount.address, INTIIAL_ALICE_AMOUNT_ETH)
       // Give some ERC20 tokens to Alice on the child chain
@@ -351,9 +334,8 @@ describe('transferTest.js (ci-enabled)', function () {
 
     afterEach(async function () {
       try {
-        // Send any leftover funds back to the faucet
-        await faucet.returnFunds(web3, aliceAccount)
-        await faucet.returnFunds(web3, bobAccount)
+        await faucet.returnFunds(aliceAccount)
+        await faucet.returnFunds(bobAccount)
       } catch (err) {
         console.warn(`Error trying to return funds to the faucet: ${err}`)
       }
@@ -427,29 +409,23 @@ describe('transferTest.js (ci-enabled)', function () {
   })
 
   describe('sendTransaction test', function () {
-    let INTIIAL_ALICE_AMOUNT
+    const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.1', 'ether')
     // TRANSFER_AMOUNT is deliberately bigger than Number.MAX_SAFE_INTEGER to cause rounding errors if not properly handled
     const TRANSFER_AMOUNT = '20000000000000123'
     let aliceAccount
     let bobAccount
 
     beforeEach(async function () {
-      INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.1', 'ether')
-      // Create Alice and Bob's accounts
       aliceAccount = rcHelper.createAccount(web3)
-      console.log(`Created Alice account ${JSON.stringify(aliceAccount)}`)
       bobAccount = rcHelper.createAccount(web3)
-      console.log(`Created Bob account ${JSON.stringify(bobAccount)}`)
-      // Give some ETH to Alice on the child chain
       await faucet.fundChildchain(aliceAccount.address, INTIIAL_ALICE_AMOUNT, transaction.ETH_CURRENCY)
       await ccHelper.waitForBalanceEq(childChain, aliceAccount.address, INTIIAL_ALICE_AMOUNT)
     })
 
     afterEach(async function () {
       try {
-        // Send any leftover funds back to the faucet
-        await faucet.returnFunds(web3, aliceAccount)
-        await faucet.returnFunds(web3, bobAccount)
+        await faucet.returnFunds(aliceAccount)
+        await faucet.returnFunds(bobAccount)
       } catch (err) {
         console.warn(`Error trying to return funds to the faucet: ${err}`)
       }

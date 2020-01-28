@@ -30,7 +30,7 @@ describe('challengeExitTest.js', function () {
   const rootChain = new RootChain({ web3, plasmaContractAddress: config.rootchainContract })
 
   before(async function () {
-    await faucet.init(rootChain, childChain, web3, config)
+    await faucet.init(rootChain, childChain, web3, config, 'challengeExitTest')
   })
 
   describe('Challenge a standard exit', function () {
@@ -44,15 +44,13 @@ describe('challengeExitTest.js', function () {
 
     beforeEach(async function () {
       aliceAccount = rcHelper.createAccount(web3)
-      console.log(`Created Alice account ${JSON.stringify(aliceAccount)}`)
       bobAccount = rcHelper.createAccount(web3)
-      console.log(`Created Bob account ${JSON.stringify(bobAccount)}`)
 
       await Promise.all([
         faucet.fundChildchain(aliceAccount.address, INTIIAL_ALICE_CC_AMOUNT, transaction.ETH_CURRENCY),
-        faucet.fundRootchainEth(web3, aliceAccount.address, INTIIAL_ALICE_RC_AMOUNT)
+        faucet.fundRootchainEth(aliceAccount.address, INTIIAL_ALICE_RC_AMOUNT)
       ])
-      await faucet.fundRootchainEth(web3, bobAccount.address, INTIIAL_BOB_RC_AMOUNT)
+      await faucet.fundRootchainEth(bobAccount.address, INTIIAL_BOB_RC_AMOUNT)
 
       await Promise.all([
         ccHelper.waitForBalanceEq(childChain, aliceAccount.address, INTIIAL_ALICE_CC_AMOUNT),
@@ -63,8 +61,8 @@ describe('challengeExitTest.js', function () {
 
     afterEach(async function () {
       try {
-        await faucet.returnFunds(web3, aliceAccount)
-        await faucet.returnFunds(web3, bobAccount)
+        await faucet.returnFunds(aliceAccount)
+        await faucet.returnFunds(bobAccount)
       } catch (err) {
         console.warn(`Error trying to return funds to the faucet: ${err}`)
       }

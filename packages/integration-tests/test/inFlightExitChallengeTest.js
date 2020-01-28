@@ -31,7 +31,7 @@ describe('inFlightExitChallengeTest.js', function () {
   const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url })
 
   before(async function () {
-    await faucet.init(rootChain, childChain, web3, config)
+    await faucet.init(rootChain, childChain, web3, config, 'inFlightExitChallengeTest')
   })
 
   describe('in-flight transaction challenge exit with competitor', function () {
@@ -47,11 +47,8 @@ describe('inFlightExitChallengeTest.js', function () {
 
     beforeEach(async function () {
       aliceAccount = rcHelper.createAccount(web3)
-      console.log(`Created Alice account ${JSON.stringify(aliceAccount)}`)
       bobAccount = rcHelper.createAccount(web3)
-      console.log(`Created Bob account ${JSON.stringify(bobAccount)}`)
       carolAccount = rcHelper.createAccount(web3)
-      console.log(`Created Carol account ${JSON.stringify(carolAccount)}`)
 
       await Promise.all([
         // Give some ETH to Alice on the child chain
@@ -61,15 +58,11 @@ describe('inFlightExitChallengeTest.js', function () {
           transaction.ETH_CURRENCY
         ),
         // Give some ETH to Bob on the root chain
-        faucet.fundRootchainEth(web3, bobAccount.address, INTIIAL_BOB_RC_AMOUNT)
+        faucet.fundRootchainEth(bobAccount.address, INTIIAL_BOB_RC_AMOUNT)
       ]).then(([tx]) => (fundAliceTx = tx))
 
       // Give some ETH to Carol on the root chain
-      await faucet.fundRootchainEth(
-        web3,
-        carolAccount.address,
-        INTIIAL_CAROL_RC_AMOUNT
-      )
+      await faucet.fundRootchainEth(carolAccount.address, INTIIAL_CAROL_RC_AMOUNT)
 
       // Wait for finality
       await Promise.all([
@@ -93,9 +86,9 @@ describe('inFlightExitChallengeTest.js', function () {
 
     afterEach(async function () {
       try {
-        await faucet.returnFunds(web3, aliceAccount)
-        await faucet.returnFunds(web3, bobAccount)
-        await faucet.returnFunds(web3, carolAccount)
+        await faucet.returnFunds(aliceAccount)
+        await faucet.returnFunds(bobAccount)
+        await faucet.returnFunds(carolAccount)
       } catch (err) {
         console.warn(`Error trying to return funds to the faucet: ${err}`)
       }
@@ -293,27 +286,20 @@ describe('inFlightExitChallengeTest.js', function () {
   })
 
   describe('in-flight transaction challenge exit without competitor', function () {
-    let INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.1', 'ether')
-    let INTIIAL_BOB_RC_AMOUNT = web3.utils.toWei('1', 'ether')
-    let INTIIAL_CAROL_RC_AMOUNT = web3.utils.toWei('.5', 'ether')
-    let TRANSFER_AMOUNT = web3.utils.toWei('0.0002', 'ether')
+    const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.1', 'ether')
+    const INTIIAL_BOB_RC_AMOUNT = web3.utils.toWei('1', 'ether')
+    const INTIIAL_CAROL_RC_AMOUNT = web3.utils.toWei('.5', 'ether')
+    const TRANSFER_AMOUNT = web3.utils.toWei('0.0002', 'ether')
+
     let aliceAccount
     let bobAccount
     let carolAccount
     let fundAliceTx
 
     beforeEach(async function () {
-      INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.1', 'ether')
-      INTIIAL_BOB_RC_AMOUNT = web3.utils.toWei('1', 'ether')
-      INTIIAL_CAROL_RC_AMOUNT = web3.utils.toWei('.5', 'ether')
-      TRANSFER_AMOUNT = web3.utils.toWei('0.0002', 'ether')
-      // Create Alice and Bob's accounts
       aliceAccount = rcHelper.createAccount(web3)
-      console.log(`Created Alice account ${JSON.stringify(aliceAccount)}`)
       bobAccount = rcHelper.createAccount(web3)
-      console.log(`Created Bob account ${JSON.stringify(bobAccount)}`)
       carolAccount = rcHelper.createAccount(web3)
-      console.log(`Created Carol account ${JSON.stringify(carolAccount)}`)
 
       await Promise.all([
         // Give some ETH to Alice on the child chain
@@ -323,14 +309,10 @@ describe('inFlightExitChallengeTest.js', function () {
           transaction.ETH_CURRENCY
         ),
         // Give some ETH to Bob on the root chain
-        faucet.fundRootchainEth(web3, bobAccount.address, INTIIAL_BOB_RC_AMOUNT)
+        faucet.fundRootchainEth(bobAccount.address, INTIIAL_BOB_RC_AMOUNT)
       ]).then(([tx]) => (fundAliceTx = tx))
       // Give some ETH to Carol on the root chain
-      await faucet.fundRootchainEth(
-        web3,
-        carolAccount.address,
-        INTIIAL_CAROL_RC_AMOUNT
-      )
+      await faucet.fundRootchainEth(carolAccount.address, INTIIAL_CAROL_RC_AMOUNT)
 
       // Wait for finality
       await Promise.all([
@@ -354,10 +336,9 @@ describe('inFlightExitChallengeTest.js', function () {
 
     afterEach(async function () {
       try {
-        // Send any leftover funds back to the faucet
-        await faucet.returnFunds(web3, aliceAccount)
-        await faucet.returnFunds(web3, bobAccount)
-        await faucet.returnFunds(web3, carolAccount)
+        await faucet.returnFunds(aliceAccount)
+        await faucet.returnFunds(bobAccount)
+        await faucet.returnFunds(carolAccount)
       } catch (err) {
         console.warn(`Error trying to return funds to the faucet: ${err}`)
       }
