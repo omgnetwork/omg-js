@@ -30,7 +30,7 @@ describe('decodeTxBytesTest.js (ci-enabled)', function () {
   const rootChain = new RootChain({ web3, plasmaContractAddress: config.rootchainContract })
 
   before(async function () {
-    await faucet.init(rootChain, childChain, web3, config)
+    await faucet.init(rootChain, childChain, web3, config, 'decodeTxBytesTest')
   })
 
   describe('Decode txBytes exit data', function () {
@@ -40,16 +40,14 @@ describe('decodeTxBytesTest.js (ci-enabled)', function () {
     let aliceAccount
 
     beforeEach(async function () {
-      // Create and fund Alice's account
       aliceAccount = rcHelper.createAccount(web3)
-      console.log(`Created Alice account ${JSON.stringify(aliceAccount)}`)
-      await faucet.fundRootchainEth(web3, aliceAccount.address, INTIIAL_ALICE_AMOUNT, 'decodeTxBytesTest')
+      await faucet.fundRootchainEth(aliceAccount.address, INTIIAL_ALICE_AMOUNT)
       await rcHelper.waitForEthBalanceEq(web3, aliceAccount.address, INTIIAL_ALICE_AMOUNT)
     })
 
     afterEach(async function () {
       try {
-        await faucet.returnFunds(web3, aliceAccount, 'decodeTxBytesTest')
+        await faucet.returnFunds(aliceAccount)
       } catch (err) {
         console.warn(`Error trying to return funds to the faucet: ${err}`)
       }

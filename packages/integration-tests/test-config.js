@@ -24,11 +24,8 @@ const config = {
   testErc20Contract: process.env.TEST_ERC20_CONTRACT,
   fundAccount: process.env.FUND_ACCOUNT,
   fundAccountPrivateKey: process.env.FUND_ACCOUNT_PRIVATEKEY,
-  fundAccountPassword: process.env.FUND_ACCOUNT_PASSWORD,
-  testFaucetAddress: process.env.TEST_FAUCET_ADDRESS,
-  testFaucetPrivateKey: process.env.TEST_FAUCET_PRIVATEKEY,
-  minAmountEth: process.env.TEST_MIN_ETH,
-  minAmountERC20: process.env.TEST_MIN_ERC20
+  minAmountEthPerTest: process.env.MIN_AMOUNT_ETH_PER_TEST,
+  minAmountERC20PerTest: process.env.MIN_AMOUNT_ERC20_PER_TEST
 }
 
 module.exports = config

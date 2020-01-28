@@ -32,19 +32,18 @@ describe('addTokenTest.js (ci-enabled)', function () {
   let aliceAccount
 
   before(async function () {
-    await faucet.init(rootChain, childChain, web3, config)
+    await faucet.init(rootChain, childChain, web3, config, 'addTokenTest')
   })
 
   beforeEach(async function () {
     aliceAccount = rcHelper.createAccount(web3)
-    console.log(`Created new account ${JSON.stringify(aliceAccount)}`)
-    await faucet.fundRootchainEth(web3, aliceAccount.address, INTIIAL_ALICE_AMOUNT, 'addTokenTest')
+    await faucet.fundRootchainEth(aliceAccount.address, INTIIAL_ALICE_AMOUNT)
     await rcHelper.waitForEthBalanceEq(web3, aliceAccount.address, INTIIAL_ALICE_AMOUNT)
   })
 
   afterEach(async function () {
     try {
-      await faucet.returnFunds(web3, aliceAccount, 'addTokenTest')
+      await faucet.returnFunds(aliceAccount)
     } catch (err) {
       console.warn(`Error trying to return funds to the faucet: ${err}`)
     }

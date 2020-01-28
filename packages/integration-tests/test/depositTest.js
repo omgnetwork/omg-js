@@ -30,7 +30,7 @@ describe('depositTest.js (ci-enabled)', function () {
   const rootChain = new RootChain({ web3, plasmaContractAddress: config.rootchainContract })
 
   before(async function () {
-    await faucet.init(rootChain, childChain, web3, config)
+    await faucet.init(rootChain, childChain, web3, config, 'depositTest')
   })
 
   describe('deposit ETH', function () {
@@ -41,14 +41,13 @@ describe('depositTest.js (ci-enabled)', function () {
 
     beforeEach(async function () {
       aliceAccount = rcHelper.createAccount(web3)
-      console.log(`Created new account ${JSON.stringify(aliceAccount)}`)
-      await faucet.fundRootchainEth(web3, aliceAccount.address, INTIIAL_ALICE_AMOUNT, 'depositTest')
+      await faucet.fundRootchainEth(aliceAccount.address, INTIIAL_ALICE_AMOUNT)
       await rcHelper.waitForEthBalanceEq(web3, aliceAccount.address, INTIIAL_ALICE_AMOUNT)
     })
 
     afterEach(async function () {
       try {
-        await faucet.returnFunds(web3, aliceAccount, 'depositTest')
+        await faucet.returnFunds(aliceAccount)
       } catch (err) {
         console.warn(`Error trying to return funds to the faucet: ${err}`)
       }
@@ -128,11 +127,9 @@ describe('depositTest.js (ci-enabled)', function () {
     const TEST_AMOUNT = 2
 
     beforeEach(async function () {
-      // Create and fund Alice's account
       aliceAccount = rcHelper.createAccount(web3)
-      console.log(`Created Alice account ${JSON.stringify(aliceAccount)}`)
-      await faucet.fundRootchainEth(web3, aliceAccount.address, INTIIAL_AMOUNT_ETH, 'depositTest')
-      await faucet.fundRootchainERC20(web3, aliceAccount.address, INITIAL_AMOUNT_ERC20, 'depositTest')
+      await faucet.fundRootchainEth(aliceAccount.address, INTIIAL_AMOUNT_ETH)
+      await faucet.fundRootchainERC20(aliceAccount.address, INITIAL_AMOUNT_ERC20)
 
       await Promise.all([
         rcHelper.waitForEthBalanceEq(web3, aliceAccount.address, INTIIAL_AMOUNT_ETH),
@@ -142,7 +139,7 @@ describe('depositTest.js (ci-enabled)', function () {
 
     afterEach(async function () {
       try {
-        await faucet.returnFunds(web3, aliceAccount, 'depositTest')
+        await faucet.returnFunds(aliceAccount)
       } catch (err) {
         console.warn(`Error trying to return funds to the faucet: ${err}`)
       }

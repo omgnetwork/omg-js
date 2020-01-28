@@ -34,8 +34,8 @@ const testFiles = [
   'metadataTest',
   'decodeTxBytesTest',
   'addTokenTest',
-  'depositTest'
-  // 'createTransactionTest',
+  'depositTest',
+  'createTransactionTest'
   // 'transferTest',
   // 'createSubmitTypedTransactionTest',
   // 'getExitQueueTest',
@@ -57,14 +57,10 @@ async function setup () {
   const rootChain = new RootChain({ web3, plasmaContractAddress: config.rootchainContract })
   const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url })
 
-  await faucet.init(rootChain, childChain, web3, config)
-
-  // fund individual test faucets
+  // pre fund individual test faucets
   for (const filename of testFiles) {
-    const account = faucet.filenameToAccount(filename)
-    await faucet.initEthBalance(web3, web3.utils.toWei('1', 'ether'), account.address, account.privateKey)
-    await faucet.initERC20Balance(web3, 10, account.address, account.privateKey)
-    console.log(`Test faucet funded for ${filename}.js: ${account.address}`)
+    await faucet.init(rootChain, childChain, web3, config, filename)
+    console.log(`Test faucet funded for ${filename}.js`)
   }
 }
 
@@ -72,6 +68,3 @@ setup().then(() => {
   console.log('setup complete... running parallel tests...')
   mochaParallel.run()
 })
-
-// Alice accounts can then be generate on the fly using this new faucet account
-// and funded by their own faucet so we don’t have nonce errors from doing multiple transactions from the same account.
