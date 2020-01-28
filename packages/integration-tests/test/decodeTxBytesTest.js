@@ -34,13 +34,12 @@ describe('decodeTxBytesTest.js (ci-enabled)', function () {
   })
 
   describe('Decode txBytes exit data', function () {
-    let INTIIAL_ALICE_AMOUNT
-    let DEPOSIT_AMOUNT
+    const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.1', 'ether')
+    const DEPOSIT_AMOUNT = web3.utils.toWei('.0001', 'ether')
+
     let aliceAccount
 
     beforeEach(async function () {
-      INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.1', 'ether')
-      DEPOSIT_AMOUNT = web3.utils.toWei('.0001', 'ether')
       // Create and fund Alice's account
       aliceAccount = rcHelper.createAccount(web3)
       console.log(`Created Alice account ${JSON.stringify(aliceAccount)}`)
@@ -58,7 +57,6 @@ describe('decodeTxBytesTest.js (ci-enabled)', function () {
 
     afterEach(async function () {
       try {
-        // Send any leftover funds back to the faucet
         await faucet.returnFunds(web3, aliceAccount)
       } catch (err) {
         console.warn(`Error trying to return funds to the faucet: ${err}`)

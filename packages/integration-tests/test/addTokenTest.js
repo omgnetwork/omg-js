@@ -28,8 +28,8 @@ describe('addTokenTest.js (ci-enabled)', function () {
   const rootChain = new RootChain({ web3, plasmaContractAddress: config.rootchainContract })
   const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url })
 
-  let aliceAccount
   const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('0.5', 'ether')
+  let aliceAccount
 
   before(async function () {
     await faucet.init(rootChain, childChain, web3, config)

@@ -34,35 +34,26 @@ describe('challengeExitTest.js', function () {
   })
 
   describe('Challenge a standard exit', function () {
-    let INTIIAL_ALICE_RC_AMOUNT
-    let INTIIAL_BOB_RC_AMOUNT
-    let INTIIAL_ALICE_CC_AMOUNT
-    let TRANSFER_AMOUNT
+    const INTIIAL_ALICE_RC_AMOUNT = web3.utils.toWei('.1', 'ether')
+    const INTIIAL_BOB_RC_AMOUNT = web3.utils.toWei('.1', 'ether')
+    const INTIIAL_ALICE_CC_AMOUNT = web3.utils.toWei('.001', 'ether')
+    const TRANSFER_AMOUNT = web3.utils.toWei('0.0002', 'ether')
+
     let aliceAccount
     let bobAccount
 
     beforeEach(async function () {
-      // Create Alice and Bob's accounts
-      INTIIAL_ALICE_RC_AMOUNT = web3.utils.toWei('.1', 'ether')
-      INTIIAL_BOB_RC_AMOUNT = web3.utils.toWei('.1', 'ether')
-      INTIIAL_ALICE_CC_AMOUNT = web3.utils.toWei('.001', 'ether')
-      TRANSFER_AMOUNT = web3.utils.toWei('0.0002', 'ether')
-
       aliceAccount = rcHelper.createAccount(web3)
       console.log(`Created Alice account ${JSON.stringify(aliceAccount)}`)
       bobAccount = rcHelper.createAccount(web3)
       console.log(`Created Bob account ${JSON.stringify(bobAccount)}`)
 
       await Promise.all([
-        // Give some ETH to Alice on the child chain
         faucet.fundChildchain(aliceAccount.address, INTIIAL_ALICE_CC_AMOUNT, transaction.ETH_CURRENCY),
-        // Give some ETH to Alice on the root chain
         faucet.fundRootchainEth(web3, aliceAccount.address, INTIIAL_ALICE_RC_AMOUNT)
       ])
-      // Give some ETH to Bob on the root chain
       await faucet.fundRootchainEth(web3, bobAccount.address, INTIIAL_BOB_RC_AMOUNT)
 
-      // Wait for finality
       await Promise.all([
         ccHelper.waitForBalanceEq(childChain, aliceAccount.address, INTIIAL_ALICE_CC_AMOUNT),
         rcHelper.waitForEthBalanceEq(web3, aliceAccount.address, INTIIAL_ALICE_RC_AMOUNT),
@@ -72,7 +63,6 @@ describe('challengeExitTest.js', function () {
 
     afterEach(async function () {
       try {
-        // Send any leftover funds back to the faucet
         await faucet.returnFunds(web3, aliceAccount)
         await faucet.returnFunds(web3, bobAccount)
       } catch (err) {

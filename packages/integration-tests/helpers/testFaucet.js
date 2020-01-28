@@ -51,8 +51,8 @@ const faucet = {
       this.privateKey = faucetAccount.privateKey
     }
 
-    await this.initEthBalance(web3, web3.utils.toWei(config.minAmountEth || '4', 'ether'))
-    await this.initERC20Balance(web3, config.minAmountERC20 || 20)
+    await this.initFaucetEthBalance(web3, web3.utils.toWei(config.minAmountEth || '4', 'ether'))
+    await this.initFaucetERC20Balance(web3, config.minAmountERC20 || 20)
     await this.addToken(this.erc20ContractAddress)
     await this.addToken(transaction.ETH_CURRENCY)
     await this.showInfo(web3)
@@ -62,7 +62,7 @@ const faucet = {
     const hasToken = await this.rootChain.hasToken(currency)
     if (!hasToken) {
       console.log(`Adding ${currency} to exit queue`)
-      await this.rootChain.addToken({
+      return this.rootChain.addToken({
         token: currency,
         txOptions: { from: this.address, privateKey: this.privateKey }
       })
@@ -99,7 +99,7 @@ const faucet = {
     console.info('------------------------------------------------')
   },
 
-  initEthBalance: async function (web3, minAmount) {
+  initFaucetEthBalance: async function (web3, minAmount) {
     if (numberToBN(minAmount).eqn(0)) {
       return
     }
@@ -145,7 +145,7 @@ const faucet = {
     }
   },
 
-  initERC20Balance: async function (web3, minAmount) {
+  initFaucetERC20Balance: async function (web3, minAmount) {
     if (numberToBN(minAmount).eqn(0)) {
       return
     }

@@ -42,7 +42,6 @@ describe('createTransactionTest.js (ci-enabled)', function () {
     let bobAccount
 
     beforeEach(async function () {
-      // Create Alice and Bob's accounts
       aliceAccount = rcHelper.createAccount(web3)
       console.log(`Created Alice account ${JSON.stringify(aliceAccount)}`)
       bobAccount = rcHelper.createAccount(web3)
@@ -54,7 +53,6 @@ describe('createTransactionTest.js (ci-enabled)', function () {
 
     afterEach(async function () {
       try {
-        // Send any leftover funds back to the faucet
         await faucet.returnFunds(web3, aliceAccount)
         await faucet.returnFunds(web3, bobAccount)
       } catch (err) {

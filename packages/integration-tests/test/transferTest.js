@@ -35,15 +35,14 @@ describe('transferTest.js (ci-enabled)', function () {
   })
 
   describe('Simple ETH', function () {
-    let INTIIAL_ALICE_AMOUNT
+    const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.1', 'ether')
     // TRANSFER_AMOUNT is deliberately bigger than Number.MAX_SAFE_INTEGER to cause rounding errors if not properly handled
     const TRANSFER_AMOUNT = '20000000000000123'
+
     let aliceAccount
     let bobAccount
 
     beforeEach(async function () {
-      INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.1', 'ether')
-      // Create Alice and Bob's accounts
       aliceAccount = rcHelper.createAccount(web3)
       console.log(`Created Alice account ${JSON.stringify(aliceAccount)}`)
       bobAccount = rcHelper.createAccount(web3)
@@ -55,7 +54,6 @@ describe('transferTest.js (ci-enabled)', function () {
 
     afterEach(async function () {
       try {
-        // Send any leftover funds back to the faucet
         await faucet.returnFunds(web3, aliceAccount)
         await faucet.returnFunds(web3, bobAccount)
       } catch (err) {

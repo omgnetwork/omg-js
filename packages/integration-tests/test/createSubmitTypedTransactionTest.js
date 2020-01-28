@@ -32,16 +32,14 @@ describe('createSubmitTypedTransactionTest.js (ci-enabled)', function () {
   })
 
   describe('create a single currency transaction with submitTyped', function () {
-    let INTIIAL_ALICE_AMOUNT
-    let TRANSFER_AMOUNT
+    const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.000001', 'ether')
+    const TRANSFER_AMOUNT = web3.utils.toWei('.0000001', 'ether')
     const FEE_AMOUNT = 10
+
     let aliceAccount
     let bobAccount
 
     beforeEach(async function () {
-      INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.000001', 'ether')
-      TRANSFER_AMOUNT = web3.utils.toWei('.0000001', 'ether')
-      // Create Alice and Bob's accounts
       aliceAccount = rcHelper.createAccount(web3)
       console.log(`Created Alice account ${JSON.stringify(aliceAccount)}`)
       bobAccount = rcHelper.createAccount(web3)
@@ -53,7 +51,6 @@ describe('createSubmitTypedTransactionTest.js (ci-enabled)', function () {
 
     afterEach(async function () {
       try {
-        // Send any leftover funds back to the faucet
         await faucet.returnFunds(web3, aliceAccount)
         await faucet.returnFunds(web3, bobAccount)
       } catch (err) {

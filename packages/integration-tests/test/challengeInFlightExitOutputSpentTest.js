@@ -35,21 +35,17 @@ describe('challengeInFlightExitOutputSpentTest.js', function () {
   })
 
   describe('in-flight transaction challenge with a invalid output piggybacking', function () {
-    let INTIIAL_ALICE_AMOUNT
-    let INTIIAL_BOB_RC_AMOUNT
-    let INTIIAL_CAROL_RC_AMOUNT
-    let TRANSFER_AMOUNT
+    const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.1', 'ether')
+    const INTIIAL_BOB_RC_AMOUNT = web3.utils.toWei('1', 'ether')
+    const INTIIAL_CAROL_RC_AMOUNT = web3.utils.toWei('.5', 'ether')
+    const TRANSFER_AMOUNT = web3.utils.toWei('0.0002', 'ether')
+
     let aliceAccount
     let bobAccount
     let carolAccount
     let fundAliceTx
 
     beforeEach(async function () {
-      INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.1', 'ether')
-      INTIIAL_BOB_RC_AMOUNT = web3.utils.toWei('1', 'ether')
-      INTIIAL_CAROL_RC_AMOUNT = web3.utils.toWei('.5', 'ether')
-      TRANSFER_AMOUNT = web3.utils.toWei('0.0002', 'ether')
-      // Create Alice and Bob's accounts
       aliceAccount = rcHelper.createAccount(web3)
       console.log(`Created Alice account ${JSON.stringify(aliceAccount)}`)
       bobAccount = rcHelper.createAccount(web3)
@@ -107,7 +103,6 @@ describe('challengeInFlightExitOutputSpentTest.js', function () {
 
     afterEach(async function () {
       try {
-        // Send any leftover funds back to the faucet
         await faucet.returnFunds(web3, aliceAccount)
         await faucet.returnFunds(web3, bobAccount)
         await faucet.returnFunds(web3, carolAccount)
