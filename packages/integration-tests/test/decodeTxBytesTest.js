@@ -43,21 +43,13 @@ describe('decodeTxBytesTest.js (ci-enabled)', function () {
       // Create and fund Alice's account
       aliceAccount = rcHelper.createAccount(web3)
       console.log(`Created Alice account ${JSON.stringify(aliceAccount)}`)
-      await faucet.fundRootchainEth(
-        web3,
-        aliceAccount.address,
-        INTIIAL_ALICE_AMOUNT
-      )
-      await rcHelper.waitForEthBalanceEq(
-        web3,
-        aliceAccount.address,
-        INTIIAL_ALICE_AMOUNT
-      )
+      await faucet.fundRootchainEth(web3, aliceAccount.address, INTIIAL_ALICE_AMOUNT, 'decodeTxBytesTest')
+      await rcHelper.waitForEthBalanceEq(web3, aliceAccount.address, INTIIAL_ALICE_AMOUNT)
     })
 
     afterEach(async function () {
       try {
-        await faucet.returnFunds(web3, aliceAccount)
+        await faucet.returnFunds(web3, aliceAccount, 'decodeTxBytesTest')
       } catch (err) {
         console.warn(`Error trying to return funds to the faucet: ${err}`)
       }

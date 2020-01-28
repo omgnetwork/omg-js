@@ -28,7 +28,7 @@ describe('addTokenTest.js (ci-enabled)', function () {
   const rootChain = new RootChain({ web3, plasmaContractAddress: config.rootchainContract })
   const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url })
 
-  const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('0.5', 'ether')
+  const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('0.1', 'ether')
   let aliceAccount
 
   before(async function () {
@@ -38,14 +38,13 @@ describe('addTokenTest.js (ci-enabled)', function () {
   beforeEach(async function () {
     aliceAccount = rcHelper.createAccount(web3)
     console.log(`Created new account ${JSON.stringify(aliceAccount)}`)
-    await faucet.fundRootchainEth(web3, aliceAccount.address, INTIIAL_ALICE_AMOUNT)
+    await faucet.fundRootchainEth(web3, aliceAccount.address, INTIIAL_ALICE_AMOUNT, 'addTokenTest')
     await rcHelper.waitForEthBalanceEq(web3, aliceAccount.address, INTIIAL_ALICE_AMOUNT)
   })
 
   afterEach(async function () {
     try {
-      // Send any leftover funds back to the faucet
-      await faucet.returnFunds(web3, aliceAccount)
+      await faucet.returnFunds(web3, aliceAccount, 'addTokenTest')
     } catch (err) {
       console.warn(`Error trying to return funds to the faucet: ${err}`)
     }

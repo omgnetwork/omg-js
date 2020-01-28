@@ -33,8 +33,8 @@ const testFiles = [
   'CORSHeaderTest',
   'metadataTest',
   'decodeTxBytesTest',
-  'addTokenTest'
-  // 'depositTest',
+  'addTokenTest',
+  'depositTest'
   // 'createTransactionTest',
   // 'transferTest',
   // 'createSubmitTypedTransactionTest',
@@ -61,21 +61,17 @@ async function setup () {
 
   // fund individual test faucets
   for (const filename of testFiles) {
-    const account = faucet.filenameToAccount(web3, filename)
-    await faucet.initEthBalance(web3, web3.utils.toWei('0.1', 'ether'), account.address, account.privateKey)
-    await faucet.initERC20Balance(web3, 5, account.address, account.privateKey)
-    console.log('-------------------------------------')
-    console.log(`Test faucet funded for ${filename}.js`)
-    console.log('-------------------------------------')
+    const account = faucet.filenameToAccount(filename)
+    await faucet.initEthBalance(web3, web3.utils.toWei('1', 'ether'), account.address, account.privateKey)
+    await faucet.initERC20Balance(web3, 10, account.address, account.privateKey)
+    console.log(`Test faucet funded for ${filename}.js: ${account.address}`)
   }
 }
 
 setup().then(() => {
   console.log('setup complete... running parallel tests...')
-  // mochaParallel.run()
+  mochaParallel.run()
 })
 
-// Each test gets a deterministic faucet that’s pre funded on setup.
-// Setup checks if enough eth to run a single test, if not funds, so can be used between tests.
-// Alice accounts can then be generate on the fly
+// Alice accounts can then be generate on the fly using this new faucet account
 // and funded by their own faucet so we don’t have nonce errors from doing multiple transactions from the same account.

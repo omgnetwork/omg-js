@@ -34,6 +34,7 @@ const faucet = {
 
     this.rootChain = rootChain
     this.childChain = childChain
+    this.web3 = web3
     this.address = config.testFaucetAddress
     this.privateKey = config.testFaucetPrivateKey
     this.erc20ContractAddress = config.testErc20Contract
@@ -58,9 +59,9 @@ const faucet = {
     await this.showInfo(web3)
   },
 
-  filenameToAccount: function (web3, filename) {
-    const privateKey = web3.utils.sha3(filename)
-    const account = web3.eth.accounts.privateKeyToAccount(privateKey)
+  filenameToAccount: function (filename) {
+    const privateKey = this.web3.utils.sha3(filename)
+    const account = this.web3.eth.accounts.privateKeyToAccount(privateKey)
     return { address: account.address, privateKey: account.privateKey }
   },
 
@@ -272,65 +273,72 @@ const faucet = {
     return rcHelper.waitForERC20Balance(web3, address, this.erc20ContractAddress, balance => numberToBN(balance).gte(amount))
   },
 
-  fundChildchain: async function (address, amount, currency) {
+  fundChildchain: async function (address, amount, currency, faucet) {
+    const faucetAccount = this.filenameToAccount(faucet)
     const ret = await ccHelper.send(
       this.childChain,
-      this.address,
+      faucetAccount.address,
       address,
       amount,
       currency,
-      this.privateKey,
+      faucetAccount.privateKey,
       this.rootChain.plasmaContractAddress
     )
     console.log(`Faucet sent ${amount} ${currencyMap[currency] || currency} on childchain to ${address}`)
     return ret
   },
 
-  fundRootchainEth: async function (web3, address, amount) {
+  fundRootchainEth: async function (web3, address, amount, faucet) {
     if (amount <= 0) {
       return
     }
 
+    const faucetAccount = this.filenameToAccount(faucet)
     const txDetails = {
-      from: this.address,
+      from: faucetAccount.address,
       to: address,
       value: amount
     }
-    const ret = await rcHelper.sendTransaction(web3, txDetails, this.privateKey)
+    const ret = await rcHelper.sendTransaction(web3, txDetails, faucetAccount.privateKey)
     console.log(`Faucet sent ${amount / 10 ** 18} ETH on root chain to ${address}`)
     return ret
   },
 
-  fundRootchainERC20: async function (web3, address, amount) {
+  fundRootchainERC20: async function (web3, address, amount, faucet) {
     if (amount <= 0) {
       return
     }
 
-    const balance = await getErc20Balance({ web3, erc20Address: this.erc20ContractAddress, address: this.address })
+    const faucetAccount = this.filenameToAccount(faucet)
+    const balance = await getErc20Balance({ web3, erc20Address: this.erc20ContractAddress, address: faucetAccount.address })
     if (numberToBN(balance).lt(numberToBN(amount))) {
       // For local testing, try to automatically top up the faucet
-      await this.topUpERC20(web3, amount)
+      await this.topUpERC20(web3, amount, faucetAccount.address)
     }
 
     const txDetails = {
-      from: this.address,
+      from: faucetAccount.address,
       to: this.erc20ContractAddress,
       data: this.erc20Contract.methods.transfer(address, amount.toString()).encodeABI()
     }
-    return rcHelper.sendTransaction(web3, txDetails, this.privateKey)
+    return rcHelper.sendTransaction(web3, txDetails, faucetAccount.privateKey)
   },
 
-  returnFunds: async function (web3, account) {
-    return Promise.all([this.returnChildchainFunds(account), this.returnRootchainFunds(web3, account)])
+  returnFunds: async function (web3, account, faucet) {
+    const faucetAccount = this.filenameToAccount(faucet)
+    return Promise.all([
+      this.returnChildchainFunds(account, faucetAccount),
+      this.returnRootchainFunds(web3, account, faucetAccount)
+    ])
   },
 
-  returnChildchainFunds: async function (account) {
+  returnChildchainFunds: async function (account, faucetAccount) {
     const balances = await this.childChain.getBalance(account.address)
     return Promise.all(balances.map(async (balance) => {
       const ret = await ccHelper.send(
         this.childChain,
         account.address,
-        this.address,
+        faucetAccount.address,
         balance.amount,
         balance.currency,
         account.privateKey,
@@ -341,12 +349,12 @@ const faucet = {
     }))
   },
 
-  returnRootchainFunds: async function (web3, account) {
+  returnRootchainFunds: async function (web3, account, faucetAccount) {
     const balance = await web3.eth.getBalance(account.address)
     if (balance.toString() !== '0') {
       const txDetails = {
         from: account.address,
-        to: this.address
+        to: faucetAccount.address
       }
 
       // Check that the account's balance isn't less than the gas it would cost to send the transaction

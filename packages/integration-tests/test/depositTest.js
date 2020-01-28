@@ -18,7 +18,6 @@ const rcHelper = require('../helpers/rootChainHelper')
 const ccHelper = require('../helpers/childChainHelper')
 const faucet = require('../helpers/testFaucet')
 const Web3 = require('web3')
-const erc20abi = require('human-standard-token-abi')
 const ChildChain = require('@omisego/omg-js-childchain')
 const RootChain = require('@omisego/omg-js-rootchain')
 const { transaction } = require('@omisego/omg-js-util')
@@ -43,13 +42,13 @@ describe('depositTest.js (ci-enabled)', function () {
     beforeEach(async function () {
       aliceAccount = rcHelper.createAccount(web3)
       console.log(`Created new account ${JSON.stringify(aliceAccount)}`)
-      await faucet.fundRootchainEth(web3, aliceAccount.address, INTIIAL_ALICE_AMOUNT)
+      await faucet.fundRootchainEth(web3, aliceAccount.address, INTIIAL_ALICE_AMOUNT, 'depositTest')
       await rcHelper.waitForEthBalanceEq(web3, aliceAccount.address, INTIIAL_ALICE_AMOUNT)
     })
 
     afterEach(async function () {
       try {
-        await faucet.returnFunds(web3, aliceAccount)
+        await faucet.returnFunds(web3, aliceAccount, 'depositTest')
       } catch (err) {
         console.warn(`Error trying to return funds to the faucet: ${err}`)
       }
@@ -124,7 +123,6 @@ describe('depositTest.js (ci-enabled)', function () {
 
   describe('deposit ERC20', function () {
     let aliceAccount
-    const testErc20Contract = new web3.eth.Contract(erc20abi, config.testErc20Contract)
     const INTIIAL_AMOUNT_ETH = web3.utils.toWei('.1', 'ether')
     const INITIAL_AMOUNT_ERC20 = 3
     const TEST_AMOUNT = 2
@@ -133,8 +131,8 @@ describe('depositTest.js (ci-enabled)', function () {
       // Create and fund Alice's account
       aliceAccount = rcHelper.createAccount(web3)
       console.log(`Created Alice account ${JSON.stringify(aliceAccount)}`)
-      await faucet.fundRootchainEth(web3, aliceAccount.address, INTIIAL_AMOUNT_ETH)
-      await faucet.fundRootchainERC20(web3, aliceAccount.address, INITIAL_AMOUNT_ERC20, testErc20Contract)
+      await faucet.fundRootchainEth(web3, aliceAccount.address, INTIIAL_AMOUNT_ETH, 'depositTest')
+      await faucet.fundRootchainERC20(web3, aliceAccount.address, INITIAL_AMOUNT_ERC20, 'depositTest')
 
       await Promise.all([
         rcHelper.waitForEthBalanceEq(web3, aliceAccount.address, INTIIAL_AMOUNT_ETH),
@@ -144,8 +142,7 @@ describe('depositTest.js (ci-enabled)', function () {
 
     afterEach(async function () {
       try {
-        // Send any leftover funds back to the faucet
-        await faucet.returnFunds(web3, aliceAccount)
+        await faucet.returnFunds(web3, aliceAccount, 'depositTest')
       } catch (err) {
         console.warn(`Error trying to return funds to the faucet: ${err}`)
       }

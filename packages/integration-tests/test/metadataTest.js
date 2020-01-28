@@ -47,14 +47,14 @@ describe('metadataTest.js (ci-enabled)', function () {
       bobAccount = rcHelper.createAccount(web3)
       console.log(`Created Bob account ${JSON.stringify(bobAccount)}`)
       // Give some ETH to Alice on the child chain
-      await faucet.fundChildchain(aliceAccount.address, INTIIAL_ALICE_AMOUNT, transaction.ETH_CURRENCY)
+      await faucet.fundChildchain(aliceAccount.address, INTIIAL_ALICE_AMOUNT, transaction.ETH_CURRENCY, 'metadataTest')
       await ccHelper.waitForBalanceEq(childChain, aliceAccount.address, INTIIAL_ALICE_AMOUNT)
     })
 
     afterEach(async function () {
       try {
-        await faucet.returnFunds(web3, aliceAccount)
-        await faucet.returnFunds(web3, bobAccount)
+        await faucet.returnFunds(web3, aliceAccount, 'metadataTest')
+        await faucet.returnFunds(web3, bobAccount, 'metadataTest')
       } catch (err) {
         console.warn(`Error trying to return funds to the faucet: ${err}`)
       }
@@ -94,29 +94,26 @@ describe('metadataTest.js (ci-enabled)', function () {
   })
 
   describe('sha256 as metadata', function () {
-    let INTIIAL_ALICE_AMOUNT
-    let TRANSFER_AMOUNT
+    const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.000001', 'ether')
+    const TRANSFER_AMOUNT = web3.utils.toWei('.0000001', 'ether')
     let aliceAccount
     let bobAccount
 
     beforeEach(async function () {
-      INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.000001', 'ether')
-      TRANSFER_AMOUNT = web3.utils.toWei('.0000001', 'ether')
       // Create Alice and Bob's accounts
       aliceAccount = rcHelper.createAccount(web3)
       console.log(`Created Alice account ${JSON.stringify(aliceAccount)}`)
       bobAccount = rcHelper.createAccount(web3)
       console.log(`Created Bob account ${JSON.stringify(bobAccount)}`)
       // Give some ETH to Alice on the child chain
-      await faucet.fundChildchain(aliceAccount.address, INTIIAL_ALICE_AMOUNT, transaction.ETH_CURRENCY)
+      await faucet.fundChildchain(aliceAccount.address, INTIIAL_ALICE_AMOUNT, transaction.ETH_CURRENCY, 'metadataTest')
       await ccHelper.waitForBalanceEq(childChain, aliceAccount.address, INTIIAL_ALICE_AMOUNT)
     })
 
     afterEach(async function () {
       try {
-        // Send any leftover funds back to the faucet
-        await faucet.returnFunds(web3, aliceAccount)
-        await faucet.returnFunds(web3, bobAccount)
+        await faucet.returnFunds(web3, aliceAccount, 'metadataTest')
+        await faucet.returnFunds(web3, bobAccount, 'metadataTest')
       } catch (err) {
         console.warn(`Error trying to return funds to the faucet: ${err}`)
       }
@@ -157,29 +154,26 @@ describe('metadataTest.js (ci-enabled)', function () {
   })
 
   describe('No metadata', function () {
-    let INTIIAL_ALICE_AMOUNT
-    let TRANSFER_AMOUNT
+    const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.000001', 'ether')
+    const TRANSFER_AMOUNT = web3.utils.toWei('.0000001', 'ether')
     let aliceAccount
     let bobAccount
 
     beforeEach(async function () {
-      INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.000001', 'ether')
-      TRANSFER_AMOUNT = web3.utils.toWei('.0000001', 'ether')
       // Create Alice and Bob's accounts
       aliceAccount = rcHelper.createAccount(web3)
       console.log(`Created Alice account ${JSON.stringify(aliceAccount)}`)
       bobAccount = rcHelper.createAccount(web3)
       console.log(`Created Bob account ${JSON.stringify(bobAccount)}`)
       // Give some ETH to Alice on the child chain
-      await faucet.fundChildchain(aliceAccount.address, INTIIAL_ALICE_AMOUNT, transaction.ETH_CURRENCY)
+      await faucet.fundChildchain(aliceAccount.address, INTIIAL_ALICE_AMOUNT, transaction.ETH_CURRENCY, 'metadataTest')
       await ccHelper.waitForBalanceEq(childChain, aliceAccount.address, INTIIAL_ALICE_AMOUNT)
     })
 
     afterEach(async function () {
       try {
-        // Send any leftover funds back to the faucet
-        await faucet.returnFunds(web3, aliceAccount)
-        await faucet.returnFunds(web3, bobAccount)
+        await faucet.returnFunds(web3, aliceAccount, 'metadataTest')
+        await faucet.returnFunds(web3, bobAccount, 'metadataTest')
       } catch (err) {
         console.warn(`Error trying to return funds to the faucet: ${err}`)
       }
