@@ -53,7 +53,10 @@ const faucet = {
       console.log(`Adding ${currency} to exit queue`)
       return this.rootChain.addToken({
         token: currency,
-        txOptions: { from: this.address, privateKey: this.privateKey }
+        txOptions: {
+          from: this.fundAccount.address,
+          privateKey: this.fundAccount.privateKey
+        }
       })
     } else {
       console.log(`Exit queue for ${currency} already exists`)
