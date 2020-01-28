@@ -15,7 +15,6 @@ limitations under the License. */
 
 const rcHelper = require('./rootChainHelper')
 const ccHelper = require('./childChainHelper')
-const faucetFaucet = require('./faucetFaucet')
 const { transaction, getErc20Balance } = require('@omisego/omg-js-util')
 const numberToBN = require('number-to-bn')
 const erc20abi = require('human-standard-token-abi')
@@ -200,26 +199,53 @@ const faucet = {
   },
 
   topUpEth: async function (web3, amount) {
-    try {
-      const topup = numberToBN(amount).add(numberToBN(web3.utils.toWei('0.1', 'ether'))) // A bit extra for gas
-      console.log(`Not enough Root chain ETH in faucet ${this.address}, attempting to top up with ${topup.toString()}`)
-      await faucetFaucet.topUpEth(web3, this.address, topup, this.fundAccount)
-      await rcHelper.waitForEthBalance(web3, this.address, balance => numberToBN(balance).gte(topup))
-    } catch (err) {
-      console.warn(err)
-      throw new Error(`Not enough ETH in test faucet ${this.address}. Please top up!`)
+    const topup = numberToBN(amount).add(numberToBN(web3.utils.toWei('0.1', 'ether'))) // A bit extra for gas
+    console.log(`Not enough Root chain ETH in faucet ${this.address}, attempting to top up with ${topup.toString()}`)
+
+    const txDetails = {
+      from: this.fundAccount.address,
+      to: this.address,
+      value: topup
     }
+    await rcHelper.setGas(web3.eth, txDetails)
+    if (this.fundAccount.privateKey) {
+      const signedTx = await web3.eth.accounts.signTransaction(txDetails, this.fundAccount.privateKey)
+      return web3.eth.sendSignedTransaction(signedTx.rawTransaction)
+    } else {
+      // Otherwise try with a password.
+      try {
+        const unlocked = await web3.eth.personal.unlockAccount(this.fundAccount.address, this.fundAccount.password)
+        if (unlocked) {
+          return web3.eth.sendTransaction(txDetails)
+        }
+      } catch (err) {
+        console.error(err)
+        throw err
+      }
+    }
+    return rcHelper.waitForEthBalance(web3, this.address, balance => numberToBN(balance).gte(topup))
   },
 
   topUpERC20: async function (web3, amount) {
-    try {
-      console.log(`Not enough Root chain erc20 tokens in faucet ${this.address}, attempting to top up with ${amount.toString()} tokens`)
-      await faucetFaucet.topUpERC20(web3, this.address, amount, this.erc20Contract, this.fundAccount)
-      await rcHelper.waitForERC20Balance(web3, this.address, this.erc20ContractAddress, balance => numberToBN(balance).gte(amount))
-    } catch (err) {
-      console.warn(err)
-      throw new Error(`Not enough ${this.erc20ContractAddress} tokens in test faucet ${this.address}. Please top up!`)
+    console.log(`Not enough Root chain erc20 tokens in faucet ${this.address}, attempting to top up with ${amount.toString()} tokens`)
+
+    const txDetails = {
+      from: this.fundAccount.address,
+      to: this.erc20Contract._address,
+      data: this.erc20Contract.methods.transfer(this.address, amount.toString()).encodeABI()
     }
+    await rcHelper.setGas(web3.eth, txDetails)
+    if (this.fundAccount.privateKey) {
+      const signedTx = await web3.eth.accounts.signTransaction(txDetails, this.fundAccount.privateKey)
+      return web3.eth.sendSignedTransaction(signedTx.rawTransaction)
+    } else {
+      // Otherwise try with a password.
+      const unlocked = await web3.eth.personal.unlockAccount(this.fundAccount.address, this.fundAccount.password)
+      if (unlocked) {
+        return web3.eth.sendTransaction(txDetails)
+      }
+    }
+    return rcHelper.waitForERC20Balance(web3, this.address, this.erc20ContractAddress, balance => numberToBN(balance).gte(amount))
   },
 
   fundChildchain: async function (address, amount, currency) {
