@@ -38,6 +38,7 @@ describe('createTransactionTest.js (ci-enabled)', function () {
     const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.000001', 'ether')
     const TRANSFER_AMOUNT = web3.utils.toWei('.0000001', 'ether')
     const FEE_AMOUNT = 10
+
     let aliceAccount
     let bobAccount
 

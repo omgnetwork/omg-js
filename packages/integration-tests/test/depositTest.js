@@ -41,7 +41,6 @@ describe('depositTest.js (ci-enabled)', function () {
     let aliceAccount
 
     beforeEach(async function () {
-      // Create and fund a new account
       aliceAccount = rcHelper.createAccount(web3)
       console.log(`Created new account ${JSON.stringify(aliceAccount)}`)
       await faucet.fundRootchainEth(web3, aliceAccount.address, INTIIAL_ALICE_AMOUNT)
@@ -50,7 +49,6 @@ describe('depositTest.js (ci-enabled)', function () {
 
     afterEach(async function () {
       try {
-        // Send any leftover funds back to the faucet
         await faucet.returnFunds(web3, aliceAccount)
       } catch (err) {
         console.warn(`Error trying to return funds to the faucet: ${err}`)
