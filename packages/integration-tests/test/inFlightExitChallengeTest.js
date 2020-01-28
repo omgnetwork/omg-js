@@ -39,7 +39,7 @@ describe('inFlightExitChallengeTest.js', function () {
 
   describe('in-flight transaction challenge exit with competitor', function () {
     const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.001', 'ether')
-    const INTIIAL_BOB_RC_AMOUNT = web3.utils.toWei('1', 'ether')
+    const INTIIAL_BOB_RC_AMOUNT = web3.utils.toWei('.5', 'ether')
     const INTIIAL_CAROL_RC_AMOUNT = web3.utils.toWei('.1', 'ether')
     const TRANSFER_AMOUNT = web3.utils.toWei('0.0002', 'ether')
 
@@ -290,7 +290,7 @@ describe('inFlightExitChallengeTest.js', function () {
 
   describe('in-flight transaction challenge exit without competitor', function () {
     const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.1', 'ether')
-    const INTIIAL_BOB_RC_AMOUNT = web3.utils.toWei('1', 'ether')
+    const INTIIAL_BOB_RC_AMOUNT = web3.utils.toWei('.5', 'ether')
     const INTIIAL_CAROL_RC_AMOUNT = web3.utils.toWei('.5', 'ether')
     const TRANSFER_AMOUNT = web3.utils.toWei('0.0002', 'ether')
 
