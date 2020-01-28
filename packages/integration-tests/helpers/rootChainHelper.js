@@ -107,13 +107,6 @@ function sleep (ms) {
   })
 }
 
-async function getPlasmaContractAddress (config) {
-  if (config.rootchainContract && config.rootchainContract !== '') {
-    return { contract_addr: config.rootchainContract }
-  }
-  throw new Error('No PLASMA_FRAMEWORK address configured')
-}
-
 const DEFAULT_INTERVAL = 1000
 const DEFAULT_BLOCKS_TO_WAIT = 1
 
@@ -185,7 +178,6 @@ module.exports = {
   sleep,
   sendTransaction,
   spentOnGas,
-  getPlasmaContractAddress,
   setGas,
   awaitTx
 }

@@ -19,13 +19,11 @@ const Web3 = require('web3')
 
 const faucet = require('../helpers/testFaucet')
 const config = require('../test-config')
-const rcHelper = require('../helpers/rootChainHelper')
 
 describe('setupTest.js', function () {
   before(async function () {
-    const plasmaContract = await rcHelper.getPlasmaContractAddress(config)
     const web3 = new Web3(new Web3.providers.HttpProvider(config.geth_url))
-    const rootChain = new RootChain({ web3, plasmaContractAddress: plasmaContract.contract_addr })
+    const rootChain = new RootChain({ web3, plasmaContractAddress: config.rootchainContract })
     const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url })
     await faucet.init(rootChain, childChain, web3, config)
   })
