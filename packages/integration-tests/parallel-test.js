@@ -43,12 +43,12 @@ async function setup () {
   // pre fund individual test faucets
   for (const filename of files) {
     await faucet.init(rootChain, childChain, web3, config, filename)
-    console.log(`Test faucet funded for ${filename}`)
+    console.log(`💰 Test faucet funded for ${filename}`)
     console.log('\n')
   }
 }
 
 setup().then(() => {
-  console.log('🚀 Running tests in parallel...')
+  console.log('🚀 Beginning parallel tests...')
   mochaParallel.run()
 })
