@@ -494,6 +494,16 @@
                 
                 </li>
               
+                
+                <li><a
+                  href='#deletenonpiggybackedinflightexit'
+                  class="">
+                  deleteNonPiggybackedInFlightExit
+                  
+                </a>
+                
+                </li>
+              
             </ul>
           </div>
           <div class='mt1 h6 quiet'>
@@ -7629,6 +7639,110 @@ This method decodes a string that was encoded with encodeMetadata().</p>
     </div>
   
 </div>
+
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+          <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='deletenonpiggybackedinflightexit'>
+      deleteNonPiggybackedInFlightExit
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>Deletes an in-flight exit if the first phase has passed and nobody has piggybacked the exit</p>
+
+    <div class='pre p1 fill-light mt0'>deleteNonPiggybackedInFlightExit(args: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="#transactionreceipt">TransactionReceipt</a>></div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>args</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>)</code>
+	    an arguments object
+
+          </div>
+          
+          <table class='mt1 mb2 fixed-table h5 col-12'>
+            <colgroup>
+              <col width='30%' />
+              <col width='70%' />
+            </colgroup>
+            <thead>
+              <tr class='bold fill-light'>
+                <th>Name</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody class='mt1'>
+              
+                <tr>
+  <td class='break-word'><span class='code bold'>args.exitId</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
+  </td>
+  <td class='break-word'><span>the exit id
+</span></td>
+</tr>
+
+
+              
+                <tr>
+  <td class='break-word'><span class='code bold'>args.txOptions</span> <code class='quiet'><a href="#transactionoptions">TransactionOptions</a></code>
+  </td>
+  <td class='break-word'><span>transaction options
+</span></td>
+</tr>
+
+
+              
+            </tbody>
+          </table>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="#transactionreceipt">TransactionReceipt</a>></code>:
+        promise that resolves with a transaction receipt
+
+      
+    
+  
+
+  
+
+  
 
   
 
