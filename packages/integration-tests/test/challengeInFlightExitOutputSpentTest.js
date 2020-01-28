@@ -163,7 +163,7 @@ describe('challengeInFlightExitOutputSpentTest.js', function () {
 
       // Bobs piggybacked output was spent, and needs to be challenged
       // tx2 is sent, but it takes awhile before watcher can get the Challenge data...
-      await rcHelper.sleep(10000)
+      await rcHelper.sleep(20000)
       const challengeData = await childChain.inFlightExitGetOutputChallengeData(exitData.in_flight_tx, 0)
       const challengeReceipt = await rootChain.challengeInFlightExitOutputSpent({
         inFlightTx: challengeData.in_flight_txbytes,

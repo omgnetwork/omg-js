@@ -16,6 +16,7 @@
 
 const ChildChain = require('../packages/omg-js-childchain/src/childchain')
 const config = require('./config.js')
+const JSONBigNumber = require('json-bigint')
 
 const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url })
 
@@ -23,8 +24,8 @@ async function childchainUtxos () {
   const aliceUtxos = await childChain.getUtxos(config.alice_eth_address)
   const bobUtxos = await childChain.getUtxos(config.bob_eth_address)
 
-  console.log(`Alice UTXOs: ${JSON.stringify(aliceUtxos, undefined, 2)}`)
-  console.log(`Bob UTXOs: ${JSON.stringify(bobUtxos, undefined, 2)}`)
+  console.log(`Alice UTXOs: ${JSONBigNumber.stringify(aliceUtxos, undefined, 2)}`)
+  console.log(`Bob UTXOs: ${JSONBigNumber.stringify(bobUtxos, undefined, 2)}`)
 }
 
 childchainUtxos()
