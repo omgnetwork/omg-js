@@ -259,12 +259,12 @@ describe('inFlightExitChallengeTest.js', function () {
           from: bobAccount.address
         }
       })
-      console.log(
-        `Bob called RootChain.processExits() after challenge period: txhash = ${receipt.transactionHash}`
-      )
-      bobSpentOnGas.iadd(await rcHelper.spentOnGas(web3, receipt))
+      if (receipt) {
+        console.log(`Bob called RootChain.processExits() after challenge period: txhash = ${receipt.transactionHash}`)
+        bobSpentOnGas.iadd(await rcHelper.spentOnGas(web3, receipt))
+        await rcHelper.awaitTx(web3, receipt.transactionHash)
+      }
 
-      await rcHelper.awaitTx(web3, receipt.transactionHash)
       // Get Bob's ETH balance
       const bobEthBalance = await web3.eth.getBalance(bobAccount.address)
       // Bob's IFE was not successful, so he loses his exit bond.
@@ -480,18 +480,18 @@ describe('inFlightExitChallengeTest.js', function () {
       receipt = await rootChain.processExits({
         token: transaction.ETH_CURRENCY,
         exitId: 0,
-        maxExitsToProcess: 5,
+        maxExitsToProcess: 20,
         txOptions: {
           privateKey: bobAccount.privateKey,
           from: bobAccount.address
         }
       })
-      console.log(
-        `Bob called RootChain.processExits() after challenge period: txhash = ${receipt.transactionHash}`
-      )
-      bobSpentOnGas.iadd(await rcHelper.spentOnGas(web3, receipt))
+      if (receipt) {
+        console.log(`Bob called RootChain.processExits() after challenge period: txhash = ${receipt.transactionHash}`)
+        bobSpentOnGas.iadd(await rcHelper.spentOnGas(web3, receipt))
+        await rcHelper.awaitTx(web3, receipt.transactionHash)
+      }
 
-      await rcHelper.awaitTx(web3, receipt.transactionHash)
       const { bonds } = await rootChain.getPaymentExitGame()
       // Get Bob's ETH balance
       const bobEthBalance = await web3.eth.getBalance(bobAccount.address)

@@ -230,10 +230,11 @@ describe('inFlightExitChallengeResponseTest.js', function () {
           gas: 6000000
         }
       })
-      console.log(`Bob called RootChain.processExits() after challenge period: txhash = ${receipt.transactionHash}`)
-      bobSpentOnGas.iadd(await rcHelper.spentOnGas(web3, receipt))
-
-      await rcHelper.awaitTx(web3, receipt.transactionHash)
+      if (receipt) {
+        console.log(`Bob called RootChain.processExits() after challenge period: txhash = ${receipt.transactionHash}`)
+        bobSpentOnGas.iadd(await rcHelper.spentOnGas(web3, receipt))
+        await rcHelper.awaitTx(web3, receipt.transactionHash)
+      }
 
       // Get Bob's ETH balance
       const bobEthBalance = await web3.eth.getBalance(bobAccount.address)

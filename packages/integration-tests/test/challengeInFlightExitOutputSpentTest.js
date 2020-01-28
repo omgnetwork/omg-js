@@ -197,9 +197,11 @@ describe('challengeInFlightExitOutputSpentTest.js', function () {
           from: bobAccount.address
         }
       })
-      await rcHelper.awaitTx(web3, processReceipt.transactionHash)
-      console.log('Bob processes the exits: ', processReceipt.transactionHash)
-      bobSpentOnGas.iadd(await rcHelper.spentOnGas(web3, processReceipt))
+      if (processReceipt) {
+        console.log(`Bob called RootChain.processExits() after challenge period: txhash = ${processReceipt.transactionHash}`)
+        bobSpentOnGas.iadd(await rcHelper.spentOnGas(web3, processReceipt))
+        await rcHelper.awaitTx(web3, processReceipt.transactionHash)
+      }
 
       const { bonds } = await rootChain.getPaymentExitGame()
       // Bob's piggyback was challenged, so he shouldnt have gotten his output out

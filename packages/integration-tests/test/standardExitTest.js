@@ -114,11 +114,11 @@ describe('standardExitTest.js', function () {
           from: aliceAccount.address
         }
       })
-      console.log(
-        `Alice called RootChain.processExits() before challenge period: txhash = ${receipt.transactionHash}`
-      )
-
-      aliceSpentOnGas.iadd(await rcHelper.spentOnGas(web3, receipt))
+      if (receipt) {
+        console.log(`Alice called RootChain.processExits() before challenge period: txhash = ${receipt.transactionHash}`)
+        aliceSpentOnGas.iadd(await rcHelper.spentOnGas(web3, receipt))
+        await rcHelper.awaitTx(web3, receipt.transactionHash)
+      }
 
       // Get Alice's ETH balance
       let aliceEthBalance = await web3.eth.getBalance(aliceAccount.address)
@@ -143,10 +143,11 @@ describe('standardExitTest.js', function () {
           from: aliceAccount.address
         }
       })
-      console.log(
-        `Alice called RootChain.processExits() after challenge period: txhash = ${receipt.transactionHash}`
-      )
-      aliceSpentOnGas.iadd(await rcHelper.spentOnGas(web3, receipt))
+      if (receipt) {
+        console.log(`Alice called RootChain.processExits() after challenge period: txhash = ${receipt.transactionHash}`)
+        aliceSpentOnGas.iadd(await rcHelper.spentOnGas(web3, receipt))
+        await rcHelper.awaitTx(web3, receipt.transactionHash)
+      }
 
       // Get Alice's ETH balance
       aliceEthBalance = await web3.eth.getBalance(aliceAccount.address)
@@ -257,12 +258,11 @@ describe('standardExitTest.js', function () {
           from: bobAccount.address
         }
       })
-      console.log(
-        `Bob called RootChain.processExits() before challenge period: txhash = ${processExitReceiptBefore.transactionHash}`
-      )
-      bobSpentOnGas.iadd(
-        await rcHelper.spentOnGas(web3, processExitReceiptBefore)
-      )
+      if (processExitReceiptBefore) {
+        console.log(`Bob called RootChain.processExits() before challenge period: txhash = ${processExitReceiptBefore.transactionHash}`)
+        bobSpentOnGas.iadd(await rcHelper.spentOnGas(web3, processExitReceiptBefore))
+        await rcHelper.awaitTx(web3, processExitReceiptBefore.transactionHash)
+      }
 
       // Get Bob's ETH balance
       let bobEthBalance = await web3.eth.getBalance(bobAccount.address)
@@ -287,12 +287,11 @@ describe('standardExitTest.js', function () {
           from: bobAccount.address
         }
       })
-      console.log(
-        `Bob called RootChain.processExits() after challenge period: txhash = ${processExitReceiptAfter.transactionHash}`
-      )
-      bobSpentOnGas.iadd(
-        await rcHelper.spentOnGas(web3, processExitReceiptAfter)
-      )
+      if (processExitReceiptAfter) {
+        console.log(`Bob called RootChain.processExits() after challenge period: txhash = ${processExitReceiptAfter.transactionHash}`)
+        bobSpentOnGas.iadd(await rcHelper.spentOnGas(web3, processExitReceiptAfter))
+        await rcHelper.awaitTx(web3, processExitReceiptAfter.transactionHash)
+      }
 
       // Get Bob's ETH balance
       bobEthBalance = await web3.eth.getBalance(bobAccount.address)
@@ -395,9 +394,11 @@ describe('standardExitTest.js', function () {
           from: aliceAccount.address
         }
       })
-      console.log(
-        `Alice called RootChain.processExits() before challenge period: txhash = ${receipt.transactionHash}`
-      )
+      if (receipt) {
+        console.log(`Alice called RootChain.processExits() before challenge period: txhash = ${receipt.transactionHash}`)
+        await rcHelper.awaitTx(web3, receipt.transactionHash)
+      }
+
       let balance = await testErc20Contract.methods
         .balanceOf(aliceAccount.address)
         .call({ from: aliceAccount.address })
@@ -421,9 +422,11 @@ describe('standardExitTest.js', function () {
           from: aliceAccount.address
         }
       })
-      console.log(
-        `Alice called RootChain.processExits() after challenge period: txhash = ${receipt.transactionHash}`
-      )
+      if (receipt) {
+        console.log(`Alice called RootChain.processExits() after challenge period: txhash = ${receipt.transactionHash}`)
+        await rcHelper.awaitTx(web3, receipt.transactionHash)
+      }
+
       balance = await testErc20Contract.methods
         .balanceOf(aliceAccount.address)
         .call({ from: aliceAccount.address })

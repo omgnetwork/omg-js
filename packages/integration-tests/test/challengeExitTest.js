@@ -163,8 +163,11 @@ describe('challengeExitTest.js', function () {
           from: aliceAccount.address
         }
       })
-      console.log(`Alice called RootChain.processExits(): txhash = ${receipt.transactionHash}`)
-      aliceSpentOnGas.iadd(await rcHelper.spentOnGas(web3, receipt))
+      if (receipt) {
+        console.log(`Alice called RootChain.processExits(): txhash = ${receipt.transactionHash}`)
+        aliceSpentOnGas.iadd(await rcHelper.spentOnGas(web3, receipt))
+        await rcHelper.awaitTx(web3, receipt.transactionHash)
+      }
 
       // Get Alice's ETH balance
       const aliceEthBalance = await web3.eth.getBalance(aliceAccount.address)
