@@ -16,6 +16,7 @@ limitations under the License. */
 const RootChain = require('@omisego/omg-js-rootchain')
 const ChildChain = require('@omisego/omg-js-childchain')
 const Web3 = require('web3')
+const fs = require('fs')
 
 const faucet = require('./helpers/testFaucet')
 const config = require('./test-config')
@@ -29,27 +30,9 @@ const mochaParallel = new MochaParallel({
   reporter: 'list'
 })
 
-const testFiles = [
-  'CORSHeaderTest',
-  'metadataTest',
-  'decodeTxBytesTest',
-  'addTokenTest',
-  'depositTest',
-  'createTransactionTest',
-  'transferTest',
-  'createSubmitTypedTransactionTest',
-  'getExitQueueTest',
-  'standardExitTest',
-  'challengeExitTest',
-  'inFlightExitTest',
-  'inFlightExitChallengeTest',
-  'inFlightExitChallengeResponseTest',
-  'challengeInFlightExitInputSpentTest',
-  'challengeInFlightExitOutputSpentTest'
-]
-
-for (const test of testFiles) {
-  mochaParallel.addFile(`${__dirname}/test/${test}.js`)
+const files = fs.readdirSync(`${__dirname}/test/`)
+for (const test of files) {
+  mochaParallel.addFile(`${__dirname}/test/${test}`)
 }
 
 async function setup () {
@@ -58,9 +41,9 @@ async function setup () {
   const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url })
 
   // pre fund individual test faucets
-  for (const filename of testFiles) {
+  for (const filename of files) {
     await faucet.init(rootChain, childChain, web3, config, filename)
-    console.log(`Test faucet funded for ${filename}.js`)
+    console.log(`Test faucet funded for ${filename}`)
     console.log('\n')
   }
 }

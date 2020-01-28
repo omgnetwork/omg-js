@@ -25,13 +25,16 @@ const chai = require('chai')
 const numberToBN = require('number-to-bn')
 const assert = chai.assert
 
+const path = require('path')
+const scriptName = path.basename(__filename)
+
 describe('challengeInFlightExitInputSpentTest.js', function () {
   const web3 = new Web3(new Web3.providers.HttpProvider(config.geth_url))
   const rootChain = new RootChain({ web3, plasmaContractAddress: config.rootchainContract })
   const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url })
 
   before(async function () {
-    await faucet.init(rootChain, childChain, web3, config, 'challengeInFlightExitInputSpentTest')
+    await faucet.init(rootChain, childChain, web3, config, scriptName)
   })
 
   describe('in-flight transaction challenge with a invalid input piggybacking', function () {

@@ -25,13 +25,16 @@ const chai = require('chai')
 const assert = chai.assert
 const ethUtil = require('ethereumjs-util')
 
+const path = require('path')
+const scriptName = path.basename(__filename)
+
 describe('metadataTest.js (ci-enabled)', function () {
   const web3 = new Web3(config.geth_url)
   const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url })
   const rootChain = new RootChain({ web3, plasmaContractAddress: config.rootchainContract })
 
   before(async function () {
-    await faucet.init(rootChain, childChain, web3, config, 'metadataTest')
+    await faucet.init(rootChain, childChain, web3, config, scriptName)
   })
 
   describe('String as metadata', function () {

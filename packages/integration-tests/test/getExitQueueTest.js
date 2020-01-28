@@ -25,6 +25,9 @@ const ccHelper = require('../helpers/childChainHelper')
 should()
 use(chaiAsPromised)
 
+const path = require('path')
+const scriptName = path.basename(__filename)
+
 describe('getExitQueueTest.js', function () {
   const web3 = new Web3(new Web3.providers.HttpProvider(config.geth_url))
   const rootChain = new RootChain({ web3, plasmaContractAddress: config.rootchainContract })
@@ -35,12 +38,12 @@ describe('getExitQueueTest.js', function () {
   let aliceAccount
 
   before(async function () {
-    await faucet.init(rootChain, childChain, web3, config, 'getExitQueueTest')
+    await faucet.init(rootChain, childChain, web3, config, scriptName)
   })
 
   beforeEach(async function () {
     aliceAccount = rcHelper.createAccount(web3)
-    await faucet.fundRootchainEth(web3, aliceAccount.address, INTIIAL_ALICE_AMOUNT)
+    await faucet.fundRootchainEth(aliceAccount.address, INTIIAL_ALICE_AMOUNT)
     await rcHelper.waitForEthBalanceEq(web3, aliceAccount.address, INTIIAL_ALICE_AMOUNT)
   })
 

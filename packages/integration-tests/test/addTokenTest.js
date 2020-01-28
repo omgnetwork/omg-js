@@ -23,6 +23,9 @@ const rcHelper = require('../helpers/rootChainHelper')
 should()
 use(chaiAsPromised)
 
+const path = require('path')
+const scriptName = path.basename(__filename)
+
 describe('addTokenTest.js (ci-enabled)', function () {
   const web3 = new Web3(new Web3.providers.HttpProvider(config.geth_url))
   const rootChain = new RootChain({ web3, plasmaContractAddress: config.rootchainContract })
@@ -32,7 +35,7 @@ describe('addTokenTest.js (ci-enabled)', function () {
   let aliceAccount
 
   before(async function () {
-    await faucet.init(rootChain, childChain, web3, config, 'addTokenTest')
+    await faucet.init(rootChain, childChain, web3, config, scriptName)
   })
 
   beforeEach(async function () {

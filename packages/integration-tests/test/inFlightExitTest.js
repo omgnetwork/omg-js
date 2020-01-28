@@ -25,18 +25,21 @@ const numberToBN = require('number-to-bn')
 const chai = require('chai')
 const assert = chai.assert
 
+const path = require('path')
+const scriptName = path.basename(__filename)
+
 describe('inFlightExitTest.js', function () {
   const web3 = new Web3(new Web3.providers.HttpProvider(config.geth_url))
   const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url })
   const rootChain = new RootChain({ web3, plasmaContractAddress: config.rootchainContract })
 
   before(async function () {
-    await faucet.init(rootChain, childChain, web3, config, 'inFlightExitTest')
+    await faucet.init(rootChain, childChain, web3, config, scriptName)
   })
 
   describe('in-flight transaction exit', function () {
-    const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.5', 'ether')
-    const INTIIAL_BOB_RC_AMOUNT = web3.utils.toWei('.5', 'ether')
+    const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.4', 'ether')
+    const INTIIAL_BOB_RC_AMOUNT = web3.utils.toWei('.4', 'ether')
     const TRANSFER_AMOUNT = web3.utils.toWei('0.0002', 'ether')
 
     let aliceAccount
