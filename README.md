@@ -76,21 +76,21 @@ To run the examples:
 
 - Refer to below explanation of `.env` variables
 ```
-GETH_URL=                       <entry point to an ethereum node>
-WATCHER_URL=                    <url of an informational watcher>
-WATCHER_PROXY_URL=              <*optional* proxy server to catch all watcher requests>
-PLASMA_FRAMEWORK=               <address of the plasma_framework contract>
-ERC20_CONTRACT=                 <*optional* address of the erc20 contract that Alice will deposit and transfer to Bob>
-ALICE_ETH_ADDRESS=              <address of Alice's account>
-ALICE_ETH_ADDRESS_PRIVATE_KEY=  <Alice's private key>
-ALICE_ETH_DEPOSIT_AMOUNT=       <ETH amount Alice will deposit into the childchain>
-ALICE_ERC20_DEPOSIT_AMOUNT=     <ERC20 amount Alice will deposit into the childchain>
-ALICE_ETH_TRANSFER_AMOUNT=      <ETH amount Alice will transfer to Bob>
-ALICE_ERC20_TRANSFER_AMOUNT=    <ERC20 amount Alice will transfer to Bob>
-BOB_ETH_ADDRESS=                <address of Bob's account>
-BOB_ETH_ADDRESS_PRIVATE_KEY=    <Bob's private key>
-MILLIS_TO_WAIT_FOR_NEXT_BLOCK=  <interval when checking for block confirmation>
-BLOCKS_TO_WAIT_FOR_TXN=         <amount of blocks to wait for confirmation>
+ETH_NODE=                           <entry point to an ethereum node>
+WATCHER_URL=                        <url of an informational watcher>
+WATCHER_PROXY_URL=                  <*optional* proxy server to catch all watcher requests>
+PLASMAFRAMEWORK_CONTRACT_ADDRESS=   <address of the plasma_framework contract>
+ERC20_CONTRACT_ADDRESS=             <*optional* address of the erc20 contract that Alice will deposit and transfer to Bob>
+ALICE_ETH_ADDRESS=                  <address of Alice's account>
+ALICE_ETH_ADDRESS_PRIVATE_KEY=      <Alice's private key>
+ALICE_ETH_DEPOSIT_AMOUNT=           <ETH amount Alice will deposit into the childchain>
+ALICE_ERC20_DEPOSIT_AMOUNT=         <ERC20 amount Alice will deposit into the childchain>
+ALICE_ETH_TRANSFER_AMOUNT=          <ETH amount Alice will transfer to Bob>
+ALICE_ERC20_TRANSFER_AMOUNT=        <ERC20 amount Alice will transfer to Bob>
+BOB_ETH_ADDRESS=                    <address of Bob's account>
+BOB_ETH_ADDRESS_PRIVATE_KEY=        <Bob's private key>
+MILLIS_TO_WAIT_FOR_NEXT_BLOCK=      <interval when checking for block confirmation>
+BLOCKS_TO_WAIT_FOR_TXN=             <amount of blocks to wait for confirmation>
 ```
 
 Let's run through a story between Alice and Bob. In this story, Alice will first deposit some ETH from the root chain into the child chain. Then Alice will transfer some of that ETH to Bob on the child chain. Bob will then exit his funds from the child chain back into the root chain. His root chain balance will be reflected with the extra ETH that Alice sent to him on the child chain.

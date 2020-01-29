@@ -26,7 +26,7 @@ const numberToBN = require('number-to-bn')
 const assert = chai.assert
 
 describe('challengeInFlightExitInputSpentTest.js', function () {
-  const web3 = new Web3(new Web3.providers.HttpProvider(config.geth_url))
+  const web3 = new Web3(new Web3.providers.HttpProvider(config.eth_node))
   let rootChain
   const childChain = new ChildChain({
     watcherUrl: config.watcher_url,

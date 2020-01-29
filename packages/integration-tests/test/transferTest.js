@@ -26,7 +26,7 @@ const chai = require('chai')
 const assert = chai.assert
 
 describe('transferTest.js (ci-enabled)', function () {
-  const web3 = new Web3(config.geth_url)
+  const web3 = new Web3(config.eth_node)
   const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url })
   let rootChain
 
@@ -255,7 +255,7 @@ describe('transferTest.js (ci-enabled)', function () {
     let bobAccount
 
     beforeEach(async function () {
-      ERC20_CURRENCY = config.testErc20Contract
+      ERC20_CURRENCY = config.erc20_contract_address
       INTIIAL_ALICE_AMOUNT_ETH = web3.utils.toWei('.00000001', 'ether')
       // Create Alice and Bob's accounts
       aliceAccount = rcHelper.createAccount(web3)
@@ -331,7 +331,7 @@ describe('transferTest.js (ci-enabled)', function () {
   })
 
   describe('Mixed currency transfer', function () {
-    const ERC20_CURRENCY = config.testErc20Contract
+    const ERC20_CURRENCY = config.erc20_contract_address
     const INTIIAL_ALICE_AMOUNT_ETH = web3.utils.toWei('0.001', 'ether')
     const INTIIAL_ALICE_AMOUNT_ERC20 = 3
     const TRANSFER_AMOUNT_ETH = numberToBN(web3.utils.toWei('0.0004', 'ether'))

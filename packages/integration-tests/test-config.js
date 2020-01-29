@@ -16,19 +16,19 @@ limitations under the License. */
 require('dotenv').config()
 
 const config = {
-  geth_url: process.env.GETH_URL,
+  eth_node: process.env.ETH_NODE,
   watcher_url: process.env.WATCHER_URL,
   watcher_proxy_url: process.env.WATCHER_PROXY_URL,
   childchain_url: process.env.CHILDCHAIN_URL,
-  rootchainContract: process.env.PLASMA_FRAMEWORK,
-  testErc20Contract: process.env.TEST_ERC20_CONTRACT,
-  fundAccount: process.env.FUND_ACCOUNT,
-  fundAccountPrivateKey: process.env.FUND_ACCOUNT_PRIVATEKEY,
-  fundAccountPassword: process.env.FUND_ACCOUNT_PASSWORD,
-  testFaucetAddress: process.env.TEST_FAUCET_ADDRESS,
-  testFaucetPrivateKey: process.env.TEST_FAUCET_PRIVATEKEY,
-  minAmountEth: process.env.TEST_MIN_ETH,
-  minAmountERC20: process.env.TEST_MIN_ERC20
+  plasmaframework_contract_address: process.env.PLASMAFRAMEWORK_CONTRACT_ADDRESS,
+  erc20_contract_address: process.env.ERC20_CONTRACT_ADDRESS,
+  fund_account: process.env.FUND_ACCOUNT,
+  fund_account_private_key: process.env.FUND_ACCOUNT_PRIVATEKEY,
+  fund_account_password: process.env.FUND_ACCOUNT_PASSWORD,
+  test_faucet_address: process.env.TEST_FAUCET_ADDRESS,
+  test_faucet_private_key: process.env.TEST_FAUCET_PRIVATEKEY,
+  test_min_eth: process.env.TEST_MIN_ETH,
+  test_min_erc20: process.env.TEST_MIN_ERC20
 }
 
 module.exports = config

@@ -108,10 +108,10 @@ function sleep (ms) {
 }
 
 async function getPlasmaContractAddress (config) {
-  if (config.rootchainContract && config.rootchainContract !== '') {
-    return { contract_addr: config.rootchainContract }
+  if (config.plasmaframework_contract_address && config.plasmaframework_contract_address !== '') {
+    return { contract_addr: config.plasmaframework_contract_address }
   }
-  throw new Error('No PLASMA_FRAMEWORK address configured')
+  throw new Error('No PLASMAFRAMEWORK_CONTRACT_ADDRESS address configured')
 }
 
 const DEFAULT_INTERVAL = 1000

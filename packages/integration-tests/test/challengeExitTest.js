@@ -25,7 +25,7 @@ const chai = require('chai')
 const assert = chai.assert
 
 describe('challengeExitTest.js', function () {
-  const web3 = new Web3(new Web3.providers.HttpProvider(config.geth_url))
+  const web3 = new Web3(new Web3.providers.HttpProvider(config.eth_node))
   const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url })
   let rootChain
 
