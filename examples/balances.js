@@ -18,7 +18,7 @@ const config = require('./config.js')
 const ChildChain = require('../packages/omg-js-childchain/src/childchain')
 const { transaction, getErc20Balance } = require('../packages/omg-js-util/src')
 
-const web3 = new Web3(new Web3.providers.HttpProvider(config.geth_url), null, { transactionConfirmationBlocks: 1 })
+const web3 = new Web3(new Web3.providers.HttpProvider(config.eth_node), null, { transactionConfirmationBlocks: 1 })
 const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url })
 
 async function balances () {
@@ -37,14 +37,14 @@ async function balances () {
     }
   ]
 
-  if (config.erc20_contract) {
+  if (config.erc20_contract_address) {
     const aliceRootchainERC20Balance = await getErc20Balance({
       web3,
       address: config.alice_eth_address,
-      erc20Address: config.erc20_contract
+      erc20Address: config.erc20_contract_address
     })
     aliceRootchainBalances.push({
-      currency: config.erc20_contract,
+      currency: config.erc20_contract_address,
       amount: aliceRootchainERC20Balance
     })
   }
@@ -65,14 +65,14 @@ async function balances () {
     }
   ]
 
-  if (config.erc20_contract) {
+  if (config.erc20_contract_address) {
     const bobRootchainERC20Balance = await getErc20Balance({
       web3,
       address: config.bob_eth_address,
-      erc20Address: config.erc20_contract
+      erc20Address: config.erc20_contract_address
     })
     bobRootchainBalances.push({
-      currency: config.erc20_contract,
+      currency: config.erc20_contract_address,
       amount: bobRootchainERC20Balance
     })
   }

@@ -14,7 +14,7 @@ const { assert, should, use } = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 const RootChain = require('@omisego/omg-js-rootchain')
 const ChildChain = require('@omisego/omg-js-childchain')
-const { transaction, waitForRootchainTransaction } = require('@omisego/omg-js-util')
+const { transaction } = require('@omisego/omg-js-util')
 const Web3 = require('web3')
 
 const faucet = require('../helpers/faucet')
@@ -29,8 +29,8 @@ const path = require('path')
 const scriptName = path.basename(__filename)
 
 describe('getExitQueueTest.js', function () {
-  const web3 = new Web3(new Web3.providers.HttpProvider(config.geth_url))
-  const rootChain = new RootChain({ web3, plasmaContractAddress: config.rootchainContract })
+  const web3 = new Web3(new Web3.providers.HttpProvider(config.eth_node))
+  const rootChain = new RootChain({ web3, plasmaContractAddress: config.plasmaframework_contract_address })
   const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url })
 
   const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.1', 'ether')
@@ -70,14 +70,7 @@ describe('getExitQueueTest.js', function () {
       })
       if (ethExitReceipt) {
         console.log(`ETH exits processing: ${ethExitReceipt.transactionHash}`)
-        await waitForRootchainTransaction({
-          web3,
-          transactionHash: ethExitReceipt.transactionHash,
-          checkIntervalMs: config.millis_to_wait_for_next_block,
-          blocksToWait: config.blocks_to_wait_for_txn,
-          onCountdown: (remaining) => console.log(`${remaining} blocks remaining before confirmation`)
-        })
-        console.log('ETH exits processed')
+        await rcHelper.awaitTx(web3, ethExitReceipt.transactionHash)
       }
     }
     queue = await rootChain.getExitQueue()

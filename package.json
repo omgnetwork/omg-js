@@ -15,7 +15,7 @@
     "build-doc": "documentation build packages/omg-js/src/** packages/omg-js-childchain/src/** packages/omg-js-rootchain/src/** packages/omg-js-util/src/** --config documentation.yml -f html -o docs",
     "mocha": "mocha --timeout=0 --bail --slow=0 --check-leaks --full-trace",
     "test": "mocha packages/omg-js-childchain/test packages/omg-js-rootchain/test packages/omg-js-util/test",
-    "ci-test": "npm run mocha --grep ci-enabled packages/integration-tests/tests",
+    "ci-test": "npm run mocha --grep ci-enabled packages/integration-tests/sequence-test",
     "sequence-test": "npm run mocha packages/integration-tests/sequence-test",
     "parallel-test": "node packages/integration-tests/parallel-test"
   },

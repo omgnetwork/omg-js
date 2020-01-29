@@ -29,9 +29,9 @@ const path = require('path')
 const scriptName = path.basename(__filename)
 
 describe('createTransactionTest.js (ci-enabled)', function () {
-  const web3 = new Web3(config.geth_url)
+  const web3 = new Web3(config.eth_node)
   const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url })
-  const rootChain = new RootChain({ web3, plasmaContractAddress: config.rootchainContract })
+  const rootChain = new RootChain({ web3, plasmaContractAddress: config.plasmaframework_contract_address })
 
   before(async function () {
     await faucet.init(rootChain, childChain, web3, config, scriptName)
@@ -149,7 +149,7 @@ describe('createTransactionTest.js (ci-enabled)', function () {
   })
 
   describe('create a mixed currency transaction', function () {
-    const ERC20_CURRENCY = config.testErc20Contract
+    const ERC20_CURRENCY = config.erc20_contract_address
     const INTIIAL_ALICE_AMOUNT_ETH = web3.utils.toWei('0.001', 'ether')
     const INTIIAL_ALICE_AMOUNT_ERC20 = 3
     const TRANSFER_AMOUNT_ETH = numberToBN(web3.utils.toWei('0.0004', 'ether'))

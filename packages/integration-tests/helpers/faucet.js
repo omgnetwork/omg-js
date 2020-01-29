@@ -24,18 +24,18 @@ const currencyMap = {
 }
 const faucet = {
   init: async function (rootChain, childChain, web3, config, faucet) {
-    this.fundAccount = { address: config.fundAccount, privateKey: config.fundAccountPrivateKey }
+    this.fundAccount = { address: config.fund_account, privateKey: config.fund_account_private_key }
 
     this.rootChain = rootChain
     this.childChain = childChain
     this.web3 = web3
 
-    this.erc20ContractAddress = config.testErc20Contract
+    this.erc20ContractAddress = config.erc20_contract_address
     this.erc20Contract = new web3.eth.Contract(erc20abi, this.erc20ContractAddress)
     this.faucetAccount = this.filenameToAccount(faucet)
 
-    await this.initEthBalance(this.web3.utils.toWei(config.minAmountEthPerTest, 'ether'), config.topupMultipler)
-    await this.initERC20Balance(config.minAmountERC20PerTest, config.topupMultipler)
+    await this.initEthBalance(this.web3.utils.toWei(config.min_amount_eth_per_test, 'ether'), config.topup_multipler)
+    await this.initERC20Balance(config.min_amount_erc20_per_test, config.topup_multipler)
     await this.addToken(this.erc20ContractAddress)
     await this.addToken(transaction.ETH_CURRENCY)
     await this.showInfo()

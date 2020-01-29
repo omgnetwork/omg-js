@@ -30,9 +30,9 @@ const path = require('path')
 const scriptName = path.basename(__filename)
 
 describe('standardExitTest.js', function () {
-  const web3 = new Web3(new Web3.providers.HttpProvider(config.geth_url))
+  const web3 = new Web3(new Web3.providers.HttpProvider(config.eth_node))
   const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url })
-  const rootChain = new RootChain({ web3, plasmaContractAddress: config.rootchainContract })
+  const rootChain = new RootChain({ web3, plasmaContractAddress: config.plasmaframework_contract_address })
 
   before(async function () {
     await faucet.init(rootChain, childChain, web3, config, scriptName)
@@ -305,8 +305,8 @@ describe('standardExitTest.js', function () {
   })
 
   describe('ERC20 exit', function () {
-    const ERC20_CURRENCY = config.testErc20Contract
-    const testErc20Contract = new web3.eth.Contract(erc20abi, config.testErc20Contract)
+    const ERC20_CURRENCY = config.erc20_contract_address
+    const testErc20Contract = new web3.eth.Contract(erc20abi, config.erc20_contract_address)
     const INTIIAL_ALICE_AMOUNT_ETH = web3.utils.toWei('.1', 'ether')
     const INTIIAL_ALICE_AMOUNT_ERC20 = 2
     let aliceAccount
@@ -386,7 +386,7 @@ describe('standardExitTest.js', function () {
 
       // Call processExits before the challenge period is over
       let receipt = await rootChain.processExits({
-        token: config.testErc20Contract,
+        token: config.erc20_contract_address,
         exitId: 0,
         maxExitsToProcess: 20,
         txOptions: {
@@ -414,7 +414,7 @@ describe('standardExitTest.js', function () {
 
       // Call processExits again.
       receipt = await rootChain.processExits({
-        token: config.testErc20Contract,
+        token: config.erc20_contract_address,
         exitId: 0,
         maxExitsToProcess: 20,
         txOptions: {

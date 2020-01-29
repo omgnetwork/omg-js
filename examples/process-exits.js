@@ -18,11 +18,11 @@ const { transaction, waitForRootchainTransaction } = require('../packages/omg-js
 const config = require('./config.js')
 
 // setup for fast confirmations
-const web3 = new Web3(new Web3.providers.HttpProvider(config.geth_url), null, {
+const web3 = new Web3(new Web3.providers.HttpProvider(config.eth_node), null, {
   transactionConfirmationBlocks: 1
 })
 
-const rootChain = new RootChain({ web3, plasmaContractAddress: config.rootchain_plasma_contract_address })
+const rootChain = new RootChain({ web3, plasmaContractAddress: config.plasmaframework_contract_address })
 const bobAddress = config.bob_eth_address
 const bobPrivateKey = config.bob_eth_address_private_key
 
@@ -59,16 +59,16 @@ async function processExits () {
     console.log('No exits in ETH exit queue to process')
   }
 
-  if (!config.erc20_contract) {
+  if (!config.erc20_contract_address) {
     console.log('No ERC20 contract defined in config')
     return
   }
 
-  const erc20Queue = await rootChain.getExitQueue(config.erc20_contract)
+  const erc20Queue = await rootChain.getExitQueue(config.erc20_contract_address)
   if (erc20Queue.length) {
     console.log('Current ERC20 exit queue: ', erc20Queue)
     const erc20ExitReceipt = await rootChain.processExits({
-      token: config.erc20_contract,
+      token: config.erc20_contract_address,
       exitId: 0,
       maxExitsToProcess: erc20Queue.length,
       txOptions: {

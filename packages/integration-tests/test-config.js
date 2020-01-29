@@ -16,17 +16,17 @@ limitations under the License. */
 require('dotenv').config()
 
 const config = {
-  geth_url: process.env.GETH_URL,
+  eth_node: process.env.ETH_NODE,
   watcher_url: process.env.WATCHER_URL,
   watcher_proxy_url: process.env.WATCHER_PROXY_URL,
   childchain_url: process.env.CHILDCHAIN_URL,
-  rootchainContract: process.env.PLASMA_FRAMEWORK,
-  testErc20Contract: process.env.TEST_ERC20_CONTRACT,
-  fundAccount: process.env.FUND_ACCOUNT,
-  fundAccountPrivateKey: process.env.FUND_ACCOUNT_PRIVATEKEY,
-  minAmountEthPerTest: process.env.MIN_AMOUNT_ETH_PER_TEST,
-  minAmountERC20PerTest: process.env.MIN_AMOUNT_ERC20_PER_TEST,
-  topupMultipler: process.env.TOPUP_MULTIPLIER
+  plasmaframework_contract_address: process.env.PLASMAFRAMEWORK_CONTRACT_ADDRESS,
+  erc20_contract_address: process.env.ERC20_CONTRACT_ADDRESS,
+  fund_account: process.env.FUND_ACCOUNT,
+  fund_account_private_key: process.env.FUND_ACCOUNT_PRIVATEKEY,
+  min_amount_eth_per_test: process.env.MIN_AMOUNT_ETH_PER_TEST,
+  min_amount_erc20_per_test: process.env.MIN_AMOUNT_ERC20_PER_TEST,
+  topup_multipler: process.env.TOPUP_MULTIPLIER
 }
 
 module.exports = config

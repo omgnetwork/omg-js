@@ -23,9 +23,9 @@ const config = require('./config.js')
 const wait = require('./wait.js')
 
 // setup for only 1 transaction confirmation block for fast confirmations
-const web3 = new Web3(new Web3.providers.HttpProvider(config.geth_url), null, { transactionConfirmationBlocks: 1 })
+const web3 = new Web3(new Web3.providers.HttpProvider(config.eth_node), null, { transactionConfirmationBlocks: 1 })
 
-const rootChain = new RootChain({ web3, plasmaContractAddress: config.rootchain_plasma_contract_address })
+const rootChain = new RootChain({ web3, plasmaContractAddress: config.plasmaframework_contract_address })
 const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url })
 
 const bobAddress = config.bob_eth_address
@@ -35,10 +35,10 @@ async function logBalances () {
   const bobRootchainBalance = await getErc20Balance({
     web3,
     address: bobAddress,
-    erc20Address: config.erc20_contract
+    erc20Address: config.erc20_contract_address
   })
   const bobChildchainBalanceArray = await childChain.getBalance(bobAddress)
-  const bobErc20Object = bobChildchainBalanceArray.find(i => i.currency.toLowerCase() === config.erc20_contract.toLowerCase())
+  const bobErc20Object = bobChildchainBalanceArray.find(i => i.currency.toLowerCase() === config.erc20_contract_address.toLowerCase())
   const bobChildchainBalance = bobErc20Object ? bobErc20Object.amount : 0
 
   console.log(`Bob's rootchain ERC20 balance: ${bobRootchainBalance}`)
@@ -46,7 +46,7 @@ async function logBalances () {
 }
 
 async function childchainExitErc20 () {
-  if (!config.erc20_contract) {
+  if (!config.erc20_contract_address) {
     console.log('Please define an ERC20 contract in your .env')
     return
   }
@@ -61,7 +61,7 @@ async function childchainExitErc20 () {
 
   // get a ERC20 UTXO and exit data
   const bobUtxos = await childChain.getUtxos(bobAddress)
-  const bobUtxoToExit = bobUtxos.find(i => i.currency.toLowerCase() === config.erc20_contract.toLowerCase())
+  const bobUtxoToExit = bobUtxos.find(i => i.currency.toLowerCase() === config.erc20_contract_address.toLowerCase())
   if (!bobUtxoToExit) {
     console.log('Bob doesnt have any ERC20 UTXOs to exit')
     return
@@ -70,11 +70,11 @@ async function childchainExitErc20 () {
   console.log(`Bob's wants to exit ${bobUtxoToExit.amount} ERC20 with this UTXO:\n${JSON.stringify(bobUtxoToExit, undefined, 2)}`)
 
   // check if queue exists for this token
-  const hasToken = await rootChain.hasToken(config.erc20_contract)
+  const hasToken = await rootChain.hasToken(config.erc20_contract_address)
   if (!hasToken) {
-    console.log(`Adding a ${config.erc20_contract} exit queue`)
+    console.log(`Adding a ${config.erc20_contract_address} exit queue`)
     await rootChain.addToken({
-      token: config.erc20_contract,
+      token: config.erc20_contract_address,
       txOptions: { from: bobAddress, privateKey: bobPrivateKey }
     })
   }
@@ -107,7 +107,7 @@ async function childchainExitErc20 () {
 
   await wait.wait(msUntilFinalization)
   const processExitReceipt = await rootChain.processExits({
-    token: config.erc20_contract,
+    token: config.erc20_contract_address,
     exitId,
     maxExitsToProcess: 20,
     txOptions: {

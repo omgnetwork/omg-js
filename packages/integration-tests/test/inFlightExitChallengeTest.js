@@ -29,8 +29,8 @@ const path = require('path')
 const scriptName = path.basename(__filename)
 
 describe('inFlightExitChallengeTest.js', function () {
-  const web3 = new Web3(new Web3.providers.HttpProvider(config.geth_url))
-  const rootChain = new RootChain({ web3, plasmaContractAddress: config.rootchainContract })
+  const web3 = new Web3(new Web3.providers.HttpProvider(config.eth_node))
+  const rootChain = new RootChain({ web3, plasmaContractAddress: config.plasmaframework_contract_address })
   const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url })
 
   before(async function () {
