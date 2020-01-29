@@ -140,7 +140,7 @@ async function childchainInflightExitEth () {
   // call processExits() after challenge period is over
   const processExitsPostChallengeReceipt = await rootChain.processExits({
     token: transaction.ETH_CURRENCY,
-    exitId,
+    exitId: 0,
     maxExitsToProcess: 20,
     txOptions: { privateKey: bobPrivateKey, from: bobAddress }
   })
