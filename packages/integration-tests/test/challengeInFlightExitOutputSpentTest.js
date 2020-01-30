@@ -16,7 +16,7 @@ limitations under the License. */
 const config = require('../test-config')
 const rcHelper = require('../helpers/rootChainHelper')
 const ccHelper = require('../helpers/childChainHelper')
-const faucet = require('../helpers/testFaucet')
+const faucet = require('../helpers/faucet')
 const Web3 = require('web3')
 const ChildChain = require('@omisego/omg-js-childchain')
 const RootChain = require('@omisego/omg-js-rootchain')
@@ -25,42 +25,33 @@ const numberToBN = require('number-to-bn')
 const chai = require('chai')
 const assert = chai.assert
 
+const path = require('path')
+const faucetName = path.basename(__filename)
+
 describe('challengeInFlightExitOutputSpentTest.js', function () {
   const web3 = new Web3(new Web3.providers.HttpProvider(config.eth_node))
-  let rootChain
-  const childChain = new ChildChain({
-    watcherUrl: config.watcher_url,
-    watcherProxyUrl: config.watcher_proxy_url
-  })
+  const rootChain = new RootChain({ web3, plasmaContractAddress: config.plasmaframework_contract_address })
+  const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url })
 
   before(async function () {
-    const plasmaContract = await rcHelper.getPlasmaContractAddress(config)
-    rootChain = new RootChain({ web3, plasmaContractAddress: plasmaContract.contract_addr })
-    await faucet.init(rootChain, childChain, web3, config)
+    await faucet.init({ rootChain, childChain, web3, config, faucetName })
   })
 
   describe('in-flight transaction challenge with a invalid output piggybacking', function () {
-    let INTIIAL_ALICE_AMOUNT
-    let INTIIAL_BOB_RC_AMOUNT
-    let INTIIAL_CAROL_RC_AMOUNT
-    let TRANSFER_AMOUNT
+    const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.1', 'ether')
+    const INTIIAL_BOB_RC_AMOUNT = web3.utils.toWei('.5', 'ether')
+    const INTIIAL_CAROL_RC_AMOUNT = web3.utils.toWei('.5', 'ether')
+    const TRANSFER_AMOUNT = web3.utils.toWei('0.0002', 'ether')
+
     let aliceAccount
     let bobAccount
     let carolAccount
     let fundAliceTx
 
     beforeEach(async function () {
-      INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.1', 'ether')
-      INTIIAL_BOB_RC_AMOUNT = web3.utils.toWei('1', 'ether')
-      INTIIAL_CAROL_RC_AMOUNT = web3.utils.toWei('.5', 'ether')
-      TRANSFER_AMOUNT = web3.utils.toWei('0.0002', 'ether')
-      // Create Alice and Bob's accounts
       aliceAccount = rcHelper.createAccount(web3)
-      console.log(`Created Alice account ${JSON.stringify(aliceAccount)}`)
       bobAccount = rcHelper.createAccount(web3)
-      console.log(`Created Bob account ${JSON.stringify(bobAccount)}`)
       carolAccount = rcHelper.createAccount(web3)
-      console.log(`Created Carol account ${JSON.stringify(carolAccount)}`)
 
       await Promise.all([
         // Give some ETH to Alice on the child chain
@@ -70,20 +61,11 @@ describe('challengeInFlightExitOutputSpentTest.js', function () {
           transaction.ETH_CURRENCY
         ),
         // Give some ETH to Bob on the root chain
-        faucet.fundRootchainEth(web3, bobAccount.address, INTIIAL_BOB_RC_AMOUNT)
+        faucet.fundRootchainEth(bobAccount.address, INTIIAL_BOB_RC_AMOUNT)
       ]).then(([tx]) => (fundAliceTx = tx))
       // Give some ETH to Carol on the root chain
-      await faucet.fundRootchainEth(
-        web3,
-        carolAccount.address,
-        INTIIAL_CAROL_RC_AMOUNT
-      )
-
-      await faucet.fundRootchainEth(
-        web3,
-        aliceAccount.address,
-        INTIIAL_ALICE_AMOUNT
-      )
+      await faucet.fundRootchainEth(carolAccount.address, INTIIAL_CAROL_RC_AMOUNT)
+      await faucet.fundRootchainEth(aliceAccount.address, INTIIAL_ALICE_AMOUNT)
 
       // Wait for finality
       await Promise.all([
@@ -112,10 +94,9 @@ describe('challengeInFlightExitOutputSpentTest.js', function () {
 
     afterEach(async function () {
       try {
-        // Send any leftover funds back to the faucet
-        await faucet.returnFunds(web3, aliceAccount)
-        await faucet.returnFunds(web3, bobAccount)
-        await faucet.returnFunds(web3, carolAccount)
+        await faucet.returnFunds(aliceAccount)
+        await faucet.returnFunds(bobAccount)
+        await faucet.returnFunds(carolAccount)
       } catch (err) {
         console.warn(`Error trying to return funds to the faucet: ${err}`)
       }
@@ -216,9 +197,11 @@ describe('challengeInFlightExitOutputSpentTest.js', function () {
           from: bobAccount.address
         }
       })
-      await rcHelper.awaitTx(web3, processReceipt.transactionHash)
-      console.log('Bob processes the exits: ', processReceipt.transactionHash)
-      bobSpentOnGas.iadd(await rcHelper.spentOnGas(web3, processReceipt))
+      if (processReceipt) {
+        console.log(`Bob called RootChain.processExits() after challenge period: txhash = ${processReceipt.transactionHash}`)
+        bobSpentOnGas.iadd(await rcHelper.spentOnGas(web3, processReceipt))
+        await rcHelper.awaitTx(web3, processReceipt.transactionHash)
+      }
 
       const { bonds } = await rootChain.getPaymentExitGame()
       // Bob's piggyback was challenged, so he shouldnt have gotten his output out

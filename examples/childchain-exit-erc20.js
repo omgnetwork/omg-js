@@ -108,7 +108,7 @@ async function childchainExitErc20 () {
   await wait.wait(msUntilFinalization)
   const processExitReceipt = await rootChain.processExits({
     token: config.erc20_contract_address,
-    exitId,
+    exitId: 0,
     maxExitsToProcess: 20,
     txOptions: {
       privateKey: bobPrivateKey,

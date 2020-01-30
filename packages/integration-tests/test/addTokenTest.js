@@ -16,36 +16,37 @@ const RootChain = require('@omisego/omg-js-rootchain')
 const ChildChain = require('@omisego/omg-js-childchain')
 const Web3 = require('web3')
 
-const faucet = require('../helpers/testFaucet')
+const faucet = require('../helpers/faucet')
 const config = require('../test-config')
 const rcHelper = require('../helpers/rootChainHelper')
 
 should()
 use(chaiAsPromised)
 
+const path = require('path')
+const faucetName = path.basename(__filename)
+
 describe('addTokenTest.js (ci-enabled)', function () {
   const web3 = new Web3(new Web3.providers.HttpProvider(config.eth_node))
-  let rootChain
-  let childChain
+  const rootChain = new RootChain({ web3, plasmaContractAddress: config.plasmaframework_contract_address })
+  const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url })
+
+  const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('0.1', 'ether')
   let aliceAccount
-  const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('0.5', 'ether')
+
+  before(async function () {
+    await faucet.init({ rootChain, childChain, web3, config, faucetName })
+  })
 
   beforeEach(async function () {
     aliceAccount = rcHelper.createAccount(web3)
-    console.log(`Created new account ${JSON.stringify(aliceAccount)}`)
-    const plasmaContract = await rcHelper.getPlasmaContractAddress(config)
-    rootChain = new RootChain({ web3, plasmaContractAddress: plasmaContract.contract_addr })
-    childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url })
-
-    await faucet.init(rootChain, childChain, web3, config)
-    await faucet.fundRootchainEth(web3, aliceAccount.address, INTIIAL_ALICE_AMOUNT)
+    await faucet.fundRootchainEth(aliceAccount.address, INTIIAL_ALICE_AMOUNT)
     await rcHelper.waitForEthBalanceEq(web3, aliceAccount.address, INTIIAL_ALICE_AMOUNT)
   })
 
   afterEach(async function () {
     try {
-      // Send any leftover funds back to the faucet
-      await faucet.returnFunds(web3, aliceAccount)
+      await faucet.returnFunds(aliceAccount)
     } catch (err) {
       console.warn(`Error trying to return funds to the faucet: ${err}`)
     }

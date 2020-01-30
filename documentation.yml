@@ -41,6 +41,7 @@ toc:
       - respondToNonCanonicalChallenge
       - challengeInFlightExitInputSpent
       - challengeInFlightExitOutputSpent
+      - deleteNonPiggybackedInFlightExit
 
   - name: OMG Util
     children:

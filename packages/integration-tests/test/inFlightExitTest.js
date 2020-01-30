@@ -16,7 +16,7 @@ limitations under the License. */
 const config = require('../test-config')
 const rcHelper = require('../helpers/rootChainHelper')
 const ccHelper = require('../helpers/childChainHelper')
-const faucet = require('../helpers/testFaucet')
+const faucet = require('../helpers/faucet')
 const Web3 = require('web3')
 const ChildChain = require('@omisego/omg-js-childchain')
 const RootChain = require('@omisego/omg-js-rootchain')
@@ -25,36 +25,29 @@ const numberToBN = require('number-to-bn')
 const chai = require('chai')
 const assert = chai.assert
 
+const path = require('path')
+const faucetName = path.basename(__filename)
+
 describe('inFlightExitTest.js', function () {
   const web3 = new Web3(new Web3.providers.HttpProvider(config.eth_node))
-  const childChain = new ChildChain({
-    watcherUrl: config.watcher_url,
-    watcherProxyUrl: config.watcher_proxy_url
-  })
-  let rootChain
+  const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url })
+  const rootChain = new RootChain({ web3, plasmaContractAddress: config.plasmaframework_contract_address })
 
   before(async function () {
-    const plasmaContract = await rcHelper.getPlasmaContractAddress(config)
-    rootChain = new RootChain({ web3, plasmaContractAddress: plasmaContract.contract_addr })
-    await faucet.init(rootChain, childChain, web3, config)
+    await faucet.init({ rootChain, childChain, web3, config, faucetName })
   })
 
   describe('in-flight transaction exit', function () {
-    let INTIIAL_ALICE_AMOUNT
-    let INTIIAL_BOB_RC_AMOUNT
-    let TRANSFER_AMOUNT
+    const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.5', 'ether')
+    const INTIIAL_BOB_RC_AMOUNT = web3.utils.toWei('.5', 'ether')
+    const TRANSFER_AMOUNT = web3.utils.toWei('0.0002', 'ether')
+
     let aliceAccount
     let bobAccount
 
     beforeEach(async function () {
-      INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.5', 'ether')
-      INTIIAL_BOB_RC_AMOUNT = web3.utils.toWei('.5', 'ether')
-      TRANSFER_AMOUNT = web3.utils.toWei('0.0002', 'ether')
-      // Create Alice and Bob's accounts
       aliceAccount = rcHelper.createAccount(web3)
-      console.log(`Created Alice account ${JSON.stringify(aliceAccount)}`)
       bobAccount = rcHelper.createAccount(web3)
-      console.log(`Created Bob account ${JSON.stringify(bobAccount)}`)
 
       await Promise.all([
         // Give some ETH to Alice on the child chain
@@ -64,7 +57,7 @@ describe('inFlightExitTest.js', function () {
           transaction.ETH_CURRENCY
         ),
         // Give some ETH to Bob on the root chain
-        faucet.fundRootchainEth(web3, bobAccount.address, INTIIAL_BOB_RC_AMOUNT)
+        faucet.fundRootchainEth(bobAccount.address, INTIIAL_BOB_RC_AMOUNT)
       ])
       // Wait for finality
       await Promise.all([
@@ -83,9 +76,8 @@ describe('inFlightExitTest.js', function () {
 
     afterEach(async function () {
       try {
-        // Send any leftover funds back to the faucet
-        await faucet.returnFunds(web3, aliceAccount)
-        await faucet.returnFunds(web3, bobAccount)
+        await faucet.returnFunds(aliceAccount)
+        await faucet.returnFunds(bobAccount)
       } catch (err) {
         console.warn(`Error trying to return funds to the faucet: ${err}`)
       }
@@ -169,10 +161,11 @@ describe('inFlightExitTest.js', function () {
           from: bobAccount.address
         }
       })
-      console.log(
-        `Bob called RootChain.processExits() before challenge period: txhash = ${receipt.transactionHash}`
-      )
-      bobSpentOnGas.iadd(await rcHelper.spentOnGas(web3, receipt))
+      if (receipt) {
+        console.log(`Bob called RootChain.processExits() before challenge period: txhash = ${receipt.transactionHash}`)
+        bobSpentOnGas.iadd(await rcHelper.spentOnGas(web3, receipt))
+        await rcHelper.awaitTx(web3, receipt.transactionHash)
+      }
 
       // Get Bob's ETH balance
       let bobEthBalance = await web3.eth.getBalance(bobAccount.address)
@@ -197,12 +190,11 @@ describe('inFlightExitTest.js', function () {
           from: bobAccount.address
         }
       })
-      console.log(
-        `Bob called RootChain.processExits() after challenge period: txhash = ${receipt.transactionHash}`
-      )
-      bobSpentOnGas.iadd(await rcHelper.spentOnGas(web3, receipt))
-
-      await rcHelper.awaitTx(web3, receipt.transactionHash)
+      if (receipt) {
+        console.log(`Bob called RootChain.processExits() after challenge period: txhash = ${receipt.transactionHash}`)
+        bobSpentOnGas.iadd(await rcHelper.spentOnGas(web3, receipt))
+        await rcHelper.awaitTx(web3, receipt.transactionHash)
+      }
 
       // Get Bob's ETH balance
       bobEthBalance = await web3.eth.getBalance(bobAccount.address)
@@ -291,10 +283,11 @@ describe('inFlightExitTest.js', function () {
           from: bobAccount.address
         }
       })
-      console.log(
-        `Bob called RootChain.processExits() before challenge period: txhash = ${receipt.transactionHash}`
-      )
-      bobSpentOnGas.iadd(await rcHelper.spentOnGas(web3, receipt))
+      if (receipt) {
+        console.log(`Bob called RootChain.processExits() before challenge period: txhash = ${receipt.transactionHash}`)
+        bobSpentOnGas.iadd(await rcHelper.spentOnGas(web3, receipt))
+        await rcHelper.awaitTx(web3, receipt.transactionHash)
+      }
 
       // Get Bob's ETH balance
       let bobEthBalance = await web3.eth.getBalance(bobAccount.address)
@@ -320,12 +313,11 @@ describe('inFlightExitTest.js', function () {
           from: bobAccount.address
         }
       })
-      console.log(
-        `Bob called RootChain.processExits() after challenge period: txhash = ${receipt.transactionHash}`
-      )
-      bobSpentOnGas.iadd(await rcHelper.spentOnGas(web3, receipt))
-
-      await rcHelper.awaitTx(web3, receipt.transactionHash)
+      if (receipt) {
+        console.log(`Bob called RootChain.processExits() after challenge period: txhash = ${receipt.transactionHash}`)
+        bobSpentOnGas.iadd(await rcHelper.spentOnGas(web3, receipt))
+        await rcHelper.awaitTx(web3, receipt.transactionHash)
+      }
 
       // Get Bob's ETH balance
       bobEthBalance = await web3.eth.getBalance(bobAccount.address)
@@ -341,7 +333,7 @@ describe('inFlightExitTest.js', function () {
       const aliceSpentOnGas = numberToBN(0)
       const kelvinSpentOnGas = numberToBN(0)
       // fund some ETH for alice on rootchain so she can piggyback / challenge
-      await faucet.fundRootchainEth(web3, aliceAccount.address, INTIIAL_ALICE_AMOUNT)
+      await faucet.fundRootchainEth(aliceAccount.address, INTIIAL_ALICE_AMOUNT)
       await rcHelper.waitForEthBalanceEq(web3, aliceAccount.address, INTIIAL_ALICE_AMOUNT)
 
       // we need the 3rd guy here, introducing kelvin which he will do a double spend
@@ -349,7 +341,7 @@ describe('inFlightExitTest.js', function () {
       const kelvinAccount = rcHelper.createAccount(web3)
       console.log(`Created Kelvin account ${JSON.stringify(bobAccount)}`)
 
-      await faucet.fundRootchainEth(web3, kelvinAccount.address, INTIIAL_KELVIN_AMOUNT)
+      await faucet.fundRootchainEth(kelvinAccount.address, INTIIAL_KELVIN_AMOUNT)
       await rcHelper.waitForEthBalanceEq(web3, kelvinAccount.address, INTIIAL_KELVIN_AMOUNT)
 
       const fundKelvinTx = await faucet.fundChildchain(
@@ -444,7 +436,7 @@ describe('inFlightExitTest.js', function () {
       aliceSpentOnGas.iadd(await rcHelper.spentOnGas(web3, receipt))
 
       console.log(
-              `Alice called RootChain.piggybackInFlightExitOnInput() : txhash = ${receipt.transactionHash}`
+        `Alice called RootChain.piggybackInFlightExitOnInput() : txhash = ${receipt.transactionHash}`
       )
 
       // alice need to prove that the IFE is non-canonical so she the piggyback input works
@@ -492,11 +484,11 @@ describe('inFlightExitTest.js', function () {
           from: bobAccount.address
         }
       })
-      console.log(
-        `Bob called RootChain.processExits() after challenge period: txhash = ${receipt.transactionHash}`
-      )
+      if (receipt) {
+        console.log(`Bob called RootChain.processExits() after challenge period: txhash = ${receipt.transactionHash}`)
+        await rcHelper.awaitTx(web3, receipt.transactionHash)
+      }
 
-      await rcHelper.awaitTx(web3, receipt.transactionHash)
       const { bonds } = await rootChain.getPaymentExitGame()
       // Get Alice's ETH balance
       const aliceEthBalance = await web3.eth.getBalance(aliceAccount.address)
