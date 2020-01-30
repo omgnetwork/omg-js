@@ -5,7 +5,6 @@ const {
   validateFee,
   validateMetadata,
   validateUtxos,
-  validateUtxo,
   validateBn
 } = require('./helpers')
 
@@ -20,7 +19,7 @@ const decodeDepositSchema = Joi.object({
 })
 
 const decodeTxBytesSchema = Joi.object({
-  tx: Joi.string().required()
+  tx: Joi.binary().required()
 })
 
 const createTransactionBodySchema = Joi.object({
@@ -36,7 +35,7 @@ const decodeUtxoPosSchema = Joi.object({
 })
 
 const encodeUtxoPosSchema = Joi.object({
-  utxo: validateUtxo.required()
+  utxo: Joi.object().required()
 })
 
 const decodeMetadataSchema = Joi.object({
@@ -83,7 +82,7 @@ const waitForRootchainTransactionSchema = Joi.object({
 })
 
 const signSchema = Joi.object({
-  tx: Joi.string().required(),
+  tx: Joi.binary().required(),
   privateKeys: Joi.array().items(Joi.string()).required()
 })
 

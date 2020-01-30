@@ -21,7 +21,7 @@ const validateBn = Joi.any().custom((value, helpers) => {
 })
 
 const validatePayment = Joi.object({
-  amount: [Joi.number().integer().required(), Joi.string().required(), validateBn.required()],
+  amount: [Joi.number().unsafe().integer().required(), Joi.string().required(), validateBn.required()],
   currency: validateAddress.required(),
   owner: validateAddress.required()
 })
@@ -49,15 +49,7 @@ const validateFee = Joi.object({
   currency: validateAddress.required()
 })
 
-const validateUtxo = Joi.object({
-  txindex: Joi.number().integer().required(),
-  oindex: Joi.number().integer().required(),
-  currency: validateAddress.required(),
-  blknum: Joi.number().integer().required(),
-  amount: Joi.number().integer().required()
-})
-
-const validateUtxos = Joi.array().items(validateUtxo)
+const validateUtxos = Joi.array().items(Joi.object())
 
 module.exports = {
   validateAddress,
@@ -67,6 +59,5 @@ module.exports = {
   validatePayments,
   validateMetadata,
   validateFee,
-  validateUtxo,
   validateUtxos
 }
