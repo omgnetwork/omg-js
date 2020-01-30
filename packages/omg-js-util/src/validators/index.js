@@ -56,6 +56,17 @@ const getToSignHashSchema = Joi.object({
   typedData: Joi.object().required()
 })
 
+const getErc20BalanceSchema = Joi.object({
+  web3: Joi.any().required(),
+  address: validateAddress.required(),
+  erc20Address: validateAddress.required()
+})
+
+const ethErrorReasonSchema = Joi.object({
+  web3: Joi.any().required(),
+  hash: Joi.string().required()
+})
+
 module.exports = {
   encodeDepositSchema,
   decodeDepositSchema,
@@ -66,5 +77,7 @@ module.exports = {
   decodeMetadataSchema,
   encodeMetadataSchema,
   getTypedDataSchema,
-  getToSignHashSchema
+  getToSignHashSchema,
+  getErc20BalanceSchema,
+  ethErrorReasonSchema
 }
