@@ -26,7 +26,8 @@ const config = {
   fund_account_private_key: process.env.FUND_ACCOUNT_PRIVATEKEY,
   min_amount_eth_per_test: process.env.MIN_AMOUNT_ETH_PER_TEST,
   min_amount_erc20_per_test: process.env.MIN_AMOUNT_ERC20_PER_TEST,
-  topup_multipler: process.env.TOPUP_MULTIPLIER
+  topup_multipler: process.env.TOPUP_MULTIPLIER,
+  faucet_salt: process.env.FAUCET_SALT
 }
 
 module.exports = config

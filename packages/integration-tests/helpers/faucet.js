@@ -32,7 +32,7 @@ const faucet = {
 
     this.erc20ContractAddress = config.erc20_contract_address
     this.erc20Contract = new web3.eth.Contract(erc20abi, this.erc20ContractAddress)
-    this.faucetAccount = this.filenameToAccount(faucet)
+    this.faucetAccount = this.createAccountFromString(faucet, config.faucet_salt)
 
     await this.initEthBalance(this.web3.utils.toWei(config.min_amount_eth_per_test, 'ether'), config.topup_multipler)
     await this.initERC20Balance(config.min_amount_erc20_per_test, config.topup_multipler)
@@ -41,8 +41,8 @@ const faucet = {
     await this.showInfo()
   },
 
-  filenameToAccount: function (filename) {
-    const privateKey = this.web3.utils.sha3(filename)
+  createAccountFromString: function (string, salt = '') {
+    const privateKey = this.web3.utils.sha3(`${string}${salt}`)
     const account = this.web3.eth.accounts.privateKeyToAccount(privateKey)
     return { address: account.address, privateKey: account.privateKey }
   },
