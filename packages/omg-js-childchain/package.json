@@ -1,6 +1,6 @@
 {
   "name": "@omisego/omg-js-childchain",
-  "version": "3.0.0-alpha.13",
+  "version": "3.0.0-alpha.15",
   "description": "Module to interact with OMG ChildChain",
   "keywords": [
     "OMG",
@@ -25,13 +25,14 @@
   },
   "dependencies": {
     "@hapi/joi": "^16.1.8",
-    "@omisego/omg-js-util": "^3.0.0-alpha.13",
+    "@omisego/omg-js-util": "^3.0.0-alpha.15",
     "bn.js": "^5.0.0",
     "debug": "^4.0.1",
     "json-bigint": "git+https://git@github.com/omisego/json-bigint.git",
     "request": "^2.88.0",
     "request-promise-native": "^1.0.7",
-    "rlp": "^2.1.0"
+    "rlp": "^2.1.0",
+    "web3-utils": "^1.2.5"
   },
   "publishConfig": {
     "access": "public"

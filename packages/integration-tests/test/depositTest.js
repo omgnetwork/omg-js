@@ -16,45 +16,41 @@ limitations under the License. */
 const config = require('../test-config')
 const rcHelper = require('../helpers/rootChainHelper')
 const ccHelper = require('../helpers/childChainHelper')
-const faucet = require('../helpers/testFaucet')
+const faucet = require('../helpers/faucet')
 const Web3 = require('web3')
-const erc20abi = require('human-standard-token-abi')
 const ChildChain = require('@omisego/omg-js-childchain')
 const RootChain = require('@omisego/omg-js-rootchain')
 const { transaction } = require('@omisego/omg-js-util')
 const chai = require('chai')
 const assert = chai.assert
 
+const path = require('path')
+const faucetName = path.basename(__filename)
+
 describe('depositTest.js (ci-enabled)', function () {
-  const web3 = new Web3(new Web3.providers.HttpProvider(config.geth_url))
+  const web3 = new Web3(new Web3.providers.HttpProvider(config.eth_node))
   const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url })
-  let rootChain
+  const rootChain = new RootChain({ web3, plasmaContractAddress: config.plasmaframework_contract_address })
 
   before(async function () {
-    const plasmaContract = await rcHelper.getPlasmaContractAddress(config)
-    rootChain = new RootChain({ web3, plasmaContractAddress: plasmaContract.contract_addr })
-    await faucet.init(rootChain, childChain, web3, config)
+    await faucet.init({ rootChain, childChain, web3, config, faucetName })
   })
 
   describe('deposit ETH', function () {
-    let INTIIAL_ALICE_AMOUNT
-    let TEST_AMOUNT
+    const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.1', 'ether')
+    const TEST_AMOUNT = web3.utils.toWei('.0001', 'ether')
+
     let aliceAccount
 
     beforeEach(async function () {
-      INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.1', 'ether')
-      TEST_AMOUNT = web3.utils.toWei('.0001', 'ether')
-      // Create and fund a new account
       aliceAccount = rcHelper.createAccount(web3)
-      console.log(`Created new account ${JSON.stringify(aliceAccount)}`)
-      await faucet.fundRootchainEth(web3, aliceAccount.address, INTIIAL_ALICE_AMOUNT)
+      await faucet.fundRootchainEth(aliceAccount.address, INTIIAL_ALICE_AMOUNT)
       await rcHelper.waitForEthBalanceEq(web3, aliceAccount.address, INTIIAL_ALICE_AMOUNT)
     })
 
     afterEach(async function () {
       try {
-        // Send any leftover funds back to the faucet
-        await faucet.returnFunds(web3, aliceAccount)
+        await faucet.returnFunds(aliceAccount)
       } catch (err) {
         console.warn(`Error trying to return funds to the faucet: ${err}`)
       }
@@ -128,29 +124,26 @@ describe('depositTest.js (ci-enabled)', function () {
   })
 
   describe('deposit ERC20', function () {
-    let aliceAccount
-    const testErc20Contract = new web3.eth.Contract(erc20abi, config.testErc20Contract)
     const INTIIAL_AMOUNT_ETH = web3.utils.toWei('.1', 'ether')
     const INITIAL_AMOUNT_ERC20 = 3
     const TEST_AMOUNT = 2
 
+    let aliceAccount
+
     beforeEach(async function () {
-      // Create and fund Alice's account
       aliceAccount = rcHelper.createAccount(web3)
-      console.log(`Created Alice account ${JSON.stringify(aliceAccount)}`)
-      await faucet.fundRootchainEth(web3, aliceAccount.address, INTIIAL_AMOUNT_ETH)
-      await faucet.fundRootchainERC20(web3, aliceAccount.address, INITIAL_AMOUNT_ERC20, testErc20Contract)
+      await faucet.fundRootchainEth(aliceAccount.address, INTIIAL_AMOUNT_ETH)
+      await faucet.fundRootchainERC20(aliceAccount.address, INITIAL_AMOUNT_ERC20)
 
       await Promise.all([
         rcHelper.waitForEthBalanceEq(web3, aliceAccount.address, INTIIAL_AMOUNT_ETH),
-        rcHelper.waitForERC20BalanceEq(web3, aliceAccount.address, config.testErc20Contract, INITIAL_AMOUNT_ERC20)
+        rcHelper.waitForERC20BalanceEq(web3, aliceAccount.address, config.erc20_contract_address, INITIAL_AMOUNT_ERC20)
       ])
     })
 
     afterEach(async function () {
       try {
-        // Send any leftover funds back to the faucet
-        await faucet.returnFunds(web3, aliceAccount)
+        await faucet.returnFunds(aliceAccount)
       } catch (err) {
         console.warn(`Error trying to return funds to the faucet: ${err}`)
       }
@@ -163,7 +156,7 @@ describe('depositTest.js (ci-enabled)', function () {
 
       // Account must approve the Plasma contract
       await rootChain.approveToken({
-        erc20Address: config.testErc20Contract,
+        erc20Address: config.erc20_contract_address,
         amount: TEST_AMOUNT,
         txOptions: {
           from: aliceAccount.address,
@@ -174,12 +167,12 @@ describe('depositTest.js (ci-enabled)', function () {
       // Deposit ERC20 tokens into the Plasma contract
       await rootChain.deposit({
         amount: TEST_AMOUNT,
-        currency: config.testErc20Contract,
+        currency: config.erc20_contract_address,
         txOptions: { from: aliceAccount.address, privateKey: aliceAccount.privateKey }
       })
 
       // Wait for transaction to be mined and reflected in the account's balance
-      const balance = await ccHelper.waitForBalanceEq(childChain, aliceAccount.address, TEST_AMOUNT, config.testErc20Contract)
+      const balance = await ccHelper.waitForBalanceEq(childChain, aliceAccount.address, TEST_AMOUNT, config.erc20_contract_address)
 
       // Check balance is correct
       assert.equal(balance[0].amount.toString(), TEST_AMOUNT)
@@ -190,7 +183,7 @@ describe('depositTest.js (ci-enabled)', function () {
       assert.equal(utxos.length, 1)
       assert.hasAllKeys(utxos[0], ['utxo_pos', 'txindex', 'owner', 'oindex', 'currency', 'blknum', 'amount', 'creating_txhash', 'spending_txhash'])
       assert.equal(utxos[0].amount.toString(), TEST_AMOUNT)
-      assert.equal(utxos[0].currency.toLowerCase(), config.testErc20Contract.toLowerCase())
+      assert.equal(utxos[0].currency.toLowerCase(), config.erc20_contract_address.toLowerCase())
     })
   })
 })

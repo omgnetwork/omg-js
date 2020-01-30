@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset='utf-8'>
-  <title>omg-js 3.0.0-alpha.13 | Documentation</title>
+  <title>omg-js 3.0.0-alpha.15 | Documentation</title>
   <meta name='description' content='JavaScript Library to interact with OMG Network'>
   <meta name='viewport' content='width=device-width,initial-scale=1'>
   <link href='assets/bass.css' rel='stylesheet'>
@@ -15,7 +15,7 @@
       <div id='split-left' class='overflow-auto fs0 height-viewport-100'>
         <div class='py1 px2'>
           <h3 class='mb0 no-anchor'>omg-js</h3>
-          <div class='mb1'><code>3.0.0-alpha.13</code></div>
+          <div class='mb1'><code>3.0.0-alpha.15</code></div>
           <input
             placeholder='Filter'
             id='filter-input'
@@ -290,6 +290,12 @@
                         href='#challengeinflightexitoutputspent'
                         class='regular pre-open'>
                         .challengeInFlightExitOutputSpent
+                      </a></li>
+                    
+                      <li><a
+                        href='#deletenonpiggybackedinflightexit'
+                        class='regular pre-open'>
+                        .deleteNonPiggybackedInFlightExit
                       </a></li>
                     
                     </ul>
@@ -4332,6 +4338,109 @@ Should be called periodically to see if there are any byzantine_events to be act
   <td class='break-word'><span class='code bold'>args.challengingTxWitness</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
   </td>
   <td class='break-word'><span>witness of challenging transaction
+</span></td>
+</tr>
+
+
+              
+                <tr>
+  <td class='break-word'><span class='code bold'>args.txOptions</span> <code class='quiet'><a href="#transactionoptions">TransactionOptions</a></code>
+  </td>
+  <td class='break-word'><span>transaction options
+</span></td>
+</tr>
+
+
+              
+            </tbody>
+          </table>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="#transactionreceipt">TransactionReceipt</a>></code>:
+        promise that resolves with a transaction receipt
+
+      
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='deletenonpiggybackedinflightexit'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>deleteNonPiggybackedInFlightExit(args)</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>Deletes an in-flight exit if the first phase has passed and nobody has piggybacked the exit</p>
+
+    <div class='pre p1 fill-light mt0'>deleteNonPiggybackedInFlightExit(args: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="#transactionreceipt">TransactionReceipt</a>></div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>args</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>)</code>
+	    an arguments object
+
+          </div>
+          
+          <table class='mt1 mb2 fixed-table h5 col-12'>
+            <colgroup>
+              <col width='30%' />
+              <col width='70%' />
+            </colgroup>
+            <thead>
+              <tr class='bold fill-light'>
+                <th>Name</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody class='mt1'>
+              
+                <tr>
+  <td class='break-word'><span class='code bold'>args.exitId</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
+  </td>
+  <td class='break-word'><span>the exit id
 </span></td>
 </tr>
 

@@ -16,7 +16,7 @@ limitations under the License. */
 const config = require('../test-config')
 const rcHelper = require('../helpers/rootChainHelper')
 const ccHelper = require('../helpers/childChainHelper')
-const faucet = require('../helpers/testFaucet')
+const faucet = require('../helpers/faucet')
 const Web3 = require('web3')
 const ChildChain = require('@omisego/omg-js-childchain')
 const RootChain = require('@omisego/omg-js-rootchain')
@@ -25,41 +25,36 @@ const chai = require('chai')
 const assert = chai.assert
 const ethUtil = require('ethereumjs-util')
 
+const path = require('path')
+const faucetName = path.basename(__filename)
+
 describe('metadataTest.js (ci-enabled)', function () {
-  const web3 = new Web3(config.geth_url)
+  const web3 = new Web3(config.eth_node)
   const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url })
-  let rootChain
+  const rootChain = new RootChain({ web3, plasmaContractAddress: config.plasmaframework_contract_address })
 
   before(async function () {
-    const plasmaContract = await rcHelper.getPlasmaContractAddress(config)
-    rootChain = new RootChain({ web3, plasmaContractAddress: plasmaContract.contract_addr })
-    await faucet.init(rootChain, childChain, web3, config)
+    await faucet.init({ rootChain, childChain, web3, config, faucetName })
   })
 
   describe('String as metadata', function () {
-    let INTIIAL_ALICE_AMOUNT
-    let TRANSFER_AMOUNT
+    const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.000001', 'ether')
+    const TRANSFER_AMOUNT = web3.utils.toWei('.0000001', 'ether')
+
     let aliceAccount
     let bobAccount
 
     beforeEach(async function () {
-      INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.000001', 'ether')
-      TRANSFER_AMOUNT = web3.utils.toWei('.0000001', 'ether')
-      // Create Alice and Bob's accounts
       aliceAccount = rcHelper.createAccount(web3)
-      console.log(`Created Alice account ${JSON.stringify(aliceAccount)}`)
       bobAccount = rcHelper.createAccount(web3)
-      console.log(`Created Bob account ${JSON.stringify(bobAccount)}`)
-      // Give some ETH to Alice on the child chain
       await faucet.fundChildchain(aliceAccount.address, INTIIAL_ALICE_AMOUNT, transaction.ETH_CURRENCY)
       await ccHelper.waitForBalanceEq(childChain, aliceAccount.address, INTIIAL_ALICE_AMOUNT)
     })
 
     afterEach(async function () {
       try {
-        // Send any leftover funds back to the faucet
-        await faucet.returnFunds(web3, aliceAccount)
-        await faucet.returnFunds(web3, bobAccount)
+        await faucet.returnFunds(aliceAccount)
+        await faucet.returnFunds(bobAccount)
       } catch (err) {
         console.warn(`Error trying to return funds to the faucet: ${err}`)
       }
@@ -99,29 +94,22 @@ describe('metadataTest.js (ci-enabled)', function () {
   })
 
   describe('sha256 as metadata', function () {
-    let INTIIAL_ALICE_AMOUNT
-    let TRANSFER_AMOUNT
+    const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.000001', 'ether')
+    const TRANSFER_AMOUNT = web3.utils.toWei('.0000001', 'ether')
     let aliceAccount
     let bobAccount
 
     beforeEach(async function () {
-      INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.000001', 'ether')
-      TRANSFER_AMOUNT = web3.utils.toWei('.0000001', 'ether')
-      // Create Alice and Bob's accounts
       aliceAccount = rcHelper.createAccount(web3)
-      console.log(`Created Alice account ${JSON.stringify(aliceAccount)}`)
       bobAccount = rcHelper.createAccount(web3)
-      console.log(`Created Bob account ${JSON.stringify(bobAccount)}`)
-      // Give some ETH to Alice on the child chain
       await faucet.fundChildchain(aliceAccount.address, INTIIAL_ALICE_AMOUNT, transaction.ETH_CURRENCY)
       await ccHelper.waitForBalanceEq(childChain, aliceAccount.address, INTIIAL_ALICE_AMOUNT)
     })
 
     afterEach(async function () {
       try {
-        // Send any leftover funds back to the faucet
-        await faucet.returnFunds(web3, aliceAccount)
-        await faucet.returnFunds(web3, bobAccount)
+        await faucet.returnFunds(aliceAccount)
+        await faucet.returnFunds(bobAccount)
       } catch (err) {
         console.warn(`Error trying to return funds to the faucet: ${err}`)
       }
@@ -162,29 +150,22 @@ describe('metadataTest.js (ci-enabled)', function () {
   })
 
   describe('No metadata', function () {
-    let INTIIAL_ALICE_AMOUNT
-    let TRANSFER_AMOUNT
+    const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.000001', 'ether')
+    const TRANSFER_AMOUNT = web3.utils.toWei('.0000001', 'ether')
     let aliceAccount
     let bobAccount
 
     beforeEach(async function () {
-      INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.000001', 'ether')
-      TRANSFER_AMOUNT = web3.utils.toWei('.0000001', 'ether')
-      // Create Alice and Bob's accounts
       aliceAccount = rcHelper.createAccount(web3)
-      console.log(`Created Alice account ${JSON.stringify(aliceAccount)}`)
       bobAccount = rcHelper.createAccount(web3)
-      console.log(`Created Bob account ${JSON.stringify(bobAccount)}`)
-      // Give some ETH to Alice on the child chain
       await faucet.fundChildchain(aliceAccount.address, INTIIAL_ALICE_AMOUNT, transaction.ETH_CURRENCY)
       await ccHelper.waitForBalanceEq(childChain, aliceAccount.address, INTIIAL_ALICE_AMOUNT)
     })
 
     afterEach(async function () {
       try {
-        // Send any leftover funds back to the faucet
-        await faucet.returnFunds(web3, aliceAccount)
-        await faucet.returnFunds(web3, bobAccount)
+        await faucet.returnFunds(aliceAccount)
+        await faucet.returnFunds(bobAccount)
       } catch (err) {
         console.warn(`Error trying to return funds to the faucet: ${err}`)
       }

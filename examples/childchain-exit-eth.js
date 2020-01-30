@@ -22,8 +22,8 @@ const { transaction, waitForRootchainTransaction } = require('../packages/omg-js
 const config = require('./config.js')
 const wait = require('./wait.js')
 
-const web3 = new Web3(new Web3.providers.HttpProvider(config.geth_url), null, { transactionConfirmationBlocks: 1 })
-const rootChain = new RootChain({ web3, plasmaContractAddress: config.rootchain_plasma_contract_address })
+const web3 = new Web3(new Web3.providers.HttpProvider(config.eth_node), null, { transactionConfirmationBlocks: 1 })
+const rootChain = new RootChain({ web3, plasmaContractAddress: config.plasmaframework_contract_address })
 const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url })
 
 const bobAddress = config.bob_eth_address
@@ -101,7 +101,7 @@ async function childchainExitEth () {
   await wait.wait(msUntilFinalization)
   const processExitReceipt = await rootChain.processExits({
     token: transaction.ETH_CURRENCY,
-    exitId,
+    exitId: 0,
     maxExitsToProcess: 20,
     txOptions: {
       privateKey: bobPrivateKey,

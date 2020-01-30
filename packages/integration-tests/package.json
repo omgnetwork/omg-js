@@ -1,19 +1,19 @@
 {
   "name": "integration-tests",
   "private": true,
-  "version": "3.0.0-alpha.13",
+  "version": "3.0.0-alpha.15",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "mocha --timeout=0 --bail --slow=0 --check-leaks --color --full-trace ./tests",
+    "mocha": "mocha --timeout=0 --bail --slow=0 --check-leaks --full-trace",
     "deploy-test-erc20": "cd tokens && truffle deploy"
   },
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@omisego/omg-js-childchain": "^3.0.0-alpha.13",
-    "@omisego/omg-js-rootchain": "^3.0.0-alpha.13",
-    "@omisego/omg-js-util": "^3.0.0-alpha.13",
+    "@omisego/omg-js-childchain": "^3.0.0-alpha.15",
+    "@omisego/omg-js-rootchain": "^3.0.0-alpha.15",
+    "@omisego/omg-js-util": "^3.0.0-alpha.15",
     "human-standard-token-abi": "^2.0.0",
     "node-fetch": "^2.6.0",
     "promise-retry": "^1.1.1",
@@ -21,6 +21,7 @@
   },
   "devDependencies": {
     "mocha": "^5.2.0",
+    "mocha-parallel-tests": "^2.2.2",
     "truffle": "^4.1.14"
   }
 }

@@ -35,7 +35,8 @@ const {
   challengeInFlightExitNotCanonicalSchema,
   respondToNonCanonicalChallengeSchema,
   challengeInFlightExitInputSpentSchema,
-  challengeInFlightExitOutputSpentSchema
+  challengeInFlightExitOutputSpentSchema,
+  deleteNonPiggybackedInFlightExitSchema
 } = require('./validators')
 const Joi = require('@hapi/joi')
 
@@ -820,6 +821,37 @@ class RootChain {
           challengingTxInputIndex,
           challengingTxWitness
         ]
+      ),
+      gas: txOptions.gas,
+      gasPrice: txOptions.gasPrice
+    }
+    return txUtils.sendTx({
+      web3: this.web3,
+      txDetails,
+      privateKey: txOptions.privateKey
+    })
+  }
+
+  /**
+   * Deletes an in-flight exit if the first phase has passed and nobody has piggybacked the exit
+   *
+   * @method deleteNonPiggybackedInFlightExit
+   * @param {Object} args an arguments object
+   * @param {string} args.exitId the exit id
+   * @param {TransactionOptions} args.txOptions transaction options
+   * @return {Promise<TransactionReceipt>} promise that resolves with a transaction receipt
+   */
+  async deleteNonPiggybackedInFlightExit ({ exitId, txOptions }) {
+    Joi.assert({ exitId, txOptions }, deleteNonPiggybackedInFlightExitSchema)
+    const { address, contract } = await this.getPaymentExitGame()
+    const txDetails = {
+      from: txOptions.from,
+      to: address,
+      data: txUtils.getTxData(
+        this.web3,
+        contract,
+        'deleteNonPiggybackedInFlightExit',
+        exitId
       ),
       gas: txOptions.gas,
       gasPrice: txOptions.gasPrice
