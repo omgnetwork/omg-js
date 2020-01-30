@@ -101,7 +101,7 @@ async function childchainExitEth () {
   await wait.wait(msUntilFinalization)
   const processExitReceipt = await rootChain.processExits({
     token: transaction.ETH_CURRENCY,
-    exitId,
+    exitId: 0,
     maxExitsToProcess: 20,
     txOptions: {
       privateKey: bobPrivateKey,

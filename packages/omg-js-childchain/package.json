@@ -31,7 +31,8 @@
     "json-bigint": "git+https://git@github.com/omisego/json-bigint.git",
     "request": "^2.88.0",
     "request-promise-native": "^1.0.7",
-    "rlp": "^2.1.0"
+    "rlp": "^2.1.0",
+    "web3-utils": "^1.2.5"
   },
   "publishConfig": {
     "access": "public"

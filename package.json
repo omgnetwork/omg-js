@@ -13,10 +13,12 @@
     "lint-fix": "eslint . --ext .js --fix",
     "build": "browserify browserify.js -o dist/omg.js",
     "build-doc": "documentation build packages/omg-js/src/** packages/omg-js-childchain/src/** packages/omg-js-rootchain/src/** packages/omg-js-util/src/** --config documentation.yml -f html -o docs",
-    "mocha": "mocha --timeout=0 --bail --slow=0 --check-leaks --color --full-trace",
+    "mocha": "mocha --timeout=0 --bail --slow=0 --check-leaks --full-trace",
     "test": "mocha packages/omg-js-childchain/test packages/omg-js-rootchain/test packages/omg-js-util/test",
-    "integration-test": "npm run mocha packages/integration-tests/tests",
-    "ci-integration-test": "npm run mocha --grep ci-enabled packages/integration-tests/tests"
+    "ci-test": "npm run mocha --grep ci-enabled packages/integration-tests/sequence-test",
+    "sequence-test": "npm run mocha packages/integration-tests/sequence-test",
+    "parallel-test": "node packages/integration-tests/parallel-test",
+    "cleanup-faucets": "node packages/integration-tests/cleanup-faucets"
   },
   "author": "OmiseGo",
   "contributors": [
@@ -47,6 +49,7 @@
     "eslint-plugin-standard": "^4.0.1",
     "lerna": "^3.18.4",
     "mocha": "^5.2.0",
+    "mocha-parallel-tests": "^2.2.2",
     "nock": "^9.6.1",
     "request": "^2.88.0",
     "request-promise-native": "^1.0.7",

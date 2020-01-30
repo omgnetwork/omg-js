@@ -44,14 +44,10 @@ async function setGas (eth, txDetails) {
 
 async function sendTransaction (web3, txDetails, privateKey) {
   await setGas(web3.eth, txDetails)
-
   if (!privateKey) {
-    // No privateKey to sign with, assume sending from an unlocked geth account
     return web3.eth.sendTransaction(txDetails)
   } else {
-    // First sign the transaction
     const signedTx = await web3.eth.accounts.signTransaction(txDetails, privateKey)
-    // Then send it
     return web3.eth.sendSignedTransaction(signedTx.rawTransaction)
   }
 }
@@ -107,19 +103,10 @@ function sleep (ms) {
   })
 }
 
-async function getPlasmaContractAddress (config) {
-  if (config.plasmaframework_contract_address && config.plasmaframework_contract_address !== '') {
-    return { contract_addr: config.plasmaframework_contract_address }
-  }
-  throw new Error('No PLASMAFRAMEWORK_CONTRACT_ADDRESS address configured')
-}
-
-const DEFAULT_INTERVAL = 1000
-const DEFAULT_BLOCKS_TO_WAIT = 1
-
 function awaitTx (web3, txnHash, options) {
-  const interval = options && options.interval ? options.interval : DEFAULT_INTERVAL
-  const blocksToWait = options && options.blocksToWait ? options.blocksToWait : DEFAULT_BLOCKS_TO_WAIT
+  const interval = options && options.interval ? options.interval : 1000
+  const blocksToWait = options && options.blocksToWait ? options.blocksToWait : 1
+
   var transactionReceiptAsync = async function (txnHash, resolve, reject) {
     try {
       var receipt = await web3.eth.getTransactionReceipt(txnHash)
@@ -185,7 +172,6 @@ module.exports = {
   sleep,
   sendTransaction,
   spentOnGas,
-  getPlasmaContractAddress,
   setGas,
   awaitTx
 }
