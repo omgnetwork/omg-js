@@ -16,7 +16,6 @@
 
 global.Buffer = global.Buffer || require('buffer').Buffer
 
-const InvalidArgumentError = require('./InvalidArgumentError')
 const numberToBN = require('number-to-bn')
 const { uniq } = require('lodash')
 const rlp = require('rlp')
@@ -406,21 +405,21 @@ const transaction = {
 
 function validateInputs (arg) {
   if (!Array.isArray(arg)) {
-    throw new InvalidArgumentError('Inputs must be an array')
+    throw new Error('Inputs must be an array')
   }
 
   if (arg.length === 0 || arg.length > MAX_INPUTS) {
-    throw new InvalidArgumentError(`Inputs must be an array of size > 0 and < ${MAX_INPUTS}`)
+    throw new Error(`Inputs must be an array of size > 0 and < ${MAX_INPUTS}`)
   }
 }
 
 function validateOutputs (arg) {
   if (!Array.isArray(arg)) {
-    throw new InvalidArgumentError('Outputs must be an array')
+    throw new Error('Outputs must be an array')
   }
 
   if (arg.length > MAX_OUTPUTS) {
-    throw new InvalidArgumentError(`Outputs must be an array of size < ${MAX_OUTPUTS}`)
+    throw new Error(`Outputs must be an array of size < ${MAX_OUTPUTS}`)
   }
 }
 
@@ -434,7 +433,7 @@ function validateMetadata (arg) {
       invalid = true
     }
     if (invalid) {
-      throw new InvalidArgumentError('Metadata must be a 32-byte hex string')
+      throw new Error('Metadata must be a 32-byte hex string')
     }
   }
 }
