@@ -14,6 +14,9 @@
   limitations under the License.
 */
 
+const { waitForRootchainTransactionSchema } = require('./validators')
+const Joi = require('@hapi/joi')
+
 /**
  * Helper that waits for RootChain confirmation of a transaction
  *
@@ -23,7 +26,7 @@
  * @param {string} args.transactionHash hash of the transaction to wait for
  * @param {number} args.checkIntervalMs interval in milliseconds to check the current block number
  * @param {number} args.blocksToWait number of blocks to wait before transaction is confirmed
- * @param {Function} args.onCountdown callback thats passed the remaining number of blocks before confirmation
+ * @param {Function} [args.onCountdown] callback thats passed the remaining number of blocks before confirmation
  * @return {Promise<TransactionReceipt>} promise that resolves with the transaction receipt of the transaction
  */
 async function waitForRootchainTransaction ({
@@ -33,6 +36,7 @@ async function waitForRootchainTransaction ({
   blocksToWait,
   onCountdown
 }) {
+  Joi.assert({ web3, transactionHash, checkIntervalMs, blocksToWait, onCountdown }, waitForRootchainTransactionSchema)
   let remaining
   const transactionReceiptAsync = async (transactionHash, resolve, reject) => {
     try {

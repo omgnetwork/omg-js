@@ -13,6 +13,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License. */
 
+const { signSchema } = require('./validators')
+const Joi = require('@hapi/joi')
 global.Buffer = global.Buffer || require('buffer').Buffer
 
 const ethUtil = require('ethereumjs-util')
@@ -35,6 +37,7 @@ function ecSign (tosign, privateKey) {
  * @return {string[]} array of signatures
  */
 function sign (tx, privateKeys) {
+  Joi.assert({ tx, privateKeys }, signSchema)
   return privateKeys.map(key => ecSign(tx, key))
 }
 

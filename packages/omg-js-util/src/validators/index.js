@@ -67,6 +67,34 @@ const ethErrorReasonSchema = Joi.object({
   hash: Joi.string().required()
 })
 
+const waitForChildchainBalanceSchema = Joi.object({
+  childChain: Joi.object().required(),
+  address: validateAddress.required(),
+  expectedAmount: [Joi.number().integer().required(), Joi.string().required(), validateBn.required()],
+  currency: validateAddress.required()
+})
+
+const waitForRootchainTransactionSchema = Joi.object({
+  web3: Joi.any().required(),
+  transactionHash: Joi.string().required(),
+  checkIntervalMs: Joi.number().integer().required(),
+  blocksToWait: Joi.number().integer().required(),
+  onCountdown: Joi.func()
+})
+
+const signSchema = Joi.object({
+  tx: Joi.string().required(),
+  privateKeys: Joi.array().items(Joi.string()).required()
+})
+
+const hexToBytesSchema = Joi.object({
+  hex: Joi.string().required()
+})
+
+const hexPrefixSchema = Joi.object({
+  data: Joi.string().required()
+})
+
 module.exports = {
   encodeDepositSchema,
   decodeDepositSchema,
@@ -79,5 +107,10 @@ module.exports = {
   getTypedDataSchema,
   getToSignHashSchema,
   getErc20BalanceSchema,
-  ethErrorReasonSchema
+  ethErrorReasonSchema,
+  waitForChildchainBalanceSchema,
+  waitForRootchainTransactionSchema,
+  signSchema,
+  hexToBytesSchema,
+  hexPrefixSchema
 }
