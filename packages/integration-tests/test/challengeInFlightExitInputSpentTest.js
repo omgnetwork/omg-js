@@ -26,7 +26,7 @@ const numberToBN = require('number-to-bn')
 const assert = chai.assert
 
 const path = require('path')
-const scriptName = path.basename(__filename)
+const faucetName = path.basename(__filename)
 
 describe('challengeInFlightExitInputSpentTest.js', function () {
   const web3 = new Web3(new Web3.providers.HttpProvider(config.eth_node))
@@ -34,7 +34,7 @@ describe('challengeInFlightExitInputSpentTest.js', function () {
   const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url })
 
   before(async function () {
-    await faucet.init(rootChain, childChain, web3, config, scriptName)
+    await faucet.init({ rootChain, childChain, web3, config, faucetName })
   })
 
   describe('in-flight transaction challenge with a invalid input piggybacking', function () {

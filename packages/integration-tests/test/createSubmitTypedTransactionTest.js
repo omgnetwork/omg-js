@@ -23,7 +23,7 @@ const chai = require('chai')
 const assert = chai.assert
 
 const path = require('path')
-const scriptName = path.basename(__filename)
+const faucetName = path.basename(__filename)
 
 describe('createSubmitTypedTransactionTest.js (ci-enabled)', function () {
   const web3 = new Web3(config.eth_node)
@@ -31,7 +31,7 @@ describe('createSubmitTypedTransactionTest.js (ci-enabled)', function () {
   const rootChain = new RootChain({ web3, plasmaContractAddress: config.plasmaframework_contract_address })
 
   before(async function () {
-    await faucet.init(rootChain, childChain, web3, config, scriptName)
+    await faucet.init({ rootChain, childChain, web3, config, faucetName })
   })
 
   describe('create a single currency transaction with submitTyped', function () {

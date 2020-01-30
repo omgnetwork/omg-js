@@ -26,7 +26,7 @@ const chai = require('chai')
 const assert = chai.assert
 
 const path = require('path')
-const scriptName = path.basename(__filename)
+const faucetName = path.basename(__filename)
 
 describe('deleteNonPiggybackedInFlightExitTest.js', function () {
   const web3 = new Web3(new Web3.providers.HttpProvider(config.eth_node))
@@ -34,7 +34,7 @@ describe('deleteNonPiggybackedInFlightExitTest.js', function () {
   const rootChain = new RootChain({ web3, plasmaContractAddress: config.plasmaframework_contract_address })
 
   before(async function () {
-    await faucet.init(rootChain, childChain, web3, config, scriptName)
+    await faucet.init({ rootChain, childChain, web3, config, faucetName })
   })
 
   describe('delete ife if not piggybacked', function () {

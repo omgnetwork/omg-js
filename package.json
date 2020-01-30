@@ -17,7 +17,8 @@
     "test": "mocha packages/omg-js-childchain/test packages/omg-js-rootchain/test packages/omg-js-util/test",
     "ci-test": "npm run mocha --grep ci-enabled packages/integration-tests/sequence-test",
     "sequence-test": "npm run mocha packages/integration-tests/sequence-test",
-    "parallel-test": "node packages/integration-tests/parallel-test"
+    "parallel-test": "node packages/integration-tests/parallel-test",
+    "cleanup-faucets": "node packages/integration-tests/cleanup-faucets"
   },
   "author": "OmiseGo",
   "contributors": [

@@ -26,7 +26,7 @@ should()
 use(chaiAsPromised)
 
 const path = require('path')
-const scriptName = path.basename(__filename)
+const faucetName = path.basename(__filename)
 
 describe('getExitQueueTest.js', function () {
   const web3 = new Web3(new Web3.providers.HttpProvider(config.eth_node))
@@ -38,7 +38,7 @@ describe('getExitQueueTest.js', function () {
   let aliceAccount
 
   before(async function () {
-    await faucet.init(rootChain, childChain, web3, config, scriptName)
+    await faucet.init({ rootChain, childChain, web3, config, faucetName })
   })
 
   beforeEach(async function () {

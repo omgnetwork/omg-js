@@ -46,9 +46,9 @@ async function setup () {
   const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url })
 
   const start = new Date()
-  for (const filename of files) {
-    await faucet.init(rootChain, childChain, web3, config, filename)
-    console.log(`💰 Test faucet funded for ${filename}`)
+  for (const faucetName of files) {
+    await faucet.init({ rootChain, childChain, web3, config, faucetName })
+    console.log(`💰 Test faucet funded for ${faucetName}`)
     console.log('\n')
   }
   const end = new Date()
