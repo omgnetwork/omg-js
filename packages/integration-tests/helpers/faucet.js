@@ -316,8 +316,6 @@ const faucet = {
         } else {
           console.log(`${from.address} doesn't have enough balance to cover return gas costs`)
         }
-      } else {
-        console.log(`No rootchain funds to return for ${from.address}`)
       }
     } catch (err) {
       console.log(`Error returning rootchain funds from ${from.address}: ${err.message}`)
