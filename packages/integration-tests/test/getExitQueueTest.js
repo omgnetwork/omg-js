@@ -114,11 +114,25 @@ describe('getExitQueueTest.js', function () {
     queue = await rootChain.getExitQueue()
     assert.lengthOf(queue, 1)
 
-    // Wait for challenge period
-    const { msUntilFinalization } = await rootChain.getExitTime({
+    // Check that Alices exitid does indeed show up in the queue
+    const alicesExitId = await rootChain.getStandardExitId({
+      txBytes: exitData.txbytes,
+      utxoPos: exitData.utxo_pos,
+      isDeposit: true
+    })
+    const { exitId, exitableAt } = queue[0]
+    assert.equal(exitId, alicesExitId)
+
+    const { msUntilFinalization, scheduledFinalizationTime } = await rootChain.getExitTime({
       exitRequestBlockNumber: standardExitReceipt.blockNumber,
       submissionBlockNumber: utxoToExit.blknum
     })
+
+    const differenceInFinalizationTime = Math.abs(scheduledFinalizationTime - exitableAt)
+    // scheduledFinalizationTime adds a 5 second buffer so this tests that the calculation is consistent
+    assert.isAtMost(differenceInFinalizationTime, 6)
+
+    // Wait for challenge period
     console.log(`Waiting for challenge period... ${msUntilFinalization / 60000} minutes`)
     await rcHelper.sleep(msUntilFinalization)
     const processReceipt = await rootChain.processExits({

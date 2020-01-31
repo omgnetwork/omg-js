@@ -16,6 +16,7 @@ limitations under the License. */
 const txUtils = require('./txUtils')
 const { transaction } = require('@omisego/omg-js-util')
 const erc20abi = require('human-standard-token-abi')
+const BN = require('bn.js')
 const {
   rootchainConstructorSchema,
   getExitTimeSchema,
@@ -169,7 +170,7 @@ class RootChain {
    *
    * @method getExitQueue
    * @param {string} token relevant queue to retrieve (defaults to ETH)
-   * @return {Promise<string[]>} promise that resolves with the exit queue of the token (as priorities)
+   * @return {Promise<Object[]>} promise that resolves with the exit queue
    */
   async getExitQueue (token = transaction.ETH_CURRENCY) {
     const vaultId = token === transaction.ETH_CURRENCY ? 1 : 2
@@ -179,8 +180,26 @@ class RootChain {
     )
     const address = await this.plasmaContract.methods.exitsQueues(hashed).call()
     const contract = getContract(this.web3, priorityQueueAbi.abi, address)
-    const exitQueue = await contract.methods.heapList().call()
-    return exitQueue.slice(1)
+    const rawExitQueue = await contract.methods.heapList().call()
+    const exitQueuePriorities = rawExitQueue.slice(1)
+
+    const exitQueue = exitQueuePriorities.map(priority => {
+      const asBN = new BN(priority)
+      const binary = asBN.toString(2, 256)
+
+      const exitableAtBinary = binary.substr(0, 42)
+      const exitIdBinary = binary.substr(96, 160)
+      const exitableAt = new BN(exitableAtBinary, 2)
+      const exitId = new BN(exitIdBinary, 2)
+
+      return {
+        priority,
+        exitableAt: exitableAt.toString(),
+        exitId: exitId.toString()
+      }
+    })
+
+    return exitQueue
   }
 
   /**
