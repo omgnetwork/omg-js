@@ -80,9 +80,7 @@ const getInFlightExitIdSchema = Joi.object({
 const startInFlightExitSchema = Joi.object({
   inFlightTx: Joi.string().required(),
   inputTxs: Joi.array().required(),
-  inputUtxosPos: Joi.array()
-    .items(validateAmount)
-    .required(),
+  inputUtxosPos: Joi.array().required(),
   inputTxsInclusionProofs: Joi.array()
     .items(Joi.string())
     .required(),
