@@ -123,7 +123,7 @@
 /**
  * Balance returned from account.get_balance
  * @typedef {Object} Balance
- * @property {BigNumber} amount
+ * @property {string|number|BigNumber} amount
  * @property {string} currency
  */
 
@@ -140,12 +140,12 @@
  * @typedef {Object} Payment
  * @property {string} owner
  * @property {string} currency
- * @property {number} amount
+ * @property {string|number|BigNumber} amount
  */
 
 /**
  * Fee object used when sending or creating transactions
  * @typedef {Object} Fee
  * @property {string} currency
- * @property {number} amount
+ * @property {string|number|BigNumber} amount
  */

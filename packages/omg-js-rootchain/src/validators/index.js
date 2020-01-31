@@ -1,5 +1,10 @@
 const Joi = require('@hapi/joi')
-const { validateAddress, validateTxOption, validateBn } = require('./helpers')
+const {
+  validateAddress,
+  validateTxOption,
+  validateBn,
+  validateAmount
+} = require('./helpers')
 
 const rootchainConstructorSchema = Joi.object({
   web3: Joi.any().required(),
@@ -7,20 +12,20 @@ const rootchainConstructorSchema = Joi.object({
 })
 
 const getExitTimeSchema = Joi.object({
-  exitRequestBlockNumber: [Joi.string().required(), Joi.number().integer().required(), validateBn.required()],
-  submissionBlockNumber: Joi.number().integer().required()
+  exitRequestBlockNumber: validateAmount,
+  submissionBlockNumber: validateAmount
 })
 
-const getExitQueueSchema = validateAddress
+const getExitQueueSchema = validateAddress.required()
 
 const approveTokenSchema = Joi.object({
   erc20Address: validateAddress.required(),
-  amount: [Joi.string().required(), Joi.number().integer().required(), validateBn.required()],
+  amount: validateAmount,
   txOptions: validateTxOption.required()
 })
 
 const depositSchema = Joi.object({
-  amount: [Joi.string().required(), Joi.number().integer().required(), validateBn.required()],
+  amount: validateAmount,
   currency: validateAddress.required(),
   txOptions: validateTxOption.required(),
   callbacks: Joi.object({
@@ -30,14 +35,14 @@ const depositSchema = Joi.object({
 })
 
 const startStandardExitSchema = Joi.object({
-  utxoPos: [Joi.string().required(), Joi.number().integer().required(), validateBn.required()],
+  utxoPos: validateAmount,
   outputTx: Joi.string().required(),
   inclusionProof: Joi.string().required(),
   txOptions: validateTxOption.required()
 })
 
 const challengeStandardExitSchema = Joi.object({
-  standardExitId: [Joi.string().required(), Joi.number().integer().required(), validateBn.required()],
+  standardExitId: validateAmount,
   exitingTx: Joi.string().required(),
   challengeTx: Joi.string().required(),
   inputIndex: Joi.number().integer(),
@@ -64,7 +69,7 @@ const addTokenSchema = Joi.object({
 
 const getStandardExitIdSchema = Joi.object({
   txBytes: Joi.string().required(),
-  utxoPos: Joi.number().integer().required(),
+  utxoPos: validateAmount,
   isDeposit: Joi.boolean().required()
 })
 
@@ -76,7 +81,7 @@ const startInFlightExitSchema = Joi.object({
   inFlightTx: Joi.string().required(),
   inputTxs: Joi.array().required(),
   inputUtxosPos: Joi.array()
-    .items(Joi.alternatives(Joi.number().integer(), validateBn))
+    .items(validateAmount)
     .required(),
   inputTxsInclusionProofs: Joi.array()
     .items(Joi.string())
@@ -101,7 +106,7 @@ const piggybackInFlightExitOnInputSchema = Joi.object({
 
 const challengeInFlightExitNotCanonicalSchema = Joi.object({
   inputTx: Joi.string().required(),
-  inputUtxoPos: [Joi.number().integer().required(), validateBn.required()],
+  inputUtxoPos: validateAmount,
   inFlightTx: Joi.string().required(),
   inFlightTxInputIndex: Joi.number().integer().required(),
   competingTx: Joi.string().required(),
@@ -114,26 +119,26 @@ const challengeInFlightExitNotCanonicalSchema = Joi.object({
 
 const respondToNonCanonicalChallengeSchema = Joi.object({
   inFlightTx: Joi.string().required(),
-  inFlightTxPos: [Joi.number().integer().required(), validateBn.required()],
+  inFlightTxPos: validateAmount,
   inFlightTxInclusionProof: Joi.string().required(),
   txOptions: validateTxOption
 })
 
 const challengeInFlightExitInputSpentSchema = Joi.object({
   inFlightTx: Joi.string().required(),
-  inFlightTxInputIndex: [Joi.number().integer().required(), validateBn.required()],
+  inFlightTxInputIndex: Joi.number().integer().required(),
   challengingTx: Joi.string().required(),
-  challengingTxInputIndex: [Joi.number().integer().required(), validateBn.required()],
+  challengingTxInputIndex: Joi.number().integer().required(),
   challengingTxWitness: Joi.string().required(),
   inputTx: Joi.string().required(),
-  inputUtxoPos: [Joi.number().integer().required(), validateBn.required()],
+  inputUtxoPos: validateAmount,
   txOptions: validateTxOption
 })
 
 const challengeInFlightExitOutputSpentSchema = Joi.object({
   inFlightTx: Joi.string().required(),
   inFlightTxInclusionProof: Joi.string().required(),
-  inFlightTxOutputPos: [Joi.number().integer().required(), validateBn.required()],
+  inFlightTxOutputPos: validateAmount,
   challengingTx: Joi.string().required(),
   challengingTxInputIndex: Joi.number().integer().required(),
   challengingTxWitness: Joi.string().required(),
