@@ -109,6 +109,16 @@ describe('amountTypes.js (ci-enabled)', function () {
       }
     })
     assert.isRejected(decimalReceipt)
+
+    const decimalStringReceipt = rootChain.approveToken({
+      erc20Address: config.erc20_contract_address,
+      amount: '1.23',
+      txOptions: {
+        from: aliceAccount.address,
+        privateKey: aliceAccount.privateKey
+      }
+    })
+    assert.isRejected(decimalStringReceipt)
   })
 
   it('deposit() should only accept safe integers, strings, and BN', async function () {
@@ -156,5 +166,14 @@ describe('amountTypes.js (ci-enabled)', function () {
       }
     })
     assert.isRejected(decimalDeposit)
+
+    const stringDecimalDeposit = rootChain.deposit({
+      amount: '1.23',
+      txOptions: {
+        from: aliceAccount.address,
+        privateKey: aliceAccount.privateKey
+      }
+    })
+    assert.isRejected(stringDecimalDeposit)
   })
 })

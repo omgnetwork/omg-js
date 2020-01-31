@@ -16,7 +16,7 @@ const validateBn = Joi.any().custom((value, helpers) => {
 const validateAmount = Joi.alternatives().try(
   Joi.number().integer().required(),
   validateBn.required(),
-  Joi.string().required()
+  Joi.string().regex(/^\d+$/).required()
 )
 
 const validatePayment = Joi.object({
