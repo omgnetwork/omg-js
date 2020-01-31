@@ -360,7 +360,7 @@ class RootChain {
     }, challengeStandardExitSchema)
     // standardExitId is an extremely large number as it uses the entire int192.
     // It's too big to be represented as a Number, so we convert it to a hex string
-    const exitId = txUtils.int192toHex(standardExitId.toString())
+    const exitId = txUtils.int192toHex(standardExitId)
     const { address, contract } = await this.getPaymentExitGame()
     const txDetails = {
       from: txOptions.from,
