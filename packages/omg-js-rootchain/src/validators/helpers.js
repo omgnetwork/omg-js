@@ -20,7 +20,11 @@ const validateBn = Joi.any().custom((value, helpers) => {
   return value
 })
 
-const validateAmount = [Joi.number().integer().required(), Joi.string().required(), validateBn.required()]
+const validateAmount = Joi.alternatives().try(
+  Joi.number().integer().required(),
+  validateBn.required(),
+  Joi.string().required()
+)
 
 module.exports = {
   validateAddress,

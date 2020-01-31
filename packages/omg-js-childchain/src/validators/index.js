@@ -41,7 +41,7 @@ const getExitDataSchema = Joi.object({
 })
 
 const getChallengeDataSchema = Joi.object({
-  utxoPos: validateAmount
+  utxoPos: validateAmount.required()
 })
 
 const submitTransactionSchema = Joi.object({

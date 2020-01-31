@@ -502,6 +502,7 @@ class RootChain {
       inFlightTxSigs,
       txOptions
     }, startInFlightExitSchema)
+    const _inputUtxoPos = inputUtxosPos.map(i => i.toString())
     const { address, contract, bonds } = await this.getPaymentExitGame()
     const txDetails = {
       from: txOptions.from,
@@ -509,7 +510,7 @@ class RootChain {
       data: txUtils.getTxData(this.web3, contract, 'startInFlightExit', [
         inFlightTx,
         inputTxs,
-        inputUtxosPos.toString(),
+        _inputUtxoPos,
         inputTxsInclusionProofs,
         inFlightTxSigs
       ]),

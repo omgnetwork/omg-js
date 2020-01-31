@@ -13,10 +13,14 @@ const validateBn = Joi.any().custom((value, helpers) => {
   return value
 })
 
-const validateAmount = [Joi.number().integer().required(), Joi.string().required(), validateBn.required()]
+const validateAmount = Joi.alternatives().try(
+  Joi.number().integer().required(),
+  validateBn.required(),
+  Joi.string().required()
+)
 
 const validatePayment = Joi.object({
-  amount: validateAmount,
+  amount: validateAmount.required(),
   currency: validateAddress.required(),
   owner: validateAddress.required()
 })
@@ -40,7 +44,7 @@ const validateMetadata = Joi.string().custom((value, helpers) => {
 })
 
 const validateFee = Joi.object({
-  amount: validateAmount,
+  amount: validateAmount.required(),
   currency: validateAddress.required()
 })
 

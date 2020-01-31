@@ -56,6 +56,6 @@ async function setup () {
 }
 
 setup().then(() => {
-  console.log(`🚀 Running ${files.length} tests in parallel...`)
+  console.log(`🚀 Running ${files.length} test files in parallel...`)
   mochaParallel.run()
 })
