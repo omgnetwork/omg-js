@@ -181,14 +181,20 @@ class RootChain {
     const address = await this.plasmaContract.methods.exitsQueues(hashed).call()
     const contract = getContract(this.web3, priorityQueueAbi.abi, address)
     const rawExitQueue = await contract.methods.heapList().call()
+    // remove the first element since it is always 0 (because heap lists start from index 1)
     const exitQueuePriorities = rawExitQueue.slice(1)
 
     const exitQueue = exitQueuePriorities.map(priority => {
       const asBN = new BN(priority)
+      // turn the uint256 priority into binary
       const binary = asBN.toString(2, 256)
 
+      // split the bits into their necessary data
+      // https://github.com/omisego/plasma-contracts/blob/master/plasma_framework/contracts/src/framework/utils/ExitPriority.sol#L16
       const exitableAtBinary = binary.substr(0, 42)
       const exitIdBinary = binary.substr(96, 160)
+
+      // use BN to turn binary back into the format we want
       const exitableAt = new BN(exitableAtBinary, 2)
       const exitId = new BN(exitIdBinary, 2)
 
