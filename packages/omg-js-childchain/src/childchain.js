@@ -92,6 +92,7 @@ class ChildChain {
    * @param {string} id the hash of the transaction to get
    * @return {Promise<TransactionData>} promise that resolves with a transaction
    */
+
   async getTransaction (id) {
     Joi.assert({ id }, getTransactionSchema)
     return rpcApi.post({
@@ -100,6 +101,20 @@ class ChildChain {
       proxyUrl: this.watcherProxyUrl
     })
   }
+
+  /**
+   * Get all the fees amount that is avaliable to use on the network
+   * 
+   * @method getFeesInfo
+   * @return {Promise<FeeInfo>}
+   */
+  async getFeesInfo () {
+    return rpcApi.post({
+      url: `${this.watcherUrl}/fees.all`,
+      proxyUrl: this.watcherProxyUrl
+    })
+  } 
+
 
   /**
    * Get transactions
