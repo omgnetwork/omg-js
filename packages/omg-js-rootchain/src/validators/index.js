@@ -149,6 +149,7 @@ const deleteNonPiggybackedInFlightExitSchema = Joi.object({
 })
 
 const getExitDataSchema = Joi.object({
+  transactionHash: Joi.string().required()
 })
 
 module.exports = {

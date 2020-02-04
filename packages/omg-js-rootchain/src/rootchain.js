@@ -38,9 +38,10 @@ const {
   respondToNonCanonicalChallengeSchema,
   challengeInFlightExitInputSpentSchema,
   challengeInFlightExitOutputSpentSchema,
-  deleteNonPiggybackedInFlightExitSchema
-  // getExitDataSchema
+  deleteNonPiggybackedInFlightExitSchema,
+  getExitDataSchema
 } = require('./validators')
+const MerkleTree = require('./merkle')
 const Joi = require('@hapi/joi')
 
 const erc20VaultAbi = require('./contracts/Erc20Vault.json')
@@ -363,20 +364,19 @@ class RootChain {
   /**
    * Gets the exit data for a deposit without access to the Watcher
    *
-   * @method getExitData
+   * @method getDepositExitData
    * @param {Object} args an arguments object
    * @param {string} args.transactionHash the transaction hash of the deposit
    * @return {ExitData[]} the exit data needed to start a standard exit
    */
-  async getExitData ({ transactionHash }) {
-    // Joi.assert({ transactionHash }, getExitDataSchema)
+  async getDepositExitData ({ transactionHash }) {
+    Joi.assert({ transactionHash }, getExitDataSchema)
     const rawTransaction = await this.web3.eth.getTransaction(transactionHash)
 
-    // either erc20Vault or ethVault abi can be used to decode the inputs
+    // either erc20Vault or ethVault abi can be used to decode the inputs and get the encodedTx
     abiDecoder.addABI(ethVaultAbi.abi)
     const decodedInputs = abiDecoder.decodeMethod(rawTransaction.input)
     const outputTx = decodedInputs.params[0].value
-
     const { owner, currency, amount } = transaction.decodeDeposit(outputTx)
 
     // get utxoPos from blocknum by querying the deposit events
@@ -390,19 +390,28 @@ class RootChain {
       ? await ethVault.getPastEvents('DepositCreated', eventArgs)
       : await erc20Vault.getPastEvents('DepositCreated', eventArgs)
 
-    // filter pastDeposits further by the amount since it isnt indexed in the event, and the blocknumber
+    // filter pastDeposits further by the amount and eth blocknumber since these aren't indexed in the event
     const deposits = pastDeposits.filter(i => {
       return i.returnValues.amount === amount.toString() &&
         i.blockNumber === rawTransaction.blockNumber
     })
 
-    // there is still the possibility that multiple deposits with the same depositer/token/amount were included in the same ethereum block
+    // there is still the rare possibility that multiple deposits with the same depositer/token/amount were included in the same ethereum block
     // for that reason, an array is returned for the possible utxoPos
     const potentialUtxoPos = deposits.map(i => i.returnValues.blknum * 1000000000)
 
-    const inclusionProof = 'todo'
+    // create the merkle tree and get the inclusion proof
+    const txLeaf = this.web3.utils.bytesToHex(outputTx)
+    const merkleTree = new MerkleTree([txLeaf], 16)
+    const proof = merkleTree.getInclusionProof(txLeaf)
 
-    return potentialUtxoPos.map(utxoPos => ({ utxoPos, outputTx, inclusionProof }))
+    return potentialUtxoPos.map(utxoPos => {
+      return {
+        proof,
+        txbytes: outputTx,
+        utxo_pos: utxoPos
+      }
+    })
   }
 
   /**
