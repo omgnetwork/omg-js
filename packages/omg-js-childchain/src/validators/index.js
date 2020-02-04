@@ -51,7 +51,6 @@ const submitTransactionSchema = Joi.object({
 const createTransactionSchema = Joi.object({
   owner: validateAddress.required(),
   payments: validatePayments.required(),
-  fee: validateFee.required(),
   metadata: validateMetadata
 })
 

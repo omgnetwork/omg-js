@@ -104,7 +104,7 @@ class ChildChain {
 
   /**
    * Get all the fees amount that is avaliable to use on the network
-   * 
+   *
    * @method getFeesInfo
    * @return {Promise<FeeInfo>}
    */
@@ -113,8 +113,7 @@ class ChildChain {
       url: `${this.watcherUrl}/fees.all`,
       proxyUrl: this.watcherProxyUrl
     })
-  } 
-
+  }
 
   /**
    * Get transactions
@@ -181,8 +180,8 @@ class ChildChain {
    * @param {string} [args.metadata] metadata to include in the transaction
    * @return {Promise<Object>} promise that resolves with an object containing the list of transactions that will fullfil the required spend
    */
-  createTransaction ({ owner, payments, fee, metadata }) {
-    Joi.assert({ owner, payments, fee, metadata }, createTransactionSchema)
+  createTransaction ({ owner, payments, metadata }) {
+    Joi.assert({ owner, payments, metadata }, createTransactionSchema)
     const _metadata = metadata
       ? transaction.encodeMetadata(metadata)
       : transaction.NULL_METADATA
@@ -192,7 +191,6 @@ class ChildChain {
       body: {
         owner,
         payments,
-        fee,
         metadata: _metadata
       },
       proxyUrl: this.watcherProxyUrl
