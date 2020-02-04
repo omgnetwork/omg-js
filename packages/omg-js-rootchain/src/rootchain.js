@@ -17,6 +17,7 @@ const txUtils = require('./txUtils')
 const { transaction } = require('@omisego/omg-js-util')
 const erc20abi = require('human-standard-token-abi')
 const BN = require('bn.js')
+const abiDecoder = require('abi-decoder')
 const {
   rootchainConstructorSchema,
   getExitTimeSchema,
@@ -38,6 +39,7 @@ const {
   challengeInFlightExitInputSpentSchema,
   challengeInFlightExitOutputSpentSchema,
   deleteNonPiggybackedInFlightExitSchema
+  // getExitDataSchema
 } = require('./validators')
 const Joi = require('@hapi/joi')
 
@@ -356,6 +358,51 @@ class RootChain {
       txDetails,
       privateKey: txOptions.privateKey
     })
+  }
+
+  /**
+   * Gets the exit data for a deposit without access to the Watcher
+   *
+   * @method getExitData
+   * @param {Object} args an arguments object
+   * @param {string} args.transactionHash the transaction hash of the deposit
+   * @return {ExitData[]} the exit data needed to start a standard exit
+   */
+  async getExitData ({ transactionHash }) {
+    // Joi.assert({ transactionHash }, getExitDataSchema)
+    const rawTransaction = await this.web3.eth.getTransaction(transactionHash)
+
+    // either erc20Vault or ethVault abi can be used to decode the inputs
+    abiDecoder.addABI(ethVaultAbi.abi)
+    const decodedInputs = abiDecoder.decodeMethod(rawTransaction.input)
+    const outputTx = decodedInputs.params[0].value
+
+    const { owner, currency, amount } = transaction.decodeDeposit(outputTx)
+
+    // get utxoPos from blocknum by querying the deposit events
+    const { contract: ethVault } = await this.getEthVault()
+    const { contract: erc20Vault } = await this.getErc20Vault()
+    const eventArgs = {
+      filter: { depositor: owner, token: currency },
+      fromBlock: 0
+    }
+    const pastDeposits = currency === transaction.ETH_CURRENCY
+      ? await ethVault.getPastEvents('DepositCreated', eventArgs)
+      : await erc20Vault.getPastEvents('DepositCreated', eventArgs)
+
+    // filter pastDeposits further by the amount since it isnt indexed in the event, and the blocknumber
+    const deposits = pastDeposits.filter(i => {
+      return i.returnValues.amount === amount.toString() &&
+        i.blockNumber === rawTransaction.blockNumber
+    })
+
+    // there is still the possibility that multiple deposits with the same depositer/token/amount were included in the same ethereum block
+    // for that reason, an array is returned for the possible utxoPos
+    const potentialUtxoPos = deposits.map(i => i.returnValues.blknum * 1000000000)
+
+    const inclusionProof = 'todo'
+
+    return potentialUtxoPos.map(utxoPos => ({ utxoPos, outputTx, inclusionProof }))
   }
 
   /**
