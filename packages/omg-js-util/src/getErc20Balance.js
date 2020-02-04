@@ -15,6 +15,8 @@
 */
 
 const erc20abi = require('human-standard-token-abi')
+const { getErc20BalanceSchema } = require('./validators')
+const Joi = require('@hapi/joi')
 
 /**
  * Retrieve the RootChain ERC20 balance for an address
@@ -23,9 +25,11 @@ const erc20abi = require('human-standard-token-abi')
  * @param {Object} args arguments object
  * @param {Web3} args.web3 web3 instance
  * @param {string} args.address the address to check
+ * @param {string} args.erc20Address the address of the erc20 contract
  * @return {Promise<string>} promise that resolves with the balance
  */
 async function getErc20Balance ({ web3, address, erc20Address }) {
+  Joi.assert({ web3, address, erc20Address }, getErc20BalanceSchema)
   const erc20Contract = new web3.eth.Contract(erc20abi, erc20Address)
   const txDetails = {
     from: address,

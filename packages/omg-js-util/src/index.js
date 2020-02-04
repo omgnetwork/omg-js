@@ -21,6 +21,5 @@ module.exports = {
   ethErrorReason: require('./ethErrorReason'),
   getErc20Balance: require('./getErc20Balance'),
   waitForRootchainTransaction: require('./waitForRootchainTransaction'),
-  waitForChildchainBalance: require('./waitForChildchainBalance'),
-  InvalidArgumentError: require('./InvalidArgumentError')
+  waitForChildchainBalance: require('./waitForChildchainBalance')
 }

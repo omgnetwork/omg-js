@@ -1,6 +1,6 @@
 {
   "name": "@omisego/omg-js-rootchain",
-  "version": "3.0.0-alpha.15",
+  "version": "3.0.0-alpha.17",
   "description": "Module to interact with the Ethereum RootChain",
   "keywords": [
     "OMG",
@@ -25,7 +25,7 @@
   },
   "dependencies": {
     "@hapi/joi": "^16.1.8",
-    "@omisego/omg-js-util": "^3.0.0-alpha.15",
+    "@omisego/omg-js-util": "^3.0.0-alpha.17",
     "bn.js": "^5.0.0",
     "debug": "^4.0.1",
     "human-standard-token-abi": "^2.0.0",

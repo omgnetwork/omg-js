@@ -14,6 +14,9 @@
   limitations under the License.
 */
 
+const { hexPrefixSchema } = require('./validators')
+const Joi = require('@hapi/joi')
+
 /**
  * Helper to ensure passed value is hex prefixed
  *
@@ -22,6 +25,7 @@
  * @return {string} hex prefixed string
  */
 function hexPrefix (data) {
+  Joi.assert({ data }, hexPrefixSchema)
   return data.startsWith('0x') ? data : `0x${data}`
 }
 

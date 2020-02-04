@@ -17,7 +17,6 @@ limitations under the License. */
 const chai = require('chai')
 const assert = chai.assert
 const transaction = require('../src/transaction')
-const InvalidArgumentError = require('../src/InvalidArgumentError')
 
 describe('Validate Transaction tests', function () {
   it('should fail to create a transaction with non array inputs', function () {
@@ -30,7 +29,7 @@ describe('Validate Transaction tests', function () {
       },
       outputs: []
     }
-    return assert.throws(() => transaction.validate(txBody), InvalidArgumentError, /Inputs must be an array/)
+    return assert.throws(() => transaction.validate(txBody), Error, /Inputs must be an array/)
   })
 
   it('should fail to create a transaction with 0 inputs', function () {
@@ -38,7 +37,7 @@ describe('Validate Transaction tests', function () {
       inputs: [],
       outputs: []
     }
-    return assert.throws(() => transaction.validate(txBody), InvalidArgumentError, /Inputs must be an array of size/)
+    return assert.throws(() => transaction.validate(txBody), Error, /Inputs must be an array of size/)
   })
 
   it('should fail to create a transaction with too many inputs', function () {
@@ -46,7 +45,7 @@ describe('Validate Transaction tests', function () {
       inputs: [{}, {}, {}, {}, {}],
       outputs: []
     }
-    return assert.throws(() => transaction.validate(txBody), InvalidArgumentError, /Inputs must be an array of size/)
+    return assert.throws(() => transaction.validate(txBody), Error, /Inputs must be an array of size/)
   })
 
   it('should fail to create a transaction with too many outputs', function () {
@@ -62,6 +61,6 @@ describe('Validate Transaction tests', function () {
       ],
       outputs: [{}, {}, {}, {}, {}]
     }
-    return assert.throws(() => transaction.validate(txBody), InvalidArgumentError, /Outputs must be an array of size/)
+    return assert.throws(() => transaction.validate(txBody), Error, /Outputs must be an array of size/)
   })
 })

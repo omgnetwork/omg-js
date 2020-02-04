@@ -6,7 +6,7 @@ describe('Encode UTXO tests', function () {
   it('should return the encoded utxo position 1', function () {
     const utxo = {
       blknum: 96035000,
-      currency: '',
+      currency: transaction.ETH_CURRENCY,
       oindex: 0,
       txbytes: '',
       txindex: 0
@@ -19,7 +19,7 @@ describe('Encode UTXO tests', function () {
   it('should return the encoded utxo position 2', function () {
     const utxo = {
       blknum: 96035000,
-      currency: '',
+      currency: transaction.ETH_CURRENCY,
       oindex: 1,
       txbytes: '',
       txindex: 7
@@ -32,7 +32,7 @@ describe('Encode UTXO tests', function () {
   it('should return the encoded utxo position 3', function () {
     const utxo = {
       blknum: 777777777,
-      currency: '',
+      currency: transaction.ETH_CURRENCY,
       oindex: 999,
       txbytes: '',
       txindex: 8888
