@@ -14,6 +14,9 @@
   limitations under the License.
 */
 
+const { hexToBytesSchema } = require('./validators')
+const Joi = require('@hapi/joi')
+
 /**
  * Helper to transform hex to bytes
  *
@@ -22,6 +25,7 @@
  * @return {string} transformed value as bytes
  */
 function hexToBytes (hex) {
+  Joi.assert({ hex }, hexToBytesSchema)
   hex = hex.toString(16)
   hex = hex.replace(/^0x/i, '')
   hex = hex.length % 2 ? '0' + hex : hex

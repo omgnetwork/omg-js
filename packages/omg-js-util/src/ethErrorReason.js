@@ -15,6 +15,8 @@
 */
 
 const hexPrefix = require('./hexPrefix')
+const { ethErrorReasonSchema } = require('./validators')
+const Joi = require('@hapi/joi')
 
 /**
  * Retrieve EVM revert reason from the transaction hash
@@ -26,6 +28,7 @@ const hexPrefix = require('./hexPrefix')
  * @return {Promise<string>} promise that resolves with the error reason
  */
 async function ethErrorReason ({ web3, hash }) {
+  Joi.assert({ web3, hash }, ethErrorReasonSchema)
   const tx = await web3.eth.getTransaction(hash)
   if (!tx) {
     console.log('Tx not found, cannot get reason')

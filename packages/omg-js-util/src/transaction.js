@@ -16,13 +16,25 @@
 
 global.Buffer = global.Buffer || require('buffer').Buffer
 
-const InvalidArgumentError = require('./InvalidArgumentError')
 const numberToBN = require('number-to-bn')
 const { uniq } = require('lodash')
 const rlp = require('rlp')
 const typedData = require('./typedData')
 const getToSignHash = require('./signHash')
 const hexPrefix = require('./hexPrefix')
+const {
+  encodeDepositSchema,
+  decodeDepositSchema,
+  encodeUtxoPosSchema,
+  decodeTxBytesSchema,
+  decodeUtxoPosSchema,
+  createTransactionBodySchema,
+  decodeMetadataSchema,
+  encodeMetadataSchema,
+  getTypedDataSchema,
+  getToSignHashSchema
+} = require('./validators')
+const Joi = require('@hapi/joi')
 
 const MAX_INPUTS = 4
 const MAX_OUTPUTS = 4
@@ -90,6 +102,7 @@ const transaction = {
   *
   */
   encodeDeposit: function (owner, amount, currency) {
+    Joi.assert({ owner, amount, currency }, encodeDepositSchema)
     const encoded = transaction.encode({
       txType: 1,
       inputs: [],
@@ -113,6 +126,7 @@ const transaction = {
   *
   */
   decodeDeposit: function (encodedDeposit) {
+    Joi.assert({ encodedDeposit }, decodeDepositSchema)
     const { outputs } = transaction.decodeTxBytes(encodedDeposit)
     const [{ outputGuard, amount, currency }] = outputs
     return {
@@ -163,6 +177,7 @@ const transaction = {
   *
   */
   decodeTxBytes: function (tx) {
+    Joi.assert({ tx }, decodeTxBytesSchema)
     let txType, inputs, outputs, txData, metadata, sigs
     const rawTx = Buffer.isBuffer(tx) ? tx : Buffer.from(tx.replace('0x', ''), 'hex')
     const decoded = rlp.decode(rawTx)
@@ -202,7 +217,7 @@ const transaction = {
   * @param {Object[]} args.fromUtxos the utxos to use as transaction inputs (in order of priority)
   * @param {Payment[]} args.payments payment objects specifying the outputs
   * @param {Fee} args.fee fee object specifying amount and currency
-  * @param {string} args.metadata the metadata to send
+  * @param {string} [args.metadata] the metadata to send
   * @return {TransactionBody} transaction object
   * @throws {Error} Error if any of the args are invalid or given utxos cannot cover the amount
   *
@@ -214,10 +229,7 @@ const transaction = {
     fee,
     metadata
   }) {
-    validateMetadata(metadata)
-    if (!fee.currency) {
-      throw new Error('Fee currency not provided.')
-    }
+    Joi.assert({ fromAddress, fromUtxos, payments, fee, metadata }, createTransactionBodySchema)
 
     const allPayments = [...payments, fee]
     const neededCurrencies = uniq([...payments.map(i => i.currency), fee.currency])
@@ -289,11 +301,15 @@ const transaction = {
     const outputs = [...changeOutputs, ...paymentOutputs]
     validateOutputs(outputs)
 
+    const encodedMetadata = metadata
+      ? transaction.encodeMetadata(metadata)
+      : typedData.NULL_METADATA
+
     const txBody = {
       inputs,
       outputs,
       txData: 0,
-      metadata
+      metadata: encodedMetadata
     }
     return txBody
   },
@@ -307,6 +323,7 @@ const transaction = {
   *
   */
   encodeUtxoPos: function (utxo) {
+    Joi.assert({ utxo }, encodeUtxoPosSchema)
     const blk = numberToBN(utxo.blknum).mul(BLOCK_OFFSET)
     const tx = numberToBN(utxo.txindex).muln(TX_OFFSET)
     return blk.add(tx).addn(utxo.oindex)
@@ -321,6 +338,7 @@ const transaction = {
   *
   */
   decodeUtxoPos: function (utxoPos) {
+    Joi.assert({ utxoPos }, decodeUtxoPosSchema)
     const bn = numberToBN(utxoPos)
     const blknum = bn.div(BLOCK_OFFSET).toNumber()
     const txindex = bn.mod(BLOCK_OFFSET).divn(TX_OFFSET).toNumber()
@@ -337,6 +355,7 @@ const transaction = {
   *
   */
   getTypedData: function (tx, verifyingContract) {
+    Joi.assert({ tx, verifyingContract }, getTypedDataSchema)
     return typedData.getTypedData(tx, verifyingContract)
   },
 
@@ -348,6 +367,7 @@ const transaction = {
   *
   */
   getToSignHash: function (typedData) {
+    Joi.assert({ typedData }, getToSignHashSchema)
     return getToSignHash(typedData)
   },
 
@@ -360,6 +380,7 @@ const transaction = {
   *
   */
   encodeMetadata: function (str) {
+    Joi.assert({ str }, encodeMetadataSchema)
     if (str.startsWith('0x')) {
       return str
     }
@@ -376,6 +397,7 @@ const transaction = {
   *
   */
   decodeMetadata: function (str) {
+    Joi.assert({ str }, decodeMetadataSchema)
     const unpad = str.replace('0x', '').replace(/^0*/, '')
     return Buffer.from(unpad, 'hex').toString()
   }
@@ -383,21 +405,21 @@ const transaction = {
 
 function validateInputs (arg) {
   if (!Array.isArray(arg)) {
-    throw new InvalidArgumentError('Inputs must be an array')
+    throw new Error('Inputs must be an array')
   }
 
   if (arg.length === 0 || arg.length > MAX_INPUTS) {
-    throw new InvalidArgumentError(`Inputs must be an array of size > 0 and < ${MAX_INPUTS}`)
+    throw new Error(`Inputs must be an array of size > 0 and < ${MAX_INPUTS}`)
   }
 }
 
 function validateOutputs (arg) {
   if (!Array.isArray(arg)) {
-    throw new InvalidArgumentError('Outputs must be an array')
+    throw new Error('Outputs must be an array')
   }
 
   if (arg.length > MAX_OUTPUTS) {
-    throw new InvalidArgumentError(`Outputs must be an array of size < ${MAX_OUTPUTS}`)
+    throw new Error(`Outputs must be an array of size < ${MAX_OUTPUTS}`)
   }
 }
 
@@ -411,7 +433,7 @@ function validateMetadata (arg) {
       invalid = true
     }
     if (invalid) {
-      throw new InvalidArgumentError('Metadata must be a 32-byte hex string')
+      throw new Error('Metadata must be a 32-byte hex string')
     }
   }
 }

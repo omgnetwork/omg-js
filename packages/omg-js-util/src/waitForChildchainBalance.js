@@ -17,6 +17,8 @@
 const promiseRetry = require('promise-retry')
 const numberToBN = require('number-to-bn')
 const transaction = require('./transaction')
+const { waitForChildchainBalanceSchema } = require('./validators')
+const Joi = require('@hapi/joi')
 
 /**
  * Helper that waits for a balance on the ChildChain to equal the expected amount
@@ -35,6 +37,7 @@ function waitForChildchainBalance ({
   expectedAmount,
   currency = transaction.ETH_CURRENCY
 }) {
+  Joi.assert({ childChain, address, expectedAmount, currency }, waitForChildchainBalanceSchema)
   return promiseRetry(async (retry, number) => {
     const resp = await childChain.getBalance(address)
     if (resp.length === 0) retry()
