@@ -7,7 +7,7 @@ const validateAddress = Joi.string().custom(value => {
 })
 
 const validateTxOption = Joi.object({
-  gas: Joi.number(),
+  gas: Joi.number().integer(),
   gasPrice: Joi.string(),
   privateKey: Joi.string(),
   from: validateAddress
@@ -20,8 +20,15 @@ const validateBn = Joi.any().custom((value, helpers) => {
   return value
 })
 
+const validateAmount = Joi.alternatives().try(
+  Joi.number().integer().required(),
+  validateBn.required(),
+  Joi.string().regex(/^\d+$/).required()
+)
+
 module.exports = {
   validateAddress,
   validateTxOption,
-  validateBn
+  validateBn,
+  validateAmount
 }

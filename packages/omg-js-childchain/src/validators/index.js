@@ -4,7 +4,7 @@ const {
   validatePayments,
   validateMetadata,
   validateFee,
-  validateBn
+  validateAmount
 } = require('./helpers')
 
 const childchainConstructorSchema = Joi.object({
@@ -19,21 +19,33 @@ const getBalanceSchema = validateAddress.required()
 const getTransactionsSchema = Joi.object({
   address: validateAddress,
   metadata: validateMetadata,
-  blknum: Joi.number(),
-  limit: Joi.number(),
-  page: Joi.number()
+  blknum: validateAmount,
+  limit: Joi.number().integer(),
+  page: Joi.number().integer()
+})
+
+const getTransactionSchema = Joi.object({
+  id: Joi.string().required()
 })
 
 const getExitDataSchema = Joi.object({
-  amount: [Joi.string(), Joi.number(), validateBn],
-  blknum: Joi.number(),
+  amount: validateAmount,
+  blknum: validateAmount,
   currency: Joi.string(),
-  oindex: Joi.number(),
+  oindex: Joi.number().integer(),
   owner: Joi.string(),
-  txindex: Joi.number(),
-  utxo_pos: Joi.number(),
+  txindex: Joi.number().integer(),
+  utxo_pos: validateAmount,
   spending_txhash: [Joi.string(), Joi.allow(null)],
   creating_txhash: [Joi.string(), Joi.allow(null)]
+})
+
+const getChallengeDataSchema = Joi.object({
+  utxoPos: validateAmount.required()
+})
+
+const submitTransactionSchema = Joi.object({
+  transaction: Joi.string().required()
 })
 
 const createTransactionSchema = Joi.object({
@@ -72,12 +84,12 @@ const sendTransactionSchema = Joi.object({
 
 const inFlightExitGetOutputChallengeDataSchema = Joi.object({
   txbytes: Joi.string().required(),
-  outputIndex: Joi.number().required()
+  outputIndex: Joi.number().integer().required()
 })
 
 const inFlightExitGetInputChallengeDataSchema = Joi.object({
   txbytes: Joi.string().required(),
-  inputIndex: Joi.number().required()
+  inputIndex: Joi.number().integer().required()
 })
 
 module.exports = {
@@ -85,7 +97,9 @@ module.exports = {
   getUtxosSchema,
   getBalanceSchema,
   getTransactionsSchema,
+  getTransactionSchema,
   getExitDataSchema,
+  getChallengeDataSchema,
   createTransactionSchema,
   signTypedDataSchema,
   submitTypedSchema,
@@ -93,5 +107,6 @@ module.exports = {
   buildSignedTransactionSchema,
   sendTransactionSchema,
   inFlightExitGetOutputChallengeDataSchema,
-  inFlightExitGetInputChallengeDataSchema
+  inFlightExitGetInputChallengeDataSchema,
+  submitTransactionSchema
 }

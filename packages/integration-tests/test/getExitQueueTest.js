@@ -64,8 +64,7 @@ describe('getExitQueueTest.js', function () {
         maxExitsToProcess: queue.length,
         txOptions: {
           privateKey: aliceAccount.privateKey,
-          from: aliceAccount.address,
-          gas: 6000000
+          from: aliceAccount.address
         }
       })
       if (ethExitReceipt) {

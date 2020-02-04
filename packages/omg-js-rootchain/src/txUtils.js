@@ -98,6 +98,7 @@ async function setGas (web3, txDetails) {
       }
     } catch (err) {
       console.warn(`Error estimating gas: ${err}`)
+      throw err
     }
   }
 }

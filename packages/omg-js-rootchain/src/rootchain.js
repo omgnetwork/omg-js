@@ -20,6 +20,7 @@ const BN = require('bn.js')
 const {
   rootchainConstructorSchema,
   getExitTimeSchema,
+  getExitQueueSchema,
   approveTokenSchema,
   depositSchema,
   startStandardExitSchema,
@@ -114,8 +115,8 @@ class RootChain {
    *
    * @method getExitTime
    * @param {Object} args an arguments object
-   * @param {number} args.exitRequestBlockNumber block number of the exit request
-   * @param {number} args.submissionBlockNumber for standard exits: the block that contains the exiting UTXO, for in-flight exits: the block that contains the youngest input of the exiting transaction
+   * @param {number|string|BigNumber} args.exitRequestBlockNumber block number of the exit request
+   * @param {number|string|BigNumber} args.submissionBlockNumber for standard exits: the block that contains the exiting UTXO, for in-flight exits: the block that contains the youngest input of the exiting transaction
    * @return {Promise<Object>} promise that resolves with the scheduled finalization unix time and the milliseconds until that time
    */
   async getExitTime ({
@@ -124,27 +125,34 @@ class RootChain {
     retries = 10
   }) {
     Joi.assert({ exitRequestBlockNumber, submissionBlockNumber }, getExitTimeSchema)
+    const _exitRequestBlockNumber = exitRequestBlockNumber.toString()
+    const _submissionBlockNumber = submissionBlockNumber.toString()
+
     const bufferSeconds = 5
     const retryInterval = 5000
 
     const _minExitPeriodSeconds = await this.plasmaContract.methods.minExitPeriod().call()
     const minExitPeriodSeconds = Number(_minExitPeriodSeconds)
 
-    const exitBlock = await this.web3.eth.getBlock(exitRequestBlockNumber)
+    const exitBlock = await this.web3.eth.getBlock(_exitRequestBlockNumber)
     if (!exitBlock) {
       if (retries > 0) {
         setTimeout(() => {
-          return this.getExitTime({ exitRequestBlockNumber, submissionBlockNumber, retries: retries - 1 })
+          return this.getExitTime({
+            exitRequestBlockNumber: _exitRequestBlockNumber,
+            submissionBlockNumber: _submissionBlockNumber,
+            retries: retries - 1
+          })
         }, retryInterval)
       } else {
-        throw Error(`Could not get exit request block data: ${exitRequestBlockNumber}`)
+        throw Error(`Could not get exit request block data: ${_exitRequestBlockNumber}`)
       }
     }
 
-    const submissionBlock = await this.plasmaContract.methods.blocks(submissionBlockNumber).call()
+    const submissionBlock = await this.plasmaContract.methods.blocks(_submissionBlockNumber).call()
 
     let scheduledFinalizationTime
-    if (submissionBlockNumber % 1000 !== 0) {
+    if (_submissionBlockNumber % 1000 !== 0) {
       // if deposit, elevated exit priority
       scheduledFinalizationTime = Math.max(
         Number(exitBlock.timestamp) + minExitPeriodSeconds,
@@ -173,6 +181,7 @@ class RootChain {
    * @return {Promise<Object[]>} promise that resolves with the exit queue
    */
   async getExitQueue (token = transaction.ETH_CURRENCY) {
+    Joi.assert(token, getExitQueueSchema)
     const vaultId = token === transaction.ETH_CURRENCY ? 1 : 2
     const hashed = this.web3.utils.soliditySha3(
       { t: 'uint256', v: vaultId },
@@ -218,7 +227,7 @@ class RootChain {
    * @method approveToken
    * @param {Object} args an arguments object
    * @param {string} args.erc20Address address of the ERC20 token
-   * @param {number} args.amount amount of ERC20 to approve to deposit
+   * @param {number|string|BigNumber} args.amount amount of ERC20 to approve to deposit
    * @param {TransactionOptions} args.txOptions transaction options
    * @return {Promise<TransactionReceipt>} promise that resolves with a transaction receipt
    */
@@ -229,7 +238,7 @@ class RootChain {
     const txDetails = {
       from: txOptions.from,
       to: erc20Address,
-      data: erc20Contract.methods.approve(spender, amount).encodeABI(),
+      data: erc20Contract.methods.approve(spender, amount.toString()).encodeABI(),
       gas: txOptions.gas,
       gasPrice: txOptions.gasPrice
     }
@@ -245,7 +254,7 @@ class RootChain {
    *
    * @method deposit
    * @param {Object} args an arguments object
-   * @param {number} args.amount amount to deposit
+   * @param {number|string|BigNumber} args.amount amount to deposit
    * @param {string} [args.currency] the token address of the deposit (defaults to ETH)
    * @param {TransactionOptions} args.txOptions transaction options
    * @param {TransactionCallbacks} [args.callbacks] callbacks to events from the transaction lifecycle
@@ -258,13 +267,14 @@ class RootChain {
     callbacks
   }) {
     Joi.assert({ amount, currency, txOptions, callbacks }, depositSchema)
+    const _amount = amount.toString()
     const isEth = currency === transaction.ETH_CURRENCY
     const { address, contract } = isEth ? await this.getEthVault() : await this.getErc20Vault()
-    const depositTx = transaction.encodeDeposit(txOptions.from, amount, currency)
+    const depositTx = transaction.encodeDeposit(txOptions.from, _amount, currency)
     const txDetails = {
       from: txOptions.from,
       to: address,
-      ...isEth ? { value: amount } : {},
+      ...isEth ? { value: _amount } : {},
       data: txUtils.getTxData(this.web3, contract, 'deposit', depositTx),
       gas: txOptions.gas,
       gasPrice: txOptions.gasPrice
@@ -283,14 +293,14 @@ class RootChain {
    * @method getStandardExitId
    * @param {Object} args an arguments object
    * @param {string} args.txBytes txBytes from the standard exit
-   * @param {number} args.utxoPos the UTXO position of the UTXO being exited
+   * @param {string|number|BigNumber} args.utxoPos the UTXO position of the UTXO being exited
    * @param {boolean} args.isDeposit whether the standard exit is of a deposit UTXO
    * @return {Promise<string>} promise that resolves with the exitId
    */
   async getStandardExitId ({ txBytes, utxoPos, isDeposit }) {
     Joi.assert({ txBytes, utxoPos, isDeposit }, getStandardExitIdSchema)
     const { contract } = await this.getPaymentExitGame()
-    return contract.methods.getStandardExitId(isDeposit, txBytes, utxoPos).call()
+    return contract.methods.getStandardExitId(isDeposit, txBytes, utxoPos.toString()).call()
   }
 
   /**
@@ -312,7 +322,7 @@ class RootChain {
    *
    * @method startStandardExit
    * @param {Object} args an arguments object
-   * @param {number} args.utxoPos identifier of the exiting output
+   * @param {string|number|BigNumber} args.utxoPos identifier of the exiting output
    * @param {string} args.outputTx RLP encoded transaction that created the exiting output
    * @param {string} args.inclusionProof a Merkle proof showing that the transaction was included
    * @param {TransactionOptions} args.txOptions transaction options
@@ -353,7 +363,7 @@ class RootChain {
    *
    * @method challengeStandardExit
    * @param {Object} args an arguments object
-   * @param {number} args.standardExitId identifier of the exiting output
+   * @param {string|number|BigNumber} args.standardExitId identifier of the exiting output
    * @param {string} args.exitingTx RLP encoded transaction that is exiting
    * @param {string} args.challengeTx RLP encoded transaction that spends the exiting output
    * @param {number} args.inputIndex which input to the challenging tx corresponds to the exiting output
@@ -412,7 +422,7 @@ class RootChain {
    * @method processExits
    * @param {Object} args an arguments object
    * @param {string} args.token an address of the token to exit
-   * @param {string} args.exitId the exit id
+   * @param {string|0} args.exitId the exit id
    * @param {number} args.maxExitsToProcess the max number of exits to process
    * @param {TransactionOptions} args.txOptions transaction options
    * @return {Promise<TransactionReceipt>} promise that resolves with a transaction receipt
@@ -499,7 +509,7 @@ class RootChain {
    * @param {Object} args an arguments object
    * @param {string} args.inFlightTx RLP encoded in-flight transaction
    * @param {string[]} args.inputTxs transactions that created the inputs to the in-flight transaction
-   * @param {number[]} args.inputUtxosPos utxo positions of the inputs
+   * @param {string[]|number[]|BigNumber[]} args.inputUtxosPos utxo positions of the inputs
    * @param {string[]} args.inputTxsInclusionProofs merkle proofs that show the input-creating transactions are valid
    * @param {string[]} args.inFlightTxSigs in-flight transaction witnesses
    * @param {TransactionOptions} args.txOptions transaction options
@@ -521,6 +531,7 @@ class RootChain {
       inFlightTxSigs,
       txOptions
     }, startInFlightExitSchema)
+    const _inputUtxoPos = inputUtxosPos.map(i => i.toString())
     const { address, contract, bonds } = await this.getPaymentExitGame()
     const txDetails = {
       from: txOptions.from,
@@ -528,7 +539,7 @@ class RootChain {
       data: txUtils.getTxData(this.web3, contract, 'startInFlightExit', [
         inFlightTx,
         inputTxs,
-        inputUtxosPos,
+        _inputUtxoPos,
         inputTxsInclusionProofs,
         inFlightTxSigs
       ]),
@@ -549,7 +560,7 @@ class RootChain {
    * @method piggybackInFlightExitOnOutput
    * @param {Object} args an arguments object
    * @param {string} args.inFlightTx RLP encoded in-flight transaction
-   * @param {number} args.outputIndex index of the input/output to piggyback (0-7)
+   * @param {number} args.outputIndex index of the output to piggyback (0-3)
    * @param {TransactionOptions} args.txOptions transaction options
    * @return {Promise<TransactionReceipt>} promise that resolves with a transaction receipt
    */
@@ -594,7 +605,7 @@ class RootChain {
    * @method piggybackInFlightExitOnInput
    * @param {Object} args an arguments object
    * @param {string} args.inFlightTx RLP encoded in-flight transaction
-   * @param {number} args.inputIndex index of the input/output to piggyback (0-7)
+   * @param {number} args.inputIndex index of the input to piggyback (0-3)
    * @param {TransactionOptions} args.txOptions transaction options
    * @return {Promise<TransactionReceipt>} promise that resolves with a transaction receipt
    */
@@ -627,12 +638,12 @@ class RootChain {
    * @method challengeInFlightExitNotCanonical
    * @param {Object} args an arguments object
    * @param {string} args.inputTx the input transaction
-   * @param {number} args.inputUtxoPos input utxo position
+   * @param {string|number|BigNumber} args.inputUtxoPos input utxo position
    * @param {string} args.inFlightTx the in-flight transaction
    * @param {number} args.inFlightTxInputIndex index of the double-spent input in the in-flight transaction
    * @param {string} args.competingTx RLP encoded transaction that spent the input
    * @param {number} args.competingTxInputIndex index of the double-spent input in the competing transaction
-   * @param {number} args.competingTxPos position of the competing transaction
+   * @param {string|number|BigNumber} args.competingTxPos position of the competing transaction
    * @param {string} args.competingTxInclusionProof proof that the competing transaction was included
    * @param {string} args.competingTxWitness competing transaction witness
    * @param {TransactionOptions} args.txOptions transaction options
@@ -672,12 +683,12 @@ class RootChain {
         'challengeInFlightExitNotCanonical',
         [
           inputTx,
-          inputUtxoPos,
+          inputUtxoPos.toString(),
           inFlightTx,
           inFlightTxInputIndex,
           competingTx,
           competingTxInputIndex,
-          competingTxPos,
+          competingTxPos.toString(),
           competingTxInclusionProof,
           competingTxWitness
         ]
@@ -698,7 +709,7 @@ class RootChain {
    * @method respondToNonCanonicalChallenge
    * @param {Object} args an arguments object
    * @param {string} args.inFlightTx RLP encoded in-flight transaction being exited
-   * @param {number} args.inFlightTxPos position of the in-flight transaction in the chain
+   * @param {string|number|BigNumber} args.inFlightTxPos position of the in-flight transaction in the chain
    * @param {string} args.inFlightTxInclusionProof proof that the in-flight transaction is included before the competitor
    * @param {TransactionOptions} args.txOptions transaction options
    * @return {Promise<TransactionReceipt>} promise that resolves with a transaction receipt
@@ -724,7 +735,7 @@ class RootChain {
         contract,
         'respondToNonCanonicalChallenge',
         inFlightTx,
-        inFlightTxPos,
+        inFlightTxPos.toString(),
         inFlightTxInclusionProof
       ),
       gas: txOptions.gas,
@@ -748,7 +759,7 @@ class RootChain {
    * @param {number} args.challengingTxInputIndex challenging transaction input index
    * @param {string} args.challengingTxWitness challenging transaction witness
    * @param {string} args.inputTx the input transaction
-   * @param {number} args.inputUtxoPos input utxo position
+   * @param {string|number|BigNumber} args.inputUtxoPos input utxo position
    * @param {TransactionOptions} args.txOptions transaction options
    * @return {Promise<TransactionReceipt>} promise that resolves with a transaction receipt
    */
@@ -787,7 +798,7 @@ class RootChain {
           challengingTxInputIndex,
           challengingTxWitness,
           inputTx,
-          inputUtxoPos
+          inputUtxoPos.toString()
         ]
       ),
       gas: txOptions.gas,
@@ -807,7 +818,7 @@ class RootChain {
    * @param {Object} args an arguments object
    * @param {string} args.inFlightTx RLP encoded in-flight transaction being exited
    * @param {string} args.inFlightTxInclusionProof inclusion proof
-   * @param {number} args.inFlightTxOutputPos output that's been spent
+   * @param {string|number|BigNumber} args.inFlightTxOutputPos output that's been spent
    * @param {string} args.challengingTx challenging transaction
    * @param {number} args.challengingTxInputIndex input index of challenging transaction
    * @param {string} args.challengingTxWitness witness of challenging transaction
@@ -843,7 +854,7 @@ class RootChain {
         [
           inFlightTx,
           inFlightTxInclusionProof,
-          inFlightTxOutputPos,
+          inFlightTxOutputPos.toString(),
           challengingTx,
           challengingTxInputIndex,
           challengingTxWitness

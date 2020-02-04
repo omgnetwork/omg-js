@@ -18,7 +18,9 @@ const {
   getUtxosSchema,
   getBalanceSchema,
   getTransactionsSchema,
+  getTransactionSchema,
   getExitDataSchema,
+  getChallengeDataSchema,
   createTransactionSchema,
   signTypedDataSchema,
   submitTypedSchema,
@@ -26,7 +28,8 @@ const {
   buildSignedTransactionSchema,
   sendTransactionSchema,
   inFlightExitGetOutputChallengeDataSchema,
-  inFlightExitGetInputChallengeDataSchema
+  inFlightExitGetInputChallengeDataSchema,
+  submitTransactionSchema
 } = require('./validators')
 const Joi = require('@hapi/joi')
 const rpcApi = require('./rpc/rpcApi')
@@ -90,7 +93,7 @@ class ChildChain {
    * @return {Promise<TransactionData>} promise that resolves with a transaction
    */
   async getTransaction (id) {
-    Joi.assert(id, Joi.string().required())
+    Joi.assert({ id }, getTransactionSchema)
     return rpcApi.post({
       url: `${this.watcherUrl}/transaction.get`,
       body: { id },
@@ -144,7 +147,7 @@ class ChildChain {
    * @return {Promise<Object>} promise that resolves with the challenge data
    */
   async getChallengeData (utxoPos) {
-    Joi.assert(utxoPos, Joi.number().required())
+    Joi.assert({ utxoPos }, getChallengeDataSchema)
     return rpcApi.post({
       url: `${this.watcherUrl}/utxo.get_challenge_data`,
       body: { utxo_pos: utxoPos },
@@ -249,7 +252,7 @@ class ChildChain {
    * @return {Promise<Object>} promise that resolves with the submitted transaction
    */
   async submitTransaction (transaction) {
-    Joi.assert(transaction, Joi.string().required())
+    Joi.assert({ transaction }, submitTransactionSchema)
     return rpcApi.post({
       url: `${this.watcherUrl}/transaction.submit`,
       body: { transaction: transaction.startsWith('0x') ? transaction : `0x${transaction}` },
