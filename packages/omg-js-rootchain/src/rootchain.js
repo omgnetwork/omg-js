@@ -17,6 +17,7 @@ const txUtils = require('./txUtils')
 const { transaction } = require('@omisego/omg-js-util')
 const erc20abi = require('human-standard-token-abi')
 const BN = require('bn.js')
+const abiDecoder = require('abi-decoder')
 const {
   rootchainConstructorSchema,
   getExitTimeSchema,
@@ -37,8 +38,10 @@ const {
   respondToNonCanonicalChallengeSchema,
   challengeInFlightExitInputSpentSchema,
   challengeInFlightExitOutputSpentSchema,
-  deleteNonPiggybackedInFlightExitSchema
+  deleteNonPiggybackedInFlightExitSchema,
+  getExitDataSchema
 } = require('./validators')
+const MerkleTree = require('./merkle')
 const Joi = require('@hapi/joi')
 
 const erc20VaultAbi = require('./contracts/Erc20Vault.json')
@@ -356,6 +359,39 @@ class RootChain {
       txDetails,
       privateKey: txOptions.privateKey
     })
+  }
+
+  /**
+   * Gets the exit data for a deposit without using the Watcher
+   *
+   * @method getDepositExitData
+   * @param {Object} args an arguments object
+   * @param {string} args.transactionHash the transaction hash of the deposit
+   * @return {ExitData} the exit data needed to start a standard exit
+   */
+  async getDepositExitData ({ transactionHash }) {
+    Joi.assert({ transactionHash }, getExitDataSchema)
+
+    // use a vault abi to decode the inputs and get the txbytes
+    abiDecoder.addABI(ethVaultAbi.abi)
+    const rawTransaction = await this.web3.eth.getTransaction(transactionHash)
+    const decodedInputs = abiDecoder.decodeMethod(rawTransaction.input)
+    const txbytes = decodedInputs.params[0].value
+
+    // create merkle tree and get the inclusion proof
+    const txLeaf = this.web3.utils.bytesToHex(txbytes)
+    const merkleTree = new MerkleTree([txLeaf], 16)
+    const proof = merkleTree.getInclusionProof(txLeaf)
+
+    // blknum will be the 3rd topic in the first event
+    const receipt = await this.web3.eth.getTransactionReceipt(transactionHash)
+    const blknum = this.web3.utils.hexToNumber(receipt.logs[0].topics[2])
+
+    return {
+      proof,
+      txbytes,
+      utxo_pos: blknum * 1000000000
+    }
   }
 
   /**
