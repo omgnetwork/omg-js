@@ -131,6 +131,14 @@ Checking Bob's final rootchain balance you will notice it will be a little less 
 
 #### ERC20 Examples
 
+Before we begin, we need to deploy and mint some ERC20 tokens.
+
+    ```shell
+    npm run deploy-test-erc20 --prefix ../packages/integration-tests
+    ```
+
+Use the ERC20 contract address from the output above to configure `ERC20_CONTRACT_ADDRESS` in your `.env` file.
+
 Now let's run through the same story above but for ERC20 deposit/transaction/exit.
 
 1. [Deposit some ERC20 from Alice's Rootchain to the Childchain](examples/childchain-deposit-erc20.js)
