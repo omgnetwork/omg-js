@@ -111,6 +111,7 @@ class ChildChain {
   async getFeesInfo () {
     return rpcApi.post({
       url: `${this.watcherUrl}/fees.all`,
+      body: {},
       proxyUrl: this.watcherProxyUrl
     })
   }

@@ -123,25 +123,17 @@ async function createTx (childChain, from, to, amount, currency, fromPrivateKey,
     }]
   }
 
+  const fees = (await childChain.getFeesInfo())['1']
+  const { amount: feeEthAmountWei } = fees.find(f => f.currency === transaction.ETH_CURRENCY)
   const utxoAmount = numberToBN(utxosToSpend[0].amount)
-  if (utxoAmount.gt(numberToBN(amount))) {
+  if (utxoAmount.gt(numberToBN(amount).add(numberToBN(feeEthAmountWei)))) {
     // Need to add a 'change' output
-    const CHANGE_AMOUNT = utxoAmount.sub(numberToBN(amount))
+    const CHANGE_AMOUNT = utxoAmount.sub(numberToBN(amount)).sub(numberToBN(feeEthAmountWei))
     txBody.outputs.push({
       outputType: 1,
       outputGuard: from,
       currency,
       amount: CHANGE_AMOUNT
-    })
-  }
-
-  if (this.transferZeroFee && utxosToSpend.length > 1) {
-    // The fee input can be returned
-    txBody.outputs.push({
-      outputType: 1,
-      outputGuard: from,
-      currency: utxosToSpend[utxosToSpend.length - 1].currency,
-      amount: utxosToSpend[utxosToSpend.length - 1].amount
     })
   }
 
