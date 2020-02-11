@@ -150,7 +150,7 @@
  * @property {string|number|BigNumber} amount
  */
 
- /**
+/**
   * Fees object information
   * @typedef {Object} FeeInfo
   * @property {number} amount
