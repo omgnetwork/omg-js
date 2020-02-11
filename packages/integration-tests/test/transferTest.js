@@ -167,8 +167,7 @@ describe('transferTest.js (ci-enabled)', function () {
       const ALICE_OUTPUT_0 = UTXO_AMOUNT * 0.2
       const ALICE_OUTPUT_1 = UTXO_AMOUNT * 1.3
       const BOB_OUTPUT_0 = UTXO_AMOUNT * 1
-      const BOB_OUTPUT_1 = UTXO_AMOUNT * 1.5
-
+      const BOB_OUTPUT_1 = numberToBN(UTXO_AMOUNT).mul(numberToBN(3)).div(numberToBN(2)).sub(numberToBN(feeEth))
       const outputs = [
         {
           outputType: 1,
@@ -281,7 +280,7 @@ describe('transferTest.js (ci-enabled)', function () {
       assert.equal(erc20Utxo.amount, INTIIAL_ALICE_AMOUNT)
       assert.equal(erc20Utxo.currency, ERC20_CURRENCY)
 
-      const CHANGE_AMOUNT = erc20Utxo.amount - TRANSFER_AMOUNT
+      const CHANGE_AMOUNT = erc20Utxo.amount - TRANSFER_AMOUNT - feeEth
       const txBody = {
         inputs: [ethUtxo, erc20Utxo],
         outputs: [{
@@ -358,7 +357,7 @@ describe('transferTest.js (ci-enabled)', function () {
       assert.equal(utxos[1].currency.toLowerCase(), ERC20_CURRENCY.toLowerCase())
 
       const CHANGE_AMOUNT_ETH = numberToBN(utxos[0].amount).sub(TRANSFER_AMOUNT_ETH)
-      const CHANGE_AMOUNT_ERC20 = utxos[1].amount - TRANSFER_AMOUNT_ERC20
+      const CHANGE_AMOUNT_ERC20 = utxos[1].amount - TRANSFER_AMOUNT_ERC20 - feeEth
       const txBody = {
         inputs: [utxos[0], utxos[1]],
         outputs: [{
