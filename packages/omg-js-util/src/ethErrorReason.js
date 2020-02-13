@@ -34,9 +34,13 @@ async function ethErrorReason ({ web3, hash }) {
     console.log('Tx not found, cannot get reason')
   } else {
     const code = await web3.eth.call(tx, tx.blockNumber)
-    const reason = web3.utils.toAscii(hexPrefix(code.substr(138)))
-    console.log('Revert reason:', reason)
-    return reason
+    if (code && code.substr(138)) {
+      const reason = web3.utils.toAscii(hexPrefix(code.substr(138)))
+      console.log('Revert reason:', reason)
+      return reason
+    } else {
+      console.log('No return value from tx, cannot get reason')
+    }
   }
 }
 

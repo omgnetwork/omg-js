@@ -31,10 +31,11 @@ const mochaParallel = new MochaParallel({
 })
 
 const allFiles = fs.readdirSync(`${__dirname}/test/`)
-const files = allFiles.filter(i => {
-  // skipped since testing exit queues is impossible with parallel tests calling processExits
-  return i !== 'getExitQueueTest.js'
-})
+// tests that dont work well in parallel environment
+const skippedTests = [
+  'getExitQueueTest.js'
+]
+const files = allFiles.filter(i => !skippedTests.includes(i))
 
 for (const test of files) {
   mochaParallel.addFile(`${__dirname}/test/${test}`)
@@ -55,7 +56,8 @@ async function setup () {
   console.log(`⏳ Total funding time: ${(end - start) / 60000} min`)
 }
 
-setup().then(() => {
-  console.log(`🚀 Running ${files.length} test files in parallel...`)
-  mochaParallel.run()
-})
+setup()
+  .then(() => {
+    console.log(`🚀 Running ${files.length} test files in parallel...`)
+    mochaParallel.run()
+  })
