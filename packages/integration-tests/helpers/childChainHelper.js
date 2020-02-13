@@ -178,18 +178,20 @@ async function send (childChain, from, to, amount, currency, fromPrivateKey, ver
   return { result, txbytes: hexPrefix(signedTx) }
 }
 
+// works only with ETH for now
 async function splitUtxo (childChain, verifyingContract, account, utxo, split) {
   console.log(`Splitting utxo ${transaction.encodeUtxoPos(utxo)}`)
-
+  const fees = (await childChain.getFeesInfo())['1']
+  const { amount } = fees.find(f => f.currency === transaction.ETH_CURRENCY)
   const txBody = {
     inputs: [utxo],
     outputs: []
   }
   const div = Math.floor(utxo.amount / split)
-  txBody.outputs = new Array(split).fill().map(x => ({
+  txBody.outputs = new Array(split).fill().map((x, i) => ({
     owner: account.address,
     currency: transaction.ETH_CURRENCY,
-    amount: div
+    amount: i === 0 ? div - amount : div // need to deduct eth fee
   }))
 
   // Create the unsigned transaction
