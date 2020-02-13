@@ -35,7 +35,8 @@ async function selectUtxos (utxos, amount, currency) {
     for (let i = 0; i < Math.min(sorted.length, 4); i++) {
       selected.push(sorted[i])
       currentBalance.iadd(numberToBN(sorted[i].amount))
-      if (currency === transaction.ETH_CURRENCY && currentBalance.gte(numberToBN(amount).iadd(feeEthAmountWei))) {
+      const expectedTotalIncludeFee = numberToBN(amount).add(numberToBN(feeEthAmountWei))
+      if (currency === transaction.ETH_CURRENCY && expectedTotalIncludeFee) {
         break
       } else if (currentBalance.gte(numberToBN(amount))) {
         break
