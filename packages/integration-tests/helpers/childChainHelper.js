@@ -153,7 +153,8 @@ async function createTx (childChain, from, to, amount, currency, fromPrivateKey,
       amount: CHANGE_AMOUNT_FEE
     })
   } else {
-    if (utxoAmount.gt(numberToBN(amount).add(numberToBN(feeEthAmountWei)))) {
+    const totalDeduct = numberToBN(amount).add(numberToBN(feeEthAmountWei))
+    if (utxoAmount.gt(totalDeduct)) {
       const CHANGE_AMOUNT = utxoAmount.sub(numberToBN(amount)).sub(numberToBN(feeEthAmountWei))
       txBody.outputs.push({
         outputType: 1,
