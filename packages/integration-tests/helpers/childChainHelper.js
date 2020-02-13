@@ -107,8 +107,7 @@ async function createTx (childChain, from, to, amount, currency, fromPrivateKey,
   }
 
   const utxos = await childChain.getUtxos(from)
-  const transferZeroFee = currency !== transaction.ETH_CURRENCY
-  const utxosToSpend = selectUtxos(utxos, amount, currency, transferZeroFee)
+  const utxosToSpend = selectUtxos(utxos, amount, currency, true)
   if (!utxosToSpend || utxosToSpend.length === 0) {
     throw new Error(`Not enough funds in ${from} to cover ${amount} ${currency}`)
   }
@@ -125,10 +124,14 @@ async function createTx (childChain, from, to, amount, currency, fromPrivateKey,
 
   const fees = (await childChain.getFeesInfo())['1']
   const { amount: feeEthAmountWei } = fees.find(f => f.currency === transaction.ETH_CURRENCY)
-  const utxoAmount = numberToBN(utxosToSpend[0].amount)
-  if (utxoAmount.gt(numberToBN(amount).add(numberToBN(feeEthAmountWei)))) {
+
+  const utxoEthAmount = numberToBN(utxosToSpend.find(utxo => utxo.currency === currency))
+  if (utxoEthAmount.gt(numberToBN(amount).add(numberToBN(feeEthAmountWei)))) {
     // Need to add a 'change' output
-    const CHANGE_AMOUNT = utxoAmount.sub(numberToBN(amount)).sub(numberToBN(feeEthAmountWei))
+    const CHANGE_AMOUNT = currency === transaction.ETH_CURRENCY
+      ? utxoEthAmount.sub(numberToBN(amount)).sub(numberToBN(feeEthAmountWei))
+      : utxoEthAmount.sub(numberToBN(feeEthAmountWei))
+
     txBody.outputs.push({
       outputType: 1,
       outputGuard: from,
