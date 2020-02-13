@@ -32,9 +32,12 @@ describe('metadataTest.js (ci-enabled)', function () {
   const web3 = new Web3(config.eth_node)
   const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url })
   const rootChain = new RootChain({ web3, plasmaContractAddress: config.plasmaframework_contract_address })
-
+  let feeEth
   before(async function () {
     await faucet.init({ rootChain, childChain, web3, config, faucetName })
+    const fees = (await childChain.getFeesInfo())['1']
+    const { amount } = fees.find(f => f.currency === transaction.ETH_CURRENCY)
+    feeEth = amount
   })
 
   describe('String as metadata', function () {
@@ -74,7 +77,7 @@ describe('metadataTest.js (ci-enabled)', function () {
           amount: TRANSFER_AMOUNT
         }],
         fee: {
-          amount: 0,
+          amount: feeEth,
           currency: transaction.ETH_CURRENCY
         },
         metadata: METADATA,
@@ -131,7 +134,7 @@ describe('metadataTest.js (ci-enabled)', function () {
           currency: transaction.ETH_CURRENCY
         }],
         fee: {
-          amount: 0,
+          amount: feeEth,
           currency: transaction.ETH_CURRENCY
         },
         metadata: hashString,
@@ -183,7 +186,7 @@ describe('metadataTest.js (ci-enabled)', function () {
           currency: transaction.ETH_CURRENCY
         }],
         fee: {
-          amount: 0,
+          amount: feeEth,
           currency: transaction.ETH_CURRENCY
         },
         verifyingContract: rootChain.plasmaContractAddress
