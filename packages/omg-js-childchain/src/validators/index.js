@@ -4,7 +4,8 @@ const {
   validatePayments,
   validateMetadata,
   validateFee,
-  validateAmount
+  validateAmount,
+  validateFeeCreateFromChildchain
 } = require('./helpers')
 
 const childchainConstructorSchema = Joi.object({
@@ -51,6 +52,7 @@ const submitTransactionSchema = Joi.object({
 const createTransactionSchema = Joi.object({
   owner: validateAddress.required(),
   payments: validatePayments.required(),
+  fee: validateFeeCreateFromChildchain.required(),
   metadata: validateMetadata
 })
 
