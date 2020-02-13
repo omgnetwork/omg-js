@@ -346,10 +346,10 @@ describe('createTransactionTest.js (ci-enabled)', function () {
       const utxos = await childChain.getUtxos(aliceAccount.address)
       const utxo = utxos[0]
       const div = Math.floor(utxo.amount / 4)
-      const payments = new Array(4).fill().map(x => ({
+      const payments = new Array(4).fill().map((x, i) => ({
         owner: aliceAccount.address,
         currency: transaction.ETH_CURRENCY,
-        amount: div
+        amount: i === 0 ? div - FEE_ETH_AMOUNT : div
       }))
 
       const fee = {
