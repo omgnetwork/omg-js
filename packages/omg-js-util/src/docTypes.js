@@ -147,7 +147,6 @@
  * Fee object used when sending or creating transactions
  * @typedef {Object} Fee
  * @property {string} currency
- * @property {string|number|BigNumber} amount
  */
 
 /**

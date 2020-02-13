@@ -66,8 +66,7 @@ describe('createSubmitTypedTransactionTest.js (ci-enabled)', function () {
       }]
 
       const fee = {
-        currency: transaction.ETH_CURRENCY,
-        amount: FEE_AMOUNT
+        currency: transaction.ETH_CURRENCY
       }
 
       const createdTx = await childChain.createTransaction({

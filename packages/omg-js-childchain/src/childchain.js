@@ -181,8 +181,8 @@ class ChildChain {
    * @param {string} [args.metadata] metadata to include in the transaction
    * @return {Promise<Object>} promise that resolves with an object containing the list of transactions that will fullfil the required spend
    */
-  createTransaction ({ owner, payments, metadata }) {
-    Joi.assert({ owner, payments, metadata }, createTransactionSchema)
+  createTransaction ({ owner, payments, fee, metadata }) {
+    Joi.assert({ owner, payments, fee, metadata }, createTransactionSchema)
     const _metadata = metadata
       ? transaction.encodeMetadata(metadata)
       : transaction.NULL_METADATA
@@ -192,6 +192,7 @@ class ChildChain {
       body: {
         owner,
         payments,
+        fee,
         metadata: _metadata
       },
       proxyUrl: this.watcherProxyUrl
