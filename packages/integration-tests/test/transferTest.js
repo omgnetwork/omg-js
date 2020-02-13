@@ -362,7 +362,7 @@ describe('transferTest.js (ci-enabled)', function () {
       assert.equal(utxos[1].amount, INTIIAL_ALICE_AMOUNT_ERC20)
       assert.equal(utxos[1].currency.toLowerCase(), ERC20_CURRENCY.toLowerCase())
 
-      const CHANGE_AMOUNT_ETH = numberToBN(utxos[0].amount).sub(TRANSFER_AMOUNT_ETH).sub(feeEth)
+      const CHANGE_AMOUNT_ETH = numberToBN(utxos[0].amount).sub(TRANSFER_AMOUNT_ETH).sub(numberToBN(feeEth))
       const CHANGE_AMOUNT_ERC20 = utxos[1].amount - TRANSFER_AMOUNT_ERC20
       const txBody = {
         inputs: [utxos[0], utxos[1]],
