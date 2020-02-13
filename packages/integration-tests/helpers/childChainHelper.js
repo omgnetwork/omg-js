@@ -163,7 +163,6 @@ async function createTx (childChain, from, to, amount, currency, fromPrivateKey,
       })
     }
   }
-  console.log(txBody)
 
   const privateKeys = new Array(utxosToSpend.length).fill(fromPrivateKey)
   const typedData = transaction.getTypedData(txBody, verifyingContract)

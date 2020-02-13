@@ -239,7 +239,7 @@ describe('transferTest.js (ci-enabled)', function () {
     })
   })
 
-  describe.only('ERC20 transfer', function () {
+  describe('ERC20 transfer', function () {
     const ERC20_CURRENCY = config.erc20_contract_address
     const INTIIAL_ALICE_AMOUNT_ETH = web3.utils.toWei('.00000001', 'ether')
     const INTIIAL_ALICE_AMOUNT = 4
@@ -280,7 +280,8 @@ describe('transferTest.js (ci-enabled)', function () {
       assert.equal(erc20Utxo.amount, INTIIAL_ALICE_AMOUNT)
       assert.equal(erc20Utxo.currency, ERC20_CURRENCY)
 
-      const CHANGE_AMOUNT = erc20Utxo.amount - TRANSFER_AMOUNT - feeEth
+      const CHANGE_AMOUNT = erc20Utxo.amount - TRANSFER_AMOUNT
+      const CHANGE_AMOUNT_FEE = ethUtxo.amount - feeEth
       const txBody = {
         inputs: [ethUtxo, erc20Utxo],
         outputs: [{
@@ -293,6 +294,11 @@ describe('transferTest.js (ci-enabled)', function () {
           outputGuard: aliceAccount.address,
           currency: ERC20_CURRENCY,
           amount: CHANGE_AMOUNT
+        }, {
+          outputType: 1,
+          outputGuard: aliceAccount.address,
+          currency: transaction.ETH_CURRENCY,
+          amount: CHANGE_AMOUNT_FEE
         }]
       }
 
@@ -356,8 +362,8 @@ describe('transferTest.js (ci-enabled)', function () {
       assert.equal(utxos[1].amount, INTIIAL_ALICE_AMOUNT_ERC20)
       assert.equal(utxos[1].currency.toLowerCase(), ERC20_CURRENCY.toLowerCase())
 
-      const CHANGE_AMOUNT_ETH = numberToBN(utxos[0].amount).sub(TRANSFER_AMOUNT_ETH)
-      const CHANGE_AMOUNT_ERC20 = utxos[1].amount - TRANSFER_AMOUNT_ERC20 - feeEth
+      const CHANGE_AMOUNT_ETH = numberToBN(utxos[0].amount).sub(TRANSFER_AMOUNT_ETH).sub(feeEth)
+      const CHANGE_AMOUNT_ERC20 = utxos[1].amount - TRANSFER_AMOUNT_ERC20
       const txBody = {
         inputs: [utxos[0], utxos[1]],
         outputs: [{
@@ -454,7 +460,7 @@ describe('transferTest.js (ci-enabled)', function () {
           amount: TRANSFER_AMOUNT
         }],
         fee: {
-          amount: 0,
+          amount: feeEth,
           currency: transaction.ETH_CURRENCY
         },
         verifyingContract: rootChain.plasmaContractAddress
