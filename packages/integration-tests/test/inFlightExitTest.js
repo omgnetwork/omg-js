@@ -38,8 +38,8 @@ describe('inFlightExitTest.js', function () {
   })
 
   describe('in-flight transaction exit', function () {
-    const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.5', 'ether')
-    const INTIIAL_BOB_RC_AMOUNT = web3.utils.toWei('.5', 'ether')
+    const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.4', 'ether')
+    const INTIIAL_BOB_RC_AMOUNT = web3.utils.toWei('.4', 'ether')
     const TRANSFER_AMOUNT = web3.utils.toWei('0.0002', 'ether')
 
     let aliceAccount

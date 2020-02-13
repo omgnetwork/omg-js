@@ -273,10 +273,12 @@ const faucet = {
   },
 
   returnFunds: function (from, to) {
-    return Promise.all([
-      this.returnChildchainFunds(from, to),
-      this.returnRootchainFunds(from, to)
-    ])
+    return this.returnRootchainFunds(from, to)
+    // we don't return childchain fund because it messed up the utxo
+    // return Promise.all([
+    //   this.returnChildchainFunds(from, to),
+    //   this.returnRootchainFunds(from, to)
+    // ])
   },
 
   returnChildchainFunds: async function (from, to = this.faucetAccount) {
