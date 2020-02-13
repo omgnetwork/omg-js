@@ -352,7 +352,7 @@ describe('transferTest.js (ci-enabled)', function () {
       }
     })
 
-    it.only('should transfer ETH and ERC20 tokens on the childchain', async function () {
+    it('should transfer ETH and ERC20 tokens on the childchain', async function () {
       // Check utxos on the child chain
       const utxos = await childChain.getUtxos(aliceAccount.address)
       assert.equal(utxos.length, 2)
