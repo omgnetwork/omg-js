@@ -327,9 +327,9 @@ describe('transferTest.js (ci-enabled)', function () {
   describe('Mixed currency transfer', function () {
     const ERC20_CURRENCY = config.erc20_contract_address
     const INTIIAL_ALICE_AMOUNT_ETH = web3.utils.toWei('0.001', 'ether')
-    const INTIIAL_ALICE_AMOUNT_ERC20 = 3
+    const INTIIAL_ALICE_AMOUNT_ERC20 = 2
     const TRANSFER_AMOUNT_ETH = numberToBN(web3.utils.toWei('0.0004', 'ether'))
-    const TRANSFER_AMOUNT_ERC20 = 2
+    const TRANSFER_AMOUNT_ERC20 = 1
     let aliceAccount
     let bobAccount
 
@@ -352,7 +352,7 @@ describe('transferTest.js (ci-enabled)', function () {
       }
     })
 
-    it('should transfer ETH and ERC20 tokens on the childchain', async function () {
+    it.only('should transfer ETH and ERC20 tokens on the childchain', async function () {
       // Check utxos on the child chain
       const utxos = await childChain.getUtxos(aliceAccount.address)
       assert.equal(utxos.length, 2)
