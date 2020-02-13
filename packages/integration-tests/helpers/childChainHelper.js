@@ -43,7 +43,7 @@ async function selectUtxos (utxos, amount, currency) {
       }
     }
     if (currency !== transaction.ETH_CURRENCY) {
-      const ethUtxos = utxos.filter(
+      const ethUtxos = utxos.find(
         utxo => utxo.currency.toLowerCase() === transaction.ETH_CURRENCY.toLowerCase()
       )
       selected.push(ethUtxos)
@@ -128,20 +128,42 @@ async function createTx (childChain, from, to, amount, currency, fromPrivateKey,
   const fees = (await childChain.getFeesInfo())['1']
   const { amount: feeEthAmountWei } = fees.find(f => f.currency === transaction.ETH_CURRENCY)
 
-  const utxoEthAmount = numberToBN(utxosToSpend.find(utxo => utxo.currency === currency).amount)
-  if (utxoEthAmount.gt(numberToBN(amount).add(numberToBN(feeEthAmountWei)))) {
+  const utxoAmount = numberToBN(utxosToSpend.find(utxo => utxo.currency === currency).amount)
+  const utxoEthAmount = numberToBN(utxosToSpend.find(utxo => utxo.currency === transaction.ETH_CURRENCY).amount)
+  const isEthCurrency = currency === transaction.ETH_CURRENCY
+
+  if (!isEthCurrency) {
     // Need to add a 'change' output
-    const CHANGE_AMOUNT = currency === transaction.ETH_CURRENCY
-      ? utxoEthAmount.sub(numberToBN(amount)).sub(numberToBN(feeEthAmountWei))
-      : utxoEthAmount.sub(numberToBN(feeEthAmountWei))
+    if (utxoAmount.gt(numberToBN(amount))) {
+      const CHANGE_AMOUNT = utxoAmount.sub(numberToBN(amount))
+      txBody.outputs.push({
+        outputType: 1,
+        outputGuard: from,
+        currency,
+        amount: CHANGE_AMOUNT
+      })
+    }
+
+    const CHANGE_AMOUNT_FEE = utxoEthAmount.sub(numberToBN(feeEthAmountWei))
 
     txBody.outputs.push({
       outputType: 1,
       outputGuard: from,
-      currency,
-      amount: CHANGE_AMOUNT
+      currency: transaction.ETH_CURRENCY,
+      amount: CHANGE_AMOUNT_FEE
     })
+  } else {
+    if (utxoAmount.gt(numberToBN(amount).add(numberToBN(feeEthAmountWei)))) {
+      const CHANGE_AMOUNT = utxoAmount.sub(numberToBN(amount)).sub(numberToBN(feeEthAmountWei))
+      txBody.outputs.push({
+        outputType: 1,
+        outputGuard: from,
+        currency: transaction.ETH_CURRENCY,
+        amount: CHANGE_AMOUNT
+      })
+    }
   }
+  console.log(txBody)
 
   const privateKeys = new Array(utxosToSpend.length).fill(fromPrivateKey)
   const typedData = transaction.getTypedData(txBody, verifyingContract)

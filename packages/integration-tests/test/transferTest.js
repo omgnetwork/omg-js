@@ -239,7 +239,7 @@ describe('transferTest.js (ci-enabled)', function () {
     })
   })
 
-  describe('ERC20 transfer', function () {
+  describe.only('ERC20 transfer', function () {
     const ERC20_CURRENCY = config.erc20_contract_address
     const INTIIAL_ALICE_AMOUNT_ETH = web3.utils.toWei('.00000001', 'ether')
     const INTIIAL_ALICE_AMOUNT = 4
