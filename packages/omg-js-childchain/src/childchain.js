@@ -177,7 +177,7 @@ class ChildChain {
    * @param {Object} args an arguments object
    * @param {string} args.owner owner of the input utxos
    * @param {Payment[]} args.payments payments made as outputs
-   * @param {Fee} [args.fee] fee paid
+   * @param {Fee} [args.fee] the fee object that tells what currency need you want to use as fee, amount will be automatically calculate by childchain.
    * @param {string} [args.metadata] metadata to include in the transaction
    * @return {Promise<Object>} promise that resolves with an object containing the list of transactions that will fullfil the required spend
    */
