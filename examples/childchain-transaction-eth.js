@@ -52,7 +52,6 @@ async function childchainTransactionEth () {
   console.log('-----')
 
   const transferAmount = new BigNumber(web3.utils.toWei(config.alice_eth_transfer_amount, 'ether'))
-  const feeAmount = new BigNumber(web3.utils.toWei('0.00000000000000001', 'ether'))
 
   const payments = [{
     owner: bobAddress,
@@ -60,8 +59,7 @@ async function childchainTransactionEth () {
     amount: Number(transferAmount)
   }]
   const fee = {
-    currency: transaction.ETH_CURRENCY,
-    amount: Number(feeAmount)
+    currency: transaction.ETH_CURRENCY
   }
 
   const createdTxn = await childChain.createTransaction({
@@ -70,6 +68,7 @@ async function childchainTransactionEth () {
     fee,
     metadata: 'hello'
   })
+
   console.log(`Created a childchain transaction of ${web3.utils.fromWei(payments[0].amount.toString(), 'ether')} ETH from Alice to Bob.`)
 
   // type/sign/build/submit
