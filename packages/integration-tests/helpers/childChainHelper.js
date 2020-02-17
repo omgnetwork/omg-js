@@ -22,7 +22,7 @@ const config = require('../test-config')
 async function selectUtxos (utxos, amount, currency) {
   // Filter by desired currency and sort in descending order
   const childChain = new Childchain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url })
-  const fees = (await childChain.getFeesInfo())['1']
+  const fees = (await childChain.getFees())['1']
   const { amount: feeEthAmountWei } = fees.find(f => f.currency === transaction.ETH_CURRENCY)
 
   const sorted = utxos
@@ -125,7 +125,7 @@ async function createTx (childChain, from, to, amount, currency, fromPrivateKey,
     }]
   }
 
-  const fees = (await childChain.getFeesInfo())['1']
+  const fees = (await childChain.getFees())['1']
   const { amount: feeEthAmountWei } = fees.find(f => f.currency === transaction.ETH_CURRENCY)
 
   const utxoAmount = numberToBN(utxosToSpend.find(utxo => utxo.currency === currency).amount)
@@ -182,7 +182,7 @@ async function send (childChain, from, to, amount, currency, fromPrivateKey, ver
 // works only with ETH for now
 async function splitUtxo (childChain, verifyingContract, account, utxo, split) {
   console.log(`Splitting utxo ${transaction.encodeUtxoPos(utxo)}`)
-  const fees = (await childChain.getFeesInfo())['1']
+  const fees = (await childChain.getFees())['1']
   const { amount } = fees.find(f => f.currency === transaction.ETH_CURRENCY)
   const txBody = {
     inputs: [utxo],

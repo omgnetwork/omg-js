@@ -105,7 +105,7 @@ describe('challengeInFlightExitOutputSpentTest.js', function () {
     it('should challenge output from a canonical invalid output piggyback', async function () {
       const bobSpentOnGas = numberToBN(0)
       const carolSpentOnGas = numberToBN(0)
-      const fees = (await childChain.getFeesInfo())['1']
+      const fees = (await childChain.getFees())['1']
       const { amount: feeAmountEth } = fees.find(f => f.currency === transaction.ETH_CURRENCY)
       // Alice sends to Bob
       const tx1 = await ccHelper.createTx(

@@ -7,7 +7,7 @@ toc:
       - getTransactions
       - getExitData
       - getChallengeData
-      - getFeesInfo
+      - getFees
       - createTransaction
       - signTypedData
       - submitTyped

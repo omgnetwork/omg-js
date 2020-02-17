@@ -48,7 +48,7 @@ const validateFee = Joi.object({
   currency: validateAddress.required()
 })
 
-const validateFeeCreateFromChildchain = Joi.object({
+const validateFeeCurrency = Joi.object({
   currency: validateAddress.required()
 })
 
@@ -60,5 +60,5 @@ module.exports = {
   validateMetadata,
   validateFee,
   validateBn,
-  validateFeeCreateFromChildchain
+  validateFeeCurrency
 }

@@ -285,7 +285,7 @@ const faucet = {
     const balances = await this.childChain.getBalance(from.address)
     for (const balance of balances) {
       if (balance.currency === transaction.ETH_CURRENCY) {
-        const fees = (await this.childChain.getFeesInfo())['1']
+        const fees = (await this.childChain.getFees())['1']
         const { amount: feeEthAmountWei } = fees.find(f => f.currency === transaction.ETH_CURRENCY)
         await ccHelper.send(
           this.childChain,

@@ -35,7 +35,7 @@ describe('transferTest.js (ci-enabled)', function () {
   let feeEth
   before(async function () {
     await faucet.init({ rootChain, childChain, web3, config, faucetName })
-    const fees = (await childChain.getFeesInfo())['1']
+    const fees = (await childChain.getFees())['1']
     const { amount } = fees.find(f => f.currency === transaction.ETH_CURRENCY)
     feeEth = amount
   })
