@@ -74,7 +74,7 @@
                       </a></li>
                     
                       <li><a
-                        href='#getFees'
+                        href='#getfees'
                         class='regular pre-open'>
                         .getFees
                       </a></li>
@@ -503,22 +503,18 @@
                         .Fee
                       </a></li>
                     
+                      <li><a
+                        href='#feeinfo'
+                        class='regular pre-open'>
+                        .FeeInfo
+                      </a></li>
+                    
                     </ul>
                   
                   
                   
                   
                 </div>
-                
-                </li>
-              
-                
-                <li><a
-                  href='#feeinfo'
-                  class="">
-                  FeeInfo
-                  
-                </a>
                 
                 </li>
               
@@ -1047,7 +1043,7 @@
       </div>
     </div>
   
-    <div class='border-bottom' id='getFees'>
+    <div class='border-bottom' id='getfees'>
       <div class="clearfix small pointer toggle-sibling">
         <div class="py1 contain">
             <a class='icon pin-right py1 dark-link caret-right'>▸</a>
@@ -1059,7 +1055,7 @@
 
   
 
-  <p>Get all the fees amount that is avaliable to use on the network</p>
+  <p>Get supported fee tokens and amounts</p>
 
     <div class='pre p1 fill-light mt0'>getFees(): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="#feeinfo">FeeInfo</a>></div>
   
@@ -1172,7 +1168,7 @@
                 <tr>
   <td class='break-word'><span class='code bold'>args.fee</span> <code class='quiet'><a href="#fee">Fee</a>?</code>
   </td>
-  <td class='break-word'><span>the fee object that tells what currency need you want to use as fee, amount will be automatically calculate by childchain.
+  <td class='break-word'><span>a fee object only containing the currency to be used for the fee. The fee amount is automatically calculated by the child chain
 </span></td>
 </tr>
 
@@ -7911,31 +7907,16 @@ This method decodes a string that was encoded with encodeMetadata().</p>
       </div>
     </div>
   
-</div>
+    <div class='border-bottom' id='feeinfo'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>FeeInfo</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
 
-  
-
-  
-
-  
-
-  
-</section>
-
-          
-        
-          
-          <section class='p2 mb2 clearfix bg-white minishadow'>
-
-  
-  <div class='clearfix'>
-    
-    <h3 class='fl m0' id='feeinfo'>
-      FeeInfo
-    </h3>
-    
-    
-  </div>
   
 
   <p>Fees object information</p>
@@ -8012,6 +7993,20 @@ This method decodes a string that was encoded with encodeMetadata().</p>
   
 
   
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+</div>
 
   
 
