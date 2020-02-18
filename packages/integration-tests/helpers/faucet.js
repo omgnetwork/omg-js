@@ -273,28 +273,44 @@ const faucet = {
   },
 
   returnFunds: function (from, to) {
-    return Promise.all([
-      this.returnChildchainFunds(from, to),
-      this.returnRootchainFunds(from, to)
-    ])
+    return this.returnRootchainFunds(from, to)
+    // we don't return childchain fund because it messed up the utxo
+    // return Promise.all([
+    //   this.returnChildchainFunds(from, to),
+    //   this.returnRootchainFunds(from, to)
+    // ])
   },
 
   returnChildchainFunds: async function (from, to = this.faucetAccount) {
     const balances = await this.childChain.getBalance(from.address)
-    const txPromises = balances.map(balance => {
-      return ccHelper.send(
-        this.childChain,
-        from.address,
-        to.address,
-        balance.amount,
-        balance.currency,
-        from.privateKey,
-        this.rootChain.plasmaContractAddress
-      ).catch(e => {
-        console.log(`Error returning childchain funds from ${from.address}: ${e.message}`)
-      })
-    })
-    return Promise.all(txPromises)
+    for (const balance of balances) {
+      if (balance.currency === transaction.ETH_CURRENCY) {
+        const fees = (await this.childChain.getFees())['1']
+        const { amount: feeEthAmountWei } = fees.find(f => f.currency === transaction.ETH_CURRENCY)
+        await ccHelper.send(
+          this.childChain,
+          from.address,
+          to.address,
+          numberToBN(balance.amount).sub(numberToBN(feeEthAmountWei)),
+          balance.currency,
+          from.privateKey,
+          this.rootChain.plasmaContractAddress
+        ).catch(e => {
+          console.log(`Error returning childchain funds from ${from.address}: ${e.message}`)
+        })
+      } else {
+        // skip returning fund for erc20 now due to fee
+        // await ccHelper.send(
+        //   this.childChain,
+        //   from.address,
+        //   to.address,
+        //   balance.amount,
+        //   balance.currency,
+        //   from.privateKey,
+        //   this.rootChain.plasmaContractAddress
+        // )
+      }
+    }
   },
 
   returnRootchainFunds: async function (from, to = this.faucetAccount) {

@@ -48,6 +48,10 @@ const validateFee = Joi.object({
   currency: validateAddress.required()
 })
 
+const validateFeeCurrency = Joi.object({
+  currency: validateAddress.required()
+})
+
 module.exports = {
   validateAmount,
   validateAddress,
@@ -55,5 +59,6 @@ module.exports = {
   validatePayment,
   validateMetadata,
   validateFee,
-  validateBn
+  validateBn,
+  validateFeeCurrency
 }

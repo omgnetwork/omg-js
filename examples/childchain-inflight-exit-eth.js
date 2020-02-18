@@ -64,7 +64,6 @@ async function childchainInflightExitEth () {
   console.log('-----')
 
   const transferAmount = new BigNumber(web3.utils.toWei(config.alice_eth_transfer_amount, 'ether'))
-  const feeAmount = new BigNumber(web3.utils.toWei('0.00000000000000001', 'ether'))
 
   const payments = [{
     owner: bobAddress,
@@ -72,8 +71,7 @@ async function childchainInflightExitEth () {
     amount: Number(transferAmount)
   }]
   const fee = {
-    currency: transaction.ETH_CURRENCY,
-    amount: Number(feeAmount)
+    currency: transaction.ETH_CURRENCY
   }
   const createdTxn = await childChain.createTransaction({
     owner: aliceAddress,

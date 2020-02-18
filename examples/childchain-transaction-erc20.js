@@ -54,8 +54,7 @@ async function childchainTransactionErc20 () {
     amount: Number(config.alice_erc20_transfer_amount)
   }]
   const fee = {
-    currency: transaction.ETH_CURRENCY,
-    amount: 1
+    currency: transaction.ETH_CURRENCY
   }
 
   const createdTxn = await childChain.createTransaction({

@@ -147,5 +147,16 @@
  * Fee object used when sending or creating transactions
  * @typedef {Object} Fee
  * @property {string} currency
- * @property {string|number|BigNumber} amount
  */
+
+/**
+  * Fees object information
+  * @typedef {Object} FeeInfo
+  * @property {number} amount
+  * @property {string} currency
+  * @property {number} pegged_amount
+  * @property {string} pegged_currency
+  * @property {number} pegged_subunit_to_unit
+  * @property {number} subunit_to_unit
+  * @property {string} updated_at
+  */

@@ -29,15 +29,17 @@ describe('createSubmitTypedTransactionTest.js (ci-enabled)', function () {
   const web3 = new Web3(config.eth_node)
   const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url })
   const rootChain = new RootChain({ web3, plasmaContractAddress: config.plasmaframework_contract_address })
-
+  let FEE_ETH_AMOUNT
   before(async function () {
     await faucet.init({ rootChain, childChain, web3, config, faucetName })
+    const fees = (await childChain.getFees())['1']
+    const { amount } = fees.find(f => f.currency === transaction.ETH_CURRENCY)
+    FEE_ETH_AMOUNT = numberToBN(amount)
   })
 
   describe('create a single currency transaction with submitTyped', function () {
     const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.000001', 'ether')
     const TRANSFER_AMOUNT = web3.utils.toWei('.0000001', 'ether')
-    const FEE_AMOUNT = 10
 
     let aliceAccount
     let bobAccount
@@ -66,8 +68,7 @@ describe('createSubmitTypedTransactionTest.js (ci-enabled)', function () {
       }]
 
       const fee = {
-        currency: transaction.ETH_CURRENCY,
-        amount: FEE_AMOUNT
+        currency: transaction.ETH_CURRENCY
       }
 
       const createdTx = await childChain.createTransaction({
@@ -90,7 +91,7 @@ describe('createSubmitTypedTransactionTest.js (ci-enabled)', function () {
       // Alice's balance should be INTIIAL_ALICE_AMOUNT - TRANSFER_AMOUNT - FEE_AMOUNT
       const aliceBalance = await childChain.getBalance(aliceAccount.address)
       assert.equal(aliceBalance.length, 1)
-      const expected = numberToBN(INTIIAL_ALICE_AMOUNT).sub(numberToBN(TRANSFER_AMOUNT)).subn(FEE_AMOUNT)
+      const expected = numberToBN(INTIIAL_ALICE_AMOUNT).sub(numberToBN(TRANSFER_AMOUNT)).sub(FEE_ETH_AMOUNT)
       assert.equal(aliceBalance[0].amount.toString(), expected.toString())
     })
   })

@@ -32,15 +32,17 @@ describe('createTransactionTest.js (ci-enabled)', function () {
   const web3 = new Web3(config.eth_node)
   const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url })
   const rootChain = new RootChain({ web3, plasmaContractAddress: config.plasmaframework_contract_address })
-
+  let FEE_ETH_AMOUNT
   before(async function () {
     await faucet.init({ rootChain, childChain, web3, config, faucetName })
+    const fees = (await childChain.getFees())['1']
+    const { amount } = fees.find(f => f.currency === transaction.ETH_CURRENCY)
+    FEE_ETH_AMOUNT = numberToBN(amount)
   })
 
   describe('create a single currency transaction', function () {
-    const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.000001', 'ether')
+    const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.0001', 'ether')
     const TRANSFER_AMOUNT = web3.utils.toWei('.0000001', 'ether')
-    const FEE_AMOUNT = 10
 
     let aliceAccount
     let bobAccount
@@ -69,8 +71,7 @@ describe('createTransactionTest.js (ci-enabled)', function () {
       }]
 
       const fee = {
-        currency: transaction.ETH_CURRENCY,
-        amount: FEE_AMOUNT
+        currency: transaction.ETH_CURRENCY
       }
 
       const createdTx = await childChain.createTransaction({
@@ -99,15 +100,14 @@ describe('createTransactionTest.js (ci-enabled)', function () {
       // Alice's balance should be INTIIAL_ALICE_AMOUNT - TRANSFER_AMOUNT - FEE_AMOUNT
       const aliceBalance = await childChain.getBalance(aliceAccount.address)
       assert.equal(aliceBalance.length, 1)
-      const expected = numberToBN(INTIIAL_ALICE_AMOUNT).sub(numberToBN(TRANSFER_AMOUNT)).subn(FEE_AMOUNT)
+      const expected = numberToBN(INTIIAL_ALICE_AMOUNT).sub(numberToBN(TRANSFER_AMOUNT)).sub(FEE_ETH_AMOUNT)
       assert.equal(aliceBalance[0].amount.toString(), expected.toString())
     })
   })
 
   describe('create a single currency transaction with no receiver', function () {
-    const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.000001', 'ether')
+    const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.0001', 'ether')
     const TRANSFER_AMOUNT = web3.utils.toWei('.0000001', 'ether')
-    const FEE_AMOUNT = 10
     let aliceAccount
     let bobAccount
 
@@ -134,8 +134,7 @@ describe('createTransactionTest.js (ci-enabled)', function () {
       }]
 
       const fee = {
-        currency: transaction.ETH_CURRENCY,
-        amount: FEE_AMOUNT
+        currency: transaction.ETH_CURRENCY
       }
 
       const createdTx = await childChain.createTransaction({
@@ -154,7 +153,6 @@ describe('createTransactionTest.js (ci-enabled)', function () {
     const INTIIAL_ALICE_AMOUNT_ERC20 = 3
     const TRANSFER_AMOUNT_ETH = numberToBN(web3.utils.toWei('0.0004', 'ether'))
     const TRANSFER_AMOUNT_ERC20 = 2
-    const FEE_AMOUNT = 0
     let aliceAccount
     let bobAccount
 
@@ -189,8 +187,7 @@ describe('createTransactionTest.js (ci-enabled)', function () {
       }]
 
       const fee = {
-        currency: transaction.ETH_CURRENCY,
-        amount: FEE_AMOUNT
+        currency: transaction.ETH_CURRENCY
       }
 
       const createdTx = await childChain.createTransaction({
@@ -222,7 +219,7 @@ describe('createTransactionTest.js (ci-enabled)', function () {
       // Check Alice's balance
       balance = await childChain.getBalance(aliceAccount.address)
       assert.equal(balance.length, 2)
-      const expectedEth = numberToBN(INTIIAL_ALICE_AMOUNT_ETH).sub(numberToBN(TRANSFER_AMOUNT_ETH)).subn(FEE_AMOUNT)
+      const expectedEth = numberToBN(INTIIAL_ALICE_AMOUNT_ETH).sub(numberToBN(TRANSFER_AMOUNT_ETH)).sub(FEE_ETH_AMOUNT)
       assert.deepInclude(balance, { currency: transaction.ETH_CURRENCY, amount: Number(expectedEth.toString()) })
       const expectedErc20 = numberToBN(INTIIAL_ALICE_AMOUNT_ERC20).sub(numberToBN(TRANSFER_AMOUNT_ERC20))
       assert.deepInclude(balance, { currency: ERC20_CURRENCY, amount: Number(expectedErc20.toString()) })
@@ -230,8 +227,7 @@ describe('createTransactionTest.js (ci-enabled)', function () {
   })
 
   describe('create an incomplete transaction', function () {
-    const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.000001', 'ether')
-    const FEE_AMOUNT = 0
+    const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.0000000001', 'ether')
     let aliceAccount
     let bobAccount
 
@@ -261,15 +257,16 @@ describe('createTransactionTest.js (ci-enabled)', function () {
     })
 
     it('should create an incomplete transaction', async function () {
+      const toSendAmount = numberToBN(INTIIAL_ALICE_AMOUNT).sub(numberToBN(FEE_ETH_AMOUNT).mul(numberToBN(3)))
       const payments = [{
         owner: bobAccount.address,
         currency: transaction.ETH_CURRENCY,
-        amount: Number(INTIIAL_ALICE_AMOUNT)
+        amount: toSendAmount
+        // split 2 times so we need to deduct the fee
       }]
 
       const fee = {
-        currency: transaction.ETH_CURRENCY,
-        amount: FEE_AMOUNT
+        currency: transaction.ETH_CURRENCY
       }
 
       const createdTx = await childChain.createTransaction({
@@ -317,9 +314,9 @@ describe('createTransactionTest.js (ci-enabled)', function () {
       console.log(`Submitted transaction: ${JSON.stringify(result)}`)
 
       // Bob's balance should be INTIIAL_ALICE_AMOUNT
-      const bobBalance = await ccHelper.waitForBalanceEq(childChain, bobAccount.address, INTIIAL_ALICE_AMOUNT)
+      const bobBalance = await ccHelper.waitForBalanceEq(childChain, bobAccount.address, toSendAmount)
       assert.equal(bobBalance.length, 1)
-      assert.equal(bobBalance[0].amount.toString(), INTIIAL_ALICE_AMOUNT)
+      assert.equal(bobBalance[0].amount.toString(), toSendAmount)
 
       // Alice's balance should be 0
       const aliceBalance = await childChain.getBalance(aliceAccount.address)
@@ -328,7 +325,7 @@ describe('createTransactionTest.js (ci-enabled)', function () {
   })
 
   describe('create a transaction to split utxos', function () {
-    const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.000001', 'ether')
+    const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.0001', 'ether')
     let aliceAccount
 
     beforeEach(async function () {
@@ -349,15 +346,14 @@ describe('createTransactionTest.js (ci-enabled)', function () {
       const utxos = await childChain.getUtxos(aliceAccount.address)
       const utxo = utxos[0]
       const div = Math.floor(utxo.amount / 4)
-      const payments = new Array(4).fill().map(x => ({
+      const payments = new Array(4).fill().map((x, i) => ({
         owner: aliceAccount.address,
         currency: transaction.ETH_CURRENCY,
-        amount: div
+        amount: i === 0 ? div - FEE_ETH_AMOUNT : div
       }))
 
       const fee = {
-        currency: transaction.ETH_CURRENCY,
-        amount: 0
+        currency: transaction.ETH_CURRENCY
       }
 
       const createdTx = await childChain.createTransaction({

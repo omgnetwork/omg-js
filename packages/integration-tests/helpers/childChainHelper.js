@@ -16,9 +16,15 @@ limitations under the License. */
 const promiseRetry = require('promise-retry')
 const { transaction, hexPrefix } = require('@omisego/omg-js-util')
 const numberToBN = require('number-to-bn')
+const Childchain = require('@omisego/omg-js-childchain')
+const config = require('../test-config')
 
-function selectUtxos (utxos, amount, currency, includeFee) {
+async function selectUtxos (utxos, amount, currency) {
   // Filter by desired currency and sort in descending order
+  const childChain = new Childchain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url })
+  const fees = (await childChain.getFees())['1']
+  const { amount: feeEthAmountWei } = fees.find(f => f.currency === transaction.ETH_CURRENCY)
+
   const sorted = utxos
     .filter(utxo => utxo.currency.toLowerCase() === currency.toLowerCase())
     .sort((a, b) => numberToBN(b.amount).sub(numberToBN(a.amount)))
@@ -29,24 +35,20 @@ function selectUtxos (utxos, amount, currency, includeFee) {
     for (let i = 0; i < Math.min(sorted.length, 4); i++) {
       selected.push(sorted[i])
       currentBalance.iadd(numberToBN(sorted[i].amount))
-      if (currentBalance.gte(numberToBN(amount))) {
+      const expectedTotalIncludeFee = numberToBN(amount).add(numberToBN(feeEthAmountWei))
+      if (currency === transaction.ETH_CURRENCY && currentBalance.gte(expectedTotalIncludeFee)) {
+        break
+      } else if (currentBalance.gte(numberToBN(amount))) {
         break
       }
     }
-
-    if (currentBalance.gte(numberToBN(amount))) {
-      if (includeFee) {
-        // Find the first ETH utxo (that's not selected)
-        const ethUtxos = utxos.filter(
-          utxo => utxo.currency.toLowerCase() === transaction.ETH_CURRENCY.toLowerCase()
-        )
-        const feeUtxo = ethUtxos.find(utxo => utxo !== selected)
-        if (feeUtxo) {
-          selected.push(feeUtxo)
-        }
-      }
-      return selected
+    if (currency !== transaction.ETH_CURRENCY) {
+      const ethUtxos = utxos.find(
+        utxo => utxo.currency.toLowerCase() === transaction.ETH_CURRENCY.toLowerCase()
+      )
+      selected.push(ethUtxos)
     }
+    return selected
   }
 }
 
@@ -107,11 +109,11 @@ async function createTx (childChain, from, to, amount, currency, fromPrivateKey,
   }
 
   const utxos = await childChain.getUtxos(from)
-  const transferZeroFee = currency !== transaction.ETH_CURRENCY
-  const utxosToSpend = selectUtxos(utxos, amount, currency, transferZeroFee)
+  const utxosToSpend = await selectUtxos(utxos, amount, currency, true)
   if (!utxosToSpend || utxosToSpend.length === 0) {
     throw new Error(`Not enough funds in ${from} to cover ${amount} ${currency}`)
   }
+
   // Construct the tx body
   const txBody = {
     inputs: utxosToSpend,
@@ -123,26 +125,44 @@ async function createTx (childChain, from, to, amount, currency, fromPrivateKey,
     }]
   }
 
-  const utxoAmount = numberToBN(utxosToSpend[0].amount)
-  if (utxoAmount.gt(numberToBN(amount))) {
-    // Need to add a 'change' output
-    const CHANGE_AMOUNT = utxoAmount.sub(numberToBN(amount))
-    txBody.outputs.push({
-      outputType: 1,
-      outputGuard: from,
-      currency,
-      amount: CHANGE_AMOUNT
-    })
-  }
+  const fees = (await childChain.getFees())['1']
+  const { amount: feeEthAmountWei } = fees.find(f => f.currency === transaction.ETH_CURRENCY)
 
-  if (this.transferZeroFee && utxosToSpend.length > 1) {
-    // The fee input can be returned
+  const utxoAmount = numberToBN(utxosToSpend.find(utxo => utxo.currency === currency).amount)
+  const utxoEthAmount = numberToBN(utxosToSpend.find(utxo => utxo.currency === transaction.ETH_CURRENCY).amount)
+  const isEthCurrency = currency === transaction.ETH_CURRENCY
+
+  if (!isEthCurrency) {
+    // Need to add a 'change' output
+    if (utxoAmount.gt(numberToBN(amount))) {
+      const CHANGE_AMOUNT = utxoAmount.sub(numberToBN(amount))
+      txBody.outputs.push({
+        outputType: 1,
+        outputGuard: from,
+        currency,
+        amount: CHANGE_AMOUNT
+      })
+    }
+
+    const CHANGE_AMOUNT_FEE = utxoEthAmount.sub(numberToBN(feeEthAmountWei))
+
     txBody.outputs.push({
       outputType: 1,
       outputGuard: from,
-      currency: utxosToSpend[utxosToSpend.length - 1].currency,
-      amount: utxosToSpend[utxosToSpend.length - 1].amount
+      currency: transaction.ETH_CURRENCY,
+      amount: CHANGE_AMOUNT_FEE
     })
+  } else {
+    const totalDeduct = numberToBN(amount).add(numberToBN(feeEthAmountWei))
+    if (utxoAmount.gt(totalDeduct)) {
+      const CHANGE_AMOUNT = utxoAmount.sub(numberToBN(amount)).sub(numberToBN(feeEthAmountWei))
+      txBody.outputs.push({
+        outputType: 1,
+        outputGuard: from,
+        currency: transaction.ETH_CURRENCY,
+        amount: CHANGE_AMOUNT
+      })
+    }
   }
 
   const privateKeys = new Array(utxosToSpend.length).fill(fromPrivateKey)
@@ -159,18 +179,20 @@ async function send (childChain, from, to, amount, currency, fromPrivateKey, ver
   return { result, txbytes: hexPrefix(signedTx) }
 }
 
+// works only with ETH for now
 async function splitUtxo (childChain, verifyingContract, account, utxo, split) {
   console.log(`Splitting utxo ${transaction.encodeUtxoPos(utxo)}`)
-
+  const fees = (await childChain.getFees())['1']
+  const { amount } = fees.find(f => f.currency === transaction.ETH_CURRENCY)
   const txBody = {
     inputs: [utxo],
     outputs: []
   }
   const div = Math.floor(utxo.amount / split)
-  txBody.outputs = new Array(split).fill().map(x => ({
+  txBody.outputs = new Array(split).fill().map((x, i) => ({
     owner: account.address,
     currency: transaction.ETH_CURRENCY,
-    amount: div
+    amount: i === 0 ? div - amount : div // need to deduct eth fee
   }))
 
   // Create the unsigned transaction

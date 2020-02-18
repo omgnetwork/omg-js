@@ -92,11 +92,26 @@ class ChildChain {
    * @param {string} id the hash of the transaction to get
    * @return {Promise<TransactionData>} promise that resolves with a transaction
    */
+
   async getTransaction (id) {
     Joi.assert({ id }, getTransactionSchema)
     return rpcApi.post({
       url: `${this.watcherUrl}/transaction.get`,
       body: { id },
+      proxyUrl: this.watcherProxyUrl
+    })
+  }
+
+  /**
+   * Get supported fee tokens and amounts
+   *
+   * @method getFees
+   * @return {Promise<FeeInfo>}
+   */
+  async getFees () {
+    return rpcApi.post({
+      url: `${this.watcherUrl}/fees.all`,
+      body: {},
       proxyUrl: this.watcherProxyUrl
     })
   }
@@ -162,7 +177,7 @@ class ChildChain {
    * @param {Object} args an arguments object
    * @param {string} args.owner owner of the input utxos
    * @param {Payment[]} args.payments payments made as outputs
-   * @param {Fee} [args.fee] fee paid
+   * @param {Fee} [args.fee] a fee object only containing the currency to be used for the fee. The fee amount is automatically calculated by the child chain
    * @param {string} [args.metadata] metadata to include in the transaction
    * @return {Promise<Object>} promise that resolves with an object containing the list of transactions that will fullfil the required spend
    */

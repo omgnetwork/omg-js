@@ -74,6 +74,12 @@
                       </a></li>
                     
                       <li><a
+                        href='#getfees'
+                        class='regular pre-open'>
+                        .getFees
+                      </a></li>
+                    
+                      <li><a
                         href='#createtransaction'
                         class='regular pre-open'>
                         .createTransaction
@@ -495,6 +501,12 @@
                         href='#fee'
                         class='regular pre-open'>
                         .Fee
+                      </a></li>
+                    
+                      <li><a
+                        href='#feeinfo'
+                        class='regular pre-open'>
+                        .FeeInfo
                       </a></li>
                     
                     </ul>
@@ -1031,6 +1043,61 @@
       </div>
     </div>
   
+    <div class='border-bottom' id='getfees'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>getFees()</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>Get supported fee tokens and amounts</p>
+
+    <div class='pre p1 fill-light mt0'>getFees(): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="#feeinfo">FeeInfo</a>></div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="#feeinfo">FeeInfo</a>></code>:
+        
+
+      
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
     <div class='border-bottom' id='createtransaction'>
       <div class="clearfix small pointer toggle-sibling">
         <div class="py1 contain">
@@ -1101,7 +1168,7 @@
                 <tr>
   <td class='break-word'><span class='code bold'>args.fee</span> <code class='quiet'><a href="#fee">Fee</a>?</code>
   </td>
-  <td class='break-word'><span>fee paid
+  <td class='break-word'><span>a fee object only containing the currency to be used for the fee. The fee amount is automatically calculated by the child chain
 </span></td>
 </tr>
 
@@ -7819,8 +7886,101 @@ This method decodes a string that was encoded with encodeMetadata().</p>
           
         </div>
       
+    </div>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='feeinfo'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>FeeInfo</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>Fees object information</p>
+
+    <div class='pre p1 fill-light mt0'>FeeInfo</div>
+  
+    <p>
+      Type:
+      <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>
+    </p>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Properties</div>
+    <div>
+      
         <div class='space-bottom0'>
-          <span class='code bold'>amount</span> <code class='quiet'>((<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a> | <a href="#bignumber">BigNumber</a>))</code>
+          <span class='code bold'>amount</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)</code>
+          
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>currency</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
+          
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>pegged_amount</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)</code>
+          
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>pegged_currency</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
+          
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>pegged_subunit_to_unit</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)</code>
+          
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>subunit_to_unit</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)</code>
+          
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <span class='code bold'>updated_at</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
           
           
         </div>

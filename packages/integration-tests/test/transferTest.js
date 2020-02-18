@@ -32,22 +32,25 @@ describe('transferTest.js (ci-enabled)', function () {
   const web3 = new Web3(config.eth_node)
   const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url })
   const rootChain = new RootChain({ web3, plasmaContractAddress: config.plasmaframework_contract_address })
-
+  let feeEth
   before(async function () {
     await faucet.init({ rootChain, childChain, web3, config, faucetName })
+    const fees = (await childChain.getFees())['1']
+    const { amount } = fees.find(f => f.currency === transaction.ETH_CURRENCY)
+    feeEth = amount
   })
 
   describe('Simple ETH', function () {
     const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.1', 'ether')
-    // TRANSFER_AMOUNT is deliberately bigger than Number.MAX_SAFE_INTEGER to cause rounding errors if not properly handled
-    const TRANSFER_AMOUNT = '20000000000000123'
-
+    let TRANSFER_AMOUNT
     let aliceAccount
     let bobAccount
 
     beforeEach(async function () {
       aliceAccount = rcHelper.createAccount(web3)
       bobAccount = rcHelper.createAccount(web3)
+      // TRANSFER_AMOUNT is deliberately bigger than Number.MAX_SAFE_INTEGER to cause rounding errors if not properly handled
+      TRANSFER_AMOUNT = numberToBN('20000000000000123')
       await faucet.fundChildchain(aliceAccount.address, INTIIAL_ALICE_AMOUNT, transaction.ETH_CURRENCY)
       await ccHelper.waitForBalanceEq(childChain, aliceAccount.address, INTIIAL_ALICE_AMOUNT)
     })
@@ -69,7 +72,7 @@ describe('transferTest.js (ci-enabled)', function () {
       assert.equal(utxos[0].amount.toString(), INTIIAL_ALICE_AMOUNT)
       assert.equal(utxos[0].currency, transaction.ETH_CURRENCY)
 
-      const CHANGE_AMOUNT = numberToBN(utxos[0].amount).sub(numberToBN(TRANSFER_AMOUNT))
+      const CHANGE_AMOUNT = numberToBN(utxos[0].amount).sub(numberToBN(TRANSFER_AMOUNT)).sub(numberToBN(feeEth))
       const txBody = {
         inputs: [utxos[0]],
         outputs: [{
@@ -164,8 +167,7 @@ describe('transferTest.js (ci-enabled)', function () {
       const ALICE_OUTPUT_0 = UTXO_AMOUNT * 0.2
       const ALICE_OUTPUT_1 = UTXO_AMOUNT * 1.3
       const BOB_OUTPUT_0 = UTXO_AMOUNT * 1
-      const BOB_OUTPUT_1 = UTXO_AMOUNT * 1.5
-
+      const BOB_OUTPUT_1 = numberToBN(UTXO_AMOUNT).mul(numberToBN(3)).div(numberToBN(2)).sub(numberToBN(feeEth))
       const outputs = [
         {
           outputType: 1,
@@ -279,6 +281,7 @@ describe('transferTest.js (ci-enabled)', function () {
       assert.equal(erc20Utxo.currency, ERC20_CURRENCY)
 
       const CHANGE_AMOUNT = erc20Utxo.amount - TRANSFER_AMOUNT
+      const CHANGE_AMOUNT_FEE = ethUtxo.amount - feeEth
       const txBody = {
         inputs: [ethUtxo, erc20Utxo],
         outputs: [{
@@ -291,6 +294,11 @@ describe('transferTest.js (ci-enabled)', function () {
           outputGuard: aliceAccount.address,
           currency: ERC20_CURRENCY,
           amount: CHANGE_AMOUNT
+        }, {
+          outputType: 1,
+          outputGuard: aliceAccount.address,
+          currency: transaction.ETH_CURRENCY,
+          amount: CHANGE_AMOUNT_FEE
         }]
       }
 
@@ -319,9 +327,9 @@ describe('transferTest.js (ci-enabled)', function () {
   describe('Mixed currency transfer', function () {
     const ERC20_CURRENCY = config.erc20_contract_address
     const INTIIAL_ALICE_AMOUNT_ETH = web3.utils.toWei('0.001', 'ether')
-    const INTIIAL_ALICE_AMOUNT_ERC20 = 3
+    const INTIIAL_ALICE_AMOUNT_ERC20 = 2
     const TRANSFER_AMOUNT_ETH = numberToBN(web3.utils.toWei('0.0004', 'ether'))
-    const TRANSFER_AMOUNT_ERC20 = 2
+    const TRANSFER_AMOUNT_ERC20 = 1
     let aliceAccount
     let bobAccount
 
@@ -354,7 +362,7 @@ describe('transferTest.js (ci-enabled)', function () {
       assert.equal(utxos[1].amount, INTIIAL_ALICE_AMOUNT_ERC20)
       assert.equal(utxos[1].currency.toLowerCase(), ERC20_CURRENCY.toLowerCase())
 
-      const CHANGE_AMOUNT_ETH = numberToBN(utxos[0].amount).sub(TRANSFER_AMOUNT_ETH)
+      const CHANGE_AMOUNT_ETH = numberToBN(utxos[0].amount).sub(TRANSFER_AMOUNT_ETH).sub(numberToBN(feeEth))
       const CHANGE_AMOUNT_ERC20 = utxos[1].amount - TRANSFER_AMOUNT_ERC20
       const txBody = {
         inputs: [utxos[0], utxos[1]],
@@ -452,7 +460,7 @@ describe('transferTest.js (ci-enabled)', function () {
           amount: TRANSFER_AMOUNT
         }],
         fee: {
-          amount: 0,
+          amount: feeEth,
           currency: transaction.ETH_CURRENCY
         },
         verifyingContract: rootChain.plasmaContractAddress
