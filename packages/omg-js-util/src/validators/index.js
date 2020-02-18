@@ -19,7 +19,7 @@ const decodeDepositSchema = Joi.object({
 })
 
 const decodeTxBytesSchema = Joi.object({
-  tx: Joi.binary().required()
+  tx: Joi.any().required()
 })
 
 const createTransactionBodySchema = Joi.object({
@@ -82,7 +82,7 @@ const waitForRootchainTransactionSchema = Joi.object({
 })
 
 const signSchema = Joi.object({
-  tx: Joi.binary().required(),
+  tx: Joi.any().required(),
   privateKeys: Joi.array().items(Joi.string()).required()
 })
 
