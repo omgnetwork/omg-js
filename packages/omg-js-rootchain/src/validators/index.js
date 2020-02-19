@@ -77,6 +77,10 @@ const getInFlightExitIdSchema = Joi.object({
   txBytes: Joi.string().required()
 })
 
+const getInFlightExitDataSchema = Joi.object({
+  exitIds: Joi.array().items(Joi.string().required())
+})
+
 const startInFlightExitSchema = Joi.object({
   inFlightTx: Joi.string().required(),
   inputTxs: Joi.array().required(),
@@ -165,6 +169,7 @@ module.exports = {
   addTokenSchema,
   getStandardExitIdSchema,
   getInFlightExitIdSchema,
+  getInFlightExitDataSchema,
   startInFlightExitSchema,
   piggybackInFlightExitOnOutputSchema,
   piggybackInFlightExitOnInputSchema,

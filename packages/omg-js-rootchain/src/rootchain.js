@@ -32,6 +32,7 @@ const {
   addTokenSchema,
   getStandardExitIdSchema,
   getInFlightExitIdSchema,
+  getInFlightExitDataSchema,
   startInFlightExitSchema,
   piggybackInFlightExitOnOutputSchema,
   piggybackInFlightExitOnInputSchema,
@@ -319,6 +320,19 @@ class RootChain {
     Joi.assert({ txBytes }, getInFlightExitIdSchema)
     const { contract } = await this.getPaymentExitGame()
     return contract.methods.getInFlightExitId(txBytes).call()
+  }
+
+  /**
+   * Retrieves in-flight exit data from exit IDs
+   *
+   * @method getInFlightExitData
+   * @param {string[]} exitIds exit ids to retrieve data for
+   * @return {Promise<Object[]>} promise that resolves with the exit data
+   */
+  async getInFlightExitData ({ exitIds }) {
+    Joi.assert({ exitIds }, getInFlightExitDataSchema)
+    const { contract } = await this.getPaymentExitGame()
+    return contract.methods.inFlightExits(exitIds).call()
   }
 
   /**
