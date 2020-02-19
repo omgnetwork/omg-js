@@ -16,6 +16,7 @@ limitations under the License. */
 const txUtils = require('./txUtils')
 const { transaction } = require('@omisego/omg-js-util')
 const erc20abi = require('human-standard-token-abi')
+const ethUtil = require('ethereumjs-util')
 const BN = require('bn.js')
 const abiDecoder = require('abi-decoder')
 const {
@@ -439,7 +440,8 @@ class RootChain {
           exitingTx,
           challengeTx,
           inputIndex,
-          challengeTxSig
+          challengeTxSig,
+          ethUtil.keccak256(txOptions.from)
         ]
       ),
       gas: txOptions.gas,
@@ -834,7 +836,8 @@ class RootChain {
           challengingTxInputIndex,
           challengingTxWitness,
           inputTx,
-          inputUtxoPos.toString()
+          inputUtxoPos.toString(),
+          ethUtil.keccak256(txOptions.from)
         ]
       ),
       gas: txOptions.gas,
@@ -893,7 +896,8 @@ class RootChain {
           inFlightTxOutputPos.toString(),
           challengingTx,
           challengingTxInputIndex,
-          challengingTxWitness
+          challengingTxWitness,
+          ethUtil.keccak256(txOptions.from)
         ]
       ),
       gas: txOptions.gas,
