@@ -326,7 +326,8 @@ class RootChain {
    * Retrieves in-flight exit data from exit IDs
    *
    * @method getInFlightExitData
-   * @param {string[]} exitIds exit ids to retrieve data for
+   * @param {Object} args an arguments object
+   * @param {string[]} args.exitIds exit ids to retrieve data for
    * @return {Promise<Object[]>} promise that resolves with the exit data
    */
   async getInFlightExitData ({ exitIds }) {
