@@ -358,7 +358,8 @@ describe('standardExitTest.js', function () {
         'blknum',
         'amount',
         'creating_txhash',
-        'spending_txhash'
+        'spending_txhash',
+        'otype'
       ])
       assert.equal(utxos[0].amount, INTIIAL_ALICE_AMOUNT_ERC20)
       assert.equal(

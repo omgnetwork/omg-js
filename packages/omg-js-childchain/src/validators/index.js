@@ -38,7 +38,8 @@ const getExitDataSchema = Joi.object({
   txindex: Joi.number().integer(),
   utxo_pos: validateAmount,
   spending_txhash: [Joi.string(), Joi.allow(null)],
-  creating_txhash: [Joi.string(), Joi.allow(null)]
+  creating_txhash: [Joi.string(), Joi.allow(null)],
+  otype: Joi.number().integer()
 })
 
 const getChallengeDataSchema = Joi.object({
