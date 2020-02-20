@@ -17,6 +17,7 @@ Below you can find a compatibility table of `omg-js` with `elixir-omg` and `plas
 
 | Version | elixir-omg | plasma-contracts |
 | --- | --- | --- |
+| 3.0.0-alpha.20 | 5d092ce | bfbf7cc |
 | 3.0.0-alpha.13 | 40f899b | 835d10c |
 | 3.0.0-alpha.12 | 02e67bf | a7e8503 |
 | 3.0.0-alpha.6 | 70e9a68 | 1608296 |
