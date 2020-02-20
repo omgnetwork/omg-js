@@ -68,7 +68,7 @@ describe('transferTest.js (ci-enabled)', function () {
       // Check utxos on the child chain
       const utxos = await childChain.getUtxos(aliceAccount.address)
       assert.equal(utxos.length, 1)
-      assert.hasAllKeys(utxos[0], ['utxo_pos', 'txindex', 'owner', 'oindex', 'currency', 'blknum', 'amount', 'creating_txhash', 'spending_txhash'])
+      assert.hasAllKeys(utxos[0], ['utxo_pos', 'txindex', 'owner', 'oindex', 'currency', 'blknum', 'amount', 'creating_txhash', 'spending_txhash', 'otype'])
       assert.equal(utxos[0].amount.toString(), INTIIAL_ALICE_AMOUNT)
       assert.equal(utxos[0].currency, transaction.ETH_CURRENCY)
 
@@ -145,7 +145,7 @@ describe('transferTest.js (ci-enabled)', function () {
       // Check Alice's utxos on the child chain
       let aliceUtxos = await childChain.getUtxos(aliceAccount.address)
       assert.equal(aliceUtxos.length, 2)
-      assert.hasAllKeys(aliceUtxos[0], ['utxo_pos', 'txindex', 'owner', 'oindex', 'currency', 'blknum', 'amount', 'creating_txhash', 'spending_txhash'])
+      assert.hasAllKeys(aliceUtxos[0], ['utxo_pos', 'txindex', 'owner', 'oindex', 'currency', 'blknum', 'amount', 'creating_txhash', 'spending_txhash', 'otype'])
       assert.equal(aliceUtxos[0].amount.toString(), UTXO_AMOUNT)
       assert.equal(aliceUtxos[0].currency, transaction.ETH_CURRENCY)
       assert.equal(aliceUtxos[1].amount.toString(), UTXO_AMOUNT)
@@ -154,7 +154,7 @@ describe('transferTest.js (ci-enabled)', function () {
       // Check Bob's utxos on the child chain
       let bobUtxos = await childChain.getUtxos(bobAccount.address)
       assert.equal(bobUtxos.length, 2)
-      assert.hasAllKeys(bobUtxos[0], ['utxo_pos', 'txindex', 'owner', 'oindex', 'currency', 'blknum', 'amount', 'creating_txhash', 'spending_txhash'])
+      assert.hasAllKeys(bobUtxos[0], ['utxo_pos', 'txindex', 'owner', 'oindex', 'currency', 'blknum', 'amount', 'creating_txhash', 'spending_txhash', 'otype'])
       assert.equal(bobUtxos[0].amount.toString(), UTXO_AMOUNT)
       assert.equal(bobUtxos[0].currency, transaction.ETH_CURRENCY)
       assert.equal(bobUtxos[1].amount.toString(), UTXO_AMOUNT)
@@ -222,7 +222,7 @@ describe('transferTest.js (ci-enabled)', function () {
       // Check Alice's utxos on the child chain again
       aliceUtxos = await childChain.getUtxos(aliceAccount.address)
       assert.equal(aliceUtxos.length, 2)
-      assert.hasAllKeys(aliceUtxos[0], ['utxo_pos', 'txindex', 'owner', 'oindex', 'currency', 'blknum', 'amount', 'creating_txhash', 'spending_txhash'])
+      assert.hasAllKeys(aliceUtxos[0], ['utxo_pos', 'txindex', 'owner', 'oindex', 'currency', 'blknum', 'amount', 'creating_txhash', 'spending_txhash', 'otype'])
       assert.equal(aliceUtxos[0].amount.toString(), ALICE_OUTPUT_0)
       assert.equal(aliceUtxos[0].currency, transaction.ETH_CURRENCY)
       assert.equal(aliceUtxos[1].amount.toString(), ALICE_OUTPUT_1)
@@ -231,7 +231,7 @@ describe('transferTest.js (ci-enabled)', function () {
       // Check Bob's utxos on the child chain again
       bobUtxos = await childChain.getUtxos(bobAccount.address)
       assert.equal(bobUtxos.length, 2)
-      assert.hasAllKeys(bobUtxos[0], ['utxo_pos', 'txindex', 'owner', 'oindex', 'currency', 'blknum', 'amount', 'creating_txhash', 'spending_txhash'])
+      assert.hasAllKeys(bobUtxos[0], ['utxo_pos', 'txindex', 'owner', 'oindex', 'currency', 'blknum', 'amount', 'creating_txhash', 'spending_txhash', 'otype'])
       assert.equal(bobUtxos[0].amount.toString(), BOB_OUTPUT_0)
       assert.equal(bobUtxos[0].currency, transaction.ETH_CURRENCY)
       assert.equal(bobUtxos[1].amount.toString(), BOB_OUTPUT_1)
@@ -273,7 +273,7 @@ describe('transferTest.js (ci-enabled)', function () {
       // Check utxos on the child chain
       const utxos = await childChain.getUtxos(aliceAccount.address)
       assert.equal(utxos.length, 2)
-      assert.hasAllKeys(utxos[0], ['utxo_pos', 'txindex', 'owner', 'oindex', 'currency', 'blknum', 'amount', 'creating_txhash', 'spending_txhash'])
+      assert.hasAllKeys(utxos[0], ['utxo_pos', 'txindex', 'owner', 'oindex', 'currency', 'blknum', 'amount', 'creating_txhash', 'spending_txhash', 'otype'])
 
       const erc20Utxo = utxos.find(utxo => utxo.currency === ERC20_CURRENCY)
       const ethUtxo = utxos.find(utxo => utxo.currency === transaction.ETH_CURRENCY)
@@ -356,7 +356,7 @@ describe('transferTest.js (ci-enabled)', function () {
       // Check utxos on the child chain
       const utxos = await childChain.getUtxos(aliceAccount.address)
       assert.equal(utxos.length, 2)
-      assert.hasAllKeys(utxos[0], ['utxo_pos', 'txindex', 'owner', 'oindex', 'currency', 'blknum', 'amount', 'creating_txhash', 'spending_txhash'])
+      assert.hasAllKeys(utxos[0], ['utxo_pos', 'txindex', 'owner', 'oindex', 'currency', 'blknum', 'amount', 'creating_txhash', 'spending_txhash', 'otype'])
       assert.equal(utxos[0].amount, INTIIAL_ALICE_AMOUNT_ETH)
       assert.equal(utxos[0].currency, transaction.ETH_CURRENCY)
       assert.equal(utxos[1].amount, INTIIAL_ALICE_AMOUNT_ERC20)
@@ -446,7 +446,7 @@ describe('transferTest.js (ci-enabled)', function () {
       // Check utxos on the child chain
       const utxos = await childChain.getUtxos(aliceAccount.address)
       assert.equal(utxos.length, 1)
-      assert.hasAllKeys(utxos[0], ['utxo_pos', 'txindex', 'owner', 'oindex', 'currency', 'blknum', 'amount', 'creating_txhash', 'spending_txhash'])
+      assert.hasAllKeys(utxos[0], ['utxo_pos', 'txindex', 'owner', 'oindex', 'currency', 'blknum', 'amount', 'creating_txhash', 'spending_txhash', 'otype'])
       assert.equal(utxos[0].amount.toString(), INTIIAL_ALICE_AMOUNT)
       assert.equal(utxos[0].currency, transaction.ETH_CURRENCY)
 

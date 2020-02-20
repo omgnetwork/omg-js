@@ -267,12 +267,11 @@ describe('inFlightExitChallengeTest.js', function () {
 
       // Get Bob's ETH balance
       const bobEthBalance = await web3.eth.getBalance(bobAccount.address)
-      // Bob's IFE was not successful, so he loses his exit bond.
-      // INTIIAL_BOB_AMOUNT - INFLIGHT_EXIT_BOND - PIGGYBACK_BOND - gas spent
+      // Bob's IFE was not successful, so he loses his exit bond, but gets his piggyback bond back
+      // INTIIAL_BOB_AMOUNT - INFLIGHT_EXIT_BOND - gas spent
       const expected = web3.utils
         .toBN(INTIIAL_BOB_RC_AMOUNT)
         .sub(web3.utils.toBN(bonds.inflightExit))
-        .sub(web3.utils.toBN(bonds.piggyback))
         .sub(bobSpentOnGas)
       assert.equal(bobEthBalance.toString(), expected.toString())
 

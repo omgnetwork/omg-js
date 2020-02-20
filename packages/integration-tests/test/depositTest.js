@@ -117,7 +117,7 @@ describe('depositTest.js (ci-enabled)', function () {
       // THe account should have one utxo on the child chain
       const utxos = await childChain.getUtxos(aliceAccount.address)
       assert.equal(utxos.length, 1)
-      assert.hasAllKeys(utxos[0], ['utxo_pos', 'txindex', 'owner', 'oindex', 'currency', 'blknum', 'amount', 'creating_txhash', 'spending_txhash'])
+      assert.hasAllKeys(utxos[0], ['utxo_pos', 'txindex', 'owner', 'oindex', 'currency', 'blknum', 'amount', 'creating_txhash', 'spending_txhash', 'otype'])
       assert.equal(utxos[0].amount.toString(), TEST_AMOUNT)
       assert.equal(utxos[0].currency, transaction.ETH_CURRENCY)
     })
@@ -181,7 +181,7 @@ describe('depositTest.js (ci-enabled)', function () {
       // THe account should have one utxo on the child chain
       const utxos = await childChain.getUtxos(aliceAccount.address)
       assert.equal(utxos.length, 1)
-      assert.hasAllKeys(utxos[0], ['utxo_pos', 'txindex', 'owner', 'oindex', 'currency', 'blknum', 'amount', 'creating_txhash', 'spending_txhash'])
+      assert.hasAllKeys(utxos[0], ['utxo_pos', 'txindex', 'owner', 'oindex', 'currency', 'blknum', 'amount', 'creating_txhash', 'spending_txhash', 'otype'])
       assert.equal(utxos[0].amount.toString(), TEST_AMOUNT)
       assert.equal(utxos[0].currency.toLowerCase(), config.erc20_contract_address.toLowerCase())
     })
