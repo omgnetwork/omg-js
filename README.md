@@ -134,9 +134,9 @@ Checking Bob's final rootchain balance you will notice it will be a little less 
 
 Before we begin, we need to deploy and mint some ERC20 tokens.
 
-    ```shell
-    npm run deploy-test-erc20 --prefix ../packages/integration-tests
-    ```
+```
+npm run deploy-test-erc20 --prefix ../packages/integration-tests
+```
 
 Use the ERC20 contract address from the output above to configure `ERC20_CONTRACT_ADDRESS` in your `.env` file.
 
