@@ -12,11 +12,12 @@ This is a Javascript library that allows you to interact with OmiseGo's MoreVP i
 
 ## Compatibility
 
-This library is currently compatible with version 0.3 of the OMG Network.
-Below you can find a compatibility table of `omg-js` with `elixir-omg` and `plasma-contracts` SHAs
+Below you can find a compatibility table of `omg-js` with `elixir-omg` and `plasma-contracts` SHAs.
+`omg-js` follows a modified semver with the first part referring to its own library versioning and the second part referring to its compatible `elixir-omg` version.
 
 | Version | elixir-omg | plasma-contracts |
 | --- | --- | --- |
+| 3.0.0-0.4.1 | a43605e | 7c3f796 |
 | 3.0.0-alpha.21 | 5d092ce | bfbf7cc |
 | 3.0.0-alpha.13 | 40f899b | 835d10c |
 | 3.0.0-alpha.12 | 02e67bf | a7e8503 |
