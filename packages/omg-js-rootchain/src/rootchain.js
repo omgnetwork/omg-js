@@ -16,6 +16,7 @@ limitations under the License. */
 const txUtils = require('./txUtils')
 const { transaction } = require('@omisego/omg-js-util')
 const erc20abi = require('human-standard-token-abi')
+const ethUtil = require('ethereumjs-util')
 const BN = require('bn.js')
 const abiDecoder = require('abi-decoder')
 const {
@@ -31,6 +32,7 @@ const {
   addTokenSchema,
   getStandardExitIdSchema,
   getInFlightExitIdSchema,
+  getInFlightExitDataSchema,
   startInFlightExitSchema,
   piggybackInFlightExitOnOutputSchema,
   piggybackInFlightExitOnInputSchema,
@@ -321,6 +323,20 @@ class RootChain {
   }
 
   /**
+   * Retrieves in-flight exit data from exit IDs
+   *
+   * @method getInFlightExitData
+   * @param {Object} args an arguments object
+   * @param {string[]} args.exitIds exit ids to retrieve data for
+   * @return {Promise<Object[]>} promise that resolves with the exit data
+   */
+  async getInFlightExitData ({ exitIds }) {
+    Joi.assert({ exitIds }, getInFlightExitDataSchema)
+    const { contract } = await this.getPaymentExitGame()
+    return contract.methods.inFlightExits(exitIds).call()
+  }
+
+  /**
    * Starts a standard withdrawal of a given output. Uses output-age priority
    *
    * @method startStandardExit
@@ -439,7 +455,8 @@ class RootChain {
           exitingTx,
           challengeTx,
           inputIndex,
-          challengeTxSig
+          challengeTxSig,
+          ethUtil.keccak256(txOptions.from)
         ]
       ),
       gas: txOptions.gas,
@@ -834,7 +851,8 @@ class RootChain {
           challengingTxInputIndex,
           challengingTxWitness,
           inputTx,
-          inputUtxoPos.toString()
+          inputUtxoPos.toString(),
+          ethUtil.keccak256(txOptions.from)
         ]
       ),
       gas: txOptions.gas,
@@ -893,7 +911,8 @@ class RootChain {
           inFlightTxOutputPos.toString(),
           challengingTx,
           challengingTxInputIndex,
-          challengingTxWitness
+          challengingTxWitness,
+          ethUtil.keccak256(txOptions.from)
         ]
       ),
       gas: txOptions.gas,

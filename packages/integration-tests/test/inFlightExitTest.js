@@ -111,6 +111,11 @@ describe('inFlightExitTest.js', function () {
         'input_utxos_pos'
       ])
 
+      // test we can get more exit information from the contract using the exitId
+      const exitId = await rootChain.getInFlightExitId({ txBytes: txbytes })
+      const alternativeExitData = await rootChain.getInFlightExitData({ exitIds: [exitId] })
+      assert.lengthOf(alternativeExitData, 1)
+
       // Start an in-flight exit.
       const ifeReceipt = await rootChain.startInFlightExit({
         inFlightTx: exitData.in_flight_tx,
