@@ -1,13 +1,13 @@
 {
   "name": "omg-js",
-  "version": "3.0.0-alpha.20",
+  "version": "3.0.0-alpha.21",
   "private": true,
   "description": "JavaScript Library to interact with OMG Network",
   "scripts": {
     "lerna-reset": "lerna clean && lerna bootstrap",
-    "publish": "lerna publish",
-    "publish-fromgit": "lerna publish from-git",
-    "publish-frompackage": "lerna publish from-package",
+    "release": "lerna publish --exact",
+    "release-fromgit": "lerna publish from-git",
+    "release-frompackage": "lerna publish from-package",
     "postinstall": "lerna bootstrap --hoist",
     "lint": "eslint . --ext .js",
     "lint-fix": "eslint . --ext .js --fix",

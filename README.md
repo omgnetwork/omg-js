@@ -17,7 +17,7 @@ Below you can find a compatibility table of `omg-js` with `elixir-omg` and `plas
 
 | Version | elixir-omg | plasma-contracts |
 | --- | --- | --- |
-| 3.0.0-alpha.20 | 5d092ce | bfbf7cc |
+| 3.0.0-alpha.21 | 5d092ce | bfbf7cc |
 | 3.0.0-alpha.13 | 40f899b | 835d10c |
 | 3.0.0-alpha.12 | 02e67bf | a7e8503 |
 | 3.0.0-alpha.6 | 70e9a68 | 1608296 |
@@ -134,9 +134,9 @@ Checking Bob's final rootchain balance you will notice it will be a little less 
 
 Before we begin, we need to deploy and mint some ERC20 tokens.
 
-    ```shell
-    npm run deploy-test-erc20 --prefix ../packages/integration-tests
-    ```
+```
+npm run deploy-test-erc20 --prefix ../packages/integration-tests
+```
 
 Use the ERC20 contract address from the output above to configure `ERC20_CONTRACT_ADDRESS` in your `.env` file.
 
