@@ -88,7 +88,7 @@ describe('standardExitTest.js', function () {
       // Get the exit data
       const utxoToExit = aliceUtxos[0]
       const exitData = await childChain.getExitData(utxoToExit)
-      assert.hasAllKeys(exitData, ['txbytes', 'proof', 'utxo_pos'])
+      assert.containsAllKeys(exitData, ['txbytes', 'proof', 'utxo_pos'])
 
       const standardExitReceipt = await rootChain.startStandardExit({
         utxoPos: exitData.utxo_pos,
@@ -229,7 +229,7 @@ describe('standardExitTest.js', function () {
       // Get the exit data
       const utxoToExit = bobUtxos[0]
       const exitData = await childChain.getExitData(utxoToExit)
-      assert.hasAllKeys(exitData, ['txbytes', 'proof', 'utxo_pos'])
+      assert.containsAllKeys(exitData, ['txbytes', 'proof', 'utxo_pos'])
 
       const startStandardExitReceipt = await rootChain.startStandardExit({
         utxoPos: exitData.utxo_pos,
@@ -349,18 +349,6 @@ describe('standardExitTest.js', function () {
       // Check utxos on the child chain
       const utxos = await childChain.getUtxos(aliceAccount.address)
       assert.equal(utxos.length, 1)
-      assert.hasAllKeys(utxos[0], [
-        'utxo_pos',
-        'txindex',
-        'owner',
-        'oindex',
-        'currency',
-        'blknum',
-        'amount',
-        'creating_txhash',
-        'spending_txhash',
-        'otype'
-      ])
       assert.equal(utxos[0].amount, INTIIAL_ALICE_AMOUNT_ERC20)
       assert.equal(
         utxos[0].currency.toLowerCase(),
@@ -370,7 +358,7 @@ describe('standardExitTest.js', function () {
       // Get the exit data
       const utxoToExit = utxos[0]
       const exitData = await childChain.getExitData(utxoToExit)
-      assert.hasAllKeys(exitData, ['txbytes', 'proof', 'utxo_pos'])
+      assert.containsAllKeys(exitData, ['txbytes', 'proof', 'utxo_pos'])
 
       const standardExitReceipt = await rootChain.startStandardExit({
         utxoPos: exitData.utxo_pos,

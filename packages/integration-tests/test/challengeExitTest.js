@@ -128,7 +128,7 @@ describe('challengeExitTest.js', function () {
 
       // ...and challenges the exit
       const challengeData = await childChain.getChallengeData(invalidExit.details.utxo_pos)
-      assert.hasAllKeys(challengeData, ['input_index', 'exit_id', 'exiting_tx', 'sig', 'txbytes'])
+      assert.containsAllKeys(challengeData, ['input_index', 'exit_id', 'exiting_tx', 'sig', 'txbytes'])
       let receipt = await rootChain.challengeStandardExit({
         standardExitId: challengeData.exit_id,
         exitingTx: challengeData.exiting_tx,

@@ -138,7 +138,7 @@ describe('Decode transaction tests', function () {
     const signedEncoded = rlp.encode(toEndcode)
 
     const decoded = transaction.decodeTxBytes(signedEncoded)
-    assert.hasAllKeys(decoded, [
+    assert.containsAllKeys(decoded, [
       'sigs',
       'inputs',
       'outputs',
@@ -195,7 +195,7 @@ describe('Decode transaction tests', function () {
     const signedEncoded = rlp.encode(toEndcode)
 
     const decoded = transaction.decodeTxBytes(signedEncoded)
-    assert.hasAllKeys(decoded, [
+    assert.containsAllKeys(decoded, [
       'sigs',
       'inputs',
       'outputs',

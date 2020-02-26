@@ -42,9 +42,12 @@
  * @typedef {Object} UTXO
  * @property {number} amount
  * @property {number} blknum
+ * @property {string} creating_txhash
  * @property {string} currency
  * @property {number} oindex
+ * @property {number} otype
  * @property {string} owner
+ * @property {string} spending_txhash
  * @property {number} txindex
  * @property {number} utxo_pos
  */

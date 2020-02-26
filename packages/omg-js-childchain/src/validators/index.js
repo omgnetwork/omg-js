@@ -23,24 +23,17 @@ const getTransactionsSchema = Joi.object({
   blknum: validateAmount,
   limit: Joi.number().integer(),
   page: Joi.number().integer()
-})
+}).unknown()
 
 const getTransactionSchema = Joi.object({
   id: Joi.string().required()
 })
 
 const getExitDataSchema = Joi.object({
-  amount: validateAmount,
   blknum: validateAmount,
-  currency: Joi.string(),
-  oindex: Joi.number().integer(),
-  owner: Joi.string(),
   txindex: Joi.number().integer(),
-  utxo_pos: validateAmount,
-  spending_txhash: [Joi.string(), Joi.allow(null)],
-  creating_txhash: [Joi.string(), Joi.allow(null)],
-  otype: Joi.number().integer()
-})
+  oindex: Joi.number().integer()
+}).unknown()
 
 const getChallengeDataSchema = Joi.object({
   utxoPos: validateAmount.required()
