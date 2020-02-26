@@ -27,7 +27,8 @@ const mochaParallel = new MochaParallel({
   slow: 0,
   useColors: true,
   fullStackTrace: true,
-  reporter: 'list'
+  reporter: 'list',
+  retries: 1
 })
 
 const allFiles = fs.readdirSync(`${__dirname}/test/`)
