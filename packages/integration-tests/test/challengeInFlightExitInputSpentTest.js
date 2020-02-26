@@ -122,7 +122,7 @@ describe('challengeInFlightExitInputSpentTest.js', function () {
 
       // Get the exit data
       const exitData = await childChain.inFlightExitGetData(bobTx)
-      assert.hasAllKeys(exitData, [
+      assert.containsAllKeys(exitData, [
         'in_flight_tx',
         'in_flight_tx_sigs',
         'input_txs',

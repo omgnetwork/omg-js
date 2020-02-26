@@ -98,7 +98,7 @@ describe('inFlightExitChallengeResponseTest.js', function () {
 
       // Get the exit data
       const exitData = await childChain.inFlightExitGetData(bobTx)
-      assert.hasAllKeys(exitData, ['in_flight_tx', 'in_flight_tx_sigs', 'input_txs', 'input_txs_inclusion_proofs', 'input_utxos_pos'])
+      assert.containsAllKeys(exitData, ['in_flight_tx', 'in_flight_tx_sigs', 'input_txs', 'input_txs_inclusion_proofs', 'input_utxos_pos'])
 
       // Starts the in-flight exit
       const ifeExitReceipt = await rootChain.startInFlightExit({

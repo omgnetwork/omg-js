@@ -88,7 +88,7 @@ describe('standardExitTest.js', function () {
       // Get the exit data
       const utxoToExit = aliceUtxos[0]
       const exitData = await childChain.getExitData(utxoToExit)
-      assert.hasAllKeys(exitData, ['txbytes', 'proof', 'utxo_pos'])
+      assert.containsAllKeys(exitData, ['txbytes', 'proof', 'utxo_pos'])
 
       const standardExitReceipt = await rootChain.startStandardExit({
         utxoPos: exitData.utxo_pos,
@@ -229,7 +229,7 @@ describe('standardExitTest.js', function () {
       // Get the exit data
       const utxoToExit = bobUtxos[0]
       const exitData = await childChain.getExitData(utxoToExit)
-      assert.hasAllKeys(exitData, ['txbytes', 'proof', 'utxo_pos'])
+      assert.containsAllKeys(exitData, ['txbytes', 'proof', 'utxo_pos'])
 
       const startStandardExitReceipt = await rootChain.startStandardExit({
         utxoPos: exitData.utxo_pos,
@@ -358,7 +358,7 @@ describe('standardExitTest.js', function () {
       // Get the exit data
       const utxoToExit = utxos[0]
       const exitData = await childChain.getExitData(utxoToExit)
-      assert.hasAllKeys(exitData, ['txbytes', 'proof', 'utxo_pos'])
+      assert.containsAllKeys(exitData, ['txbytes', 'proof', 'utxo_pos'])
 
       const standardExitReceipt = await rootChain.startStandardExit({
         utxoPos: exitData.utxo_pos,

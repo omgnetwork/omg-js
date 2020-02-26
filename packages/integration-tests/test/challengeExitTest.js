@@ -27,7 +27,7 @@ const assert = chai.assert
 const path = require('path')
 const faucetName = path.basename(__filename)
 
-describe('challengeExitTest.js', function () {
+describe.only('challengeExitTest.js', function () {
   const web3 = new Web3(new Web3.providers.HttpProvider(config.eth_node))
   const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url })
   const rootChain = new RootChain({ web3, plasmaContractAddress: config.plasmaframework_contract_address })
@@ -128,7 +128,7 @@ describe('challengeExitTest.js', function () {
 
       // ...and challenges the exit
       const challengeData = await childChain.getChallengeData(invalidExit.details.utxo_pos)
-      assert.hasAllKeys(challengeData, ['input_index', 'exit_id', 'exiting_tx', 'sig', 'txbytes'])
+      assert.containsAllKeys(challengeData, ['input_index', 'exit_id', 'exiting_tx', 'sig', 'txbytes'])
       let receipt = await rootChain.challengeStandardExit({
         standardExitId: challengeData.exit_id,
         exitingTx: challengeData.exiting_tx,

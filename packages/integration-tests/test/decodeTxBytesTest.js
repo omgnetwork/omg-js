@@ -79,7 +79,7 @@ describe('decodeTxBytesTest.js (ci-enabled)', function () {
       // Get the exit data
       const utxoToExit = aliceUtxos[0]
       const exitData = await childChain.getExitData(utxoToExit)
-      assert.hasAllKeys(exitData, ['txbytes', 'proof', 'utxo_pos'])
+      assert.containsAllKeys(exitData, ['txbytes', 'proof', 'utxo_pos'])
       assert.deepEqual(
         {
           txType: 1,
