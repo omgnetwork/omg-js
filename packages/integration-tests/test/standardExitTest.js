@@ -349,18 +349,6 @@ describe('standardExitTest.js', function () {
       // Check utxos on the child chain
       const utxos = await childChain.getUtxos(aliceAccount.address)
       assert.equal(utxos.length, 1)
-      assert.hasAllKeys(utxos[0], [
-        'utxo_pos',
-        'txindex',
-        'owner',
-        'oindex',
-        'currency',
-        'blknum',
-        'amount',
-        'creating_txhash',
-        'spending_txhash',
-        'otype'
-      ])
       assert.equal(utxos[0].amount, INTIIAL_ALICE_AMOUNT_ERC20)
       assert.equal(
         utxos[0].currency.toLowerCase(),
