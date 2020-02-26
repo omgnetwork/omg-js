@@ -5,7 +5,8 @@ const {
   validateFee,
   validateMetadata,
   validateUtxos,
-  validateBn
+  validateBn,
+  validateAmount
 } = require('./helpers')
 
 const encodeDepositSchema = Joi.object({
@@ -35,7 +36,11 @@ const decodeUtxoPosSchema = Joi.object({
 })
 
 const encodeUtxoPosSchema = Joi.object({
-  utxo: Joi.object().required()
+  utxo: Joi.object({
+    blknum: validateAmount,
+    txindex: Joi.number().integer(),
+    oindex: Joi.number().integer()
+  }).unknown()
 })
 
 const decodeMetadataSchema = Joi.object({

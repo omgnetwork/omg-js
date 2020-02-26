@@ -51,6 +51,12 @@ const validateFee = Joi.object({
 
 const validateUtxos = Joi.array().items(Joi.object())
 
+const validateAmount = Joi.alternatives().try(
+  Joi.number().integer().required(),
+  validateBn.required(),
+  Joi.string().regex(/^\d+$/).required()
+)
+
 module.exports = {
   validateAddress,
   validateTxOption,
@@ -59,5 +65,6 @@ module.exports = {
   validatePayments,
   validateMetadata,
   validateFee,
-  validateUtxos
+  validateUtxos,
+  validateAmount
 }
