@@ -1,0 +1,38 @@
+version: 2
+
+workflows:
+  version: 2
+  build-master:
+    jobs:
+      - test:
+          filters:
+            branches:
+              only: master
+  build-other-branches:
+    jobs:
+      - test:
+          filters:
+            branches:
+              ignore: master
+
+jobs:
+  test:
+    docker:
+      - image: node:12.16.1-alpine3.11
+    steps:
+      - checkout
+      - run: |
+          apk update && apk upgrade
+          apk add --no-cache git openssh make gcc g++ python
+      - run:
+          name: Install dev dependencies
+          command: npm install
+      - run:
+          name: Run linter
+          command: npm run lint
+      - run:
+          name: Bootstrap lerna
+          command: npm run lerna-reset
+      - run:
+          name: Run unit tests
+          command: npm run test
