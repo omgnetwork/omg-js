@@ -12,12 +12,13 @@ const { ethErrorReason } = require('@omisego/omg-js-util')
  * @return {Promise<{ transactionHash: string }>} promise that resolves with the transaction hash
  */
 async function sendTx ({ web3, txDetails, privateKey, callbacks }) {
-  await setGas(web3, txDetails)
+  const enhancedTxDetails = await setGas(web3, txDetails)
+
   if (!privateKey) {
     // No privateKey, caller will handle signing if necessary
     if (web3.version.api && web3.version.api.startsWith('0.2')) {
       return new Promise((resolve, reject) => {
-        web3.eth.sendTransaction(txDetails, (err, transactionHash) => {
+        web3.eth.sendTransaction(enhancedTxDetails, (err, transactionHash) => {
           err
             ? reject(err)
             : resolve({ transactionHash })
@@ -26,18 +27,18 @@ async function sendTx ({ web3, txDetails, privateKey, callbacks }) {
     }
     if (callbacks) {
       return new Promise((resolve, reject) => {
-        web3.eth.sendTransaction(txDetails)
+        web3.eth.sendTransaction(enhancedTxDetails)
           .on('receipt', callbacks.onReceipt)
           .on('confirmation', callbacks.onConfirmation)
           .on('transactionHash', hash => resolve({ transactionHash: hash }))
           .on('error', reject)
       })
     }
-    return web3.eth.sendTransaction(txDetails)
+    return web3.eth.sendTransaction(enhancedTxDetails)
   }
 
   // First sign the transaction
-  const signedTx = await web3.eth.accounts.signTransaction(txDetails, prefixHex(privateKey))
+  const signedTx = await web3.eth.accounts.signTransaction(enhancedTxDetails, prefixHex(privateKey))
   // Then send it
   if (callbacks) {
     return new Promise((resolve, reject) => {
@@ -65,7 +66,7 @@ async function setGas (web3, txDetails) {
   if (!txDetails.gasPrice) {
     try {
       if (web3.version.api && web3.version.api.startsWith('0.2')) {
-        txDetails.gasPrice = await new Promise((resolve, reject) => {
+        const gasPrice = await new Promise((resolve, reject) => {
           web3.eth.getGasPrice((err, result) => {
             if (err) {
               reject(err)
@@ -74,17 +75,20 @@ async function setGas (web3, txDetails) {
             }
           })
         })
+        return { ...txDetails, gasPrice }
       } else {
-        txDetails.gasPrice = await web3.eth.getGasPrice()
+        const gasPrice = await web3.eth.getGasPrice()
+        return { ...txDetails, gasPrice }
       }
     } catch (err) {
-      txDetails.gasPrice = '1000000000' // Default to 1 GWEI
+      // Default to 1 GWEI
+      return { ...txDetails, gasPrice: '1000000000' }
     }
   }
   if (!txDetails.gas) {
     try {
       if (web3.version.api && web3.version.api.startsWith('0.2')) {
-        txDetails.gas = await new Promise((resolve, reject) => {
+        const gas = await new Promise((resolve, reject) => {
           web3.eth.estimateGas(txDetails, (err, result) => {
             if (err) {
               reject(err)
@@ -93,8 +97,10 @@ async function setGas (web3, txDetails) {
             }
           })
         })
+        return { ...txDetails, gas }
       } else {
-        txDetails.gas = await web3.eth.estimateGas(txDetails)
+        const gas = await web3.eth.estimateGas(txDetails)
+        return { ...txDetails, gas }
       }
     } catch (err) {
       console.warn(`Error estimating gas: ${err}`)
