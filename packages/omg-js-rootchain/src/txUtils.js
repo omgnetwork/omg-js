@@ -49,17 +49,7 @@ async function sendTx ({ web3, txDetails, privateKey, callbacks }) {
         .on('error', reject)
     })
   }
-  return web3.eth.sendSignedTransaction(signedTx.rawTransaction).catch(err => {
-    let transactionHash
-    try {
-      transactionHash = JSON.parse(err.message.replace('Transaction has been reverted by the EVM:', '')).transactionHash
-    } catch (parseError) {
-      throw (err)
-    }
-    ethErrorReason({ web3, hash: transactionHash }).then(() => {
-      throw (err)
-    })
-  })
+  return web3.eth.sendSignedTransaction(signedTx.rawTransaction)
 }
 
 async function setGas (web3, txDetails) {
