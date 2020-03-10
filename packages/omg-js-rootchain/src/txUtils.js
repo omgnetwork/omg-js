@@ -1,5 +1,3 @@
-const { ethErrorReason } = require('@omisego/omg-js-util')
-
 /**
  * Send transaction using web3
  *
@@ -37,9 +35,8 @@ async function sendTx ({ web3, txDetails, privateKey, callbacks }) {
     return web3.eth.sendTransaction(enhancedTxDetails)
   }
 
-  // First sign the transaction
+  // Sign and send transaction
   const signedTx = await web3.eth.accounts.signTransaction(enhancedTxDetails, prefixHex(privateKey))
-  // Then send it
   if (callbacks) {
     return new Promise((resolve, reject) => {
       web3.eth.sendSignedTransaction(signedTx.rawTransaction)
@@ -75,6 +72,7 @@ async function setGas (web3, txDetails) {
       return { ...txDetails, gasPrice: '1000000000' }
     }
   }
+
   if (!txDetails.gas) {
     try {
       if (web3.version.api && web3.version.api.startsWith('0.2')) {
