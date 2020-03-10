@@ -4,7 +4,7 @@
   "private": true,
   "description": "JavaScript Library to interact with OMG Network",
   "scripts": {
-    "lerna-reset": "lerna clean && lerna bootstrap",
+    "lerna-reset": "lerna clean --yes && lerna bootstrap",
     "release": "lerna publish --exact",
     "release-fromgit": "lerna publish from-git",
     "release-frompackage": "lerna publish from-package",
