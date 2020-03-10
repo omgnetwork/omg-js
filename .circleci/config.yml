@@ -25,6 +25,5 @@ jobs:
           apk update && apk upgrade
           apk add --no-cache git openssh make gcc g++ python
       - run: npm install
-      - run: yes | npm run lerna-reset
       - run: npm run lint
       - run: npm run test
