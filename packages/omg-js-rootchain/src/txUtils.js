@@ -50,7 +50,8 @@ async function sendTx ({ web3, txDetails, privateKey, callbacks }) {
 }
 
 async function setGas (web3, txDetails) {
-  if (!txDetails.gasPrice) {
+  let enhancedTxDetails = { ...txDetails }
+  if (!enhancedTxDetails.gasPrice) {
     try {
       if (web3.version.api && web3.version.api.startsWith('0.2')) {
         const gasPrice = await new Promise((resolve, reject) => {
@@ -62,22 +63,22 @@ async function setGas (web3, txDetails) {
             }
           })
         })
-        return { ...txDetails, gasPrice }
+        enhancedTxDetails = { ...enhancedTxDetails, gasPrice }
       } else {
         const gasPrice = await web3.eth.getGasPrice()
-        return { ...txDetails, gasPrice }
+        enhancedTxDetails = { ...enhancedTxDetails, gasPrice }
       }
     } catch (err) {
       // Default to 1 GWEI
-      return { ...txDetails, gasPrice: '1000000000' }
+      enhancedTxDetails = { ...enhancedTxDetails, gasPrice: '1000000000' }
     }
   }
 
-  if (!txDetails.gas) {
+  if (!enhancedTxDetails.gas) {
     try {
       if (web3.version.api && web3.version.api.startsWith('0.2')) {
         const gas = await new Promise((resolve, reject) => {
-          web3.eth.estimateGas(txDetails, (err, result) => {
+          web3.eth.estimateGas(enhancedTxDetails, (err, result) => {
             if (err) {
               reject(err)
             } else {
@@ -85,16 +86,18 @@ async function setGas (web3, txDetails) {
             }
           })
         })
-        return { ...txDetails, gas }
+        enhancedTxDetails = { ...enhancedTxDetails, gas }
       } else {
-        const gas = await web3.eth.estimateGas(txDetails)
-        return { ...txDetails, gas }
+        const gas = await web3.eth.estimateGas(enhancedTxDetails)
+        enhancedTxDetails = { ...enhancedTxDetails, gas }
       }
     } catch (err) {
       console.warn(`Error estimating gas: ${err}`)
       throw err
     }
   }
+
+  return enhancedTxDetails
 }
 
 function getTxData (web3, contract, method, ...args) {
