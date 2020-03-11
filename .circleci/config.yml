@@ -21,6 +21,7 @@ jobs:
       - image: node:12.16.1
     steps:
       - checkout
+      - setup_remote_docker
       - run: |
           apt-get update && apt-get dist-upgrade
           apt-get install git make
@@ -30,7 +31,6 @@ jobs:
             set -x
             curl -L https://github.com/docker/compose/releases/download/1.25.3/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
             chmod +x /usr/local/bin/docker-compose
-      - setup_remote_docker
       - run:
           name: Install Dev Dependencies
           command: npm install
