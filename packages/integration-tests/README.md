@@ -12,8 +12,8 @@ To run the integration tests, there is some manual setup involved:
 
 There are 3 options to run the test suite
 1. The quickest option is to run them in parallel using `npm run parallel-test`.
-2. The slowest option is to run them in sequence using `npm run sequence-test`
-3. Running tests flagged with the `ci-enabled` flag is done by `npm run ci-test`. This is run in sequence.
+2. The slowest option is to run them all in sequence using `npm run sequence-test`
+3. Tests to be run in ci can be run with `npm run ci-test`. This is run in sequence.
 
 ## Returning Test Funds
 
