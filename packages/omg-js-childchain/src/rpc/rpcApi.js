@@ -51,9 +51,8 @@ async function post ({ url, body, proxyUrl }) {
       body: JSONBigNumber.stringify(body),
       ...proxyUrl && { proxy: proxyUrl, rejectUnauthorized: false }
     }
-    console.log('options: ', options)
+    console.log('body: ', JSONBigNumber.stringify(body))
     const res = await request.post(options)
-    console.log('res: ', res)
     return parseResponse(res)
   } catch (err) {
     throw new Error(err)
