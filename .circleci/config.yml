@@ -25,21 +25,29 @@ jobs:
           apk update && apk upgrade
           apk add --no-cache git openssh make gcc g++ python
       - run:
-          name: Install dev dependencies
+          name: Install Docker Compose
+          command: |
+            set -x
+            curl -L https://github.com/docker/compose/releases/download/1.25.3/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
+            chmod +x /usr/local/bin/docker-compose
+      - setup_remote_docker
+      - run:
+          name: Install Dev Dependencies
           command: npm install
       - run:
-          name: Run linter
+          name: Run Linter
           command: npm run lint
       - run:
-          name: Bootstrap lerna
+          name: Bootstrap Lerna
           command: npm run lerna-reset
       - run:
-          name: Run unit tests
+          name: Run Unit Tests
           command: npm run test
       - run:
-          name: Setup elixir-omg environment
+          name: Start elixir-omg Environment
           command: |
             mkdir ~/.ssh/ && echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
             git clone git@github.com:omisego/elixir-omg.git ~/elixir-omg
             cd ~/elixir-omg
+            SNAPSHOT=SNAPSHOT_MIX_EXIT_PERIOD_SECONDS_120 make init_test
             docker-compose up
