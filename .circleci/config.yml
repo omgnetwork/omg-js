@@ -22,7 +22,8 @@ jobs:
     steps:
       - checkout
       - run: |
-          ./load-nvm.sh
+          export NVM_DIR="/opt/circleci/.nvm"
+          [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
           nvm install v12.16.1
           nvm alias default v12.16.1
           set -x
