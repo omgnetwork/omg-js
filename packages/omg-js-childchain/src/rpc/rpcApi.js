@@ -52,6 +52,8 @@ async function post ({ url, body, proxyUrl }) {
       ...proxyUrl && { proxy: proxyUrl, rejectUnauthorized: false }
     }
     const res = await request.post(options)
+    console.log('options: ', options)
+    console.log('res: ', res)
     return parseResponse(res)
   } catch (err) {
     throw new Error(err)
