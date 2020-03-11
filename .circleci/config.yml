@@ -17,12 +17,11 @@ workflows:
 
 jobs:
   test:
-    machine: true
+    machine:
+      image: ubuntu-1604:201903-01 
     steps:
       - checkout
       - run: |
-          apt-get update && apt-get dist-upgrade
-          apt-get install git make curl
           ./load-nvm.sh
           nvm install v12.16.1
           nvm alias default v12.16.1
@@ -33,6 +32,7 @@ jobs:
           name: Install Dev Dependencies
           command: |
             ./load-nvm.sh
+            node -v
             npm install
       - run:
           name: Run Linter
