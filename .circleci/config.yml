@@ -8,15 +8,37 @@ workflows:
           filters:
             branches:
               only: master
+      - integration-test:
+          filters:
+            branches:
+              only: master
   build-other-branches:
     jobs:
       - test:
           filters:
             branches:
               ignore: master
+      - integration-test:
+          filters:
+            branches:
+              only: master
 
 jobs:
   test:
+    docker:
+      image: node:12.16.1-alpine3.11
+    steps:
+      - run:
+          name: Install Dependencies
+          command: npm install
+      - run:
+          name: Run Linter
+          command: npm run lint
+      - run:
+          name: Run Unit Tests
+          command: npm run test
+
+  integration-test:
     machine:
       image: ubuntu-1604:201903-01 
     steps:
@@ -38,19 +60,6 @@ jobs:
             export NVM_DIR="/opt/circleci/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
             npm install
-            npm run lerna-reset
-      - run:
-          name: Run Linter
-          command: |
-            export NVM_DIR="/opt/circleci/.nvm"
-            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-            npm run lint
-      - run:
-          name: Run Unit Tests
-          command: |
-            export NVM_DIR="/opt/circleci/.nvm"
-            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-            npm run test
       - run:
           name: Setup elixir-omg
           command: |
