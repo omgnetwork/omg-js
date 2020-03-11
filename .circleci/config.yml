@@ -26,8 +26,12 @@ workflows:
 jobs:
   test:
     docker:
-      image: node:12.16.1-alpine3.11
+      - image: node:12.16.1-alpine3.11
     steps:
+      - checkout
+      - run: |
+          apk update && apk upgrade
+          apk add --no-cache git openssh make gcc g++ python
       - run:
           name: Install Dependencies
           command: npm install
