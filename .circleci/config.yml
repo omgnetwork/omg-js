@@ -23,7 +23,7 @@ jobs:
       - checkout
       - run: |
           apt-get update && apt-get dist-upgrade
-          apt-get install git openssh make gcc g++ python
+          apt-get install git make
       - run:
           name: Install Docker Compose
           command: |
