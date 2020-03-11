@@ -26,30 +26,23 @@ jobs:
           [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
           nvm install v12.16.1
           nvm alias default v12.16.1
-          set -x
-          sudo curl -L https://github.com/docker/compose/releases/download/1.25.3/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
-          sudo chmod +x /usr/local/bin/docker-compose
+          curl -L https://github.com/docker/compose/releases/download/1.11.2/docker-compose-`uname -s`-`uname -m` > ~/docker-compose
+          chmod +x ~/docker-compose
+          sudo mv ~/docker-compose /usr/local/bin/docker-compose
       - run:
-          name: Install Dev Dependencies
+          name: Install Dependencies
           command: |
-            ./load-nvm.sh
+            export NVM_DIR="/opt/circleci/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
             node -v
             npm install
-      - run:
-          name: Run Linter
-          command: |
-            ./load-nvm.sh
-            npm run lint
-      - run:
-          name: Bootstrap Lerna
-          command: |
-            ./load-nvm.sh
             npm run lerna-reset
       - run:
+          name: Run Linter
+          command: npm run lint
+      - run:
           name: Run Unit Tests
-          command: |
-            ./load-nvm.sh
-            npm run test
+          command: npm run test
       - run:
           name: Setup elixir-omg
           command: |
@@ -66,13 +59,15 @@ jobs:
       - run:
           name: Setup Integration Test with ERC20
           command: |
-            ./load-nvm.sh
+            export NVM_DIR="/opt/circleci/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
             cd ~/project/packages/integration-tests
             npm run deploy-test-erc20
       - run:
           name: Run Integration Test
           command: |
-            ./load-nvm.sh
+            export NVM_DIR="/opt/circleci/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
             npm run parallel-test
           environment:
             ETH_NODE: http://localhost:8545
