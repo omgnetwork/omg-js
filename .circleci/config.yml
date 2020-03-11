@@ -23,7 +23,7 @@ jobs:
       - checkout
       - run: |
           apk update && apk upgrade
-          apk add --no-cache git openssh make gcc g++ python
+          apk add --no-cache git openssh make gcc g++ python curl curl-dev
       - run:
           name: Install Docker Compose
           command: |
