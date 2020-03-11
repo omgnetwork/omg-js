@@ -41,5 +41,5 @@ jobs:
           command: |
             mkdir ~/.ssh/ && echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
             git clone git@github.com:omisego/elixir-omg.git ~/elixir-omg
-            cd elixir-omg
+            cd ~/elixir-omg
             docker-compose up
