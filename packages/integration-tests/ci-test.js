@@ -1,0 +1,15 @@
+// tests to run in ci environment
+
+require('./test/CORSHeaderTest')
+require('./test/metadataTest')
+require('./test/amountTypes')
+require('./test/decodeTxBytesTest')
+require('./test/addTokenTest')
+require('./test/depositTest')
+require('./test/createTransactionTest')
+require('./test/transferTest')
+require('./test/createSubmitTypedTransactionTest')
+require('./test/getExitQueueTest')
+require('./test/standardExitTest')
+require('./test/exitWithoutWatcherTest')
+require('./test/challengeExitTest')

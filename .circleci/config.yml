@@ -94,7 +94,7 @@ jobs:
           command: |
             export NVM_DIR="/opt/circleci/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-            npm run parallel-test
+            npm run ci-test
           environment:
             ETH_NODE: http://localhost:8545
             WATCHER_URL: http://localhost:7534
