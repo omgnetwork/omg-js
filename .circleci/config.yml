@@ -36,6 +36,9 @@ jobs:
       - run:
           name: Run unit tests
           command: npm run test
+      - add_ssh_keys:
+        fingerprints:
+          - "SHA256:nThbg6kXUpJWGl7E1IGOCspRomTxdCARLviKw6E5SY8"
       - run:
           name: Setup elixir-omg environment
           command: |
