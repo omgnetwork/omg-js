@@ -36,13 +36,10 @@ jobs:
       - run:
           name: Run unit tests
           command: npm run test
-      - add_ssh_keys:
-        fingerprints:
-          - "SHA256:nThbg6kXUpJWGl7E1IGOCspRomTxdCARLviKw6E5SY8"
       - run:
           name: Setup elixir-omg environment
           command: |
-            cd
-            git clone git@github.com:omisego/elixir-omg.git
+            mkdir ~/.ssh/ && echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
+            git clone git@github.com:omisego/elixir-omg.git ~/elixir-omg
             cd elixir-omg
             docker-compose up
