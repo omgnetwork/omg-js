@@ -46,7 +46,8 @@ jobs:
       - run:
           name: Start elixir-omg Environment
           command: |
-            mkdir ~/.ssh/ && echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
+            mkdir -p ~/.ssh/
+            echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
             git clone git@github.com:omisego/elixir-omg.git ~/elixir-omg
             cd ~/elixir-omg
             SNAPSHOT=SNAPSHOT_MIX_EXIT_PERIOD_SECONDS_120 make init_test
