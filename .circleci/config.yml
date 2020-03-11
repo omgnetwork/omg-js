@@ -44,11 +44,15 @@ jobs:
           name: Run Unit Tests
           command: npm run test
       - run:
-          name: Start elixir-omg Environment
+          name: Setup elixir-omg
           command: |
             mkdir -p ~/.ssh/
             echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
             git clone git@github.com:omisego/elixir-omg.git ~/elixir-omg
             cd ~/elixir-omg
             SNAPSHOT=SNAPSHOT_MIX_EXIT_PERIOD_SECONDS_120 make init_test
+      - run:
+          name: Start elixir-omg
+          command: |
+            cd ~/elixir-omg
             docker-compose up
