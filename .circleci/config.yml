@@ -21,7 +21,7 @@ workflows:
       - integration-test:
           filters:
             branches:
-              only: master
+              ignore: master
 
 jobs:
   test:
