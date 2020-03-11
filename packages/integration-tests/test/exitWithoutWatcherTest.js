@@ -26,7 +26,7 @@ const assert = chai.assert
 const path = require('path')
 const faucetName = path.basename(__filename)
 
-describe('exitWithoutWatcherTest.js', function () {
+describe('exitWithoutWatcherTest.js (ci-enabled)', function () {
   const web3 = new Web3(new Web3.providers.HttpProvider(config.eth_node))
   const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url })
   const rootChain = new RootChain({ web3, plasmaContractAddress: config.plasmaframework_contract_address })
