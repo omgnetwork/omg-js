@@ -21,28 +21,35 @@ jobs:
       image: ubuntu-1604:201903-01 
     steps:
       - checkout
-      - run: |
-          export NVM_DIR="/opt/circleci/.nvm"
-          [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-          nvm install v12.16.1
-          nvm alias default v12.16.1
-          curl -L https://github.com/docker/compose/releases/download/1.11.2/docker-compose-`uname -s`-`uname -m` > ~/docker-compose
-          chmod +x ~/docker-compose
-          sudo mv ~/docker-compose /usr/local/bin/docker-compose
+      - run:
+          name: Setup Machine
+          command: |
+            export NVM_DIR="/opt/circleci/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            nvm install v12.16.1
+            nvm alias default v12.16.1
+            curl -L https://github.com/docker/compose/releases/download/1.11.2/docker-compose-`uname -s`-`uname -m` > ~/docker-compose
+            chmod +x ~/docker-compose
+            sudo mv ~/docker-compose /usr/local/bin/docker-compose
       - run:
           name: Install Dependencies
           command: |
             export NVM_DIR="/opt/circleci/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-            node -v
             npm install
             npm run lerna-reset
       - run:
           name: Run Linter
-          command: npm run lint
+          command: |
+            export NVM_DIR="/opt/circleci/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            npm run lint
       - run:
           name: Run Unit Tests
-          command: npm run test
+          command: |
+            export NVM_DIR="/opt/circleci/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            npm run test
       - run:
           name: Setup elixir-omg
           command: |
