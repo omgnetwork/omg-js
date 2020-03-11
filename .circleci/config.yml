@@ -61,6 +61,7 @@ jobs:
             SNAPSHOT=SNAPSHOT_MIX_EXIT_PERIOD_SECONDS_120 make init_test
       - run:
           name: Start elixir-omg
+          background: true
           command: |
             cd ~/elixir-omg
             docker-compose up
@@ -70,6 +71,7 @@ jobs:
             export NVM_DIR="/opt/circleci/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
             cd ~/project/packages/integration-tests
+            wget --retry-connrefused --waitretry=10 --read-timeout=10 --timeout=10 -t 100 http://localhost:7534/status.get
             npm run deploy-test-erc20
       - run:
           name: Run Integration Test
