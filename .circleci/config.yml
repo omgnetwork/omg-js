@@ -57,13 +57,13 @@ commands:
       - run:
           name: Setup elixir-omg
           command: |
-            cd packages/integration-tests
+            cd ~/project/packages/integration-tests
             wget https://raw.githubusercontent.com/omisego/elixir-omg/<< pipeline.parameters.elixir-omg-sha >>/Makefile
             wget https://raw.githubusercontent.com/omisego/elixir-omg/<< pipeline.parameters.elixir-omg-sha >>/snapshots.env
             mkdir -p bin
             cd bin
             wget https://raw.githubusercontent.com/omisego/elixir-omg/<< pipeline.parameters.elixir-omg-sha >>/bin/generate-localchain-env
-            cd ~/projects/packages/integration-tests
+            cd ~/project/packages/integration-tests
             SNAPSHOT=SNAPSHOT_MIX_EXIT_PERIOD_SECONDS_120 make init-contracts
       - run:
           name: Start elixir-omg
