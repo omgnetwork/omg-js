@@ -51,15 +51,15 @@ jobs:
       - checkout
       - run:
           name: Setup Machine
+            # curl -L https://github.com/docker/compose/releases/download/1.25.4/docker-compose-`uname -s`-`uname -m` > ~/docker-compose
+            # chmod +x ~/docker-compose
+            # sudo mv ~/docker-compose /usr/local/bin/docker-compose
+            # docker-compose --version
           command: |
             export NVM_DIR="/opt/circleci/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
             nvm install v12.16.1
             nvm alias default v12.16.1
-            curl -L https://github.com/docker/compose/releases/download/1.25.4/docker-compose-`uname -s`-`uname -m` > ~/docker-compose
-            chmod +x ~/docker-compose
-            sudo mv ~/docker-compose /usr/local/bin/docker-compose
-            docker-compose --version
       - run:
           name: Install Dependencies
           command: |
@@ -74,7 +74,7 @@ jobs:
             echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
             git clone git@github.com:omisego/elixir-omg.git ~/elixir-omg
             cd ~/elixir-omg
-            SNAPSHOT=SNAPSHOT_MIX_EXIT_PERIOD_SECONDS_120 make init_test
+            SNAPSHOT=SNAPSHOT_MIX_EXIT_PERIOD_SECONDS_120 make init-contracts
       - run:
           name: Start elixir-omg
           background: true
