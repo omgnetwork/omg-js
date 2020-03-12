@@ -1,5 +1,3 @@
-// tests to run in ci environment
-
 require('./test/CORSHeaderTest')
 require('./test/metadataTest')
 require('./test/amountTypes')

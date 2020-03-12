@@ -8,7 +8,8 @@ workflows:
           filters:
             branches:
               only: master
-      - integration-test:
+      - full-integration-test:
+          requires: [unit-test]
           filters:
             branches:
               only: master
@@ -18,38 +19,21 @@ workflows:
           filters:
             branches:
               ignore: master
-      - integration-test:
+      - baseline-integration-test:
+          requires: [unit-test]
+          filters:
+            branches:
+              ignore: master
+      - ife-integration-test:
+          requires: [unit-test]
           filters:
             branches:
               ignore: master
 
-jobs:
-  unit-test:
-    docker:
-      - image: node:12.16.1-alpine3.11
+commands:
+  setup_integration_tests:
+    description: "Set up the integration test environment"
     steps:
-      - checkout
-      - run: |
-          apk update && apk upgrade
-          apk add --no-cache git openssh make gcc g++ python
-      - run:
-          name: Install Dependencies
-          command: |
-            npm install
-            npm run lerna-reset
-      - run:
-          name: Run Linter
-          command: npm run lint
-      - run:
-          name: Run Unit Tests
-          command: npm run test
-
-  integration-test:
-    machine:
-      image: ubuntu-1604:201903-01
-    resource_class: xlarge
-    steps:
-      - checkout
       - run:
           name: Install Node
           command: |
@@ -86,12 +70,90 @@ jobs:
             cd ~/project/packages/integration-tests
             wget --retry-connrefused --waitretry=10 --read-timeout=10 --timeout=10 -t 100 http://localhost:7534/status.get
             npm run deploy-test-erc20
+
+jobs:
+  unit-test:
+    docker:
+      - image: node:12.16.1-alpine3.11
+    steps:
+      - checkout
+      - run: |
+          apk update && apk upgrade
+          apk add --no-cache git openssh make gcc g++ python
       - run:
-          name: Run Integration Test
+          name: Install Dependencies
+          command: |
+            npm install
+            npm run lerna-reset
+      - run:
+          name: Run Linter
+          command: npm run lint
+      - run:
+          name: Run Unit Tests
+          command: npm run test
+
+  full-integration-test:
+    machine:
+      image: ubuntu-1604:201903-01
+    steps:
+      - checkout
+      - setup_integration_tests
+      - run:
+          name: Run All Integration Tests
           command: |
             export NVM_DIR="/opt/circleci/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
             npm run sequence-test
+          environment:
+            ETH_NODE: http://localhost:8545
+            WATCHER_URL: http://localhost:7534
+            CHILDCHAIN_URL: http://localhost:9656
+            PLASMAFRAMEWORK_CONTRACT_ADDRESS: "0xc673e4ffcb8464faff908a6804fe0e635af0ea2f"
+            ERC20_CONTRACT_ADDRESS: "0x932130ff6e440aee05e6fa75ac5d385c4e3a4d5d"
+            FUND_ACCOUNT: "0x6de4b3b9c28e9c3e84c2b2d3a875c947a84de68d"
+            FUND_ACCOUNT_PRIVATEKEY: "0xd885a307e35738f773d8c9c63c7a3f3977819274638d04aaf934a1e1158513ce"
+            MIN_AMOUNT_ETH_PER_TEST: 2
+            MIN_AMOUNT_ERC20_PER_TEST: 20
+            TOPUP_MULTIPLIER: 5
+            FAUCET_SALT: integration-tests
+
+  baseline-integration-test:
+    machine:
+      image: ubuntu-1604:201903-01
+    steps:
+      - checkout
+      - setup_integration_tests
+      - run:
+          name: Run Baseline Integration Tests
+          command: |
+            export NVM_DIR="/opt/circleci/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            npm run ci-baseline-test
+          environment:
+            ETH_NODE: http://localhost:8545
+            WATCHER_URL: http://localhost:7534
+            CHILDCHAIN_URL: http://localhost:9656
+            PLASMAFRAMEWORK_CONTRACT_ADDRESS: "0xc673e4ffcb8464faff908a6804fe0e635af0ea2f"
+            ERC20_CONTRACT_ADDRESS: "0x932130ff6e440aee05e6fa75ac5d385c4e3a4d5d"
+            FUND_ACCOUNT: "0x6de4b3b9c28e9c3e84c2b2d3a875c947a84de68d"
+            FUND_ACCOUNT_PRIVATEKEY: "0xd885a307e35738f773d8c9c63c7a3f3977819274638d04aaf934a1e1158513ce"
+            MIN_AMOUNT_ETH_PER_TEST: 2
+            MIN_AMOUNT_ERC20_PER_TEST: 20
+            TOPUP_MULTIPLIER: 5
+            FAUCET_SALT: integration-tests
+
+  ife-integration-test:
+    machine:
+      image: ubuntu-1604:201903-01
+    steps:
+      - checkout
+      - setup_integration_tests
+      - run:
+          name: Run IFE Integration Tests
+          command: |
+            export NVM_DIR="/opt/circleci/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            npm run ci-ife-test
           environment:
             ETH_NODE: http://localhost:8545
             WATCHER_URL: http://localhost:7534
