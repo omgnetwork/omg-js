@@ -39,7 +39,7 @@ describe('deleteNonPiggybackedInFlightExitTest.js', function () {
 
   describe('delete ife if not piggybacked', function () {
     const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.1', 'ether')
-    const INTIIAL_BOB_RC_AMOUNT = web3.utils.toWei('.1', 'ether')
+    const INTIIAL_BOB_RC_AMOUNT = web3.utils.toWei('.5', 'ether')
     const TRANSFER_AMOUNT = web3.utils.toWei('0.0002', 'ether')
 
     let aliceAccount

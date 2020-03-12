@@ -17,6 +17,7 @@ const RootChain = require('@omisego/omg-js-rootchain')
 const ChildChain = require('@omisego/omg-js-childchain')
 const Web3 = require('web3')
 const fs = require('fs')
+const os = require('os')
 
 const faucet = require('./helpers/faucet')
 const config = require('./test-config')
@@ -27,8 +28,7 @@ const mochaParallel = new MochaParallel({
   slow: 0,
   useColors: true,
   fullStackTrace: true,
-  reporter: 'list',
-  retries: 1
+  reporter: 'list'
 })
 
 const allFiles = fs.readdirSync(`${__dirname}/test/`)
@@ -57,8 +57,17 @@ async function setup () {
   console.log(`⏳ Total funding time: ${(end - start) / 60000} min`)
 }
 
-setup()
-  .then(() => {
-    console.log(`🚀 Running ${files.length} test files in parallel...`)
-    mochaParallel.run()
+async function runner () {
+  await setup()
+
+  const cores = os.cpus().length
+  console.log(`🚀 Running ${files.length} test files in parallel`)
+  console.log(`💻 ${cores} CPI cores available, will run ${cores} tests at a time`)
+  mochaParallel.run(fails => {
+    if (fails > 0) {
+      throw Error(`${fails} failures in test run`)
+    }
   })
+}
+
+runner()

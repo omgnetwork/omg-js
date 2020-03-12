@@ -18,7 +18,7 @@ const fetch = require('node-fetch')
 const chai = require('chai')
 const assert = chai.assert
 
-describe('CORSHeaderTest.js (ci-enabled)', function () {
+describe('CORSHeaderTest.js', function () {
   describe('Watcher CORS Header test', function () {
     it('should return CORS headers', async function () {
       const url = `${config.watcher_url}/status.get`

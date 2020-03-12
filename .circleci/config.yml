@@ -1,22 +1,88 @@
-version: 2
+version: 2.1
+
+# Define the elixir-omg sha to run ci against below
+parameters:
+  elixir-omg-sha:
+    type: string
+    default: "7182c95"
 
 workflows:
   version: 2
   build-master:
     jobs:
-      - test:
+      - unit-test:
+          filters:
+            branches:
+              only: master
+      - full-integration-test:
+          requires: [unit-test]
           filters:
             branches:
               only: master
   build-other-branches:
     jobs:
-      - test:
+      - unit-test:
+          filters:
+            branches:
+              ignore: master
+      - baseline-integration-test:
+          requires: [unit-test]
+          filters:
+            branches:
+              ignore: master
+      - ife-integration-test:
+          requires: [unit-test]
           filters:
             branches:
               ignore: master
 
+commands:
+  setup_integration_tests:
+    description: "Set up the integration test environment"
+    steps:
+      - run:
+          name: Install Node
+          command: |
+            export NVM_DIR="/opt/circleci/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            nvm install v12.16.1
+            nvm alias default v12.16.1
+      - run:
+          name: Install Dependencies
+          command: |
+            export NVM_DIR="/opt/circleci/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            npm install
+            npm run lerna-reset
+      - run:
+          name: Setup elixir-omg
+          command: |
+            cd ~/project/packages/integration-tests
+            wget https://raw.githubusercontent.com/omisego/elixir-omg/<< pipeline.parameters.elixir-omg-sha >>/Makefile
+            wget https://raw.githubusercontent.com/omisego/elixir-omg/<< pipeline.parameters.elixir-omg-sha >>/snapshots.env
+            wget https://raw.githubusercontent.com/omisego/elixir-omg/<< pipeline.parameters.elixir-omg-sha >>/contract_addresses_template.env
+            mkdir -p bin
+            cd bin
+            wget https://raw.githubusercontent.com/omisego/elixir-omg/<< pipeline.parameters.elixir-omg-sha >>/bin/generate-localchain-env
+            cd ~/project/packages/integration-tests
+            SNAPSHOT=SNAPSHOT_MIX_EXIT_PERIOD_SECONDS_120 make init-contracts
+      - run:
+          name: Start elixir-omg
+          background: true
+          command: |
+            cd ~/project/packages/integration-tests
+            ELIXIR_OMG_SHA=<< pipeline.parameters.elixir-omg-sha >> docker-compose up
+      - run:
+          name: Setup Integration Test with ERC20
+          command: |
+            export NVM_DIR="/opt/circleci/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            cd ~/project/packages/integration-tests
+            wget --retry-connrefused --waitretry=10 --read-timeout=10 --timeout=10 -t 20 http://localhost:7534/status.get
+            npm run deploy-test-erc20
+
 jobs:
-  test:
+  unit-test:
     docker:
       - image: node:12.16.1-alpine3.11
     steps:
@@ -25,14 +91,88 @@ jobs:
           apk update && apk upgrade
           apk add --no-cache git openssh make gcc g++ python
       - run:
-          name: Install dev dependencies
-          command: npm install
+          name: Install Dependencies
+          command: |
+            npm install
+            npm run lerna-reset
       - run:
-          name: Run linter
+          name: Run Linter
           command: npm run lint
       - run:
-          name: Bootstrap lerna
-          command: npm run lerna-reset
-      - run:
-          name: Run unit tests
+          name: Run Unit Tests
           command: npm run test
+
+  full-integration-test:
+    machine:
+      image: ubuntu-1604:201903-01
+    steps:
+      - checkout
+      - setup_integration_tests
+      - run:
+          name: Run All Integration Tests
+          command: |
+            export NVM_DIR="/opt/circleci/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            npm run sequence-test
+          environment:
+            ETH_NODE: http://localhost:8545
+            WATCHER_URL: http://localhost:7534
+            CHILDCHAIN_URL: http://localhost:9656
+            PLASMAFRAMEWORK_CONTRACT_ADDRESS: "0xc673e4ffcb8464faff908a6804fe0e635af0ea2f"
+            ERC20_CONTRACT_ADDRESS: "0x932130ff6e440aee05e6fa75ac5d385c4e3a4d5d"
+            FUND_ACCOUNT: "0x6de4b3b9c28e9c3e84c2b2d3a875c947a84de68d"
+            FUND_ACCOUNT_PRIVATEKEY: "0xd885a307e35738f773d8c9c63c7a3f3977819274638d04aaf934a1e1158513ce"
+            MIN_AMOUNT_ETH_PER_TEST: 2
+            MIN_AMOUNT_ERC20_PER_TEST: 20
+            TOPUP_MULTIPLIER: 5
+            FAUCET_SALT: integration-tests
+
+  baseline-integration-test:
+    machine:
+      image: ubuntu-1604:201903-01
+    steps:
+      - checkout
+      - setup_integration_tests
+      - run:
+          name: Run Baseline Integration Tests
+          command: |
+            export NVM_DIR="/opt/circleci/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            npm run ci-baseline-test
+          environment:
+            ETH_NODE: http://localhost:8545
+            WATCHER_URL: http://localhost:7534
+            CHILDCHAIN_URL: http://localhost:9656
+            PLASMAFRAMEWORK_CONTRACT_ADDRESS: "0xc673e4ffcb8464faff908a6804fe0e635af0ea2f"
+            ERC20_CONTRACT_ADDRESS: "0x932130ff6e440aee05e6fa75ac5d385c4e3a4d5d"
+            FUND_ACCOUNT: "0x6de4b3b9c28e9c3e84c2b2d3a875c947a84de68d"
+            FUND_ACCOUNT_PRIVATEKEY: "0xd885a307e35738f773d8c9c63c7a3f3977819274638d04aaf934a1e1158513ce"
+            MIN_AMOUNT_ETH_PER_TEST: 2
+            MIN_AMOUNT_ERC20_PER_TEST: 20
+            TOPUP_MULTIPLIER: 5
+            FAUCET_SALT: integration-tests
+
+  ife-integration-test:
+    machine:
+      image: ubuntu-1604:201903-01
+    steps:
+      - checkout
+      - setup_integration_tests
+      - run:
+          name: Run IFE Integration Tests
+          command: |
+            export NVM_DIR="/opt/circleci/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            npm run ci-ife-test
+          environment:
+            ETH_NODE: http://localhost:8545
+            WATCHER_URL: http://localhost:7534
+            CHILDCHAIN_URL: http://localhost:9656
+            PLASMAFRAMEWORK_CONTRACT_ADDRESS: "0xc673e4ffcb8464faff908a6804fe0e635af0ea2f"
+            ERC20_CONTRACT_ADDRESS: "0x932130ff6e440aee05e6fa75ac5d385c4e3a4d5d"
+            FUND_ACCOUNT: "0x6de4b3b9c28e9c3e84c2b2d3a875c947a84de68d"
+            FUND_ACCOUNT_PRIVATEKEY: "0xd885a307e35738f773d8c9c63c7a3f3977819274638d04aaf934a1e1158513ce"
+            MIN_AMOUNT_ETH_PER_TEST: 2
+            MIN_AMOUNT_ERC20_PER_TEST: 20
+            TOPUP_MULTIPLIER: 5
+            FAUCET_SALT: integration-tests
