@@ -60,6 +60,7 @@ commands:
             cd ~/project/packages/integration-tests
             wget https://raw.githubusercontent.com/omisego/elixir-omg/<< pipeline.parameters.elixir-omg-sha >>/Makefile
             wget https://raw.githubusercontent.com/omisego/elixir-omg/<< pipeline.parameters.elixir-omg-sha >>/snapshots.env
+            wget https://raw.githubusercontent.com/omisego/elixir-omg/<< pipeline.parameters.elixir-omg-sha >>/contract_addresses_template.env
             mkdir -p bin
             cd bin
             wget https://raw.githubusercontent.com/omisego/elixir-omg/<< pipeline.parameters.elixir-omg-sha >>/bin/generate-localchain-env
@@ -69,7 +70,7 @@ commands:
           name: Start elixir-omg
           background: true
           command: |
-            cd packages/integration-tests
+            cd ~/project/packages/integration-tests
             ELIXIR_OMG_SHA=<< pipeline.parameters.elixir-omg-sha >> docker-compose up
       - run:
           name: Setup Integration Test with ERC20
