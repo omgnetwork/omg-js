@@ -51,17 +51,15 @@ commands:
       - run:
           name: Setup elixir-omg
           command: |
-            mkdir -p ~/.ssh/
-            echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
-            git clone git@github.com:omisego/elixir-omg.git ~/elixir-omg
-            cd ~/elixir-omg
+            cd packages/integration-tests
+            wget https://raw.githubusercontent.com/omisego/elixir-omg/7182c95/Makefile
             SNAPSHOT=SNAPSHOT_MIX_EXIT_PERIOD_SECONDS_120 make init-contracts
       - run:
           name: Start elixir-omg
           background: true
           command: |
-            cd ~/elixir-omg
-            docker-compose up
+            cd packages/integration-tests
+            ELIXIR_OMG_SHA=7182c95 docker-compose up
       - run:
           name: Setup Integration Test with ERC20
           command: |
