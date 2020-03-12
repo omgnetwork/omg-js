@@ -1,5 +1,3 @@
-const { ethErrorReason } = require('@omisego/omg-js-util')
-
 /**
  * Send transaction using web3
  *
@@ -12,12 +10,13 @@ const { ethErrorReason } = require('@omisego/omg-js-util')
  * @return {Promise<{ transactionHash: string }>} promise that resolves with the transaction hash
  */
 async function sendTx ({ web3, txDetails, privateKey, callbacks }) {
-  await setGas(web3, txDetails)
+  const enhancedTxDetails = await setGas(web3, txDetails)
+
   if (!privateKey) {
     // No privateKey, caller will handle signing if necessary
     if (web3.version.api && web3.version.api.startsWith('0.2')) {
       return new Promise((resolve, reject) => {
-        web3.eth.sendTransaction(txDetails, (err, transactionHash) => {
+        web3.eth.sendTransaction(enhancedTxDetails, (err, transactionHash) => {
           err
             ? reject(err)
             : resolve({ transactionHash })
@@ -26,19 +25,18 @@ async function sendTx ({ web3, txDetails, privateKey, callbacks }) {
     }
     if (callbacks) {
       return new Promise((resolve, reject) => {
-        web3.eth.sendTransaction(txDetails)
+        web3.eth.sendTransaction(enhancedTxDetails)
           .on('receipt', callbacks.onReceipt)
           .on('confirmation', callbacks.onConfirmation)
           .on('transactionHash', hash => resolve({ transactionHash: hash }))
           .on('error', reject)
       })
     }
-    return web3.eth.sendTransaction(txDetails)
+    return web3.eth.sendTransaction(enhancedTxDetails)
   }
 
-  // First sign the transaction
-  const signedTx = await web3.eth.accounts.signTransaction(txDetails, prefixHex(privateKey))
-  // Then send it
+  // Sign and send transaction
+  const signedTx = await web3.eth.accounts.signTransaction(enhancedTxDetails, prefixHex(privateKey))
   if (callbacks) {
     return new Promise((resolve, reject) => {
       web3.eth.sendSignedTransaction(signedTx.rawTransaction)
@@ -48,24 +46,15 @@ async function sendTx ({ web3, txDetails, privateKey, callbacks }) {
         .on('error', reject)
     })
   }
-  return web3.eth.sendSignedTransaction(signedTx.rawTransaction).catch(err => {
-    let transactionHash
-    try {
-      transactionHash = JSON.parse(err.message.replace('Transaction has been reverted by the EVM:', '')).transactionHash
-    } catch (parseError) {
-      throw (err)
-    }
-    ethErrorReason({ web3, hash: transactionHash }).then(() => {
-      throw (err)
-    })
-  })
+  return web3.eth.sendSignedTransaction(signedTx.rawTransaction)
 }
 
 async function setGas (web3, txDetails) {
-  if (!txDetails.gasPrice) {
+  let enhancedTxDetails = { ...txDetails }
+  if (!enhancedTxDetails.gasPrice) {
     try {
       if (web3.version.api && web3.version.api.startsWith('0.2')) {
-        txDetails.gasPrice = await new Promise((resolve, reject) => {
+        const gasPrice = await new Promise((resolve, reject) => {
           web3.eth.getGasPrice((err, result) => {
             if (err) {
               reject(err)
@@ -74,18 +63,22 @@ async function setGas (web3, txDetails) {
             }
           })
         })
+        enhancedTxDetails = { ...enhancedTxDetails, gasPrice }
       } else {
-        txDetails.gasPrice = await web3.eth.getGasPrice()
+        const gasPrice = await web3.eth.getGasPrice()
+        enhancedTxDetails = { ...enhancedTxDetails, gasPrice }
       }
     } catch (err) {
-      txDetails.gasPrice = '1000000000' // Default to 1 GWEI
+      // Default to 1 GWEI
+      enhancedTxDetails = { ...enhancedTxDetails, gasPrice: '1000000000' }
     }
   }
-  if (!txDetails.gas) {
+
+  if (!enhancedTxDetails.gas) {
     try {
       if (web3.version.api && web3.version.api.startsWith('0.2')) {
-        txDetails.gas = await new Promise((resolve, reject) => {
-          web3.eth.estimateGas(txDetails, (err, result) => {
+        const gas = await new Promise((resolve, reject) => {
+          web3.eth.estimateGas(enhancedTxDetails, (err, result) => {
             if (err) {
               reject(err)
             } else {
@@ -93,14 +86,18 @@ async function setGas (web3, txDetails) {
             }
           })
         })
+        enhancedTxDetails = { ...enhancedTxDetails, gas }
       } else {
-        txDetails.gas = await web3.eth.estimateGas(txDetails)
+        const gas = await web3.eth.estimateGas(enhancedTxDetails)
+        enhancedTxDetails = { ...enhancedTxDetails, gas }
       }
     } catch (err) {
       console.warn(`Error estimating gas: ${err}`)
       throw err
     }
   }
+
+  return enhancedTxDetails
 }
 
 function getTxData (web3, contract, method, ...args) {
