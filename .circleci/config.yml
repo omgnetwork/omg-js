@@ -46,15 +46,12 @@ jobs:
 
   integration-test:
     machine:
-      image: ubuntu-1604:201903-01 
+      image: ubuntu-1604:201903-01
+    resource_class: xlarge
     steps:
       - checkout
       - run:
-          name: Setup Machine
-            # curl -L https://github.com/docker/compose/releases/download/1.25.4/docker-compose-`uname -s`-`uname -m` > ~/docker-compose
-            # chmod +x ~/docker-compose
-            # sudo mv ~/docker-compose /usr/local/bin/docker-compose
-            # docker-compose --version
+          name: Install Node
           command: |
             export NVM_DIR="/opt/circleci/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
@@ -94,7 +91,7 @@ jobs:
           command: |
             export NVM_DIR="/opt/circleci/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-            npm run ci-test
+            npm run parallel-test
           environment:
             ETH_NODE: http://localhost:8545
             WATCHER_URL: http://localhost:7534
