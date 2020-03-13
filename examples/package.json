@@ -20,8 +20,8 @@
   "dependencies": {
     "bn.js": "^5.0.0",
     "human-standard-token-abi": "^2.0.0",
-    "json-bigint": "git+https://git@github.com/omisego/json-bigint.git",
     "number-to-bn": "^1.7.0",
+    "omg-json-bigint": "^1.0.0",
     "promise-retry": "^1.1.1",
     "web3": "1.2.2"
   }

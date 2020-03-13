@@ -15,7 +15,7 @@ limitations under the License. */
 
 const request = require('request-promise-native')
 const debug = require('debug')('omg.childchain.rpc')
-const JSONBigNumber = require('json-bigint')
+const JSONBigNumber = require('omg-json-bigint')
 
 class RpcError extends Error {
   constructor ({ code, description, messages }) {

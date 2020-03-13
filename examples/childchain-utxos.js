@@ -16,7 +16,7 @@
 
 const ChildChain = require('../packages/omg-js-childchain/src/childchain')
 const config = require('./config.js')
-const JSONBigNumber = require('json-bigint')
+const JSONBigNumber = require('omg-json-bigint')
 
 const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url })
 
