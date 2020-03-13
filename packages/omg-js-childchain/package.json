@@ -28,7 +28,7 @@
     "@omisego/omg-js-util": "3.0.2-0.4.5",
     "bn.js": "^5.0.0",
     "debug": "^4.0.1",
-    "json-bigint": "git+https://git@github.com/omisego/json-bigint.git",
+    "omg-json-bigint": "^1.0.0",
     "request": "^2.88.0",
     "request-promise-native": "^1.0.7",
     "rlp": "^2.1.0",
