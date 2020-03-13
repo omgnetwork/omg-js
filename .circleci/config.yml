@@ -14,7 +14,12 @@ workflows:
           filters:
             branches:
               only: master
-      - full-integration-test:
+      - baseline-integration-test:
+          requires: [unit-test]
+          filters:
+            branches:
+              only: master
+      - ife-integration-test:
           requires: [unit-test]
           filters:
             branches:
