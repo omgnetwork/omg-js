@@ -1,0 +1,29 @@
+{
+  "name": "@omisego/omg-js-client",
+  "version": "3.0.3-0.4.5",
+  "description": "JavaScript Library to interact with OMG Network",
+  "keywords": [
+    "OMG",
+    "OmiseGo",
+    "Plasma"
+  ],
+  "main": "omg.js",
+  "author": "OmiseGo",
+  "contributors": [
+    "Pong Cheecharern <pong@omise.co>",
+    "Kevin Sullivan <kevinsul@omise.co>",
+    "Jarindr Thitadilaka <jarindr@omisego.co>",
+    "Nicholas Mueller <nicholas@omisego.co>"
+  ],
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/omisego/omg-js.git"
+  },
+  "bugs": {
+    "url": "https://github.com/omisego/omg-js/issues"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

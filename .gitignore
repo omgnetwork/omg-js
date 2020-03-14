@@ -10,3 +10,6 @@ node_modules
 
 build
 dist
+
+# ignore browserified build
+packages/omg-js-client/omg.js
