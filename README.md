@@ -1,7 +1,10 @@
 ## OMG-JS 
+
 [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 
 [![JavaScript Style Guide](https://cdn.rawgit.com/standard/standard/master/badge.svg)](https://github.com/standard/standard)
+
+[![CircleCI](https://circleci.com/gh/omisego/omg-js/tree/master.svg?style=svg)](https://circleci.com/gh/omisego/omg-js/tree/master)
 
 This is a Javascript library that allows you to interact with OmiseGo's MoreVP implementation of Plasma. It provides functions to:
 
@@ -33,7 +36,7 @@ The project is organized into 3 submodules:
 2. @omisego/omg-js-childchain
 3. @omisego/omg-js-util
 
-You can use any of them separately, or all at once by importing the parent `@omisego/omg-js` package
+You can use any of them separately, or all at once by importing the parent `@omisego/omg-js` package.
 
 ## Installation
 
@@ -43,13 +46,17 @@ Requires Node >= 8.11.3 < 13.0.0
 npm install @omisego/omg-js
 ```
 
-
 #### Browser
-Copy the `dist/omg.js` file into your project and include it.
+You can add `omg-js` to a website quickly. Just add this script tag. 
 ```
-<script type="text/javascript" src="omg.js"></script>
+<script src="https://unpkg.com/@omisego/omg-js-client"></script>
 ```
 
+#### React Native
+`omg-js` can easily be integrated with React Native projects by installing this package.
+```
+npm install @omisego/omg-js-react-native
+```
 
 ## API Documentation
 
