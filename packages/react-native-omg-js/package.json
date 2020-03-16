@@ -5,6 +5,9 @@
   "scripts": {
     "postinstall": "sh postinstall.sh"
   },
+  "bin": {
+    "omgjs-nodeify": "./hack.sh"
+  },
   "keywords": [
     "OMG",
     "OmiseGo",
