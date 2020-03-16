@@ -49,13 +49,13 @@ npm install @omisego/omg-js
 #### Browser
 You can add `omg-js` to a website quickly. Just add this script tag. 
 ```
-<script src="https://unpkg.com/@omisego/omg-js-client"></script>
+<script src="https://unpkg.com/@omisego/browser-omg-js"></script>
 ```
 
 #### React Native
 `omg-js` can easily be integrated with React Native projects by installing this package.
 ```
-npm install @omisego/omg-js-react-native
+npm install @omisego/react-native-omg-js
 ```
 
 ## API Documentation

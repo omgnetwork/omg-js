@@ -12,4 +12,4 @@ build
 dist
 
 # ignore browserified build
-packages/omg-js-client/omg.js
+packages/browser-omg-js/omg.js

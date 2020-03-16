@@ -1,7 +1,7 @@
 {
-  "name": "@omisego/omg-js-client",
+  "name": "@omisego/browser-omg-js",
   "version": "3.0.3-0.4.5",
-  "description": "JavaScript Library to interact with OMG Network",
+  "description": "omg-js for the browser",
   "keywords": [
     "OMG",
     "OmiseGo",

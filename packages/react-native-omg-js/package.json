@@ -1,7 +1,7 @@
 {
-  "name": "@omisego/omg-js-react-native",
+  "name": "@omisego/react-native-omg-js",
   "version": "3.0.3-0.4.5",
-  "description": "omg-js for React Native integration",
+  "description": "omg-js for React Native",
   "scripts": {
     "postinstall": "sh postinstall.sh"
   },
