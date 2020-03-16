@@ -30,9 +30,7 @@
     "url": "https://github.com/omisego/omg-js/issues"
   },
   "dependencies": {
-    "@omisego/omg-js-childchain": "3.0.3-0.4.5",
-    "@omisego/omg-js-rootchain": "3.0.3-0.4.5",
-    "@omisego/omg-js-util": "3.0.3-0.4.5",
+    "@omisego/omg-js": "3.0.3-0.4.5",
     "@tradle/react-native-http": "^2.0.1",
     "assert": "^1.5.0",
     "browserify-zlib": "^0.1.4",
@@ -54,41 +52,5 @@
   },
   "publishConfig": {
     "access": "public"
-  },
-  "react-native": {
-    "zlib": "browserify-zlib",
-    "crypto": "react-native-crypto",
-    "net": "react-native-tcp",
-    "http": "@tradle/react-native-http",
-    "https": "https-browserify",
-    "os": "react-native-os",
-    "path": "path-browserify",
-    "fs": "react-native-level-fs",
-    "_stream_transform": "readable-stream/transform",
-    "_stream_readable": "readable-stream/readable",
-    "_stream_writable": "readable-stream/writable",
-    "_stream_duplex": "readable-stream/duplex",
-    "_stream_passthrough": "readable-stream/passthrough",
-    "stream": "stream-browserify",
-    "vm": "vm-browserify",
-    "tls": false
-  },
-  "browser": {
-    "zlib": "browserify-zlib",
-    "crypto": "react-native-crypto",
-    "net": "react-native-tcp",
-    "http": "@tradle/react-native-http",
-    "https": "https-browserify",
-    "os": "react-native-os",
-    "path": "path-browserify",
-    "fs": "react-native-level-fs",
-    "_stream_transform": "readable-stream/transform",
-    "_stream_readable": "readable-stream/readable",
-    "_stream_writable": "readable-stream/writable",
-    "_stream_duplex": "readable-stream/duplex",
-    "_stream_passthrough": "readable-stream/passthrough",
-    "stream": "stream-browserify",
-    "vm": "vm-browserify",
-    "tls": false
   }
 }
