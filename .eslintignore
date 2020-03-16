@@ -1,3 +1,5 @@
 node_modules
 docs
+
 packages/omg-js-client
+packages/omg-js-react-native
