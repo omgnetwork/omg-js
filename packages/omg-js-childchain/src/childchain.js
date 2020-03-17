@@ -29,7 +29,8 @@ const {
   sendTransactionSchema,
   inFlightExitGetOutputChallengeDataSchema,
   inFlightExitGetInputChallengeDataSchema,
-  submitTransactionSchema
+  submitTransactionSchema,
+  mergeUtxosSchema
 } = require('./validators')
 const Joi = require('@hapi/joi')
 const rpcApi = require('./rpc/rpcApi')
@@ -338,6 +339,12 @@ class ChildChain {
     privateKey,
     verifyingContract
   }) {
+    Joi.assert({
+      utxos,
+      privateKey,
+      verifyingContract
+    }, mergeUtxosSchema)
+
     const txBody = {
       inputs: utxos,
       outputs: [utxo.mergeUtxosToOutput(utxos)],
