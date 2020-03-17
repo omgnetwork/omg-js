@@ -13,13 +13,13 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 */
-const { uniqBy, sumBy } = require('lodash')
-
+const numberToBN = require('number-to-bn')
+const { uniqBy } = require('lodash')
 function mergeUtxosToOutput (utxos) {
   if (utxos.length > 4) {
     throw new Error('max utxos that can merge must less than 4')
   }
-  const isSameCurrency = uniqBy(utxos, u => u.currency).length === 1
+  const isSameCurrency = uniqBy(utxos, (u) => u.currency).length === 1
   if (!isSameCurrency) {
     throw new Error('all utxo currency must be the same')
   }
@@ -28,7 +28,10 @@ function mergeUtxosToOutput (utxos) {
     outputType: 1,
     outputGuard: utxos.owner,
     currency: utxos[0].currency,
-    amount: sumBy(utxos, d => d.amount)
+    amount: utxos.reduce(
+      (prev, curr) => prev.add(numberToBN(curr.amount)),
+      numberToBN(0)
+    )
   }
 }
 
