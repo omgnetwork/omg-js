@@ -4,11 +4,11 @@
   "private": true,
   "description": "JavaScript Library to interact with OMG Network",
   "scripts": {
-    "lerna-reset": "lerna clean --yes && lerna bootstrap",
+    "lerna-reset": "lerna clean --yes && lerna bootstrap --hoist",
     "release": "npm run build && lerna publish --exact",
     "release-fromgit": "lerna publish from-git",
     "release-frompackage": "lerna publish from-package",
-    "postinstall": "lerna bootstrap --hoist",
+    "postinstall": "npm run lerna-reset",
     "lint": "eslint . --ext .js",
     "lint-fix": "eslint . --ext .js --fix",
     "build": "browserify browserify.js -o packages/browser-omg-js/omg.js",

@@ -58,7 +58,6 @@ commands:
             export NVM_DIR="/opt/circleci/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
             npm install
-            npm run lerna-reset
       - run:
           name: Setup elixir-omg
           command: |
@@ -97,9 +96,7 @@ jobs:
           apk add --no-cache git openssh make gcc g++ python
       - run:
           name: Install Dependencies
-          command: |
-            npm install
-            npm run lerna-reset
+          command: npm install
       - run:
           name: Run Linter
           command: npm run lint

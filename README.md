@@ -88,7 +88,6 @@ You can find example code inside `examples` folder.
 
 To run the examples:
 - `npm install` from root of `omg-js`.
-- `npm run lerna-reset` from root of `omg-js`.
 - Step inside the `/examples` directory.
 - Run `npm install`.
 - Create `.env` file inside the root of the `/examples` directory with the appropriate values (see `/examples/env.example` for an example)
