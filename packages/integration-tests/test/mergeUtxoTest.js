@@ -108,6 +108,9 @@ describe('mergeUtxoTest.js', function () {
         privateKey: aliceAccount.privateKey,
         verifyingContract: config.plasmaframework_contract_address
       })
+      await ccHelper.waitNumUtxos(childChain, aliceAccount.address, 1)
+      const utxosMerged = await childChain.getUtxos(aliceAccount.address)
+      assert.equal(utxosMerged.length, 1)
     })
   })
 })
