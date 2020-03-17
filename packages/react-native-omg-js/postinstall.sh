@@ -1,4 +1,7 @@
 #!/bin/sh
+if [ "$CI" = true ]; then
+  exit 0
+fi
 
 # Polyfill TextEncoder from joi
 # Backup original content
