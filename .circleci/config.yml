@@ -96,7 +96,9 @@ jobs:
           apk add --no-cache git openssh make gcc g++ python
       - run:
           name: Install Dependencies
-          command: npm install
+          command: |
+            npm install
+            npm run lerna-reset
       - run:
           name: Run Linter
           command: npm run lint
