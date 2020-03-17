@@ -26,7 +26,7 @@ function mergeUtxosToOutput (utxos) {
 
   return {
     outputType: 1,
-    outputGuard: utxos.owner,
+    outputGuard: utxos[0].owner,
     currency: utxos[0].currency,
     amount: utxos.reduce(
       (prev, curr) => prev.add(numberToBN(curr.amount)),

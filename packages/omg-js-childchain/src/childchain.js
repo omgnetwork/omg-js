@@ -340,13 +340,13 @@ class ChildChain {
   }) {
     const txBody = {
       inputs: utxos,
-      outputs: utxo.mergeUtxosToOutput(utxos),
+      outputs: [utxo.mergeUtxosToOutput(utxos)],
       txData: 0,
       metadata: transaction.NULL_METADATA
     }
 
     const typedData = transaction.getTypedData(txBody, verifyingContract)
-    const signatures = this.signTransaction(typedData, [new Array(utxos.length).fill(privateKey)])
+    const signatures = this.signTransaction(typedData, new Array(utxos.length).fill(privateKey))
     const signedTx = this.buildSignedTransaction(typedData, signatures)
     return this.submitTransaction(signedTx)
   }
