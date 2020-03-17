@@ -65,7 +65,7 @@ describe('mergeUtxoTest.js', function () {
       }
     })
 
-    it('should deposit ETH to the Plasma contract', async function () {
+    it('should merge utxos to a single utxo', async function () {
       // The new account should have no initial balance
       const initialBalance = await childChain.getBalance(aliceAccount.address)
       assert.equal(initialBalance.length, 0)
@@ -111,6 +111,7 @@ describe('mergeUtxoTest.js', function () {
       await ccHelper.waitNumUtxos(childChain, aliceAccount.address, 1)
       const utxosMerged = await childChain.getUtxos(aliceAccount.address)
       assert.equal(utxosMerged.length, 1)
+      assert.equal(utxosMerged[0].amount.toString(), (TEST_AMOUNT * 2).toString())
     })
   })
 })
