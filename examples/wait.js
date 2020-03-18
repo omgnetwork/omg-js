@@ -29,7 +29,7 @@ async function waitForChallengePeriodToEnd (rootChain) {
 
 async function waitForUtxo (childChain, address, utxo) {
   return promiseRetry(async (retry, number) => {
-    console.log(`Waiting for utxo ${utxo} ${number}`)
+    console.log(`Waiting for utxo ${JSON.stringify(utxo, undefined, 2)} ${number}`)
     const utxos = await childChain.getUtxos(address)
     const found = utxos.find(u => u.oindex === 0 && u.txindex === utxo.txindex && u.blknum === utxo.blknum)
     if (!found) {
