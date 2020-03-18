@@ -41,7 +41,7 @@ async function childchainMergeUtxos () {
   })
 
   console.log('merge utxo transaction result', utxo)
-  await wait.waitForUtxo(utxo)
+  await wait.waitForUtxo(childChain, config.alice_eth_address, utxo)
   console.log(`Alice UTXOs has length of ${aliceUtxos.length}`)
 }
 
