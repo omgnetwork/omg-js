@@ -90,7 +90,8 @@ const inFlightExitGetInputChallengeDataSchema = Joi.object({
 const mergeUtxosSchema = Joi.object({
   utxos: Joi.array().max(4).items(Joi.object()).required(),
   privateKey: Joi.string().required(),
-  verifyingContract: validateAddress.required()
+  verifyingContract: validateAddress.required(),
+  metadata: validateMetadata
 })
 
 module.exports = {

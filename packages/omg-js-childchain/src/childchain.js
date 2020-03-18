@@ -337,19 +337,21 @@ class ChildChain {
   async mergeUtxos ({
     utxos,
     privateKey,
-    verifyingContract
+    verifyingContract,
+    metadata = transaction.NULL_METADATA
   }) {
     Joi.assert({
       utxos,
       privateKey,
-      verifyingContract
+      verifyingContract,
+      metadata
     }, mergeUtxosSchema)
 
     const txBody = {
       inputs: utxos,
       outputs: [utxo.mergeUtxosToOutput(utxos)],
       txData: 0,
-      metadata: transaction.NULL_METADATA
+      metadata
     }
 
     const typedData = transaction.getTypedData(txBody, verifyingContract)
