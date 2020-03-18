@@ -16,12 +16,20 @@
 const numberToBN = require('number-to-bn')
 const { uniqBy } = require('lodash')
 function mergeUtxosToOutput (utxos) {
+  if (utxos.length < 2) {
+    throw new Error('max utxos that can merge must more than 2')
+  }
   if (utxos.length > 4) {
     throw new Error('max utxos that can merge must less than 4')
   }
   const isSameCurrency = uniqBy(utxos, (u) => u.currency).length === 1
   if (!isSameCurrency) {
     throw new Error('all utxo currency must be the same')
+  }
+
+  const isSameOwner = uniqBy(utxos, (u) => u.owner).length === 1
+  if (!isSameOwner) {
+    throw new Error('all utxo owner must be the same')
   }
 
   return {
