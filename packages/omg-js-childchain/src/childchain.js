@@ -330,8 +330,10 @@ class ChildChain {
    * Merge utxos to a single output
    *
    * @method mergeUtxos
+   * @param {Object} args an arguments object
    * @param {UTXO[]} args.utxos a utxo array
    * @param {string} args.verifyingContract address of the RootChain contract
+   * @param {string} args.privateKey private key of the owner's utxo
    * @return {Promise<Object>} promise that resolves with the submitted merge transaction
    */
   async mergeUtxos ({
