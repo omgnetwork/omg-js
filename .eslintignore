@@ -1,2 +1,5 @@
 node_modules
 docs
+
+packages/browser-omg-js
+packages/react-native-omg-js

@@ -1,7 +1,10 @@
 ## OMG-JS 
+
 [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 
 [![JavaScript Style Guide](https://cdn.rawgit.com/standard/standard/master/badge.svg)](https://github.com/standard/standard)
+
+[![CircleCI](https://circleci.com/gh/omisego/omg-js/tree/master.svg?style=svg)](https://circleci.com/gh/omisego/omg-js/tree/master)
 
 This is a Javascript library that allows you to interact with OmiseGo's MoreVP implementation of Plasma. It provides functions to:
 
@@ -33,7 +36,7 @@ The project is organized into 3 submodules:
 2. @omisego/omg-js-childchain
 3. @omisego/omg-js-util
 
-You can use any of them separately, or all at once by importing the parent `@omisego/omg-js` package
+You can use any of them separately, or all at once by importing the parent `@omisego/omg-js` package.
 
 ## Installation
 
@@ -43,13 +46,25 @@ Requires Node >= 8.11.3 < 13.0.0
 npm install @omisego/omg-js
 ```
 
-
 #### Browser
-Copy the `dist/omg.js` file into your project and include it.
+You can add `omg-js` to a website quickly. Just add this script tag.
 ```
-<script type="text/javascript" src="omg.js"></script>
+<script src="https://unpkg.com/@omisego/browser-omg-js"></script>
 ```
 
+#### React Native
+`omg-js` can easily be integrated with React Native projects.
+First, add this postinstall script to your project's `package.json`
+```
+"scripts": {
+    "postinstall": "omgjs-nodeify"
+}
+```
+
+Then install the library.
+```
+npm install @omisego/react-native-omg-js
+```
 
 ## API Documentation
 
@@ -73,7 +88,6 @@ You can find example code inside `examples` folder.
 
 To run the examples:
 - `npm install` from root of `omg-js`.
-- `npm run lerna-reset` from root of `omg-js`.
 - Step inside the `/examples` directory.
 - Run `npm install`.
 - Create `.env` file inside the root of the `/examples` directory with the appropriate values (see `/examples/env.example` for an example)
