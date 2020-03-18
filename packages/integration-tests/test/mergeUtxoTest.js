@@ -41,7 +41,7 @@ describe('mergeUtxoTest.js', function () {
     await faucet.init({ rootChain, childChain, web3, config, faucetName })
   })
 
-  describe('deposit ETH', function () {
+  describe('merge utxos', function () {
     const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.1', 'ether')
     const TEST_AMOUNT = web3.utils.toWei('.0001', 'ether')
 
