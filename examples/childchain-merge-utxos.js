@@ -31,8 +31,9 @@ async function childchainMergeUtxos () {
   )
   console.log(`Alice UTXOs has length of ${aliceUtxos.length}`)
 
-  const utxosToMerge = aliceUtxos.filter(u => u.currency === transaction.ETH_CURRENCY).slice(4)
-
+  const utxosToMerge = aliceUtxos
+    .filter((u) => u.currency === transaction.ETH_CURRENCY)
+    .slice(0, 4)
   const result = await childChain.mergeUtxos({
     utxos: utxosToMerge,
     privateKey: config.alice_eth_address_private_key,
