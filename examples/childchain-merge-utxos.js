@@ -40,7 +40,7 @@ async function childchainMergeUtxos () {
     verifyingContract: config.plasmaframework_contract_address
   })
 
-  console.log('merge utxo transaction result', utxo)
+  console.log('merge utxo transaction result', JSON.stringify(utxo, undefined, 2))
   await wait.waitForUtxo(childChain, config.alice_eth_address, utxo)
   console.log(`Alice UTXOs has length of ${aliceUtxos.length}`)
 }
