@@ -1,0 +1,29 @@
+{
+  "name": "@omisego/browser-omg-js",
+  "version": "3.0.3-0.4.5",
+  "description": "omg-js for the browser",
+  "keywords": [
+    "OMG",
+    "OmiseGo",
+    "Plasma"
+  ],
+  "main": "omg.js",
+  "author": "OmiseGo",
+  "contributors": [
+    "Pong Cheecharern <pong@omise.co>",
+    "Kevin Sullivan <kevinsul@omise.co>",
+    "Jarindr Thitadilaka <jarindr@omisego.co>",
+    "Nicholas Mueller <nicholas@omisego.co>"
+  ],
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/omisego/omg-js.git"
+  },
+  "bugs": {
+    "url": "https://github.com/omisego/omg-js/issues"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
