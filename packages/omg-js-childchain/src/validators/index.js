@@ -87,6 +87,13 @@ const inFlightExitGetInputChallengeDataSchema = Joi.object({
   inputIndex: Joi.number().integer().required()
 })
 
+const mergeUtxosSchema = Joi.object({
+  utxos: Joi.array().max(4).min(2).items(Joi.object()).required(),
+  privateKey: Joi.string().required(),
+  verifyingContract: validateAddress.required(),
+  metadata: validateMetadata
+})
+
 module.exports = {
   childchainConstructorSchema,
   getUtxosSchema,
@@ -103,5 +110,6 @@ module.exports = {
   sendTransactionSchema,
   inFlightExitGetOutputChallengeDataSchema,
   inFlightExitGetInputChallengeDataSchema,
-  submitTransactionSchema
+  submitTransactionSchema,
+  mergeUtxosSchema
 }

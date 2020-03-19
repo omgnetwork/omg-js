@@ -1,0 +1,48 @@
+/*
+  Copyright 2019 OmiseGO Pte Ltd
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+*/
+const numberToBN = require('number-to-bn')
+const { uniqBy } = require('lodash')
+function mergeUtxosToOutput (utxos) {
+  if (utxos.length < 2) {
+    throw new Error('Must merge at least 2 utxos')
+  }
+  if (utxos.length > 4) {
+    throw new Error('Cannot merge more than 4 utxos')
+  }
+  const isSameCurrency = uniqBy(utxos, (u) => u.currency).length === 1
+  if (!isSameCurrency) {
+    throw new Error('All utxo currency must be the same')
+  }
+
+  const isSameOwner = uniqBy(utxos, (u) => u.owner).length === 1
+  if (!isSameOwner) {
+    throw new Error('All utxo owner must be the same')
+  }
+
+  return {
+    outputType: 1,
+    outputGuard: utxos[0].owner,
+    currency: utxos[0].currency,
+    amount: utxos.reduce(
+      (prev, curr) => prev.add(numberToBN(curr.amount)),
+      numberToBN(0)
+    )
+  }
+}
+
+module.exports = {
+  mergeUtxosToOutput
+}

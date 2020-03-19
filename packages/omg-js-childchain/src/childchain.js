@@ -29,12 +29,13 @@ const {
   sendTransactionSchema,
   inFlightExitGetOutputChallengeDataSchema,
   inFlightExitGetInputChallengeDataSchema,
-  submitTransactionSchema
+  submitTransactionSchema,
+  mergeUtxosSchema
 } = require('./validators')
 const Joi = require('@hapi/joi')
 const rpcApi = require('./rpc/rpcApi')
 const rlp = require('rlp')
-const { transaction, sign, hexPrefix } = require('@omisego/omg-js-util')
+const { transaction, sign, hexPrefix, utxo } = require('@omisego/omg-js-util')
 global.Buffer = global.Buffer || require('buffer').Buffer
 
 class ChildChain {
@@ -321,6 +322,42 @@ class ChildChain {
     })
     const typedData = transaction.getTypedData(txBody, verifyingContract)
     const signatures = this.signTransaction(typedData, fromPrivateKeys)
+    const signedTx = this.buildSignedTransaction(typedData, signatures)
+    return this.submitTransaction(signedTx)
+  }
+
+  /**
+   * Merge utxos to a single output
+   *
+   * @method mergeUtxos
+   * @param {Object} args an arguments object
+   * @param {UTXO[]} args.utxos a utxo array
+   * @param {string} args.verifyingContract address of the RootChain contract
+   * @param {string} args.privateKey private key of the owner's utxo
+   * @return {Promise<Object>} promise that resolves with the submitted merge transaction
+   */
+  async mergeUtxos ({
+    utxos,
+    privateKey,
+    verifyingContract,
+    metadata = transaction.NULL_METADATA
+  }) {
+    Joi.assert({
+      utxos,
+      privateKey,
+      verifyingContract,
+      metadata
+    }, mergeUtxosSchema)
+
+    const txBody = {
+      inputs: utxos,
+      outputs: [utxo.mergeUtxosToOutput(utxos)],
+      txData: 0,
+      metadata
+    }
+
+    const typedData = transaction.getTypedData(txBody, verifyingContract)
+    const signatures = this.signTransaction(typedData, new Array(utxos.length).fill(privateKey))
     const signedTx = this.buildSignedTransaction(typedData, signatures)
     return this.submitTransaction(signedTx)
   }
