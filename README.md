@@ -170,3 +170,5 @@ Now let's run through the same story above but for ERC20 deposit/transaction/exi
 3. [Exit one of Bob's Childchain ERC20 UTXOs to the Rootchain](examples/childchain-exit-erc20.js)
 
     `npm run childchain-exit-erc20`
+
+hihi
