@@ -1,8 +1,8 @@
 ## OMG-JS 
 
-[![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
-
 [![JavaScript Style Guide](https://cdn.rawgit.com/standard/standard/master/badge.svg)](https://github.com/standard/standard)
+
+[![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 
 [![CircleCI](https://circleci.com/gh/omisego/omg-js/tree/master.svg?style=svg)](https://circleci.com/gh/omisego/omg-js/tree/master)
 
@@ -15,18 +15,7 @@ This is a Javascript library that allows you to interact with OmiseGo's MoreVP i
 
 ## Compatibility
 
-Below you can find a compatibility table of `omg-js` with `elixir-omg` and `plasma-contracts` SHAs.
 `omg-js` follows a modified semver with the first part referring to its own library versioning and the second part referring to its compatible `elixir-omg` version.
-
-| Version | elixir-omg | plasma-contracts |
-| --- | --- | --- |
-| 3.0.3-0.4.5 | a8b3bd4 | a69c763 |
-| 3.0.1-0.4.2 | 78f1a7f | 7c3f796 |
-| 3.0.0-0.4.1 | a43605e | 7c3f796 |
-| 3.0.0-alpha.21 | 5d092ce | bfbf7cc |
-| 3.0.0-alpha.13 | 40f899b | 835d10c |
-| 3.0.0-alpha.12 | 02e67bf | a7e8503 |
-| 3.0.0-alpha.6 | 70e9a68 | 1608296 |
 
 ## Getting Started
 
@@ -61,7 +50,7 @@ First, add this postinstall script to your project's `package.json`
 }
 ```
 
-Then install the library.
+Then install the react native compatible library.
 ```
 npm install @omisego/react-native-omg-js
 ```
