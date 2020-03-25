@@ -1,6 +1,6 @@
 {
   "name": "omg-js",
-  "version": "3.0.3-0.4.5",
+  "version": "3.1.0-0.4.6",
   "private": true,
   "description": "JavaScript Library to interact with OMG Network",
   "scripts": {
@@ -24,10 +24,10 @@
   },
   "author": "OmiseGo",
   "contributors": [
-    "Pong Cheecharern <pong@omise.co>",
-    "Kevin Sullivan <kevinsul@omise.co>",
-    "Jarindr Thitadilaka <jarindr@omisego.co>",
-    "Nicholas Mueller <nicholas@omisego.co>"
+    "Pong Cheecharern <@Pongch>",
+    "Kevin Sullivan <@kevsul>",
+    "Jarindr Thitadilaka <@jarindr>",
+    "Nicholas Mueller <@nicholasmueller>"
   ],
   "license": "Apache-2.0",
   "repository": {
