@@ -19,7 +19,8 @@
     "ci-baseline-test": "npm run mocha packages/integration-tests/ci-baseline-test",
     "ci-ife-test": "npm run mocha packages/integration-tests/ci-ife-test",
     "parallel-test": "node packages/integration-tests/parallel-test",
-    "cleanup-faucets": "node packages/integration-tests/cleanup-faucets"
+    "cleanup-faucets": "node packages/integration-tests/cleanup-faucets",
+    "audit-check": "audit-ci --moderate"
   },
   "author": "OmiseGo",
   "contributors": [
@@ -37,6 +38,7 @@
     "url": "https://github.com/omisego/omg-js/issues"
   },
   "devDependencies": {
+    "audit-ci": "^2.5.1",
     "chai": "^4.1.2",
     "chai-as-promised": "^7.1.1",
     "documentation": "^12.1.3",
