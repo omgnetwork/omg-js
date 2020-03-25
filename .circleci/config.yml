@@ -101,7 +101,7 @@ jobs:
             npm run lerna-reset
       - run:
           name: run-audit-ci
-          command: audit-ci --moderate
+          command: npm run audit-check
       - run:
           name: Run Linter
           command: npm run lint
