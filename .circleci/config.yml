@@ -97,8 +97,11 @@ jobs:
       - run:
           name: Install Dependencies
           command: |
-            npm install
+            npm install --no-audit
             npm run lerna-reset
+      - run:
+          name: run-audit-ci
+          command: audit-ci --moderate
       - run:
           name: Run Linter
           command: npm run lint
