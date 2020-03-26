@@ -50,7 +50,7 @@ class ChildChain {
   *
   */
     constructor ({ watcherUrl, watcherProxyUrl, verifyingContract }) {
-    Joi.assert({ watcherUrl, watcherProxyUrl }, childchainConstructorSchema)
+    Joi.assert({ watcherUrl, watcherProxyUrl, verifyingContract }, childchainConstructorSchema)
     this.watcherUrl = watcherUrl
     this.watcherProxyUrl = watcherProxyUrl
     this.verifyingContract = verifyingContract
