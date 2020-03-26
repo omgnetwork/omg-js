@@ -45,7 +45,7 @@ class ChildChain {
   * @param {Object} config the childchain configuration object
   * @param {string} config.watcherUrl the url of the watcher server (running in security-critical and informational mode)
   * @param {string} [config.watcherProxyUrl] *optional* the proxy url for requests made to the watcher server
-  * @param {string} config.verifyingContract the address of the verifying contract 
+  * @param {string} config.verifyingContract the address of the Rootchain contract 
   * @return {ChildChain} a ChildChain Object
   *
   */
@@ -289,7 +289,6 @@ class ChildChain {
    * @param {Payment[]} args.payments a payments object
    * @param {Fee} args.fee fee object specifying amount and currency
    * @param {string} [args.metadata] the metadata to include in the transaction
-   * @param {string} args.verifyingContract address of the RootChain contract
    * @return {Promise<Object>} promise that resolves with the submitted transaction
    */
   async sendTransaction ({
@@ -298,8 +297,7 @@ class ChildChain {
     fromPrivateKeys,
     payments,
     fee,
-    metadata,
-    verifyingContract
+    metadata
   }) {
     Joi.assert({
       fromAddress,
@@ -307,8 +305,7 @@ class ChildChain {
       fromPrivateKeys,
       payments,
       fee,
-      metadata,
-      verifyingContract
+      metadata
     }, sendTransactionSchema)
 
     const _metadata = metadata
@@ -322,7 +319,7 @@ class ChildChain {
       fee,
       metadata: _metadata
     })
-    const typedData = transaction.getTypedData(txBody, verifyingContract)
+    const typedData = transaction.getTypedData(txBody, this.verifyingContract)
     const signatures = this.signTransaction(typedData, fromPrivateKeys)
     const signedTx = this.buildSignedTransaction(typedData, signatures)
     return this.submitTransaction(signedTx)
@@ -334,20 +331,17 @@ class ChildChain {
    * @method mergeUtxos
    * @param {Object} args an arguments object
    * @param {UTXO[]} args.utxos a utxo array
-   * @param {string} args.verifyingContract address of the RootChain contract
    * @param {string} args.privateKey private key of the owner's utxo
    * @return {Promise<Object>} promise that resolves with the submitted merge transaction
    */
   async mergeUtxos ({
     utxos,
     privateKey,
-    verifyingContract,
     metadata = transaction.NULL_METADATA
   }) {
     Joi.assert({
       utxos,
       privateKey,
-      verifyingContract,
       metadata
     }, mergeUtxosSchema)
 
@@ -358,7 +352,7 @@ class ChildChain {
       metadata
     }
 
-    const typedData = transaction.getTypedData(txBody, verifyingContract)
+    const typedData = transaction.getTypedData(txBody, this.verifyingContract)
     const signatures = this.signTransaction(typedData, new Array(utxos.length).fill(privateKey))
     const signedTx = this.buildSignedTransaction(typedData, signatures)
     return this.submitTransaction(signedTx)
