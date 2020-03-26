@@ -30,7 +30,7 @@ const faucetName = path.basename(__filename)
 
 describe('transferTest.js', function () {
   const web3 = new Web3(config.eth_node)
-  const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url })
+  const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url, verifyingContract: rootChain.plasmaContractAddress })
   const rootChain = new RootChain({ web3, plasmaContractAddress: config.plasmaframework_contract_address })
   let feeEth
   before(async function () {
@@ -454,8 +454,7 @@ describe('transferTest.js', function () {
         fee: {
           amount: feeEth,
           currency: transaction.ETH_CURRENCY
-        },
-        verifyingContract: rootChain.plasmaContractAddress
+        } 
       })
       console.log(`Submitted transaction: ${JSON.stringify(result)}`)
 
