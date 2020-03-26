@@ -10,7 +10,8 @@ const {
 
 const childchainConstructorSchema = Joi.object({
   watcherUrl: Joi.string().required(),
-  watcherProxyUrl: Joi.string().allow('')
+  watcherProxyUrl: Joi.string().allow(''),
+  verifyingContract: validateAddress.required()
 })
 
 const getUtxosSchema = validateAddress.required()

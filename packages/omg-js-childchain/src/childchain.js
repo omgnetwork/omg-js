@@ -42,16 +42,18 @@ class ChildChain {
   /**
   * Creates a ChildChain object
   *
-  * @param {Object} config the rootchain configuration object
+  * @param {Object} config the childchain configuration object
   * @param {string} config.watcherUrl the url of the watcher server (running in security-critical and informational mode)
   * @param {string} [config.watcherProxyUrl] *optional* the proxy url for requests made to the watcher server
+  * @param {string} config.verifyingContract the address of the verifying contract 
   * @return {ChildChain} a ChildChain Object
   *
   */
-  constructor ({ watcherUrl, watcherProxyUrl }) {
+    constructor ({ watcherUrl, watcherProxyUrl, verifyingContract }) {
     Joi.assert({ watcherUrl, watcherProxyUrl }, childchainConstructorSchema)
     this.watcherUrl = watcherUrl
     this.watcherProxyUrl = watcherProxyUrl
+    this.verifyingContract = verifyingContract
   }
 
   /**
