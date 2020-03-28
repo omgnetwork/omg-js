@@ -27,7 +27,6 @@ const watcherUrl = 'http://omg-watcher'
 const proxyUrl = 'http://omg-proxy'
 const plasmaContractAddress = '0xE009136B58a8B2eEb80cfa18aD2Ea6D389d3A375'
 
-
 describe('rpcApi test', function () {
   before(function () {
     sinon.stub(rp, 'get').resolves(
