@@ -31,7 +31,7 @@ describe('mergeUtxoTest.js', function () {
   const childChain = new ChildChain({
     watcherUrl: config.watcher_url,
     watcherProxyUrl: config.watcher_proxy_url,
-    verifyingContract: config.plasmaframework_contract_address
+    plasmaContractAddress: config.plasmaframework_contract_address
   })
   const rootChain = new RootChain({
     web3,

@@ -31,7 +31,7 @@ const faucetName = path.basename(__filename)
 describe('getExitQueueTest.js', function () {
   const web3 = new Web3(new Web3.providers.HttpProvider(config.eth_node))
   const rootChain = new RootChain({ web3, plasmaContractAddress: config.plasmaframework_contract_address })
-  const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url })
+  const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url, plasmaContractAddress: config.plasmaframework_contract_address })
 
   const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.1', 'ether')
   const DEPOSIT_AMOUNT = web3.utils.toWei('.0001', 'ether')
