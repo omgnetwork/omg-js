@@ -21,7 +21,7 @@ const config = require('../test-config')
 
 async function selectUtxos (utxos, amount, currency) {
   // Filter by desired currency and sort in descending order
-  const childChain = new Childchain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url })
+  const childChain = new Childchain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url, plasmaContractAddress: config.plasmaframework_contract_address })
   const fees = (await childChain.getFees())['1']
   const { amount: feeEthAmountWei } = fees.find(f => f.currency === transaction.ETH_CURRENCY)
 
