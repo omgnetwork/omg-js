@@ -25,6 +25,8 @@ use(chaiAsPromised)
 
 const watcherUrl = 'http://omg-watcher'
 const proxyUrl = 'http://omg-proxy'
+const plasmaContractAddress = '0xE009136B58a8B2eEb80cfa18aD2Ea6D389d3A375'
+
 
 describe('rpcApi test', function () {
   before(function () {
@@ -106,7 +108,8 @@ describe('rpcApi integration test', function () {
   it('childchain should pass proxy url if it exists', async function () {
     const childchainWithProxy = new ChildChain({
       watcherUrl,
-      watcherProxyUrl: proxyUrl
+      watcherProxyUrl: proxyUrl,
+      plasmaContractAddress
     })
     const res = await childchainWithProxy.getTransaction('0x123')
     const expectedCall = {
@@ -122,7 +125,7 @@ describe('rpcApi integration test', function () {
   })
 
   it('childchain should not pass proxy url if it doesnt exist', async function () {
-    const childchainNoProxy = new ChildChain({ watcherUrl })
+    const childchainNoProxy = new ChildChain({ watcherUrl, plasmaContractAddress })
     const res = await childchainNoProxy.getTransaction('0xabc')
     const expectedCall = {
       method: 'POST',

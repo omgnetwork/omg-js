@@ -25,6 +25,7 @@ chai.use(chaiAsPromised)
 const assert = chai.assert
 
 const watcherUrl = 'http://omg-watcher'
+const plasmaContractAddress = '0xE009136B58a8B2eEb80cfa18aD2Ea6D389d3A375'
 
 describe('getUtxo', () => {
   it('should return object with empty array as utxo with an address', async () => {
@@ -35,7 +36,7 @@ describe('getUtxo', () => {
       .post('/account.get_utxos', { address, jsonrpc: '2.0', id: 0 })
       .reply(200, { success: true, data: expectedObject })
 
-    const childChain = new ChildChain({ watcherUrl })
+    const childChain = new ChildChain({ watcherUrl, plasmaContractAddress })
     const returnUtxo = await childChain.getUtxos(address)
     assert.deepEqual(expectedObject, returnUtxo)
   })
@@ -51,7 +52,7 @@ describe('getUtxo', () => {
       .post('/account.get_utxos', { address, jsonrpc: '2.0', id: 0 })
       .reply(200, { success: false, data: errorObject })
 
-    const childChain = new ChildChain({ watcherUrl })
+    const childChain = new ChildChain({ watcherUrl, plasmaContractAddress })
     return assert.isRejected(childChain.getUtxos(address), Error, errorObject.description)
   })
 })

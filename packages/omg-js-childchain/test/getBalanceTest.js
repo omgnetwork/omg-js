@@ -22,6 +22,7 @@ chai.use(chaiAsPromised)
 const assert = chai.assert
 
 const watcherUrl = 'http://omg-watcher'
+const plasmaContractAddress = '0xE009136B58a8B2eEb80cfa18aD2Ea6D389d3A375'
 
 describe('getBalance', function () {
   it('should return the balance of an address', async function () {
@@ -35,7 +36,7 @@ describe('getBalance', function () {
       .post('/account.get_balance', { address, jsonrpc: '2.0', id: 0 })
       .reply(200, { success: true, data: expectedObject })
 
-    const childChain = new ChildChain({ watcherUrl })
+    const childChain = new ChildChain({ watcherUrl, plasmaContractAddress })
     const result = await childChain.getBalance(address)
     assert(Array.isArray(result))
     assert.equal(result.length, 1)
@@ -54,7 +55,7 @@ describe('getBalance', function () {
       .post('/account.get_balance', { address, jsonrpc: '2.0', id: 0 })
       .reply(200, { success: false, data: errorObject })
 
-    const childChain = new ChildChain({ watcherUrl })
+    const childChain = new ChildChain({ watcherUrl, plasmaContractAddress })
     return assert.isRejected(childChain.getBalance(address), Error, errorObject.description)
   })
 })

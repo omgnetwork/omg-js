@@ -45,15 +45,15 @@ class ChildChain {
   * @param {Object} config the childchain configuration object
   * @param {string} config.watcherUrl the url of the watcher server (running in security-critical and informational mode)
   * @param {string} [config.watcherProxyUrl] *optional* the proxy url for requests made to the watcher server
-  * @param {string} config.verifyingContract the address of the Rootchain contract 
+  * @param {string} config.plasmaContractAddress the address of the PlasmaFramework contract
   * @return {ChildChain} a ChildChain Object
   *
   */
-    constructor ({ watcherUrl, watcherProxyUrl, verifyingContract }) {
-    Joi.assert({ watcherUrl, watcherProxyUrl, verifyingContract }, childchainConstructorSchema)
+  constructor ({ watcherUrl, watcherProxyUrl, plasmaContractAddress }) {
+    Joi.assert({ watcherUrl, watcherProxyUrl, plasmaContractAddress }, childchainConstructorSchema)
     this.watcherUrl = watcherUrl
     this.watcherProxyUrl = watcherProxyUrl
-    this.verifyingContract = verifyingContract
+    this.plasmaContractAddress = plasmaContractAddress
   }
 
   /**
