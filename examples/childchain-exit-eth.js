@@ -24,7 +24,8 @@ const wait = require('./wait.js')
 
 const web3 = new Web3(new Web3.providers.HttpProvider(config.eth_node), null, { transactionConfirmationBlocks: 1 })
 const rootChain = new RootChain({ web3, plasmaContractAddress: config.plasmaframework_contract_address })
-const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url })
+
+const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url, plasmaContractAddress: config.plasmaframework_contract_address })
 
 const bobAddress = config.bob_eth_address
 const bobPrivateKey = config.bob_eth_address_private_key

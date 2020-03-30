@@ -22,7 +22,8 @@ const { transaction, waitForChildchainBalance } = require('../packages/omg-js-ut
 const config = require('./config.js')
 
 const web3 = new Web3(new Web3.providers.HttpProvider(config.eth_node), null, { transactionConfirmationBlocks: 1 })
-const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url })
+
+const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url, plasmaContractAddress: config.plasmaframework_contract_address })
 
 const rootChainPlasmaContractAddress = config.plasmaframework_contract_address
 const aliceAddress = config.alice_eth_address
