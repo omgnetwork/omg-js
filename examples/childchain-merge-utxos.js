@@ -21,7 +21,8 @@ const JSONBigNumber = require('omg-json-bigint')
 const wait = require('./wait.js')
 const childChain = new ChildChain({
   watcherUrl: config.watcher_url,
-  watcherProxyUrl: config.watcher_proxy_url
+  watcherProxyUrl: config.watcher_proxy_url,
+  plasmaContractAddress: config.plasmaframework_contract_address
 })
 
 async function childchainMergeUtxos () {
@@ -36,8 +37,7 @@ async function childchainMergeUtxos () {
     .slice(0, 4)
   const utxo = await childChain.mergeUtxos({
     utxos: utxosToMerge,
-    privateKey: config.alice_eth_address_private_key,
-    verifyingContract: config.plasmaframework_contract_address
+    privateKey: config.alice_eth_address_private_key
   })
 
   console.log('merge utxo transaction result', JSON.stringify(utxo, undefined, 2))

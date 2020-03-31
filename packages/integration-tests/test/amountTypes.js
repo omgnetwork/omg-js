@@ -30,7 +30,7 @@ const faucetName = path.basename(__filename)
 describe('amountTypes.js', function () {
   const web3 = new Web3(new Web3.providers.HttpProvider(config.eth_node))
   const rootChain = new RootChain({ web3, plasmaContractAddress: config.plasmaframework_contract_address })
-  const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url })
+  const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url, plasmaContractAddress: config.plasmaframework_contract_address })
   const testErc20Contract = new web3.eth.Contract(erc20abi, config.erc20_contract_address)
 
   let aliceAccount

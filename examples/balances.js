@@ -19,7 +19,7 @@ const ChildChain = require('../packages/omg-js-childchain/src/childchain')
 const { transaction, getErc20Balance } = require('../packages/omg-js-util/src')
 
 const web3 = new Web3(new Web3.providers.HttpProvider(config.eth_node), null, { transactionConfirmationBlocks: 1 })
-const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url })
+const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url, plasmaContractAddress: config.plasmaframework_contract_address })
 
 async function balances () {
   const alicesBalanceArray = await childChain.getBalance(config.alice_eth_address)

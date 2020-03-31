@@ -10,7 +10,8 @@ const {
 
 const childchainConstructorSchema = Joi.object({
   watcherUrl: Joi.string().required(),
-  watcherProxyUrl: Joi.string().allow('')
+  watcherProxyUrl: Joi.string().allow(''),
+  plasmaContractAddress: validateAddress.required()
 })
 
 const getUtxosSchema = validateAddress.required()
@@ -73,8 +74,7 @@ const sendTransactionSchema = Joi.object({
   fromPrivateKeys: Joi.array().items(Joi.string()).required(),
   payments: validatePayments.required(),
   fee: validateFee.required(),
-  metadata: validateMetadata,
-  verifyingContract: validateAddress.required()
+  metadata: validateMetadata
 })
 
 const inFlightExitGetOutputChallengeDataSchema = Joi.object({
@@ -90,7 +90,6 @@ const inFlightExitGetInputChallengeDataSchema = Joi.object({
 const mergeUtxosSchema = Joi.object({
   utxos: Joi.array().max(4).min(2).items(Joi.object()).required(),
   privateKey: Joi.string().required(),
-  verifyingContract: validateAddress.required(),
   metadata: validateMetadata
 })
 

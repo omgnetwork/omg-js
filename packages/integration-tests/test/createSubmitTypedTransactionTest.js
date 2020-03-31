@@ -27,7 +27,7 @@ const faucetName = path.basename(__filename)
 
 describe('createSubmitTypedTransactionTest.js', function () {
   const web3 = new Web3(config.eth_node)
-  const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url })
+  const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url, plasmaContractAddress: config.plasmaframework_contract_address })
   const rootChain = new RootChain({ web3, plasmaContractAddress: config.plasmaframework_contract_address })
   let FEE_ETH_AMOUNT
   before(async function () {
