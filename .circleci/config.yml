@@ -46,6 +46,13 @@ commands:
     description: "Set up the integration test environment"
     steps:
       - run:
+          # Circle CI does not automatically use the node version set by nvm in different job
+          # https://discuss.circleci.com/t/nvm-does-not-change-node-version-on-machine/28973/4
+          name: Bind circle CI with nvm
+          command: |
+            echo 'export NVM_DIR="/opt/circleci/.nvm"' >> $BASH_ENV
+            echo ' [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"' >> $BASH_ENV
+      - run:
           name: Install Node
           command: |
             export NVM_DIR="/opt/circleci/.nvm"
@@ -118,8 +125,6 @@ jobs:
       - run:
           name: Run All Integration Tests
           command: |
-            export NVM_DIR="/opt/circleci/.nvm"
-            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
             npm run sequence-test
           environment:
             ETH_NODE: http://localhost:8545
@@ -143,8 +148,6 @@ jobs:
       - run:
           name: Run Baseline Integration Tests
           command: |
-            export NVM_DIR="/opt/circleci/.nvm"
-            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
             npm run ci-baseline-test
           environment:
             ETH_NODE: http://localhost:8545
@@ -168,8 +171,6 @@ jobs:
       - run:
           name: Run IFE Integration Tests
           command: |
-            export NVM_DIR="/opt/circleci/.nvm"
-            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
             npm run ci-ife-test
           environment:
             ETH_NODE: http://localhost:8545
