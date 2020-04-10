@@ -57,7 +57,7 @@ npm install @omisego/react-native-omg-js
 
 ## API Documentation
 
-[Documentation for omg-js ](https://developer.omisego.co/omg-js/)
+[Documentation for omg-js ](https://docs.omg.network/omg-js/)
 
 ## Design Documentation
 
