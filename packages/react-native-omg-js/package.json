@@ -2,10 +2,6 @@
   "name": "@omisego/react-native-omg-js",
   "version": "3.1.0-0.4.6",
   "description": "omg-js for React Native",
-  "scripts": {
-    "postinstall": "sh postinstall.sh",
-    "audit-check": "audit-ci --moderate"
-  },
   "bin": {
     "omgjs-nodeify": "./hack.sh"
   },
@@ -15,6 +11,9 @@
     "Plasma"
   ],
   "main": "index.js",
+  "scripts": {
+    "audit-check": "audit-ci --moderate"
+  },
   "author": "OmiseGo",
   "contributors": [
     "Pong Cheecharern <@Pongch>",
@@ -55,5 +54,8 @@
   },
   "publishConfig": {
     "access": "public"
+  },
+  "devDependencies": {
+    "audit-ci": "^2.5.1"
   }
 }
