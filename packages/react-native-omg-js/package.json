@@ -12,6 +12,7 @@
   ],
   "main": "index.js",
   "scripts": {
+    "postinstall": "sh postinstall.sh",
     "audit-check": "audit-ci --moderate"
   },
   "author": "OmiseGo",
