@@ -132,7 +132,7 @@ jobs:
       - run:
           name: omg-js-react-native-omg-js
           command: |
-            cd packages/omg-js-react-native-omg-js && npm install && npm run audit-check   
+            cd packages/react-native-omg-js && npm install && npm run audit-check   
       - run:
           name: integration-test
           command: |
