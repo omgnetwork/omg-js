@@ -116,27 +116,27 @@ jobs:
       - run:
           name: omg-js
           command: |
-            cd packages/omg-js && npm run audit-check
+            cd packages/omg-js && npm install && npm run audit-check
       - run:
           name: omg-js-childchain
           command: |
-            cd packages/omg-js-childchain && npm run audit-check
+            cd packages/omg-js-childchain && npm install && npm run audit-check
       - run:
           name: omg-js-rootchain
           command: |
-            cd packages/omg-js-rootchain && npm run audit-check
+            cd packages/omg-js-rootchain && npm install && npm run audit-check
       - run:
           name: omg-js-util
           command: |
-            cd packages/omg-js-util && npm run audit-check
+            cd packages/omg-js-util && npm install && npm run audit-check
       - run:
           name: omg-js-react-native-omg-js
           command: |
-            cd packages/omg-js-react-native-omg-js && npm run audit-check   
+            cd packages/omg-js-react-native-omg-js && npm install && npm run audit-check   
       - run:
           name: integration-test
           command: |
-            cd packages/integration-test && npm run audit-check         
+            cd packages/integration-test && npm install && npm run audit-check         
 
   unit-test:
     docker:
