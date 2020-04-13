@@ -26,7 +26,8 @@
     "audit-check-omg-childchain": "cd packages/omg-js-childchain && npm run audit-ci",
     "audit-check-omg-rootchain": "cd packages/omg-js-rootchain && npm run audit-ci",
     "audit-check-omg-util": "cd packages/omg-js-util && npm run audit-ci",
-    "audit-check-omg-react-native": "cd packages/react-native-omg-js && npm run audit-ci"
+    "audit-check-omg-react-native": "cd packages/react-native-omg-js && npm run audit-ci",
+    "audit-all": "npm run audit-check-root && npm run audit-check-omg-js && npm run audit-check-omg-browser && npm run audit-check-omg-childchain && npm run audit-check-omg-rootchain && npm run audit-check-omg-util && npm run audit-check-omg-react-native"
   },
   "author": "OmiseGo",
   "contributors": [
