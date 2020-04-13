@@ -152,9 +152,6 @@ jobs:
             npm install --no-audit
             npm run lerna-reset
       - run:
-          name: run-audit-c
-          command: npm run audit-check
-      - run:
           name: Run Linter
           command: npm run lint
       - run:
