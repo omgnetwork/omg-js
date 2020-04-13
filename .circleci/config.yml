@@ -112,7 +112,7 @@ jobs:
       - run:
           name: omg-js-root-repo
           command: |
-            npm run audit-check
+            npm install && npm run audit-check
       - run:
           name: omg-js
           command: |
