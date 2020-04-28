@@ -15,7 +15,7 @@ limitations under the License. */
 
 const { use, assert } = require('chai')
 const chaiAsPromised = require('chai-as-promised')
-const rp = require('request-promise-native')
+const ax = require('axios')
 const sinon = require('sinon')
 
 const ChildChain = require('../src/childchain')
@@ -29,13 +29,13 @@ const plasmaContractAddress = '0xE009136B58a8B2eEb80cfa18aD2Ea6D389d3A375'
 
 describe('rpcApi test', function () {
   before(function () {
-    sinon.stub(rp, 'get').resolves(
+    sinon.stub(ax, 'get').resolves(
       JSON.stringify({
         success: true,
         data: 'foobar'
       })
     )
-    sinon.stub(rp, 'post').resolves(
+    sinon.stub(ax, 'post').resolves(
       JSON.stringify({
         success: true,
         data: 'foobar'
@@ -43,10 +43,11 @@ describe('rpcApi test', function () {
     )
   })
   after(function () {
-    rp.post.restore()
-    rp.get.restore()
+    ax.post.restore()
+    ax.get.restore()
   })
   it('should call body post as string', async function () {
+    console.log()
     const res = await rpcApi.post({
       url: watcherUrl,
       body: { test: 'object should call string' }
@@ -62,7 +63,7 @@ describe('rpcApi test', function () {
         id: 0
       })
     }
-    sinon.assert.calledWith(rp.post, expectedCall)
+    sinon.assert.calledWith(ax.post, expectedCall)
   })
 
   it('should get to passed url', async function () {
@@ -72,7 +73,7 @@ describe('rpcApi test', function () {
       method: 'GET',
       uri: 'http://omg-watcher'
     }
-    sinon.assert.calledWith(rp.get, expectedCall)
+    sinon.assert.calledWith(ax.get, expectedCall)
   })
 
   it('should post to passed url', async function () {
@@ -87,13 +88,13 @@ describe('rpcApi test', function () {
       body: JSON.stringify({ id: 10, foo: 'bar', jsonrpc: '2.0' })
     }
     assert.equal(res, 'foobar')
-    sinon.assert.calledWith(rp.post, expectedCall)
+    sinon.assert.calledWith(ax.post, expectedCall)
   })
 })
 
 describe('rpcApi integration test', function () {
   before(function () {
-    sinon.stub(rp, 'post').resolves(
+    sinon.stub(ax, 'post').resolves(
       JSON.stringify({
         success: true,
         data: 'foobar'
@@ -101,7 +102,7 @@ describe('rpcApi integration test', function () {
     )
   })
   after(function () {
-    rp.post.restore()
+    ax.post.restore()
   })
 
   it('childchain should pass proxy url if it exists', async function () {
@@ -120,7 +121,7 @@ describe('rpcApi integration test', function () {
       rejectUnauthorized: false
     }
     assert.equal(res, 'foobar')
-    sinon.assert.calledWith(rp.post, expectedCall)
+    sinon.assert.calledWith(ax.post, expectedCall)
   })
 
   it('childchain should not pass proxy url if it doesnt exist', async function () {
@@ -133,6 +134,6 @@ describe('rpcApi integration test', function () {
       body: JSON.stringify({ id: '0xabc', jsonrpc: '2.0' })
     }
     assert.equal(res, 'foobar')
-    sinon.assert.calledWith(rp.post, expectedCall)
+    sinon.assert.calledWith(ax.post, expectedCall)
   })
 })

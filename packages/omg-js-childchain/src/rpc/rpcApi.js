@@ -16,7 +16,7 @@ limitations under the License. */
 const axios = require('axios')
 const debug = require('debug')('omg.childchain.rpc')
 const JSONBigNumber = require('omg-json-bigint')
-
+const HttpsProxyAgent = require('https-proxy-agent')
 class RpcError extends Error {
   constructor ({ code, description, messages }) {
     super(description || code + (messages ? `, ${messages.code}` : ''))
@@ -29,7 +29,8 @@ async function get ({ url, proxyUrl }) {
     const options = {
       method: 'GET',
       uri: url,
-      ...proxyUrl && { proxy: proxyUrl, rejectUnauthorized: false }
+      transformResponse: [(data) => parseResponse(data)],
+      httpsAgent: proxyUrl ? new HttpsProxyAgent({ host: proxyUrl, rejectUnauthorized: false }) : undefined
     }
 
     const res = await axios.get(options)
@@ -42,14 +43,14 @@ async function get ({ url, proxyUrl }) {
 async function post ({ url, body, proxyUrl }) {
   body.jsonrpc = body.jsonrpc || '2.0'
   body.id = body.id || 0
-
   try {
     const options = {
       method: 'POST',
       uri: url,
       headers: { 'Content-Type': 'application/json' },
       body: JSONBigNumber.stringify(body),
-      ...proxyUrl && { proxy: proxyUrl, rejectUnauthorized: false }
+      transformResponse: [(data) => parseResponse(data)],
+      httpsAgent: proxyUrl ? new HttpsProxyAgent({ host: proxyUrl, rejectUnauthorized: false }) : undefined
     }
     const res = await axios.post(options)
     return parseResponse(res)
@@ -62,7 +63,7 @@ async function parseResponse (res) {
   let json
   try {
     // Need to use a JSON parser capable of handling uint256
-    json = JSONBigNumber.parse(res.data)
+    json = JSONBigNumber.parse(res)
   } catch (err) {
     throw new Error(`Unable to parse response from server: ${err}`)
   }
