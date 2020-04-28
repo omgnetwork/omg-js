@@ -31,7 +31,7 @@ describe('addTokenTest.js', function () {
   const rootChain = new RootChain({ web3, plasmaContractAddress: config.plasmaframework_contract_address })
   const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url, plasmaContractAddress: config.plasmaframework_contract_address })
 
-  const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('0.1', 'ether')
+  const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('0.01', 'ether')
   let aliceAccount
 
   before(async function () {
