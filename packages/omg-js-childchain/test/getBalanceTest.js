@@ -16,9 +16,7 @@ limitations under the License. */
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 const ChildChain = require('../src/childchain')
-const axios = require('axios')
-const MockAdapter = require('axios-mock-adapter')
-const mock = new MockAdapter(axios)
+const mockAx = require('./mock')
 
 chai.use(chaiAsPromised)
 const assert = chai.assert
@@ -34,7 +32,7 @@ describe('getBalance', function () {
       amount: 1000000000000000000
     }]
 
-    mock.onPost(`${watcherUrl}/account.get_balance`, { address, jsonrpc: '2.0', id: 0 }).reply(200, JSON.stringify({ success: true, data: expectedObject }))
+    mockAx.onPost(`${watcherUrl}/account.get_balance`, { address, jsonrpc: '2.0', id: 0 }).reply(200, JSON.stringify({ success: true, data: expectedObject }))
 
     const childChain = new ChildChain({ watcherUrl, plasmaContractAddress })
     const result = await childChain.getBalance(address)
@@ -51,7 +49,7 @@ describe('getBalance', function () {
       description: 'The error description'
     }
 
-    mock.onPost('/account.get_balance', { address, jsonrpc: '2.0', id: 0 }).reply(200, JSON.stringify({ success: true, data: errorObject }))
+    mockAx.onPost(`${watcherUrl}/account.get_balance`, { address, jsonrpc: '2.0', id: 0 }).reply(200, JSON.stringify({ success: false, data: errorObject }))
     const childChain = new ChildChain({ watcherUrl, plasmaContractAddress })
     return assert.isRejected(childChain.getBalance(address), Error, errorObject.description)
   })

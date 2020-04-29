@@ -97,11 +97,14 @@ describe('rpcApi test', function () {
 
 describe('rpcApi integration test', function () {
   before(function () {
-    sinon.stub(ax, 'post').resolves(
-      JSON.stringify({
-        success: true,
-        data: 'foobar'
-      })
+    sinon.stub(ax, 'request').resolves(
+      {
+        status: 200,
+        data: JSON.stringify({
+          success: true,
+          data: 'foobar'
+        })
+      }
     )
   })
   after(function () {
@@ -120,8 +123,8 @@ describe('rpcApi integration test', function () {
       url: `${watcherUrl}/transaction.get`,
       headers: { 'Content-Type': 'application/json' },
       data: JSON.stringify({ id: '0x123', jsonrpc: '2.0' }),
-      proxy: proxyUrl,
-      rejectUnauthorized: false
+      transformResponse: sinon.match.array,
+      httpsAgent: sinon.match.object
     }
     assert.equal(res, 'foobar')
     sinon.assert.calledWith(ax.request, expectedCall)
@@ -134,7 +137,9 @@ describe('rpcApi integration test', function () {
       method: 'POST',
       url: `${watcherUrl}/transaction.get`,
       headers: { 'Content-Type': 'application/json' },
-      data: JSON.stringify({ id: '0xabc', jsonrpc: '2.0' })
+      data: JSON.stringify({ id: '0xabc', jsonrpc: '2.0' }),
+      transformResponse: sinon.match.array,
+      httpsAgent: undefined
     }
     assert.equal(res, 'foobar')
     sinon.assert.calledWith(ax.request, expectedCall)
