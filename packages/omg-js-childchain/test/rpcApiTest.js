@@ -53,8 +53,11 @@ describe('rpcApi test', function () {
         test: 'object should call string',
         jsonrpc: '2.0',
         id: 0
-      })
+      }),
+      httpsAgent: undefined,
+      transformResponse: [sinon.spy()]
     }
+
     sinon.assert.calledWith(ax.request, expectedCall)
   })
 

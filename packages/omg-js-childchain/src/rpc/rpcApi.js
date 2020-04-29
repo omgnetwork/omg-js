@@ -23,14 +23,21 @@ class RpcError extends Error {
     this.code = code
   }
 }
+function getTransformResponse () {
+  return [(data) => parseResponse(data)]
+}
+
+function getHttpsProxyAgent (proxyUrl) {
+  return proxyUrl ? new HttpsProxyAgent({ host: proxyUrl, rejectUnauthorized: false }) : undefined
+}
 
 async function get ({ url, proxyUrl }) {
   try {
     const options = {
       method: 'GET',
       url: url,
-      transformResponse: [(data) => parseResponse(data)],
-      httpsAgent: proxyUrl ? new HttpsProxyAgent({ host: proxyUrl, rejectUnauthorized: false }) : undefined
+      transformResponse: getTransformResponse(),
+      httpsAgent: getHttpsProxyAgent(proxyUrl)
     }
 
     const res = await axios.request(options)
@@ -49,8 +56,8 @@ async function post ({ url, body, proxyUrl }) {
       url: url,
       headers: { 'Content-Type': 'application/json' },
       data: JSONBigNumber.stringify(body),
-      transformResponse: [(data) => parseResponse(data)],
-      httpsAgent: proxyUrl ? new HttpsProxyAgent({ host: proxyUrl, rejectUnauthorized: false }) : undefined
+      transformResponse: getTransformResponse(),
+      httpsAgent: getHttpsProxyAgent(proxyUrl)
     }
     const res = await axios.request(options)
     return parseResponse(res)
