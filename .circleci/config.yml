@@ -39,7 +39,7 @@ workflows:
           requires: [unit-test]
           filters:
             branches:
-              only: master
+              ignore: master
       - baseline-integration-test:
           requires: [unit-test]
           filters:
