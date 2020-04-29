@@ -37,5 +37,8 @@
   },
   "publishConfig": {
     "access": "public"
+  },
+  "devDependencies": {
+    "axios-mock-adapter": "^1.18.1"
   }
 }

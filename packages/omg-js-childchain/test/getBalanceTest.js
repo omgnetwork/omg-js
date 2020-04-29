@@ -16,7 +16,9 @@ limitations under the License. */
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 const ChildChain = require('../src/childchain')
-const nock = require('nock')
+const axios = require('axios')
+const MockAdapter = require('axios-mock-adapter')
+const mock = MockAdapter(axios)
 
 chai.use(chaiAsPromised)
 const assert = chai.assert
@@ -24,7 +26,7 @@ const assert = chai.assert
 const watcherUrl = 'http://omg-watcher'
 const plasmaContractAddress = '0xE009136B58a8B2eEb80cfa18aD2Ea6D389d3A375'
 
-describe('getBalance', function () {
+describe.only('getBalance', function () {
   it('should return the balance of an address', async function () {
     const address = '0xd72afdfa06ae5857a639051444f7608fea1528d4'
     const expectedObject = [{
@@ -32,9 +34,7 @@ describe('getBalance', function () {
       amount: 1000000000000000000
     }]
 
-    nock(watcherUrl)
-      .post('/account.get_balance', { address, jsonrpc: '2.0', id: 0 })
-      .reply(200, { success: true, data: expectedObject })
+    mock.onPost('/account.get_balance', { address, jsonrpc: '2.0', id: 0 }).reply(200, { success: true, data: expectedObject })
 
     const childChain = new ChildChain({ watcherUrl, plasmaContractAddress })
     const result = await childChain.getBalance(address)
@@ -51,10 +51,7 @@ describe('getBalance', function () {
       description: 'The error description'
     }
 
-    nock(watcherUrl)
-      .post('/account.get_balance', { address, jsonrpc: '2.0', id: 0 })
-      .reply(200, { success: false, data: errorObject })
-
+    mock.onPost('/account.get_balance', { address, jsonrpc: '2.0', id: 0 }).reply(200, { success: false, data: errorObject })
     const childChain = new ChildChain({ watcherUrl, plasmaContractAddress })
     return assert.isRejected(childChain.getBalance(address), Error, errorObject.description)
   })
