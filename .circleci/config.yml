@@ -14,6 +14,11 @@ workflows:
           filters:
             branches:
               only: master
+      - smoke-integration-test:
+          requires: [unit-test]
+          filters:
+            branches:
+              only: master
       - baseline-integration-test:
           requires: [unit-test]
           filters:
@@ -27,6 +32,11 @@ workflows:
   build-other-branches:
     jobs:
       - unit-test:
+          filters:
+            branches:
+              ignore: master
+      - smoke-integration-test:
+          requires: [unit-test]
           filters:
             branches:
               ignore: master
@@ -132,6 +142,29 @@ jobs:
           name: Run All Integration Tests
           command: |
             npm run sequence-test
+          environment:
+            ETH_NODE: http://localhost:8545
+            WATCHER_URL: http://localhost:7534
+            CHILDCHAIN_URL: http://localhost:9656
+            PLASMAFRAMEWORK_CONTRACT_ADDRESS: "0xc673e4ffcb8464faff908a6804fe0e635af0ea2f"
+            ERC20_CONTRACT_ADDRESS: "0x932130ff6e440aee05e6fa75ac5d385c4e3a4d5d"
+            FUND_ACCOUNT: "0x6de4b3b9c28e9c3e84c2b2d3a875c947a84de68d"
+            FUND_ACCOUNT_PRIVATEKEY: "0xd885a307e35738f773d8c9c63c7a3f3977819274638d04aaf934a1e1158513ce"
+            MIN_AMOUNT_ETH_PER_TEST: 2
+            MIN_AMOUNT_ERC20_PER_TEST: 20
+            TOPUP_MULTIPLIER: 5
+            FAUCET_SALT: integration-tests
+
+  smoke-integration-test:
+    machine:
+      image: ubuntu-1604:201903-01
+    steps:
+      - checkout
+      - setup_integration_tests
+      - run:
+          name: Run minimum Smoke Integration Tests
+          command: |
+            npm run ci-min-smoke-test
           environment:
             ETH_NODE: http://localhost:8545
             WATCHER_URL: http://localhost:7534
