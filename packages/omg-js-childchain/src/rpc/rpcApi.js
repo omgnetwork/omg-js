@@ -24,7 +24,7 @@ class RpcError extends Error {
   }
 }
 function getTransformResponse () {
-  return [(data) => parseResponse(data)]
+  return [(data) => data]
 }
 
 function getHttpsProxyAgent (proxyUrl) {
@@ -67,20 +67,20 @@ async function post ({ url, body, proxyUrl }) {
 }
 
 async function parseResponse (res) {
-  let json
+  let data
   try {
     // Need to use a JSON parser capable of handling uint256
-    json = JSONBigNumber.parse(res)
+    data = JSONBigNumber.parse(res.data)
   } catch (err) {
     throw new Error(`Unable to parse response from server: ${err}`)
   }
-  debug(`rpc response is ${JSON.stringify(json)}`)
+  debug(`rpc response is ${JSON.stringify(data)}`)
 
-  if (json.success) {
-    return json.data
+  if (data.success) {
+    return data.data
   }
 
-  throw new RpcError(json.data)
+  throw new RpcError(data.data)
 }
 
 module.exports = {

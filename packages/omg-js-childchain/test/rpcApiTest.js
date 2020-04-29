@@ -30,10 +30,13 @@ const plasmaContractAddress = '0xE009136B58a8B2eEb80cfa18aD2Ea6D389d3A375'
 describe('rpcApi test', function () {
   before(function () {
     sinon.stub(ax, 'request').resolves(
-      JSON.stringify({
-        success: true,
-        data: 'foobar'
-      })
+      {
+        status: 200,
+        data: JSON.stringify({
+          success: true,
+          data: 'foobar'
+        })
+      }
     )
   })
   after(function () {

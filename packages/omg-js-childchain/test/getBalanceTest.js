@@ -18,7 +18,7 @@ const chaiAsPromised = require('chai-as-promised')
 const ChildChain = require('../src/childchain')
 const axios = require('axios')
 const MockAdapter = require('axios-mock-adapter')
-const mock = MockAdapter(axios)
+const mock = new MockAdapter(axios)
 
 chai.use(chaiAsPromised)
 const assert = chai.assert
@@ -26,7 +26,7 @@ const assert = chai.assert
 const watcherUrl = 'http://omg-watcher'
 const plasmaContractAddress = '0xE009136B58a8B2eEb80cfa18aD2Ea6D389d3A375'
 
-describe.only('getBalance', function () {
+describe('getBalance', function () {
   it('should return the balance of an address', async function () {
     const address = '0xd72afdfa06ae5857a639051444f7608fea1528d4'
     const expectedObject = [{
@@ -34,7 +34,7 @@ describe.only('getBalance', function () {
       amount: 1000000000000000000
     }]
 
-    mock.onPost('/account.get_balance', { address, jsonrpc: '2.0', id: 0 }).reply(200, { success: true, data: expectedObject })
+    mock.onPost(`${watcherUrl}/account.get_balance`, { address, jsonrpc: '2.0', id: 0 }).reply(200, JSON.stringify({ success: true, data: expectedObject }))
 
     const childChain = new ChildChain({ watcherUrl, plasmaContractAddress })
     const result = await childChain.getBalance(address)
@@ -51,7 +51,7 @@ describe.only('getBalance', function () {
       description: 'The error description'
     }
 
-    mock.onPost('/account.get_balance', { address, jsonrpc: '2.0', id: 0 }).reply(200, { success: false, data: errorObject })
+    mock.onPost('/account.get_balance', { address, jsonrpc: '2.0', id: 0 }).reply(200, JSON.stringify({ success: true, data: errorObject }))
     const childChain = new ChildChain({ watcherUrl, plasmaContractAddress })
     return assert.isRejected(childChain.getBalance(address), Error, errorObject.description)
   })
