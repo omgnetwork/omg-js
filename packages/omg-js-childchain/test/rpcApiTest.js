@@ -39,7 +39,7 @@ describe('rpcApi test', function () {
   after(function () {
     ax.request.restore()
   })
-  it.only('should call body post as string', async function () {
+  it('should call body post as string', async function () {
     const res = await rpcApi.post({
       url: watcherUrl,
       body: { test: 'object should call string' }
@@ -54,11 +54,12 @@ describe('rpcApi test', function () {
         jsonrpc: '2.0',
         id: 0
       }),
-      httpsAgent: undefined,
-      transformResponse: [sinon.spy()]
+      transformResponse: sinon.match.array
     }
 
-    sinon.assert.calledWith(ax.request, expectedCall)
+    sinon.assert.calledWith(
+      ax.request,
+      sinon.match(expectedCall))
   })
 
   it('should get to passed url', async function () {
@@ -66,7 +67,9 @@ describe('rpcApi test', function () {
     assert.equal(res, 'foobar')
     const expectedCall = {
       method: 'GET',
-      url: 'http://omg-watcher'
+      url: 'http://omg-watcher',
+      transformResponse: sinon.match.array,
+      httpsAgent: undefined
     }
     sinon.assert.calledWith(ax.request, expectedCall)
   })
@@ -74,13 +77,15 @@ describe('rpcApi test', function () {
   it('should post to passed url', async function () {
     const res = await rpcApi.post({
       url: watcherUrl,
-      data: { id: 10, foo: 'bar' }
+      body: { id: 10, foo: 'bar' }
     })
     const expectedCall = {
       method: 'POST',
       url: watcherUrl,
       headers: { 'Content-Type': 'application/json' },
-      data: JSON.stringify({ id: 10, foo: 'bar', jsonrpc: '2.0' })
+      data: JSON.stringify({ id: 10, foo: 'bar', jsonrpc: '2.0' }),
+      transformResponse: sinon.match.array,
+      httpsAgent: undefined
     }
     assert.equal(res, 'foobar')
     sinon.assert.calledWith(ax.request, expectedCall)
