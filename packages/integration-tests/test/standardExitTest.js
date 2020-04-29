@@ -140,7 +140,8 @@ describe('standardExitTest.js', function () {
         maxExitsToProcess: 20,
         txOptions: {
           privateKey: aliceAccount.privateKey,
-          from: aliceAccount.address
+          from: aliceAccount.address,
+          gas: 2000000
         }
       })
       if (receipt) {
@@ -284,7 +285,8 @@ describe('standardExitTest.js', function () {
         maxExitsToProcess: 20,
         txOptions: {
           privateKey: bobAccount.privateKey,
-          from: bobAccount.address
+          from: bobAccount.address,
+          gas: 2000000
         }
       })
       if (processExitReceiptAfter) {
@@ -408,7 +410,8 @@ describe('standardExitTest.js', function () {
         maxExitsToProcess: 20,
         txOptions: {
           privateKey: aliceAccount.privateKey,
-          from: aliceAccount.address
+          from: aliceAccount.address,
+          gas: 2000000
         }
       })
       if (receipt) {
