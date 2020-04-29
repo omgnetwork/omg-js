@@ -37,13 +37,12 @@ describe('rpcApi test', function () {
     )
   })
   after(function () {
-    ax.post.restore()
-    ax.get.restore()
+    ax.request.restore()
   })
-  it('should call body post as string', async function () {
+  it.only('should call body post as string', async function () {
     const res = await rpcApi.post({
       url: watcherUrl,
-      data: { test: 'object should call string' }
+      body: { test: 'object should call string' }
     })
     assert.equal(res, 'foobar')
     const expectedCall = {
