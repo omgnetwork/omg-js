@@ -28,12 +28,12 @@ async function get ({ url, proxyUrl }) {
   try {
     const options = {
       method: 'GET',
-      uri: url,
+      url: url,
       transformResponse: [(data) => parseResponse(data)],
       httpsAgent: proxyUrl ? new HttpsProxyAgent({ host: proxyUrl, rejectUnauthorized: false }) : undefined
     }
 
-    const res = await axios.get(options)
+    const res = await axios.request(options)
     return parseResponse(res)
   } catch (err) {
     throw new Error(err)
@@ -46,13 +46,13 @@ async function post ({ url, body, proxyUrl }) {
   try {
     const options = {
       method: 'POST',
-      uri: url,
+      url: url,
       headers: { 'Content-Type': 'application/json' },
-      body: JSONBigNumber.stringify(body),
+      data: JSONBigNumber.stringify(body),
       transformResponse: [(data) => parseResponse(data)],
       httpsAgent: proxyUrl ? new HttpsProxyAgent({ host: proxyUrl, rejectUnauthorized: false }) : undefined
     }
-    const res = await axios.post(options)
+    const res = await axios.request(options)
     return parseResponse(res)
   } catch (err) {
     throw new Error(err)

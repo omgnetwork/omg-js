@@ -29,13 +29,7 @@ const plasmaContractAddress = '0xE009136B58a8B2eEb80cfa18aD2Ea6D389d3A375'
 
 describe('rpcApi test', function () {
   before(function () {
-    sinon.stub(ax, 'get').resolves(
-      JSON.stringify({
-        success: true,
-        data: 'foobar'
-      })
-    )
-    sinon.stub(ax, 'post').resolves(
+    sinon.stub(ax, 'request').resolves(
       JSON.stringify({
         success: true,
         data: 'foobar'
@@ -47,23 +41,22 @@ describe('rpcApi test', function () {
     ax.get.restore()
   })
   it('should call body post as string', async function () {
-    console.log()
     const res = await rpcApi.post({
       url: watcherUrl,
-      body: { test: 'object should call string' }
+      data: { test: 'object should call string' }
     })
     assert.equal(res, 'foobar')
     const expectedCall = {
       method: 'POST',
-      uri: 'http://omg-watcher',
+      url: 'http://omg-watcher',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
+      data: JSON.stringify({
         test: 'object should call string',
         jsonrpc: '2.0',
         id: 0
       })
     }
-    sinon.assert.calledWith(ax.post, expectedCall)
+    sinon.assert.calledWith(ax.request, expectedCall)
   })
 
   it('should get to passed url', async function () {
@@ -71,24 +64,24 @@ describe('rpcApi test', function () {
     assert.equal(res, 'foobar')
     const expectedCall = {
       method: 'GET',
-      uri: 'http://omg-watcher'
+      url: 'http://omg-watcher'
     }
-    sinon.assert.calledWith(ax.get, expectedCall)
+    sinon.assert.calledWith(ax.request, expectedCall)
   })
 
   it('should post to passed url', async function () {
     const res = await rpcApi.post({
       url: watcherUrl,
-      body: { id: 10, foo: 'bar' }
+      data: { id: 10, foo: 'bar' }
     })
     const expectedCall = {
       method: 'POST',
-      uri: watcherUrl,
+      url: watcherUrl,
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id: 10, foo: 'bar', jsonrpc: '2.0' })
+      data: JSON.stringify({ id: 10, foo: 'bar', jsonrpc: '2.0' })
     }
     assert.equal(res, 'foobar')
-    sinon.assert.calledWith(ax.post, expectedCall)
+    sinon.assert.calledWith(ax.request, expectedCall)
   })
 })
 
@@ -102,7 +95,7 @@ describe('rpcApi integration test', function () {
     )
   })
   after(function () {
-    ax.post.restore()
+    ax.request.restore()
   })
 
   it('childchain should pass proxy url if it exists', async function () {
@@ -114,14 +107,14 @@ describe('rpcApi integration test', function () {
     const res = await childchainWithProxy.getTransaction('0x123')
     const expectedCall = {
       method: 'POST',
-      uri: `${watcherUrl}/transaction.get`,
+      url: `${watcherUrl}/transaction.get`,
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id: '0x123', jsonrpc: '2.0' }),
+      data: JSON.stringify({ id: '0x123', jsonrpc: '2.0' }),
       proxy: proxyUrl,
       rejectUnauthorized: false
     }
     assert.equal(res, 'foobar')
-    sinon.assert.calledWith(ax.post, expectedCall)
+    sinon.assert.calledWith(ax.request, expectedCall)
   })
 
   it('childchain should not pass proxy url if it doesnt exist', async function () {
@@ -129,11 +122,11 @@ describe('rpcApi integration test', function () {
     const res = await childchainNoProxy.getTransaction('0xabc')
     const expectedCall = {
       method: 'POST',
-      uri: `${watcherUrl}/transaction.get`,
+      url: `${watcherUrl}/transaction.get`,
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id: '0xabc', jsonrpc: '2.0' })
+      data: JSON.stringify({ id: '0xabc', jsonrpc: '2.0' })
     }
     assert.equal(res, 'foobar')
-    sinon.assert.calledWith(ax.post, expectedCall)
+    sinon.assert.calledWith(ax.request, expectedCall)
   })
 })
