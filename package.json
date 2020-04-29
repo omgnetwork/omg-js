@@ -69,5 +69,7 @@
       "packages/integration-tests/tokens"
     ]
   },
-  "dependencies": {}
+  "dependencies": {
+    "browserify": "^16.5.1"
+  }
 }
