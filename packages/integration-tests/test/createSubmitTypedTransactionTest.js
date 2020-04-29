@@ -38,7 +38,7 @@ describe('createSubmitTypedTransactionTest.js', function () {
   })
 
   describe('create a single currency transaction with submitTyped', function () {
-    const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.000001', 'ether')
+    const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.0001', 'ether')
     const TRANSFER_AMOUNT = web3.utils.toWei('.0000001', 'ether')
 
     let aliceAccount

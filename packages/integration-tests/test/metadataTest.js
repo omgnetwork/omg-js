@@ -41,7 +41,7 @@ describe('metadataTest.js', function () {
   })
 
   describe('String as metadata', function () {
-    const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.000001', 'ether')
+    const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.0001', 'ether')
     const TRANSFER_AMOUNT = web3.utils.toWei('.0000001', 'ether')
 
     let aliceAccount
@@ -97,7 +97,7 @@ describe('metadataTest.js', function () {
   })
 
   describe('sha256 as metadata', function () {
-    const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.000001', 'ether')
+    const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.0001', 'ether')
     const TRANSFER_AMOUNT = web3.utils.toWei('.0000001', 'ether')
     let aliceAccount
     let bobAccount
@@ -153,7 +153,7 @@ describe('metadataTest.js', function () {
   })
 
   describe('No metadata', function () {
-    const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.000001', 'ether')
+    const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.0001', 'ether')
     const TRANSFER_AMOUNT = web3.utils.toWei('.0000001', 'ether')
     let aliceAccount
     let bobAccount

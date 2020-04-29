@@ -16,6 +16,7 @@
     "mocha": "mocha --timeout=0 --bail --slow=0 --check-leaks --full-trace",
     "test": "mocha packages/omg-js-childchain/test packages/omg-js-rootchain/test packages/omg-js-util/test",
     "sequence-test": "npm run mocha packages/integration-tests/sequence-test",
+    "ci-min-smoke-test": "npm run mocha packages/integration-tests/ci-min-smoke-test",
     "ci-baseline-test": "npm run mocha packages/integration-tests/ci-baseline-test",
     "ci-ife-test": "npm run mocha packages/integration-tests/ci-ife-test",
     "parallel-test": "node packages/integration-tests/parallel-test",
