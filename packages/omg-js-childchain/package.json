@@ -26,15 +26,18 @@
   "dependencies": {
     "@hapi/joi": "^16.1.8",
     "@omisego/omg-js-util": "3.1.0-0.4.6",
+    "axios": "^0.19.2",
     "bn.js": "^5.0.0",
     "debug": "^4.0.1",
+    "https-proxy-agent": "^5.0.0",
     "omg-json-bigint": "^1.0.0",
-    "request": "^2.88.0",
-    "request-promise-native": "^1.0.7",
     "rlp": "^2.1.0",
     "web3-utils": "^1.2.5"
   },
   "publishConfig": {
     "access": "public"
+  },
+  "devDependencies": {
+    "axios-mock-adapter": "^1.18.1"
   }
 }

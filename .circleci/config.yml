@@ -125,6 +125,12 @@ jobs:
       - run:
           name: Run Unit Tests
           command: npm run test
+      - run:
+          name: Run build browser omg-js test
+          command: npm run build
+      - run:
+          name: Run build doc test
+          command: npm run build-doc
 
   full-integration-test:
     machine:
