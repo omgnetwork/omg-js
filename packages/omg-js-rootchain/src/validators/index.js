@@ -156,6 +156,8 @@ const getExitDataSchema = Joi.object({
   transactionHash: Joi.string().required()
 })
 
+const getExitsSchema = validateAddress.required()
+
 module.exports = {
   rootchainConstructorSchema,
   getExitTimeSchema,
@@ -178,5 +180,6 @@ module.exports = {
   challengeInFlightExitInputSpentSchema,
   challengeInFlightExitOutputSpentSchema,
   deleteNonPiggybackedInFlightExitSchema,
-  getExitDataSchema
+  getExitDataSchema,
+  getExitsSchema
 }
