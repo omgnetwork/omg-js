@@ -3,19 +3,6 @@
   "version": "0.1.0",
   "description": "",
   "main": "",
-  "scripts": {
-    "process-exits": "node process-exits.js",
-    "childchain-utxos": "node childchain-utxos.js",
-    "balances": "node balances.js",
-    "childchain-deposit-eth": "node childchain-deposit-eth.js",
-    "childchain-deposit-erc20": "node childchain-deposit-erc20.js",
-    "childchain-transaction-eth": "node childchain-transaction-eth.js",
-    "childchain-transaction-erc20": "node childchain-transaction-erc20.js",
-    "childchain-exit-eth": "node childchain-exit-eth.js",
-    "childchain-exit-erc20": "node childchain-exit-erc20.js",
-    "childchain-inflight-exit-eth": "node childchain-inflight-exit-eth.js",
-    "childchain-merge-utxos": "node childchain-merge-utxos.js"
-  },
   "author": "",
   "license": "ISC",
   "dependencies": {
