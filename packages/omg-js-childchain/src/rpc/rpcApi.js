@@ -23,6 +23,7 @@ class RpcError extends Error {
     this.code = code
   }
 }
+// function to override default behavior of axios, so it doesn't use native JSON.parse
 function getTransformResponse () {
   return [(data) => data]
 }
