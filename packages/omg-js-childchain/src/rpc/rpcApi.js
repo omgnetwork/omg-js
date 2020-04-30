@@ -13,7 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License. */
 
-const request = require('request-promise-native')
+const axios = require('axios')
 const debug = require('debug')('omg.childchain.rpc')
 const JSONBigNumber = require('omg-json-bigint')
 
@@ -32,7 +32,7 @@ async function get ({ url, proxyUrl }) {
       ...proxyUrl && { proxy: proxyUrl, rejectUnauthorized: false }
     }
 
-    const res = await request.get(options)
+    const res = await axios.get(options)
     return parseResponse(res)
   } catch (err) {
     throw new Error(err)
@@ -51,7 +51,7 @@ async function post ({ url, body, proxyUrl }) {
       body: JSONBigNumber.stringify(body),
       ...proxyUrl && { proxy: proxyUrl, rejectUnauthorized: false }
     }
-    const res = await request.post(options)
+    const res = await axios.post(options)
     return parseResponse(res)
   } catch (err) {
     throw new Error(err)
@@ -62,7 +62,7 @@ async function parseResponse (res) {
   let json
   try {
     // Need to use a JSON parser capable of handling uint256
-    json = JSONBigNumber.parse(res)
+    json = JSONBigNumber.parse(res.data)
   } catch (err) {
     throw new Error(`Unable to parse response from server: ${err}`)
   }
