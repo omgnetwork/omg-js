@@ -16,23 +16,32 @@ limitations under the License. */
 const axios = require('axios')
 const debug = require('debug')('omg.childchain.rpc')
 const JSONBigNumber = require('omg-json-bigint')
-
+const HttpsProxyAgent = require('https-proxy-agent')
 class RpcError extends Error {
   constructor ({ code, description, messages }) {
     super(description || code + (messages ? `, ${messages.code}` : ''))
     this.code = code
   }
 }
+// function to override default behavior of axios, so it doesn't use native JSON.parse
+function getTransformResponse () {
+  return [(data) => data]
+}
+
+function getHttpsProxyAgent (proxyUrl) {
+  return proxyUrl ? new HttpsProxyAgent({ host: proxyUrl, rejectUnauthorized: false }) : undefined
+}
 
 async function get ({ url, proxyUrl }) {
   try {
     const options = {
       method: 'GET',
-      uri: url,
-      ...proxyUrl && { proxy: proxyUrl, rejectUnauthorized: false }
+      url: url,
+      transformResponse: getTransformResponse(),
+      httpsAgent: getHttpsProxyAgent(proxyUrl)
     }
 
-    const res = await axios.get(options)
+    const res = await axios.request(options)
     return parseResponse(res)
   } catch (err) {
     throw new Error(err)
@@ -42,16 +51,16 @@ async function get ({ url, proxyUrl }) {
 async function post ({ url, body, proxyUrl }) {
   body.jsonrpc = body.jsonrpc || '2.0'
   body.id = body.id || 0
-
   try {
     const options = {
       method: 'POST',
-      uri: url,
+      url: url,
       headers: { 'Content-Type': 'application/json' },
-      body: JSONBigNumber.stringify(body),
-      ...proxyUrl && { proxy: proxyUrl, rejectUnauthorized: false }
+      data: JSONBigNumber.stringify(body),
+      transformResponse: getTransformResponse(),
+      httpsAgent: getHttpsProxyAgent(proxyUrl)
     }
-    const res = await axios.post(options)
+    const res = await axios.request(options)
     return parseResponse(res)
   } catch (err) {
     throw new Error(err)
@@ -59,20 +68,20 @@ async function post ({ url, body, proxyUrl }) {
 }
 
 async function parseResponse (res) {
-  let json
+  let data
   try {
     // Need to use a JSON parser capable of handling uint256
-    json = JSONBigNumber.parse(res.data)
+    data = JSONBigNumber.parse(res.data)
   } catch (err) {
     throw new Error(`Unable to parse response from server: ${err}`)
   }
-  debug(`rpc response is ${JSON.stringify(json)}`)
+  debug(`rpc response is ${JSON.stringify(data)}`)
 
-  if (json.success) {
-    return json.data
+  if (data.success) {
+    return data.data
   }
 
-  throw new RpcError(json.data)
+  throw new RpcError(data.data)
 }
 
 module.exports = {

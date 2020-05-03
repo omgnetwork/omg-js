@@ -160,7 +160,8 @@ describe('challengeExitTest.js', function () {
         maxExitsToProcess: 20,
         txOptions: {
           privateKey: aliceAccount.privateKey,
-          from: aliceAccount.address
+          from: aliceAccount.address,
+          gas: 2000000
         }
       })
       if (receipt) {
