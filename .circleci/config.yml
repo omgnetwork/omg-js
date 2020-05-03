@@ -146,7 +146,7 @@ jobs:
       - run:
           name: integration-test
           command: |
-            cd packages/integration-test && npm install && npm run audit-check         
+            cd packages/integration-tests && npm install && npm run audit-check         
 
   unit-test:
     docker:
