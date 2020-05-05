@@ -15,7 +15,7 @@ limitations under the License. */
 
 const { use, assert } = require('chai')
 const chaiAsPromised = require('chai-as-promised')
-const rp = require('request-promise-native')
+const ax = require('axios')
 const sinon = require('sinon')
 
 const ChildChain = require('../src/childchain')
@@ -29,22 +29,18 @@ const plasmaContractAddress = '0xE009136B58a8B2eEb80cfa18aD2Ea6D389d3A375'
 
 describe('rpcApi test', function () {
   before(function () {
-    sinon.stub(rp, 'get').resolves(
-      JSON.stringify({
-        success: true,
-        data: 'foobar'
-      })
-    )
-    sinon.stub(rp, 'post').resolves(
-      JSON.stringify({
-        success: true,
-        data: 'foobar'
-      })
+    sinon.stub(ax, 'request').resolves(
+      {
+        status: 200,
+        data: JSON.stringify({
+          success: true,
+          data: 'foobar'
+        })
+      }
     )
   })
   after(function () {
-    rp.post.restore()
-    rp.get.restore()
+    ax.request.restore()
   })
   it('should call body post as string', async function () {
     const res = await rpcApi.post({
@@ -54,15 +50,19 @@ describe('rpcApi test', function () {
     assert.equal(res, 'foobar')
     const expectedCall = {
       method: 'POST',
-      uri: 'http://omg-watcher',
+      url: 'http://omg-watcher',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
+      data: JSON.stringify({
         test: 'object should call string',
         jsonrpc: '2.0',
         id: 0
-      })
+      }),
+      transformResponse: sinon.match.array
     }
-    sinon.assert.calledWith(rp.post, expectedCall)
+
+    sinon.assert.calledWith(
+      ax.request,
+      sinon.match(expectedCall))
   })
 
   it('should get to passed url', async function () {
@@ -70,9 +70,11 @@ describe('rpcApi test', function () {
     assert.equal(res, 'foobar')
     const expectedCall = {
       method: 'GET',
-      uri: 'http://omg-watcher'
+      url: 'http://omg-watcher',
+      transformResponse: sinon.match.array,
+      httpsAgent: undefined
     }
-    sinon.assert.calledWith(rp.get, expectedCall)
+    sinon.assert.calledWith(ax.request, expectedCall)
   })
 
   it('should post to passed url', async function () {
@@ -82,26 +84,31 @@ describe('rpcApi test', function () {
     })
     const expectedCall = {
       method: 'POST',
-      uri: watcherUrl,
+      url: watcherUrl,
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id: 10, foo: 'bar', jsonrpc: '2.0' })
+      data: JSON.stringify({ id: 10, foo: 'bar', jsonrpc: '2.0' }),
+      transformResponse: sinon.match.array,
+      httpsAgent: undefined
     }
     assert.equal(res, 'foobar')
-    sinon.assert.calledWith(rp.post, expectedCall)
+    sinon.assert.calledWith(ax.request, expectedCall)
   })
 })
 
 describe('rpcApi integration test', function () {
   before(function () {
-    sinon.stub(rp, 'post').resolves(
-      JSON.stringify({
-        success: true,
-        data: 'foobar'
-      })
+    sinon.stub(ax, 'request').resolves(
+      {
+        status: 200,
+        data: JSON.stringify({
+          success: true,
+          data: 'foobar'
+        })
+      }
     )
   })
   after(function () {
-    rp.post.restore()
+    ax.request.restore()
   })
 
   it('childchain should pass proxy url if it exists', async function () {
@@ -113,14 +120,14 @@ describe('rpcApi integration test', function () {
     const res = await childchainWithProxy.getTransaction('0x123')
     const expectedCall = {
       method: 'POST',
-      uri: `${watcherUrl}/transaction.get`,
+      url: `${watcherUrl}/transaction.get`,
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id: '0x123', jsonrpc: '2.0' }),
-      proxy: proxyUrl,
-      rejectUnauthorized: false
+      data: JSON.stringify({ id: '0x123', jsonrpc: '2.0' }),
+      transformResponse: sinon.match.array,
+      httpsAgent: sinon.match.object
     }
     assert.equal(res, 'foobar')
-    sinon.assert.calledWith(rp.post, expectedCall)
+    sinon.assert.calledWith(ax.request, expectedCall)
   })
 
   it('childchain should not pass proxy url if it doesnt exist', async function () {
@@ -128,11 +135,13 @@ describe('rpcApi integration test', function () {
     const res = await childchainNoProxy.getTransaction('0xabc')
     const expectedCall = {
       method: 'POST',
-      uri: `${watcherUrl}/transaction.get`,
+      url: `${watcherUrl}/transaction.get`,
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id: '0xabc', jsonrpc: '2.0' })
+      data: JSON.stringify({ id: '0xabc', jsonrpc: '2.0' }),
+      transformResponse: sinon.match.array,
+      httpsAgent: undefined
     }
     assert.equal(res, 'foobar')
-    sinon.assert.calledWith(rp.post, expectedCall)
+    sinon.assert.calledWith(ax.request, expectedCall)
   })
 })

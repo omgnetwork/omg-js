@@ -19,7 +19,7 @@ const it = mocha.it
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 const ChildChain = require('../src/childchain')
-const nock = require('nock')
+const mockAx = require('./mock')
 
 chai.use(chaiAsPromised)
 const assert = chai.assert
@@ -32,9 +32,7 @@ describe('getUtxo', () => {
     const address = '0xd72afdfa06ae5857a639051444f7608fea1528d4'
     const expectedObject = []
 
-    nock(watcherUrl)
-      .post('/account.get_utxos', { address, jsonrpc: '2.0', id: 0 })
-      .reply(200, { success: true, data: expectedObject })
+    mockAx.onPost(`${watcherUrl}/account.get_utxos`, { address, jsonrpc: '2.0', id: 0 }).reply(200, JSON.stringify({ success: true, data: expectedObject }))
 
     const childChain = new ChildChain({ watcherUrl, plasmaContractAddress })
     const returnUtxo = await childChain.getUtxos(address)
@@ -48,9 +46,7 @@ describe('getUtxo', () => {
       description: 'The error description'
     }
 
-    nock(watcherUrl)
-      .post('/account.get_utxos', { address, jsonrpc: '2.0', id: 0 })
-      .reply(200, { success: false, data: errorObject })
+    mockAx.onPost(`${watcherUrl}/account.get_utxos`, { address, jsonrpc: '2.0', id: 0 }).reply(200, JSON.stringify({ success: false, data: errorObject }))
 
     const childChain = new ChildChain({ watcherUrl, plasmaContractAddress })
     return assert.isRejected(childChain.getUtxos(address), Error, errorObject.description)
