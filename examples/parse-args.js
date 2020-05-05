@@ -22,10 +22,14 @@ module.exports = function (...keys) {
     }
   }
 
+  const missingArgs = []
   for (const key of keys) {
     if (!argMap[key]) {
-      throw Error(`Please pass the --${key} flag when calling this function`)
+      missingArgs.push(`Missing --${key} flag.`)
     }
+  }
+  if (missingArgs.length) {
+    throw Error(JSON.stringify(missingArgs, null, 2))
   }
 
   return argMap
