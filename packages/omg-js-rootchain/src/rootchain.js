@@ -41,8 +41,7 @@ const {
   challengeInFlightExitInputSpentSchema,
   challengeInFlightExitOutputSpentSchema,
   deleteNonPiggybackedInFlightExitSchema,
-  getExitDataSchema,
-  getExitsSchema
+  getExitDataSchema
 } = require('./validators')
 const MerkleTree = require('./merkle')
 const Joi = require('@hapi/joi')
@@ -177,58 +176,6 @@ class RootChain {
       scheduledFinalizationTime: scheduledFinalizationTime + bufferSeconds,
       msUntilFinalization
     }
-  }
-
-  /**
-   * Retrieves exit information for an Ethereum address
-   *
-   * @method getExits
-   * @param {string} address the address to retrieve exit information for
-   * @return {Promise<Object>} promise that resolves with the exit information
-   */
-  async getExits (address) {
-    Joi.assert(address, getExitsSchema)
-    // number of blocks before an exit is considered confirmed
-
-    function serializeExit (exit, status, finalityPercentage = '100') {
-      return {
-        blockNumber: exit.blockNumber,
-        transactionHash: exit.transactionHash,
-        exitId: exit.returnValues.exitId,
-        status,
-        finalityPercentage
-      }
-    }
-
-    const EXIT_FINALITY = 12
-    const ethBlockNumber = await this.web3.eth.getBlockNumber()
-    const { contract } = await this.getPaymentExitGame()
-
-    const allExits = await contract.getPastEvents('ExitStarted', {
-      filter: { owner: address },
-      fromBlock: 0
-    })
-
-    const exits = []
-    for (const exit of allExits) {
-      const isFinalized = await contract.getPastEvents('ExitFinalized', {
-        filter: { exitId: exit.returnValues.exitId.toString() },
-        fromBlock: 0
-      })
-
-      if (isFinalized.length) {
-        const serialized = serializeExit(exit, 'finalized')
-        exits.push(serialized)
-        continue
-      }
-
-      const status = ethBlockNumber - exit.blockNumber >= EXIT_FINALITY ? 'confirmed' : 'pending'
-      const pendingPercentage = (ethBlockNumber - exit.blockNumber) / EXIT_FINALITY
-      const serialized = serializeExit(exit, status, (pendingPercentage * 100).toFixed())
-      exits.push(serialized)
-    }
-
-    return exits
   }
 
   /**
