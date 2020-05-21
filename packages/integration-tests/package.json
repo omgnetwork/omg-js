@@ -1,7 +1,7 @@
 {
   "name": "integration-tests",
   "private": true,
-  "version": "3.1.0-0.4.6",
+  "version": "4.0.0-0.4.7",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -12,9 +12,9 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@omisego/omg-js-childchain": "3.1.0-0.4.6",
-    "@omisego/omg-js-rootchain": "3.1.0-0.4.6",
-    "@omisego/omg-js-util": "3.1.0-0.4.6",
+    "@omisego/omg-js-childchain": "4.0.0-0.4.7",
+    "@omisego/omg-js-rootchain": "4.0.0-0.4.7",
+    "@omisego/omg-js-util": "4.0.0-0.4.7",
     "human-standard-token-abi": "^2.0.0",
     "node-fetch": "^2.6.0",
     "promise-retry": "^1.1.1",
