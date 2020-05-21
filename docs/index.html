@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset='utf-8'>
-  <title>omg-js 3.1.0-0.4.6 | Documentation</title>
+  <title>omg-js 4.0.0-0.4.7 | Documentation</title>
   <meta name='description' content='JavaScript Library to interact with OMG Network'>
   <meta name='viewport' content='width=device-width,initial-scale=1'>
   <link href='assets/bass.css' rel='stylesheet'>
@@ -15,7 +15,7 @@
       <div id='split-left' class='overflow-auto fs0 height-viewport-100'>
         <div class='py1 px2'>
           <h3 class='mb0 no-anchor'>omg-js</h3>
-          <div class='mb1'><code>3.1.0-0.4.6</code></div>
+          <div class='mb1'><code>4.0.0-0.4.7</code></div>
           <input
             placeholder='Filter'
             id='filter-input'
@@ -1709,15 +1709,6 @@
 
 
               
-                <tr>
-  <td class='break-word'><span class='code bold'>args.verifyingContract</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
-  </td>
-  <td class='break-word'><span>address of the RootChain contract
-</span></td>
-</tr>
-
-
-              
             </tbody>
           </table>
           
@@ -1807,15 +1798,6 @@
   <td class='break-word'><span class='code bold'>args.utxos</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="#utxo">UTXO</a>></code>
   </td>
   <td class='break-word'><span>a utxo array
-</span></td>
-</tr>
-
-
-              
-                <tr>
-  <td class='break-word'><span class='code bold'>args.verifyingContract</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
-  </td>
-  <td class='break-word'><span>address of the RootChain contract
 </span></td>
 </tr>
 
@@ -2325,7 +2307,7 @@ Should be called periodically to see if there are any byzantine_events to be act
         <div class='space-bottom0'>
           <div>
             <span class='code bold'>config</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>)</code>
-	    the rootchain configuration object
+	    the childchain configuration object
 
           </div>
           
@@ -2356,6 +2338,15 @@ Should be called periodically to see if there are any byzantine_events to be act
   </td>
   <td class='break-word'><span><em>optional</em>
  the proxy url for requests made to the watcher server
+</span></td>
+</tr>
+
+
+              
+                <tr>
+  <td class='break-word'><span class='code bold'>config.plasmaContractAddress</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
+  </td>
+  <td class='break-word'><span>the address of the PlasmaFramework contract
 </span></td>
 </tr>
 
