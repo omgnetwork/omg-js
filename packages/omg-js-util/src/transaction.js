@@ -480,4 +480,3 @@ function parseString (buf) {
 }
 
 module.exports = transaction
-
