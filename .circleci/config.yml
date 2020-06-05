@@ -107,7 +107,7 @@ commands:
             export NVM_DIR="/opt/circleci/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
             cd ~/project/packages/integration-tests
-            wget --retry-connrefused --waitretry=10 --read-timeout=10 --timeout=10 -t 20 http://localhost:7534/fees.all
+            wget --retry-connrefused --waitretry=10 --read-timeout=10 --timeout=10 -t 20 http://localhost:7534/status.get
             npm run deploy-test-erc20
 
 jobs:
