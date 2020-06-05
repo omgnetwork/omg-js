@@ -356,18 +356,17 @@ describe('createTransactionTest.js', function () {
         currency: transaction.ETH_CURRENCY
       }
 
-      const createdTx = await childChain.createTransaction({
-        owner: aliceAccount.address,
+      const txBody = transaction.createTransactionBody({
+        fromAddress: aliceAccount.address,
+        fromUtxos: utxos,
         payments,
         fee
       })
-      assert.equal(createdTx.result, 'complete')
-      assert.equal(createdTx.transactions.length, 1)
 
       // Get the transaction data
-      const typedData = transaction.getTypedData(createdTx.transactions[0], rootChain.plasmaContractAddress)
+      const typedData = transaction.getTypedData(txBody, rootChain.plasmaContractAddress)
       // Sign it
-      const privateKeys = new Array(createdTx.transactions[0].inputs.length).fill(aliceAccount.privateKey)
+      const privateKeys = new Array(txBody.inputs.length).fill(aliceAccount.privateKey)
       const signatures = childChain.signTransaction(typedData, privateKeys)
       // Build the signed transaction
       const signedTx = childChain.buildSignedTransaction(typedData, signatures)
