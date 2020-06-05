@@ -353,7 +353,8 @@ describe('createTransactionTest.js', function () {
       }))
 
       const fee = {
-        currency: transaction.ETH_CURRENCY
+        currency: transaction.ETH_CURRENCY,
+        amount: FEE_ETH_AMOUNT
       }
 
       const txBody = transaction.createTransactionBody({
