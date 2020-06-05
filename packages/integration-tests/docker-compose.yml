@@ -52,6 +52,8 @@ services:
     expose:
       - "8546"
       - "8545"
+    volumes:
+      - ./data:/data
     healthcheck:
       test: curl geth:8545
       interval: 5s
@@ -111,7 +113,7 @@ services:
       - APP_ENV=local_docker_development
       - DD_HOSTNAME=datadog
       - DD_DISABLED=true
-      - DB_PATH=/app/.omg/data
+      - DB_PATH=/data
       - ETHEREUM_EVENTS_CHECK_INTERVAL_MS=800
       - ETHEREUM_STALLED_SYNC_THRESHOLD_MS=20000
       - ETHEREUM_BLOCK_TIME_SECONDS=1
@@ -125,6 +127,8 @@ services:
       - "7434:7434"
     expose:
       - "7434"
+    volumes:
+      - ./data:/data
     healthcheck:
       test: curl watcher:7434
       interval: 30s
@@ -150,7 +154,7 @@ services:
       - APP_ENV=local_docker_development
       - DD_HOSTNAME=datadog
       - DD_DISABLED=true
-      - DB_PATH=/app/.omg/data
+      - DB_PATH=/data
       - ETHEREUM_EVENTS_CHECK_INTERVAL_MS=800
       - ETHEREUM_BLOCK_TIME_SECONDS=1
       - EXIT_PROCESSOR_SLA_MARGIN=5520
@@ -163,6 +167,8 @@ services:
       - "7534:7534"
     expose:
       - "7534"
+    volumes:
+      - ./data:/data
     healthcheck:
       test: curl watcher_info:7534
       interval: 30s
