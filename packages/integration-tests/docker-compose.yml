@@ -89,7 +89,7 @@ services:
       - "9656"
     volumes:
       - ./data:/data
-      - ./priv/dev-artifacts:/dev-artifacts
+      - ./specs:/dev-artifacts
     healthcheck:
       test: curl childchain:9656
       interval: 30s
