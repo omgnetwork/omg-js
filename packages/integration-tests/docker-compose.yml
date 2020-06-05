@@ -16,7 +16,7 @@ services:
       retries: 5
 
   geth:
-    image: ethereum/client-go:v1.9.11
+    image: ethereum/client-go:v1.9.12
     entrypoint:
       - /bin/sh
       - -c
@@ -63,27 +63,33 @@ services:
   childchain:
     image: omisego/child_chain:${ELIXIR_OMG_SHA}
     command: "full_local"
+    container_name: childchain
     env_file:
       - ./localchain_contract_addresses.env
     environment:
       - ETHEREUM_NETWORK=LOCALCHAIN
       - ETHEREUM_RPC_URL=http://geth:8545
-      - ERLANG_COOKIE=develop
-      - NODE_HOST=127.0.0.1
       - APP_ENV=local_docker_development
       - DD_HOSTNAME=datadog
       - DD_DISABLED=true
-      - DB_PATH=/app/.omg/data
+      - DB_PATH=/data
       - ETHEREUM_EVENTS_CHECK_INTERVAL_MS=800
       - ETHEREUM_STALLED_SYNC_THRESHOLD_MS=20000
       - FEE_CLAIMER_ADDRESS=0x3b9f4c1dd26e0be593373b1d36cee2008cbeb837
+      - FEE_ADAPTER=file
+      - FEE_SPECS_FILE_PATH=/dev-artifacts/fee_specs.dev.json
       - FEE_BUFFER_DURATION_MS=30000
       - LOGGER_BACKEND=console
+      - RELEASE_COOKIE=development
+      - NODE_HOST=127.0.0.1
     restart: always
     ports:
       - "9656:9656"
     expose:
       - "9656"
+    volumes:
+      - ./data:/data
+      - ./priv/dev-artifacts:/dev-artifacts
     healthcheck:
       test: curl childchain:9656
       interval: 30s
@@ -97,30 +103,33 @@ services:
   watcher:
     image: omisego/watcher:${ELIXIR_OMG_SHA}
     command: "full_local"
+    container_name: watcher
     env_file:
       - ./localchain_contract_addresses.env
     environment:
       - ETHEREUM_NETWORK=LOCALCHAIN
       - ETHEREUM_RPC_URL=http://geth:8545
       - CHILD_CHAIN_URL=http://childchain:9656
-      - ERLANG_COOKIE=develop
-      - NODE_HOST=127.0.0.1
       - PORT=7434
       - APP_ENV=local_docker_development
       - DD_HOSTNAME=datadog
       - DD_DISABLED=true
-      - DB_PATH=/app/.omg/data
+      - DB_PATH=/data
       - ETHEREUM_EVENTS_CHECK_INTERVAL_MS=800
       - ETHEREUM_STALLED_SYNC_THRESHOLD_MS=20000
       - ETHEREUM_BLOCK_TIME_SECONDS=1
       - EXIT_PROCESSOR_SLA_MARGIN=5520
       - EXIT_PROCESSOR_SLA_MARGIN_FORCED=TRUE
       - LOGGER_BACKEND=console
+      - RELEASE_COOKIE=development
+      - NODE_HOST=127.0.0.1
     restart: always
     ports:
       - "7434:7434"
     expose:
       - "7434"
+    volumes:
+      - ./data:/data
     healthcheck:
       test: curl watcher:7434
       interval: 30s
@@ -134,6 +143,7 @@ services:
   watcher_info:
     image: omisego/watcher_info:${ELIXIR_OMG_SHA}
     command: "full_local"
+    container_name: watcher_info
     env_file:
       - ./localchain_contract_addresses.env
     environment:
@@ -141,23 +151,25 @@ services:
       - ETHEREUM_RPC_URL=http://geth:8545
       - CHILD_CHAIN_URL=http://childchain:9656
       - DATABASE_URL=postgresql://omisego_dev:omisego_dev@postgres:5432/omisego_dev
-      - ERLANG_COOKIE=develop
-      - NODE_HOST=127.0.0.1
       - PORT=7534
       - APP_ENV=local_docker_development
       - DD_HOSTNAME=datadog
       - DD_DISABLED=true
-      - DB_PATH=/app/.omg/data
+      - DB_PATH=/data
       - ETHEREUM_EVENTS_CHECK_INTERVAL_MS=800
       - ETHEREUM_BLOCK_TIME_SECONDS=1
       - EXIT_PROCESSOR_SLA_MARGIN=5520
       - EXIT_PROCESSOR_SLA_MARGIN_FORCED=TRUE
       - LOGGER_BACKEND=console
+      - RELEASE_COOKIE=development
+      - NODE_HOST=127.0.0.1
     restart: always
     ports:
       - "7534:7534"
     expose:
       - "7534"
+    volumes:
+      - ./data:/data
     healthcheck:
       test: curl watcher_info:7534
       interval: 30s
