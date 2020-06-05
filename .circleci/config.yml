@@ -105,7 +105,7 @@ commands:
           background: true
           command: |
             cd ~/project/packages/integration-tests
-            ELIXIR_OMG_SHA=<< pipeline.parameters.elixir-omg-sha >> docker-compose up || (START_RESULT=$?; docker-compose logs; exit $START_RESULT;)
+            ELIXIR_OMG_SHA=<< pipeline.parameters.elixir-omg-sha >> docker-compose up || (START_RESULT=$?; ELIXIR_OMG_SHA=<< pipeline.parameters.elixir-omg-sha >>; docker-compose logs; exit $START_RESULT;)
       - run:
           name: Setup Integration Test with ERC20
           command: |
