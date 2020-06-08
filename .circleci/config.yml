@@ -4,7 +4,7 @@ version: 2.1
 parameters:
   elixir-omg-sha:
     type: string
-    default: "c6a25a0"
+    default: "8105fef"
 
 workflows:
   version: 2
@@ -90,6 +90,11 @@ commands:
             wget https://raw.githubusercontent.com/omisego/elixir-omg/<< pipeline.parameters.elixir-omg-sha >>/Makefile
             wget https://raw.githubusercontent.com/omisego/elixir-omg/<< pipeline.parameters.elixir-omg-sha >>/snapshots.env
             wget https://raw.githubusercontent.com/omisego/elixir-omg/<< pipeline.parameters.elixir-omg-sha >>/contract_addresses_template.env
+            mkdir -p priv/dev-artifacts
+            mkdir -p data
+            cd ~/project/packages/integration-tests/priv/dev-artifacts
+            wget https://raw.githubusercontent.com/omisego/elixir-omg/<< pipeline.parameters.elixir-omg-sha >>/priv/dev-artifacts/fee_specs.dev.json
+            cd ~/project/packages/integration-tests
             mkdir -p bin
             cd bin
             wget https://raw.githubusercontent.com/omisego/elixir-omg/<< pipeline.parameters.elixir-omg-sha >>/bin/generate-localchain-env
@@ -100,7 +105,7 @@ commands:
           background: true
           command: |
             cd ~/project/packages/integration-tests
-            ELIXIR_OMG_SHA=<< pipeline.parameters.elixir-omg-sha >> docker-compose up
+            ELIXIR_OMG_SHA=<< pipeline.parameters.elixir-omg-sha >> docker-compose up || (START_RESULT=$?; docker-compose logs; exit $START_RESULT;)
       - run:
           name: Setup Integration Test with ERC20
           command: |
