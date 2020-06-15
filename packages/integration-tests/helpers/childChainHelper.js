@@ -128,7 +128,7 @@ async function createTx (childChain, from, to, amount, currency, fromPrivateKey,
   const fees = (await childChain.getFees())['1']
   const { amount: feeEthAmountWei } = fees.find(f => f.currency === transaction.ETH_CURRENCY)
 
-  const utxoAmount = numberToBN(utxosToSpend.find(utxo => utxo.currency === currency).amount)
+  const utxoAmount = numberToBN(utxosToSpend.find(utxo => utxo.currency.toLowerCase() === currency.toLowerCase()).amount)
   const utxoEthAmount = numberToBN(utxosToSpend.find(utxo => utxo.currency === transaction.ETH_CURRENCY).amount)
   const isEthCurrency = currency === transaction.ETH_CURRENCY
 
