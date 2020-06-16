@@ -4,7 +4,7 @@
 
 [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 
-[![CircleCI](https://circleci.com/gh/omisego/omg-js/tree/master.svg?style=svg)](https://circleci.com/gh/omisego/omg-js/tree/master)
+[![CircleCI](https://circleci.com/gh/omgnetwork/omg-js/tree/master.svg?style=svg)](https://circleci.com/gh/omgnetwork/omg-js/tree/master)
 
 This is a Javascript library that allows you to interact with OmiseGo's MoreVP implementation of Plasma. It provides functions to:
 
