@@ -104,35 +104,35 @@ Let's run through a story between Alice and Bob. In this story, Alice will first
 
 From the `/examples` folder run the following scripts:
 
-- [Get Alice's and Bob's balances](examples/balances.js)
+- [Get Alice's and Bob's balances](examples/print-balance.js)
 
     `node print-balance --owner=alice`  
     `node print-balance --owner=bob`
 
-- [Get Alice's and Bob's Childchain UTXOs](examples/childchain-utxos.js)
+- [Get Alice's and Bob's Childchain UTXOs](examples/print-utxos.js)
 
     `node print-utxos --owner=alice`  
     `node print-utxos --owner=bob`
 
 #### ETH Examples
 
-1. [Deposit some ETH from Alice's Rootchain to the Childchain](examples/childchain-deposit-eth.js)
+1. [Deposit some ETH from Alice's Rootchain to the Childchain](examples/deposit-eth.js)
     
     `node deposit-eth --owner=alice --amount=0.01`
 
-2. [Send some ETH from Alice's Childchain to Bob's Childchain](examples/childchain-transaction-eth.js)
+2. [Send some ETH from Alice's Childchain to Bob's Childchain](examples/transaction-eth.js)
     
     `node transaction-eth --from=alice --to=bob --amount=0.001`
 
 Alice has now sent some ETH to Bob. This should be reflected in Bob's childchain balance.
 
-3. [Exit one of Bob's Childchain UTXOs to the Rootchain](examples/childchain-exit-eth.js)
+3. [Exit one of Bob's Childchain UTXOs to the Rootchain](examples/exit-eth.js)
 
     `node exit-eth --owner=bob`
 
 Checking Bob's final rootchain balance you will notice it will be a little less than expected. This is because of rootchain gas costs Bob had to pay to exit the childchain.
 
-4. [Bob starts and piggyback's an inflight exit for his ouput on a transaction sent by Alice](example/childchain-inflight-exit-eth.js)
+4. [Bob starts and piggyback's an inflight exit for his ouput on a transaction sent by Alice](example/inflight-exit-eth.js)
 
     `node inflight-exit-eth --from=alice --to=bob --amount=0.01`
 
@@ -149,14 +149,14 @@ Use the ERC20 contract address from the output above to configure `ERC20_CONTRAC
 
 Now let's run through the same story above but for ERC20 deposit/transaction/exit.
 
-1. [Deposit some ERC20 from Alice's Rootchain to the Childchain](examples/childchain-deposit-erc20.js)
+1. [Deposit some ERC20 from Alice's Rootchain to the Childchain](examples/deposit-erc20.js)
     
     `node deposit-erc20 --owner=alice --amount=10`
 
-2. [Send some ERC20 from Alice's Childchain to Bob's Childchain](examples/childchain-transaction-erc20.js)
+2. [Send some ERC20 from Alice's Childchain to Bob's Childchain](examples/transaction-erc20.js)
     
     `node transaction-erc20 --from=alice --to=bob --amount=1`
 
-3. [Exit one of Bob's Childchain ERC20 UTXOs to the Rootchain](examples/childchain-exit-erc20.js)
+3. [Exit one of Bob's Childchain ERC20 UTXOs to the Rootchain](examples/exit-erc20.js)
 
     `node exit-erc20 --owner=bob`
