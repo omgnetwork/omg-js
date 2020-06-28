@@ -4,7 +4,7 @@ version: 2.1
 parameters:
   elixir-omg-sha:
     type: string
-    default: "593018b"
+    default: "d950ebe"
 
 workflows:
   version: 2
@@ -29,6 +29,10 @@ workflows:
           filters:
             branches:
               only: master
+      - dependencies-audit:
+          filters:
+            branches:
+              only: master
   build-other-branches:
     jobs:
       - unit-test:
@@ -47,6 +51,10 @@ workflows:
               ignore: master
       - ife-integration-test:
           requires: [unit-test]
+          filters:
+            branches:
+              ignore: master
+      - dependencies-audit:
           filters:
             branches:
               ignore: master
@@ -82,6 +90,11 @@ commands:
             wget https://raw.githubusercontent.com/omisego/elixir-omg/<< pipeline.parameters.elixir-omg-sha >>/Makefile
             wget https://raw.githubusercontent.com/omisego/elixir-omg/<< pipeline.parameters.elixir-omg-sha >>/snapshots.env
             wget https://raw.githubusercontent.com/omisego/elixir-omg/<< pipeline.parameters.elixir-omg-sha >>/contract_addresses_template.env
+            mkdir -p priv/dev-artifacts
+            mkdir -p data
+            cd ~/project/packages/integration-tests/priv/dev-artifacts
+            wget https://raw.githubusercontent.com/omisego/elixir-omg/<< pipeline.parameters.elixir-omg-sha >>/priv/dev-artifacts/fee_specs.dev.json
+            cd ~/project/packages/integration-tests
             mkdir -p bin
             cd bin
             wget https://raw.githubusercontent.com/omisego/elixir-omg/<< pipeline.parameters.elixir-omg-sha >>/bin/generate-localchain-env
@@ -92,7 +105,7 @@ commands:
           background: true
           command: |
             cd ~/project/packages/integration-tests
-            ELIXIR_OMG_SHA=<< pipeline.parameters.elixir-omg-sha >> docker-compose up
+            ELIXIR_OMG_SHA=<< pipeline.parameters.elixir-omg-sha >> docker-compose up || (START_RESULT=$?; docker-compose logs; exit $START_RESULT;)
       - run:
           name: Setup Integration Test with ERC20
           command: |
@@ -103,6 +116,43 @@ commands:
             npm run deploy-test-erc20
 
 jobs:
+  dependencies-audit:
+    docker:
+      - image: node:12.16.1-alpine3.11
+    steps:
+      - checkout
+      - run: |
+          apk update && apk upgrade
+          apk add --no-cache git openssh make gcc g++ python
+      - run:
+          name: omg-js-root-repo
+          command: |
+            npm install && npm run audit-check
+      - run:
+          name: omg-js
+          command: |
+            cd packages/omg-js && npm install && npm run audit-check
+      - run:
+          name: omg-js-childchain
+          command: |
+            cd packages/omg-js-childchain && npm install && npm run audit-check
+      - run:
+          name: omg-js-rootchain
+          command: |
+            cd packages/omg-js-rootchain && npm install && npm run audit-check
+      - run:
+          name: omg-js-util
+          command: |
+            cd packages/omg-js-util && npm install && npm run audit-check
+      - run:
+          name: omg-js-react-native-omg-js
+          command: |
+            cd packages/react-native-omg-js && npm install && npm run audit-check   
+      - run:
+          name: integration-test
+          command: |
+            cd packages/integration-tests && npm install && npm run audit-check         
+
   unit-test:
     docker:
       - image: node:12.16.1-alpine3.11
@@ -116,9 +166,6 @@ jobs:
           command: |
             npm install --no-audit
             npm run lerna-reset
-      - run:
-          name: run-audit-ci
-          command: npm run audit-check
       - run:
           name: Run Linter
           command: npm run lint

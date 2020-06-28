@@ -1,6 +1,6 @@
 {
   "name": "@omisego/browser-omg-js",
-  "version": "3.1.0-0.4.6",
+  "version": "4.0.1-1.0.0",
   "description": "omg-js for the browser",
   "keywords": [
     "OMG",
@@ -8,6 +8,9 @@
     "Plasma"
   ],
   "main": "omg.js",
+  "scripts": {
+    "audit-check": "audit-ci --moderate"
+  },
   "author": "OmiseGo",
   "contributors": [
     "Pong Cheecharern <@Pongch>",
@@ -25,5 +28,8 @@
   },
   "publishConfig": {
     "access": "public"
+  },
+  "devDependencies": {
+    "audit-ci": "^2.5.1"
   }
 }

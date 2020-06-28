@@ -442,7 +442,7 @@ function addInput (array, input) {
   if (input.blknum !== 0) {
     const blk = numberToBN(input.blknum).mul(BLOCK_OFFSET)
     const tx = numberToBN(input.txindex).muln(TX_OFFSET)
-    const position = blk.add(tx).addn(input.oindex).toBuffer()
+    const position = blk.add(tx).addn(input.oindex).toArrayLike(Buffer)
     const toPad = 32 - position.length
     const pads = Buffer.alloc(toPad, 0)
     const encodedPosition = Buffer.concat([pads, position])

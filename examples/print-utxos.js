@@ -16,16 +16,21 @@
 
 const ChildChain = require('../packages/omg-js-childchain/src/childchain')
 const config = require('./config.js')
+const getFlags = require('./parse-args')
 const JSONBigNumber = require('omg-json-bigint')
 
 const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url, plasmaContractAddress: config.plasmaframework_contract_address })
 
-async function childchainUtxos () {
-  const aliceUtxos = await childChain.getUtxos(config.alice_eth_address)
-  const bobUtxos = await childChain.getUtxos(config.bob_eth_address)
+async function printUtxos () {
+  try {
+    const { owner } = getFlags('owner')
+    const address = config[`${owner}_eth_address`]
 
-  console.log(`Alice UTXOs: ${JSONBigNumber.stringify(aliceUtxos, undefined, 2)}`)
-  console.log(`Bob UTXOs: ${JSONBigNumber.stringify(bobUtxos, undefined, 2)}`)
+    const utxos = await childChain.getUtxos(address)
+    console.log(JSONBigNumber.stringify(utxos, undefined, 2))
+  } catch (error) {
+    console.log('Error: ', error.message)
+  }
 }
 
-childchainUtxos()
+printUtxos()

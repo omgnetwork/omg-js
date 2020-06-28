@@ -194,7 +194,8 @@ class ChildChain {
   }
 
   /**
-   * Given currency, amount and spender, finds spender's inputs sufficient to perform a payment. If also provided with receiver's address, creates and encodes a transaction
+   * Given currency, amount and spender, finds spender's inputs sufficient to perform a payment. If also provided with receiver's address, creates and encodes a transaction.
+   * Note that this method cannot be used to create merge or split transaction.
    *
    * @method createTransaction
    * @param {Object} args an arguments object
