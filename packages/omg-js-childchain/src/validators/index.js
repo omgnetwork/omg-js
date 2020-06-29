@@ -30,6 +30,12 @@ const getTransactionSchema = Joi.object({
   id: Joi.string().required()
 })
 
+const getDepositsSchema = Joi.object({
+  address: validateAddress,
+  limit: Joi.number().integer(),
+  page: Joi.number().integer()
+})
+
 const getExitDataSchema = Joi.object({
   blknum: validateAmount,
   txindex: Joi.number().integer(),
@@ -99,6 +105,7 @@ module.exports = {
   getBalanceSchema,
   getTransactionsSchema,
   getTransactionSchema,
+  getDepositsSchema,
   getExitDataSchema,
   getChallengeDataSchema,
   createTransactionSchema,

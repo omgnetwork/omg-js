@@ -19,6 +19,7 @@ const {
   getBalanceSchema,
   getTransactionsSchema,
   getTransactionSchema,
+  getDepositsSchema,
   getExitDataSchema,
   getChallengeDataSchema,
   createTransactionSchema,
@@ -135,6 +136,25 @@ class ChildChain {
     Joi.assert(filters, getTransactionsSchema)
     return rpcApi.post({
       url: `${this.watcherUrl}/transaction.all`,
+      body: filters,
+      proxyUrl: this.watcherProxyUrl
+    })
+  }
+
+  /**
+   * Get deposits
+   *
+   * @method getDeposits
+   * @param {Object} filters filter object
+   * @param {string} [filters.address] address to filter by
+   * @param {number} [filters.limit] max number of transactions to return
+   * @param {number} [filters.page] page of paginated request
+   * @return {Promise<DepositInfo>} promise that resolves with an array of confirmed deposits
+   */
+  async getDeposits (filters) {
+    Joi.assert(filters, getDepositsSchema)
+    return rpcApi.post({
+      url: `${this.watcherUrl}/deposit.all`,
       body: filters,
       proxyUrl: this.watcherProxyUrl
     })
