@@ -207,8 +207,8 @@ class RootChain {
 
         // split the bits into their necessary data
         // https://github.com/omisego/plasma-contracts/blob/master/plasma_framework/contracts/src/framework/utils/ExitPriority.sol#L16
-        const exitableAtBinary = binary.substr(0, 42)
-        const exitIdBinary = binary.substr(96, 160)
+        const exitableAtBinary = binary.substr(0, 32)
+        const exitIdBinary = binary.substr(88, 168)
 
         // use BN to turn binary back into the format we want
         const exitableAt = new BN(exitableAtBinary, 2)
