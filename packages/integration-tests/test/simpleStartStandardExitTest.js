@@ -34,6 +34,28 @@ describe('simpleStartStandardExitTest.js', function () {
 
   before(async function () {
     await faucet.init({ rootChain, childChain, web3, config, faucetName })
+
+    // This test itself would introduce some exits inside the queue
+    // As a result, being a nice member that each time it tries to clean up the queue
+    // so the next time the test is run (if after challenge period) it will garbage collect its own exit
+    const queue = await rootChain.getExitQueue()
+    if (queue.length) {
+      console.log(`Help cleaning up ${queue.length} exits inside the queue...`)
+      const ethExitReceipt = await rootChain.processExits({
+        token: transaction.ETH_CURRENCY,
+        exitId: 0,
+        maxExitsToProcess: queue.length,
+        txOptions: {
+          privateKey: faucet.fundAccount.privateKey,
+          from: faucet.fundAccount.address,
+          gas: 3000000
+        }
+      })
+      if (ethExitReceipt) {
+        console.log(`ETH exits processing: ${ethExitReceipt.transactionHash}`)
+        await rcHelper.awaitTx(web3, ethExitReceipt.transactionHash)
+      }
+    }
   })
 
   describe('childchain transaction exit', function () {
