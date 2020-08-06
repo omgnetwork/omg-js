@@ -103,10 +103,6 @@ describe('mergeUtxoTest.js', function () {
 
       // THe account should have one utxo on the child chain
       const utxos = await childChain.getUtxos(aliceAccount.address)
-      console.log(">>>>>>>>>>>>>> utxos >>>>>>>>>>>>>>>>>>>")
-      console.log(utxos)
-      console.log(">>>>>>>>>>>>>> utxos >>>>>>>>>>>>>>>>>>>")
-
       assert.equal(utxos.length, 2)
       await childChain.mergeUtxos({
         utxos,

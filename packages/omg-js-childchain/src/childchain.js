@@ -375,12 +375,9 @@ class ChildChain {
       metadata
     }
 
-    console.log('txBody:', txBody)
     const typedData = transaction.getTypedData(txBody, this.plasmaContractAddress)
     const signatures = this.signTransaction(typedData, new Array(utxos.length).fill(privateKey))
     const signedTx = this.buildSignedTransaction(typedData, signatures)
-
-    console.log('sunmitting transactions....')
     return this.submitTransaction(signedTx)
   }
 

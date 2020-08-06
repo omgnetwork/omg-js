@@ -35,29 +35,29 @@ workflows:
               only: master
   build-other-branches:
     jobs:
-      # - unit-test:
-      #     filters:
-      #       branches:
-      #         ignore: master
-      # - smoke-integration-test:
-      #     requires: [unit-test]
-      #     filters:
-      #       branches:
-      #         ignore: master
-      - baseline-integration-test:
-          # requires: [unit-test]
+      - unit-test:
           filters:
             branches:
               ignore: master
-      # - ife-integration-test:
-      #     requires: [unit-test]
-      #     filters:
-      #       branches:
-      #         ignore: master
-      # - dependencies-audit:
-      #     filters:
-      #       branches:
-      #         ignore: master
+      - smoke-integration-test:
+          requires: [unit-test]
+          filters:
+            branches:
+              ignore: master
+      - baseline-integration-test:
+          requires: [unit-test]
+          filters:
+            branches:
+              ignore: master
+      - ife-integration-test:
+          requires: [unit-test]
+          filters:
+            branches:
+              ignore: master
+      - dependencies-audit:
+          filters:
+            branches:
+              ignore: master
 
 commands:
   setup_integration_tests:
@@ -147,11 +147,11 @@ jobs:
       - run:
           name: omg-js-react-native-omg-js
           command: |
-            cd packages/react-native-omg-js && npm install && npm run audit-check
+            cd packages/react-native-omg-js && npm install && npm run audit-check   
       - run:
           name: integration-test
           command: |
-            cd packages/integration-tests && npm install && npm run audit-check
+            cd packages/integration-tests && npm install && npm run audit-check         
 
   unit-test:
     docker:
