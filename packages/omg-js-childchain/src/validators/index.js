@@ -11,6 +11,7 @@ const {
 const childchainConstructorSchema = Joi.object({
   watcherUrl: Joi.string().required(),
   watcherProxyUrl: Joi.string().allow(''),
+  watcherSecurityUrl: Joi.string().allow(''),
   plasmaContractAddress: validateAddress.required()
 })
 
