@@ -147,11 +147,11 @@ jobs:
       - run:
           name: omg-js-react-native-omg-js
           command: |
-            cd packages/react-native-omg-js && npm install && npm run audit-check   
+            cd packages/react-native-omg-js && npm install && npm run audit-check
       - run:
           name: integration-test
           command: |
-            cd packages/integration-tests && npm install && npm run audit-check         
+            cd packages/integration-tests && npm install && npm run audit-check
 
   unit-test:
     docker:
@@ -192,6 +192,7 @@ jobs:
           environment:
             ETH_NODE: http://localhost:8545
             WATCHER_URL: http://localhost:7534
+            WATCHER_SECURITY_URL: http://localhost:7434
             CHILDCHAIN_URL: http://localhost:9656
             PLASMAFRAMEWORK_CONTRACT_ADDRESS: "0xc673e4ffcb8464faff908a6804fe0e635af0ea2f"
             ERC20_CONTRACT_ADDRESS: "0x932130ff6e440aee05e6fa75ac5d385c4e3a4d5d"
