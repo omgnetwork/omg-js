@@ -29,13 +29,8 @@ const faucetName = path.basename(__filename)
 
 describe('simpleStartStandardExitTest.js', function () {
   const web3 = new Web3(new Web3.providers.HttpProvider(config.eth_node))
+  let childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url, plasmaContractAddress: config.plasmaframework_contract_address })
   const rootChain = new RootChain({ web3, plasmaContractAddress: config.plasmaframework_contract_address })
-  let childChain = new ChildChain({
-    watcherUrl: config.watcher_url,
-    watcherSecurityUrl: config.watcher_security_url,
-    watcherProxyUrl: config.watcher_proxy_url,
-    plasmaContractAddress: config.plasmaframework_contract_address
-  })
 
   before(async function () {
     await faucet.init({ rootChain, childChain, web3, config, faucetName })
