@@ -44,15 +44,17 @@ class ChildChain {
   * Creates a ChildChain object
   *
   * @param {Object} config the childchain configuration object
-  * @param {string} config.watcherUrl the url of the watcher server (running in security-critical and informational mode)
+  * @param {string} config.watcherUrl the url of the watcher-info server (running in both security-critical and informational mode)
+  * @param {string} config.watcherSecurityUrl *optional* the url of the watcher security server. If this is set, all security related endpoints would be using from this url instead.
   * @param {string} [config.watcherProxyUrl] *optional* the proxy url for requests made to the watcher server
   * @param {string} config.plasmaContractAddress the address of the PlasmaFramework contract
   * @return {ChildChain} a ChildChain Object
   *
   */
-  constructor ({ watcherUrl, watcherProxyUrl, plasmaContractAddress }) {
-    Joi.assert({ watcherUrl, watcherProxyUrl, plasmaContractAddress }, childchainConstructorSchema)
+  constructor ({ watcherUrl, watcherProxyUrl, watcherSecurityUrl, plasmaContractAddress }) {
+    Joi.assert({ watcherUrl, watcherProxyUrl, watcherSecurityUrl, plasmaContractAddress }, childchainConstructorSchema)
     this.watcherUrl = watcherUrl
+    this.watcherSecurityUrl = watcherSecurityUrl || watcherUrl
     this.watcherProxyUrl = watcherProxyUrl
     this.plasmaContractAddress = plasmaContractAddress
   }
@@ -171,7 +173,7 @@ class ChildChain {
     Joi.assert(utxo, getExitDataSchema)
     const utxoPos = transaction.encodeUtxoPos(utxo)
     return rpcApi.post({
-      url: `${this.watcherUrl}/utxo.get_exit_data`,
+      url: `${this.watcherSecurityUrl}/utxo.get_exit_data`,
       body: { utxo_pos: utxoPos },
       proxyUrl: this.watcherProxyUrl
     })
@@ -187,7 +189,7 @@ class ChildChain {
   async getChallengeData (utxoPos) {
     Joi.assert({ utxoPos }, getChallengeDataSchema)
     return rpcApi.post({
-      url: `${this.watcherUrl}/utxo.get_challenge_data`,
+      url: `${this.watcherSecurityUrl}/utxo.get_challenge_data`,
       body: { utxo_pos: utxoPos },
       proxyUrl: this.watcherProxyUrl
     })
@@ -293,7 +295,7 @@ class ChildChain {
   async submitTransaction (transaction) {
     Joi.assert({ transaction }, submitTransactionSchema)
     return rpcApi.post({
-      url: `${this.watcherUrl}/transaction.submit`,
+      url: `${this.watcherSecurityUrl}/transaction.submit`,
       body: { transaction: transaction.startsWith('0x') ? transaction : `0x${transaction}` },
       proxyUrl: this.watcherProxyUrl
     })
@@ -405,7 +407,7 @@ class ChildChain {
   async inFlightExitGetInputChallengeData (txbytes, inputIndex) {
     Joi.assert({ txbytes, inputIndex }, inFlightExitGetInputChallengeDataSchema)
     return rpcApi.post({
-      url: `${this.watcherUrl}/in_flight_exit.get_input_challenge_data`,
+      url: `${this.watcherSecurityUrl}/in_flight_exit.get_input_challenge_data`,
       body: {
         txbytes: hexPrefix(txbytes),
         input_index: inputIndex
@@ -425,7 +427,7 @@ class ChildChain {
   async inFlightExitGetOutputChallengeData (txbytes, outputIndex) {
     Joi.assert({ txbytes, outputIndex }, inFlightExitGetOutputChallengeDataSchema)
     return rpcApi.post({
-      url: `${this.watcherUrl}/in_flight_exit.get_output_challenge_data`,
+      url: `${this.watcherSecurityUrl}/in_flight_exit.get_output_challenge_data`,
       body: {
         txbytes: hexPrefix(txbytes),
         output_index: outputIndex
@@ -444,7 +446,7 @@ class ChildChain {
   async inFlightExitGetData (txbytes) {
     Joi.assert(txbytes, Joi.string().required())
     return rpcApi.post({
-      url: `${this.watcherUrl}/in_flight_exit.get_data`,
+      url: `${this.watcherSecurityUrl}/in_flight_exit.get_data`,
       body: { txbytes: hexPrefix(txbytes) },
       proxyUrl: this.watcherProxyUrl
     })
@@ -460,7 +462,7 @@ class ChildChain {
   async inFlightExitGetCompetitor (txbytes) {
     Joi.assert(txbytes, Joi.string().required())
     return rpcApi.post({
-      url: `${this.watcherUrl}/in_flight_exit.get_competitor`,
+      url: `${this.watcherSecurityUrl}/in_flight_exit.get_competitor`,
       body: { txbytes: hexPrefix(txbytes) },
       proxyUrl: this.watcherProxyUrl
     })
@@ -476,7 +478,7 @@ class ChildChain {
   async inFlightExitProveCanonical (txbytes) {
     Joi.assert(txbytes, Joi.string().required())
     return rpcApi.post({
-      url: `${this.watcherUrl}/in_flight_exit.prove_canonical`,
+      url: `${this.watcherSecurityUrl}/in_flight_exit.prove_canonical`,
       body: { txbytes: hexPrefix(txbytes) },
       proxyUrl: this.watcherProxyUrl
     })

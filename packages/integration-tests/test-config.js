@@ -18,6 +18,7 @@ require('dotenv').config()
 const config = {
   eth_node: process.env.ETH_NODE,
   watcher_url: process.env.WATCHER_URL,
+  watcher_security_url: process.env.WATCHER_SECURITY_URL,
   watcher_proxy_url: process.env.WATCHER_PROXY_URL,
   childchain_url: process.env.CHILDCHAIN_URL,
   plasmaframework_contract_address: process.env.PLASMAFRAMEWORK_CONTRACT_ADDRESS,
