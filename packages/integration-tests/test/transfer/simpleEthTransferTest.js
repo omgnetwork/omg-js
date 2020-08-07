@@ -30,11 +30,11 @@ const faucetName = path.basename(__filename)
 
 describe('simpleEthTransferTest.js', function () {
   const web3 = new Web3(config.eth_node)
-  let childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url, plasmaContractAddress: config.plasmaframework_contract_address })
   const rootChain = new RootChain({ web3, plasmaContractAddress: config.plasmaframework_contract_address })
   let feeEth
 
   before(async function () {
+    const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url, plasmaContractAddress: config.plasmaframework_contract_address })
     await faucet.init({ rootChain, childChain, web3, config, faucetName })
     const fees = (await childChain.getFees())['1']
     const { amount } = fees.find(f => f.currency === transaction.ETH_CURRENCY)
@@ -42,31 +42,27 @@ describe('simpleEthTransferTest.js', function () {
   })
 
   describe('hitting watcher-info service only', function () {
-    before(async function () {
-      childChain = new ChildChain({
-        watcherUrl: config.watcher_url,
-        watcherProxyUrl: config.watcher_proxy_url,
-        plasmaContractAddress: config.plasmaframework_contract_address
-      })
+    const childChain = new ChildChain({
+      watcherUrl: config.watcher_url,
+      watcherProxyUrl: config.watcher_proxy_url,
+      plasmaContractAddress: config.plasmaframework_contract_address
     })
 
-    simpleEthTransferScenario()
+    simpleEthTransferScenario(childChain)
   })
 
   describe('hitting both watcher-security and watcher-info service', function () {
-    before(async function () {
-      childChain = new ChildChain({
-        watcherUrl: config.watcher_url,
-        watcherSecurityUrl: config.watcher_security_url,
-        watcherProxyUrl: config.watcher_proxy_url,
-        plasmaContractAddress: config.plasmaframework_contract_address
-      })
+    const childChain = new ChildChain({
+      watcherUrl: config.watcher_url,
+      watcherSecurityUrl: config.watcher_security_url,
+      watcherProxyUrl: config.watcher_proxy_url,
+      plasmaContractAddress: config.plasmaframework_contract_address
     })
 
-    simpleEthTransferScenario()
+    simpleEthTransferScenario(childChain)
   })
 
-  function simpleEthTransferScenario () {
+  function simpleEthTransferScenario (childChain) {
     describe('Simple ETH', function () {
       const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.1', 'ether')
       let TRANSFER_AMOUNT
