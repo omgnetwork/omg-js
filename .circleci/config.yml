@@ -10,59 +10,59 @@ workflows:
   version: 2
   build-master:
     jobs:
-      - unit-test:
-          filters:
-            branches:
-              only: master
-      - smoke-integration-test:
-          requires: [unit-test]
-          filters:
-            branches:
-              only: master
-      - baseline-integration-test:
-          requires: [unit-test]
-          filters:
-            branches:
-              only: master
-      - ife-integration-test:
-          requires: [unit-test]
-          filters:
-            branches:
-              only: master
-      - dependencies-audit:
-          filters:
-            branches:
-              only: master
+      # - unit-test:
+      #     filters:
+      #       branches:
+      #         only: master
+      # - smoke-integration-test:
+      #     requires: [unit-test]
+      #     filters:
+      #       branches:
+      #         only: master
+      # - baseline-integration-test:
+      #     requires: [unit-test]
+      #     filters:
+      #       branches:
+      #         only: master
+      # - ife-integration-test:
+      #     requires: [unit-test]
+      #     filters:
+      #       branches:
+      #         only: master
+      # - dependencies-audit:
+      #     filters:
+      #       branches:
+      #         only: master
       - publish_test_runner:
-          requires: [smoke-integration-test, baseline-integration-test, ife-integration-test]
+          # requires: [smoke-integration-test, baseline-integration-test, ife-integration-test]
           filters:
             branches:
-              only: master
-  build-other-branches:
-    jobs:
-      - unit-test:
-          filters:
-            branches:
-              ignore: master
-      - smoke-integration-test:
-          requires: [unit-test]
-          filters:
-            branches:
-              ignore: master
-      - baseline-integration-test:
-          requires: [unit-test]
-          filters:
-            branches:
-              ignore: master
-      - ife-integration-test:
-          requires: [unit-test]
-          filters:
-            branches:
-              ignore: master
-      - dependencies-audit:
-          filters:
-            branches:
-              ignore: master
+              only: boolafish/testrunner
+  # build-other-branches:
+  #   jobs:
+  #     - unit-test:
+  #         filters:
+  #           branches:
+  #             ignore: master
+  #     - smoke-integration-test:
+  #         requires: [unit-test]
+  #         filters:
+  #           branches:
+  #             ignore: master
+  #     - baseline-integration-test:
+  #         requires: [unit-test]
+  #         filters:
+  #           branches:
+  #             ignore: master
+  #     - ife-integration-test:
+  #         requires: [unit-test]
+  #         filters:
+  #           branches:
+  #             ignore: master
+  #     - dependencies-audit:
+  #         filters:
+  #           branches:
+  #             ignore: master
 
 commands:
   setup_integration_tests:
