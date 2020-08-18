@@ -278,7 +278,8 @@ jobs:
             FAUCET_SALT: integration-tests
 
   publish_test_runner:
-    executor: metal
+    machine:
+      image: ubuntu-1604:201903-01
     steps:
       - checkout
       - run:
