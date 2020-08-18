@@ -283,6 +283,11 @@ jobs:
     steps:
       - checkout
       - run:
+          name: authenticate GCP with circle ci
+          command: |
+            echo $GCLOUD_SERVICE_KEY | gcloud auth activate-service-account --key-file=-
+            gcloud -q auth configure-docker
+      - run:
           name: publish to GCP container registry
           command: |
             sh .circleci/ci_publish.sh
