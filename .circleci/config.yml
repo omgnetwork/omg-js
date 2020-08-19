@@ -33,6 +33,11 @@ workflows:
           filters:
             branches:
               only: master
+      - publish_test_runner:
+          requires: [smoke-integration-test, baseline-integration-test, ife-integration-test]
+          filters:
+            branches:
+              only: master
   build-other-branches:
     jobs:
       - unit-test:
@@ -271,3 +276,18 @@ jobs:
             MIN_AMOUNT_ERC20_PER_TEST: 20
             TOPUP_MULTIPLIER: 5
             FAUCET_SALT: integration-tests
+
+  publish_test_runner:
+    machine:
+      image: ubuntu-1604:201903-01
+    steps:
+      - checkout
+      - run:
+          name: authenticate GCP with circle ci
+          command: |
+            echo $GCLOUD_SERVICE_KEY | gcloud auth activate-service-account --key-file=-
+            gcloud -q auth configure-docker
+      - run:
+          name: publish to GCP container registry
+          command: |
+            sh .circleci/ci_publish.sh
