@@ -15,6 +15,7 @@
 */
 
 const NULL_ADDRESS = '0x0000000000000000000000000000000000000000'
+const OMG_ADDRESS = '0xd26114cd6ee289accf82350c8d8487fedb8a0c07'
 const NULL_INPUT = { blknum: 0, txindex: 0, oindex: 0 }
 const NULL_OUTPUT = {
   outputType: 0,

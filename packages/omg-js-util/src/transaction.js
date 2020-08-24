@@ -47,6 +47,7 @@ const TX_OFFSET = 10000
 */
 const transaction = {
   ETH_CURRENCY: typedData.NULL_ADDRESS,
+  OMG_CURRENCY: typedData.OMG_ADDRESS,
   NULL_METADATA: typedData.NULL_METADATA,
 
   /**
