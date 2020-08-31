@@ -30,8 +30,5 @@
   },
   "resolutions": {
     "elliptic": "6.5.3"
-  },
-  "config": {
-    "unsafe-perm":true
   }
 }
