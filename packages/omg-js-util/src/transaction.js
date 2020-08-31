@@ -22,6 +22,7 @@ const rlp = require('rlp')
 const typedData = require('./typedData')
 const getToSignHash = require('./signHash')
 const hexPrefix = require('./hexPrefix')
+const { NULL_ADDRESS } = require('./address.js')
 const {
   encodeDepositSchema,
   decodeDepositSchema,
@@ -46,8 +47,7 @@ const TX_OFFSET = 10000
 * A collection of helper functions for creating, encoding and decoding transactions.
 */
 const transaction = {
-  ETH_CURRENCY: typedData.NULL_ADDRESS,
-  OMG_CURRENCY: typedData.OMG_ADDRESS,
+  ETH_CURRENCY: NULL_ADDRESS,
   NULL_METADATA: typedData.NULL_METADATA,
 
   /**
