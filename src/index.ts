@@ -7,7 +7,7 @@ import * as Joi from '@hapi/joi';
 import * as ExitQueueModule from 'rootchain/exitqueue';
 import * as DepositModule from 'rootchain/deposit';
 import * as ContractsModule from 'contracts';
-import * as Constants from 'util/constants';
+import * as Constants from 'common/constants';
 // import * as Watcher from 'watcher';
 import PlasmaFrameworkContract from 'contracts/abi/PlasmaFramework.json';
 import { OmgJSError } from 'errors';
@@ -17,6 +17,7 @@ import * as Validators from 'validators';
 
 // interfaces
 import { IVault, IPaymentExitGame } from 'contracts';
+import { ITransactionReceipt } from 'common/interfaces';
 
 interface IOmgJS {
   plasmaContractAddress: string;
@@ -44,7 +45,7 @@ class OmgJS {
     Joi.assert({ plasmaContractAddress, watcherUrl, web3Provider }, Validators.constructorSchema);
     this.plasmaContractAddress = plasmaContractAddress;
     this.watcherUrl = watcherUrl;
-    this.web3Instance = new Web3(web3Provider);
+    this.web3Instance = new (Web3 as any)(web3Provider, null, { transactionConfirmationBlocks: 1 });
     this.plasmaContract = new Contract((PlasmaFrameworkContract as any).abi, plasmaContractAddress);
   }
 
@@ -108,7 +109,7 @@ class OmgJS {
     erc20Address,
     amount,
     transactionOptions
-  }: DepositModule.IApproveDeposit): Promise<DepositModule.TransactionReceipt> {
+  }: DepositModule.IApproveDeposit): Promise<ITransactionReceipt> {
     Joi.assert({ erc20Address, amount, transactionOptions }, Validators.approveTokenSchema);
     try {
       return await DepositModule.approveDeposit({

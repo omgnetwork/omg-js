@@ -1,4 +1,5 @@
 import { Contract } from 'web3-eth-contract';
+import erc20abi from 'human-standard-token-abi';
 
 import Erc20VaultContract from 'contracts/abi/Erc20Vault.json';
 import EthVaultContract from 'contracts/abi/EthVault.json';
@@ -57,5 +58,10 @@ export async function getPaymentExitGame (): Promise<IPaymentExitGame> {
 
 export async function getPriorityQueue (address: string): Promise<IVault> {
   const contract: Contract = new Contract((PriorityQueueContract as any).abi, address);
+  return { contract, address };
+}
+
+export async function getErc20 (address: string): Promise<IVault> {
+  const contract: Contract = new Contract(erc20abi, address);
   return { contract, address };
 }
