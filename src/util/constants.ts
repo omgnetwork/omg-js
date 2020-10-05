@@ -1,0 +1,6 @@
+export const currencyMap = {
+  ETH: '0x0000000000000000000000000000000000000000',
+  OMG: {
+    MAINNET: '0xd26114cd6ee289accf82350c8d8487fedb8a0c07'
+  }
+};
