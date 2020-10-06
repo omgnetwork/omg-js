@@ -75,7 +75,7 @@ export interface IExitQueue {
 }
 
 export async function getExitQueue (token: string): Promise<IExitQueue[]> {
-  const vaultId = token === Constants.currencyMap.ETH ? 1 : 2;
+  const vaultId = token === Constants.CURRENCY_MAP.ETH ? 1 : 2;
   const hashed = web3Utils.soliditySha3(
     { t: 'uint256', v: vaultId },
     { t: 'address', v: token }
