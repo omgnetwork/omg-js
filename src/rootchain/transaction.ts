@@ -4,6 +4,7 @@ import { Buffer } from 'buffer';
 
 import { ITransactionReceipt, ITransactionDetails } from 'common/interfaces';
 import * as Constants from 'common/constants';
+import * as Util from 'common/util';
 
 export async function sendTransaction (transactionDetails: ITransactionDetails): Promise<ITransactionReceipt> {
   const _gasLimit = await setGasLimit(transactionDetails);
@@ -22,7 +23,7 @@ export async function sendTransaction (transactionDetails: ITransactionDetails):
   if (transactionDetails.privateKey) {
     const signedTransaction = await this.web3Instance.eth.accounts.signTransaction(
       enhancedTransactionDetails,
-      prefixHex(transactionDetails.privateKey)
+      Util.prefixHex(transactionDetails.privateKey)
     );
     return this.web3Instance.eth.sendSignedTransaction(signedTransaction.rawTransaction);
   }
@@ -47,18 +48,6 @@ export async function setGasPrice (gasPrice: string): Promise<string> {
     // default gas to 1 gwei
     return '1000000000';
   }
-};
-
-export function prefixHex (hex: string): string {
-  return hex.startsWith('0x')
-    ? hex
-    : `0x${hex}`;
-};
-
-export function int192toHex (int192: number | string): string {
-  return typeof int192 === 'string'
-    ? prefixHex(int192)
-    : prefixHex(int192.toString(16));
 };
 
 export interface IEncode {
@@ -100,7 +89,7 @@ export function encode ({
   txArray.push(outputArray);
   txArray.push(txData);
   txArray.push(metadata);
-  return prefixHex(rlp.encode(txArray).toString('hex'));
+  return Util.prefixHex(rlp.encode(txArray).toString('hex'));
 };
 
 function addInput (array: Array<any>, input): void {
@@ -120,8 +109,8 @@ function addOutput (array: Array<any>, output): void {
     array.push([
       output.outputType,
       [
-        prefixHex(output.outputGuard),
-        prefixHex(output.currency),
+        Util.prefixHex(output.outputGuard),
+        Util.prefixHex(output.currency),
         new BN(output.amount.toString())
       ]
     ]);

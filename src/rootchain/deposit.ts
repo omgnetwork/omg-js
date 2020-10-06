@@ -2,6 +2,7 @@ import BN from 'bn.js';
 
 import * as ContractsModule from 'contracts';
 import * as Constants from 'common/constants';
+import * as Util from 'common/util';
 import { ITransactionOptions, ITransactionReceipt } from 'common/interfaces';
 import * as TransactionsModule from 'rootchain/transaction';
 
@@ -82,8 +83,8 @@ export function encodeDeposit ({
     inputs: [],
     outputs: [{
       outputType: 1,
-      outputGuard: TransactionsModule.prefixHex(owner),
-      currency: TransactionsModule.prefixHex(currency),
+      outputGuard: Util.prefixHex(owner),
+      currency: Util.prefixHex(currency),
       amount
     }],
     txData: 0,
