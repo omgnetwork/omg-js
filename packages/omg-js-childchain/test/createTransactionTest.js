@@ -13,10 +13,10 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License. */
 
-const ChildChain = require('../src/childchain')
 const ax = require('axios')
-const { transaction } = require('@omisego/omg-js-util')
+const ChildChain = require('../src/childchain')
 const sinon = require('sinon')
+const { transaction } = require('@omisego/omg-js-util')
 
 const watcherUrl = 'http://omg-watcher'
 const plasmaContractAddress = '0xE009136B58a8B2eEb80cfa18aD2Ea6D389d3A375'
@@ -37,13 +37,14 @@ describe('createTransaction', function () {
   })
 
   it('should convert string amount in payments to BN amount', async function () {
+    const stringAmount = '1000000'
     const params = {
       owner: '0xd72afdfa06ae5857a639051444f7608fea1528d4',
       payments: [
         {
           owner: '0xd72afdfa06ae5857a639051444f7608fea1528d4',
           currency: transaction.ETH_CURRENCY,
-          amount: '1000000'
+          amount: stringAmount
         }
       ],
       fee: {
@@ -65,7 +66,7 @@ describe('createTransaction', function () {
           {
             owner: '0xd72afdfa06ae5857a639051444f7608fea1528d4',
             currency: transaction.ETH_CURRENCY,
-            amount: 1000000
+            amount: Number(stringAmount)
           }
         ],
         fee: {
