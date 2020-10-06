@@ -2,8 +2,8 @@
   "name": "omg-js",
   "version": "4.0.1-1.0.0",
   "description": "JavaScript Library to interact with the OMG Network",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "scripts": {
     "publish": "yarn compile && npm publish",
     "compile": "tsc",
