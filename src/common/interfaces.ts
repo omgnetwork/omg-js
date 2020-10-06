@@ -1,8 +1,14 @@
 export interface ITransactionOptions {
   from: string;
-  privateKey?: string;
-  gas?: number;
+  gasLimit?: number;
   gasPrice?: string;
+  privateKey?: string;
+};
+
+export interface ITransactionDetails extends ITransactionOptions {
+  to?: string;
+  data?: string;
+  value?: string;
 };
 
 export interface ITransactionReceipt {

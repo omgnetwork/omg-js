@@ -26,7 +26,7 @@ interface IOmgJS {
 }
 
 class OmgJS {
-  static currency = Constants.currencyMap;
+  static currency = Constants.CURRENCY_MAP;
 
   private readonly plasmaContractAddress: string;
   private readonly watcherUrl: string;
@@ -105,6 +105,27 @@ class OmgJS {
     }
   }
 
+  public encodeDeposit ({
+    owner,
+    amount,
+    currency
+  }: DepositModule.IEncodeDeposit): string {
+    Joi.assert({ owner, amount, currency }, Validators.encodeDepositSchema);
+    try {
+      return DepositModule.encodeDeposit({
+        owner,
+        amount,
+        currency
+      });
+    } catch (error) {
+      throw new OmgJSError({
+        origin: 'encodeDeposit',
+        message: error.message,
+        path: 'ROOTCHAIN'
+      });
+    }
+  }
+
   public async approveDeposit ({
     erc20Address,
     amount,
@@ -120,6 +141,27 @@ class OmgJS {
     } catch (error) {
       throw new OmgJSError({
         origin: 'approveDeposit',
+        message: error.message,
+        path: 'ROOTCHAIN'
+      });
+    }
+  }
+
+  public async deposit ({
+    amount,
+    currency,
+    transactionOptions,
+  }: DepositModule.IDeposit): Promise<ITransactionReceipt> {
+    Joi.assert({ amount, currency, transactionOptions }, Validators.depositSchema);
+    try {
+      return await DepositModule.deposit({
+        amount,
+        currency,
+        transactionOptions
+      });
+    } catch (error) {
+      throw new OmgJSError({
+        origin: 'deposit',
         message: error.message,
         path: 'ROOTCHAIN'
       });
