@@ -1,6 +1,6 @@
 import * as Joi from '@hapi/joi';
 
-import * as helpers from 'validators/helpers';
+import * as helpers from '@lib/validators/helpers';
 
 export const constructorSchema: Joi.Schema = Joi.object({
   plasmaContractAddress: helpers.validateAddress.required(),
@@ -23,7 +23,7 @@ export const approveTokenSchema: Joi.Schema = Joi.object({
 
 export const depositSchema: Joi.Schema = Joi.object({
   amount: helpers.validateAmount.required(),
-  currency: helpers.validateAddress.required(),
+  currency: helpers.validateAddress,
   transactionOptions: helpers.validateTransactionOptions.required()
 });
 

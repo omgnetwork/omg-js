@@ -12,5 +12,5 @@ dist
 # ignore browserified build
 packages/browser-omg-js/omg.js
 
-# force yarn usage
-package-lock.json
+# force npm usage
+yarn.lock

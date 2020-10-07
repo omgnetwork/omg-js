@@ -1,14 +1,14 @@
-import rlp from 'rlp';
 import BN from 'bn.js';
+import * as rlp from 'rlp';
 import { Buffer } from 'buffer';
 
-import { ITransactionReceipt, ITransactionDetails } from 'common/interfaces';
-import * as Constants from 'common/constants';
-import * as Util from 'common/util';
+import { ITransactionReceipt, ITransactionDetails } from '@lib/common/interfaces';
+import * as Constants from '@lib/common/constants';
+import * as Util from '@lib/common/util';
 
 export async function sendTransaction (transactionDetails: ITransactionDetails): Promise<ITransactionReceipt> {
-  const _gasLimit = await setGasLimit(transactionDetails);
-  const _gasPrice = await setGasPrice(transactionDetails.gasPrice);
+  const _gasLimit = await setGasLimit.call(this, transactionDetails);
+  const _gasPrice = await setGasPrice.call(this, transactionDetails.gasPrice);
 
   const enhancedTransactionDetails: ITransactionDetails = {
     ...transactionDetails,
@@ -89,7 +89,9 @@ export function encode ({
   txArray.push(outputArray);
   txArray.push(txData);
   txArray.push(metadata);
-  return Util.prefixHex(rlp.encode(txArray).toString('hex'));
+
+  const encoded = rlp.encode(txArray).toString('hex');
+  return Util.prefixHex(encoded);
 };
 
 function addInput (array: Array<any>, input): void {

@@ -1,10 +1,10 @@
 import { Contract } from 'web3-eth-contract';
 import erc20abi from 'human-standard-token-abi';
 
-import Erc20VaultContract from 'contracts/abi/Erc20Vault.json';
-import EthVaultContract from 'contracts/abi/EthVault.json';
-import PaymentExitGameContract from 'contracts/abi/PaymentExitGame.json';
-import PriorityQueueContract from 'contracts/abi/PriorityQueue.json';
+import Erc20VaultContract from '@lib/contracts/abi/Erc20Vault.json';
+import EthVaultContract from '@lib/contracts/abi/EthVault.json';
+import PaymentExitGameContract from '@lib/contracts/abi/PaymentExitGame.json';
+import PriorityQueueContract from '@lib/contracts/abi/PriorityQueue.json';
 
 const ETH_VAULT_ID = 1;
 const ERC20_VAULT_ID = 2;
@@ -25,19 +25,19 @@ export interface IPaymentExitGame extends IVault {
 
 export async function getErc20Vault (): Promise<IVault> {
   const address: string = await this.plasmaContract.methods.vaults(ERC20_VAULT_ID).call();
-  const contract: Contract = new Contract((Erc20VaultContract as any).abi, address);
+  const contract: Contract = new this.web3Instance.eth.Contract((Erc20VaultContract as any).abi, address);
   return { contract, address };
 }
 
 export async function getEthVault (): Promise<IVault> {
   const address: string = await this.plasmaContract.methods.vaults(ETH_VAULT_ID).call();
-  const contract: Contract = new Contract((EthVaultContract as any).abi, address);
+  const contract: Contract = new this.web3Instance.eth.Contract((EthVaultContract as any).abi, address);
   return { contract, address };
 }
 
 export async function getPaymentExitGame (): Promise<IPaymentExitGame> {
   const address: string = await this.plasmaContract.methods.exitGames(PAYMENT_TYPE).call();
-  const contract: Contract = new Contract((PaymentExitGameContract as any).abi, address);
+  const contract: Contract = new this.web3Instance.eth.Contract((PaymentExitGameContract as any).abi, address);
 
   const bondSizes = await Promise.all([
     contract.methods.startStandardExitBondSize().call(),
@@ -57,12 +57,12 @@ export async function getPaymentExitGame (): Promise<IPaymentExitGame> {
 }
 
 export async function getPriorityQueue (address: string): Promise<IVault> {
-  const contract: Contract = new Contract((PriorityQueueContract as any).abi, address);
+  const contract: Contract = new this.web3Instance.eth.Contract((PriorityQueueContract as any).abi, address);
   return { contract, address };
 }
 
 export async function getErc20 (address: string): Promise<IVault> {
-  const contract: Contract = new Contract(erc20abi, address);
+  const contract: Contract = new this.web3Instance.eth.Contract(erc20abi, address);
   return { contract, address };
 }
 

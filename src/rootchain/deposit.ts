@@ -1,22 +1,22 @@
 import BN from 'bn.js';
 
-import * as ContractsModule from 'contracts';
-import * as Constants from 'common/constants';
-import * as Util from 'common/util';
-import { ITransactionOptions, ITransactionReceipt } from 'common/interfaces';
-import * as TransactionsModule from 'rootchain/transaction';
+import * as ContractsModule from '@lib/contracts';
+import * as TransactionsModule from '@lib/rootchain/transaction';
+import * as Constants from '@lib/common/constants';
+import * as Util from '@lib/common/util';
+import * as Interfaces from '@lib/common/interfaces';
 
 export interface IApproveDeposit {
   erc20Address: string;
   amount: string | number | BN;
-  transactionOptions: ITransactionOptions
+  transactionOptions: Interfaces.ITransactionOptions
 }
 
 export async function approveDeposit ({
   erc20Address,
   amount,
   transactionOptions
-}: IApproveDeposit): Promise<ITransactionReceipt> {
+}: IApproveDeposit): Promise<Interfaces.ITransactionReceipt> {
   const { address: spender } = await this.getErc20Vault();
   const { contract } = await ContractsModule.getErc20(erc20Address);
 
@@ -33,14 +33,14 @@ export async function approveDeposit ({
 export interface IDeposit {
   amount: string | number | BN;
   currency?: string;
-  transactionOptions: ITransactionOptions;
+  transactionOptions: Interfaces.ITransactionOptions;
 }
 
 export async function deposit ({
   amount,
   currency = Constants.CURRENCY_MAP.ETH,
   transactionOptions
-}: IDeposit): Promise<ITransactionReceipt> {
+}: IDeposit): Promise<Interfaces.ITransactionReceipt> {
   const _amount = amount.toString();
   const isEth = currency === Constants.CURRENCY_MAP.ETH;
 
@@ -54,9 +54,10 @@ export async function deposit ({
     currency
   });
 
+  console.log('depositTx: ', depositTx);
   const transactionData = ContractsModule.getTxData(contract, 'deposit', depositTx);
 
-  return TransactionsModule.sendTransaction({
+  return TransactionsModule.sendTransaction.call(this, {
     from: transactionOptions.from,
     to: address,
     ...isEth ? { value: _amount } : {},

@@ -1,8 +1,8 @@
 import web3Utils from 'web3-utils';
 import BN from 'bn.js';
 
-import * as Constants from 'common/constants';
-import * as Contracts from 'contracts';
+import * as Constants from '@lib/common/constants';
+import * as Contracts from '@lib/contracts';
 
 export interface IGetExitTime {
   exitRequestBlockNumber: string,
