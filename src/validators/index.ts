@@ -76,3 +76,23 @@ export const processExitsSchema: Joi.Schema = Joi.object({
   maxExitsToProcess: Joi.number().integer(),
   transactionOptions: helpers.validateTransactionOptions.required()
 });
+
+export const hasExitQueueSchema: Joi.Schema = helpers.validateAddress.required();
+
+export const addExitQueueSchema: Joi.Schema = Joi.object({
+  token: helpers.validateAddress.required(),
+  transactionOptions: helpers.validateTransactionOptions.required()
+});
+
+export const startInFlightExitSchema: Joi.Schema = Joi.object({
+  inFlightTx: Joi.string().required(),
+  inputTxs: Joi.array().required(),
+  inputUtxosPos: Joi.array().items(helpers.validateAmount.required()),
+  inputTxsInclusionProofs: Joi.array()
+    .items(Joi.string())
+    .required(),
+  inFlightTxSigs: Joi.array()
+    .items(Joi.string())
+    .required(),
+    transactionOptions: helpers.validateTransactionOptions.required()
+});

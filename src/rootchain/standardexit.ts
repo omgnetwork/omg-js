@@ -5,9 +5,8 @@ import { Buffer } from 'buffer';
 
 import * as ContractsModule from '@lib/contracts';
 import * as TransactionsModule from '@lib/rootchain/transaction';
-import * as Interfaces from '@lib/common/interfaces';
-import * as Constants from '@lib/common/constants';
 import * as Util from '@lib/common/util';
+import * as Interfaces from '@lib/common/interfaces';
 import MerkleTree from '@lib/common/merkle';
 
 import EthVaultContract from '@lib/contracts/abi/EthVault.json';
@@ -136,40 +135,6 @@ export async function challengeStandardExit ({
   return TransactionsModule.sendTransaction.call(this, {
     from: transactionOptions.from,
     to: address,
-    data: transactionData,
-    gasLimit: transactionOptions.gasLimit,
-    gasPrice: transactionOptions.gasPrice,
-    privateKey: transactionOptions.privateKey
-  });
-}
-
-export interface IProcessExits {
-  token: string;
-  exitId: number | string;
-  maxExitsToProcess: number;
-  transactionOptions: Interfaces.ITransactionOptions
-}
-
-export async function processExits ({
-  token,
-  exitId,
-  maxExitsToProcess,
-  transactionOptions
-}: IProcessExits): Promise<Interfaces.ITransactionReceipt> {
-  const vaultId = token === Constants.CURRENCY_MAP.ETH ? 1 : 2;
-
-  const transactionData = ContractsModule.getTxData(
-    this.plasmaContract,
-    'processExits',
-    vaultId,
-    token,
-    exitId,
-    maxExitsToProcess
-  );
-
-  return TransactionsModule.sendTransaction.call(this, {
-    from: transactionOptions.from,
-    to: this.plasmaContractAddress,
     data: transactionData,
     gasLimit: transactionOptions.gasLimit,
     gasPrice: transactionOptions.gasPrice,

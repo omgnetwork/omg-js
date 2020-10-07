@@ -3,6 +3,8 @@ import BN from 'bn.js';
 
 import * as Constants from '@lib/common/constants';
 import * as ContractsModule from '@lib/contracts';
+import * as Interfaces from '@lib/common/interfaces';
+import * as TransactionsModule from '@lib/rootchain/transaction';
 
 export interface IGetExitTime {
   exitRequestBlockNumber: string,
@@ -112,4 +114,71 @@ export async function getExitQueue (token: string): Promise<IExitQueue[]> {
   } else {
     return [];
   }
+}
+
+export interface IProcessExits {
+  token: string;
+  exitId: number | string;
+  maxExitsToProcess: number;
+  transactionOptions: Interfaces.ITransactionOptions
+}
+
+export async function processExits ({
+  token,
+  exitId,
+  maxExitsToProcess,
+  transactionOptions
+}: IProcessExits): Promise<Interfaces.ITransactionReceipt> {
+  const vaultId = token === Constants.CURRENCY_MAP.ETH ? 1 : 2;
+
+  const transactionData = ContractsModule.getTxData(
+    this.plasmaContract,
+    'processExits',
+    vaultId,
+    token,
+    exitId,
+    maxExitsToProcess
+  );
+
+  return TransactionsModule.sendTransaction.call(this, {
+    from: transactionOptions.from,
+    to: this.plasmaContractAddress,
+    data: transactionData,
+    gasLimit: transactionOptions.gasLimit,
+    gasPrice: transactionOptions.gasPrice,
+    privateKey: transactionOptions.privateKey
+  });
+}
+
+export async function hasExitQueue (token: string): Promise<boolean> {
+  const vaultId = token === Constants.CURRENCY_MAP.ETH ? 1 : 2;
+  return this.plasmaContract.methods.hasExitQueue(vaultId, token).call();
+}
+
+export interface IAddExitQueue {
+  token: string;
+  transactionOptions: Interfaces.ITransactionOptions;
+}
+
+export async function addExitQueue ({
+  token,
+  transactionOptions
+}: IAddExitQueue): Promise<Interfaces.ITransactionReceipt> {
+  const vaultId = token === Constants.CURRENCY_MAP.ETH ? 1 : 2;
+
+  const transactionData = ContractsModule.getTxData(
+    this.plasmaContract,
+    'addExitQueue',
+    vaultId,
+    token
+  );
+
+  return TransactionsModule.sendTransaction.call(this, {
+    from: transactionOptions.from,
+    to: this.plasmaContractAddress,
+    data: transactionData,
+    gasLimit: transactionOptions.gasLimit,
+    gasPrice: transactionOptions.gasPrice,
+    privateKey: transactionOptions.privateKey
+  });
 }

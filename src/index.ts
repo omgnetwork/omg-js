@@ -122,7 +122,7 @@ class OmgJS {
   public async deposit ({
     amount,
     currency,
-    transactionOptions,
+    transactionOptions
   }: DepositModule.IDeposit): Promise<ITransactionReceipt> {
     Joi.assert({ amount, currency, transactionOptions }, Validators.depositSchema);
     return DepositModule.deposit.call(this, {
@@ -218,9 +218,9 @@ class OmgJS {
     exitId,
     maxExitsToProcess,
     transactionOptions
-  }: StandardExitModule.IProcessExits): Promise<ITransactionReceipt> {
+  }: ExitQueueModule.IProcessExits): Promise<ITransactionReceipt> {
     Joi.assert({ token, exitId, maxExitsToProcess, transactionOptions }, Validators.processExitsSchema);
-    return StandardExitModule.processExits.call(this, {
+    return ExitQueueModule.processExits.call(this, {
       token,
       exitId,
       maxExitsToProcess,
@@ -228,6 +228,26 @@ class OmgJS {
     });
   }
 
+  public async hasExitQueue (token: string): Promise<boolean> {
+    Joi.assert(token, Validators.hasExitQueueSchema);
+    return ExitQueueModule.hasExitQueue.call(this, token);
+  } 
+
+  public async addExitQueue ({
+    token,
+    transactionOptions
+  }: ExitQueueModule.IAddExitQueue): Promise<ITransactionReceipt> {
+    Joi.assert({ token, transactionOptions }, Validators.addExitQueueSchema);
+    return ExitQueueModule.addExitQueue.call(this, {
+      token,
+      transactionOptions
+    });
+  }
+
+  public async startInFlightExit (args: InflightExitModule.IStartInflightExit): Promise<ITransactionReceipt> {
+    Joi.assert(args, Validators.startInFlightExitSchema);
+    return InflightExitModule.startInflightExit.call(this, args);
+  }
 }
 
 export default OmgJS;
