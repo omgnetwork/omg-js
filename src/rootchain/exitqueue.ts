@@ -2,7 +2,7 @@ import web3Utils from 'web3-utils';
 import BN from 'bn.js';
 
 import * as Constants from '@lib/common/constants';
-import * as Contracts from '@lib/contracts';
+import * as ContractsModule from '@lib/contracts';
 
 export interface IGetExitTime {
   exitRequestBlockNumber: string,
@@ -81,7 +81,7 @@ export async function getExitQueue (token: string): Promise<IExitQueue[]> {
     { t: 'address', v: token }
   );
   const address: string = await this.plasmaContract.methods.exitsQueues(hashed).call();
-  const { contract } = await Contracts.getPriorityQueue(address);
+  const { contract } = await ContractsModule.getPriorityQueue.call(this, address);
   const rawExitQueue: Array<string> = await contract.methods.heapList().call();
 
   if (rawExitQueue && rawExitQueue.length) {

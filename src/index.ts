@@ -3,7 +3,8 @@ import { Contract } from 'web3-eth-contract';
 import { HttpProvider } from 'web3-providers-http';
 import * as Joi from '@hapi/joi';
 
-// import * as WatcherModule from '@lib/watcher';
+import * as StandardExitModule from '@lib/rootchain/standardexit';
+import * as InflightExitModule from '@lib/rootchain/inflightexit';
 import * as ExitQueueModule from '@lib/rootchain/exitqueue';
 import * as DepositModule from '@lib/rootchain/deposit';
 import * as ContractsModule from '@lib/contracts';
@@ -41,8 +42,15 @@ class OmgJS {
     Joi.assert({ plasmaContractAddress, watcherUrl, web3Provider }, Validators.constructorSchema);
     this.plasmaContractAddress = plasmaContractAddress;
     this.watcherUrl = watcherUrl;
-    this.web3Instance = new (Web3 as any)(web3Provider, null, { transactionConfirmationBlocks: 1 });
-    this.plasmaContract = new this.web3Instance.eth.Contract((PlasmaFrameworkContract as any).abi, plasmaContractAddress);
+    this.web3Instance = new (Web3 as any)(
+      web3Provider,
+      null,
+      { transactionConfirmationBlocks: 1 }
+    );
+    this.plasmaContract = new this.web3Instance.eth.Contract(
+      (PlasmaFrameworkContract as any).abi,
+      plasmaContractAddress
+    );
   }
 
   private async getErc20Vault (): Promise<IVault> {
@@ -91,20 +99,20 @@ class OmgJS {
     currency
   }: DepositModule.IEncodeDeposit): string {
     Joi.assert({ owner, amount, currency }, Validators.encodeDepositSchema);
-    return DepositModule.encodeDeposit({
+    return DepositModule.encodeDeposit.call(this, {
       owner,
       amount,
       currency
     });
   }
 
-  public async approveDeposit ({
+  public async approveERC20Deposit ({
     erc20Address,
     amount,
     transactionOptions
   }: DepositModule.IApproveDeposit): Promise<ITransactionReceipt> {
     Joi.assert({ erc20Address, amount, transactionOptions }, Validators.approveTokenSchema);
-    return DepositModule.approveDeposit.call(this, {
+    return DepositModule.approveERC20Deposit.call(this, {
       erc20Address,
       amount,
       transactionOptions
@@ -117,9 +125,55 @@ class OmgJS {
     transactionOptions,
   }: DepositModule.IDeposit): Promise<ITransactionReceipt> {
     Joi.assert({ amount, currency, transactionOptions }, Validators.depositSchema);
-    return await DepositModule.deposit.call(this, {
+    return DepositModule.deposit.call(this, {
       amount,
       currency,
+      transactionOptions
+    });
+  }
+
+  public async getStandardExitId ({
+    txBytes,
+    utxoPos,
+    isDeposit
+  }: StandardExitModule.IGetStandardExitId): Promise<string> {
+    Joi.assert({ txBytes, utxoPos, isDeposit }, Validators.getStandardExitIdSchema);
+    return StandardExitModule.getStandardExitId.call(this, {
+      txBytes,
+      utxoPos,
+      isDeposit
+    });
+  }
+
+  public async getInFlightExitId ({
+    txBytes
+  }: InflightExitModule.IGetInflightExitId): Promise<string> {
+    Joi.assert({ txBytes }, Validators.getInFlightExitIdSchema);
+    return InflightExitModule.getInFlightExitId.call(this, {
+      txBytes
+    });
+  }
+
+  public async getInFlightExitData ({
+    exitIds
+  }: InflightExitModule.IGetInflightExitData): Promise<InflightExitModule.IInflightExitData> {
+    Joi.assert({ exitIds }, Validators.getInFlightExitDataSchema);
+    return InflightExitModule.getInFlightExitData.call(this, {
+      exitIds
+    });
+  }
+
+  public async startStandardExit ({
+    utxoPos,
+    outputTx,
+    inclusionProof,
+    transactionOptions
+  }: StandardExitModule.IStartStandardExit): Promise<ITransactionReceipt> {
+    Joi.assert({ utxoPos, outputTx, inclusionProof, transactionOptions }, Validators.startStandardExitSchema);
+    return StandardExitModule.startStandardExit.call(this, {
+      utxoPos,
+      outputTx,
+      inclusionProof,
       transactionOptions
     });
   }

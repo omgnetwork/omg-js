@@ -12,15 +12,15 @@ export interface IApproveDeposit {
   transactionOptions: Interfaces.ITransactionOptions
 }
 
-export async function approveDeposit ({
+export async function approveERC20Deposit ({
   erc20Address,
   amount,
   transactionOptions
 }: IApproveDeposit): Promise<Interfaces.ITransactionReceipt> {
   const { address: spender } = await this.getErc20Vault();
-  const { contract } = await ContractsModule.getErc20(erc20Address);
+  const { contract } = await ContractsModule.getErc20.call(this, erc20Address);
 
-  return TransactionsModule.sendTransaction({
+  return TransactionsModule.sendTransaction.call(this, {
     from: transactionOptions.from,
     to: erc20Address,
     data: contract.methods.approve(spender, amount.toString()).encodeABI(),
@@ -54,8 +54,11 @@ export async function deposit ({
     currency
   });
 
-  console.log('depositTx: ', depositTx);
-  const transactionData = ContractsModule.getTxData(contract, 'deposit', depositTx);
+  const transactionData = ContractsModule.getTxData(
+    contract,
+    'deposit',
+    depositTx
+  );
 
   return TransactionsModule.sendTransaction.call(this, {
     from: transactionOptions.from,

@@ -27,8 +27,29 @@ export const depositSchema: Joi.Schema = Joi.object({
   transactionOptions: helpers.validateTransactionOptions.required()
 });
 
-export const encodeDepositSchema = Joi.object({
+export const encodeDepositSchema: Joi.Schema = Joi.object({
   owner: helpers.validateAddress.required(),
   amount: helpers.validateAmount.required(),
   currency: helpers.validateAddress.required()
+});
+
+export const getStandardExitIdSchema: Joi.Schema = Joi.object({
+  txBytes: Joi.string().required(),
+  utxoPos: helpers.validateAmount.required(),
+  isDeposit: Joi.boolean().required()
+});
+
+export const getInFlightExitIdSchema: Joi.Schema = Joi.object({
+  txBytes: Joi.string().required()
+});
+
+export const getInFlightExitDataSchema: Joi.Schema = Joi.object({
+  exitIds: Joi.array().items(Joi.string().required())
+});
+
+export const startStandardExitSchema: Joi.Schema = Joi.object({
+  utxoPos: helpers.validateAmount.required(),
+  outputTx: Joi.string().required(),
+  inclusionProof: Joi.string().required(),
+  transactionOptions: helpers.validateTransactionOptions.required()
 });

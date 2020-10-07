@@ -66,6 +66,6 @@ export async function getErc20 (address: string): Promise<IVault> {
   return { contract, address };
 }
 
-export function getTxData (contract: Contract, method: string, ...args: any): any {
+export function getTxData (contract: Contract, method: string, ...args: any): string {
   return contract.methods[method](...args).encodeABI();
 }

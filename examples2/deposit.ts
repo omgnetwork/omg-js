@@ -11,7 +11,7 @@ const omgjs = new OmgJs({
   web3Provider
 });
 
-async function depositEth () {
+async function depositEth (): Promise<void> {
   const receipt = await omgjs.deposit({
     amount: '1',
     transactionOptions: {
@@ -20,7 +20,7 @@ async function depositEth () {
     }
   });
 
-  console.log(receipt.transactionHash);
+  console.log('deposit success: ', receipt.transactionHash);
 }
 
 depositEth();
