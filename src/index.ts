@@ -177,6 +177,57 @@ class OmgJS {
       transactionOptions
     });
   }
+
+  public async getDepositExitData ({
+    transactionHash
+  }: StandardExitModule.IGetDepositExitData): Promise<StandardExitModule.IExitData> {
+    Joi.assert({ transactionHash }, Validators.getExitDataSchema);
+    return StandardExitModule.getDepositExitData.call(this, {
+      transactionHash
+    });
+  }
+
+  public async challengeStandardExit ({
+    standardExitId,
+    exitingTx,
+    challengeTx,
+    inputIndex,
+    challengeTxSig,
+    transactionOptions
+  }: StandardExitModule.IChallengeStandardExit): Promise<ITransactionReceipt> {
+    Joi.assert({
+      standardExitId,
+      exitingTx,
+      challengeTx,
+      inputIndex,
+      challengeTxSig,
+      transactionOptions
+    }, Validators.challengeStandardExitSchema);
+    return StandardExitModule.challengeStandardExit.call(this, {
+      standardExitId,
+      exitingTx,
+      challengeTx,
+      inputIndex,
+      challengeTxSig,
+      transactionOptions
+    });
+  }
+
+  public async processExits ({
+    token,
+    exitId,
+    maxExitsToProcess,
+    transactionOptions
+  }: StandardExitModule.IProcessExits): Promise<ITransactionReceipt> {
+    Joi.assert({ token, exitId, maxExitsToProcess, transactionOptions }, Validators.processExitsSchema);
+    return StandardExitModule.processExits.call(this, {
+      token,
+      exitId,
+      maxExitsToProcess,
+      transactionOptions
+    });
+  }
+
 }
 
 export default OmgJS;

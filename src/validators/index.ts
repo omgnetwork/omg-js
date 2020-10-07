@@ -53,3 +53,26 @@ export const startStandardExitSchema: Joi.Schema = Joi.object({
   inclusionProof: Joi.string().required(),
   transactionOptions: helpers.validateTransactionOptions.required()
 });
+
+export const getExitDataSchema: Joi.Schema = Joi.object({
+  transactionHash: Joi.string().required()
+});
+
+export const challengeStandardExitSchema: Joi.Schema = Joi.object({
+  standardExitId: helpers.validateAmount.required(),
+  exitingTx: Joi.string().required(),
+  challengeTx: Joi.string().required(),
+  inputIndex: Joi.number().integer(),
+  challengeTxSig: Joi.string().required(),
+  transactionOptions: helpers.validateTransactionOptions.required()
+});
+
+export const processExitsSchema: Joi.Schema = Joi.object({
+  token: helpers.validateAddress.required(),
+  exitId: [
+    Joi.number().equal(0).required(),
+    Joi.string().required()
+  ],
+  maxExitsToProcess: Joi.number().integer(),
+  transactionOptions: helpers.validateTransactionOptions.required()
+});

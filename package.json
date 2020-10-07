@@ -85,8 +85,10 @@
   },
   "dependencies": {
     "@hapi/joi": "^17.1.1",
+    "abi-decoder": "^2.3.0",
     "bn.js": "^5.1.3",
     "buffer": "^5.6.0",
+    "ethereumjs-util": "^7.0.5",
     "human-standard-token-abi": "^2.0.0",
     "rlp": "^2.2.6",
     "web3": "^1.3.0",
