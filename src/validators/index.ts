@@ -94,5 +94,17 @@ export const startInFlightExitSchema: Joi.Schema = Joi.object({
   inFlightTxSigs: Joi.array()
     .items(Joi.string())
     .required(),
-    transactionOptions: helpers.validateTransactionOptions.required()
+  transactionOptions: helpers.validateTransactionOptions.required()
+});
+
+export const piggybackInFlightExitOnOutputSchema: Joi.Schema = Joi.object({
+  inFlightTx: Joi.string().required(),
+  outputIndex: Joi.number().integer().required(),
+  transactionOptions: helpers.validateTransactionOptions.required()
+});
+
+export const piggybackInFlightExitOnInputSchema: Joi.Schema = Joi.object({
+  inFlightTx: Joi.string().required(),
+  inputIndex: Joi.number().integer().required(),
+  transactionOptions: helpers.validateTransactionOptions.required()
 });

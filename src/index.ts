@@ -244,9 +244,64 @@ class OmgJS {
     });
   }
 
-  public async startInFlightExit (args: InflightExitModule.IStartInflightExit): Promise<ITransactionReceipt> {
-    Joi.assert(args, Validators.startInFlightExitSchema);
-    return InflightExitModule.startInflightExit.call(this, args);
+  public async startInFlightExit ({
+    inFlightTx,
+    inputTxs,
+    inputUtxosPos,
+    inputTxsInclusionProofs,
+    inFlightTxSigs,
+    transactionOptions
+  }: InflightExitModule.IStartInflightExit): Promise<ITransactionReceipt> {
+    Joi.assert({
+      inFlightTx,
+      inputTxs,
+      inputUtxosPos,
+      inputTxsInclusionProofs,
+      inFlightTxSigs,
+      transactionOptions
+    }, Validators.startInFlightExitSchema);
+    return InflightExitModule.startInflightExit.call(this, {
+      inFlightTx,
+      inputTxs,
+      inputUtxosPos,
+      inputTxsInclusionProofs,
+      inFlightTxSigs,
+      transactionOptions
+    });
+  }
+
+  public async piggybackInFlightExitOnOutput ({
+    inFlightTx,
+    outputIndex,
+    transactionOptions
+  }: InflightExitModule.IPiggybackInflightExitOnOutput): Promise<ITransactionReceipt> {
+    Joi.assert({
+      inFlightTx,
+      outputIndex,
+      transactionOptions
+    }, Validators.piggybackInFlightExitOnOutputSchema);
+    return InflightExitModule.piggybackInFlightExitOnOutput.call(this, {
+      inFlightTx,
+      outputIndex,
+      transactionOptions
+    });
+  }
+
+  public async piggybackInFlightExitOnInput ({
+    inFlightTx,
+    inputIndex,
+    transactionOptions
+  }: InflightExitModule.IPiggybackInflightExitOnInput): Promise<ITransactionReceipt> {
+    Joi.assert({
+      inFlightTx,
+      inputIndex,
+      transactionOptions
+    }, Validators.piggybackInFlightExitOnInputSchema);
+    return InflightExitModule.piggybackInFlightExitOnInput.call(this, {
+      inFlightTx,
+      inputIndex,
+      transactionOptions
+    });
   }
 }
 

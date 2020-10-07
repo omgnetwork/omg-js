@@ -71,3 +71,69 @@ export async function startInflightExit ({
     privateKey: transactionOptions.privateKey
   });
 };
+
+export interface IPiggybackInflightExitOnOutput {
+  inFlightTx: string;
+  outputIndex: number;
+  transactionOptions: Interfaces.ITransactionOptions;
+};
+
+export async function piggybackInFlightExitOnOutput ({
+  inFlightTx,
+  outputIndex,
+  transactionOptions
+}: IPiggybackInflightExitOnOutput): Promise<Interfaces.ITransactionReceipt> {
+  const { address, contract, bonds } = await this.getPaymentExitGame();
+
+  const transactionData = ContractsModule.getTxData(
+    contract,
+    'piggybackInFlightExitOnOutput',
+    [
+      inFlightTx,
+      outputIndex
+    ]
+  );
+
+  return TransactionsModule.sendTransaction.call(this, {
+    from: transactionOptions.from,
+    to: address,
+    data: transactionData,
+    value: bonds.piggyback,
+    gasLimit: transactionOptions.gasLimit,
+    gasPrice: transactionOptions.gasPrice,
+    privateKey: transactionOptions.privateKey
+  });
+}
+
+export interface IPiggybackInflightExitOnInput {
+  inFlightTx: string;
+  inputIndex: number;
+  transactionOptions: Interfaces.ITransactionOptions;
+};
+
+export async function piggybackInFlightExitOnInput ({
+  inFlightTx,
+  inputIndex,
+  transactionOptions
+}: IPiggybackInflightExitOnInput): Promise<Interfaces.ITransactionReceipt> {
+  const { address, contract, bonds } = await this.getPaymentExitGame();
+
+  const transactionData = ContractsModule.getTxData(
+    contract,
+    'piggybackInFlightExitOnInput',
+    [
+      inFlightTx,
+      inputIndex
+    ]
+  );
+
+  return TransactionsModule.sendTransaction.call(this, {
+    from: transactionOptions.from,
+    to: address,
+    data: transactionData,
+    value: bonds.piggyback,
+    gasLimit: transactionOptions.gasLimit,
+    gasPrice: transactionOptions.gasPrice,
+    privateKey: transactionOptions.privateKey
+  });
+}
