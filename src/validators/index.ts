@@ -5,6 +5,7 @@ import * as helpers from '@lib/validators/helpers';
 export const constructorSchema: Joi.Schema = Joi.object({
   plasmaContractAddress: helpers.validateAddress.required(),
   watcherUrl: Joi.string().required(),
+  watcherProxyUrl: Joi.string(),
   web3Provider: Joi.any().required()
 });
 
@@ -153,4 +154,89 @@ export const challengeInFlightExitOutputSpentSchema: Joi.Schema = Joi.object({
 export const deleteNonPiggybackedInFlightExitSchema: Joi.Schema = Joi.object({
   exitId: Joi.string().required(),
   txOptions: helpers.validateTxOptions.required()
+});
+
+export const getUtxosSchema: Joi.Schema = helpers.validateAddress.required();
+
+export const getBalanceSchema: Joi.Schema = helpers.validateAddress.required();
+
+export const getTransactionsSchema: Joi.Schema = Joi.object({
+  address: helpers.validateAddress,
+  metadata: helpers.validateMetadata,
+  blknum: helpers.validateAmount,
+  limit: Joi.number().integer(),
+  page: Joi.number().integer()
+}).unknown();
+
+export const getTransactionSchema = Joi.object({
+  id: Joi.string().required()
+});
+
+export const getDepositsSchema = Joi.object({
+  address: helpers.validateAddress,
+  limit: Joi.number().integer(),
+  page: Joi.number().integer()
+});
+
+export const getUtxoExitDataSchema = Joi.object({
+  blknum: helpers.validateAmount,
+  txindex: Joi.number().integer(),
+  oindex: Joi.number().integer()
+}).unknown();
+
+export const getChallengeDataSchema = Joi.object({
+  utxoPos: helpers.validateAmount.required()
+});
+
+export const submitTransactionSchema = Joi.object({
+  transaction: Joi.string().required()
+});
+
+export const createTransactionSchema = Joi.object({
+  owner: helpers.validateAddress.required(),
+  payments: helpers.validatePayments.required(),
+  fee: helpers.validateFeeCurrency.required(),
+  metadata: helpers.validateMetadata
+});
+
+export const signTypedDataSchema = Joi.object({
+  txData: Joi.object().required(),
+  privateKeys: Joi.array().items(Joi.string()).required()
+});
+
+export const submitTypedSchema = Joi.object().required()
+
+export const signTransactionSchema = Joi.object({
+  typedData: Joi.object().required(),
+  privateKeys: Joi.array().items(Joi.string()).required()
+});
+
+export const buildSignedTransactionSchema = Joi.object({
+  typedData: Joi.object().required(),
+  signatures: Joi.array().items(Joi.string()).required()
+});
+
+export const sendTransactionSchema = Joi.object({
+  fromAddress: helpers.validateAddress.required(),
+  fromUtxos: Joi.array().items(Joi.object()).required(),
+  fromPrivateKeys: Joi.array().items(Joi.string()).required(),
+  payments: helpers.validatePayments.required(),
+  fee: helpers.validateFee.required(),
+  metadata: helpers.validateMetadata
+});
+
+export const inFlightExitGetOutputChallengeDataSchema = Joi.object({
+  txbytes: Joi.string().required(),
+  outputIndex: Joi.number().integer().required()
+});
+
+export const inFlightExitGetInputChallengeDataSchema = Joi.object({
+  txbytes: Joi.string().required(),
+  inputIndex: Joi.number().integer().required()
+});
+
+export const mergeUtxosSchema = Joi.object({
+  utxos: Joi.array().max(4).min(2).items(Joi.object()).required(),
+  privateKey: Joi.string().required(),
+  metadata: helpers.validateMetadata
 });
