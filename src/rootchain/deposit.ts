@@ -2,7 +2,7 @@ import * as ContractsModule from '@lib/contracts';
 import * as RootchainTransactionsModule from '@lib/rootchain/transaction';
 import * as Constants from '@lib/common/constants';
 import * as Interfaces from '@lib/common/interfaces';
-import * as TransactionsModule from '@lib/transaction';
+import * as Encoders from '@lib/transaction/encoders';
 
 export interface IApproveDeposit {
   erc20Address: string;
@@ -46,7 +46,7 @@ export async function deposit ({
     ? await this.getEthVault()
     : await this.getErc20Vault();
 
-  const depositTx = TransactionsModule.encodeDeposit({
+  const depositTx = Encoders.encodeDeposit({
     owner: txOptions.from,
     amount: _amount,
     currency

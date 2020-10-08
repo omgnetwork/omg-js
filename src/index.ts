@@ -18,7 +18,9 @@ import * as WatcherUtxoModule from '@lib/watcher/utxo';
 import * as WatcherStatusModule from '@lib/watcher/status';
 import * as WatcherInflightExitModule from '@lib/watcher/inflightexit';
 
-import * as TransactionModule from '@lib/transaction';
+import * as EncoderModule from '@lib/transaction/encoders';
+import * as TypedDataModule from '@lib/transaction/typedData';
+import * as StructHashModule from '@lib/transaction/structHash';
 
 import * as Constants from '@lib/common/constants';
 import * as Interfaces from '@lib/common/interfaces';
@@ -115,9 +117,9 @@ class OmgJS {
     owner,
     amount,
     currency
-  }: TransactionModule.IEncodeDeposit): string {
+  }: EncoderModule.IEncodeDeposit): string {
     Joi.assert({ owner, amount, currency }, Validators.encodeDepositSchema);
-    return TransactionModule.encodeDeposit.call(this, {
+    return EncoderModule.encodeDeposit.call(this, {
       owner,
       amount,
       currency
@@ -126,7 +128,7 @@ class OmgJS {
 
   public decodeDeposit (encodedDeposit: string): Interfaces.IDepositTransaction {
     Joi.assert(encodedDeposit, Joi.string().required());
-    return TransactionModule.decodeDeposit.call(this, encodedDeposit);
+    return EncoderModule.decodeDeposit.call(this, encodedDeposit);
   }
 
   public encodeTransaction ({
@@ -137,7 +139,7 @@ class OmgJS {
     metadata,
     signatures,
     signed
-  }: TransactionModule.IEncodeTransaction): string {
+  }: EncoderModule.IEncodeTransaction): string {
     Joi.assert({
       txType,
       inputs,
@@ -147,7 +149,7 @@ class OmgJS {
       signatures,
       signed
     }, Validators.encodeTransactionSchema);
-    return TransactionModule.encodeTransaction.call(this, {
+    return EncoderModule.encodeTransaction.call(this, {
       txType,
       inputs,
       outputs,
@@ -160,27 +162,27 @@ class OmgJS {
 
   public decodeTransaction (encodedTransaction: string): Interfaces.ITransactionBody {
     Joi.assert(encodedTransaction, Joi.string().required());
-    return TransactionModule.decodeTransaction.call(this, encodedTransaction);
+    return EncoderModule.decodeTransaction.call(this, encodedTransaction);
   }
 
   public encodeUtxoPos (utxo: Interfaces.IUTXO): BN {
     Joi.assert({ utxo }, Validators.encodeUtxoPosSchema);
-    return TransactionModule.encodeUtxoPos.call(this, utxo);
+    return EncoderModule.encodeUtxoPos.call(this, utxo);
   }
 
   public decodeUtxoPos (utxoPos: Interfaces.IComplexAmount): Partial<Interfaces.IUTXO> {
     Joi.assert({ utxoPos }, Validators.decodeUtxoPosSchema);
-    return TransactionModule.decodeUtxoPos.call(this, utxoPos);
+    return EncoderModule.decodeUtxoPos.call(this, utxoPos);
   }
 
   public encodeMetadata (metadata: string): string {
     Joi.assert({ metadata }, Validators.encodeMetadataSchema);
-    return TransactionModule.encodeMetadata.call(this, metadata);
+    return EncoderModule.encodeMetadata.call(this, metadata);
   }
 
   public decodeMetadata (metadata: string): string {
     Joi.assert({ metadata }, Validators.decodeMetadataSchema);
-    return TransactionModule.decodeMetadata.call(this, metadata);
+    return EncoderModule.decodeMetadata.call(this, metadata);
   }
 
   public async approveERC20Deposit ({
@@ -676,6 +678,16 @@ class OmgJS {
       expectedAmount,
       currency
     });
+  }
+
+  public hashTypedData (typedData: Interfaces.ITypedData): Buffer {
+    Joi.assert({ typedData }, Validators.hashTypedDataSchema);
+    return StructHashModule.hashTypedData.call(this, typedData);
+  }
+
+  public getTypedData (transactionBody: Interfaces.ITransactionBody): Interfaces.ITypedData {
+    Joi.assert({ transactionBody }, Validators.getTypedDataSchema);
+    return TypedDataModule.getTypedData.call(this, transactionBody);
   }
 }
 

@@ -47,6 +47,7 @@ export interface IUTXO {
 export interface IOutput {
   outputType: number;
   outputGuard: string;
+  owner?: string;
   currency: string;
   amount: IComplexAmount;
 };

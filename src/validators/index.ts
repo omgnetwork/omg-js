@@ -288,3 +288,11 @@ export const decodeMetadataSchema: Joi.Schema = Joi.object({
 export const encodeMetadataSchema: Joi.Schema = Joi.object({
   metadata: helpers.validateMetadata.required()
 });
+
+export const hashTypedDataSchema = Joi.object({
+  typedData: Joi.object().required()
+});
+
+export const getTypedDataSchema = Joi.object({
+  transactionBody: Joi.object().required()
+});
