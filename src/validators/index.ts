@@ -18,13 +18,13 @@ export const getExitQueueSchema: Joi.Schema = helpers.validateAddress.required()
 export const approveTokenSchema: Joi.Schema = Joi.object({
   erc20Address: helpers.validateAddress.required(),
   amount: helpers.validateAmount.required(),
-  transactionOptions: helpers.validateTransactionOptions.required()
+  txOptions: helpers.validateTxOptions.required()
 });
 
 export const depositSchema: Joi.Schema = Joi.object({
   amount: helpers.validateAmount.required(),
   currency: helpers.validateAddress,
-  transactionOptions: helpers.validateTransactionOptions.required()
+  txOptions: helpers.validateTxOptions.required()
 });
 
 export const encodeDepositSchema: Joi.Schema = Joi.object({
@@ -51,7 +51,7 @@ export const startStandardExitSchema: Joi.Schema = Joi.object({
   utxoPos: helpers.validateAmount.required(),
   outputTx: Joi.string().required(),
   inclusionProof: Joi.string().required(),
-  transactionOptions: helpers.validateTransactionOptions.required()
+  txOptions: helpers.validateTxOptions.required()
 });
 
 export const getExitDataSchema: Joi.Schema = Joi.object({
@@ -64,7 +64,7 @@ export const challengeStandardExitSchema: Joi.Schema = Joi.object({
   challengeTx: Joi.string().required(),
   inputIndex: Joi.number().integer(),
   challengeTxSig: Joi.string().required(),
-  transactionOptions: helpers.validateTransactionOptions.required()
+  txOptions: helpers.validateTxOptions.required()
 });
 
 export const processExitsSchema: Joi.Schema = Joi.object({
@@ -74,14 +74,14 @@ export const processExitsSchema: Joi.Schema = Joi.object({
     Joi.string().required()
   ],
   maxExitsToProcess: Joi.number().integer(),
-  transactionOptions: helpers.validateTransactionOptions.required()
+  txOptions: helpers.validateTxOptions.required()
 });
 
 export const hasExitQueueSchema: Joi.Schema = helpers.validateAddress.required();
 
 export const addExitQueueSchema: Joi.Schema = Joi.object({
   token: helpers.validateAddress.required(),
-  transactionOptions: helpers.validateTransactionOptions.required()
+  txOptions: helpers.validateTxOptions.required()
 });
 
 export const startInFlightExitSchema: Joi.Schema = Joi.object({
@@ -94,17 +94,63 @@ export const startInFlightExitSchema: Joi.Schema = Joi.object({
   inFlightTxSigs: Joi.array()
     .items(Joi.string())
     .required(),
-  transactionOptions: helpers.validateTransactionOptions.required()
+  txOptions: helpers.validateTxOptions.required()
 });
 
 export const piggybackInFlightExitOnOutputSchema: Joi.Schema = Joi.object({
   inFlightTx: Joi.string().required(),
   outputIndex: Joi.number().integer().required(),
-  transactionOptions: helpers.validateTransactionOptions.required()
+  txOptions: helpers.validateTxOptions.required()
 });
 
 export const piggybackInFlightExitOnInputSchema: Joi.Schema = Joi.object({
   inFlightTx: Joi.string().required(),
   inputIndex: Joi.number().integer().required(),
-  transactionOptions: helpers.validateTransactionOptions.required()
+  txOptions: helpers.validateTxOptions.required()
+});
+
+export const challengeInFlightExitNotCanonicalSchema: Joi.Schema = Joi.object({
+  inputTx: Joi.string().required(),
+  inputUtxoPos: helpers.validateAmount.required(),
+  inFlightTx: Joi.string().required(),
+  inFlightTxInputIndex: Joi.number().integer().required(),
+  competingTx: Joi.string().required(),
+  competingTxInputIndex: Joi.number().integer().required(),
+  competingTxPos: [Joi.number().integer().required(), helpers.validateBn.required(), Joi.string().equal('0x')],
+  competingTxInclusionProof: Joi.string(),
+  competingTxWitness: Joi.string(),
+  txOptions: helpers.validateTxOptions.required()
+});
+
+export const respondToNonCanonicalChallengeSchema: Joi.Schema = Joi.object({
+  inFlightTx: Joi.string().required(),
+  inFlightTxPos: helpers.validateAmount.required(),
+  inFlightTxInclusionProof: Joi.string().required(),
+  txOptions: helpers.validateTxOptions.required()
+});
+
+export const challengeInFlightExitInputSpentSchema: Joi.Schema = Joi.object({
+  inFlightTx: Joi.string().required(),
+  inFlightTxInputIndex: Joi.number().integer().required(),
+  challengingTx: Joi.string().required(),
+  challengingTxInputIndex: Joi.number().integer().required(),
+  challengingTxWitness: Joi.string().required(),
+  inputTx: Joi.string().required(),
+  inputUtxoPos: helpers.validateAmount.required(),
+  txOptions: helpers.validateTxOptions.required()
+});
+
+export const challengeInFlightExitOutputSpentSchema: Joi.Schema = Joi.object({
+  inFlightTx: Joi.string().required(),
+  inFlightTxInclusionProof: Joi.string().required(),
+  inFlightTxOutputPos: helpers.validateAmount.required(),
+  challengingTx: Joi.string().required(),
+  challengingTxInputIndex: Joi.number().integer().required(),
+  challengingTxWitness: Joi.string().required(),
+  txOptions: helpers.validateTxOptions.required()
+});
+
+export const deleteNonPiggybackedInFlightExitSchema: Joi.Schema = Joi.object({
+  exitId: Joi.string().required(),
+  txOptions: helpers.validateTxOptions.required()
 });

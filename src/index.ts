@@ -109,26 +109,26 @@ class OmgJS {
   public async approveERC20Deposit ({
     erc20Address,
     amount,
-    transactionOptions
+    txOptions
   }: DepositModule.IApproveDeposit): Promise<ITransactionReceipt> {
-    Joi.assert({ erc20Address, amount, transactionOptions }, Validators.approveTokenSchema);
+    Joi.assert({ erc20Address, amount, txOptions }, Validators.approveTokenSchema);
     return DepositModule.approveERC20Deposit.call(this, {
       erc20Address,
       amount,
-      transactionOptions
+      txOptions
     });
   }
 
   public async deposit ({
     amount,
     currency,
-    transactionOptions
+    txOptions
   }: DepositModule.IDeposit): Promise<ITransactionReceipt> {
-    Joi.assert({ amount, currency, transactionOptions }, Validators.depositSchema);
+    Joi.assert({ amount, currency, txOptions }, Validators.depositSchema);
     return DepositModule.deposit.call(this, {
       amount,
       currency,
-      transactionOptions
+      txOptions
     });
   }
 
@@ -167,14 +167,14 @@ class OmgJS {
     utxoPos,
     outputTx,
     inclusionProof,
-    transactionOptions
+    txOptions
   }: StandardExitModule.IStartStandardExit): Promise<ITransactionReceipt> {
-    Joi.assert({ utxoPos, outputTx, inclusionProof, transactionOptions }, Validators.startStandardExitSchema);
+    Joi.assert({ utxoPos, outputTx, inclusionProof, txOptions }, Validators.startStandardExitSchema);
     return StandardExitModule.startStandardExit.call(this, {
       utxoPos,
       outputTx,
       inclusionProof,
-      transactionOptions
+      txOptions
     });
   }
 
@@ -193,7 +193,7 @@ class OmgJS {
     challengeTx,
     inputIndex,
     challengeTxSig,
-    transactionOptions
+    txOptions
   }: StandardExitModule.IChallengeStandardExit): Promise<ITransactionReceipt> {
     Joi.assert({
       standardExitId,
@@ -201,7 +201,7 @@ class OmgJS {
       challengeTx,
       inputIndex,
       challengeTxSig,
-      transactionOptions
+      txOptions
     }, Validators.challengeStandardExitSchema);
     return StandardExitModule.challengeStandardExit.call(this, {
       standardExitId,
@@ -209,7 +209,7 @@ class OmgJS {
       challengeTx,
       inputIndex,
       challengeTxSig,
-      transactionOptions
+      txOptions
     });
   }
 
@@ -217,14 +217,14 @@ class OmgJS {
     token,
     exitId,
     maxExitsToProcess,
-    transactionOptions
+    txOptions
   }: ExitQueueModule.IProcessExits): Promise<ITransactionReceipt> {
-    Joi.assert({ token, exitId, maxExitsToProcess, transactionOptions }, Validators.processExitsSchema);
+    Joi.assert({ token, exitId, maxExitsToProcess, txOptions }, Validators.processExitsSchema);
     return ExitQueueModule.processExits.call(this, {
       token,
       exitId,
       maxExitsToProcess,
-      transactionOptions
+      txOptions
     });
   }
 
@@ -235,12 +235,12 @@ class OmgJS {
 
   public async addExitQueue ({
     token,
-    transactionOptions
+    txOptions
   }: ExitQueueModule.IAddExitQueue): Promise<ITransactionReceipt> {
-    Joi.assert({ token, transactionOptions }, Validators.addExitQueueSchema);
+    Joi.assert({ token, txOptions }, Validators.addExitQueueSchema);
     return ExitQueueModule.addExitQueue.call(this, {
       token,
-      transactionOptions
+      txOptions
     });
   }
 
@@ -250,7 +250,7 @@ class OmgJS {
     inputUtxosPos,
     inputTxsInclusionProofs,
     inFlightTxSigs,
-    transactionOptions
+    txOptions
   }: InflightExitModule.IStartInflightExit): Promise<ITransactionReceipt> {
     Joi.assert({
       inFlightTx,
@@ -258,7 +258,7 @@ class OmgJS {
       inputUtxosPos,
       inputTxsInclusionProofs,
       inFlightTxSigs,
-      transactionOptions
+      txOptions
     }, Validators.startInFlightExitSchema);
     return InflightExitModule.startInflightExit.call(this, {
       inFlightTx,
@@ -266,41 +266,174 @@ class OmgJS {
       inputUtxosPos,
       inputTxsInclusionProofs,
       inFlightTxSigs,
-      transactionOptions
+      txOptions
     });
   }
 
   public async piggybackInFlightExitOnOutput ({
     inFlightTx,
     outputIndex,
-    transactionOptions
+    txOptions
   }: InflightExitModule.IPiggybackInflightExitOnOutput): Promise<ITransactionReceipt> {
     Joi.assert({
       inFlightTx,
       outputIndex,
-      transactionOptions
+      txOptions
     }, Validators.piggybackInFlightExitOnOutputSchema);
     return InflightExitModule.piggybackInFlightExitOnOutput.call(this, {
       inFlightTx,
       outputIndex,
-      transactionOptions
+      txOptions
     });
   }
 
   public async piggybackInFlightExitOnInput ({
     inFlightTx,
     inputIndex,
-    transactionOptions
+    txOptions
   }: InflightExitModule.IPiggybackInflightExitOnInput): Promise<ITransactionReceipt> {
     Joi.assert({
       inFlightTx,
       inputIndex,
-      transactionOptions
+      txOptions
     }, Validators.piggybackInFlightExitOnInputSchema);
     return InflightExitModule.piggybackInFlightExitOnInput.call(this, {
       inFlightTx,
       inputIndex,
-      transactionOptions
+      txOptions
+    });
+  }
+
+  public async challengeInFlightExitNotCanonical ({
+    inputTx,
+    inputUtxoPos,
+    inFlightTx,
+    inFlightTxInputIndex,
+    competingTx,
+    competingTxInputIndex,
+    competingTxPos,
+    competingTxInclusionProof,
+    competingTxWitness,
+    txOptions
+  }: InflightExitModule.IChallengeInflightExitNotCanonical): Promise<ITransactionReceipt> {
+    Joi.assert({
+      inputTx,
+      inputUtxoPos,
+      inFlightTx,
+      inFlightTxInputIndex,
+      competingTx,
+      competingTxInputIndex,
+      competingTxPos,
+      competingTxInclusionProof,
+      competingTxWitness,
+      txOptions
+    }, Validators.challengeInFlightExitNotCanonicalSchema);
+    return InflightExitModule.challengeInFlightExitNotCanonical.call(this, {
+      inputTx,
+      inputUtxoPos,
+      inFlightTx,
+      inFlightTxInputIndex,
+      competingTx,
+      competingTxInputIndex,
+      competingTxPos,
+      competingTxInclusionProof,
+      competingTxWitness,
+      txOptions
+    });
+  }
+
+  public async respondToNonCanonicalChallenge ({
+    inFlightTx,
+    inFlightTxPos,
+    inFlightTxInclusionProof,
+    txOptions
+  }: InflightExitModule.IRespondToNonCanonicalChallenge): Promise<ITransactionReceipt> {
+    Joi.assert({
+      inFlightTx,
+      inFlightTxPos,
+      inFlightTxInclusionProof,
+      txOptions
+    }, Validators.respondToNonCanonicalChallengeSchema);
+    return InflightExitModule.respondToNonCanonicalChallenge.call(this, {
+      inFlightTx,
+      inFlightTxPos,
+      inFlightTxInclusionProof,
+      txOptions
+    });
+  }
+
+  public async challengeInFlightExitInputSpent ({
+    inFlightTx,
+    inFlightTxInputIndex,
+    challengingTx,
+    challengingTxInputIndex,
+    challengingTxWitness,
+    inputTx,
+    inputUtxoPos,
+    txOptions
+  }: InflightExitModule.IChallengeInFlightExitInputSpent): Promise<ITransactionReceipt> {
+    Joi.assert({
+      inFlightTx,
+      inFlightTxInputIndex,
+      challengingTx,
+      challengingTxInputIndex,
+      challengingTxWitness,
+      inputTx,
+      inputUtxoPos,
+      txOptions
+    }, Validators.challengeInFlightExitInputSpentSchema);
+    return InflightExitModule.challengeInFlightExitInputSpent.call(this, {
+      inFlightTx,
+      inFlightTxInputIndex,
+      challengingTx,
+      challengingTxInputIndex,
+      challengingTxWitness,
+      inputTx,
+      inputUtxoPos,
+      txOptions
+    });
+  }
+
+  public async challengeInFlightExitOutputSpent ({
+    inFlightTx,
+    inFlightTxInclusionProof,
+    inFlightTxOutputPos,
+    challengingTx,
+    challengingTxInputIndex,
+    challengingTxWitness,
+    txOptions
+  }: InflightExitModule.IChallengeInFlightExitOutputSpent): Promise<ITransactionReceipt> {
+    Joi.assert({
+      inFlightTx,
+      inFlightTxInclusionProof,
+      inFlightTxOutputPos,
+      challengingTx,
+      challengingTxInputIndex,
+      challengingTxWitness,
+      txOptions
+    }, Validators.challengeInFlightExitOutputSpentSchema);
+    return InflightExitModule.challengeInFlightExitOutputSpent.call(this, {
+      inFlightTx,
+      inFlightTxInclusionProof,
+      inFlightTxOutputPos,
+      challengingTx,
+      challengingTxInputIndex,
+      challengingTxWitness,
+      txOptions
+    });
+  }
+
+  public async deleteNonPiggybackedInFlightExit ({
+    exitId,
+    txOptions
+  }: InflightExitModule.IDeleteNonPiggybackedInFlightExit): Promise<ITransactionReceipt> {
+    Joi.assert({
+      exitId,
+      txOptions
+    }, Validators.deleteNonPiggybackedInFlightExitSchema);
+    return InflightExitModule.deleteNonPiggybackedInFlightExit.call(this, {
+      exitId,
+      txOptions
     });
   }
 }

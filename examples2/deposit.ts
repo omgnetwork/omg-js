@@ -14,7 +14,7 @@ const omgjs = new OmgJs({
 async function depositEth (): Promise<void> {
   const receipt = await omgjs.deposit({
     amount: '1',
-    transactionOptions: {
+    txOptions: {
       from: process.env.ALICE_ETH_ADDRESS,
       privateKey: process.env.ALICE_ETH_ADDRESS_PRIVATE_KEY
     }

@@ -9,37 +9,37 @@ import * as Interfaces from '@lib/common/interfaces';
 export interface IApproveDeposit {
   erc20Address: string;
   amount: string | number | BN;
-  transactionOptions: Interfaces.ITransactionOptions
+  txOptions: Interfaces.ITransactionOptions
 }
 
 export async function approveERC20Deposit ({
   erc20Address,
   amount,
-  transactionOptions
+  txOptions
 }: IApproveDeposit): Promise<Interfaces.ITransactionReceipt> {
   const { address: spender } = await this.getErc20Vault();
   const { contract } = await ContractsModule.getErc20.call(this, erc20Address);
 
   return TransactionsModule.sendTransaction.call(this, {
-    from: transactionOptions.from,
+    from: txOptions.from,
     to: erc20Address,
     data: contract.methods.approve(spender, amount.toString()).encodeABI(),
-    gasLimit: transactionOptions.gasLimit,
-    gasPrice: transactionOptions.gasPrice,
-    privateKey: transactionOptions.privateKey
+    gasLimit: txOptions.gasLimit,
+    gasPrice: txOptions.gasPrice,
+    privateKey: txOptions.privateKey
   });
 }
 
 export interface IDeposit {
   amount: string | number | BN;
   currency?: string;
-  transactionOptions: Interfaces.ITransactionOptions;
+  txOptions: Interfaces.ITransactionOptions;
 }
 
 export async function deposit ({
   amount,
   currency = Constants.CURRENCY_MAP.ETH,
-  transactionOptions
+  txOptions
 }: IDeposit): Promise<Interfaces.ITransactionReceipt> {
   const _amount = amount.toString();
   const isEth = currency === Constants.CURRENCY_MAP.ETH;
@@ -49,7 +49,7 @@ export async function deposit ({
     : await this.getErc20Vault();
 
   const depositTx = encodeDeposit({
-    owner: transactionOptions.from,
+    owner: txOptions.from,
     amount: _amount,
     currency
   });
@@ -61,13 +61,13 @@ export async function deposit ({
   );
 
   return TransactionsModule.sendTransaction.call(this, {
-    from: transactionOptions.from,
+    from: txOptions.from,
     to: address,
     ...isEth ? { value: _amount } : {},
     data: transactionData,
-    gasLimit: transactionOptions.gasLimit,
-    gasPrice: transactionOptions.gasPrice,
-    privateKey: transactionOptions.privateKey
+    gasLimit: txOptions.gasLimit,
+    gasPrice: txOptions.gasPrice,
+    privateKey: txOptions.privateKey
   });
 }
 

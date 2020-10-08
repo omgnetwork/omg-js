@@ -120,14 +120,14 @@ export interface IProcessExits {
   token: string;
   exitId: number | string;
   maxExitsToProcess: number;
-  transactionOptions: Interfaces.ITransactionOptions
+  txOptions: Interfaces.ITransactionOptions
 }
 
 export async function processExits ({
   token,
   exitId,
   maxExitsToProcess,
-  transactionOptions
+  txOptions
 }: IProcessExits): Promise<Interfaces.ITransactionReceipt> {
   const vaultId = token === Constants.CURRENCY_MAP.ETH ? 1 : 2;
 
@@ -141,12 +141,12 @@ export async function processExits ({
   );
 
   return TransactionsModule.sendTransaction.call(this, {
-    from: transactionOptions.from,
+    from: txOptions.from,
     to: this.plasmaContractAddress,
     data: transactionData,
-    gasLimit: transactionOptions.gasLimit,
-    gasPrice: transactionOptions.gasPrice,
-    privateKey: transactionOptions.privateKey
+    gasLimit: txOptions.gasLimit,
+    gasPrice: txOptions.gasPrice,
+    privateKey: txOptions.privateKey
   });
 }
 
@@ -157,12 +157,12 @@ export async function hasExitQueue (token: string): Promise<boolean> {
 
 export interface IAddExitQueue {
   token: string;
-  transactionOptions: Interfaces.ITransactionOptions;
+  txOptions: Interfaces.ITransactionOptions;
 }
 
 export async function addExitQueue ({
   token,
-  transactionOptions
+  txOptions
 }: IAddExitQueue): Promise<Interfaces.ITransactionReceipt> {
   const vaultId = token === Constants.CURRENCY_MAP.ETH ? 1 : 2;
 
@@ -174,11 +174,11 @@ export async function addExitQueue ({
   );
 
   return TransactionsModule.sendTransaction.call(this, {
-    from: transactionOptions.from,
+    from: txOptions.from,
     to: this.plasmaContractAddress,
     data: transactionData,
-    gasLimit: transactionOptions.gasLimit,
-    gasPrice: transactionOptions.gasPrice,
-    privateKey: transactionOptions.privateKey
+    gasLimit: txOptions.gasLimit,
+    gasPrice: txOptions.gasPrice,
+    privateKey: txOptions.privateKey
   });
 }

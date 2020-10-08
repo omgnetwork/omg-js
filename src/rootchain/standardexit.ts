@@ -30,14 +30,14 @@ export interface IStartStandardExit {
   utxoPos: number | string | BN;
   outputTx: string;
   inclusionProof: string;
-  transactionOptions: Interfaces.ITransactionOptions
+  txOptions: Interfaces.ITransactionOptions
 };
 
 export async function startStandardExit ({
   utxoPos,
   outputTx,
   inclusionProof,
-  transactionOptions
+  txOptions
 }: IStartStandardExit): Promise<Interfaces.ITransactionReceipt> {
   const { contract, address, bonds } = await this.getPaymentExitGame();
 
@@ -52,13 +52,13 @@ export async function startStandardExit ({
   );
 
   return TransactionsModule.sendTransaction.call(this, {
-    from: transactionOptions.from,
+    from: txOptions.from,
     to: address,
     data: transactionData,
     value: bonds.standardExit,
-    gasLimit: transactionOptions.gasLimit,
-    gasPrice: transactionOptions.gasPrice,
-    privateKey: transactionOptions.privateKey
+    gasLimit: txOptions.gasLimit,
+    gasPrice: txOptions.gasPrice,
+    privateKey: txOptions.privateKey
   });
 }
 
@@ -103,7 +103,7 @@ export interface IChallengeStandardExit {
   challengeTx: string;
   inputIndex: number;
   challengeTxSig: string;
-  transactionOptions: Interfaces.ITransactionOptions
+  txOptions: Interfaces.ITransactionOptions
 }
 
 export async function challengeStandardExit ({
@@ -112,7 +112,7 @@ export async function challengeStandardExit ({
   challengeTx,
   inputIndex,
   challengeTxSig,
-  transactionOptions
+  txOptions
 }: IChallengeStandardExit): Promise<Interfaces.ITransactionReceipt> {
   // standardExitId is an extremely large number as it uses the entire int192.
   // It's too big to be represented as a Number, so we convert it to a hex string
@@ -128,16 +128,16 @@ export async function challengeStandardExit ({
       challengeTx,
       inputIndex,
       challengeTxSig,
-      keccak256(Buffer.from(transactionOptions.from))
+      keccak256(Buffer.from(txOptions.from))
     ]
   );
 
   return TransactionsModule.sendTransaction.call(this, {
-    from: transactionOptions.from,
+    from: txOptions.from,
     to: address,
     data: transactionData,
-    gasLimit: transactionOptions.gasLimit,
-    gasPrice: transactionOptions.gasPrice,
-    privateKey: transactionOptions.privateKey
+    gasLimit: txOptions.gasLimit,
+    gasPrice: txOptions.gasPrice,
+    privateKey: txOptions.privateKey
   });
 }

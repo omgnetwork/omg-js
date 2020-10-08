@@ -1,4 +1,6 @@
 import BN from 'bn.js';
+import { keccak256 } from 'ethereumjs-util';
+import { Buffer } from 'buffer';
 
 import * as ContractsModule from '@lib/contracts';
 import * as TransactionsModule from '@lib/rootchain/transaction';
@@ -35,7 +37,7 @@ export interface IStartInflightExit {
   inputUtxosPos: Array<number | string | BN>;
   inputTxsInclusionProofs: Array<string>;
   inFlightTxSigs: Array<string>;
-  transactionOptions: Interfaces.ITransactionOptions
+  txOptions: Interfaces.ITransactionOptions
 };
 
 export async function startInflightExit ({
@@ -44,7 +46,7 @@ export async function startInflightExit ({
   inputUtxosPos,
   inputTxsInclusionProofs,
   inFlightTxSigs,
-  transactionOptions
+  txOptions
 }: IStartInflightExit): Promise<Interfaces.ITransactionReceipt> {
   const _inputUtxoPos = inputUtxosPos.map(i => i.toString());
   const { address, contract, bonds } = await this.getPaymentExitGame();
@@ -62,26 +64,26 @@ export async function startInflightExit ({
   );
 
   return TransactionsModule.sendTransaction.call(this, {
-    from: transactionOptions.from,
+    from: txOptions.from,
     to: address,
     data: transactionData,
     value: bonds.inflightExit,
-    gasLimit: transactionOptions.gasLimit,
-    gasPrice: transactionOptions.gasPrice,
-    privateKey: transactionOptions.privateKey
+    gasLimit: txOptions.gasLimit,
+    gasPrice: txOptions.gasPrice,
+    privateKey: txOptions.privateKey
   });
 };
 
 export interface IPiggybackInflightExitOnOutput {
   inFlightTx: string;
   outputIndex: number;
-  transactionOptions: Interfaces.ITransactionOptions;
+  txOptions: Interfaces.ITransactionOptions;
 };
 
 export async function piggybackInFlightExitOnOutput ({
   inFlightTx,
   outputIndex,
-  transactionOptions
+  txOptions
 }: IPiggybackInflightExitOnOutput): Promise<Interfaces.ITransactionReceipt> {
   const { address, contract, bonds } = await this.getPaymentExitGame();
 
@@ -95,26 +97,26 @@ export async function piggybackInFlightExitOnOutput ({
   );
 
   return TransactionsModule.sendTransaction.call(this, {
-    from: transactionOptions.from,
+    from: txOptions.from,
     to: address,
     data: transactionData,
     value: bonds.piggyback,
-    gasLimit: transactionOptions.gasLimit,
-    gasPrice: transactionOptions.gasPrice,
-    privateKey: transactionOptions.privateKey
+    gasLimit: txOptions.gasLimit,
+    gasPrice: txOptions.gasPrice,
+    privateKey: txOptions.privateKey
   });
 }
 
 export interface IPiggybackInflightExitOnInput {
   inFlightTx: string;
   inputIndex: number;
-  transactionOptions: Interfaces.ITransactionOptions;
+  txOptions: Interfaces.ITransactionOptions;
 };
 
 export async function piggybackInFlightExitOnInput ({
   inFlightTx,
   inputIndex,
-  transactionOptions
+  txOptions
 }: IPiggybackInflightExitOnInput): Promise<Interfaces.ITransactionReceipt> {
   const { address, contract, bonds } = await this.getPaymentExitGame();
 
@@ -128,12 +130,217 @@ export async function piggybackInFlightExitOnInput ({
   );
 
   return TransactionsModule.sendTransaction.call(this, {
-    from: transactionOptions.from,
+    from: txOptions.from,
     to: address,
     data: transactionData,
     value: bonds.piggyback,
-    gasLimit: transactionOptions.gasLimit,
-    gasPrice: transactionOptions.gasPrice,
-    privateKey: transactionOptions.privateKey
+    gasLimit: txOptions.gasLimit,
+    gasPrice: txOptions.gasPrice,
+    privateKey: txOptions.privateKey
+  });
+}
+
+export interface IChallengeInflightExitNotCanonical {
+  inputTx: string;
+  inputUtxoPos: number | string | BN;
+  inFlightTx: string;
+  inFlightTxInputIndex: number;
+  competingTx: string;
+  competingTxInputIndex: number;
+  competingTxPos: '0x' | number | BN;
+  competingTxInclusionProof: string;
+  competingTxWitness: string;
+  txOptions: Interfaces.ITransactionOptions;
+};
+
+export async function challengeInFlightExitNotCanonical ({
+  inputTx,
+  inputUtxoPos,
+  inFlightTx,
+  inFlightTxInputIndex,
+  competingTx,
+  competingTxInputIndex,
+  competingTxPos,
+  competingTxInclusionProof,
+  competingTxWitness,
+  txOptions
+}: IChallengeInflightExitNotCanonical): Promise<Interfaces.ITransactionReceipt> {
+  const { address, contract } = await this.getPaymentExitGame();
+
+  const transactionData = ContractsModule.getTxData(
+    contract,
+    'challengeInFlightExitNotCanonical',
+    [
+      inputTx,
+      inputUtxoPos.toString(),
+      inFlightTx,
+      inFlightTxInputIndex,
+      competingTx,
+      competingTxInputIndex,
+      competingTxPos.toString(),
+      competingTxInclusionProof,
+      competingTxWitness
+    ]
+  );
+
+  return TransactionsModule.sendTransaction.call(this, {
+    from: txOptions.from,
+    to: address,
+    data: transactionData,
+    gasLimit: txOptions.gasLimit,
+    gasPrice: txOptions.gasPrice,
+    privateKey: txOptions.privateKey
+  });
+}
+
+export interface IRespondToNonCanonicalChallenge {
+  inFlightTx: string;
+  inFlightTxPos: number | string | BN;
+  inFlightTxInclusionProof: string;
+  txOptions: Interfaces.ITransactionOptions;
+};
+
+export async function respondToNonCanonicalChallenge ({
+  inFlightTx,
+  inFlightTxPos,
+  inFlightTxInclusionProof,
+  txOptions
+}: IRespondToNonCanonicalChallenge): Promise<Interfaces.ITransactionReceipt> {
+  const { address, contract } = await this.getPaymentExitGame();
+
+  const transactionData = ContractsModule.getTxData(
+    contract,
+    'respondToNonCanonicalChallenge',
+    inFlightTx,
+    inFlightTxPos.toString(),
+    inFlightTxInclusionProof
+  );
+
+  return TransactionsModule.sendTransaction.call(this, {
+    from: txOptions.from,
+    to: address,
+    data: transactionData,
+    gasLimit: txOptions.gasLimit,
+    gasPrice: txOptions.gasPrice,
+    privateKey: txOptions.privateKey
+  });
+}
+
+export interface IChallengeInFlightExitInputSpent {
+  inFlightTx: string;
+  inFlightTxInputIndex: number;
+  challengingTx: string;
+  challengingTxInputIndex: number;
+  challengingTxWitness: string;
+  inputTx: string;
+  inputUtxoPos: number | string | BN;
+  txOptions: Interfaces.ITransactionOptions;
+};
+
+export async function challengeInFlightExitInputSpent ({
+  inFlightTx,
+  inFlightTxInputIndex,
+  challengingTx,
+  challengingTxInputIndex,
+  challengingTxWitness,
+  inputTx,
+  inputUtxoPos,
+  txOptions
+}: IChallengeInFlightExitInputSpent): Promise<Interfaces.ITransactionReceipt> {
+  const { address, contract } = await this.getPaymentExitGame();
+
+  const transactionData = ContractsModule.getTxData(
+    contract,
+    'challengeInFlightExitInputSpent',
+    [
+      inFlightTx,
+      inFlightTxInputIndex,
+      challengingTx,
+      challengingTxInputIndex,
+      challengingTxWitness,
+      inputTx,
+      inputUtxoPos.toString(),
+      keccak256(Buffer.from(txOptions.from))
+    ]
+  )
+  return TransactionsModule.sendTransaction.call(this, {
+    from: txOptions.from,
+    to: address,
+    data: transactionData,
+    gasLimit: txOptions.gasLimit,
+    gasPrice: txOptions.gasPrice,
+    privateKey: txOptions.privateKey
+  });
+}
+
+export interface IChallengeInFlightExitOutputSpent {
+  inFlightTx: string;
+  inFlightTxInclusionProof: string;
+  inFlightTxOutputPos: number | string | BN;
+  challengingTx: string;
+  challengingTxInputIndex: number;
+  challengingTxWitness: string;
+  txOptions: Interfaces.ITransactionOptions;
+};
+
+export async function challengeInFlightExitOutputSpent ({
+  inFlightTx,
+  inFlightTxInclusionProof,
+  inFlightTxOutputPos,
+  challengingTx,
+  challengingTxInputIndex,
+  challengingTxWitness,
+  txOptions
+}: IChallengeInFlightExitOutputSpent): Promise<Interfaces.ITransactionReceipt> {
+  const { address, contract } = await this.getPaymentExitGame();
+
+  const transactionData = ContractsModule.getTxData(
+    contract,
+    'challengeInFlightExitOutputSpent',
+    [
+      inFlightTx,
+      inFlightTxInclusionProof,
+      inFlightTxOutputPos.toString(),
+      challengingTx,
+      challengingTxInputIndex,
+      challengingTxWitness,
+      keccak256(Buffer.from(txOptions.from))
+    ]
+  );
+
+  return TransactionsModule.sendTransaction.call(this, {
+    from: txOptions.from,
+    to: address,
+    data: transactionData,
+    gasLimit: txOptions.gasLimit,
+    gasPrice: txOptions.gasPrice,
+    privateKey: txOptions.privateKey
+  });
+}
+
+export interface IDeleteNonPiggybackedInFlightExit {
+  exitId: string;
+  txOptions: Interfaces.ITransactionOptions;
+};
+
+export async function deleteNonPiggybackedInFlightExit ({
+  exitId,
+  txOptions
+}: IDeleteNonPiggybackedInFlightExit): Promise<Interfaces.ITransactionReceipt> {
+  const { address, contract } = await this.getPaymentExitGame();
+
+  const transactionData = ContractsModule.getTxData(
+    contract,
+    'deleteNonPiggybackedInFlightExit',
+    exitId
+  );
+
+  return TransactionsModule.sendTransaction.call(this, {
+    from: txOptions.from,
+    to: address,
+    data: transactionData,
+    gasLimit: txOptions.gasLimit,
+    gasPrice: txOptions.gasPrice,
+    privateKey: txOptions.privateKey
   });
 }

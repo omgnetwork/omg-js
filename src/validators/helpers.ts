@@ -19,7 +19,7 @@ export const validateAmount: Joi.Schema = Joi.alternatives().try(
   Joi.string().regex(/^\d+$/).required()
 );
 
-export const validateTransactionOptions: Joi.Schema = Joi.object({
+export const validateTxOptions: Joi.Schema = Joi.object({
   gas: Joi.number().integer(),
   gasPrice: Joi.string(),
   privateKey: Joi.string(),
