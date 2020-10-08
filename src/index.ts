@@ -527,6 +527,35 @@ class OmgJS {
       inputIndex
     });
   }
+
+  public async inFlightExitGetOutputChallengeData ({
+    txbytes,
+    outputIndex
+  }: WatcherInflightExitModule.IInFlightExitGetOutputChallengeData): Promise<WatcherInflightExitModule.IInflightExitOutputChallengeData> {
+    Joi.assert({
+      txbytes,
+      outputIndex
+    }, Validators.inFlightExitGetOutputChallengeDataSchema);
+    return WatcherInflightExitModule.inFlightExitGetOutputChallengeData.call(this, {
+      txbytes,
+      outputIndex      
+    });
+  }
+
+  public async inFlightExitGetData (txbytes: string): Promise<Interfaces.IExitData> {
+    Joi.assert(txbytes, Joi.string().required());
+    return WatcherInflightExitModule.inFlightExitGetData.call(this, txbytes);
+  }
+
+  public async inFlightExitGetCompetitor (txbytes: string): Promise<WatcherInflightExitModule.IInflightExitCompetitor> {
+    Joi.assert(txbytes, Joi.string().required());
+    return WatcherInflightExitModule.inFlightExitGetCompetitor.call(this, txbytes);
+  }
+
+  public async inFlightExitProveCanonical (txbytes: string): Promise<string> {
+    Joi.assert(txbytes, Joi.string().required());
+    return WatcherInflightExitModule.inFlightExitProveCanonical.call(this, txbytes);
+  }
 }
 
 export default OmgJS;

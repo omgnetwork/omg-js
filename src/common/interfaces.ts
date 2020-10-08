@@ -1,5 +1,7 @@
 import BN from 'bn.js';
 
+// NMTODO: decide whether some of these interfaces should live with the specific module that uses it
+
 export interface ITransactionOptions {
   from: string;
   gasLimit?: number;
