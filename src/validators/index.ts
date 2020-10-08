@@ -245,3 +245,16 @@ export const getErc20BalanceSchema: Joi.Schema = Joi.object({
   address: helpers.validateAddress.required(),
   erc20Address: helpers.validateAddress.required()
 });
+
+export const waitForRootchainTransactionSchema: Joi.Schema = Joi.object({
+  transactionHash: Joi.string().required(),
+  checkIntervalMs: Joi.number().integer().required(),
+  blocksToWait: Joi.number().integer().required(),
+  onCountdown: Joi.func()
+});
+
+export const waitForChildchainBalanceSchema: Joi.Schema = Joi.object({
+  address: helpers.validateAddress.required(),
+  expectedAmount: helpers.validateAmount.required(),
+  currency: helpers.validateAddress.required()
+});

@@ -578,6 +578,43 @@ class OmgJS {
       erc20Address
     });
   }
+
+  public async waitForRootchainTransaction ({
+    transactionHash,
+    checkIntervalMs,
+    blocksToWait,
+    onCountdown
+  }: RootchainUtilModule.IWaitForRootchainTransaction): Promise<Interfaces.ITransactionReceipt> {
+    Joi.assert({
+      transactionHash,
+      checkIntervalMs,
+      blocksToWait,
+      onCountdown
+    }, Validators.waitForRootchainTransactionSchema);
+    return RootchainUtilModule.waitForRootchainTransaction.call(this, {
+      transactionHash,
+      checkIntervalMs,
+      blocksToWait,
+      onCountdown
+    });
+  }
+
+  public async waitForChildchainBalance ({
+    address,
+    expectedAmount,
+    currency
+  }: RootchainUtilModule.IWaitForChildchainBalance): Promise<Array<Interfaces.IBalance>> {
+    Joi.assert({
+      address,
+      expectedAmount,
+      currency
+    }, Validators.waitForChildchainBalanceSchema);
+    return RootchainUtilModule.waitForChildchainBalance.call(this, {
+      address,
+      expectedAmount,
+      currency
+    });
+  }
 }
 
 export default OmgJS;

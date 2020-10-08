@@ -94,6 +94,7 @@
     "https-proxy-agent": "^5.0.0",
     "human-standard-token-abi": "^2.0.0",
     "omg-json-bigint": "^1.0.0",
+    "promise-retry": "^2.0.1",
     "rlp": "^2.2.6",
     "web3": "^1.3.0",
     "web3-eth-contract": "^1.3.0",
