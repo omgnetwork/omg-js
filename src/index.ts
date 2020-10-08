@@ -7,6 +7,7 @@ import * as RootchainStandardExitModule from '@lib/rootchain/standardexit';
 import * as RootchainInflightExitModule from '@lib/rootchain/inflightexit';
 import * as RootchainExitQueueModule from '@lib/rootchain/exitqueue';
 import * as RootchainDepositModule from '@lib/rootchain/deposit';
+import * as RootchainUtilModule from '@lib/rootchain/util';
 
 import * as WatcherAccountModule from '@lib/watcher/account';
 import * as WatcherTransactionModule from '@lib/watcher/transaction';
@@ -490,6 +491,8 @@ class OmgJS {
     return WatcherUtxoModule.getChallengeData.call(this, utxoPos);
   }
 
+  // NMTODO: add missing childchain signing methods
+
   public async createTransaction ({
     owner,
     payments,
@@ -555,6 +558,25 @@ class OmgJS {
   public async inFlightExitProveCanonical (txbytes: string): Promise<string> {
     Joi.assert(txbytes, Joi.string().required());
     return WatcherInflightExitModule.inFlightExitProveCanonical.call(this, txbytes);
+  }
+
+  public async getEVMErrorReason (txHash: string): Promise<string> {
+    Joi.assert(txHash, Joi.string().required());
+    return RootchainUtilModule.getEVMErrorReason.call(this, txHash);
+  }
+
+  public async getRootchainERC20Balance ({
+    address,
+    erc20Address
+  }: RootchainUtilModule.IGetRootchainERC20Balance): Promise<string> {
+    Joi.assert({
+      address,
+      erc20Address
+    }, Validators.getErc20BalanceSchema);
+    return RootchainUtilModule.getRootchainERC20Balance.call(this, {
+      address,
+      erc20Address
+    });
   }
 }
 

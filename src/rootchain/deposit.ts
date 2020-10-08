@@ -1,5 +1,3 @@
-import BN from 'bn.js';
-
 import * as ContractsModule from '@lib/contracts';
 import * as TransactionsModule from '@lib/rootchain/transaction';
 import * as Constants from '@lib/common/constants';
