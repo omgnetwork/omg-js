@@ -289,10 +289,18 @@ export const encodeMetadataSchema: Joi.Schema = Joi.object({
   metadata: helpers.validateMetadata.required()
 });
 
-export const hashTypedDataSchema = Joi.object({
+export const hashTypedDataSchema: Joi.Schema = Joi.object({
   typedData: Joi.object().required()
 });
 
-export const getTypedDataSchema = Joi.object({
+export const getTypedDataSchema: Joi.Schema = Joi.object({
   transactionBody: Joi.object().required()
+});
+
+export const createTransactionBodySchema: Joi.Schema = Joi.object({
+  fromAddress: helpers.validateAddress.required(),
+  fromUtxos: helpers.validateUtxos.required(),
+  payments: helpers.validatePayments.required(),
+  fee: helpers.validateFee.required(),
+  metadata: helpers.validateMetadata
 });

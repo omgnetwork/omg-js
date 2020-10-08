@@ -21,6 +21,7 @@ import * as WatcherInflightExitModule from '@lib/watcher/inflightexit';
 import * as EncoderModule from '@lib/transaction/encoders';
 import * as TypedDataModule from '@lib/transaction/typedData';
 import * as StructHashModule from '@lib/transaction/structHash';
+import * as TransactionBuilderModule from '@lib/transaction/txBuilder';
 
 import * as Constants from '@lib/common/constants';
 import * as Interfaces from '@lib/common/interfaces';
@@ -688,6 +689,33 @@ class OmgJS {
   public getTypedData (transactionBody: Interfaces.ITransactionBody): Interfaces.ITypedData {
     Joi.assert({ transactionBody }, Validators.getTypedDataSchema);
     return TypedDataModule.getTypedData.call(this, transactionBody);
+  }
+
+  public getTypedDataArray (typedDataMessage: Interfaces.ITypedDataMessage): Array<any> {
+    return EncoderModule.getTypedDataArray.call(this, typedDataMessage);
+  }
+
+  public createTransactionBody ({
+    fromAddress,
+    fromUtxos,
+    payments,
+    fee,
+    metadata
+  }: TransactionBuilderModule.ICreateTransactionBody): Partial<Interfaces.ITransactionBody> {
+    Joi.assert({
+      fromAddress,
+      fromUtxos,
+      payments,
+      fee,
+      metadata
+    }, Validators.createTransactionBodySchema);
+    return TransactionBuilderModule.createTransactionBody.call(this, {
+      fromAddress,
+      fromUtxos,
+      payments,
+      fee,
+      metadata
+    });
   }
 }
 

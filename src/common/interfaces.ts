@@ -70,6 +70,19 @@ export interface ITransactionBody {
   metadata: string;
 };
 
+export interface ITypedDataMessage {
+  input0: IUTXO;
+  input1: IUTXO;
+  input2: IUTXO;
+  input3: IUTXO;
+  output0: IOutput;
+  output1: IOutput;
+  output2: IOutput;
+  output3: IOutput;
+  txData: number;
+  metadata: string;
+}
+
 export interface IDepositTransaction {
   owner: string;
   amount: IComplexAmount;
@@ -102,6 +115,10 @@ export interface IPayment {
 
 export interface IFee {
   currency: string;
+};
+
+export interface IFeeDetail extends IFee {
+  amount: IComplexAmount;
 };
 
 export interface IFeeInfo {

@@ -143,6 +143,29 @@ export function decodeMetadata (metadata: string): string {
   return Buffer.from(unpad, 'hex').toString();
 }
 
+export function getTypedDataArray (typedDataMessage: Interfaces.ITypedDataMessage): Array<any> {
+  const txArray = [];
+
+  const inputArray = [];
+  addInput(inputArray, typedDataMessage.input0);
+  addInput(inputArray, typedDataMessage.input1);
+  addInput(inputArray, typedDataMessage.input2);
+  addInput(inputArray, typedDataMessage.input3);
+  txArray.push(inputArray);
+
+  const outputArray = [];
+  addOutput(outputArray, typedDataMessage.output0);
+  addOutput(outputArray, typedDataMessage.output1);
+  addOutput(outputArray, typedDataMessage.output2);
+  addOutput(outputArray, typedDataMessage.output3);
+  txArray.push(outputArray);
+
+  txArray.push(typedDataMessage.txData);
+  txArray.push(typedDataMessage.metadata);
+
+  return txArray;
+}
+
 function addInput (array: Array<any>, input): void {
   if (input.blknum !== 0) {
     const blk = new BN(input.blknum.toString()).mul(new BN(Constants.BLOCK_OFFSET));
@@ -165,24 +188,6 @@ function addOutput (array: Array<any>, output): void {
         new BN(output.amount.toString())
       ]
     ]);
-  }
-}
-
-function validateInputs (arg): void {
-  if (!Array.isArray(arg)) {
-    throw new Error('Inputs must be an array');
-  }
-  if (arg.length === 0 || arg.length > Constants.MAX_INPUTS) {
-    throw new Error(`Inputs must be an array of size > 0 and < ${Constants.MAX_INPUTS}`);
-  }
-}
-
-function validateOutputs (arg): void {
-  if (!Array.isArray(arg)) {
-    throw new Error('Outputs must be an array');
-  }
-  if (arg.length > Constants.MAX_OUTPUTS) {
-    throw new Error(`Outputs must be an array of size < ${Constants.MAX_OUTPUTS}`);
   }
 }
 
