@@ -1,3 +1,5 @@
+import BN from 'bn.js';
+
 export interface ITransactionOptions {
   from: string;
   gasLimit?: number;
@@ -24,3 +26,5 @@ export interface ITransactionReceipt {
   transactionHash: string;
   transactionIndex: number;
 };
+
+export type IComplexAmount = string | number | BN;

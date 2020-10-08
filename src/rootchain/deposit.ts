@@ -8,7 +8,7 @@ import * as Interfaces from '@lib/common/interfaces';
 
 export interface IApproveDeposit {
   erc20Address: string;
-  amount: string | number | BN;
+  amount: Interfaces.IComplexAmount;
   txOptions: Interfaces.ITransactionOptions
 }
 
@@ -31,7 +31,7 @@ export async function approveERC20Deposit ({
 }
 
 export interface IDeposit {
-  amount: string | number | BN;
+  amount: Interfaces.IComplexAmount;
   currency?: string;
   txOptions: Interfaces.ITransactionOptions;
 }

@@ -34,7 +34,7 @@ export async function getInFlightExitData ({
 export interface IStartInflightExit {
   inFlightTx: string;
   inputTxs: Array<any>;
-  inputUtxosPos: Array<number | string | BN>;
+  inputUtxosPos: Array<Interfaces.IComplexAmount>;
   inputTxsInclusionProofs: Array<string>;
   inFlightTxSigs: Array<string>;
   txOptions: Interfaces.ITransactionOptions
@@ -142,7 +142,7 @@ export async function piggybackInFlightExitOnInput ({
 
 export interface IChallengeInflightExitNotCanonical {
   inputTx: string;
-  inputUtxoPos: number | string | BN;
+  inputUtxoPos: Interfaces.IComplexAmount;
   inFlightTx: string;
   inFlightTxInputIndex: number;
   competingTx: string;
@@ -195,7 +195,7 @@ export async function challengeInFlightExitNotCanonical ({
 
 export interface IRespondToNonCanonicalChallenge {
   inFlightTx: string;
-  inFlightTxPos: number | string | BN;
+  inFlightTxPos: Interfaces.IComplexAmount;
   inFlightTxInclusionProof: string;
   txOptions: Interfaces.ITransactionOptions;
 };
@@ -233,7 +233,7 @@ export interface IChallengeInFlightExitInputSpent {
   challengingTxInputIndex: number;
   challengingTxWitness: string;
   inputTx: string;
-  inputUtxoPos: number | string | BN;
+  inputUtxoPos: Interfaces.IComplexAmount;
   txOptions: Interfaces.ITransactionOptions;
 };
 
@@ -276,7 +276,7 @@ export async function challengeInFlightExitInputSpent ({
 export interface IChallengeInFlightExitOutputSpent {
   inFlightTx: string;
   inFlightTxInclusionProof: string;
-  inFlightTxOutputPos: number | string | BN;
+  inFlightTxOutputPos: Interfaces.IComplexAmount;
   challengingTx: string;
   challengingTxInputIndex: number;
   challengingTxWitness: string;

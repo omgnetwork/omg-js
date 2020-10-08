@@ -13,7 +13,7 @@ import EthVaultContract from '@lib/contracts/abi/EthVault.json';
 
 export interface IGetStandardExitId {
   txBytes: string;
-  utxoPos: number | string | BN;
+  utxoPos: Interfaces.IComplexAmount;
   isDeposit: boolean;
 };
 
@@ -27,7 +27,7 @@ export async function getStandardExitId ({
 };
 
 export interface IStartStandardExit {
-  utxoPos: number | string | BN;
+  utxoPos: Interfaces.IComplexAmount;
   outputTx: string;
   inclusionProof: string;
   txOptions: Interfaces.ITransactionOptions
@@ -98,7 +98,7 @@ export async function getDepositExitData ({
 }
 
 export interface IChallengeStandardExit {
-  standardExitId: number | string | BN;
+  standardExitId: Interfaces.IComplexAmount;
   exitingTx: string;
   challengeTx: string;
   inputIndex: number;
