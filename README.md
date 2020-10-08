@@ -1,31 +1,17 @@
 ## OMG-JS 
 
-[![JavaScript Style Guide](https://cdn.rawgit.com/standard/standard/master/badge.svg)](https://github.com/standard/standard)
-
-[![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
-
 [![CircleCI](https://circleci.com/gh/omgnetwork/omg-js/tree/master.svg?style=svg)](https://circleci.com/gh/omgnetwork/omg-js/tree/master)
 
-This is a Javascript library that allows you to interact with OmiseGo's MoreVP implementation of Plasma. It provides functions to:
+This is a Javascript library that allows you to interact with OMG Network's MoreVP implementation of Plasma. It provides functions to:
 
-1. Deposit (Eth/Token) from the Root chain into the Child chain.
-2. Transact on the Child chain.
-3. Exit from the Child chain back to the Root chain.
-4. Challenge an invalid exit.
+1. Deposit (Eth/ERC20) from the Rootchain into the Childchain.
+2. Transact on the Childchain.
+3. Exit from the Childchain back to the Rootchain.
+4. Challenge invalid exits.
 
 ## Compatibility
 
 `omg-js` follows a modified semver with the first part referring to its own library versioning and the second part referring to its compatible `elixir-omg` version.
-
-## Getting Started
-
-The project is organized into 3 submodules:
-
-1. @omisego/omg-js-rootchain
-2. @omisego/omg-js-childchain
-3. @omisego/omg-js-util
-
-You can use any of them separately, or all at once by importing the parent `@omisego/omg-js` package.
 
 ## Installation
 
@@ -58,11 +44,6 @@ npm install @omisego/react-native-omg-js
 ## API Documentation
 
 [Documentation for omg-js ](https://docs.omg.network/omg-js/)
-
-## Design Documentation
-
-[Sending a transaction](/integration-docs/transactions.md)  
-[How to sign a transaction](/integration-docs/signing-methods.md)
 
 ## Examples
 
