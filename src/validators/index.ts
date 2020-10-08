@@ -258,3 +258,33 @@ export const waitForChildchainBalanceSchema: Joi.Schema = Joi.object({
   expectedAmount: helpers.validateAmount.required(),
   currency: helpers.validateAddress.required()
 });
+
+export const encodeTransactionSchema: Joi.Schema = Joi.object({
+  txType: Joi.number().required(),
+  inputs: Joi.array().items(Joi.object()).required(),
+  outputs: Joi.array().items(Joi.object()).required(),
+  txData: Joi.number().required(),
+  metadata: helpers.validateMetadata,
+  signatures: Joi.array().items(Joi.string()),
+  signed: Joi.boolean()
+});
+
+export const encodeUtxoPosSchema: Joi.Schema = Joi.object({
+  utxo: Joi.object({
+    blknum: helpers.validateAmount,
+    txindex: Joi.number().integer(),
+    oindex: Joi.number().integer()
+  }).unknown()
+});
+
+export const decodeUtxoPosSchema: Joi.Schema = Joi.object({
+  utxoPos: helpers.validateAmount.required()
+});
+
+export const decodeMetadataSchema: Joi.Schema = Joi.object({
+  metadata: helpers.validateMetadata.required()
+});
+
+export const encodeMetadataSchema: Joi.Schema = Joi.object({
+  metadata: helpers.validateMetadata.required()
+});

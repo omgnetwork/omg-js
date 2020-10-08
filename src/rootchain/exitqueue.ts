@@ -4,7 +4,7 @@ import BN from 'bn.js';
 import * as Constants from '@lib/common/constants';
 import * as ContractsModule from '@lib/contracts';
 import * as Interfaces from '@lib/common/interfaces';
-import * as TransactionsModule from '@lib/rootchain/transaction';
+import * as RootchainTransactionsModule from '@lib/rootchain/transaction';
 
 export interface IGetExitTime {
   exitRequestBlockNumber: string,
@@ -140,7 +140,7 @@ export async function processExits ({
     maxExitsToProcess
   );
 
-  return TransactionsModule.sendTransaction.call(this, {
+  return RootchainTransactionsModule.sendTransaction.call(this, {
     from: txOptions.from,
     to: this.plasmaContractAddress,
     data: transactionData,
@@ -173,7 +173,7 @@ export async function addExitQueue ({
     token
   );
 
-  return TransactionsModule.sendTransaction.call(this, {
+  return RootchainTransactionsModule.sendTransaction.call(this, {
     from: txOptions.from,
     to: this.plasmaContractAddress,
     data: transactionData,

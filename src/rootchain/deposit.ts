@@ -1,8 +1,8 @@
 import * as ContractsModule from '@lib/contracts';
-import * as TransactionsModule from '@lib/rootchain/transaction';
+import * as RootchainTransactionsModule from '@lib/rootchain/transaction';
 import * as Constants from '@lib/common/constants';
-import * as Util from '@lib/common/util';
 import * as Interfaces from '@lib/common/interfaces';
+import * as TransactionsModule from '@lib/transaction';
 
 export interface IApproveDeposit {
   erc20Address: string;
@@ -18,7 +18,7 @@ export async function approveERC20Deposit ({
   const { address: spender } = await this.getErc20Vault();
   const { contract } = await ContractsModule.getErc20.call(this, erc20Address);
 
-  return TransactionsModule.sendTransaction.call(this, {
+  return RootchainTransactionsModule.sendTransaction.call(this, {
     from: txOptions.from,
     to: erc20Address,
     data: contract.methods.approve(spender, amount.toString()).encodeABI(),
@@ -46,7 +46,7 @@ export async function deposit ({
     ? await this.getEthVault()
     : await this.getErc20Vault();
 
-  const depositTx = encodeDeposit({
+  const depositTx = TransactionsModule.encodeDeposit({
     owner: txOptions.from,
     amount: _amount,
     currency
@@ -58,7 +58,7 @@ export async function deposit ({
     depositTx
   );
 
-  return TransactionsModule.sendTransaction.call(this, {
+  return RootchainTransactionsModule.sendTransaction.call(this, {
     from: txOptions.from,
     to: address,
     ...isEth ? { value: _amount } : {},
@@ -66,30 +66,5 @@ export async function deposit ({
     gasLimit: txOptions.gasLimit,
     gasPrice: txOptions.gasPrice,
     privateKey: txOptions.privateKey
-  });
-}
-
-export interface IEncodeDeposit {
-  owner: string,
-  amount: string,
-  currency: string
-}
-
-export function encodeDeposit ({
-  owner,
-  amount,
-  currency
-}: IEncodeDeposit): string {
-  return TransactionsModule.encode({
-    txType: 1,
-    inputs: [],
-    outputs: [{
-      outputType: 1,
-      outputGuard: Util.prefixHex(owner),
-      currency: Util.prefixHex(currency),
-      amount
-    }],
-    txData: 0,
-    metadata: Constants.NULL_METADATA
   });
 }

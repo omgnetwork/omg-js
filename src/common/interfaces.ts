@@ -48,7 +48,7 @@ export interface IOutput {
   outputType: number;
   outputGuard: string;
   currency: string;
-  amount: number;
+  amount: IComplexAmount;
 };
 
 export interface ITransactionData {
@@ -57,8 +57,8 @@ export interface ITransactionData {
   metadata: string;
   txbytes: string;
   block: object;
-  inputs: object[];
-  outputs: object[];
+  inputs: IUTXO[];
+  outputs: IOutput[];
 };
 
 export interface ITransactionBody {
@@ -71,7 +71,7 @@ export interface ITransactionBody {
 
 export interface IDepositTransaction {
   owner: string;
-  amount: number;
+  amount: IComplexAmount;
   currency: string;
 };
 

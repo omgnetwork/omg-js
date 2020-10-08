@@ -3,7 +3,7 @@ import { keccak256 } from 'ethereumjs-util';
 import { Buffer } from 'buffer';
 
 import * as ContractsModule from '@lib/contracts';
-import * as TransactionsModule from '@lib/rootchain/transaction';
+import * as RootchainTransactionsModule from '@lib/rootchain/transaction';
 import * as Interfaces from '@lib/common/interfaces';
 
 export interface IGetInflightExitId {
@@ -63,7 +63,7 @@ export async function startInflightExit ({
     ]
   );
 
-  return TransactionsModule.sendTransaction.call(this, {
+  return RootchainTransactionsModule.sendTransaction.call(this, {
     from: txOptions.from,
     to: address,
     data: transactionData,
@@ -96,7 +96,7 @@ export async function piggybackInFlightExitOnOutput ({
     ]
   );
 
-  return TransactionsModule.sendTransaction.call(this, {
+  return RootchainTransactionsModule.sendTransaction.call(this, {
     from: txOptions.from,
     to: address,
     data: transactionData,
@@ -129,7 +129,7 @@ export async function piggybackInFlightExitOnInput ({
     ]
   );
 
-  return TransactionsModule.sendTransaction.call(this, {
+  return RootchainTransactionsModule.sendTransaction.call(this, {
     from: txOptions.from,
     to: address,
     data: transactionData,
@@ -183,7 +183,7 @@ export async function challengeInFlightExitNotCanonical ({
     ]
   );
 
-  return TransactionsModule.sendTransaction.call(this, {
+  return RootchainTransactionsModule.sendTransaction.call(this, {
     from: txOptions.from,
     to: address,
     data: transactionData,
@@ -216,7 +216,7 @@ export async function respondToNonCanonicalChallenge ({
     inFlightTxInclusionProof
   );
 
-  return TransactionsModule.sendTransaction.call(this, {
+  return RootchainTransactionsModule.sendTransaction.call(this, {
     from: txOptions.from,
     to: address,
     data: transactionData,
@@ -263,7 +263,7 @@ export async function challengeInFlightExitInputSpent ({
       keccak256(Buffer.from(txOptions.from))
     ]
   )
-  return TransactionsModule.sendTransaction.call(this, {
+  return RootchainTransactionsModule.sendTransaction.call(this, {
     from: txOptions.from,
     to: address,
     data: transactionData,
@@ -308,7 +308,7 @@ export async function challengeInFlightExitOutputSpent ({
     ]
   );
 
-  return TransactionsModule.sendTransaction.call(this, {
+  return RootchainTransactionsModule.sendTransaction.call(this, {
     from: txOptions.from,
     to: address,
     data: transactionData,
@@ -335,7 +335,7 @@ export async function deleteNonPiggybackedInFlightExit ({
     exitId
   );
 
-  return TransactionsModule.sendTransaction.call(this, {
+  return RootchainTransactionsModule.sendTransaction.call(this, {
     from: txOptions.from,
     to: address,
     data: transactionData,

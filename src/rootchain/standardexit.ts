@@ -4,7 +4,7 @@ import { keccak256 } from 'ethereumjs-util';
 import { Buffer } from 'buffer';
 
 import * as ContractsModule from '@lib/contracts';
-import * as TransactionsModule from '@lib/rootchain/transaction';
+import * as RootchainTransactionsModule from '@lib/rootchain/transaction';
 import * as Util from '@lib/common/util';
 import * as Interfaces from '@lib/common/interfaces';
 import MerkleTree from '@lib/common/merkle';
@@ -51,7 +51,7 @@ export async function startStandardExit ({
     ]
   );
 
-  return TransactionsModule.sendTransaction.call(this, {
+  return RootchainTransactionsModule.sendTransaction.call(this, {
     from: txOptions.from,
     to: address,
     data: transactionData,
@@ -132,7 +132,7 @@ export async function challengeStandardExit ({
     ]
   );
 
-  return TransactionsModule.sendTransaction.call(this, {
+  return RootchainTransactionsModule.sendTransaction.call(this, {
     from: txOptions.from,
     to: address,
     data: transactionData,
