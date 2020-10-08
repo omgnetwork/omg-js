@@ -7,14 +7,13 @@ import * as StandardExitModule from '@lib/rootchain/standardexit';
 import * as InflightExitModule from '@lib/rootchain/inflightexit';
 import * as ExitQueueModule from '@lib/rootchain/exitqueue';
 import * as DepositModule from '@lib/rootchain/deposit';
-import * as ContractsModule from '@lib/contracts';
-import * as Constants from '@lib/common/constants';
-import PlasmaFrameworkContract from '@lib/contracts/abi/PlasmaFramework.json';
 
+import * as Constants from '@lib/common/constants';
+import * as Interfaces from '@lib/common/interfaces';
+import * as ContractsModule from '@lib/contracts';
 import * as Validators from '@lib/validators';
 
-import { IVault, IPaymentExitGame } from '@lib/contracts';
-import { ITransactionReceipt } from '@lib/common/interfaces';
+import PlasmaFrameworkContract from '@lib/contracts/abi/PlasmaFramework.json';
 
 interface IOmgJS {
   plasmaContractAddress: string;
@@ -30,9 +29,9 @@ class OmgJS {
   private readonly web3Instance: Web3;
   private readonly plasmaContract: Contract;
 
-  private erc20Vault: IVault;
-  private ethVault: IVault;
-  private paymentExitGame: IPaymentExitGame;
+  private erc20Vault: ContractsModule.IVault;
+  private ethVault: ContractsModule.IVault;
+  private paymentExitGame: ContractsModule.IPaymentExitGame;
 
   public constructor({
     plasmaContractAddress,
@@ -53,7 +52,7 @@ class OmgJS {
     );
   }
 
-  private async getErc20Vault (): Promise<IVault> {
+  private async getErc20Vault (): Promise<ContractsModule.IVault> {
     if (this.erc20Vault) {
       return this.erc20Vault;
     }
@@ -61,7 +60,7 @@ class OmgJS {
     return this.erc20Vault;
   }
 
-  private async getEthVault (): Promise<IVault> {
+  private async getEthVault (): Promise<ContractsModule.IVault> {
     if (this.ethVault) {
       return this.ethVault;
     }
@@ -69,7 +68,7 @@ class OmgJS {
     return this.ethVault;
   }
 
-  private async getPaymentExitGame (): Promise<IPaymentExitGame> {
+  private async getPaymentExitGame (): Promise<ContractsModule.IPaymentExitGame> {
     if (this.paymentExitGame) {
       return this.paymentExitGame;
     }
@@ -110,7 +109,7 @@ class OmgJS {
     erc20Address,
     amount,
     txOptions
-  }: DepositModule.IApproveDeposit): Promise<ITransactionReceipt> {
+  }: DepositModule.IApproveDeposit): Promise<Interfaces.ITransactionReceipt> {
     Joi.assert({ erc20Address, amount, txOptions }, Validators.approveTokenSchema);
     return DepositModule.approveERC20Deposit.call(this, {
       erc20Address,
@@ -123,7 +122,7 @@ class OmgJS {
     amount,
     currency,
     txOptions
-  }: DepositModule.IDeposit): Promise<ITransactionReceipt> {
+  }: DepositModule.IDeposit): Promise<Interfaces.ITransactionReceipt> {
     Joi.assert({ amount, currency, txOptions }, Validators.depositSchema);
     return DepositModule.deposit.call(this, {
       amount,
@@ -168,7 +167,7 @@ class OmgJS {
     outputTx,
     inclusionProof,
     txOptions
-  }: StandardExitModule.IStartStandardExit): Promise<ITransactionReceipt> {
+  }: StandardExitModule.IStartStandardExit): Promise<Interfaces.ITransactionReceipt> {
     Joi.assert({ utxoPos, outputTx, inclusionProof, txOptions }, Validators.startStandardExitSchema);
     return StandardExitModule.startStandardExit.call(this, {
       utxoPos,
@@ -194,7 +193,7 @@ class OmgJS {
     inputIndex,
     challengeTxSig,
     txOptions
-  }: StandardExitModule.IChallengeStandardExit): Promise<ITransactionReceipt> {
+  }: StandardExitModule.IChallengeStandardExit): Promise<Interfaces.ITransactionReceipt> {
     Joi.assert({
       standardExitId,
       exitingTx,
@@ -218,7 +217,7 @@ class OmgJS {
     exitId,
     maxExitsToProcess,
     txOptions
-  }: ExitQueueModule.IProcessExits): Promise<ITransactionReceipt> {
+  }: ExitQueueModule.IProcessExits): Promise<Interfaces.ITransactionReceipt> {
     Joi.assert({ token, exitId, maxExitsToProcess, txOptions }, Validators.processExitsSchema);
     return ExitQueueModule.processExits.call(this, {
       token,
@@ -236,7 +235,7 @@ class OmgJS {
   public async addExitQueue ({
     token,
     txOptions
-  }: ExitQueueModule.IAddExitQueue): Promise<ITransactionReceipt> {
+  }: ExitQueueModule.IAddExitQueue): Promise<Interfaces.ITransactionReceipt> {
     Joi.assert({ token, txOptions }, Validators.addExitQueueSchema);
     return ExitQueueModule.addExitQueue.call(this, {
       token,
@@ -251,7 +250,7 @@ class OmgJS {
     inputTxsInclusionProofs,
     inFlightTxSigs,
     txOptions
-  }: InflightExitModule.IStartInflightExit): Promise<ITransactionReceipt> {
+  }: InflightExitModule.IStartInflightExit): Promise<Interfaces.ITransactionReceipt> {
     Joi.assert({
       inFlightTx,
       inputTxs,
@@ -274,7 +273,7 @@ class OmgJS {
     inFlightTx,
     outputIndex,
     txOptions
-  }: InflightExitModule.IPiggybackInflightExitOnOutput): Promise<ITransactionReceipt> {
+  }: InflightExitModule.IPiggybackInflightExitOnOutput): Promise<Interfaces.ITransactionReceipt> {
     Joi.assert({
       inFlightTx,
       outputIndex,
@@ -291,7 +290,7 @@ class OmgJS {
     inFlightTx,
     inputIndex,
     txOptions
-  }: InflightExitModule.IPiggybackInflightExitOnInput): Promise<ITransactionReceipt> {
+  }: InflightExitModule.IPiggybackInflightExitOnInput): Promise<Interfaces.ITransactionReceipt> {
     Joi.assert({
       inFlightTx,
       inputIndex,
@@ -315,7 +314,7 @@ class OmgJS {
     competingTxInclusionProof,
     competingTxWitness,
     txOptions
-  }: InflightExitModule.IChallengeInflightExitNotCanonical): Promise<ITransactionReceipt> {
+  }: InflightExitModule.IChallengeInflightExitNotCanonical): Promise<Interfaces.ITransactionReceipt> {
     Joi.assert({
       inputTx,
       inputUtxoPos,
@@ -347,7 +346,7 @@ class OmgJS {
     inFlightTxPos,
     inFlightTxInclusionProof,
     txOptions
-  }: InflightExitModule.IRespondToNonCanonicalChallenge): Promise<ITransactionReceipt> {
+  }: InflightExitModule.IRespondToNonCanonicalChallenge): Promise<Interfaces.ITransactionReceipt> {
     Joi.assert({
       inFlightTx,
       inFlightTxPos,
@@ -371,7 +370,7 @@ class OmgJS {
     inputTx,
     inputUtxoPos,
     txOptions
-  }: InflightExitModule.IChallengeInFlightExitInputSpent): Promise<ITransactionReceipt> {
+  }: InflightExitModule.IChallengeInFlightExitInputSpent): Promise<Interfaces.ITransactionReceipt> {
     Joi.assert({
       inFlightTx,
       inFlightTxInputIndex,
@@ -402,7 +401,7 @@ class OmgJS {
     challengingTxInputIndex,
     challengingTxWitness,
     txOptions
-  }: InflightExitModule.IChallengeInFlightExitOutputSpent): Promise<ITransactionReceipt> {
+  }: InflightExitModule.IChallengeInFlightExitOutputSpent): Promise<Interfaces.ITransactionReceipt> {
     Joi.assert({
       inFlightTx,
       inFlightTxInclusionProof,
@@ -426,7 +425,7 @@ class OmgJS {
   public async deleteNonPiggybackedInFlightExit ({
     exitId,
     txOptions
-  }: InflightExitModule.IDeleteNonPiggybackedInFlightExit): Promise<ITransactionReceipt> {
+  }: InflightExitModule.IDeleteNonPiggybackedInFlightExit): Promise<Interfaces.ITransactionReceipt> {
     Joi.assert({
       exitId,
       txOptions
@@ -435,6 +434,11 @@ class OmgJS {
       exitId,
       txOptions
     });
+  }
+
+  public async getUtxos (address: string): Promise<Array<Interfaces.UTXO>> {
+    Joi.assert(address, Validators.getUtxosSchema);
+
   }
 }
 
