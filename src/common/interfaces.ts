@@ -128,3 +128,6 @@ export interface IDepositFilter extends IPagination {
 
 // NMTODO: figure out this interface
 export interface IDepositInfo {};
+
+// NMTODO: figure out this interface
+export interface IChallengeData {};

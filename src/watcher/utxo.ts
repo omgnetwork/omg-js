@@ -12,3 +12,11 @@ export async function getExitData (utxo: Interfaces.IUTXO): Promise<Interfaces.I
     proxyUrl: this.watcherProxyUrl
   });
 }
+
+export async function getChallengeData (utxoPos: number): Promise<Interfaces.IChallengeData> {
+  return Transporter.post({
+    url: `${this.watcherSecurityUrl}/utxo.get_challenge_data`,
+    body: { utxo_pos: utxoPos },
+    proxyUrl: this.watcherProxyUrl
+  });
+}

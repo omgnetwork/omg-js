@@ -16,3 +16,36 @@ export async function getTransactions (filters: Interfaces.ITransactionFilter): 
     proxyUrl: this.watcherProxyUrl
   });
 }
+
+export interface ICreateTransaction {
+  owner: string;
+  payments: Array<Interfaces.IPayment>;
+  fee: Interfaces.IFee;
+  metadata: string;
+}
+
+// NMTODO: figure out this interface
+export interface ICreatedTransactions {}
+
+export async function createTransaction ({
+  owner,
+  payments,
+  fee,
+  metadata
+}: ICreateTransaction): Promise<ICreatedTransactions> {
+  // NMTODO: implement transaction helpers
+  // const _metadata = metadata
+  //   ? transaction.encodeMetadata(metadata)
+  //   : transaction.NULL_METADATA
+
+  return Transporter.post({
+    url: `${this.watcherUrl}/transaction.create`,
+    body: {
+      owner,
+      payments,
+      fee,
+      metadata
+    },
+    proxyUrl: this.watcherProxyUrl
+  });
+}

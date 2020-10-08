@@ -13,6 +13,8 @@ import * as WatcherTransactionModule from '@lib/watcher/transaction';
 import * as WatcherFeesModule from '@lib/watcher/fees';
 import * as WatcherDepositModule from '@lib/watcher/deposit';
 import * as WatcherUtxoModule from '@lib/watcher/utxo';
+import * as WatcherStatusModule from '@lib/watcher/status';
+import * as WatcherInflightExitModule from '@lib/watcher/inflightexit';
 
 import * as Constants from '@lib/common/constants';
 import * as Interfaces from '@lib/common/interfaces';
@@ -481,6 +483,49 @@ class OmgJS {
   public async getExitData (utxo: Interfaces.IUTXO): Promise<Interfaces.IExitData> {
     Joi.assert(utxo, Validators.getExitDataSchema);
     return WatcherUtxoModule.getExitData.call(this, utxo);
+  }
+
+  public async getChallengeData (utxoPos: number): Promise<Interfaces.IChallengeData> {
+    Joi.assert({ utxoPos }, Validators.getChallengeDataSchema);
+    return WatcherUtxoModule.getChallengeData.call(this, utxoPos);
+  }
+
+  public async createTransaction ({
+    owner,
+    payments,
+    fee,
+    metadata
+  }: WatcherTransactionModule.ICreateTransaction): Promise<WatcherTransactionModule.ICreatedTransactions> {
+    Joi.assert({
+      owner,
+      payments,
+      fee,
+      metadata
+    }, Validators.createTransactionSchema);
+    return WatcherTransactionModule.createTransaction.call(this, {
+      owner,
+      payments,
+      fee,
+      metadata
+    });
+  }
+
+  public async getStatus (): Promise<WatcherStatusModule.IStatus> {
+    return WatcherStatusModule.getStatus.call(this);
+  }
+
+  public async inFlightExitGetInputChallengeData ({
+    txbytes,
+    inputIndex
+  }: WatcherInflightExitModule.IInFlightExitGetInputChallengeData): Promise<WatcherInflightExitModule.IInflightExitInputChallengeData> {
+    Joi.assert({
+      txbytes,
+      inputIndex
+    }, Validators.inFlightExitGetInputChallengeDataSchema);
+    return WatcherInflightExitModule.inFlightExitGetInputChallengeData.call(this, {
+      txbytes,
+      inputIndex
+    });
   }
 }
 
