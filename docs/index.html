@@ -1,0 +1,245 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>omg-js - v4.0.1-1.0.0</title>
+	<meta name="description" content="Documentation for omg-js - v4.0.1-1.0.0">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="assets/css/main.css">
+</head>
+<body>
+<header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="assets/js/search.json" data-base=".">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="index.html" class="title">omg-js - v4.0.1-1.0.0</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+							<input type="checkbox" id="tsd-filter-externals" checked />
+							<label class="tsd-widget" for="tsd-filter-externals">Externals</label>
+							<input type="checkbox" id="tsd-filter-only-exported" />
+							<label class="tsd-widget" for="tsd-filter-only-exported">Only exported</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<ul class="tsd-breadcrumb">
+				<li>
+					<a href="globals.html">Globals</a>
+				</li>
+			</ul>
+			<h1>omg-js - v4.0.1-1.0.0</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<div class="tsd-panel tsd-typography">
+				<a href="#omg-js" id="omg-js" style="color: inherit; text-decoration: none;">
+					<h2>OMG-JS</h2>
+				</a>
+				<p><a href="https://circleci.com/gh/omgnetwork/omg-js/tree/master"><img src="https://circleci.com/gh/omgnetwork/omg-js/tree/master.svg?style=svg" alt="CircleCI"></a></p>
+				<p>This is a Javascript library that allows you to interact with OMG Network&#39;s MoreVP implementation of Plasma. It provides functions to:</p>
+				<ol>
+					<li>Deposit (Eth/ERC20) from the Rootchain into the Childchain.</li>
+					<li>Transact on the Childchain.</li>
+					<li>Exit from the Childchain back to the Rootchain.</li>
+					<li>Challenge invalid exits.</li>
+				</ol>
+				<a href="#compatibility" id="compatibility" style="color: inherit; text-decoration: none;">
+					<h2>Compatibility</h2>
+				</a>
+				<p><code>omg-js</code> follows a modified semver with the first part referring to its own library versioning and the second part referring to its compatible <code>elixir-omg</code> version.</p>
+				<a href="#installation" id="installation" style="color: inherit; text-decoration: none;">
+					<h2>Installation</h2>
+				</a>
+				<a href="#node" id="node" style="color: inherit; text-decoration: none;">
+					<h4>Node</h4>
+				</a>
+				<p>Requires Node &gt;= 8.11.3 &lt; 13.0.0</p>
+				<pre><code><span class="hljs-built_in">npm</span> install @omisego/omg-js</code></pre>
+				<a href="#browser" id="browser" style="color: inherit; text-decoration: none;">
+					<h4>Browser</h4>
+				</a>
+				<p>You can add <code>omg-js</code> to a website quickly. Just add this script tag.</p>
+				<pre><code><span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">&quot;https://unpkg.com/@omisego/browser-omg-js&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span></code></pre>
+				<a href="#react-native" id="react-native" style="color: inherit; text-decoration: none;">
+					<h4>React Native</h4>
+				</a>
+				<p><code>omg-js</code> can easily be integrated with React Native projects.
+				First, add this postinstall script to your project&#39;s <code>package.json</code></p>
+				<pre><code><span class="hljs-string">&quot;scripts&quot;</span>: {
+    <span class="hljs-string">&quot;postinstall&quot;</span>: <span class="hljs-string">&quot;omgjs-nodeify&quot;</span>
+}</code></pre>
+				<p>Then install the react native compatible library.</p>
+				<pre><code><span class="hljs-built_in">npm</span> install @omisego/react-<span class="hljs-keyword">native</span>-omg-js</code></pre>
+				<a href="#api-documentation" id="api-documentation" style="color: inherit; text-decoration: none;">
+					<h2>API Documentation</h2>
+				</a>
+				<p><a href="https://docs.omg.network/omg-js/">Documentation for omg-js </a></p>
+				<a href="#examples" id="examples" style="color: inherit; text-decoration: none;">
+					<h2>Examples</h2>
+				</a>
+				<a href="#prerequisites" id="prerequisites" style="color: inherit; text-decoration: none;">
+					<h4>Prerequisites</h4>
+				</a>
+				<p>Both Alice&#39;s and Bob&#39;s Ethereum accounts need to have some ETH in them. The ETH is used for gas costs on the rootchain, fees on the childchain and the actual ETH transferred from Alice to Bob.
+				If you want to run the ERC20 examples, make sure the token address is recorded in your <code>.env</code> and either Alice or Bob has a balance on the rootchain.</p>
+				<a href="#running-the-examples" id="running-the-examples" style="color: inherit; text-decoration: none;">
+					<h4>Running the Examples</h4>
+				</a>
+				<p>You can find example code inside the <code>examples</code> folder. </p>
+				<p>To run the examples:</p>
+				<ul>
+					<li><p><code>npm install</code> from root of <code>omg-js</code>.</p>
+					</li>
+					<li><p>Step inside the <code>/examples</code> directory.</p>
+					</li>
+					<li><p>Run <code>npm install</code>.</p>
+					</li>
+					<li><p>Create <code>.env</code> file inside the root of the <code>/examples</code> directory with the appropriate values (see <code>/examples/env.example</code> for an example)</p>
+					</li>
+					<li><p>Refer to below explanation of <code>.env</code> variables</p>
+						<pre><code>ETH_NODE=                           &lt;entry point <span class="hljs-keyword">to</span> an ethereum node&gt;
+WATCHER_URL=                        &lt;url of an informational watcher&gt;
+WATCHER_PROXY_URL=                  &lt;*optional*<span class="hljs-built_in"> proxy server </span><span class="hljs-keyword">to</span> catch all watcher requests&gt;
+PLASMAFRAMEWORK_CONTRACT_ADDRESS=   &lt;address of the plasma_framework contract&gt;
+ERC20_CONTRACT_ADDRESS=             &lt;*optional*<span class="hljs-built_in"> address </span>of the erc20 contract that Alice will deposit <span class="hljs-keyword">and</span> transfer <span class="hljs-keyword">to</span> Bob&gt;
+ALICE_ETH_ADDRESS=                  &lt;address of Alice<span class="hljs-string">&#x27;s account&gt;
+ALICE_ETH_ADDRESS_PRIVATE_KEY=      &lt;Alice&#x27;</span>s private key&gt;
+BOB_ETH_ADDRESS=                    &lt;address of Bob<span class="hljs-string">&#x27;s account&gt;
+BOB_ETH_ADDRESS_PRIVATE_KEY=        &lt;Bob&#x27;</span>s private key&gt;
+MILLIS_TO_WAIT_FOR_NEXT_BLOCK=      &lt;interval when checking <span class="hljs-keyword">for</span> block confirmation&gt;
+BLOCKS_TO_WAIT_FOR_TXN=             &lt;amount of blocks <span class="hljs-keyword">to</span> wait <span class="hljs-keyword">for</span> confirmation&gt;</code></pre>
+					</li>
+				</ul>
+				<p>Let&#39;s run through a story between Alice and Bob. In this story, Alice will first deposit some ETH from the root chain into the child chain. Then Alice will transfer some of that ETH to Bob on the child chain. Bob will then exit his funds from the child chain back into the root chain. His root chain balance will be reflected with the extra ETH that Alice sent to him on the child chain.</p>
+				<p><em><em>Note</em></em> you can modify the values of the passed flags to suit your needs</p>
+				<a href="#helpful-scripts" id="helpful-scripts" style="color: inherit; text-decoration: none;">
+					<h4>Helpful Scripts</h4>
+				</a>
+				<p>From the <code>/examples</code> folder run the following scripts:</p>
+				<ul>
+					<li><p><a href="examples/print-balance.js">Get Alice&#39;s and Bob&#39;s balances</a></p>
+						<p>  <code>node print-balance --owner=alice</code><br>  <code>node print-balance --owner=bob</code></p>
+					</li>
+					<li><p><a href="examples/print-utxos.js">Get Alice&#39;s and Bob&#39;s Childchain UTXOs</a></p>
+						<p>  <code>node print-utxos --owner=alice</code><br>  <code>node print-utxos --owner=bob</code></p>
+					</li>
+				</ul>
+				<a href="#eth-examples" id="eth-examples" style="color: inherit; text-decoration: none;">
+					<h4>ETH Examples</h4>
+				</a>
+				<ol>
+					<li><p><a href="examples/deposit-eth.js">Deposit some ETH from Alice&#39;s Rootchain to the Childchain</a></p>
+						<p> <code>node deposit-eth --owner=alice --amount=0.01</code></p>
+					</li>
+					<li><p><a href="examples/transaction-eth.js">Send some ETH from Alice&#39;s Childchain to Bob&#39;s Childchain</a></p>
+						<p> <code>node transaction-eth --from=alice --to=bob --amount=0.001</code></p>
+					</li>
+				</ol>
+				<p>Alice has now sent some ETH to Bob. This should be reflected in Bob&#39;s childchain balance.</p>
+				<ol start="3">
+					<li><p><a href="examples/exit-eth.js">Exit one of Bob&#39;s Childchain UTXOs to the Rootchain</a></p>
+						<p> <code>node exit-eth --owner=bob</code></p>
+					</li>
+				</ol>
+				<p>Checking Bob&#39;s final rootchain balance you will notice it will be a little less than expected. This is because of rootchain gas costs Bob had to pay to exit the childchain.</p>
+				<ol start="4">
+					<li><p><a href="example/inflight-exit-eth.js">Bob starts and piggyback&#39;s an inflight exit for his ouput on a transaction sent by Alice</a></p>
+						<p> <code>node inflight-exit-eth --from=alice --to=bob --amount=0.01</code></p>
+					</li>
+				</ol>
+				<a href="#erc20-examples" id="erc20-examples" style="color: inherit; text-decoration: none;">
+					<h4>ERC20 Examples</h4>
+				</a>
+				<p>Before we begin, we need to deploy and mint some ERC20 tokens.
+				From the examples folder run the following command:</p>
+				<pre><code>npm <span class="hljs-builtin-name">run</span> deploy-test-erc20 --prefix <span class="hljs-built_in">..</span>/packages/integration-tests</code></pre>
+				<p>Use the ERC20 contract address from the output above to configure <code>ERC20_CONTRACT_ADDRESS</code> in your <code>.env</code> file.</p>
+				<p>Now let&#39;s run through the same story above but for ERC20 deposit/transaction/exit.</p>
+				<ol>
+					<li><p><a href="examples/deposit-erc20.js">Deposit some ERC20 from Alice&#39;s Rootchain to the Childchain</a></p>
+						<p> <code>node deposit-erc20 --owner=alice --amount=10</code></p>
+					</li>
+					<li><p><a href="examples/transaction-erc20.js">Send some ERC20 from Alice&#39;s Childchain to Bob&#39;s Childchain</a></p>
+						<p> <code>node transaction-erc20 --from=alice --to=bob --amount=1</code></p>
+					</li>
+					<li><p><a href="examples/exit-erc20.js">Exit one of Bob&#39;s Childchain ERC20 UTXOs to the Rootchain</a></p>
+						<p> <code>node exit-erc20 --owner=bob</code></p>
+					</li>
+				</ol>
+			</div>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class="globals  ">
+						<a href="globals.html"><em>Globals</em></a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+					<li class=" tsd-kind-class">
+						<a href="classes/omgjs.html" class="tsd-kind-icon">OmgJS</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer>
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited property</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static property</span></li>
+			</ul>
+		</div>
+	</div>
+</footer>
+<div class="overlay"></div>
+<script src="assets/js/main.js"></script>
+</body>
+</html>

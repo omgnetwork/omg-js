@@ -1,0 +1,2035 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>OmgJS | omg-js - v4.0.1-1.0.0</title>
+	<meta name="description" content="Documentation for omg-js - v4.0.1-1.0.0">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="../assets/css/main.css">
+</head>
+<body>
+<header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="../assets/js/search.json" data-base="..">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="../index.html" class="title">omg-js - v4.0.1-1.0.0</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+							<input type="checkbox" id="tsd-filter-externals" checked />
+							<label class="tsd-widget" for="tsd-filter-externals">Externals</label>
+							<input type="checkbox" id="tsd-filter-only-exported" />
+							<label class="tsd-widget" for="tsd-filter-only-exported">Only exported</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<ul class="tsd-breadcrumb">
+				<li>
+					<a href="../globals.html">Globals</a>
+				</li>
+				<li>
+					<a href="omgjs.html">OmgJS</a>
+				</li>
+			</ul>
+			<h1>Class OmgJS</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-comment">
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p>Create an OmgJS object to interact with the OMG Network</p>
+					</div>
+					<pre><code class="language-ts"><span class="hljs-keyword">const</span> omgjs = <span class="hljs-keyword">new</span> OmgJS({
+ plasmaContractAddress: <span class="hljs-string">&#x27;0x123&#x27;</span>,
+ watcherUrl: <span class="hljs-string">&#x27;https://watcherurl&#x27;</span>,
+ web3Provider: <span class="hljs-keyword">new</span> Web3.providers.HTTPProvider(eth_node);
+});</code></pre>
+				</div>
+			</section>
+			<section class="tsd-panel tsd-hierarchy">
+				<h3>Hierarchy</h3>
+				<ul class="tsd-hierarchy">
+					<li>
+						<span class="target">OmgJS</span>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel-group tsd-index-group">
+				<h2>Index</h2>
+				<section class="tsd-panel tsd-index-panel">
+					<div class="tsd-index-content">
+						<section class="tsd-index-section ">
+							<h3>Constructors</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="omgjs.html#constructor" class="tsd-kind-icon">constructor</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Properties</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="omgjs.html#currency" class="tsd-kind-icon">currency</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Methods</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#addexitqueue" class="tsd-kind-icon">add<wbr>Exit<wbr>Queue</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#approveerc20deposit" class="tsd-kind-icon">approveERC20<wbr>Deposit</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#challengeinflightexitinputspent" class="tsd-kind-icon">challenge<wbr>InFlight<wbr>Exit<wbr>Input<wbr>Spent</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#challengeinflightexitnotcanonical" class="tsd-kind-icon">challenge<wbr>InFlight<wbr>Exit<wbr>Not<wbr>Canonical</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#challengeinflightexitoutputspent" class="tsd-kind-icon">challenge<wbr>InFlight<wbr>Exit<wbr>Output<wbr>Spent</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#challengestandardexit" class="tsd-kind-icon">challenge<wbr>Standard<wbr>Exit</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#createtransaction" class="tsd-kind-icon">create<wbr>Transaction</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#createtransactionbody" class="tsd-kind-icon">create<wbr>Transaction<wbr>Body</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#decodedeposit" class="tsd-kind-icon">decode<wbr>Deposit</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#decodemetadata" class="tsd-kind-icon">decode<wbr>Metadata</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#decodetransaction" class="tsd-kind-icon">decode<wbr>Transaction</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#decodeutxopos" class="tsd-kind-icon">decode<wbr>Utxo<wbr>Pos</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#deletenonpiggybackedinflightexit" class="tsd-kind-icon">delete<wbr>Non<wbr>Piggybacked<wbr>InFlight<wbr>Exit</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#deposit" class="tsd-kind-icon">deposit</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#encodedeposit" class="tsd-kind-icon">encode<wbr>Deposit</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#encodemetadata" class="tsd-kind-icon">encode<wbr>Metadata</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#encodetransaction" class="tsd-kind-icon">encode<wbr>Transaction</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#encodeutxopos" class="tsd-kind-icon">encode<wbr>Utxo<wbr>Pos</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#getbalance" class="tsd-kind-icon">get<wbr>Balance</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#getchallengedata" class="tsd-kind-icon">get<wbr>Challenge<wbr>Data</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#getdepositexitdata" class="tsd-kind-icon">get<wbr>Deposit<wbr>Exit<wbr>Data</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#getdeposits" class="tsd-kind-icon">get<wbr>Deposits</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#getevmerrorreason" class="tsd-kind-icon">getEVMError<wbr>Reason</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#getexitdata" class="tsd-kind-icon">get<wbr>Exit<wbr>Data</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#getexitqueue" class="tsd-kind-icon">get<wbr>Exit<wbr>Queue</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#getexittime" class="tsd-kind-icon">get<wbr>Exit<wbr>Time</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#getfees" class="tsd-kind-icon">get<wbr>Fees</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#getinflightexitdata" class="tsd-kind-icon">get<wbr>InFlight<wbr>Exit<wbr>Data</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#getinflightexitid" class="tsd-kind-icon">get<wbr>InFlight<wbr>Exit<wbr>Id</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#getrootchainerc20balance" class="tsd-kind-icon">get<wbr>RootchainERC20<wbr>Balance</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#getstandardexitid" class="tsd-kind-icon">get<wbr>Standard<wbr>Exit<wbr>Id</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#getstatus" class="tsd-kind-icon">get<wbr>Status</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#gettransaction" class="tsd-kind-icon">get<wbr>Transaction</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#gettransactions" class="tsd-kind-icon">get<wbr>Transactions</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#gettypeddata" class="tsd-kind-icon">get<wbr>Typed<wbr>Data</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#gettypeddataarray" class="tsd-kind-icon">get<wbr>Typed<wbr>Data<wbr>Array</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#getutxos" class="tsd-kind-icon">get<wbr>Utxos</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#hasexitqueue" class="tsd-kind-icon">has<wbr>Exit<wbr>Queue</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#hashtypeddata" class="tsd-kind-icon">hash<wbr>Typed<wbr>Data</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#inflightexitgetcompetitor" class="tsd-kind-icon">in<wbr>Flight<wbr>Exit<wbr>Get<wbr>Competitor</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#inflightexitgetdata" class="tsd-kind-icon">in<wbr>Flight<wbr>Exit<wbr>Get<wbr>Data</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#inflightexitgetinputchallengedata" class="tsd-kind-icon">in<wbr>Flight<wbr>Exit<wbr>Get<wbr>Input<wbr>Challenge<wbr>Data</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#inflightexitgetoutputchallengedata" class="tsd-kind-icon">in<wbr>Flight<wbr>Exit<wbr>Get<wbr>Output<wbr>Challenge<wbr>Data</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#inflightexitprovecanonical" class="tsd-kind-icon">in<wbr>Flight<wbr>Exit<wbr>Prove<wbr>Canonical</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#piggybackinflightexitoninput" class="tsd-kind-icon">piggyback<wbr>InFlight<wbr>Exit<wbr>OnInput</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#piggybackinflightexitonoutput" class="tsd-kind-icon">piggyback<wbr>InFlight<wbr>Exit<wbr>OnOutput</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#processexits" class="tsd-kind-icon">process<wbr>Exits</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#respondtononcanonicalchallenge" class="tsd-kind-icon">respond<wbr>ToNon<wbr>Canonical<wbr>Challenge</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#startinflightexit" class="tsd-kind-icon">start<wbr>InFlight<wbr>Exit</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#startstandardexit" class="tsd-kind-icon">start<wbr>Standard<wbr>Exit</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#waitforchildchainbalance" class="tsd-kind-icon">wait<wbr>For<wbr>Childchain<wbr>Balance</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#waitforrootchaintransaction" class="tsd-kind-icon">wait<wbr>For<wbr>Rootchain<wbr>Transaction</a></li>
+							</ul>
+						</section>
+					</div>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Constructors</h2>
+				<section class="tsd-panel tsd-member tsd-kind-constructor tsd-parent-kind-class">
+					<a name="constructor" class="tsd-anchor"></a>
+					<h3>constructor</h3>
+					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">new <wbr>OmgJS<span class="tsd-signature-symbol">(</span>__namedParameters<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>plasmaContractAddress<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>watcherProxyUrl<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>watcherUrl<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>web3Provider<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Partial</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">HttpProvider</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="omgjs.html" class="tsd-signature-type">OmgJS</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/f7eb363/src/index.ts#L62">src/index.ts:62</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>__namedParameters: <span class="tsd-signature-symbol">{ </span>plasmaContractAddress<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>watcherProxyUrl<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>watcherUrl<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>web3Provider<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Partial</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">HttpProvider</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> }</span></h5>
+									<ul class="tsd-parameters">
+										<li class="tsd-parameter">
+											<h5>plasma<wbr>Contract<wbr>Address<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+											<div class="tsd-comment tsd-typography">
+												<p>the address of the PlasmaFramework contract</p>
+											</div>
+										</li>
+										<li class="tsd-parameter">
+											<h5>watcher<wbr>Proxy<wbr>Url<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+											<div class="tsd-comment tsd-typography">
+												<p><em>optional</em> the url of the watcher security server. If this is set, all security related endpoints would be using from this url instead.</p>
+											</div>
+										</li>
+										<li class="tsd-parameter">
+											<h5>watcher<wbr>Url<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+											<div class="tsd-comment tsd-typography">
+												<p>the url of the watcher-info server (running in both security-critical and informational mode)</p>
+											</div>
+										</li>
+										<li class="tsd-parameter">
+											<h5>web3<wbr>Provider<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Partial</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">HttpProvider</span><span class="tsd-signature-symbol">&gt;</span></h5>
+											<div class="tsd-comment tsd-typography">
+												<p>a web3 http provider</p>
+											</div>
+										</li>
+									</ul>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="omgjs.html" class="tsd-signature-type">OmgJS</a></h4>
+						</li>
+					</ul>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Properties</h2>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
+					<a name="currency" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> currency</h3>
+					<div class="tsd-signature tsd-kind-icon">currency<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>ETH<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>OMG<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">object</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> = Constants.CURRENCY_MAP</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/omisego/omg-js/blob/f7eb363/src/index.ts#L52">src/index.ts:52</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-type-declaration">
+						<h4>Type declaration</h4>
+						<ul class="tsd-parameters">
+							<li class="tsd-parameter">
+								<h5>ETH<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+							</li>
+							<li class="tsd-parameter">
+								<h5>OMG<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">object</span></h5>
+								<ul class="tsd-parameters">
+									<li class="tsd-parameter">
+										<h5>MAINNET<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+									</li>
+								</ul>
+							</li>
+						</ul>
+					</div>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Methods</h2>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="addexitqueue" class="tsd-anchor"></a>
+					<h3>add<wbr>Exit<wbr>Queue</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">add<wbr>Exit<wbr>Queue<span class="tsd-signature-symbol">(</span>__namedParameters<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>token<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>txOptions<span class="tsd-signature-symbol">: </span><a href="../interfaces/itransactionoptions.html" class="tsd-signature-type">ITransactionOptions</a><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/itransactionreceipt.html" class="tsd-signature-type">ITransactionReceipt</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/f7eb363/src/index.ts#L349">src/index.ts:349</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>__namedParameters: <span class="tsd-signature-symbol">{ </span>token<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>txOptions<span class="tsd-signature-symbol">: </span><a href="../interfaces/itransactionoptions.html" class="tsd-signature-type">ITransactionOptions</a><span class="tsd-signature-symbol"> }</span></h5>
+									<ul class="tsd-parameters">
+										<li class="tsd-parameter">
+											<h5>token<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+										</li>
+										<li class="tsd-parameter">
+											<h5>tx<wbr>Options<span class="tsd-signature-symbol">: </span><a href="../interfaces/itransactionoptions.html" class="tsd-signature-type">ITransactionOptions</a></h5>
+										</li>
+									</ul>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/itransactionreceipt.html" class="tsd-signature-type">ITransactionReceipt</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="approveerc20deposit" class="tsd-anchor"></a>
+					<h3>approveERC20<wbr>Deposit</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">approveERC20<wbr>Deposit<span class="tsd-signature-symbol">(</span>__namedParameters<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>amount<span class="tsd-signature-symbol">: </span><a href="../globals.html#icomplexamount" class="tsd-signature-type">IComplexAmount</a><span class="tsd-signature-symbol">; </span>erc20Address<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>txOptions<span class="tsd-signature-symbol">: </span><a href="../interfaces/itransactionoptions.html" class="tsd-signature-type">ITransactionOptions</a><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/itransactionreceipt.html" class="tsd-signature-type">ITransactionReceipt</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/f7eb363/src/index.ts#L220">src/index.ts:220</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>__namedParameters: <span class="tsd-signature-symbol">{ </span>amount<span class="tsd-signature-symbol">: </span><a href="../globals.html#icomplexamount" class="tsd-signature-type">IComplexAmount</a><span class="tsd-signature-symbol">; </span>erc20Address<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>txOptions<span class="tsd-signature-symbol">: </span><a href="../interfaces/itransactionoptions.html" class="tsd-signature-type">ITransactionOptions</a><span class="tsd-signature-symbol"> }</span></h5>
+									<ul class="tsd-parameters">
+										<li class="tsd-parameter">
+											<h5>amount<span class="tsd-signature-symbol">: </span><a href="../globals.html#icomplexamount" class="tsd-signature-type">IComplexAmount</a></h5>
+										</li>
+										<li class="tsd-parameter">
+											<h5>erc20<wbr>Address<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+										</li>
+										<li class="tsd-parameter">
+											<h5>tx<wbr>Options<span class="tsd-signature-symbol">: </span><a href="../interfaces/itransactionoptions.html" class="tsd-signature-type">ITransactionOptions</a></h5>
+										</li>
+									</ul>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/itransactionreceipt.html" class="tsd-signature-type">ITransactionReceipt</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="challengeinflightexitinputspent" class="tsd-anchor"></a>
+					<h3>challenge<wbr>InFlight<wbr>Exit<wbr>Input<wbr>Spent</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">challenge<wbr>InFlight<wbr>Exit<wbr>Input<wbr>Spent<span class="tsd-signature-symbol">(</span>__namedParameters<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>challengingTx<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>challengingTxInputIndex<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>challengingTxWitness<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>inFlightTx<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>inFlightTxInputIndex<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>inputTx<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>inputUtxoPos<span class="tsd-signature-symbol">: </span><a href="../globals.html#icomplexamount" class="tsd-signature-type">IComplexAmount</a><span class="tsd-signature-symbol">; </span>txOptions<span class="tsd-signature-symbol">: </span><a href="../interfaces/itransactionoptions.html" class="tsd-signature-type">ITransactionOptions</a><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/itransactionreceipt.html" class="tsd-signature-type">ITransactionReceipt</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/f7eb363/src/index.ts#L478">src/index.ts:478</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>__namedParameters: <span class="tsd-signature-symbol">{ </span>challengingTx<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>challengingTxInputIndex<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>challengingTxWitness<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>inFlightTx<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>inFlightTxInputIndex<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>inputTx<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>inputUtxoPos<span class="tsd-signature-symbol">: </span><a href="../globals.html#icomplexamount" class="tsd-signature-type">IComplexAmount</a><span class="tsd-signature-symbol">; </span>txOptions<span class="tsd-signature-symbol">: </span><a href="../interfaces/itransactionoptions.html" class="tsd-signature-type">ITransactionOptions</a><span class="tsd-signature-symbol"> }</span></h5>
+									<ul class="tsd-parameters">
+										<li class="tsd-parameter">
+											<h5>challenging<wbr>Tx<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+										</li>
+										<li class="tsd-parameter">
+											<h5>challenging<wbr>TxInput<wbr>Index<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+										</li>
+										<li class="tsd-parameter">
+											<h5>challenging<wbr>TxWitness<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+										</li>
+										<li class="tsd-parameter">
+											<h5>in<wbr>Flight<wbr>Tx<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+										</li>
+										<li class="tsd-parameter">
+											<h5>in<wbr>Flight<wbr>TxInput<wbr>Index<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+										</li>
+										<li class="tsd-parameter">
+											<h5>input<wbr>Tx<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+										</li>
+										<li class="tsd-parameter">
+											<h5>input<wbr>Utxo<wbr>Pos<span class="tsd-signature-symbol">: </span><a href="../globals.html#icomplexamount" class="tsd-signature-type">IComplexAmount</a></h5>
+										</li>
+										<li class="tsd-parameter">
+											<h5>tx<wbr>Options<span class="tsd-signature-symbol">: </span><a href="../interfaces/itransactionoptions.html" class="tsd-signature-type">ITransactionOptions</a></h5>
+										</li>
+									</ul>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/itransactionreceipt.html" class="tsd-signature-type">ITransactionReceipt</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="challengeinflightexitnotcanonical" class="tsd-anchor"></a>
+					<h3>challenge<wbr>InFlight<wbr>Exit<wbr>Not<wbr>Canonical</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">challenge<wbr>InFlight<wbr>Exit<wbr>Not<wbr>Canonical<span class="tsd-signature-symbol">(</span>__namedParameters<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>competingTx<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>competingTxInclusionProof<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>competingTxInputIndex<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>competingTxPos<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">BN</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"0x"</span><span class="tsd-signature-symbol">; </span>competingTxWitness<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>inFlightTx<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>inFlightTxInputIndex<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>inputTx<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>inputUtxoPos<span class="tsd-signature-symbol">: </span><a href="../globals.html#icomplexamount" class="tsd-signature-type">IComplexAmount</a><span class="tsd-signature-symbol">; </span>txOptions<span class="tsd-signature-symbol">: </span><a href="../interfaces/itransactionoptions.html" class="tsd-signature-type">ITransactionOptions</a><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/itransactionreceipt.html" class="tsd-signature-type">ITransactionReceipt</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/f7eb363/src/index.ts#L420">src/index.ts:420</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>__namedParameters: <span class="tsd-signature-symbol">{ </span>competingTx<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>competingTxInclusionProof<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>competingTxInputIndex<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>competingTxPos<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">BN</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"0x"</span><span class="tsd-signature-symbol">; </span>competingTxWitness<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>inFlightTx<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>inFlightTxInputIndex<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>inputTx<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>inputUtxoPos<span class="tsd-signature-symbol">: </span><a href="../globals.html#icomplexamount" class="tsd-signature-type">IComplexAmount</a><span class="tsd-signature-symbol">; </span>txOptions<span class="tsd-signature-symbol">: </span><a href="../interfaces/itransactionoptions.html" class="tsd-signature-type">ITransactionOptions</a><span class="tsd-signature-symbol"> }</span></h5>
+									<ul class="tsd-parameters">
+										<li class="tsd-parameter">
+											<h5>competing<wbr>Tx<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+										</li>
+										<li class="tsd-parameter">
+											<h5>competing<wbr>TxInclusion<wbr>Proof<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+										</li>
+										<li class="tsd-parameter">
+											<h5>competing<wbr>TxInput<wbr>Index<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+										</li>
+										<li class="tsd-parameter">
+											<h5>competing<wbr>TxPos<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">BN</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"0x"</span></h5>
+										</li>
+										<li class="tsd-parameter">
+											<h5>competing<wbr>TxWitness<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+										</li>
+										<li class="tsd-parameter">
+											<h5>in<wbr>Flight<wbr>Tx<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+										</li>
+										<li class="tsd-parameter">
+											<h5>in<wbr>Flight<wbr>TxInput<wbr>Index<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+										</li>
+										<li class="tsd-parameter">
+											<h5>input<wbr>Tx<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+										</li>
+										<li class="tsd-parameter">
+											<h5>input<wbr>Utxo<wbr>Pos<span class="tsd-signature-symbol">: </span><a href="../globals.html#icomplexamount" class="tsd-signature-type">IComplexAmount</a></h5>
+										</li>
+										<li class="tsd-parameter">
+											<h5>tx<wbr>Options<span class="tsd-signature-symbol">: </span><a href="../interfaces/itransactionoptions.html" class="tsd-signature-type">ITransactionOptions</a></h5>
+										</li>
+									</ul>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/itransactionreceipt.html" class="tsd-signature-type">ITransactionReceipt</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="challengeinflightexitoutputspent" class="tsd-anchor"></a>
+					<h3>challenge<wbr>InFlight<wbr>Exit<wbr>Output<wbr>Spent</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">challenge<wbr>InFlight<wbr>Exit<wbr>Output<wbr>Spent<span class="tsd-signature-symbol">(</span>__namedParameters<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>challengingTx<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>challengingTxInputIndex<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>challengingTxWitness<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>inFlightTx<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>inFlightTxInclusionProof<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>inFlightTxOutputPos<span class="tsd-signature-symbol">: </span><a href="../globals.html#icomplexamount" class="tsd-signature-type">IComplexAmount</a><span class="tsd-signature-symbol">; </span>txOptions<span class="tsd-signature-symbol">: </span><a href="../interfaces/itransactionoptions.html" class="tsd-signature-type">ITransactionOptions</a><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/itransactionreceipt.html" class="tsd-signature-type">ITransactionReceipt</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/f7eb363/src/index.ts#L510">src/index.ts:510</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>__namedParameters: <span class="tsd-signature-symbol">{ </span>challengingTx<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>challengingTxInputIndex<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>challengingTxWitness<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>inFlightTx<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>inFlightTxInclusionProof<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>inFlightTxOutputPos<span class="tsd-signature-symbol">: </span><a href="../globals.html#icomplexamount" class="tsd-signature-type">IComplexAmount</a><span class="tsd-signature-symbol">; </span>txOptions<span class="tsd-signature-symbol">: </span><a href="../interfaces/itransactionoptions.html" class="tsd-signature-type">ITransactionOptions</a><span class="tsd-signature-symbol"> }</span></h5>
+									<ul class="tsd-parameters">
+										<li class="tsd-parameter">
+											<h5>challenging<wbr>Tx<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+										</li>
+										<li class="tsd-parameter">
+											<h5>challenging<wbr>TxInput<wbr>Index<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+										</li>
+										<li class="tsd-parameter">
+											<h5>challenging<wbr>TxWitness<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+										</li>
+										<li class="tsd-parameter">
+											<h5>in<wbr>Flight<wbr>Tx<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+										</li>
+										<li class="tsd-parameter">
+											<h5>in<wbr>Flight<wbr>TxInclusion<wbr>Proof<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+										</li>
+										<li class="tsd-parameter">
+											<h5>in<wbr>Flight<wbr>TxOutput<wbr>Pos<span class="tsd-signature-symbol">: </span><a href="../globals.html#icomplexamount" class="tsd-signature-type">IComplexAmount</a></h5>
+										</li>
+										<li class="tsd-parameter">
+											<h5>tx<wbr>Options<span class="tsd-signature-symbol">: </span><a href="../interfaces/itransactionoptions.html" class="tsd-signature-type">ITransactionOptions</a></h5>
+										</li>
+									</ul>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/itransactionreceipt.html" class="tsd-signature-type">ITransactionReceipt</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="challengestandardexit" class="tsd-anchor"></a>
+					<h3>challenge<wbr>Standard<wbr>Exit</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">challenge<wbr>Standard<wbr>Exit<span class="tsd-signature-symbol">(</span>__namedParameters<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>challengeTx<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>challengeTxSig<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>exitingTx<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>inputIndex<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>standardExitId<span class="tsd-signature-symbol">: </span><a href="../globals.html#icomplexamount" class="tsd-signature-type">IComplexAmount</a><span class="tsd-signature-symbol">; </span>txOptions<span class="tsd-signature-symbol">: </span><a href="../interfaces/itransactionoptions.html" class="tsd-signature-type">ITransactionOptions</a><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/itransactionreceipt.html" class="tsd-signature-type">ITransactionReceipt</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/f7eb363/src/index.ts#L301">src/index.ts:301</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>__namedParameters: <span class="tsd-signature-symbol">{ </span>challengeTx<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>challengeTxSig<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>exitingTx<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>inputIndex<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>standardExitId<span class="tsd-signature-symbol">: </span><a href="../globals.html#icomplexamount" class="tsd-signature-type">IComplexAmount</a><span class="tsd-signature-symbol">; </span>txOptions<span class="tsd-signature-symbol">: </span><a href="../interfaces/itransactionoptions.html" class="tsd-signature-type">ITransactionOptions</a><span class="tsd-signature-symbol"> }</span></h5>
+									<ul class="tsd-parameters">
+										<li class="tsd-parameter">
+											<h5>challenge<wbr>Tx<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+										</li>
+										<li class="tsd-parameter">
+											<h5>challenge<wbr>TxSig<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+										</li>
+										<li class="tsd-parameter">
+											<h5>exiting<wbr>Tx<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+										</li>
+										<li class="tsd-parameter">
+											<h5>input<wbr>Index<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+										</li>
+										<li class="tsd-parameter">
+											<h5>standard<wbr>Exit<wbr>Id<span class="tsd-signature-symbol">: </span><a href="../globals.html#icomplexamount" class="tsd-signature-type">IComplexAmount</a></h5>
+										</li>
+										<li class="tsd-parameter">
+											<h5>tx<wbr>Options<span class="tsd-signature-symbol">: </span><a href="../interfaces/itransactionoptions.html" class="tsd-signature-type">ITransactionOptions</a></h5>
+										</li>
+									</ul>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/itransactionreceipt.html" class="tsd-signature-type">ITransactionReceipt</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="createtransaction" class="tsd-anchor"></a>
+					<h3>create<wbr>Transaction</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">create<wbr>Transaction<span class="tsd-signature-symbol">(</span>__namedParameters<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>feeCurrency<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>metadata<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>owner<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>payments<span class="tsd-signature-symbol">: </span><a href="../interfaces/ipayment.html" class="tsd-signature-type">IPayment</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/icreatedtransactions.html" class="tsd-signature-type">ICreatedTransactions</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/f7eb363/src/index.ts#L608">src/index.ts:608</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>__namedParameters: <span class="tsd-signature-symbol">{ </span>feeCurrency<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>metadata<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>owner<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>payments<span class="tsd-signature-symbol">: </span><a href="../interfaces/ipayment.html" class="tsd-signature-type">IPayment</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> }</span></h5>
+									<ul class="tsd-parameters">
+										<li class="tsd-parameter">
+											<h5>fee<wbr>Currency<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+										</li>
+										<li class="tsd-parameter">
+											<h5>metadata<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+										</li>
+										<li class="tsd-parameter">
+											<h5>owner<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+										</li>
+										<li class="tsd-parameter">
+											<h5>payments<span class="tsd-signature-symbol">: </span><a href="../interfaces/ipayment.html" class="tsd-signature-type">IPayment</a><span class="tsd-signature-symbol">[]</span></h5>
+										</li>
+									</ul>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/icreatedtransactions.html" class="tsd-signature-type">ICreatedTransactions</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="createtransactionbody" class="tsd-anchor"></a>
+					<h3>create<wbr>Transaction<wbr>Body</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">create<wbr>Transaction<wbr>Body<span class="tsd-signature-symbol">(</span>__namedParameters<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>fee<span class="tsd-signature-symbol">: </span><a href="../interfaces/ifeedetail.html" class="tsd-signature-type">IFeeDetail</a><span class="tsd-signature-symbol">; </span>fromAddress<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>fromUtxos<span class="tsd-signature-symbol">: </span><a href="../interfaces/iutxo.html" class="tsd-signature-type">IUTXO</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">; </span>metadata<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>payments<span class="tsd-signature-symbol">: </span><a href="../interfaces/ipayment.html" class="tsd-signature-type">IPayment</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Partial</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/itransactionbody.html" class="tsd-signature-type">ITransactionBody</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/f7eb363/src/index.ts#L759">src/index.ts:759</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>__namedParameters: <span class="tsd-signature-symbol">{ </span>fee<span class="tsd-signature-symbol">: </span><a href="../interfaces/ifeedetail.html" class="tsd-signature-type">IFeeDetail</a><span class="tsd-signature-symbol">; </span>fromAddress<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>fromUtxos<span class="tsd-signature-symbol">: </span><a href="../interfaces/iutxo.html" class="tsd-signature-type">IUTXO</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">; </span>metadata<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>payments<span class="tsd-signature-symbol">: </span><a href="../interfaces/ipayment.html" class="tsd-signature-type">IPayment</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> }</span></h5>
+									<ul class="tsd-parameters">
+										<li class="tsd-parameter">
+											<h5>fee<span class="tsd-signature-symbol">: </span><a href="../interfaces/ifeedetail.html" class="tsd-signature-type">IFeeDetail</a></h5>
+										</li>
+										<li class="tsd-parameter">
+											<h5>from<wbr>Address<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+										</li>
+										<li class="tsd-parameter">
+											<h5>from<wbr>Utxos<span class="tsd-signature-symbol">: </span><a href="../interfaces/iutxo.html" class="tsd-signature-type">IUTXO</a><span class="tsd-signature-symbol">[]</span></h5>
+										</li>
+										<li class="tsd-parameter">
+											<h5>metadata<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+										</li>
+										<li class="tsd-parameter">
+											<h5>payments<span class="tsd-signature-symbol">: </span><a href="../interfaces/ipayment.html" class="tsd-signature-type">IPayment</a><span class="tsd-signature-symbol">[]</span></h5>
+										</li>
+									</ul>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Partial</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/itransactionbody.html" class="tsd-signature-type">ITransactionBody</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="decodedeposit" class="tsd-anchor"></a>
+					<h3>decode<wbr>Deposit</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">decode<wbr>Deposit<span class="tsd-signature-symbol">(</span>encodedDeposit<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/ideposittransaction.html" class="tsd-signature-type">IDepositTransaction</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/f7eb363/src/index.ts#L149">src/index.ts:149</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>encodedDeposit: <span class="tsd-signature-type">string</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="../interfaces/ideposittransaction.html" class="tsd-signature-type">IDepositTransaction</a></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="decodemetadata" class="tsd-anchor"></a>
+					<h3>decode<wbr>Metadata</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">decode<wbr>Metadata<span class="tsd-signature-symbol">(</span>metadata<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/f7eb363/src/index.ts#L213">src/index.ts:213</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>metadata: <span class="tsd-signature-type">string</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="decodetransaction" class="tsd-anchor"></a>
+					<h3>decode<wbr>Transaction</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">decode<wbr>Transaction<span class="tsd-signature-symbol">(</span>encodedTransaction<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/itransactionbody.html" class="tsd-signature-type">ITransactionBody</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/f7eb363/src/index.ts#L185">src/index.ts:185</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>encodedTransaction: <span class="tsd-signature-type">string</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="../interfaces/itransactionbody.html" class="tsd-signature-type">ITransactionBody</a></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="decodeutxopos" class="tsd-anchor"></a>
+					<h3>decode<wbr>Utxo<wbr>Pos</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">decode<wbr>Utxo<wbr>Pos<span class="tsd-signature-symbol">(</span>utxoPos<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Interfaces.IComplexAmount</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Partial</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/iutxo.html" class="tsd-signature-type">IUTXO</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/f7eb363/src/index.ts#L199">src/index.ts:199</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>utxoPos: <span class="tsd-signature-type">Interfaces.IComplexAmount</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Partial</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/iutxo.html" class="tsd-signature-type">IUTXO</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="deletenonpiggybackedinflightexit" class="tsd-anchor"></a>
+					<h3>delete<wbr>Non<wbr>Piggybacked<wbr>InFlight<wbr>Exit</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">delete<wbr>Non<wbr>Piggybacked<wbr>InFlight<wbr>Exit<span class="tsd-signature-symbol">(</span>__namedParameters<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>exitId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>txOptions<span class="tsd-signature-symbol">: </span><a href="../interfaces/itransactionoptions.html" class="tsd-signature-type">ITransactionOptions</a><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/itransactionreceipt.html" class="tsd-signature-type">ITransactionReceipt</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/f7eb363/src/index.ts#L539">src/index.ts:539</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>__namedParameters: <span class="tsd-signature-symbol">{ </span>exitId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>txOptions<span class="tsd-signature-symbol">: </span><a href="../interfaces/itransactionoptions.html" class="tsd-signature-type">ITransactionOptions</a><span class="tsd-signature-symbol"> }</span></h5>
+									<ul class="tsd-parameters">
+										<li class="tsd-parameter">
+											<h5>exit<wbr>Id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+										</li>
+										<li class="tsd-parameter">
+											<h5>tx<wbr>Options<span class="tsd-signature-symbol">: </span><a href="../interfaces/itransactionoptions.html" class="tsd-signature-type">ITransactionOptions</a></h5>
+										</li>
+									</ul>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/itransactionreceipt.html" class="tsd-signature-type">ITransactionReceipt</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="deposit" class="tsd-anchor"></a>
+					<h3>deposit</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">deposit<span class="tsd-signature-symbol">(</span>__namedParameters<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>amount<span class="tsd-signature-symbol">: </span><a href="../globals.html#icomplexamount" class="tsd-signature-type">IComplexAmount</a><span class="tsd-signature-symbol">; </span>currency<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>txOptions<span class="tsd-signature-symbol">: </span><a href="../interfaces/itransactionoptions.html" class="tsd-signature-type">ITransactionOptions</a><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/itransactionreceipt.html" class="tsd-signature-type">ITransactionReceipt</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/f7eb363/src/index.ts#L233">src/index.ts:233</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>__namedParameters: <span class="tsd-signature-symbol">{ </span>amount<span class="tsd-signature-symbol">: </span><a href="../globals.html#icomplexamount" class="tsd-signature-type">IComplexAmount</a><span class="tsd-signature-symbol">; </span>currency<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>txOptions<span class="tsd-signature-symbol">: </span><a href="../interfaces/itransactionoptions.html" class="tsd-signature-type">ITransactionOptions</a><span class="tsd-signature-symbol"> }</span></h5>
+									<ul class="tsd-parameters">
+										<li class="tsd-parameter">
+											<h5>amount<span class="tsd-signature-symbol">: </span><a href="../globals.html#icomplexamount" class="tsd-signature-type">IComplexAmount</a></h5>
+										</li>
+										<li class="tsd-parameter">
+											<h5>currency<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+										</li>
+										<li class="tsd-parameter">
+											<h5>tx<wbr>Options<span class="tsd-signature-symbol">: </span><a href="../interfaces/itransactionoptions.html" class="tsd-signature-type">ITransactionOptions</a></h5>
+										</li>
+									</ul>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/itransactionreceipt.html" class="tsd-signature-type">ITransactionReceipt</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="encodedeposit" class="tsd-anchor"></a>
+					<h3>encode<wbr>Deposit</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">encode<wbr>Deposit<span class="tsd-signature-symbol">(</span>__namedParameters<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>amount<span class="tsd-signature-symbol">: </span><a href="../globals.html#icomplexamount" class="tsd-signature-type">IComplexAmount</a><span class="tsd-signature-symbol">; </span>currency<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>owner<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/f7eb363/src/index.ts#L136">src/index.ts:136</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>__namedParameters: <span class="tsd-signature-symbol">{ </span>amount<span class="tsd-signature-symbol">: </span><a href="../globals.html#icomplexamount" class="tsd-signature-type">IComplexAmount</a><span class="tsd-signature-symbol">; </span>currency<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>owner<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span></h5>
+									<ul class="tsd-parameters">
+										<li class="tsd-parameter">
+											<h5>amount<span class="tsd-signature-symbol">: </span><a href="../globals.html#icomplexamount" class="tsd-signature-type">IComplexAmount</a></h5>
+										</li>
+										<li class="tsd-parameter">
+											<h5>currency<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+										</li>
+										<li class="tsd-parameter">
+											<h5>owner<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+										</li>
+									</ul>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="encodemetadata" class="tsd-anchor"></a>
+					<h3>encode<wbr>Metadata</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">encode<wbr>Metadata<span class="tsd-signature-symbol">(</span>metadata<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/f7eb363/src/index.ts#L206">src/index.ts:206</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>metadata: <span class="tsd-signature-type">string</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="encodetransaction" class="tsd-anchor"></a>
+					<h3>encode<wbr>Transaction</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">encode<wbr>Transaction<span class="tsd-signature-symbol">(</span>__namedParameters<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>inputs<span class="tsd-signature-symbol">: </span><a href="../interfaces/iutxo.html" class="tsd-signature-type">IUTXO</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">; </span>metadata<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>outputs<span class="tsd-signature-symbol">: </span><a href="../interfaces/ioutput.html" class="tsd-signature-type">IOutput</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">; </span>signatures<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">; </span>signed<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">; </span>txData<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>txType<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/f7eb363/src/index.ts#L156">src/index.ts:156</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>__namedParameters: <span class="tsd-signature-symbol">{ </span>inputs<span class="tsd-signature-symbol">: </span><a href="../interfaces/iutxo.html" class="tsd-signature-type">IUTXO</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">; </span>metadata<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>outputs<span class="tsd-signature-symbol">: </span><a href="../interfaces/ioutput.html" class="tsd-signature-type">IOutput</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">; </span>signatures<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">; </span>signed<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">; </span>txData<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>txType<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> }</span></h5>
+									<ul class="tsd-parameters">
+										<li class="tsd-parameter">
+											<h5>inputs<span class="tsd-signature-symbol">: </span><a href="../interfaces/iutxo.html" class="tsd-signature-type">IUTXO</a><span class="tsd-signature-symbol">[]</span></h5>
+										</li>
+										<li class="tsd-parameter">
+											<h5>metadata<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+										</li>
+										<li class="tsd-parameter">
+											<h5>outputs<span class="tsd-signature-symbol">: </span><a href="../interfaces/ioutput.html" class="tsd-signature-type">IOutput</a><span class="tsd-signature-symbol">[]</span></h5>
+										</li>
+										<li class="tsd-parameter">
+											<h5>signatures<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></h5>
+										</li>
+										<li class="tsd-parameter">
+											<h5>signed<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></h5>
+										</li>
+										<li class="tsd-parameter">
+											<h5>tx<wbr>Data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+										</li>
+										<li class="tsd-parameter">
+											<h5>tx<wbr>Type<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+										</li>
+									</ul>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="encodeutxopos" class="tsd-anchor"></a>
+					<h3>encode<wbr>Utxo<wbr>Pos</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">encode<wbr>Utxo<wbr>Pos<span class="tsd-signature-symbol">(</span>utxo<span class="tsd-signature-symbol">: </span><a href="../interfaces/iutxo.html" class="tsd-signature-type">IUTXO</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">BN</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/f7eb363/src/index.ts#L192">src/index.ts:192</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>utxo: <a href="../interfaces/iutxo.html" class="tsd-signature-type">IUTXO</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">BN</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="getbalance" class="tsd-anchor"></a>
+					<h3>get<wbr>Balance</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Balance<span class="tsd-signature-symbol">(</span>address<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/ibalance.html" class="tsd-signature-type">IBalance</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/f7eb363/src/index.ts#L560">src/index.ts:560</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>address: <span class="tsd-signature-type">string</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/ibalance.html" class="tsd-signature-type">IBalance</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="getchallengedata" class="tsd-anchor"></a>
+					<h3>get<wbr>Challenge<wbr>Data</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Challenge<wbr>Data<span class="tsd-signature-symbol">(</span>utxoPos<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/ichallengedata.html" class="tsd-signature-type">IChallengeData</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/f7eb363/src/index.ts#L599">src/index.ts:599</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>utxoPos: <span class="tsd-signature-type">number</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/ichallengedata.html" class="tsd-signature-type">IChallengeData</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="getdepositexitdata" class="tsd-anchor"></a>
+					<h3>get<wbr>Deposit<wbr>Exit<wbr>Data</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Deposit<wbr>Exit<wbr>Data<span class="tsd-signature-symbol">(</span>__namedParameters<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>transactionHash<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/iexitdata.html" class="tsd-signature-type">IExitData</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/f7eb363/src/index.ts#L292">src/index.ts:292</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>__namedParameters: <span class="tsd-signature-symbol">{ </span>transactionHash<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span></h5>
+									<ul class="tsd-parameters">
+										<li class="tsd-parameter">
+											<h5>transaction<wbr>Hash<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+										</li>
+									</ul>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/iexitdata.html" class="tsd-signature-type">IExitData</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="getdeposits" class="tsd-anchor"></a>
+					<h3>get<wbr>Deposits</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Deposits<span class="tsd-signature-symbol">(</span>filters<span class="tsd-signature-symbol">: </span><a href="../interfaces/idepositfilter.html" class="tsd-signature-type">IDepositFilter</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/idepositinfo.html" class="tsd-signature-type">IDepositInfo</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/f7eb363/src/index.ts#L585">src/index.ts:585</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>filters: <a href="../interfaces/idepositfilter.html" class="tsd-signature-type">IDepositFilter</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/idepositinfo.html" class="tsd-signature-type">IDepositInfo</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="getevmerrorreason" class="tsd-anchor"></a>
+					<h3>getEVMError<wbr>Reason</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">getEVMError<wbr>Reason<span class="tsd-signature-symbol">(</span>txHash<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/f7eb363/src/index.ts#L681">src/index.ts:681</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>txHash: <span class="tsd-signature-type">string</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="getexitdata" class="tsd-anchor"></a>
+					<h3>get<wbr>Exit<wbr>Data</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Exit<wbr>Data<span class="tsd-signature-symbol">(</span>utxo<span class="tsd-signature-symbol">: </span><a href="../interfaces/iutxo.html" class="tsd-signature-type">IUTXO</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/iexitdata.html" class="tsd-signature-type">IExitData</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/f7eb363/src/index.ts#L592">src/index.ts:592</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>utxo: <a href="../interfaces/iutxo.html" class="tsd-signature-type">IUTXO</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/iexitdata.html" class="tsd-signature-type">IExitData</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="getexitqueue" class="tsd-anchor"></a>
+					<h3>get<wbr>Exit<wbr>Queue</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Exit<wbr>Queue<span class="tsd-signature-symbol">(</span>token<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/iexitqueue.html" class="tsd-signature-type">IExitQueue</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/f7eb363/src/index.ts#L129">src/index.ts:129</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>token: <span class="tsd-signature-type">string</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/iexitqueue.html" class="tsd-signature-type">IExitQueue</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="getexittime" class="tsd-anchor"></a>
+					<h3>get<wbr>Exit<wbr>Time</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Exit<wbr>Time<span class="tsd-signature-symbol">(</span>__namedParameters<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>exitRequestBlockNumber<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>submissionBlockNumber<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/iexittime.html" class="tsd-signature-type">IExitTime</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/f7eb363/src/index.ts#L118">src/index.ts:118</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>__namedParameters: <span class="tsd-signature-symbol">{ </span>exitRequestBlockNumber<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>submissionBlockNumber<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span></h5>
+									<ul class="tsd-parameters">
+										<li class="tsd-parameter">
+											<h5>exit<wbr>Request<wbr>Block<wbr>Number<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+										</li>
+										<li class="tsd-parameter">
+											<h5>submission<wbr>Block<wbr>Number<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+										</li>
+									</ul>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/iexittime.html" class="tsd-signature-type">IExitTime</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="getfees" class="tsd-anchor"></a>
+					<h3>get<wbr>Fees</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Fees<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/ifeeinfo.html" class="tsd-signature-type">IFeeInfo</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/f7eb363/src/index.ts#L581">src/index.ts:581</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/ifeeinfo.html" class="tsd-signature-type">IFeeInfo</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="getinflightexitdata" class="tsd-anchor"></a>
+					<h3>get<wbr>InFlight<wbr>Exit<wbr>Data</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>InFlight<wbr>Exit<wbr>Data<span class="tsd-signature-symbol">(</span>__namedParameters<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>exitIds<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/iinflightexitdata.html" class="tsd-signature-type">IInflightExitData</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/f7eb363/src/index.ts#L268">src/index.ts:268</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>__namedParameters: <span class="tsd-signature-symbol">{ </span>exitIds<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> }</span></h5>
+									<ul class="tsd-parameters">
+										<li class="tsd-parameter">
+											<h5>exit<wbr>Ids<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></h5>
+										</li>
+									</ul>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/iinflightexitdata.html" class="tsd-signature-type">IInflightExitData</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="getinflightexitid" class="tsd-anchor"></a>
+					<h3>get<wbr>InFlight<wbr>Exit<wbr>Id</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>InFlight<wbr>Exit<wbr>Id<span class="tsd-signature-symbol">(</span>__namedParameters<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>txBytes<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/f7eb363/src/index.ts#L259">src/index.ts:259</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>__namedParameters: <span class="tsd-signature-symbol">{ </span>txBytes<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span></h5>
+									<ul class="tsd-parameters">
+										<li class="tsd-parameter">
+											<h5>tx<wbr>Bytes<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+										</li>
+									</ul>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="getrootchainerc20balance" class="tsd-anchor"></a>
+					<h3>get<wbr>RootchainERC20<wbr>Balance</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>RootchainERC20<wbr>Balance<span class="tsd-signature-symbol">(</span>__namedParameters<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>address<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>erc20Address<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/f7eb363/src/index.ts#L688">src/index.ts:688</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>__namedParameters: <span class="tsd-signature-symbol">{ </span>address<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>erc20Address<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span></h5>
+									<ul class="tsd-parameters">
+										<li class="tsd-parameter">
+											<h5>address<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+										</li>
+										<li class="tsd-parameter">
+											<h5>erc20<wbr>Address<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+										</li>
+									</ul>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="getstandardexitid" class="tsd-anchor"></a>
+					<h3>get<wbr>Standard<wbr>Exit<wbr>Id</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Standard<wbr>Exit<wbr>Id<span class="tsd-signature-symbol">(</span>__namedParameters<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>isDeposit<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">; </span>txBytes<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>utxoPos<span class="tsd-signature-symbol">: </span><a href="../globals.html#icomplexamount" class="tsd-signature-type">IComplexAmount</a><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/f7eb363/src/index.ts#L246">src/index.ts:246</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>__namedParameters: <span class="tsd-signature-symbol">{ </span>isDeposit<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">; </span>txBytes<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>utxoPos<span class="tsd-signature-symbol">: </span><a href="../globals.html#icomplexamount" class="tsd-signature-type">IComplexAmount</a><span class="tsd-signature-symbol"> }</span></h5>
+									<ul class="tsd-parameters">
+										<li class="tsd-parameter">
+											<h5>is<wbr>Deposit<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></h5>
+										</li>
+										<li class="tsd-parameter">
+											<h5>tx<wbr>Bytes<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+										</li>
+										<li class="tsd-parameter">
+											<h5>utxo<wbr>Pos<span class="tsd-signature-symbol">: </span><a href="../globals.html#icomplexamount" class="tsd-signature-type">IComplexAmount</a></h5>
+										</li>
+									</ul>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="getstatus" class="tsd-anchor"></a>
+					<h3>get<wbr>Status</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Status<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/istatus.html" class="tsd-signature-type">IStatus</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/f7eb363/src/index.ts#L628">src/index.ts:628</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/istatus.html" class="tsd-signature-type">IStatus</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="gettransaction" class="tsd-anchor"></a>
+					<h3>get<wbr>Transaction</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Transaction<span class="tsd-signature-symbol">(</span>id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/itransactiondata.html" class="tsd-signature-type">ITransactionData</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/f7eb363/src/index.ts#L567">src/index.ts:567</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>id: <span class="tsd-signature-type">string</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/itransactiondata.html" class="tsd-signature-type">ITransactionData</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="gettransactions" class="tsd-anchor"></a>
+					<h3>get<wbr>Transactions</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Transactions<span class="tsd-signature-symbol">(</span>filters<span class="tsd-signature-symbol">: </span><a href="../interfaces/itransactionfilter.html" class="tsd-signature-type">ITransactionFilter</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/itransactiondata.html" class="tsd-signature-type">ITransactionData</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/f7eb363/src/index.ts#L574">src/index.ts:574</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>filters: <a href="../interfaces/itransactionfilter.html" class="tsd-signature-type">ITransactionFilter</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/itransactiondata.html" class="tsd-signature-type">ITransactionData</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="gettypeddata" class="tsd-anchor"></a>
+					<h3>get<wbr>Typed<wbr>Data</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Typed<wbr>Data<span class="tsd-signature-symbol">(</span>transactionBody<span class="tsd-signature-symbol">: </span><a href="../interfaces/itransactionbody.html" class="tsd-signature-type">ITransactionBody</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/itypeddata.html" class="tsd-signature-type">ITypedData</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/f7eb363/src/index.ts#L746">src/index.ts:746</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>transactionBody: <a href="../interfaces/itransactionbody.html" class="tsd-signature-type">ITransactionBody</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="../interfaces/itypeddata.html" class="tsd-signature-type">ITypedData</a></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="gettypeddataarray" class="tsd-anchor"></a>
+					<h3>get<wbr>Typed<wbr>Data<wbr>Array</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Typed<wbr>Data<wbr>Array<span class="tsd-signature-symbol">(</span>typedDataMessage<span class="tsd-signature-symbol">: </span><a href="../interfaces/itypeddatamessage.html" class="tsd-signature-type">ITypedDataMessage</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/f7eb363/src/index.ts#L753">src/index.ts:753</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>typedDataMessage: <a href="../interfaces/itypeddatamessage.html" class="tsd-signature-type">ITypedDataMessage</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="getutxos" class="tsd-anchor"></a>
+					<h3>get<wbr>Utxos</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Utxos<span class="tsd-signature-symbol">(</span>address<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/iutxo.html" class="tsd-signature-type">IUTXO</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/f7eb363/src/index.ts#L553">src/index.ts:553</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>address: <span class="tsd-signature-type">string</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/iutxo.html" class="tsd-signature-type">IUTXO</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="hasexitqueue" class="tsd-anchor"></a>
+					<h3>has<wbr>Exit<wbr>Queue</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">has<wbr>Exit<wbr>Queue<span class="tsd-signature-symbol">(</span>token<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/f7eb363/src/index.ts#L342">src/index.ts:342</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>token: <span class="tsd-signature-type">string</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="hashtypeddata" class="tsd-anchor"></a>
+					<h3>hash<wbr>Typed<wbr>Data</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">hash<wbr>Typed<wbr>Data<span class="tsd-signature-symbol">(</span>typedData<span class="tsd-signature-symbol">: </span><a href="../interfaces/itypeddata.html" class="tsd-signature-type">ITypedData</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Buffer</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/f7eb363/src/index.ts#L739">src/index.ts:739</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>typedData: <a href="../interfaces/itypeddata.html" class="tsd-signature-type">ITypedData</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Buffer</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="inflightexitgetcompetitor" class="tsd-anchor"></a>
+					<h3>in<wbr>Flight<wbr>Exit<wbr>Get<wbr>Competitor</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">in<wbr>Flight<wbr>Exit<wbr>Get<wbr>Competitor<span class="tsd-signature-symbol">(</span>txbytes<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/iinflightexitcompetitor.html" class="tsd-signature-type">IInflightExitCompetitor</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/f7eb363/src/index.ts#L667">src/index.ts:667</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>txbytes: <span class="tsd-signature-type">string</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/iinflightexitcompetitor.html" class="tsd-signature-type">IInflightExitCompetitor</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="inflightexitgetdata" class="tsd-anchor"></a>
+					<h3>in<wbr>Flight<wbr>Exit<wbr>Get<wbr>Data</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">in<wbr>Flight<wbr>Exit<wbr>Get<wbr>Data<span class="tsd-signature-symbol">(</span>txbytes<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/iexitdata.html" class="tsd-signature-type">IExitData</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/f7eb363/src/index.ts#L660">src/index.ts:660</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>txbytes: <span class="tsd-signature-type">string</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/iexitdata.html" class="tsd-signature-type">IExitData</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="inflightexitgetinputchallengedata" class="tsd-anchor"></a>
+					<h3>in<wbr>Flight<wbr>Exit<wbr>Get<wbr>Input<wbr>Challenge<wbr>Data</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">in<wbr>Flight<wbr>Exit<wbr>Get<wbr>Input<wbr>Challenge<wbr>Data<span class="tsd-signature-symbol">(</span>__namedParameters<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>inputIndex<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>txbytes<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/iinflightexitinputchallengedata.html" class="tsd-signature-type">IInflightExitInputChallengeData</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/f7eb363/src/index.ts#L632">src/index.ts:632</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>__namedParameters: <span class="tsd-signature-symbol">{ </span>inputIndex<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>txbytes<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span></h5>
+									<ul class="tsd-parameters">
+										<li class="tsd-parameter">
+											<h5>input<wbr>Index<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+										</li>
+										<li class="tsd-parameter">
+											<h5>txbytes<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+										</li>
+									</ul>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/iinflightexitinputchallengedata.html" class="tsd-signature-type">IInflightExitInputChallengeData</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="inflightexitgetoutputchallengedata" class="tsd-anchor"></a>
+					<h3>in<wbr>Flight<wbr>Exit<wbr>Get<wbr>Output<wbr>Challenge<wbr>Data</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">in<wbr>Flight<wbr>Exit<wbr>Get<wbr>Output<wbr>Challenge<wbr>Data<span class="tsd-signature-symbol">(</span>__namedParameters<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>outputIndex<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>txbytes<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/iinflightexitoutputchallengedata.html" class="tsd-signature-type">IInflightExitOutputChallengeData</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/f7eb363/src/index.ts#L646">src/index.ts:646</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>__namedParameters: <span class="tsd-signature-symbol">{ </span>outputIndex<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>txbytes<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span></h5>
+									<ul class="tsd-parameters">
+										<li class="tsd-parameter">
+											<h5>output<wbr>Index<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+										</li>
+										<li class="tsd-parameter">
+											<h5>txbytes<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+										</li>
+									</ul>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/iinflightexitoutputchallengedata.html" class="tsd-signature-type">IInflightExitOutputChallengeData</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="inflightexitprovecanonical" class="tsd-anchor"></a>
+					<h3>in<wbr>Flight<wbr>Exit<wbr>Prove<wbr>Canonical</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">in<wbr>Flight<wbr>Exit<wbr>Prove<wbr>Canonical<span class="tsd-signature-symbol">(</span>txbytes<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/f7eb363/src/index.ts#L674">src/index.ts:674</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>txbytes: <span class="tsd-signature-type">string</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="piggybackinflightexitoninput" class="tsd-anchor"></a>
+					<h3>piggyback<wbr>InFlight<wbr>Exit<wbr>OnInput</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">piggyback<wbr>InFlight<wbr>Exit<wbr>OnInput<span class="tsd-signature-symbol">(</span>__namedParameters<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>inFlightTx<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>inputIndex<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>txOptions<span class="tsd-signature-symbol">: </span><a href="../interfaces/itransactionoptions.html" class="tsd-signature-type">ITransactionOptions</a><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/itransactionreceipt.html" class="tsd-signature-type">ITransactionReceipt</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/f7eb363/src/index.ts#L403">src/index.ts:403</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>__namedParameters: <span class="tsd-signature-symbol">{ </span>inFlightTx<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>inputIndex<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>txOptions<span class="tsd-signature-symbol">: </span><a href="../interfaces/itransactionoptions.html" class="tsd-signature-type">ITransactionOptions</a><span class="tsd-signature-symbol"> }</span></h5>
+									<ul class="tsd-parameters">
+										<li class="tsd-parameter">
+											<h5>in<wbr>Flight<wbr>Tx<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+										</li>
+										<li class="tsd-parameter">
+											<h5>input<wbr>Index<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+										</li>
+										<li class="tsd-parameter">
+											<h5>tx<wbr>Options<span class="tsd-signature-symbol">: </span><a href="../interfaces/itransactionoptions.html" class="tsd-signature-type">ITransactionOptions</a></h5>
+										</li>
+									</ul>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/itransactionreceipt.html" class="tsd-signature-type">ITransactionReceipt</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="piggybackinflightexitonoutput" class="tsd-anchor"></a>
+					<h3>piggyback<wbr>InFlight<wbr>Exit<wbr>OnOutput</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">piggyback<wbr>InFlight<wbr>Exit<wbr>OnOutput<span class="tsd-signature-symbol">(</span>__namedParameters<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>inFlightTx<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>outputIndex<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>txOptions<span class="tsd-signature-symbol">: </span><a href="../interfaces/itransactionoptions.html" class="tsd-signature-type">ITransactionOptions</a><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/itransactionreceipt.html" class="tsd-signature-type">ITransactionReceipt</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/f7eb363/src/index.ts#L386">src/index.ts:386</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>__namedParameters: <span class="tsd-signature-symbol">{ </span>inFlightTx<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>outputIndex<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>txOptions<span class="tsd-signature-symbol">: </span><a href="../interfaces/itransactionoptions.html" class="tsd-signature-type">ITransactionOptions</a><span class="tsd-signature-symbol"> }</span></h5>
+									<ul class="tsd-parameters">
+										<li class="tsd-parameter">
+											<h5>in<wbr>Flight<wbr>Tx<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+										</li>
+										<li class="tsd-parameter">
+											<h5>output<wbr>Index<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+										</li>
+										<li class="tsd-parameter">
+											<h5>tx<wbr>Options<span class="tsd-signature-symbol">: </span><a href="../interfaces/itransactionoptions.html" class="tsd-signature-type">ITransactionOptions</a></h5>
+										</li>
+									</ul>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/itransactionreceipt.html" class="tsd-signature-type">ITransactionReceipt</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="processexits" class="tsd-anchor"></a>
+					<h3>process<wbr>Exits</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">process<wbr>Exits<span class="tsd-signature-symbol">(</span>__namedParameters<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>exitId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>maxExitsToProcess<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>token<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>txOptions<span class="tsd-signature-symbol">: </span><a href="../interfaces/itransactionoptions.html" class="tsd-signature-type">ITransactionOptions</a><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/itransactionreceipt.html" class="tsd-signature-type">ITransactionReceipt</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/f7eb363/src/index.ts#L327">src/index.ts:327</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>__namedParameters: <span class="tsd-signature-symbol">{ </span>exitId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>maxExitsToProcess<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>token<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>txOptions<span class="tsd-signature-symbol">: </span><a href="../interfaces/itransactionoptions.html" class="tsd-signature-type">ITransactionOptions</a><span class="tsd-signature-symbol"> }</span></h5>
+									<ul class="tsd-parameters">
+										<li class="tsd-parameter">
+											<h5>exit<wbr>Id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span></h5>
+										</li>
+										<li class="tsd-parameter">
+											<h5>max<wbr>Exits<wbr>ToProcess<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+										</li>
+										<li class="tsd-parameter">
+											<h5>token<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+										</li>
+										<li class="tsd-parameter">
+											<h5>tx<wbr>Options<span class="tsd-signature-symbol">: </span><a href="../interfaces/itransactionoptions.html" class="tsd-signature-type">ITransactionOptions</a></h5>
+										</li>
+									</ul>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/itransactionreceipt.html" class="tsd-signature-type">ITransactionReceipt</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="respondtononcanonicalchallenge" class="tsd-anchor"></a>
+					<h3>respond<wbr>ToNon<wbr>Canonical<wbr>Challenge</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">respond<wbr>ToNon<wbr>Canonical<wbr>Challenge<span class="tsd-signature-symbol">(</span>__namedParameters<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>inFlightTx<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>inFlightTxInclusionProof<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>inFlightTxPos<span class="tsd-signature-symbol">: </span><a href="../globals.html#icomplexamount" class="tsd-signature-type">IComplexAmount</a><span class="tsd-signature-symbol">; </span>txOptions<span class="tsd-signature-symbol">: </span><a href="../interfaces/itransactionoptions.html" class="tsd-signature-type">ITransactionOptions</a><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/itransactionreceipt.html" class="tsd-signature-type">ITransactionReceipt</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/f7eb363/src/index.ts#L458">src/index.ts:458</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>__namedParameters: <span class="tsd-signature-symbol">{ </span>inFlightTx<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>inFlightTxInclusionProof<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>inFlightTxPos<span class="tsd-signature-symbol">: </span><a href="../globals.html#icomplexamount" class="tsd-signature-type">IComplexAmount</a><span class="tsd-signature-symbol">; </span>txOptions<span class="tsd-signature-symbol">: </span><a href="../interfaces/itransactionoptions.html" class="tsd-signature-type">ITransactionOptions</a><span class="tsd-signature-symbol"> }</span></h5>
+									<ul class="tsd-parameters">
+										<li class="tsd-parameter">
+											<h5>in<wbr>Flight<wbr>Tx<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+										</li>
+										<li class="tsd-parameter">
+											<h5>in<wbr>Flight<wbr>TxInclusion<wbr>Proof<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+										</li>
+										<li class="tsd-parameter">
+											<h5>in<wbr>Flight<wbr>TxPos<span class="tsd-signature-symbol">: </span><a href="../globals.html#icomplexamount" class="tsd-signature-type">IComplexAmount</a></h5>
+										</li>
+										<li class="tsd-parameter">
+											<h5>tx<wbr>Options<span class="tsd-signature-symbol">: </span><a href="../interfaces/itransactionoptions.html" class="tsd-signature-type">ITransactionOptions</a></h5>
+										</li>
+									</ul>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/itransactionreceipt.html" class="tsd-signature-type">ITransactionReceipt</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="startinflightexit" class="tsd-anchor"></a>
+					<h3>start<wbr>InFlight<wbr>Exit</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">start<wbr>InFlight<wbr>Exit<span class="tsd-signature-symbol">(</span>__namedParameters<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>inFlightTx<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>inFlightTxSigs<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">; </span>inputTxs<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">; </span>inputTxsInclusionProofs<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">; </span>inputUtxosPos<span class="tsd-signature-symbol">: </span><a href="../globals.html#icomplexamount" class="tsd-signature-type">IComplexAmount</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">; </span>txOptions<span class="tsd-signature-symbol">: </span><a href="../interfaces/itransactionoptions.html" class="tsd-signature-type">ITransactionOptions</a><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/itransactionreceipt.html" class="tsd-signature-type">ITransactionReceipt</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/f7eb363/src/index.ts#L360">src/index.ts:360</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>__namedParameters: <span class="tsd-signature-symbol">{ </span>inFlightTx<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>inFlightTxSigs<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">; </span>inputTxs<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">; </span>inputTxsInclusionProofs<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">; </span>inputUtxosPos<span class="tsd-signature-symbol">: </span><a href="../globals.html#icomplexamount" class="tsd-signature-type">IComplexAmount</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">; </span>txOptions<span class="tsd-signature-symbol">: </span><a href="../interfaces/itransactionoptions.html" class="tsd-signature-type">ITransactionOptions</a><span class="tsd-signature-symbol"> }</span></h5>
+									<ul class="tsd-parameters">
+										<li class="tsd-parameter">
+											<h5>in<wbr>Flight<wbr>Tx<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+										</li>
+										<li class="tsd-parameter">
+											<h5>in<wbr>Flight<wbr>TxSigs<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></h5>
+										</li>
+										<li class="tsd-parameter">
+											<h5>input<wbr>Txs<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span></h5>
+										</li>
+										<li class="tsd-parameter">
+											<h5>input<wbr>Txs<wbr>Inclusion<wbr>Proofs<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></h5>
+										</li>
+										<li class="tsd-parameter">
+											<h5>input<wbr>Utxos<wbr>Pos<span class="tsd-signature-symbol">: </span><a href="../globals.html#icomplexamount" class="tsd-signature-type">IComplexAmount</a><span class="tsd-signature-symbol">[]</span></h5>
+										</li>
+										<li class="tsd-parameter">
+											<h5>tx<wbr>Options<span class="tsd-signature-symbol">: </span><a href="../interfaces/itransactionoptions.html" class="tsd-signature-type">ITransactionOptions</a></h5>
+										</li>
+									</ul>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/itransactionreceipt.html" class="tsd-signature-type">ITransactionReceipt</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="startstandardexit" class="tsd-anchor"></a>
+					<h3>start<wbr>Standard<wbr>Exit</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">start<wbr>Standard<wbr>Exit<span class="tsd-signature-symbol">(</span>__namedParameters<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>inclusionProof<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>outputTx<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>txOptions<span class="tsd-signature-symbol">: </span><a href="../interfaces/itransactionoptions.html" class="tsd-signature-type">ITransactionOptions</a><span class="tsd-signature-symbol">; </span>utxoPos<span class="tsd-signature-symbol">: </span><a href="../globals.html#icomplexamount" class="tsd-signature-type">IComplexAmount</a><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/itransactionreceipt.html" class="tsd-signature-type">ITransactionReceipt</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/f7eb363/src/index.ts#L277">src/index.ts:277</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>__namedParameters: <span class="tsd-signature-symbol">{ </span>inclusionProof<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>outputTx<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>txOptions<span class="tsd-signature-symbol">: </span><a href="../interfaces/itransactionoptions.html" class="tsd-signature-type">ITransactionOptions</a><span class="tsd-signature-symbol">; </span>utxoPos<span class="tsd-signature-symbol">: </span><a href="../globals.html#icomplexamount" class="tsd-signature-type">IComplexAmount</a><span class="tsd-signature-symbol"> }</span></h5>
+									<ul class="tsd-parameters">
+										<li class="tsd-parameter">
+											<h5>inclusion<wbr>Proof<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+										</li>
+										<li class="tsd-parameter">
+											<h5>output<wbr>Tx<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+										</li>
+										<li class="tsd-parameter">
+											<h5>tx<wbr>Options<span class="tsd-signature-symbol">: </span><a href="../interfaces/itransactionoptions.html" class="tsd-signature-type">ITransactionOptions</a></h5>
+										</li>
+										<li class="tsd-parameter">
+											<h5>utxo<wbr>Pos<span class="tsd-signature-symbol">: </span><a href="../globals.html#icomplexamount" class="tsd-signature-type">IComplexAmount</a></h5>
+										</li>
+									</ul>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/itransactionreceipt.html" class="tsd-signature-type">ITransactionReceipt</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="waitforchildchainbalance" class="tsd-anchor"></a>
+					<h3>wait<wbr>For<wbr>Childchain<wbr>Balance</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">wait<wbr>For<wbr>Childchain<wbr>Balance<span class="tsd-signature-symbol">(</span>__namedParameters<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>address<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>currency<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>expectedAmount<span class="tsd-signature-symbol">: </span><a href="../globals.html#icomplexamount" class="tsd-signature-type">IComplexAmount</a><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/ibalance.html" class="tsd-signature-type">IBalance</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/f7eb363/src/index.ts#L722">src/index.ts:722</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>__namedParameters: <span class="tsd-signature-symbol">{ </span>address<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>currency<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>expectedAmount<span class="tsd-signature-symbol">: </span><a href="../globals.html#icomplexamount" class="tsd-signature-type">IComplexAmount</a><span class="tsd-signature-symbol"> }</span></h5>
+									<ul class="tsd-parameters">
+										<li class="tsd-parameter">
+											<h5>address<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+										</li>
+										<li class="tsd-parameter">
+											<h5>currency<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+										</li>
+										<li class="tsd-parameter">
+											<h5>expected<wbr>Amount<span class="tsd-signature-symbol">: </span><a href="../globals.html#icomplexamount" class="tsd-signature-type">IComplexAmount</a></h5>
+										</li>
+									</ul>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/ibalance.html" class="tsd-signature-type">IBalance</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="waitforrootchaintransaction" class="tsd-anchor"></a>
+					<h3>wait<wbr>For<wbr>Rootchain<wbr>Transaction</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">wait<wbr>For<wbr>Rootchain<wbr>Transaction<span class="tsd-signature-symbol">(</span>__namedParameters<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>blocksToWait<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>checkIntervalMs<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>onCountdown<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span>blocksRemaining<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">; </span>transactionHash<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/itransactionreceipt.html" class="tsd-signature-type">ITransactionReceipt</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/f7eb363/src/index.ts#L702">src/index.ts:702</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>__namedParameters: <span class="tsd-signature-symbol">{ </span>blocksToWait<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>checkIntervalMs<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>onCountdown<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span>blocksRemaining<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">; </span>transactionHash<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span></h5>
+									<ul class="tsd-parameters">
+										<li class="tsd-parameter">
+											<h5>blocks<wbr>ToWait<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+										</li>
+										<li class="tsd-parameter">
+											<h5>check<wbr>Interval<wbr>Ms<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+										</li>
+										<li class="tsd-parameter">
+											<h5>on<wbr>Countdown<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span>blocksRemaining<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span></h5>
+											<ul class="tsd-parameters">
+												<li class="tsd-parameter-signature">
+													<ul class="tsd-signatures tsd-kind-type-literal tsd-parent-kind-variable">
+														<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>blocksRemaining<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+													</ul>
+													<ul class="tsd-descriptions">
+														<li class="tsd-description">
+															<h4 class="tsd-parameters-title">Parameters</h4>
+															<ul class="tsd-parameters">
+																<li>
+																	<h5>blocksRemaining: <span class="tsd-signature-type">number</span></h5>
+																</li>
+															</ul>
+															<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+														</li>
+													</ul>
+												</li>
+											</ul>
+										</li>
+										<li class="tsd-parameter">
+											<h5>transaction<wbr>Hash<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+										</li>
+									</ul>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/itransactionreceipt.html" class="tsd-signature-type">ITransactionReceipt</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+			</section>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class="globals  ">
+						<a href="../globals.html"><em>Globals</em></a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+				</ul>
+				<ul class="current">
+					<li class="current tsd-kind-class">
+						<a href="omgjs.html" class="tsd-kind-icon">OmgJS</a>
+						<ul>
+							<li class=" tsd-kind-constructor tsd-parent-kind-class">
+								<a href="omgjs.html#constructor" class="tsd-kind-icon">constructor</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
+								<a href="omgjs.html#currency" class="tsd-kind-icon">currency</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#addexitqueue" class="tsd-kind-icon">add<wbr>Exit<wbr>Queue</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#approveerc20deposit" class="tsd-kind-icon">approveERC20<wbr>Deposit</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#challengeinflightexitinputspent" class="tsd-kind-icon">challenge<wbr>InFlight<wbr>Exit<wbr>Input<wbr>Spent</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#challengeinflightexitnotcanonical" class="tsd-kind-icon">challenge<wbr>InFlight<wbr>Exit<wbr>Not<wbr>Canonical</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#challengeinflightexitoutputspent" class="tsd-kind-icon">challenge<wbr>InFlight<wbr>Exit<wbr>Output<wbr>Spent</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#challengestandardexit" class="tsd-kind-icon">challenge<wbr>Standard<wbr>Exit</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#createtransaction" class="tsd-kind-icon">create<wbr>Transaction</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#createtransactionbody" class="tsd-kind-icon">create<wbr>Transaction<wbr>Body</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#decodedeposit" class="tsd-kind-icon">decode<wbr>Deposit</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#decodemetadata" class="tsd-kind-icon">decode<wbr>Metadata</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#decodetransaction" class="tsd-kind-icon">decode<wbr>Transaction</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#decodeutxopos" class="tsd-kind-icon">decode<wbr>Utxo<wbr>Pos</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#deletenonpiggybackedinflightexit" class="tsd-kind-icon">delete<wbr>Non<wbr>Piggybacked<wbr>InFlight<wbr>Exit</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#deposit" class="tsd-kind-icon">deposit</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#encodedeposit" class="tsd-kind-icon">encode<wbr>Deposit</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#encodemetadata" class="tsd-kind-icon">encode<wbr>Metadata</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#encodetransaction" class="tsd-kind-icon">encode<wbr>Transaction</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#encodeutxopos" class="tsd-kind-icon">encode<wbr>Utxo<wbr>Pos</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#getbalance" class="tsd-kind-icon">get<wbr>Balance</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#getchallengedata" class="tsd-kind-icon">get<wbr>Challenge<wbr>Data</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#getdepositexitdata" class="tsd-kind-icon">get<wbr>Deposit<wbr>Exit<wbr>Data</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#getdeposits" class="tsd-kind-icon">get<wbr>Deposits</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#getevmerrorreason" class="tsd-kind-icon">getEVMError<wbr>Reason</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#getexitdata" class="tsd-kind-icon">get<wbr>Exit<wbr>Data</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#getexitqueue" class="tsd-kind-icon">get<wbr>Exit<wbr>Queue</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#getexittime" class="tsd-kind-icon">get<wbr>Exit<wbr>Time</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#getfees" class="tsd-kind-icon">get<wbr>Fees</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#getinflightexitdata" class="tsd-kind-icon">get<wbr>InFlight<wbr>Exit<wbr>Data</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#getinflightexitid" class="tsd-kind-icon">get<wbr>InFlight<wbr>Exit<wbr>Id</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#getrootchainerc20balance" class="tsd-kind-icon">get<wbr>RootchainERC20<wbr>Balance</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#getstandardexitid" class="tsd-kind-icon">get<wbr>Standard<wbr>Exit<wbr>Id</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#getstatus" class="tsd-kind-icon">get<wbr>Status</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#gettransaction" class="tsd-kind-icon">get<wbr>Transaction</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#gettransactions" class="tsd-kind-icon">get<wbr>Transactions</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#gettypeddata" class="tsd-kind-icon">get<wbr>Typed<wbr>Data</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#gettypeddataarray" class="tsd-kind-icon">get<wbr>Typed<wbr>Data<wbr>Array</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#getutxos" class="tsd-kind-icon">get<wbr>Utxos</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#hasexitqueue" class="tsd-kind-icon">has<wbr>Exit<wbr>Queue</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#hashtypeddata" class="tsd-kind-icon">hash<wbr>Typed<wbr>Data</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#inflightexitgetcompetitor" class="tsd-kind-icon">in<wbr>Flight<wbr>Exit<wbr>Get<wbr>Competitor</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#inflightexitgetdata" class="tsd-kind-icon">in<wbr>Flight<wbr>Exit<wbr>Get<wbr>Data</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#inflightexitgetinputchallengedata" class="tsd-kind-icon">in<wbr>Flight<wbr>Exit<wbr>Get<wbr>Input<wbr>Challenge<wbr>Data</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#inflightexitgetoutputchallengedata" class="tsd-kind-icon">in<wbr>Flight<wbr>Exit<wbr>Get<wbr>Output<wbr>Challenge<wbr>Data</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#inflightexitprovecanonical" class="tsd-kind-icon">in<wbr>Flight<wbr>Exit<wbr>Prove<wbr>Canonical</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#piggybackinflightexitoninput" class="tsd-kind-icon">piggyback<wbr>InFlight<wbr>Exit<wbr>OnInput</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#piggybackinflightexitonoutput" class="tsd-kind-icon">piggyback<wbr>InFlight<wbr>Exit<wbr>OnOutput</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#processexits" class="tsd-kind-icon">process<wbr>Exits</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#respondtononcanonicalchallenge" class="tsd-kind-icon">respond<wbr>ToNon<wbr>Canonical<wbr>Challenge</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#startinflightexit" class="tsd-kind-icon">start<wbr>InFlight<wbr>Exit</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#startstandardexit" class="tsd-kind-icon">start<wbr>Standard<wbr>Exit</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#waitforchildchainbalance" class="tsd-kind-icon">wait<wbr>For<wbr>Childchain<wbr>Balance</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#waitforrootchaintransaction" class="tsd-kind-icon">wait<wbr>For<wbr>Rootchain<wbr>Transaction</a>
+							</li>
+						</ul>
+					</li>
+				</ul>
+				<ul class="after-current">
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer>
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited property</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static property</span></li>
+			</ul>
+		</div>
+	</div>
+</footer>
+<div class="overlay"></div>
+<script src="../assets/js/main.js"></script>
+</body>
+</html>

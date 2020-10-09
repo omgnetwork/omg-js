@@ -37,6 +37,17 @@ interface IOmgJS {
   web3Provider: Partial<HttpProvider>;
 }
 
+/**
+ * Create an OmgJS object to interact with the OMG Network
+ * 
+ * ```ts
+ * const omgjs = new OmgJS({
+ *  plasmaContractAddress: '0x123',
+ *  watcherUrl: 'https://watcherurl',
+ *  web3Provider: new Web3.providers.HTTPProvider(eth_node);
+ * });
+ * ```
+ * */
 class OmgJS {
   static currency = Constants.CURRENCY_MAP;
 
@@ -50,6 +61,12 @@ class OmgJS {
   private ethVault: ContractsModule.IVault;
   private paymentExitGame: ContractsModule.IPaymentExitGame;
 
+  /**
+   * @param plasmaContractAddress the address of the PlasmaFramework contract
+   * @param watcherUrl the url of the watcher-info server (running in both security-critical and informational mode)
+   * @param watcherProxyUrl *optional* the url of the watcher security server. If this is set, all security related endpoints would be using from this url instead.
+   * @param web3Provider a web3 http provider
+   */
   public constructor({
     plasmaContractAddress,
     watcherUrl,

@@ -13,7 +13,7 @@
   "scripts": {
     "compile": "ttsc",
     "compile:watch": "ttsc -w",
-    "build-docs": "typedoc --out docs /src",
+    "build-docs": "typedoc",
     "lint": "eslint . --ext .js",
     "lint-fix": "eslint . --ext .js --fix",
     "mocha": "mocha --timeout=0 --bail --slow=0 --check-leaks --full-trace",

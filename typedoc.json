@@ -1,0 +1,14 @@
+{
+  "inputFiles": ["./src"],
+  "out": "docs",
+  "mode": "file",
+  "hideGenerator": true,
+  "excludePrivate": true,
+  "excludeProtected": true,
+  "stripInternal": true,
+  "includeVersion": true,
+  "exclude": "**/validators/**",
+  "toc": [
+    "OmgJS"
+  ]
+}

@@ -6,6 +6,7 @@ const LeafSalt = '0x00';
 const NodeSalt = '0x01';
 const NullHash = web3Utils.sha3('\0'.repeat(33));
 
+/** @internal */
 class MerkleNode {
   public data;
   public left;
@@ -18,6 +19,7 @@ class MerkleNode {
   }
 }
 
+/** @internal */
 class MerkleTree {
   public height;
   public leafCount;
