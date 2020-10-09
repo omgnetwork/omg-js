@@ -13,13 +13,14 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License. */
 
-const promiseRetry = require('promise-retry')
-function wait (ms) {
-  console.log(`Waiting for ${ms * 0.00001667} min...`)
-  return new Promise((resolve, reject) => setTimeout(resolve, ms))
+import promiseRetry from 'promise-retry';
+
+export function wait (ms: number): Promise<void> {
+  console.log(`Waiting for ${ms * 0.00001667} min...`);
+  return new Promise((resolve, _reject) => setTimeout(resolve, ms));
 }
 
-async function waitForChallengePeriodToEnd (rootChain) {
+export async function waitForChallengePeriodToEnd (rootChain) {
   const minExitPeriod =
     (await rootChain.plasmaContract.methods.minExitPeriod().call()) * 1000
   const waitMs = Number(minExitPeriod) * 2
@@ -28,7 +29,7 @@ async function waitForChallengePeriodToEnd (rootChain) {
   console.log('Challenge period finished')
 }
 
-async function waitForUtxo (childChain, address, utxo) {
+export async function waitForUtxo (childChain, address, utxo) {
   return promiseRetry(
     async (retry, number) => {
       console.log('waiting for utxo...')
@@ -49,10 +50,4 @@ async function waitForUtxo (childChain, address, utxo) {
       retries: 50
     }
   )
-}
-
-module.exports = {
-  waitForChallengePeriodToEnd,
-  wait,
-  waitForUtxo
 }

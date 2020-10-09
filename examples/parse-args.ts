@@ -1,4 +1,4 @@
-module.exports = function (...keys) {
+function getFlags (...keys): any {
   const argMap = {}
   for (const position in process.argv) {
     const arg = process.argv[position]
@@ -34,3 +34,5 @@ module.exports = function (...keys) {
 
   return argMap
 }
+
+export default getFlags;

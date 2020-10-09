@@ -16,7 +16,7 @@ export interface IBalance {
 };
 
 /** @internal */
-export async function getBalance (address: string): Promise<IBalance> {
+export async function getBalance (address: string): Promise<Array<IBalance>> {
   return Transporter.post({
     url: `${this.watcherUrl}/account.get_balance`,
     body: { address },

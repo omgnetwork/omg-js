@@ -24,6 +24,7 @@ import * as StructHashModule from '@lib/transaction/structHash';
 import * as TransactionBuilderModule from '@lib/transaction/txBuilder';
 import * as SignModule from '@lib/transaction/sign';
 
+import * as Util from '@lib/common/util';
 import * as Constants from '@lib/common/constants';
 import * as Interfaces from '@lib/common/interfaces';
 import * as ContractsModule from '@lib/contracts';
@@ -52,17 +53,26 @@ interface IOmgJS {
  * */
 class OmgJS {
   /**
-   * Helper currency map to easily access certain addresses
+   * Helper currency map
    */
   public static currency = Constants.CURRENCY_MAP;
+
+  /**
+   * Utility functions
+   */
+  public static util = {
+    prefixHex: Util.prefixHex,
+    int192toHex: Util.int192toHex
+  };
+
+  public readonly web3Instance: Web3;
 
   private readonly plasmaContractAddress: string;
   private readonly watcherUrl: string;
   private readonly watcherSecurityUrl: string;
   private readonly watcherProxyUrl: string;
-  private readonly web3Instance: Web3;
   private readonly plasmaContract: Contract;
-
+  
   private erc20Vault: ContractsModule.IVault;
   private ethVault: ContractsModule.IVault;
   private paymentExitGame: ContractsModule.IPaymentExitGame;
@@ -364,10 +374,10 @@ class OmgJS {
     return WatcherAccountModule.getUtxos.call(this, address);
   }
 
-  /** Get the balance of an address */
+  /** Get the balances of an address */
   public async getBalance (
     address: string
-  ): Promise<WatcherAccountModule.IBalance> {
+  ): Promise<Array<WatcherAccountModule.IBalance>> {
     Joi.assert(address, Validators.getBalanceSchema);
     return WatcherAccountModule.getBalance.call(this, address);
   }
