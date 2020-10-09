@@ -33,6 +33,7 @@ import PlasmaFrameworkContract from '@lib/contracts/abi/PlasmaFramework.json';
 interface IOmgJS {
   plasmaContractAddress: string;
   watcherUrl: string;
+  watcherSecurityUrl?: string;
   watcherProxyUrl?: string;
   web3Provider: Partial<HttpProvider>;
 }
@@ -56,6 +57,7 @@ class OmgJS {
 
   private readonly plasmaContractAddress: string;
   private readonly watcherUrl: string;
+  private readonly watcherSecurityUrl: string;
   private readonly watcherProxyUrl: string;
   private readonly web3Instance: Web3;
   private readonly plasmaContract: Contract;
@@ -67,12 +69,14 @@ class OmgJS {
   /**
    * @param plasmaContractAddress the address of the PlasmaFramework contract
    * @param watcherUrl the url of the watcher-info server (running in both security-critical and informational mode)
+   * @param watcherSecurityUrl *optional* the url of the watcher security server. If this is set, all security related endpoints will use this url instead
    * @param watcherProxyUrl *optional* the proxy url for requests made to the watcher server
    * @param web3Provider a web3 http provider
    */
   public constructor({
     plasmaContractAddress,
     watcherUrl,
+    watcherSecurityUrl,
     watcherProxyUrl,
     web3Provider
   }: IOmgJS) {
@@ -85,6 +89,7 @@ class OmgJS {
 
     this.plasmaContractAddress = plasmaContractAddress;
     this.watcherUrl = watcherUrl;
+    this.watcherSecurityUrl = watcherSecurityUrl;
     this.watcherProxyUrl = watcherProxyUrl;
     this.web3Instance = new (Web3 as any)(web3Provider, null, { transactionConfirmationBlocks: 1 });
     this.plasmaContract = new this.web3Instance.eth.Contract(
@@ -410,12 +415,22 @@ class OmgJS {
 
   // NMTODO: add missing childchain signing methods
 
-  /** Create possible transactions using this utility from the Watcher */
+  // NMTODO: name both createtransactions differently to differentiate the two better
+
+  /** Create possible transactions using the utility from the Watcher */
   public async createTransaction (
     args: WatcherTransactionModule.ICreateTransaction
   ): Promise<WatcherTransactionModule.ICreatedTransactions> {
     Joi.assert(args, Validators.createTransactionSchema);
     return WatcherTransactionModule.createTransaction.call(this, args);
+  }
+
+  /** Create a transaction body locally with fine grain control */
+  public createTransactionBody (
+    args: TransactionBuilderModule.ICreateTransactionBody
+  ): Partial<Interfaces.ITransactionBody> {
+    Joi.assert(args, Validators.createTransactionBodySchema);
+    return TransactionBuilderModule.createTransactionBody.call(this, args);
   }
 
   /** Get the status of the Watcher */
@@ -516,14 +531,6 @@ class OmgJS {
     typedDataMessage: TypedDataModule.ITypedDataMessage
   ): Array<any> {
     return EncoderModule.getTypedDataArray.call(this, typedDataMessage);
-  }
-
-  /** Create a transaction body locally with fine grain control */
-  public createTransactionBody (
-    args: TransactionBuilderModule.ICreateTransactionBody
-  ): Partial<Interfaces.ITransactionBody> {
-    Joi.assert(args, Validators.createTransactionBodySchema);
-    return TransactionBuilderModule.createTransactionBody.call(this, args);
   }
 }
 
