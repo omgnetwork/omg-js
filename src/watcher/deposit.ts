@@ -1,7 +1,16 @@
 import * as Interfaces from '@lib/common/interfaces';
 import * as Transporter from '@lib/transport';
 
-export async function getDeposits (filters: Interfaces.IDepositFilter): Promise<Array<Interfaces.IDepositInfo>> {
+export interface IDepositFilter extends Interfaces.IPagination {
+  address?: string;
+};
+
+// NMTODO: figure out this interface
+export interface IDepositInfo {};
+
+export async function getDeposits (
+  filters: IDepositFilter
+): Promise<Array<IDepositInfo>> {
   return Transporter.post({
     url: `${this.watcherUrl}/deposit.all`,
     body: filters,

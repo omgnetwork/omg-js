@@ -2,6 +2,7 @@ import web3Utils from 'web3-utils';
 import promiseRetry from 'promise-retry';
 import BN from 'bn.js';
 
+import * as WatcherAccountModule from '@lib/watcher/account';
 import * as Interfaces from '@lib/common/interfaces';
 import * as Util from '@lib/common/util';
 import * as ContractsModule from '@lib/contracts';
@@ -99,8 +100,8 @@ export async function waitForChildchainBalance ({
   address,
   expectedAmount,
   currency
-}: IWaitForChildchainBalance): Promise<Array<Interfaces.IBalance>> {
-  return promiseRetry(async (retry, number) => {
+}: IWaitForChildchainBalance): Promise<Array<WatcherAccountModule.IBalance>> {
+  return promiseRetry(async (retry, _number) => {
     const resp = await this.getBalance(address);
     if (resp.length === 0) retry();
 

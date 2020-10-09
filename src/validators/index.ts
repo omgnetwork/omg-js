@@ -195,7 +195,7 @@ export const submitTransactionSchema: Joi.Schema = Joi.object({
 export const createTransactionSchema: Joi.Schema = Joi.object({
   owner: helpers.validateAddress.required(),
   payments: helpers.validatePayments.required(),
-  fee: helpers.validateFeeCurrency.required(),
+  feeCurrency: helpers.validateFeeCurrency.required(),
   metadata: helpers.validateMetadata
 });
 

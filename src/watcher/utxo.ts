@@ -1,10 +1,9 @@
 import * as Interfaces from '@lib/common/interfaces';
 import * as Transporter from '@lib/transport';
+import * as Encoders from '@lib/transaction/encoders';
 
 export async function getExitData (utxo: Interfaces.IUTXO): Promise<Interfaces.IExitData> {
-  // NMTODO: write transaction helpers
-  // const utxoPos = transaction.encodeUtxoPos(utxo)
-  const utxoPos = 1;
+  const utxoPos = Encoders.encodeUtxoPos(utxo);
 
   return Transporter.post({
     url: `${this.watcherSecurityUrl}/utxo.get_exit_data`,
@@ -13,7 +12,10 @@ export async function getExitData (utxo: Interfaces.IUTXO): Promise<Interfaces.I
   });
 }
 
-export async function getChallengeData (utxoPos: number): Promise<Interfaces.IChallengeData> {
+// NMTODO: figure out this interface
+export interface IChallengeData {};
+
+export async function getChallengeData (utxoPos: number): Promise<IChallengeData> {
   return Transporter.post({
     url: `${this.watcherSecurityUrl}/utxo.get_challenge_data`,
     body: { utxo_pos: utxoPos },

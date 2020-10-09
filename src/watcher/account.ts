@@ -9,7 +9,12 @@ export async function getUtxos (address: string): Promise<Array<Interfaces.IUTXO
   });
 }
 
-export async function getBalance (address: string): Promise<Interfaces.IBalance> {
+export interface IBalance {
+  amount: Interfaces.IComplexAmount;
+  currency: string;
+};
+
+export async function getBalance (address: string): Promise<IBalance> {
   return Transporter.post({
     url: `${this.watcherUrl}/account.get_balance`,
     body: { address },

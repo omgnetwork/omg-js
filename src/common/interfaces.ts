@@ -68,17 +68,6 @@ export interface ITransactionBody {
   metadata: string;
 };
 
-export interface IDepositTransaction {
-  owner: string;
-  amount: IComplexAmount;
-  currency: string;
-};
-
-export interface IBalance {
-  amount: IComplexAmount;
-  currency: string;
-};
-
 export interface IExitData {
   proof: string;
   txbytes: string;
@@ -91,41 +80,12 @@ export interface IPayment {
   amount: IComplexAmount;
 };
 
-export interface IFee {
+export interface IFeeDetail {
   currency: string;
-};
-
-export interface IFeeDetail extends IFee {
   amount: IComplexAmount;
-};
-
-export interface IFeeInfo {
-  amount: number;
-  currency: string;
-  pegged_amount: number;
-  pegged_currency: string;
-  pegged_subunit_to_unit: number;
-  subunit_to_unit: number;
-  updated_at: string;
 };
 
 export interface IPagination {
   limit?: number;
   page?: number;
 };
-
-export interface ITransactionFilter extends IPagination {
-  address?: string;
-  metadata?: string;
-  blknum?: number;
-};
-
-export interface IDepositFilter extends IPagination {
-  address?: string;
-};
-
-// NMTODO: figure out this interface
-export interface IDepositInfo {};
-
-// NMTODO: figure out this interface
-export interface IChallengeData {};

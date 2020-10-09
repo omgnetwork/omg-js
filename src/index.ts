@@ -109,7 +109,9 @@ class OmgJS {
     });
   }
 
-  public async getExitQueue (token: string): Promise<RootchainExitQueueModule.IExitQueue[]> {
+  public async getExitQueue (
+    token: string
+  ): Promise<RootchainExitQueueModule.IExitQueue[]> {
     Joi.assert(token, Validators.getExitQueueSchema);
     return RootchainExitQueueModule.getExitQueue.call(this, token);
   }
@@ -118,7 +120,7 @@ class OmgJS {
     owner,
     amount,
     currency
-  }: EncoderModule.IEncodeDeposit): string {
+  }: EncoderModule.IDepositTransaction): string {
     Joi.assert({ owner, amount, currency }, Validators.encodeDepositSchema);
     return EncoderModule.encodeDeposit.call(this, {
       owner,
@@ -127,7 +129,9 @@ class OmgJS {
     });
   }
 
-  public decodeDeposit (encodedDeposit: string): Interfaces.IDepositTransaction {
+  public decodeDeposit (
+    encodedDeposit: string
+  ): EncoderModule.IDepositTransaction {
     Joi.assert(encodedDeposit, Joi.string().required());
     return EncoderModule.decodeDeposit.call(this, encodedDeposit);
   }
@@ -161,27 +165,37 @@ class OmgJS {
     });
   }
 
-  public decodeTransaction (encodedTransaction: string): Interfaces.ITransactionBody {
+  public decodeTransaction (
+    encodedTransaction: string
+  ): Interfaces.ITransactionBody {
     Joi.assert(encodedTransaction, Joi.string().required());
     return EncoderModule.decodeTransaction.call(this, encodedTransaction);
   }
 
-  public encodeUtxoPos (utxo: Interfaces.IUTXO): BN {
+  public encodeUtxoPos (
+    utxo: Interfaces.IUTXO
+  ): BN {
     Joi.assert({ utxo }, Validators.encodeUtxoPosSchema);
     return EncoderModule.encodeUtxoPos.call(this, utxo);
   }
 
-  public decodeUtxoPos (utxoPos: Interfaces.IComplexAmount): Partial<Interfaces.IUTXO> {
+  public decodeUtxoPos (
+    utxoPos: Interfaces.IComplexAmount
+  ): Partial<Interfaces.IUTXO> {
     Joi.assert({ utxoPos }, Validators.decodeUtxoPosSchema);
     return EncoderModule.decodeUtxoPos.call(this, utxoPos);
   }
 
-  public encodeMetadata (metadata: string): string {
+  public encodeMetadata (
+    metadata: string
+  ): string {
     Joi.assert({ metadata }, Validators.encodeMetadataSchema);
     return EncoderModule.encodeMetadata.call(this, metadata);
   }
 
-  public decodeMetadata (metadata: string): string {
+  public decodeMetadata (
+    metadata: string
+  ): string {
     Joi.assert({ metadata }, Validators.decodeMetadataSchema);
     return EncoderModule.decodeMetadata.call(this, metadata);
   }
@@ -260,7 +274,7 @@ class OmgJS {
 
   public async getDepositExitData ({
     transactionHash
-  }: RootchainStandardExitModule.IGetDepositExitData): Promise<RootchainStandardExitModule.IExitData> {
+  }: RootchainStandardExitModule.IGetDepositExitData): Promise<Interfaces.IExitData> {
     Joi.assert({ transactionHash }, Validators.getExitDataSchema);
     return RootchainStandardExitModule.getDepositExitData.call(this, {
       transactionHash
@@ -308,7 +322,9 @@ class OmgJS {
     });
   }
 
-  public async hasExitQueue (token: string): Promise<boolean> {
+  public async hasExitQueue (
+    token: string
+  ): Promise<boolean> {
     Joi.assert(token, Validators.hasExitQueueSchema);
     return RootchainExitQueueModule.hasExitQueue.call(this, token);
   } 
@@ -517,41 +533,55 @@ class OmgJS {
     });
   }
 
-  public async getUtxos (address: string): Promise<Array<Interfaces.IUTXO>> {
+  public async getUtxos (
+    address: string
+  ): Promise<Array<Interfaces.IUTXO>> {
     Joi.assert(address, Validators.getUtxosSchema);
     return WatcherAccountModule.getUtxos.call(this, address);
   }
 
-  public async getBalance (address: string): Promise<Interfaces.IBalance> {
+  public async getBalance (
+    address: string
+  ): Promise<WatcherAccountModule.IBalance> {
     Joi.assert(address, Validators.getBalanceSchema);
     return WatcherAccountModule.getBalance.call(this, address);
   }
 
-  public async getTransaction (id: string): Promise<Interfaces.ITransactionData> {
+  public async getTransaction (
+    id: string
+  ): Promise<Interfaces.ITransactionData> {
     Joi.assert({ id }, Validators.getTransactionSchema);
     return WatcherTransactionModule.getTransaction.call(this, id);
   }
 
-  public async getTransactions (filters: Interfaces.ITransactionFilter): Promise<Array<Interfaces.ITransactionData>> {
+  public async getTransactions (
+    filters: WatcherTransactionModule.ITransactionFilter
+  ): Promise<Array<Interfaces.ITransactionData>> {
     Joi.assert(filters, Validators.getTransactionsSchema);
     return WatcherTransactionModule.getTransactions.call(this, filters);
   }
 
-  public async getFees (): Promise<Interfaces.IFeeInfo> {
+  public async getFees (): Promise<WatcherFeesModule.IFeeInfo> {
     return WatcherFeesModule.getFees.call(this);
   }
 
-  public async getDeposits (filters: Interfaces.IDepositFilter): Promise<Array<Interfaces.IDepositInfo>> {
+  public async getDeposits (
+    filters: WatcherDepositModule.IDepositFilter
+  ): Promise<Array<WatcherDepositModule.IDepositInfo>> {
     Joi.assert(filters, Validators.getDepositsSchema);
     return WatcherDepositModule.getDeposits.call(this, filters);
   }
 
-  public async getExitData (utxo: Interfaces.IUTXO): Promise<Interfaces.IExitData> {
+  public async getExitData (
+    utxo: Interfaces.IUTXO
+  ): Promise<Interfaces.IExitData> {
     Joi.assert(utxo, Validators.getExitDataSchema);
     return WatcherUtxoModule.getExitData.call(this, utxo);
   }
 
-  public async getChallengeData (utxoPos: number): Promise<Interfaces.IChallengeData> {
+  public async getChallengeData (
+    utxoPos: number
+  ): Promise<WatcherUtxoModule.IChallengeData> {
     Joi.assert({ utxoPos }, Validators.getChallengeDataSchema);
     return WatcherUtxoModule.getChallengeData.call(this, utxoPos);
   }
@@ -561,19 +591,19 @@ class OmgJS {
   public async createTransaction ({
     owner,
     payments,
-    fee,
+    feeCurrency,
     metadata
   }: WatcherTransactionModule.ICreateTransaction): Promise<WatcherTransactionModule.ICreatedTransactions> {
     Joi.assert({
       owner,
       payments,
-      fee,
+      feeCurrency,
       metadata
     }, Validators.createTransactionSchema);
     return WatcherTransactionModule.createTransaction.call(this, {
       owner,
       payments,
-      fee,
+      feeCurrency,
       metadata
     });
   }
@@ -610,22 +640,30 @@ class OmgJS {
     });
   }
 
-  public async inFlightExitGetData (txbytes: string): Promise<Interfaces.IExitData> {
+  public async inFlightExitGetData (
+    txbytes: string
+  ): Promise<Interfaces.IExitData> {
     Joi.assert(txbytes, Joi.string().required());
     return WatcherInflightExitModule.inFlightExitGetData.call(this, txbytes);
   }
 
-  public async inFlightExitGetCompetitor (txbytes: string): Promise<WatcherInflightExitModule.IInflightExitCompetitor> {
+  public async inFlightExitGetCompetitor (
+    txbytes: string
+  ): Promise<WatcherInflightExitModule.IInflightExitCompetitor> {
     Joi.assert(txbytes, Joi.string().required());
     return WatcherInflightExitModule.inFlightExitGetCompetitor.call(this, txbytes);
   }
 
-  public async inFlightExitProveCanonical (txbytes: string): Promise<string> {
+  public async inFlightExitProveCanonical (
+    txbytes: string
+  ): Promise<string> {
     Joi.assert(txbytes, Joi.string().required());
     return WatcherInflightExitModule.inFlightExitProveCanonical.call(this, txbytes);
   }
 
-  public async getEVMErrorReason (txHash: string): Promise<string> {
+  public async getEVMErrorReason (
+    txHash: string
+  ): Promise<string> {
     Joi.assert(txHash, Joi.string().required());
     return RootchainUtilModule.getEVMErrorReason.call(this, txHash);
   }
@@ -668,7 +706,7 @@ class OmgJS {
     address,
     expectedAmount,
     currency
-  }: RootchainUtilModule.IWaitForChildchainBalance): Promise<Array<Interfaces.IBalance>> {
+  }: RootchainUtilModule.IWaitForChildchainBalance): Promise<Array<WatcherAccountModule.IBalance>> {
     Joi.assert({
       address,
       expectedAmount,
@@ -681,17 +719,23 @@ class OmgJS {
     });
   }
 
-  public hashTypedData (typedData: TypedDataModule.ITypedData): Buffer {
+  public hashTypedData (
+    typedData: TypedDataModule.ITypedData
+  ): Buffer {
     Joi.assert({ typedData }, Validators.hashTypedDataSchema);
     return StructHashModule.hashTypedData.call(this, typedData);
   }
 
-  public getTypedData (transactionBody: Interfaces.ITransactionBody): TypedDataModule.ITypedData {
+  public getTypedData (
+    transactionBody: Interfaces.ITransactionBody
+  ): TypedDataModule.ITypedData {
     Joi.assert({ transactionBody }, Validators.getTypedDataSchema);
     return TypedDataModule.getTypedData.call(this, transactionBody);
   }
 
-  public getTypedDataArray (typedDataMessage: TypedDataModule.ITypedDataMessage): Array<any> {
+  public getTypedDataArray (
+    typedDataMessage: TypedDataModule.ITypedDataMessage
+  ): Array<any> {
     return EncoderModule.getTypedDataArray.call(this, typedDataMessage);
   }
 

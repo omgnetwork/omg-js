@@ -66,15 +66,9 @@ export interface IGetDepositExitData {
   transactionHash: string;
 };
 
-export interface IExitData {
-  proof: string;
-  txbytes: string;
-  utxo_pos: number
-};
-
 export async function getDepositExitData ({
   transactionHash
-}: IGetDepositExitData): Promise<IExitData> {
+}: IGetDepositExitData): Promise<Interfaces.IExitData> {
   // use a vault abi to decode the inputs and get the txbytes
   abiDecoder.addABI(EthVaultContract.abi);
   const rawTransaction = await this.web3Instance.eth.getTransaction(transactionHash);

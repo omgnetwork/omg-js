@@ -7,17 +7,17 @@ import * as Constants from '@lib/common/constants';
 import * as Interfaces from '@lib/common/interfaces';
 import * as TypedDataModule from '@lib/transaction/typedData';
 
-export interface IEncodeDeposit {
-  owner: string,
-  amount: string,
-  currency: string
-}
+export interface IDepositTransaction {
+  owner: string;
+  amount: Interfaces.IComplexAmount;
+  currency: string;
+};
 
 export function encodeDeposit ({
   owner,
   amount,
   currency
-}: IEncodeDeposit): string {
+}: IDepositTransaction): string {
   return encodeTransaction({
     txType: 1,
     inputs: [],
@@ -32,7 +32,7 @@ export function encodeDeposit ({
   });
 }
 
-export function decodeDeposit (encodedDeposit: string): Interfaces.IDepositTransaction {
+export function decodeDeposit (encodedDeposit: string): IDepositTransaction {
   const { outputs } = decodeTransaction(encodedDeposit);
   const [{ outputGuard, amount, currency }] = outputs;
   return {
