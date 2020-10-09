@@ -1,3 +1,4 @@
+/** @internal */
 export const CURRENCY_MAP = {
   ETH: '0x0000000000000000000000000000000000000000',
   OMG: {

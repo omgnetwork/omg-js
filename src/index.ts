@@ -38,7 +38,7 @@ interface IOmgJS {
 }
 
 /**
- * Create an OmgJS object to interact with the OMG Network
+ * Instantiate an OmgJS object to interact with the OMG Network
  * 
  * ```ts
  * const omgjs = new OmgJS({
@@ -49,7 +49,10 @@ interface IOmgJS {
  * ```
  * */
 class OmgJS {
-  static currency = Constants.CURRENCY_MAP;
+  /**
+   * Helper currency map to easily access certain addresses
+   */
+  public static currency = Constants.CURRENCY_MAP;
 
   private readonly plasmaContractAddress: string;
   private readonly watcherUrl: string;
@@ -64,7 +67,7 @@ class OmgJS {
   /**
    * @param plasmaContractAddress the address of the PlasmaFramework contract
    * @param watcherUrl the url of the watcher-info server (running in both security-critical and informational mode)
-   * @param watcherProxyUrl *optional* the url of the watcher security server. If this is set, all security related endpoints would be using from this url instead.
+   * @param watcherProxyUrl *optional* the proxy url for requests made to the watcher server
    * @param web3Provider a web3 http provider
    */
   public constructor({
@@ -83,7 +86,6 @@ class OmgJS {
     this.plasmaContractAddress = plasmaContractAddress;
     this.watcherUrl = watcherUrl;
     this.watcherProxyUrl = watcherProxyUrl;
-
     this.web3Instance = new (Web3 as any)(web3Provider, null, { transactionConfirmationBlocks: 1 });
     this.plasmaContract = new this.web3Instance.eth.Contract(
       (PlasmaFrameworkContract as any).abi,
@@ -115,37 +117,31 @@ class OmgJS {
     return this.paymentExitGame;
   }
 
-  public async getExitTime ({
-    exitRequestBlockNumber,
-    submissionBlockNumber
-  }: RootchainExitQueueModule.IGetExitTime): Promise<RootchainExitQueueModule.IExitTime> {
-    Joi.assert({ exitRequestBlockNumber, submissionBlockNumber }, Validators.getExitTimeSchema);
-    return RootchainExitQueueModule.getExitTime.call(this, {
-      exitRequestBlockNumber,
-      submissionBlockNumber
-    });
+  /** Calculate the exit schedule required before exits can be processed and released */
+  public async getExitTime (
+    args: RootchainExitQueueModule.IGetExitTime
+  ): Promise<RootchainExitQueueModule.IExitTime> {
+    Joi.assert(args, Validators.getExitTimeSchema);
+    return RootchainExitQueueModule.getExitTime.call(this, args);
   }
 
+  /** Retrieve the exit queue for a particular currency */
   public async getExitQueue (
-    token: string
+    currency: string
   ): Promise<RootchainExitQueueModule.IExitQueue[]> {
-    Joi.assert(token, Validators.getExitQueueSchema);
-    return RootchainExitQueueModule.getExitQueue.call(this, token);
+    Joi.assert(currency, Validators.getExitQueueSchema);
+    return RootchainExitQueueModule.getExitQueue.call(this, currency);
   }
 
-  public encodeDeposit ({
-    owner,
-    amount,
-    currency
-  }: EncoderModule.IDepositTransaction): string {
-    Joi.assert({ owner, amount, currency }, Validators.encodeDepositSchema);
-    return EncoderModule.encodeDeposit.call(this, {
-      owner,
-      amount,
-      currency
-    });
+  /** Create and encodes a deposit transaction */
+  public encodeDeposit (
+    args: EncoderModule.IDepositTransaction
+  ): string {
+    Joi.assert(args, Validators.encodeDepositSchema);
+    return EncoderModule.encodeDeposit.call(this, args);
   }
 
+  /** Decode a RLP encoded deposit transaction */
   public decodeDeposit (
     encodedDeposit: string
   ): EncoderModule.IDepositTransaction {
@@ -153,35 +149,15 @@ class OmgJS {
     return EncoderModule.decodeDeposit.call(this, encodedDeposit);
   }
 
-  public encodeTransaction ({
-    txType,
-    inputs,
-    outputs,
-    txData,
-    metadata,
-    signatures,
-    signed
-  }: EncoderModule.IEncodeTransaction): string {
-    Joi.assert({
-      txType,
-      inputs,
-      outputs,
-      txData,
-      metadata,
-      signatures,
-      signed
-    }, Validators.encodeTransactionSchema);
-    return EncoderModule.encodeTransaction.call(this, {
-      txType,
-      inputs,
-      outputs,
-      txData,
-      metadata,
-      signatures,
-      signed
-    });
+  /** RLP encode a transaction */
+  public encodeTransaction (
+    args: EncoderModule.IEncodeTransaction
+  ): string {
+    Joi.assert(args, Validators.encodeTransactionSchema);
+    return EncoderModule.encodeTransaction.call(this, args);
   }
 
+  /** Decode a RLP encoded transaction */
   public decodeTransaction (
     encodedTransaction: string
   ): Interfaces.ITransactionBody {
@@ -189,6 +165,7 @@ class OmgJS {
     return EncoderModule.decodeTransaction.call(this, encodedTransaction);
   }
 
+  /** Encode a UTXO */
   public encodeUtxoPos (
     utxo: Interfaces.IUTXO
   ): BN {
@@ -196,6 +173,7 @@ class OmgJS {
     return EncoderModule.encodeUtxoPos.call(this, utxo);
   }
 
+  /** Decode an encoded UTXO */
   public decodeUtxoPos (
     utxoPos: Interfaces.IComplexAmount
   ): Partial<Interfaces.IUTXO> {
@@ -203,6 +181,7 @@ class OmgJS {
     return EncoderModule.decodeUtxoPos.call(this, utxoPos);
   }
 
+  /** Encode metadata */
   public encodeMetadata (
     metadata: string
   ): string {
@@ -210,6 +189,7 @@ class OmgJS {
     return EncoderModule.encodeMetadata.call(this, metadata);
   }
 
+  /** Decode encoded metadata */
   public decodeMetadata (
     metadata: string
   ): string {
@@ -217,337 +197,154 @@ class OmgJS {
     return EncoderModule.decodeMetadata.call(this, metadata);
   }
 
-  public async approveERC20Deposit ({
-    erc20Address,
-    amount,
-    txOptions
-  }: RootchainDepositModule.IApproveDeposit): Promise<Interfaces.ITransactionReceipt> {
-    Joi.assert({ erc20Address, amount, txOptions }, Validators.approveTokenSchema);
-    return RootchainDepositModule.approveERC20Deposit.call(this, {
-      erc20Address,
-      amount,
-      txOptions
-    });
+  /** Approve an ERC20 for deposit into the OMG Network */
+  public async approveERC20Deposit (
+    args: RootchainDepositModule.IApproveDeposit
+  ): Promise<Interfaces.ITransactionReceipt> {
+    Joi.assert(args, Validators.approveERC20DepositSchema);
+    return RootchainDepositModule.approveERC20Deposit.call(this, args);
   }
 
-  public async deposit ({
-    amount,
-    currency,
-    txOptions
-  }: RootchainDepositModule.IDeposit): Promise<Interfaces.ITransactionReceipt> {
-    Joi.assert({ amount, currency, txOptions }, Validators.depositSchema);
-    return RootchainDepositModule.deposit.call(this, {
-      amount,
-      currency,
-      txOptions
-    });
+  /** Deposit funds into the OMG Network */
+  public async deposit (
+    args: RootchainDepositModule.IDeposit
+  ): Promise<Interfaces.ITransactionReceipt> {
+    Joi.assert(args, Validators.depositSchema);
+    return RootchainDepositModule.deposit.call(this, args);
   }
 
-  public async getStandardExitId ({
-    txBytes,
-    utxoPos,
-    isDeposit
-  }: RootchainStandardExitModule.IGetStandardExitId): Promise<string> {
-    Joi.assert({ txBytes, utxoPos, isDeposit }, Validators.getStandardExitIdSchema);
-    return RootchainStandardExitModule.getStandardExitId.call(this, {
-      txBytes,
-      utxoPos,
-      isDeposit
-    });
+  /** Get a standard exit id to process a standard exit */
+  public async getStandardExitId (
+    args: RootchainStandardExitModule.IGetStandardExitId
+  ): Promise<string> {
+    Joi.assert(args, Validators.getStandardExitIdSchema);
+    return RootchainStandardExitModule.getStandardExitId.call(this, args);
   }
 
-  public async getInFlightExitId ({
-    txBytes
-  }: RootchainInflightExitModule.IGetInflightExitId): Promise<string> {
-    Joi.assert({ txBytes }, Validators.getInFlightExitIdSchema);
-    return RootchainInflightExitModule.getInFlightExitId.call(this, {
-      txBytes
-    });
+  /** Get an inflight exit id to process an inflight exit */
+  public async getInFlightExitId (
+    args: RootchainInflightExitModule.IGetInflightExitId
+  ): Promise<string> {
+    Joi.assert(args, Validators.getInFlightExitIdSchema);
+    return RootchainInflightExitModule.getInFlightExitId.call(this, args);
   }
 
-  public async getInFlightExitData ({
-    exitIds
-  }: RootchainInflightExitModule.IGetInflightExitData): Promise<RootchainInflightExitModule.IInflightExitData> {
-    Joi.assert({ exitIds }, Validators.getInFlightExitDataSchema);
-    return RootchainInflightExitModule.getInFlightExitData.call(this, {
-      exitIds
-    });
+  /** Retrieve in-flight exit data from an array of exit IDs */
+  public async getInFlightExitData (
+    args: RootchainInflightExitModule.IGetInflightExitData
+  ): Promise<RootchainInflightExitModule.IInflightExitData> {
+    Joi.assert(args, Validators.getInFlightExitDataSchema);
+    return RootchainInflightExitModule.getInFlightExitData.call(this, args);
   }
 
-  public async startStandardExit ({
-    utxoPos,
-    outputTx,
-    inclusionProof,
-    txOptions
-  }: RootchainStandardExitModule.IStartStandardExit): Promise<Interfaces.ITransactionReceipt> {
-    Joi.assert({ utxoPos, outputTx, inclusionProof, txOptions }, Validators.startStandardExitSchema);
-    return RootchainStandardExitModule.startStandardExit.call(this, {
-      utxoPos,
-      outputTx,
-      inclusionProof,
-      txOptions
-    });
+  /** Start a standard withdrawal of a given output. Uses output-age priority */
+  public async startStandardExit (
+    args: RootchainStandardExitModule.IStartStandardExit
+  ): Promise<Interfaces.ITransactionReceipt> {
+    Joi.assert(args, Validators.startStandardExitSchema);
+    return RootchainStandardExitModule.startStandardExit.call(this, args);
   }
 
-  public async getDepositExitData ({
-    transactionHash
-  }: RootchainStandardExitModule.IGetDepositExitData): Promise<Interfaces.IExitData> {
-    Joi.assert({ transactionHash }, Validators.getExitDataSchema);
-    return RootchainStandardExitModule.getDepositExitData.call(this, {
-      transactionHash
-    });
+  /** Get the exit data for a deposit without using the Watcher */
+  public async getDepositExitData (
+    args: RootchainStandardExitModule.IGetDepositExitData
+  ): Promise<Interfaces.IExitData> {
+    Joi.assert(args, Validators.getExitDataSchema);
+    return RootchainStandardExitModule.getDepositExitData.call(this, args);
   }
 
-  public async challengeStandardExit ({
-    standardExitId,
-    exitingTx,
-    challengeTx,
-    inputIndex,
-    challengeTxSig,
-    txOptions
-  }: RootchainStandardExitModule.IChallengeStandardExit): Promise<Interfaces.ITransactionReceipt> {
-    Joi.assert({
-      standardExitId,
-      exitingTx,
-      challengeTx,
-      inputIndex,
-      challengeTxSig,
-      txOptions
-    }, Validators.challengeStandardExitSchema);
-    return RootchainStandardExitModule.challengeStandardExit.call(this, {
-      standardExitId,
-      exitingTx,
-      challengeTx,
-      inputIndex,
-      challengeTxSig,
-      txOptions
-    });
+  /** Block a standard exit by showing the exiting output was spent */
+  public async challengeStandardExit (args: RootchainStandardExitModule.IChallengeStandardExit): Promise<Interfaces.ITransactionReceipt> {
+    Joi.assert(args, Validators.challengeStandardExitSchema);
+    return RootchainStandardExitModule.challengeStandardExit.call(this, args);
   }
 
-  public async processExits ({
-    token,
-    exitId,
-    maxExitsToProcess,
-    txOptions
-  }: RootchainExitQueueModule.IProcessExits): Promise<Interfaces.ITransactionReceipt> {
-    Joi.assert({ token, exitId, maxExitsToProcess, txOptions }, Validators.processExitsSchema);
-    return RootchainExitQueueModule.processExits.call(this, {
-      token,
-      exitId,
-      maxExitsToProcess,
-      txOptions
-    });
+  /** Processes any exit that has completed the challenge period */
+  public async processExits (
+    args: RootchainExitQueueModule.IProcessExits
+  ): Promise<Interfaces.ITransactionReceipt> {
+    Joi.assert(args, Validators.processExitsSchema);
+    return RootchainExitQueueModule.processExits.call(this, args);
   }
 
+  /** Check if an exit queue exists for this currency */
   public async hasExitQueue (
-    token: string
+    currency: string
   ): Promise<boolean> {
-    Joi.assert(token, Validators.hasExitQueueSchema);
-    return RootchainExitQueueModule.hasExitQueue.call(this, token);
+    Joi.assert(currency, Validators.hasExitQueueSchema);
+    return RootchainExitQueueModule.hasExitQueue.call(this, currency);
   } 
 
-  public async addExitQueue ({
-    token,
-    txOptions
-  }: RootchainExitQueueModule.IAddExitQueue): Promise<Interfaces.ITransactionReceipt> {
-    Joi.assert({ token, txOptions }, Validators.addExitQueueSchema);
-    return RootchainExitQueueModule.addExitQueue.call(this, {
-      token,
-      txOptions
-    });
+  /** Adds an exit queue to the OMG Network */
+  public async addExitQueue (
+    args: RootchainExitQueueModule.IAddExitQueue
+  ): Promise<Interfaces.ITransactionReceipt> {
+    Joi.assert(args, Validators.addExitQueueSchema);
+    return RootchainExitQueueModule.addExitQueue.call(this, args);
   }
 
-  public async startInFlightExit ({
-    inFlightTx,
-    inputTxs,
-    inputUtxosPos,
-    inputTxsInclusionProofs,
-    inFlightTxSigs,
-    txOptions
-  }: RootchainInflightExitModule.IStartInflightExit): Promise<Interfaces.ITransactionReceipt> {
-    Joi.assert({
-      inFlightTx,
-      inputTxs,
-      inputUtxosPos,
-      inputTxsInclusionProofs,
-      inFlightTxSigs,
-      txOptions
-    }, Validators.startInFlightExitSchema);
-    return RootchainInflightExitModule.startInflightExit.call(this, {
-      inFlightTx,
-      inputTxs,
-      inputUtxosPos,
-      inputTxsInclusionProofs,
-      inFlightTxSigs,
-      txOptions
-    });
+  /** Start an exit for an in-flight transaction */
+  public async startInFlightExit (
+    args: RootchainInflightExitModule.IStartInflightExit
+  ): Promise<Interfaces.ITransactionReceipt> {
+    Joi.assert(args, Validators.startInFlightExitSchema);
+    return RootchainInflightExitModule.startInflightExit.call(this, args);
   }
 
-  public async piggybackInFlightExitOnOutput ({
-    inFlightTx,
-    outputIndex,
-    txOptions
-  }: RootchainInflightExitModule.IPiggybackInflightExitOnOutput): Promise<Interfaces.ITransactionReceipt> {
-    Joi.assert({
-      inFlightTx,
-      outputIndex,
-      txOptions
-    }, Validators.piggybackInFlightExitOnOutputSchema);
-    return RootchainInflightExitModule.piggybackInFlightExitOnOutput.call(this, {
-      inFlightTx,
-      outputIndex,
-      txOptions
-    });
+  /** Piggyback onto an output of an in-flight transaction */
+  public async piggybackInFlightExitOnOutput (
+    args: RootchainInflightExitModule.IPiggybackInflightExitOnOutput
+  ): Promise<Interfaces.ITransactionReceipt> {
+    Joi.assert(args, Validators.piggybackInFlightExitOnOutputSchema);
+    return RootchainInflightExitModule.piggybackInFlightExitOnOutput.call(this, args);
   }
 
-  public async piggybackInFlightExitOnInput ({
-    inFlightTx,
-    inputIndex,
-    txOptions
-  }: RootchainInflightExitModule.IPiggybackInflightExitOnInput): Promise<Interfaces.ITransactionReceipt> {
-    Joi.assert({
-      inFlightTx,
-      inputIndex,
-      txOptions
-    }, Validators.piggybackInFlightExitOnInputSchema);
-    return RootchainInflightExitModule.piggybackInFlightExitOnInput.call(this, {
-      inFlightTx,
-      inputIndex,
-      txOptions
-    });
+  /** Piggyback onto an input of an in-flight transaction */
+  public async piggybackInFlightExitOnInput (
+    args: RootchainInflightExitModule.IPiggybackInflightExitOnInput
+  ): Promise<Interfaces.ITransactionReceipt> {
+    Joi.assert(args, Validators.piggybackInFlightExitOnInputSchema);
+    return RootchainInflightExitModule.piggybackInFlightExitOnInput.call(this, args);
   }
 
-  public async challengeInFlightExitNotCanonical ({
-    inputTx,
-    inputUtxoPos,
-    inFlightTx,
-    inFlightTxInputIndex,
-    competingTx,
-    competingTxInputIndex,
-    competingTxPos,
-    competingTxInclusionProof,
-    competingTxWitness,
-    txOptions
-  }: RootchainInflightExitModule.IChallengeInflightExitNotCanonical): Promise<Interfaces.ITransactionReceipt> {
-    Joi.assert({
-      inputTx,
-      inputUtxoPos,
-      inFlightTx,
-      inFlightTxInputIndex,
-      competingTx,
-      competingTxInputIndex,
-      competingTxPos,
-      competingTxInclusionProof,
-      competingTxWitness,
-      txOptions
-    }, Validators.challengeInFlightExitNotCanonicalSchema);
-    return RootchainInflightExitModule.challengeInFlightExitNotCanonical.call(this, {
-      inputTx,
-      inputUtxoPos,
-      inFlightTx,
-      inFlightTxInputIndex,
-      competingTx,
-      competingTxInputIndex,
-      competingTxPos,
-      competingTxInclusionProof,
-      competingTxWitness,
-      txOptions
-    });
+  /** Prove that an in-flight exit is not canonical */
+  public async challengeInFlightExitNotCanonical (
+    args: RootchainInflightExitModule.IChallengeInflightExitNotCanonical
+  ): Promise<Interfaces.ITransactionReceipt> {
+    Joi.assert(args, Validators.challengeInFlightExitNotCanonicalSchema);
+    return RootchainInflightExitModule.challengeInFlightExitNotCanonical.call(this, args);
   }
 
-  public async respondToNonCanonicalChallenge ({
-    inFlightTx,
-    inFlightTxPos,
-    inFlightTxInclusionProof,
-    txOptions
-  }: RootchainInflightExitModule.IRespondToNonCanonicalChallenge): Promise<Interfaces.ITransactionReceipt> {
-    Joi.assert({
-      inFlightTx,
-      inFlightTxPos,
-      inFlightTxInclusionProof,
-      txOptions
-    }, Validators.respondToNonCanonicalChallengeSchema);
-    return RootchainInflightExitModule.respondToNonCanonicalChallenge.call(this, {
-      inFlightTx,
-      inFlightTxPos,
-      inFlightTxInclusionProof,
-      txOptions
-    });
+  /** Respond to competitors of an in-flight exit by showing the transaction is included */
+  public async respondToNonCanonicalChallenge (
+    args: RootchainInflightExitModule.IRespondToNonCanonicalChallenge
+  ): Promise<Interfaces.ITransactionReceipt> {
+    Joi.assert(args, Validators.respondToNonCanonicalChallengeSchema);
+    return RootchainInflightExitModule.respondToNonCanonicalChallenge.call(this, args);
   }
 
-  public async challengeInFlightExitInputSpent ({
-    inFlightTx,
-    inFlightTxInputIndex,
-    challengingTx,
-    challengingTxInputIndex,
-    challengingTxWitness,
-    inputTx,
-    inputUtxoPos,
-    txOptions
-  }: RootchainInflightExitModule.IChallengeInFlightExitInputSpent): Promise<Interfaces.ITransactionReceipt> {
-    Joi.assert({
-      inFlightTx,
-      inFlightTxInputIndex,
-      challengingTx,
-      challengingTxInputIndex,
-      challengingTxWitness,
-      inputTx,
-      inputUtxoPos,
-      txOptions
-    }, Validators.challengeInFlightExitInputSpentSchema);
-    return RootchainInflightExitModule.challengeInFlightExitInputSpent.call(this, {
-      inFlightTx,
-      inFlightTxInputIndex,
-      challengingTx,
-      challengingTxInputIndex,
-      challengingTxWitness,
-      inputTx,
-      inputUtxoPos,
-      txOptions
-    });
+  /** Remove an input from list of exitable outputs in an in-flight transaction */
+  public async challengeInFlightExitInputSpent (
+    args: RootchainInflightExitModule.IChallengeInFlightExitInputSpent
+  ): Promise<Interfaces.ITransactionReceipt> {
+    Joi.assert(args, Validators.challengeInFlightExitInputSpentSchema);
+    return RootchainInflightExitModule.challengeInFlightExitInputSpent.call(this, args);
   }
 
-  public async challengeInFlightExitOutputSpent ({
-    inFlightTx,
-    inFlightTxInclusionProof,
-    inFlightTxOutputPos,
-    challengingTx,
-    challengingTxInputIndex,
-    challengingTxWitness,
-    txOptions
-  }: RootchainInflightExitModule.IChallengeInFlightExitOutputSpent): Promise<Interfaces.ITransactionReceipt> {
-    Joi.assert({
-      inFlightTx,
-      inFlightTxInclusionProof,
-      inFlightTxOutputPos,
-      challengingTx,
-      challengingTxInputIndex,
-      challengingTxWitness,
-      txOptions
-    }, Validators.challengeInFlightExitOutputSpentSchema);
-    return RootchainInflightExitModule.challengeInFlightExitOutputSpent.call(this, {
-      inFlightTx,
-      inFlightTxInclusionProof,
-      inFlightTxOutputPos,
-      challengingTx,
-      challengingTxInputIndex,
-      challengingTxWitness,
-      txOptions
-    });
+  /** Remove an output from list of exitable outputs in an in-flight transaction */
+  public async challengeInFlightExitOutputSpent (
+    args: RootchainInflightExitModule.IChallengeInFlightExitOutputSpent
+  ): Promise<Interfaces.ITransactionReceipt> {
+    Joi.assert(args, Validators.challengeInFlightExitOutputSpentSchema);
+    return RootchainInflightExitModule.challengeInFlightExitOutputSpent.call(this, args);
   }
 
-  public async deleteNonPiggybackedInFlightExit ({
-    exitId,
-    txOptions
-  }: RootchainInflightExitModule.IDeleteNonPiggybackedInFlightExit): Promise<Interfaces.ITransactionReceipt> {
-    Joi.assert({
-      exitId,
-      txOptions
-    }, Validators.deleteNonPiggybackedInFlightExitSchema);
-    return RootchainInflightExitModule.deleteNonPiggybackedInFlightExit.call(this, {
-      exitId,
-      txOptions
-    });
+  /** Delete an in-flight exit if the first phase has passed and nobody has piggybacked the exit */
+  public async deleteNonPiggybackedInFlightExit (
+    args: RootchainInflightExitModule.IDeleteNonPiggybackedInFlightExit
+  ): Promise<Interfaces.ITransactionReceipt> {
+    Joi.assert(args, Validators.deleteNonPiggybackedInFlightExitSchema);
+    return RootchainInflightExitModule.deleteNonPiggybackedInFlightExit.call(this, args);
   }
 
   public async getUtxos (

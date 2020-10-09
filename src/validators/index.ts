@@ -16,7 +16,7 @@ export const getExitTimeSchema: Joi.Schema = Joi.object({
 
 export const getExitQueueSchema: Joi.Schema = helpers.validateAddress.required();
 
-export const approveTokenSchema: Joi.Schema = Joi.object({
+export const approveERC20DepositSchema: Joi.Schema = Joi.object({
   erc20Address: helpers.validateAddress.required(),
   amount: helpers.validateAmount.required(),
   txOptions: helpers.validateTxOptions.required()

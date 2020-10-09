@@ -92,6 +92,7 @@ export async function getDepositExitData ({
 }
 
 export interface IChallengeStandardExit {
+  /** the standard exit id */
   standardExitId: Interfaces.IComplexAmount;
   exitingTx: string;
   challengeTx: string;

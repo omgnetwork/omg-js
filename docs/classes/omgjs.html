@@ -67,7 +67,7 @@
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>Create an OmgJS object to interact with the OMG Network</p>
+						<p>Instantiate an OmgJS object to interact with the OMG Network</p>
 					</div>
 					<pre><code class="language-ts"><span class="hljs-keyword">const</span> omgjs = <span class="hljs-keyword">new</span> OmgJS({
  plasmaContractAddress: <span class="hljs-string">&#x27;0x123&#x27;</span>,
@@ -172,7 +172,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/a03089d/src/index.ts#L62">src/index.ts:62</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/785d2df/src/index.ts#L65">src/index.ts:65</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -191,7 +191,7 @@
 										<li class="tsd-parameter">
 											<h5>watcher<wbr>Proxy<wbr>Url<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
 											<div class="tsd-comment tsd-typography">
-												<p><em>optional</em> the url of the watcher security server. If this is set, all security related endpoints would be using from this url instead.</p>
+												<p><em>optional</em> the proxy url for requests made to the watcher server</p>
 											</div>
 										</li>
 										<li class="tsd-parameter">
@@ -222,9 +222,14 @@
 					<div class="tsd-signature tsd-kind-icon">currency<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>ETH<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>OMG<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">object</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> = Constants.CURRENCY_MAP</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/omisego/omg-js/blob/a03089d/src/index.ts#L52">src/index.ts:52</a></li>
+							<li>Defined in <a href="https://github.com/omisego/omg-js/blob/785d2df/src/index.ts#L55">src/index.ts:55</a></li>
 						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Helper currency map to easily access certain addresses</p>
+						</div>
+					</div>
 					<div class="tsd-type-declaration">
 						<h4>Type declaration</h4>
 						<ul class="tsd-parameters">
@@ -255,7 +260,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/a03089d/src/index.ts#L349">src/index.ts:349</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/785d2df/src/index.ts#L341">src/index.ts:341</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -286,7 +291,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/a03089d/src/index.ts#L220">src/index.ts:220</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/785d2df/src/index.ts#L235">src/index.ts:235</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -320,7 +325,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/a03089d/src/index.ts#L478">src/index.ts:478</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/785d2df/src/index.ts#L470">src/index.ts:470</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -369,7 +374,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/a03089d/src/index.ts#L420">src/index.ts:420</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/785d2df/src/index.ts#L412">src/index.ts:412</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -424,7 +429,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/a03089d/src/index.ts#L510">src/index.ts:510</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/785d2df/src/index.ts#L502">src/index.ts:502</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -464,39 +469,24 @@
 					<a name="challengestandardexit" class="tsd-anchor"></a>
 					<h3>challenge<wbr>Standard<wbr>Exit</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">challenge<wbr>Standard<wbr>Exit<span class="tsd-signature-symbol">(</span>__namedParameters<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>challengeTx<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>challengeTxSig<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>exitingTx<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>inputIndex<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>standardExitId<span class="tsd-signature-symbol">: </span><a href="../globals.html#icomplexamount" class="tsd-signature-type">IComplexAmount</a><span class="tsd-signature-symbol">; </span>txOptions<span class="tsd-signature-symbol">: </span><a href="../interfaces/itransactionoptions.html" class="tsd-signature-type">ITransactionOptions</a><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/itransactionreceipt.html" class="tsd-signature-type">ITransactionReceipt</a><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">challenge<wbr>Standard<wbr>Exit<span class="tsd-signature-symbol">(</span>args<span class="tsd-signature-symbol">: </span><a href="../interfaces/ichallengestandardexit.html" class="tsd-signature-type">IChallengeStandardExit</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/itransactionreceipt.html" class="tsd-signature-type">ITransactionReceipt</a><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/a03089d/src/index.ts#L301">src/index.ts:301</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/785d2df/src/index.ts#L314">src/index.ts:314</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Challenge a standard exit</p>
+								</div>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>__namedParameters: <span class="tsd-signature-symbol">{ </span>challengeTx<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>challengeTxSig<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>exitingTx<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>inputIndex<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>standardExitId<span class="tsd-signature-symbol">: </span><a href="../globals.html#icomplexamount" class="tsd-signature-type">IComplexAmount</a><span class="tsd-signature-symbol">; </span>txOptions<span class="tsd-signature-symbol">: </span><a href="../interfaces/itransactionoptions.html" class="tsd-signature-type">ITransactionOptions</a><span class="tsd-signature-symbol"> }</span></h5>
-									<ul class="tsd-parameters">
-										<li class="tsd-parameter">
-											<h5>challenge<wbr>Tx<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
-										</li>
-										<li class="tsd-parameter">
-											<h5>challenge<wbr>TxSig<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
-										</li>
-										<li class="tsd-parameter">
-											<h5>exiting<wbr>Tx<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
-										</li>
-										<li class="tsd-parameter">
-											<h5>input<wbr>Index<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
-										</li>
-										<li class="tsd-parameter">
-											<h5>standard<wbr>Exit<wbr>Id<span class="tsd-signature-symbol">: </span><a href="../globals.html#icomplexamount" class="tsd-signature-type">IComplexAmount</a></h5>
-										</li>
-										<li class="tsd-parameter">
-											<h5>tx<wbr>Options<span class="tsd-signature-symbol">: </span><a href="../interfaces/itransactionoptions.html" class="tsd-signature-type">ITransactionOptions</a></h5>
-										</li>
-									</ul>
+									<h5>args: <a href="../interfaces/ichallengestandardexit.html" class="tsd-signature-type">IChallengeStandardExit</a></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/itransactionreceipt.html" class="tsd-signature-type">ITransactionReceipt</a><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -513,7 +503,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/a03089d/src/index.ts#L608">src/index.ts:608</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/785d2df/src/index.ts#L600">src/index.ts:600</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -550,7 +540,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/a03089d/src/index.ts#L759">src/index.ts:759</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/785d2df/src/index.ts#L751">src/index.ts:751</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -590,13 +580,21 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/a03089d/src/index.ts#L149">src/index.ts:149</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/785d2df/src/index.ts#L160">src/index.ts:160</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Decodes a deposit transaction</p>
+								</div>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
 									<h5>encodedDeposit: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>the RLP encoded deposit transaction</p>
+									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="../interfaces/ideposittransaction.html" class="tsd-signature-type">IDepositTransaction</a></h4>
@@ -613,7 +611,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/a03089d/src/index.ts#L213">src/index.ts:213</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/785d2df/src/index.ts#L228">src/index.ts:228</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -636,7 +634,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/a03089d/src/index.ts#L185">src/index.ts:185</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/785d2df/src/index.ts#L200">src/index.ts:200</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -659,7 +657,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/a03089d/src/index.ts#L199">src/index.ts:199</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/785d2df/src/index.ts#L214">src/index.ts:214</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -682,7 +680,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/a03089d/src/index.ts#L539">src/index.ts:539</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/785d2df/src/index.ts#L531">src/index.ts:531</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -707,30 +705,24 @@
 					<a name="deposit" class="tsd-anchor"></a>
 					<h3>deposit</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">deposit<span class="tsd-signature-symbol">(</span>__namedParameters<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>amount<span class="tsd-signature-symbol">: </span><a href="../globals.html#icomplexamount" class="tsd-signature-type">IComplexAmount</a><span class="tsd-signature-symbol">; </span>currency<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>txOptions<span class="tsd-signature-symbol">: </span><a href="../interfaces/itransactionoptions.html" class="tsd-signature-type">ITransactionOptions</a><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/itransactionreceipt.html" class="tsd-signature-type">ITransactionReceipt</a><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">deposit<span class="tsd-signature-symbol">(</span>args<span class="tsd-signature-symbol">: </span><a href="../interfaces/ideposit.html" class="tsd-signature-type">IDeposit</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/itransactionreceipt.html" class="tsd-signature-type">ITransactionReceipt</a><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/a03089d/src/index.ts#L233">src/index.ts:233</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/785d2df/src/index.ts#L249">src/index.ts:249</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Deposit funds into the OMG Network</p>
+								</div>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>__namedParameters: <span class="tsd-signature-symbol">{ </span>amount<span class="tsd-signature-symbol">: </span><a href="../globals.html#icomplexamount" class="tsd-signature-type">IComplexAmount</a><span class="tsd-signature-symbol">; </span>currency<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>txOptions<span class="tsd-signature-symbol">: </span><a href="../interfaces/itransactionoptions.html" class="tsd-signature-type">ITransactionOptions</a><span class="tsd-signature-symbol"> }</span></h5>
-									<ul class="tsd-parameters">
-										<li class="tsd-parameter">
-											<h5>amount<span class="tsd-signature-symbol">: </span><a href="../globals.html#icomplexamount" class="tsd-signature-type">IComplexAmount</a></h5>
-										</li>
-										<li class="tsd-parameter">
-											<h5>currency<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
-										</li>
-										<li class="tsd-parameter">
-											<h5>tx<wbr>Options<span class="tsd-signature-symbol">: </span><a href="../interfaces/itransactionoptions.html" class="tsd-signature-type">ITransactionOptions</a></h5>
-										</li>
-									</ul>
+									<h5>args: <a href="../interfaces/ideposit.html" class="tsd-signature-type">IDeposit</a></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/itransactionreceipt.html" class="tsd-signature-type">ITransactionReceipt</a><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -747,9 +739,14 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/a03089d/src/index.ts#L136">src/index.ts:136</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/785d2df/src/index.ts#L143">src/index.ts:143</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Creates and encodes a deposit transaction</p>
+								</div>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
@@ -757,17 +754,27 @@
 									<ul class="tsd-parameters">
 										<li class="tsd-parameter">
 											<h5>amount<span class="tsd-signature-symbol">: </span><a href="../globals.html#icomplexamount" class="tsd-signature-type">IComplexAmount</a></h5>
+											<div class="tsd-comment tsd-typography">
+												<p>the amount of the deposit</p>
+											</div>
 										</li>
 										<li class="tsd-parameter">
 											<h5>currency<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+											<div class="tsd-comment tsd-typography">
+												<p>the currency address of the deposit</p>
+											</div>
 										</li>
 										<li class="tsd-parameter">
 											<h5>owner<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+											<div class="tsd-comment tsd-typography">
+												<p>the address that is making the deposit</p>
+											</div>
 										</li>
 									</ul>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
+							<p>the RLP encoded deposit transaction</p>
 						</li>
 					</ul>
 				</section>
@@ -781,7 +788,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/a03089d/src/index.ts#L206">src/index.ts:206</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/785d2df/src/index.ts#L221">src/index.ts:221</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -804,9 +811,14 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/a03089d/src/index.ts#L156">src/index.ts:156</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/785d2df/src/index.ts#L171">src/index.ts:171</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>RLP encodes a transaction</p>
+								</div>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
@@ -837,6 +849,7 @@
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
+							<p>the RLP encoded transaction</p>
 						</li>
 					</ul>
 				</section>
@@ -850,7 +863,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/a03089d/src/index.ts#L192">src/index.ts:192</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/785d2df/src/index.ts#L207">src/index.ts:207</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -873,7 +886,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/a03089d/src/index.ts#L560">src/index.ts:560</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/785d2df/src/index.ts#L552">src/index.ts:552</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -896,7 +909,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/a03089d/src/index.ts#L599">src/index.ts:599</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/785d2df/src/index.ts#L591">src/index.ts:591</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -919,7 +932,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/a03089d/src/index.ts#L292">src/index.ts:292</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/785d2df/src/index.ts#L302">src/index.ts:302</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -947,7 +960,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/a03089d/src/index.ts#L585">src/index.ts:585</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/785d2df/src/index.ts#L577">src/index.ts:577</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -970,7 +983,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/a03089d/src/index.ts#L681">src/index.ts:681</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/785d2df/src/index.ts#L673">src/index.ts:673</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -993,7 +1006,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/a03089d/src/index.ts#L592">src/index.ts:592</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/785d2df/src/index.ts#L584">src/index.ts:584</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1010,19 +1023,24 @@
 					<a name="getexitqueue" class="tsd-anchor"></a>
 					<h3>get<wbr>Exit<wbr>Queue</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>Exit<wbr>Queue<span class="tsd-signature-symbol">(</span>token<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/iexitqueue.html" class="tsd-signature-type">IExitQueue</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Exit<wbr>Queue<span class="tsd-signature-symbol">(</span>currency<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/iexitqueue.html" class="tsd-signature-type">IExitQueue</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/a03089d/src/index.ts#L129">src/index.ts:129</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/785d2df/src/index.ts#L129">src/index.ts:129</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Retrieves the exit queue for a particular currency</p>
+								</div>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>token: <span class="tsd-signature-type">string</span></h5>
+									<h5>currency: <span class="tsd-signature-type">string</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/iexitqueue.html" class="tsd-signature-type">IExitQueue</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -1033,27 +1051,24 @@
 					<a name="getexittime" class="tsd-anchor"></a>
 					<h3>get<wbr>Exit<wbr>Time</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>Exit<wbr>Time<span class="tsd-signature-symbol">(</span>__namedParameters<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>exitRequestBlockNumber<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>submissionBlockNumber<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/iexittime.html" class="tsd-signature-type">IExitTime</a><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Exit<wbr>Time<span class="tsd-signature-symbol">(</span>args<span class="tsd-signature-symbol">: </span><a href="../interfaces/igetexittime.html" class="tsd-signature-type">IGetExitTime</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/iexittime.html" class="tsd-signature-type">IExitTime</a><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/a03089d/src/index.ts#L118">src/index.ts:118</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/785d2df/src/index.ts#L121">src/index.ts:121</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Calculate the exit schedule required before exits can be processed and released</p>
+								</div>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>__namedParameters: <span class="tsd-signature-symbol">{ </span>exitRequestBlockNumber<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>submissionBlockNumber<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span></h5>
-									<ul class="tsd-parameters">
-										<li class="tsd-parameter">
-											<h5>exit<wbr>Request<wbr>Block<wbr>Number<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
-										</li>
-										<li class="tsd-parameter">
-											<h5>submission<wbr>Block<wbr>Number<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
-										</li>
-									</ul>
+									<h5>args: <a href="../interfaces/igetexittime.html" class="tsd-signature-type">IGetExitTime</a></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/iexittime.html" class="tsd-signature-type">IExitTime</a><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -1070,7 +1085,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/a03089d/src/index.ts#L581">src/index.ts:581</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/785d2df/src/index.ts#L573">src/index.ts:573</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/ifeeinfo.html" class="tsd-signature-type">IFeeInfo</a><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -1087,7 +1102,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/a03089d/src/index.ts#L268">src/index.ts:268</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/785d2df/src/index.ts#L278">src/index.ts:278</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1115,7 +1130,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/a03089d/src/index.ts#L259">src/index.ts:259</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/785d2df/src/index.ts#L269">src/index.ts:269</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1143,7 +1158,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/a03089d/src/index.ts#L688">src/index.ts:688</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/785d2df/src/index.ts#L680">src/index.ts:680</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1174,7 +1189,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/a03089d/src/index.ts#L246">src/index.ts:246</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/785d2df/src/index.ts#L256">src/index.ts:256</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1208,7 +1223,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/a03089d/src/index.ts#L628">src/index.ts:628</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/785d2df/src/index.ts#L620">src/index.ts:620</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/istatus.html" class="tsd-signature-type">IStatus</a><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -1225,7 +1240,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/a03089d/src/index.ts#L567">src/index.ts:567</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/785d2df/src/index.ts#L559">src/index.ts:559</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1248,7 +1263,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/a03089d/src/index.ts#L574">src/index.ts:574</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/785d2df/src/index.ts#L566">src/index.ts:566</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1271,7 +1286,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/a03089d/src/index.ts#L746">src/index.ts:746</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/785d2df/src/index.ts#L738">src/index.ts:738</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1294,7 +1309,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/a03089d/src/index.ts#L753">src/index.ts:753</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/785d2df/src/index.ts#L745">src/index.ts:745</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1317,7 +1332,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/a03089d/src/index.ts#L553">src/index.ts:553</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/785d2df/src/index.ts#L545">src/index.ts:545</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1340,7 +1355,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/a03089d/src/index.ts#L342">src/index.ts:342</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/785d2df/src/index.ts#L334">src/index.ts:334</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1363,7 +1378,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/a03089d/src/index.ts#L739">src/index.ts:739</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/785d2df/src/index.ts#L731">src/index.ts:731</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1386,7 +1401,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/a03089d/src/index.ts#L667">src/index.ts:667</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/785d2df/src/index.ts#L659">src/index.ts:659</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1409,7 +1424,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/a03089d/src/index.ts#L660">src/index.ts:660</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/785d2df/src/index.ts#L652">src/index.ts:652</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1432,7 +1447,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/a03089d/src/index.ts#L632">src/index.ts:632</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/785d2df/src/index.ts#L624">src/index.ts:624</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1463,7 +1478,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/a03089d/src/index.ts#L646">src/index.ts:646</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/785d2df/src/index.ts#L638">src/index.ts:638</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1494,7 +1509,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/a03089d/src/index.ts#L674">src/index.ts:674</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/785d2df/src/index.ts#L666">src/index.ts:666</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1517,7 +1532,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/a03089d/src/index.ts#L403">src/index.ts:403</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/785d2df/src/index.ts#L395">src/index.ts:395</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1551,7 +1566,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/a03089d/src/index.ts#L386">src/index.ts:386</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/785d2df/src/index.ts#L378">src/index.ts:378</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1585,7 +1600,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/a03089d/src/index.ts#L327">src/index.ts:327</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/785d2df/src/index.ts#L319">src/index.ts:319</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1622,7 +1637,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/a03089d/src/index.ts#L458">src/index.ts:458</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/785d2df/src/index.ts#L450">src/index.ts:450</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1659,7 +1674,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/a03089d/src/index.ts#L360">src/index.ts:360</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/785d2df/src/index.ts#L352">src/index.ts:352</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1702,7 +1717,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/a03089d/src/index.ts#L277">src/index.ts:277</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/785d2df/src/index.ts#L287">src/index.ts:287</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1739,7 +1754,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/a03089d/src/index.ts#L722">src/index.ts:722</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/785d2df/src/index.ts#L714">src/index.ts:714</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1773,7 +1788,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/a03089d/src/index.ts#L702">src/index.ts:702</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/785d2df/src/index.ts#L694">src/index.ts:694</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
