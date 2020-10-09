@@ -69,9 +69,10 @@ class OmgJS {
   /**
    * @param plasmaContractAddress the address of the PlasmaFramework contract
    * @param watcherUrl the url of the watcher-info server (running in both security-critical and informational mode)
+   * @param web3Provider a web3 http provider
+   * 
    * @param watcherSecurityUrl *optional* the url of the watcher security server. If this is set, all security related endpoints will use this url instead
    * @param watcherProxyUrl *optional* the proxy url for requests made to the watcher server
-   * @param web3Provider a web3 http provider
    */
   public constructor({
     plasmaContractAddress,
@@ -259,7 +260,9 @@ class OmgJS {
   }
 
   /** Block a standard exit by showing the exiting output was spent */
-  public async challengeStandardExit (args: RootchainStandardExitModule.IChallengeStandardExit): Promise<Interfaces.ITransactionReceipt> {
+  public async challengeStandardExit (
+    args: RootchainStandardExitModule.IChallengeStandardExit
+  ): Promise<Interfaces.ITransactionReceipt> {
     Joi.assert(args, Validators.challengeStandardExitSchema);
     return RootchainStandardExitModule.challengeStandardExit.call(this, args);
   }
