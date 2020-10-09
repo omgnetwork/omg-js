@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>IInFlightExitGetOutputChallengeData | omg-js - v4.0.1-1.0.0</title>
+	<title>IMergeUtxos | omg-js - v4.0.1-1.0.0</title>
 	<meta name="description" content="Documentation for omg-js - v4.0.1-1.0.0">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -54,10 +54,10 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="iinflightexitgetoutputchallengedata.html">IInFlightExitGetOutputChallengeData</a>
+					<a href="imergeutxos.html">IMergeUtxos</a>
 				</li>
 			</ul>
-			<h1>Interface IInFlightExitGetOutputChallengeData</h1>
+			<h1>Interface IMergeUtxos</h1>
 		</div>
 	</div>
 </header>
@@ -68,7 +68,7 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">IInFlightExitGetOutputChallengeData</span>
+						<span class="target">IMergeUtxos</span>
 					</li>
 				</ul>
 			</section>
@@ -79,8 +79,9 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="iinflightexitgetoutputchallengedata.html#outputindex" class="tsd-kind-icon">output<wbr>Index</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="iinflightexitgetoutputchallengedata.html#txbytes" class="tsd-kind-icon">txbytes</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="imergeutxos.html#metadata" class="tsd-kind-icon">metadata</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="imergeutxos.html#privatekey" class="tsd-kind-icon">private<wbr>Key</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="imergeutxos.html#utxos" class="tsd-kind-icon">utxos</a></li>
 							</ul>
 						</section>
 					</div>
@@ -89,22 +90,32 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="outputindex" class="tsd-anchor"></a>
-					<h3>output<wbr>Index</h3>
-					<div class="tsd-signature tsd-kind-icon">output<wbr>Index<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<a name="metadata" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> metadata</h3>
+					<div class="tsd-signature tsd-kind-icon">metadata<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/omisego/omg-js/blob/840f9c3/src/watcher/inflightexit.ts#L30">src/watcher/inflightexit.ts:30</a></li>
+							<li>Defined in <a href="https://github.com/omisego/omg-js/blob/840f9c3/src/transaction/txBuilder.ts#L161">src/transaction/txBuilder.ts:161</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="txbytes" class="tsd-anchor"></a>
-					<h3>txbytes</h3>
-					<div class="tsd-signature tsd-kind-icon">txbytes<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<a name="privatekey" class="tsd-anchor"></a>
+					<h3>private<wbr>Key</h3>
+					<div class="tsd-signature tsd-kind-icon">private<wbr>Key<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/omisego/omg-js/blob/840f9c3/src/watcher/inflightexit.ts#L29">src/watcher/inflightexit.ts:29</a></li>
+							<li>Defined in <a href="https://github.com/omisego/omg-js/blob/840f9c3/src/transaction/txBuilder.ts#L160">src/transaction/txBuilder.ts:160</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="utxos" class="tsd-anchor"></a>
+					<h3>utxos</h3>
+					<div class="tsd-signature tsd-kind-icon">utxos<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="iutxo.html" class="tsd-signature-type">IUTXO</a><span class="tsd-signature-symbol">&gt;</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/omisego/omg-js/blob/840f9c3/src/transaction/txBuilder.ts#L159">src/transaction/txBuilder.ts:159</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -123,13 +134,16 @@
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-interface">
-						<a href="iinflightexitgetoutputchallengedata.html" class="tsd-kind-icon">IIn<wbr>Flight<wbr>Exit<wbr>Get<wbr>Output<wbr>Challenge<wbr>Data</a>
+						<a href="imergeutxos.html" class="tsd-kind-icon">IMerge<wbr>Utxos</a>
 						<ul>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="iinflightexitgetoutputchallengedata.html#outputindex" class="tsd-kind-icon">output<wbr>Index</a>
+								<a href="imergeutxos.html#metadata" class="tsd-kind-icon">metadata</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="iinflightexitgetoutputchallengedata.html#txbytes" class="tsd-kind-icon">txbytes</a>
+								<a href="imergeutxos.html#privatekey" class="tsd-kind-icon">private<wbr>Key</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="imergeutxos.html#utxos" class="tsd-kind-icon">utxos</a>
 							</li>
 						</ul>
 					</li>

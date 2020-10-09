@@ -61,10 +61,10 @@ export interface ITransactionData {
 };
 
 export interface ITransactionBody {
-  txType: number;
+  txType?: number;
   inputs: IUTXO[];
   outputs: IOutput[];
-  txData: number;
+  txData?: number;
   metadata: string;
 };
 

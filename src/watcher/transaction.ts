@@ -2,6 +2,8 @@ import * as Constants from '@lib/common/constants';
 import * as Interfaces from '@lib/common/interfaces';
 import * as Transporter from '@lib/transport';
 import * as Encoders from '@lib/transaction/encoders';
+import * as TypedDataModule from '@lib/transaction/typedData';
+import * as Util from '@lib/common/util';
 
 /** @internal */
 export async function getTransaction (id: string): Promise<Interfaces.ITransactionData> {
@@ -58,6 +60,28 @@ export async function createTransaction ({
       fee: { currency: feeCurrency },
       metadata: _metadata
     },
+    proxyUrl: this.watcherProxyUrl
+  });
+}
+
+/** @internal */
+export async function submitTyped (
+  typedData: TypedDataModule.ITypedData
+): Promise<any> {
+  return Transporter.post({
+    url: `${this.watcherUrl}/transaction.submit_typed`,
+    body: typedData,
+    proxyUrl: this.watcherProxyUrl
+  });
+}
+
+/** @internal */
+export async function submitTransaction (
+  transaction: string
+): Promise<any> {
+  return Transporter.post({
+    url: `${this.watcherSecurityUrl}/transaction.submit`,
+    body: { transaction: Util.prefixHex(transaction) },
     proxyUrl: this.watcherProxyUrl
   });
 }

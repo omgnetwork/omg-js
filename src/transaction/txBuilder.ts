@@ -1,9 +1,12 @@
 import BN from 'bn.js';
-import { uniq } from 'lodash';
+import { uniq, uniqBy } from 'lodash';
 
 import * as Encoders from '@lib/transaction/encoders';
 import * as Interfaces from '@lib/common/interfaces';
 import * as Constants from '@lib/common/constants';
+import * as SignModule from '@lib/transaction/sign';
+import * as TypedDataModule from '@lib/transaction/typedData';
+import * as WatcherTransactionModule from '@lib/watcher/transaction';
 
 export interface ICreateTransactionBody {
   fromAddress: string;
@@ -123,4 +126,62 @@ function validateOutputs (arg): void {
   if (arg.length > Constants.MAX_OUTPUTS) {
     throw new Error(`Outputs must be an array of size < ${Constants.MAX_OUTPUTS}`);
   }
+}
+
+/** @internal */
+function mergeUtxosToOutput (utxos: Array<Interfaces.IUTXO>): Interfaces.IOutput {
+  if (utxos.length < 2) {
+    throw new Error('Must merge at least 2 utxos');
+  }
+  if (utxos.length > 4) {
+    throw new Error('Cannot merge more than 4 utxos');
+  }
+  const isSameCurrency = uniqBy(utxos, (u) => u.currency).length === 1;
+  if (!isSameCurrency) {
+    throw new Error('All utxo currency must be the same');
+  }
+  const isSameOwner = uniqBy(utxos, (u) => u.owner).length === 1;
+  if (!isSameOwner) {
+    throw new Error('All utxo owner must be the same');
+  }
+  return {
+    outputType: 1,
+    outputGuard: utxos[0].owner,
+    currency: utxos[0].currency,
+    amount: utxos.reduce(
+      (prev, curr) => prev.add(new BN(curr.amount.toString())),
+      new BN(0)
+    )
+  }
+}
+
+export interface IMergeUtxos {
+  utxos: Array<Interfaces.IUTXO>;
+  privateKey: string;
+  metadata?: string;
+}
+
+/** @internal */
+export async function mergeUtxos ({
+  utxos,
+  privateKey,
+  metadata = Constants.NULL_METADATA
+}: IMergeUtxos): Promise<any> {
+  const transactionBody = {
+    inputs: utxos,
+    outputs: [mergeUtxosToOutput(utxos)],
+    txData: 0,
+    metadata
+  };
+
+  const typedData = TypedDataModule.getTypedData(transactionBody);
+  const signatures = SignModule.signTransaction({
+    typedData,
+    privateKeys: new Array(utxos.length).fill(privateKey)
+  });
+  const signedTx = SignModule.buildSignedTransaction({
+    typedData,
+    signatures
+  });
+  return WatcherTransactionModule.submitTransaction.call(this, signedTx);
 }

@@ -188,10 +188,6 @@ export const getChallengeDataSchema: Joi.Schema = Joi.object({
   utxoPos: helpers.validateAmount.required()
 });
 
-export const submitTransactionSchema: Joi.Schema = Joi.object({
-  transaction: Joi.string().required()
-});
-
 export const createTransactionSchema: Joi.Schema = Joi.object({
   owner: helpers.validateAddress.required(),
   payments: helpers.validatePayments.required(),

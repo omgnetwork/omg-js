@@ -22,6 +22,7 @@ import * as EncoderModule from '@lib/transaction/encoders';
 import * as TypedDataModule from '@lib/transaction/typedData';
 import * as StructHashModule from '@lib/transaction/structHash';
 import * as TransactionBuilderModule from '@lib/transaction/txBuilder';
+import * as SignModule from '@lib/transaction/sign';
 
 import * as Constants from '@lib/common/constants';
 import * as Interfaces from '@lib/common/interfaces';
@@ -416,10 +417,7 @@ class OmgJS {
     return WatcherUtxoModule.getChallengeData.call(this, utxoPos);
   }
 
-  // NMTODO: add missing childchain signing methods
-
   // NMTODO: name both createtransactions differently to differentiate the two better
-
   /** Create possible transactions using the utility from the Watcher */
   public async createTransaction (
     args: WatcherTransactionModule.ICreateTransaction
@@ -434,6 +432,57 @@ class OmgJS {
   ): Partial<Interfaces.ITransactionBody> {
     Joi.assert(args, Validators.createTransactionBodySchema);
     return TransactionBuilderModule.createTransactionBody.call(this, args);
+  }
+
+  // NMTODO: maybe have to rename as txData input is not typed data
+  /** Signs the transaction's typed data that is returned from `createTransaction` */
+  public signTypedData (
+    args: SignModule.ISignTypedData
+  ): TypedDataModule.ITypedData {
+    Joi.assert(args, Validators.signTypedDataSchema);
+    return SignModule.signTypedData.call(this, args);
+  }
+
+  // NMTODO: figure out the return interface here
+  /** Submits a transaction along with its typed data and signatures to the Watcher */
+  public submitTyped (
+    typedData: TypedDataModule.ITypedData
+  ): Promise<any> {
+    Joi.assert(typedData, Validators.submitTypedSchema);
+    return WatcherTransactionModule.submitTyped.call(this, typedData);
+  }
+
+  /** Signs typed data using passed private keys and returns an array of signatures */
+  public signTransaction (
+    args: SignModule.ISignTransaction
+  ): Array<string> {
+    Joi.assert(args, Validators.signTransactionSchema);
+    return SignModule.signTransaction.call(this, args);
+  }
+
+  /**  Build a signed transaction into the format expected by submitTransaction */
+  public buildSignedTransaction (
+    args: SignModule.IBuildSignedTransaction
+  ): string {
+    Joi.assert(args, Validators.buildSignedTransactionSchema);
+    return SignModule.buildSignedTransaction.call(this, args);
+  }
+
+  // NMTODO: figure out the return interface here
+  /** Submit an encoded signed transaction to the Watcher */
+  public submitTransaction (
+    transaction: string
+  ): Promise<any> {
+    Joi.assert(transaction, Joi.string().required());
+    return WatcherTransactionModule.submitTransaction.call(this, transaction);
+  }
+
+  /** Merge utxos to a single output and submit it to the Watcher */
+  public mergeUtxos (
+    args: TransactionBuilderModule.IMergeUtxos
+  ): Promise<any> {
+    Joi.assert(args, Validators.mergeUtxosSchema);
+    return TransactionBuilderModule.mergeUtxos.call(this, args);
   }
 
   /** Get the status of the Watcher */
