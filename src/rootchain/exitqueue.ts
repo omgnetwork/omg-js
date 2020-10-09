@@ -84,12 +84,12 @@ export interface IExitQueue {
 
 /** @internal */
 export async function getExitQueue (
-  token: string = Constants.CURRENCY_MAP.ETH
+  currency: string = Constants.CURRENCY_MAP.ETH
 ): Promise<IExitQueue[]> {
-  const vaultId = token === Constants.CURRENCY_MAP.ETH ? 1 : 2;
+  const vaultId = currency === Constants.CURRENCY_MAP.ETH ? 1 : 2;
   const hashed = web3Utils.soliditySha3(
     { t: 'uint256', v: vaultId },
-    { t: 'address', v: token }
+    { t: 'address', v: currency }
   );
   const address: string = await this.plasmaContract.methods.exitsQueues(hashed).call();
   const { contract } = await ContractsModule.getPriorityQueue.call(this, address);
@@ -126,7 +126,7 @@ export async function getExitQueue (
 }
 
 export interface IProcessExits {
-  token: string;
+  currency: string;
   exitId: number | string;
   maxExitsToProcess: number;
   txOptions: Interfaces.ITransactionOptions
@@ -134,18 +134,18 @@ export interface IProcessExits {
 
 /** @internal */
 export async function processExits ({
-  token,
+  currency,
   exitId,
   maxExitsToProcess,
   txOptions
 }: IProcessExits): Promise<Interfaces.ITransactionReceipt> {
-  const vaultId = token === Constants.CURRENCY_MAP.ETH ? 1 : 2;
+  const vaultId = currency === Constants.CURRENCY_MAP.ETH ? 1 : 2;
 
   const transactionData = ContractsModule.getTxData(
     this.plasmaContract,
     'processExits',
     vaultId,
-    token,
+    currency,
     exitId,
     maxExitsToProcess
   );
@@ -161,28 +161,28 @@ export async function processExits ({
 }
 
 /** @internal */
-export async function hasExitQueue (token: string): Promise<boolean> {
-  const vaultId = token === Constants.CURRENCY_MAP.ETH ? 1 : 2;
-  return this.plasmaContract.methods.hasExitQueue(vaultId, token).call();
+export async function hasExitQueue (currency: string): Promise<boolean> {
+  const vaultId = currency === Constants.CURRENCY_MAP.ETH ? 1 : 2;
+  return this.plasmaContract.methods.hasExitQueue(vaultId, currency).call();
 }
 
 export interface IAddExitQueue {
-  token: string;
+  currency: string;
   txOptions: Interfaces.ITransactionOptions;
 }
 
 /** @internal */
 export async function addExitQueue ({
-  token,
+  currency,
   txOptions
 }: IAddExitQueue): Promise<Interfaces.ITransactionReceipt> {
-  const vaultId = token === Constants.CURRENCY_MAP.ETH ? 1 : 2;
+  const vaultId = currency === Constants.CURRENCY_MAP.ETH ? 1 : 2;
 
   const transactionData = ContractsModule.getTxData(
     this.plasmaContract,
     'addExitQueue',
     vaultId,
-    token
+    currency
   );
 
   return RootchainTransactionsModule.sendTransaction.call(this, {

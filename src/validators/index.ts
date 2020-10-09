@@ -69,7 +69,7 @@ export const challengeStandardExitSchema: Joi.Schema = Joi.object({
 });
 
 export const processExitsSchema: Joi.Schema = Joi.object({
-  token: helpers.validateAddress.required(),
+  currency: helpers.validateAddress.required(),
   exitId: [
     Joi.number().equal(0).required(),
     Joi.string().required()
@@ -81,7 +81,7 @@ export const processExitsSchema: Joi.Schema = Joi.object({
 export const hasExitQueueSchema: Joi.Schema = helpers.validateAddress.required();
 
 export const addExitQueueSchema: Joi.Schema = Joi.object({
-  token: helpers.validateAddress.required(),
+  currency: helpers.validateAddress.required(),
   txOptions: helpers.validateTxOptions.required()
 });
 
