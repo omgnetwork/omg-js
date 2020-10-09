@@ -12,7 +12,6 @@
   ],
   "scripts": {
     "compile": "ttsc",
-    "compile:watch": "ttsc -w",
     "build-docs": "typedoc",
     "lint": "eslint . --ext .js",
     "lint-fix": "eslint . --ext .js --fix",

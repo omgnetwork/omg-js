@@ -5,6 +5,7 @@
   "hideGenerator": true,
   "excludePrivate": true,
   "excludeProtected": true,
+  "excludeNotExported": true,
   "stripInternal": true,
   "includeVersion": true,
   "exclude": "**/validators/**",

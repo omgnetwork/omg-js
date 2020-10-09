@@ -1,18 +1,18 @@
 import * as Constants from '@lib/common/constants';
 import * as Interfaces from '@lib/common/interfaces';
 
-export interface ITypedDataSpec {
+interface ITypedDataSpec {
   name: string;
   type: string;
 };
 
-export interface ITypedDataTypes {
+interface ITypedDataTypes {
   EIP712Domain: Array<ITypedDataSpec>;
   Transaction: Array<ITypedDataSpec>;
   Input: Array<ITypedDataSpec>;
   Output: Array<ITypedDataSpec>;
 }
-export interface ITypedDataDomainData {
+interface ITypedDataDomainData {
   name: string;
   version: string;
   verifyingContract: string;
@@ -40,6 +40,7 @@ export interface ITypedData {
   message: ITypedDataMessage;
 };
 
+/** @internal */
 const domainSpec: Array<ITypedDataSpec> = [
   { name: 'name', type: 'string' },
   { name: 'version', type: 'string' },
@@ -47,6 +48,7 @@ const domainSpec: Array<ITypedDataSpec> = [
   { name: 'salt', type: 'bytes32' }
 ];
 
+/** @internal */
 const txSpec: Array<ITypedDataSpec> = [
   { name: 'txType', type: 'uint256' },
   { name: 'input0', type: 'Input' },
@@ -61,12 +63,14 @@ const txSpec: Array<ITypedDataSpec> = [
   { name: 'metadata', type: 'bytes32' }
 ];
 
+/** @internal */
 const inputSpec: Array<ITypedDataSpec> = [
   { name: 'blknum', type: 'uint256' },
   { name: 'txindex', type: 'uint256' },
   { name: 'oindex', type: 'uint256' }
 ];
 
+/** @internal */
 const outputSpec: Array<ITypedDataSpec> = [
   { name: 'outputType', type: 'uint256' },
   { name: 'outputGuard', type: 'bytes20' },
@@ -74,6 +78,7 @@ const outputSpec: Array<ITypedDataSpec> = [
   { name: 'amount', type: 'uint256' }
 ];
 
+/** @internal */
 const domainData: ITypedDataDomainData = {
   name: 'OMG Network',
   version: '1',

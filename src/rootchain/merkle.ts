@@ -2,10 +2,6 @@
 
 import web3Utils from 'web3-utils';
 
-const LeafSalt = '0x00';
-const NodeSalt = '0x01';
-const NullHash = web3Utils.sha3('\0'.repeat(33));
-
 /** @internal */
 class MerkleNode {
   public data;
@@ -21,6 +17,9 @@ class MerkleNode {
 
 /** @internal */
 class MerkleTree {
+  private readonly NodeSalt = '0x01';
+  private readonly NullHash = web3Utils.sha3('\0'.repeat(33));
+
   public height;
   public leafCount;
   public leaves;
@@ -46,14 +45,14 @@ class MerkleTree {
 
     this.leaves = leaves.map(MerkleTree.hashLeaf)
 
-    const fill = Array.from({ length: this.leafCount - this.leaves.length }, () => NullHash)
+    const fill = Array.from({ length: this.leafCount - this.leaves.length }, () => this.NullHash)
     this.leaves = this.leaves.concat(fill)
     this.tree = [MerkleTree.createNodes(this.leaves)]
     this.root = this.createTree(this.tree[0])
   }
 
   static hashLeaf (leaf) {
-    return web3Utils.sha3(LeafSalt + leaf.slice(2))
+    return web3Utils.sha3('0x00' + leaf.slice(2))
   }
 
   static createNodes (leaves) {
@@ -71,7 +70,7 @@ class MerkleTree {
     let i = 0
     while (i < levelSize) {
       // JS stores hashes as hex-encoded strings
-      const combinedData = NodeSalt + level[i].data.slice(2) + level[i + 1].data.slice(2)
+      const combinedData = this.NodeSalt + level[i].data.slice(2) + level[i + 1].data.slice(2)
       const combined = web3Utils.sha3(combinedData)
       const nextNode = new MerkleNode(combined, level[i], level[i + 1])
       nextLevel.push(nextNode)
