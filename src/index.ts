@@ -347,6 +347,7 @@ class OmgJS {
     return RootchainInflightExitModule.deleteNonPiggybackedInFlightExit.call(this, args);
   }
 
+  /** Get the UTXOs of an address */
   public async getUtxos (
     address: string
   ): Promise<Array<Interfaces.IUTXO>> {
@@ -354,6 +355,7 @@ class OmgJS {
     return WatcherAccountModule.getUtxos.call(this, address);
   }
 
+  /** Get the balance of an address */
   public async getBalance (
     address: string
   ): Promise<WatcherAccountModule.IBalance> {
@@ -361,6 +363,7 @@ class OmgJS {
     return WatcherAccountModule.getBalance.call(this, address);
   }
 
+  /** Get transaction information */
   public async getTransaction (
     id: string
   ): Promise<Interfaces.ITransactionData> {
@@ -368,6 +371,7 @@ class OmgJS {
     return WatcherTransactionModule.getTransaction.call(this, id);
   }
 
+  /** Get transaction information using various filters */
   public async getTransactions (
     filters: WatcherTransactionModule.ITransactionFilter
   ): Promise<Array<Interfaces.ITransactionData>> {
@@ -375,10 +379,12 @@ class OmgJS {
     return WatcherTransactionModule.getTransactions.call(this, filters);
   }
 
+  /** Get accepted fee information */
   public async getFees (): Promise<WatcherFeesModule.IFeeInfo> {
     return WatcherFeesModule.getFees.call(this);
   }
 
+  /** Get deposit information */
   public async getDeposits (
     filters: WatcherDepositModule.IDepositFilter
   ): Promise<Array<WatcherDepositModule.IDepositInfo>> {
@@ -386,6 +392,7 @@ class OmgJS {
     return WatcherDepositModule.getDeposits.call(this, filters);
   }
 
+  /** Get the exit data for a UTXO */
   public async getExitData (
     utxo: Interfaces.IUTXO
   ): Promise<Interfaces.IExitData> {
@@ -393,6 +400,7 @@ class OmgJS {
     return WatcherUtxoModule.getExitData.call(this, utxo);
   }
 
+  /** Get the challenge data for a UTXO */
   public async getChallengeData (
     utxoPos: number
   ): Promise<WatcherUtxoModule.IChallengeData> {
@@ -402,58 +410,36 @@ class OmgJS {
 
   // NMTODO: add missing childchain signing methods
 
-  public async createTransaction ({
-    owner,
-    payments,
-    feeCurrency,
-    metadata
-  }: WatcherTransactionModule.ICreateTransaction): Promise<WatcherTransactionModule.ICreatedTransactions> {
-    Joi.assert({
-      owner,
-      payments,
-      feeCurrency,
-      metadata
-    }, Validators.createTransactionSchema);
-    return WatcherTransactionModule.createTransaction.call(this, {
-      owner,
-      payments,
-      feeCurrency,
-      metadata
-    });
+  /** Create possible transactions using this utility from the Watcher */
+  public async createTransaction (
+    args: WatcherTransactionModule.ICreateTransaction
+  ): Promise<WatcherTransactionModule.ICreatedTransactions> {
+    Joi.assert(args, Validators.createTransactionSchema);
+    return WatcherTransactionModule.createTransaction.call(this, args);
   }
 
+  /** Get the status of the Watcher */
   public async getStatus (): Promise<WatcherStatusModule.IStatus> {
     return WatcherStatusModule.getStatus.call(this);
   }
 
-  public async inFlightExitGetInputChallengeData ({
-    txbytes,
-    inputIndex
-  }: WatcherInflightExitModule.IInFlightExitGetInputChallengeData): Promise<WatcherInflightExitModule.IInflightExitInputChallengeData> {
-    Joi.assert({
-      txbytes,
-      inputIndex
-    }, Validators.inFlightExitGetInputChallengeDataSchema);
-    return WatcherInflightExitModule.inFlightExitGetInputChallengeData.call(this, {
-      txbytes,
-      inputIndex
-    });
+  /** Get the data to challenge an invalid input piggybacked on an in-flight exit */
+  public async inFlightExitGetInputChallengeData (
+    args: WatcherInflightExitModule.IInFlightExitGetInputChallengeData
+  ): Promise<WatcherInflightExitModule.IInflightExitInputChallengeData> {
+    Joi.assert(args, Validators.inFlightExitGetInputChallengeDataSchema);
+    return WatcherInflightExitModule.inFlightExitGetInputChallengeData.call(this, args);
   }
 
-  public async inFlightExitGetOutputChallengeData ({
-    txbytes,
-    outputIndex
-  }: WatcherInflightExitModule.IInFlightExitGetOutputChallengeData): Promise<WatcherInflightExitModule.IInflightExitOutputChallengeData> {
-    Joi.assert({
-      txbytes,
-      outputIndex
-    }, Validators.inFlightExitGetOutputChallengeDataSchema);
-    return WatcherInflightExitModule.inFlightExitGetOutputChallengeData.call(this, {
-      txbytes,
-      outputIndex      
-    });
+  /** Get the data to challenge an invalid output piggybacked on an in-flight exit. */
+  public async inFlightExitGetOutputChallengeData (
+    args: WatcherInflightExitModule.IInFlightExitGetOutputChallengeData
+  ): Promise<WatcherInflightExitModule.IInflightExitOutputChallengeData> {
+    Joi.assert(args, Validators.inFlightExitGetOutputChallengeDataSchema);
+    return WatcherInflightExitModule.inFlightExitGetOutputChallengeData.call(this, args);
   }
 
+  /** Get the exit data for an in-flight transaction */
   public async inFlightExitGetData (
     txbytes: string
   ): Promise<Interfaces.IExitData> {
@@ -461,6 +447,7 @@ class OmgJS {
     return WatcherInflightExitModule.inFlightExitGetData.call(this, txbytes);
   }
 
+  /** Get the competitor for an in-flight transaction */
   public async inFlightExitGetCompetitor (
     txbytes: string
   ): Promise<WatcherInflightExitModule.IInflightExitCompetitor> {
@@ -468,6 +455,7 @@ class OmgJS {
     return WatcherInflightExitModule.inFlightExitGetCompetitor.call(this, txbytes);
   }
 
+  /** Prove that a transaction has been put into a block (and therefore is canonical) */
   public async inFlightExitProveCanonical (
     txbytes: string
   ): Promise<string> {
@@ -475,6 +463,7 @@ class OmgJS {
     return WatcherInflightExitModule.inFlightExitProveCanonical.call(this, txbytes);
   }
 
+  /** Retrieve the EVM revert reason from a transaction hash */
   public async getEVMErrorReason (
     txHash: string
   ): Promise<string> {
@@ -482,57 +471,31 @@ class OmgJS {
     return RootchainUtilModule.getEVMErrorReason.call(this, txHash);
   }
 
-  public async getRootchainERC20Balance ({
-    address,
-    erc20Address
-  }: RootchainUtilModule.IGetRootchainERC20Balance): Promise<string> {
-    Joi.assert({
-      address,
-      erc20Address
-    }, Validators.getErc20BalanceSchema);
-    return RootchainUtilModule.getRootchainERC20Balance.call(this, {
-      address,
-      erc20Address
-    });
+  /** Get the rootchain ERC20 balance of an address */
+  public async getRootchainERC20Balance (
+    args: RootchainUtilModule.IGetRootchainERC20Balance
+  ): Promise<string> {
+    Joi.assert(args, Validators.getErc20BalanceSchema);
+    return RootchainUtilModule.getRootchainERC20Balance.call(this, args);
   }
 
-  public async waitForRootchainTransaction ({
-    transactionHash,
-    checkIntervalMs,
-    blocksToWait,
-    onCountdown
-  }: RootchainUtilModule.IWaitForRootchainTransaction): Promise<Interfaces.ITransactionReceipt> {
-    Joi.assert({
-      transactionHash,
-      checkIntervalMs,
-      blocksToWait,
-      onCountdown
-    }, Validators.waitForRootchainTransactionSchema);
-    return RootchainUtilModule.waitForRootchainTransaction.call(this, {
-      transactionHash,
-      checkIntervalMs,
-      blocksToWait,
-      onCountdown
-    });
+  /** Wait for x number of blocks of a rootchain transaction */
+  public async waitForRootchainTransaction (
+    args: RootchainUtilModule.IWaitForRootchainTransaction
+  ): Promise<Interfaces.ITransactionReceipt> {
+    Joi.assert(args, Validators.waitForRootchainTransactionSchema);
+    return RootchainUtilModule.waitForRootchainTransaction.call(this, args);
   }
 
-  public async waitForChildchainBalance ({
-    address,
-    expectedAmount,
-    currency
-  }: RootchainUtilModule.IWaitForChildchainBalance): Promise<Array<WatcherAccountModule.IBalance>> {
-    Joi.assert({
-      address,
-      expectedAmount,
-      currency
-    }, Validators.waitForChildchainBalanceSchema);
-    return RootchainUtilModule.waitForChildchainBalance.call(this, {
-      address,
-      expectedAmount,
-      currency
-    });
+  /** Wait for an address to have a specified balance on the OMG Network */
+  public async waitForChildchainBalance (
+    args: RootchainUtilModule.IWaitForChildchainBalance
+  ): Promise<Array<WatcherAccountModule.IBalance>> {
+    Joi.assert(args, Validators.waitForChildchainBalanceSchema);
+    return RootchainUtilModule.waitForChildchainBalance.call(this, args);
   }
 
+  /** Hash typed data */
   public hashTypedData (
     typedData: TypedDataModule.ITypedData
   ): Buffer {
@@ -540,6 +503,7 @@ class OmgJS {
     return StructHashModule.hashTypedData.call(this, typedData);
   }
 
+  /** Get typed data from a transaction body */
   public getTypedData (
     transactionBody: Interfaces.ITransactionBody
   ): TypedDataModule.ITypedData {
@@ -547,33 +511,19 @@ class OmgJS {
     return TypedDataModule.getTypedData.call(this, transactionBody);
   }
 
+  /** Convert typed data into an array suitable for RLP encoding */
   public getTypedDataArray (
     typedDataMessage: TypedDataModule.ITypedDataMessage
   ): Array<any> {
     return EncoderModule.getTypedDataArray.call(this, typedDataMessage);
   }
 
-  public createTransactionBody ({
-    fromAddress,
-    fromUtxos,
-    payments,
-    fee,
-    metadata
-  }: TransactionBuilderModule.ICreateTransactionBody): Partial<Interfaces.ITransactionBody> {
-    Joi.assert({
-      fromAddress,
-      fromUtxos,
-      payments,
-      fee,
-      metadata
-    }, Validators.createTransactionBodySchema);
-    return TransactionBuilderModule.createTransactionBody.call(this, {
-      fromAddress,
-      fromUtxos,
-      payments,
-      fee,
-      metadata
-    });
+  /** Create a transaction body locally with fine grain control */
+  public createTransactionBody (
+    args: TransactionBuilderModule.ICreateTransactionBody
+  ): Partial<Interfaces.ITransactionBody> {
+    Joi.assert(args, Validators.createTransactionBodySchema);
+    return TransactionBuilderModule.createTransactionBody.call(this, args);
   }
 }
 
