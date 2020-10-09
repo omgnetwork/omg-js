@@ -3,6 +3,7 @@ import * as Interfaces from '@lib/common/interfaces';
 import * as Transporter from '@lib/transport';
 import * as Encoders from '@lib/transaction/encoders';
 
+/** @internal */
 export async function getTransaction (id: string): Promise<Interfaces.ITransactionData> {
   return Transporter.post({
     url: `${this.watcherUrl}/transaction.get`,
@@ -17,6 +18,7 @@ export interface ITransactionFilter extends Interfaces.IPagination {
   blknum?: number;
 };
 
+/** @internal */
 export async function getTransactions (
   filters: ITransactionFilter
 ): Promise<Array<Interfaces.ITransactionData>> {
@@ -37,6 +39,7 @@ export interface ICreateTransaction {
 // NMTODO: figure out this interface
 export interface ICreatedTransactions {}
 
+/** @internal */
 export async function createTransaction ({
   owner,
   payments,

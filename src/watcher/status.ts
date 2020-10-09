@@ -22,6 +22,7 @@ export interface IStatus {
   }>
 };
 
+/** @internal */
 export async function getStatus (): Promise<IStatus> {
   return Transporter.post({
     url: `${this.watcherUrl}/status.get`,

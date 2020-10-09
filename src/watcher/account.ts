@@ -1,6 +1,7 @@
 import * as Interfaces from '@lib/common/interfaces';
 import * as Transporter from '@lib/transport';
 
+/** @internal */
 export async function getUtxos (address: string): Promise<Array<Interfaces.IUTXO>> {
   return Transporter.post({
     url: `${this.watcherUrl}/account.get_utxos`,
@@ -14,6 +15,7 @@ export interface IBalance {
   currency: string;
 };
 
+/** @internal */
 export async function getBalance (address: string): Promise<IBalance> {
   return Transporter.post({
     url: `${this.watcherUrl}/account.get_balance`,

@@ -8,6 +8,7 @@ export interface IDepositFilter extends Interfaces.IPagination {
 // NMTODO: figure out this interface
 export interface IDepositInfo {};
 
+/** @internal */
 export async function getDeposits (
   filters: IDepositFilter
 ): Promise<Array<IDepositInfo>> {

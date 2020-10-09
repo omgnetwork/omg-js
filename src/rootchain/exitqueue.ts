@@ -19,6 +19,7 @@ export interface IExitTime {
   msUntilFinalization: number
 }
 
+/** @internal */
 export async function getExitTime ({
   exitRequestBlockNumber,
   submissionBlockNumber,
@@ -81,6 +82,7 @@ export interface IExitQueue {
   exitId: string
 }
 
+/** @internal */
 export async function getExitQueue (
   token: string = Constants.CURRENCY_MAP.ETH
 ): Promise<IExitQueue[]> {
@@ -130,6 +132,7 @@ export interface IProcessExits {
   txOptions: Interfaces.ITransactionOptions
 }
 
+/** @internal */
 export async function processExits ({
   token,
   exitId,
@@ -157,6 +160,7 @@ export async function processExits ({
   });
 }
 
+/** @internal */
 export async function hasExitQueue (token: string): Promise<boolean> {
   const vaultId = token === Constants.CURRENCY_MAP.ETH ? 1 : 2;
   return this.plasmaContract.methods.hasExitQueue(vaultId, token).call();
@@ -167,6 +171,7 @@ export interface IAddExitQueue {
   txOptions: Interfaces.ITransactionOptions;
 }
 
+/** @internal */
 export async function addExitQueue ({
   token,
   txOptions

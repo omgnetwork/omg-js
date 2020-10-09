@@ -19,6 +19,7 @@ export interface IRequestOptions {
   proxyUrl?: string;
 }
 
+/** @internal */
 export async function get ({
   url,
   proxyUrl
@@ -37,6 +38,7 @@ export async function get ({
   }
 }
 
+/** @internal */
 export async function post ({
   url,
   body,
@@ -61,16 +63,19 @@ export async function post ({
 }
 
 // override default behavior of axios, so it doesn't use native JSON.parse
+/** @internal */
 function getTransformResponse (): Array<any> {
   return [(data) => data];
 }
 
+/** @internal */
 function getHttpsProxyAgent (proxyUrl: string): HttpsProxyAgent {
   return proxyUrl
     ? new HttpsProxyAgent({ host: proxyUrl, rejectUnauthorized: false })
     : undefined;
 }
 
+/** @internal */
 async function parseResponse (res: AxiosResponse): Promise<any> {
   let data;
   try {

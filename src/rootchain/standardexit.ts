@@ -17,6 +17,7 @@ export interface IGetStandardExitId {
   isDeposit: boolean;
 };
 
+/** @internal */
 export async function getStandardExitId ({
   txBytes,
   utxoPos,
@@ -33,6 +34,7 @@ export interface IStartStandardExit {
   txOptions: Interfaces.ITransactionOptions
 };
 
+/** @internal */
 export async function startStandardExit ({
   utxoPos,
   outputTx,
@@ -66,6 +68,7 @@ export interface IGetDepositExitData {
   transactionHash: string;
 };
 
+/** @internal */
 export async function getDepositExitData ({
   transactionHash
 }: IGetDepositExitData): Promise<Interfaces.IExitData> {
@@ -101,6 +104,7 @@ export interface IChallengeStandardExit {
   txOptions: Interfaces.ITransactionOptions
 }
 
+/** @internal */
 export async function challengeStandardExit ({
   standardExitId,
   exitingTx,

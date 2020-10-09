@@ -86,6 +86,7 @@ const domainData: ITypedDataDomainData = {
   salt: '0xfad5c7f626d80f9256ef01929f3beb96e058b8b4b0e3fe52d84f054c0e2a7a83'
 };
 
+/** @internal */
 export function getTypedData (
   transactionBody: Interfaces.ITransactionBody
 ): ITypedData {

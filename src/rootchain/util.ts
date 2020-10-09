@@ -7,6 +7,7 @@ import * as Interfaces from '@lib/common/interfaces';
 import * as Util from '@lib/common/util';
 import * as ContractsModule from '@lib/contracts';
 
+/** @internal */
 export async function getEVMErrorReason (txhash: string): Promise<string> {
   const tx = await this.web3Instance.eth.getTransaction(txhash);
   if (tx) {
@@ -22,6 +23,7 @@ export interface IGetRootchainERC20Balance {
   erc20Address: string;
 };
 
+/** @internal */
 export async function getRootchainERC20Balance ({
   address,
   erc20Address
@@ -44,6 +46,7 @@ export interface IWaitForRootchainTransaction {
   onCountdown: (blocksRemaining: number) => void;
 };
 
+/** @internal */
 export async function waitForRootchainTransaction ({
   transactionHash,
   checkIntervalMs,
@@ -96,6 +99,7 @@ export interface IWaitForChildchainBalance {
   currency: string;
 }
 
+/** @internal */
 export async function waitForChildchainBalance ({
   address,
   expectedAmount,

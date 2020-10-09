@@ -4,7 +4,7 @@ import { rawEncode } from 'ethereumjs-abi';
 
 import * as TypedDataModule from '@lib/transaction/typedData';
 
-// Recursively finds all the dependencies of a type
+/** @internal */
 function dependencies (types, primaryType, found = []) {
   if (found.includes(primaryType)) {
     return found
@@ -23,6 +23,7 @@ function dependencies (types, primaryType, found = []) {
   return found
 }
 
+/** @internal */
 function encodeType (types, primaryType) {
   // Get dependencies primary first, then alphabetical
   let deps = dependencies(types, primaryType)
@@ -37,10 +38,12 @@ function encodeType (types, primaryType) {
   return result
 }
 
+/** @internal */
 function typeHash (types, primaryType) {
   return keccak256(Buffer.from(encodeType(types, primaryType)));
 }
 
+/** @internal */
 function encodeData (types, primaryType, data) {
   const encTypes = []
   const encValues = []
@@ -71,10 +74,12 @@ function encodeData (types, primaryType, data) {
   return rawEncode(encTypes, encValues)
 }
 
+/** @internal */
 function structHash (types, primaryType, data) {
   return keccak256(encodeData(types, primaryType, data))
 }
 
+/** @internal */
 export function hashTypedData (typedData: TypedDataModule.ITypedData): Buffer {
   return keccak256(
     Buffer.concat([

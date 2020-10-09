@@ -10,6 +10,7 @@ export interface IApproveDeposit {
   txOptions: Interfaces.ITransactionOptions
 }
 
+/** @internal */
 export async function approveERC20Deposit ({
   erc20Address,
   amount,
@@ -34,6 +35,7 @@ export interface IDeposit {
   txOptions: Interfaces.ITransactionOptions;
 }
 
+/** @internal */
 export async function deposit ({
   amount,
   currency = Constants.CURRENCY_MAP.ETH,

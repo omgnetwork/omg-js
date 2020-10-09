@@ -13,6 +13,7 @@ export interface ICreateTransactionBody {
   metadata?: string;
 }
 
+/** @internal */
 export function createTransactionBody ({
   fromAddress,
   fromUtxos,
@@ -104,6 +105,7 @@ export function createTransactionBody ({
   return txBody;
 }
 
+/** @internal */
 function validateInputs (arg): void {
   if (!Array.isArray(arg)) {
     throw new Error('Inputs must be an array');
@@ -113,6 +115,7 @@ function validateInputs (arg): void {
   }
 }
 
+/** @internal */
 function validateOutputs (arg): void {
   if (!Array.isArray(arg)) {
     throw new Error('Outputs must be an array');

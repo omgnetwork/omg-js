@@ -21,18 +21,21 @@ export interface IPaymentExitGame extends IVault {
   }
 }
 
+/** @internal */
 export async function getErc20Vault (): Promise<IVault> {
   const address: string = await this.plasmaContract.methods.vaults(Constants.ERC20_VAULT_ID).call();
   const contract: Contract = new this.web3Instance.eth.Contract((Erc20VaultContract as any).abi, address);
   return { contract, address };
 }
 
+/** @internal */
 export async function getEthVault (): Promise<IVault> {
   const address: string = await this.plasmaContract.methods.vaults(Constants.ETH_VAULT_ID).call();
   const contract: Contract = new this.web3Instance.eth.Contract((EthVaultContract as any).abi, address);
   return { contract, address };
 }
 
+/** @internal */
 export async function getPaymentExitGame (): Promise<IPaymentExitGame> {
   const address: string = await this.plasmaContract.methods.exitGames(Constants.EXIT_GAME_PAYMENT_TYPE).call();
   const contract: Contract = new this.web3Instance.eth.Contract((PaymentExitGameContract as any).abi, address);
@@ -54,16 +57,19 @@ export async function getPaymentExitGame (): Promise<IPaymentExitGame> {
   };
 }
 
+/** @internal */
 export async function getPriorityQueue (address: string): Promise<IVault> {
   const contract: Contract = new this.web3Instance.eth.Contract((PriorityQueueContract as any).abi, address);
   return { contract, address };
 }
 
+/** @internal */
 export async function getErc20 (address: string): Promise<IVault> {
   const contract: Contract = new this.web3Instance.eth.Contract(erc20abi, address);
   return { contract, address };
 }
 
+/** @internal */
 export function getTxData (contract: Contract, method: string, ...args: any): string {
   return contract.methods[method](...args).encodeABI();
 }

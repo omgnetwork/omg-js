@@ -1,6 +1,7 @@
 import * as Util from '@lib/common/util';
 import * as Interfaces from '@lib/common/interfaces';
 
+/** @internal */
 export async function sendTransaction (
   transactionDetails: Interfaces.ITransactionDetails
 ): Promise<Interfaces.ITransactionReceipt> {
@@ -26,6 +27,7 @@ export async function sendTransaction (
   }
 };
 
+/** @internal */
 export async function setGasLimit (
   transactionDetails: Interfaces.ITransactionDetails
 ): Promise<number> {
@@ -36,6 +38,7 @@ export async function setGasLimit (
   return gasLimitEstimation;
 };
 
+/** @internal */
 export async function setGasPrice (
   gasPrice: string
 ): Promise<string> {

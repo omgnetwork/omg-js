@@ -1,4 +1,3 @@
-import * as Interfaces from '@lib/common/interfaces';
 import * as Transporter from '@lib/transport';
 
 export interface IFeeInfo {
@@ -11,6 +10,7 @@ export interface IFeeInfo {
   updated_at: string;
 };
 
+/** @internal */
 export async function getFees (): Promise<IFeeInfo> {
   return Transporter.post({
     url: `${this.watcherUrl}/fees.all`,

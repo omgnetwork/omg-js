@@ -2,6 +2,7 @@ import * as Interfaces from '@lib/common/interfaces';
 import * as Transporter from '@lib/transport';
 import * as Encoders from '@lib/transaction/encoders';
 
+/** @internal */
 export async function getExitData (utxo: Interfaces.IUTXO): Promise<Interfaces.IExitData> {
   const utxoPos = Encoders.encodeUtxoPos(utxo);
 
@@ -15,6 +16,7 @@ export async function getExitData (utxo: Interfaces.IUTXO): Promise<Interfaces.I
 // NMTODO: figure out this interface
 export interface IChallengeData {};
 
+/** @internal */
 export async function getChallengeData (utxoPos: number): Promise<IChallengeData> {
   return Transporter.post({
     url: `${this.watcherSecurityUrl}/utxo.get_challenge_data`,

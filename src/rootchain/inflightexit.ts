@@ -10,6 +10,7 @@ export interface IGetInflightExitId {
   txBytes: string;
 };
 
+/** @internal */
 export async function getInFlightExitId ({
   txBytes
 }: IGetInflightExitId): Promise<string> {
@@ -24,6 +25,7 @@ export interface IGetInflightExitData {
 // NMTODO: define this interface
 export interface IInflightExitData {};
 
+/** @internal */
 export async function getInFlightExitData ({
   exitIds
 }: IGetInflightExitData): Promise<IInflightExitData> {
@@ -40,6 +42,7 @@ export interface IStartInflightExit {
   txOptions: Interfaces.ITransactionOptions
 };
 
+/** @internal */
 export async function startInflightExit ({
   inFlightTx,
   inputTxs,
@@ -80,6 +83,7 @@ export interface IPiggybackInflightExitOnOutput {
   txOptions: Interfaces.ITransactionOptions;
 };
 
+/** @internal */
 export async function piggybackInFlightExitOnOutput ({
   inFlightTx,
   outputIndex,
@@ -113,6 +117,7 @@ export interface IPiggybackInflightExitOnInput {
   txOptions: Interfaces.ITransactionOptions;
 };
 
+/** @internal */
 export async function piggybackInFlightExitOnInput ({
   inFlightTx,
   inputIndex,
@@ -153,6 +158,7 @@ export interface IChallengeInflightExitNotCanonical {
   txOptions: Interfaces.ITransactionOptions;
 };
 
+/** @internal */
 export async function challengeInFlightExitNotCanonical ({
   inputTx,
   inputUtxoPos,
@@ -200,6 +206,7 @@ export interface IRespondToNonCanonicalChallenge {
   txOptions: Interfaces.ITransactionOptions;
 };
 
+/** @internal */
 export async function respondToNonCanonicalChallenge ({
   inFlightTx,
   inFlightTxPos,
@@ -237,6 +244,7 @@ export interface IChallengeInFlightExitInputSpent {
   txOptions: Interfaces.ITransactionOptions;
 };
 
+/** @internal */
 export async function challengeInFlightExitInputSpent ({
   inFlightTx,
   inFlightTxInputIndex,
@@ -283,6 +291,7 @@ export interface IChallengeInFlightExitOutputSpent {
   txOptions: Interfaces.ITransactionOptions;
 };
 
+/** @internal */
 export async function challengeInFlightExitOutputSpent ({
   inFlightTx,
   inFlightTxInclusionProof,
@@ -323,6 +332,7 @@ export interface IDeleteNonPiggybackedInFlightExit {
   txOptions: Interfaces.ITransactionOptions;
 };
 
+/** @internal */
 export async function deleteNonPiggybackedInFlightExit ({
   exitId,
   txOptions

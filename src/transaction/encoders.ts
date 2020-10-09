@@ -13,6 +13,7 @@ export interface IDepositTransaction {
   currency: string;
 };
 
+/** @internal */
 export function encodeDeposit ({
   owner,
   amount,
@@ -32,6 +33,7 @@ export function encodeDeposit ({
   });
 }
 
+/** @internal */
 export function decodeDeposit (encodedDeposit: string): IDepositTransaction {
   const { outputs } = decodeTransaction(encodedDeposit);
   const [{ outputGuard, amount, currency }] = outputs;
@@ -47,6 +49,7 @@ export interface IEncodeTransaction extends Interfaces.ITransactionBody {
   signed?: boolean;
 }
 
+/** @internal */
 export function encodeTransaction ({
   txType,
   inputs,
@@ -81,6 +84,7 @@ export function encodeTransaction ({
   return Util.prefixHex(encoded);
 };
 
+/** @internal */
 export function decodeTransaction (transaction: string): Interfaces.ITransactionBody {
   let txType, inputs, outputs, txData, metadata, sigs;
   const rawTx = Buffer.isBuffer(transaction)
@@ -117,12 +121,14 @@ export function decodeTransaction (transaction: string): Interfaces.ITransaction
   }
 }
 
+/** @internal */
 export function encodeUtxoPos (utxo: Interfaces.IUTXO): BN {
   const blk = new BN(utxo.blknum.toString()).mul(new BN(Constants.BLOCK_OFFSET.toString()));
   const tx = new BN(utxo.txindex.toString()).muln(Constants.TX_OFFSET);
   return blk.add(tx).addn(utxo.oindex);
 }
 
+/** @internal */
 export function decodeUtxoPos (utxoPos: Interfaces.IComplexAmount): Partial<Interfaces.IUTXO> {
   const bn = new BN(utxoPos.toString());
   const blknum = bn.div(new BN(Constants.BLOCK_OFFSET.toString())).toNumber();
@@ -131,6 +137,7 @@ export function decodeUtxoPos (utxoPos: Interfaces.IComplexAmount): Partial<Inte
   return { blknum, txindex, oindex };
 }
 
+/** @internal */
 export function encodeMetadata (metadata: string): string {
   if (metadata.startsWith('0x')) {
     return metadata;
@@ -139,11 +146,13 @@ export function encodeMetadata (metadata: string): string {
   return `0x${encodedMetadata}`
 };
 
+/** @internal */
 export function decodeMetadata (metadata: string): string {
   const unpad = metadata.replace('0x', '').replace(/^0*/, '');
   return Buffer.from(unpad, 'hex').toString();
 }
 
+/** @internal */
 export function getTypedDataArray (typedDataMessage: TypedDataModule.ITypedDataMessage): Array<any> {
   const txArray = [];
 
@@ -167,6 +176,7 @@ export function getTypedDataArray (typedDataMessage: TypedDataModule.ITypedDataM
   return txArray;
 }
 
+/** @internal */
 function addInput (array: Array<any>, input): void {
   if (input.blknum !== 0) {
     const blk = new BN(input.blknum.toString()).mul(new BN(Constants.BLOCK_OFFSET));
@@ -179,6 +189,7 @@ function addInput (array: Array<any>, input): void {
   }
 }
 
+/** @internal */
 function addOutput (array: Array<any>, output): void {
   if (output.amount > 0) {
     array.push([
@@ -192,12 +203,14 @@ function addOutput (array: Array<any>, output): void {
   }
 }
 
+/** @internal */
 function parseNumber (buf: Buffer): number {
   return buf.length === 0
     ? 0
     : parseInt(buf.toString('hex'), 16);
 }
 
+/** @internal */
 function parseString (buf: Buffer): string {
   return buf.length === 0
     ? Constants.NULL_ADDRESS
