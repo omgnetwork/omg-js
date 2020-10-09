@@ -7,7 +7,7 @@ import * as ContractsModule from '@lib/contracts';
 import * as RootchainTransactionsModule from '@lib/rootchain/transaction';
 import * as Util from '@lib/common/util';
 import * as Interfaces from '@lib/common/interfaces';
-import MerkleTree from '@lib/common/merkle';
+import MerkleTree from '@lib/rootchain/merkle';
 
 import EthVaultContract from '@lib/contracts/abi/EthVault.json';
 

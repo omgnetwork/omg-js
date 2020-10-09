@@ -3,6 +3,8 @@ import JSONBigNumber from 'omg-json-bigint';
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 import { HttpsProxyAgent } from 'https-proxy-agent';
 
+import * as Errors from '@lib/errors';
+
 debug('omg.childchain.rpc');
 
 export interface IRequestBody {
@@ -58,14 +60,6 @@ export async function post ({
   }
 }
 
-class RpcError extends Error {
-  public code;
-  constructor ({ code, description, messages }) {
-    super(description || code + (messages ? `, ${messages.code}` : ''))
-    this.code = code
-  }
-}
-
 // override default behavior of axios, so it doesn't use native JSON.parse
 function getTransformResponse (): Array<any> {
   return [(data) => data];
@@ -89,5 +83,5 @@ async function parseResponse (res: AxiosResponse): Promise<any> {
   if (data.success) {
     return data.data;
   }
-  throw new RpcError(data.data);
+  throw new Errors.RpcError(data.data);
 }

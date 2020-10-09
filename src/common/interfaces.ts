@@ -1,7 +1,5 @@
 import BN from 'bn.js';
 
-// NMTODO: decide whether some of these interfaces should live with the specific module that uses it
-
 export interface ITransactionOptions {
   from: string;
   gasLimit?: number;
@@ -70,30 +68,10 @@ export interface ITransactionBody {
   metadata: string;
 };
 
-export interface ITypedDataMessage {
-  input0: IUTXO;
-  input1: IUTXO;
-  input2: IUTXO;
-  input3: IUTXO;
-  output0: IOutput;
-  output1: IOutput;
-  output2: IOutput;
-  output3: IOutput;
-  txData: number;
-  metadata: string;
-}
-
 export interface IDepositTransaction {
   owner: string;
   amount: IComplexAmount;
   currency: string;
-};
-
-export interface ITypedData {
-  types: object;
-  domain: object;
-  primaryType: string;
-  message: object;
 };
 
 export interface IBalance {

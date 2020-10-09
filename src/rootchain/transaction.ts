@@ -1,11 +1,13 @@
-import { ITransactionReceipt, ITransactionDetails } from '@lib/common/interfaces';
 import * as Util from '@lib/common/util';
+import * as Interfaces from '@lib/common/interfaces';
 
-export async function sendTransaction (transactionDetails: ITransactionDetails): Promise<ITransactionReceipt> {
-  const _gasLimit = await setGasLimit.call(this, transactionDetails);
-  const _gasPrice = await setGasPrice.call(this, transactionDetails.gasPrice);
+export async function sendTransaction (
+  transactionDetails: Interfaces.ITransactionDetails
+): Promise<Interfaces.ITransactionReceipt> {
+  const _gasLimit: number = await setGasLimit.call(this, transactionDetails);
+  const _gasPrice: string = await setGasPrice.call(this, transactionDetails.gasPrice);
 
-  const enhancedTransactionDetails: ITransactionDetails = {
+  const enhancedTransactionDetails: Interfaces.ITransactionDetails = {
     ...transactionDetails,
     gasLimit: _gasLimit,
     gasPrice: _gasPrice
@@ -24,7 +26,9 @@ export async function sendTransaction (transactionDetails: ITransactionDetails):
   }
 };
 
-export async function setGasLimit (transactionDetails: ITransactionDetails): Promise<number> {
+export async function setGasLimit (
+  transactionDetails: Interfaces.ITransactionDetails
+): Promise<number> {
   if (transactionDetails.gasLimit) {
     return transactionDetails.gasLimit;
   }
@@ -32,7 +36,9 @@ export async function setGasLimit (transactionDetails: ITransactionDetails): Pro
   return gasLimitEstimation;
 };
 
-export async function setGasPrice (gasPrice: string): Promise<string> {
+export async function setGasPrice (
+  gasPrice: string
+): Promise<string> {
   if (gasPrice) {
     return gasPrice;
   }

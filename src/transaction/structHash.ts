@@ -2,7 +2,7 @@ import { Buffer } from 'buffer';
 import { keccak256 } from 'ethereumjs-util';
 import { rawEncode } from 'ethereumjs-abi';
 
-import * as Interfaces from '@lib/common/interfaces';
+import * as TypedDataModule from '@lib/transaction/typedData';
 
 // Recursively finds all the dependencies of a type
 function dependencies (types, primaryType, found = []) {
@@ -75,7 +75,7 @@ function structHash (types, primaryType, data) {
   return keccak256(encodeData(types, primaryType, data))
 }
 
-export function hashTypedData (typedData: Interfaces.ITypedData): Buffer {
+export function hashTypedData (typedData: TypedDataModule.ITypedData): Buffer {
   return keccak256(
     Buffer.concat([
       Buffer.from('1901', 'hex'),

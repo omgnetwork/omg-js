@@ -5,6 +5,7 @@ import { Buffer } from 'buffer';
 import * as Util from '@lib/common/util';
 import * as Constants from '@lib/common/constants';
 import * as Interfaces from '@lib/common/interfaces';
+import * as TypedDataModule from '@lib/transaction/typedData';
 
 export interface IEncodeDeposit {
   owner: string,
@@ -143,7 +144,7 @@ export function decodeMetadata (metadata: string): string {
   return Buffer.from(unpad, 'hex').toString();
 }
 
-export function getTypedDataArray (typedDataMessage: Interfaces.ITypedDataMessage): Array<any> {
+export function getTypedDataArray (typedDataMessage: TypedDataModule.ITypedDataMessage): Array<any> {
   const txArray = [];
 
   const inputArray = [];

@@ -20,3 +20,11 @@ export class OmgJSError extends Error {
     this.path = path;
   }
 }
+
+export class RpcError extends Error {
+  public code;
+  constructor ({ code, description, messages }) {
+    super(description || code + (messages ? `, ${messages.code}` : ''))
+    this.code = code
+  }
+}

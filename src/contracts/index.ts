@@ -1,14 +1,12 @@
 import { Contract } from 'web3-eth-contract';
 import erc20abi from 'human-standard-token-abi';
 
+import * as Constants from '@lib/common/constants';
+
 import Erc20VaultContract from '@lib/contracts/abi/Erc20Vault.json';
 import EthVaultContract from '@lib/contracts/abi/EthVault.json';
 import PaymentExitGameContract from '@lib/contracts/abi/PaymentExitGame.json';
 import PriorityQueueContract from '@lib/contracts/abi/PriorityQueue.json';
-
-const ETH_VAULT_ID = 1;
-const ERC20_VAULT_ID = 2;
-const PAYMENT_TYPE = 1;
 
 export interface IVault {
   contract: Contract;
@@ -24,19 +22,19 @@ export interface IPaymentExitGame extends IVault {
 }
 
 export async function getErc20Vault (): Promise<IVault> {
-  const address: string = await this.plasmaContract.methods.vaults(ERC20_VAULT_ID).call();
+  const address: string = await this.plasmaContract.methods.vaults(Constants.ERC20_VAULT_ID).call();
   const contract: Contract = new this.web3Instance.eth.Contract((Erc20VaultContract as any).abi, address);
   return { contract, address };
 }
 
 export async function getEthVault (): Promise<IVault> {
-  const address: string = await this.plasmaContract.methods.vaults(ETH_VAULT_ID).call();
+  const address: string = await this.plasmaContract.methods.vaults(Constants.ETH_VAULT_ID).call();
   const contract: Contract = new this.web3Instance.eth.Contract((EthVaultContract as any).abi, address);
   return { contract, address };
 }
 
 export async function getPaymentExitGame (): Promise<IPaymentExitGame> {
-  const address: string = await this.plasmaContract.methods.exitGames(PAYMENT_TYPE).call();
+  const address: string = await this.plasmaContract.methods.exitGames(Constants.EXIT_GAME_PAYMENT_TYPE).call();
   const contract: Contract = new this.web3Instance.eth.Contract((PaymentExitGameContract as any).abi, address);
 
   const bondSizes = await Promise.all([

@@ -681,17 +681,17 @@ class OmgJS {
     });
   }
 
-  public hashTypedData (typedData: Interfaces.ITypedData): Buffer {
+  public hashTypedData (typedData: TypedDataModule.ITypedData): Buffer {
     Joi.assert({ typedData }, Validators.hashTypedDataSchema);
     return StructHashModule.hashTypedData.call(this, typedData);
   }
 
-  public getTypedData (transactionBody: Interfaces.ITransactionBody): Interfaces.ITypedData {
+  public getTypedData (transactionBody: Interfaces.ITransactionBody): TypedDataModule.ITypedData {
     Joi.assert({ transactionBody }, Validators.getTypedDataSchema);
     return TypedDataModule.getTypedData.call(this, transactionBody);
   }
 
-  public getTypedDataArray (typedDataMessage: Interfaces.ITypedDataMessage): Array<any> {
+  public getTypedDataArray (typedDataMessage: TypedDataModule.ITypedDataMessage): Array<any> {
     return EncoderModule.getTypedDataArray.call(this, typedDataMessage);
   }
 
