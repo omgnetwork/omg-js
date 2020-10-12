@@ -15,7 +15,6 @@
 */
 
 import Web3 from 'web3';
-import BN from 'bn.js';
 import web3Utils from 'web3-utils';
 
 import OmgJS from '..';

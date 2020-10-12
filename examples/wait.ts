@@ -13,8 +13,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License. */
 
-import promiseRetry from 'promise-retry';
-
 export function wait (ms: number): Promise<void> {
   console.log(`Waiting for ${ms * 0.00001667} min...`);
   return new Promise((resolve, _reject) => setTimeout(resolve, ms));

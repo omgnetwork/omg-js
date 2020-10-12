@@ -118,6 +118,11 @@ class OmgJS {
     return this.paymentExitGame;
   }
 
+  /** Get the minimum exit period set on the plasma framework contract */
+  public async getMinimumExitPeriod (): Promise<string> {
+    return RootchainUtilModule.getMinimumExitPeriod.call(this);
+  }
+
   /** Calculate the exit schedule required before exits can be processed and released */
   public async getExitTime (
     args: RootchainExitQueueModule.IGetExitTime

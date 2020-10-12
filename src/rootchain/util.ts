@@ -156,3 +156,8 @@ export async function waitForUtxo ({
     retries: 50
   });
 }
+
+/** @internal */
+export async function getMinimumExitPeriod (): Promise<string> {
+  return this.plasmaContract.methods.minExitPeriod().call();
+}

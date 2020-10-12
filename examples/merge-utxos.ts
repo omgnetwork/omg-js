@@ -50,7 +50,8 @@ async function mergeUtxos (): Promise<void> {
     privateKey: pk
   });
 
-  console.log('merge utxo transaction result', JSON.stringify(mergeResult, undefined, 2));
+  console.log('merge utxo transaction completed: ', mergeResult.txhash);
+  console.log('waiting for merge confirmation...');
 
   await omgjs.waitForUtxo({
     address,
