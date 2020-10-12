@@ -461,7 +461,11 @@ class OmgJS {
     return WatcherTransactionModule.submitTyped.call(this, typedData);
   }
 
-  /** Signs typed data using passed private keys and returns an array of signatures */
+  /**
+   * Signs typed data using passed private keys and returns an array of signatures
+   * @param typedData typedData of the transaction
+   * @param privateKeys array of private keys to sign each input of the transaction
+  */
   public signTransaction (
     args: SignModule.ISignTransaction
   ): Array<string> {
@@ -469,7 +473,11 @@ class OmgJS {
     return SignModule.signTransaction.call(this, args);
   }
 
-  /**  Build a signed transaction into the format expected by submitTransaction */
+  /**
+   * Build a signed transaction into the format expected by submitTransaction
+   * @param typedData typedData of the transaction
+   * @param signatures array of signatures to sign the transaction
+  */
   public buildSignedTransaction (
     args: SignModule.IBuildSignedTransaction
   ): string {

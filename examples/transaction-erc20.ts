@@ -31,39 +31,41 @@ const omgjs = new OmgJS({
   web3Provider
 });
 
-async function logBalances (address: string): Promise<{ ethBalance: number | string | BN }> {
+async function logBalances (address: string): Promise<{ erc20Balance: number | string | BN }> {
   const balanceArray = await omgjs.getBalance(address);
-  const ethObject = balanceArray.find(i => i.currency === OmgJS.currency.ETH);
-  const childchainEthBalance = ethObject
-    ? `${web3Utils.fromWei(String(ethObject.amount))} ETH`
-    : '0 ETH';
+  const erc20Object = balanceArray.find(i => i.currency.toLowerCase() === config.erc20_contract_address.toLowerCase());
+  const childchainErc20Balance = erc20Object ? erc20Object.amount : 0;
 
-  console.log(`Recipient childchain ETH balance: ${childchainEthBalance}`);
-  return { ethBalance: ethObject ? ethObject.amount : 0 };
+  console.log(`Childchain ERC20 balance: ${childchainErc20Balance}`);
+  return { erc20Balance: childchainErc20Balance };
 }
 
-async function transactionEth (): Promise<void> {
+async function transactionErc20 (): Promise<void> {
+  if (!config.erc20_contract_address) {
+    console.log('Please define an ERC20 contract address in your .env');
+    return;
+  }
+
   const { from, to, amount } = getFlags('from', 'to', 'amount');
   const fromAddress: string = config[`${from}_eth_address`];
   const fromPk: string = config[`${from}_eth_address_private_key`];
   const toAddress: string = config[`${to}_eth_address`];
-  const transferAmount: BN = new BN(web3Utils.toWei(amount, 'ether').toString());
 
-  const { ethBalance } = await logBalances(toAddress);
+  const { erc20Balance } = await logBalances(toAddress);
   console.log('-----');
 
   const createdTxn = await omgjs.createTransaction({
     owner: fromAddress,
     payments: [{
       owner: toAddress,
-      currency: OmgJS.currency.ETH,
-      amount: transferAmount
+      currency: config.erc20_contract_address,
+      amount: Number(amount)
     }],
     feeCurrency: OmgJS.currency.ETH,
-    metadata: 'hello'
+    metadata: 'hello world'
   });
 
-  console.log(`Created a childchain transaction of ${transferAmount} ETH`);
+  console.log(`Created a childchain transaction of ${amount} ERC20`);
 
   // type/sign/build/submit
   const transactionBody = createdTxn.transactions[0];
@@ -76,15 +78,15 @@ async function transactionEth (): Promise<void> {
   console.log('Transaction submitted: ', receipt.txhash);
 
   console.log('Waiting for transaction to be recorded by the watcher...');
-  const expectedAmount = transferAmount.add(new BN(ethBalance.toString()));
+  const expectedAmount = Number(amount) + Number(erc20Balance)
   await omgjs.waitForChildchainBalance({
     address: toAddress,
     expectedAmount,
-    currency: OmgJS.currency.ETH
+    currency: config.erc20_contract_address
   });
 
   console.log('-----');
   await logBalances(toAddress);
 }
 
-transactionEth();
+transactionErc20();
