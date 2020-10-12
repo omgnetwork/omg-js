@@ -21,7 +21,7 @@ export const validateAmount: Joi.Schema = Joi.alternatives().try(
 );
 
 export const validateTxOptions: Joi.Schema = Joi.object({
-  gas: Joi.number().integer(),
+  gasLimit: Joi.number().integer(),
   gasPrice: Joi.string(),
   privateKey: Joi.string(),
   from: validateAddress.required()

@@ -45,39 +45,40 @@ async function logBalances (address: string): Promise<void> {
 }
 
 async function depositEth () {
-  try {
-    const { owner, amount } = getFlags('owner', 'amount');
-    const depositAmount = new BN(web3Utils.toWei(amount, 'ether').toString());
-    const address: string = config[`${owner}_eth_address`];
-    const pk: string = config[`${owner}_eth_address_private_key`];
+  const { owner, amount } = getFlags('owner', 'amount');
+  const depositAmount = new BN(web3Utils.toWei(amount, 'ether').toString());
+  const address: string = config[`${owner}_eth_address`];
+  const pk: string = config[`${owner}_eth_address_private_key`];
 
-    await logBalances(address);
-    console.log('-----');
+  await logBalances(address);
+  console.log('-----');
 
-    console.log(`Depositing ${web3Utils.fromWei(depositAmount.toString(), 'ether')} ETH from the rootchain to the childchain`);
-    const transactionReceipt = await omgjs.deposit({
-      amount: depositAmount,
-      txOptions: {
-        from: address,
-        privateKey: pk
-      }
-    });
-    console.log('Deposit successful: ', transactionReceipt.transactionHash);
+  console.log(`Depositing ${web3Utils.fromWei(depositAmount.toString(), 'ether')} ETH from the rootchain to the childchain`);
+  const depositResult = await omgjs.deposit({
+    amount,
+    txOptions: {
+      from: address,
+      privateKey: pk
+    }
+  });
 
-    console.log('Waiting for transaction to be recorded by the watcher...');
-    await omgjs.waitForRootchainTransaction({
-      transactionHash: transactionReceipt.transactionHash,
-      checkIntervalMs: config.millis_to_wait_for_next_block,
-      blocksToWait: config.blocks_to_wait_for_txn,
-      onCountdown: remaining => console.log(`${remaining} blocks remaining before confirmation`)
-    });
+  console.log('Deposit successful: ', depositResult.transactionHash);
 
-    await wait(5000);
-    console.log('-----');
-    await logBalances(address);
-  } catch (error) {
-    console.log('Error: ', error.message);
-  }
+  console.log('Waiting for transaction to be recorded by the watcher...');
+  await omgjs.waitForRootchainTransaction({
+    transactionHash: depositResult.transactionHash,
+    checkIntervalMs: config.millis_to_wait_for_next_block,
+    blocksToWait: config.blocks_to_wait_for_txn,
+    onCountdown: remaining => console.log(`${remaining} blocks remaining before confirmation`)
+  });
+
+  await wait(5000);
+  console.log('-----');
+  await logBalances(address);
 }
 
-depositEth();
+depositEth().catch(e => {
+  console.log('message: ', e.message);
+  console.log('method: ', e.method);
+  console.log('name: ', e.name);
+});

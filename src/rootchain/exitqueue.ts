@@ -13,9 +13,7 @@ export interface IGetExitTime {
 }
 
 export interface IExitTime {
-  /** scheduled finalization unix time */
   scheduledFinalizationTime: number,
-  /** milliseconds until the scheduled finalization time */
   msUntilFinalization: number
 }
 
@@ -74,11 +72,8 @@ export async function getExitTime ({
 };
 
 export interface IExitQueue {
-  /** exit priority */
   priority: string,
-  /** scheduled finalization unix time */
   exitableAt: string,
-  /** the unique exit id */
   exitId: string
 }
 
