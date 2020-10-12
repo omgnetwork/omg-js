@@ -44,9 +44,9 @@ async function logBalances (address: string): Promise<void> {
   console.log(`Childchain ETH balance: ${childchainETHBalance}`);
 }
 
-async function depositEth () {
+async function depositEth (): Promise<void> {
   const { owner, amount } = getFlags('owner', 'amount');
-  const depositAmount = new BN(web3Utils.toWei(amount, 'ether').toString());
+  const depositAmount = web3Utils.toWei(amount, 'ether');
   const address: string = config[`${owner}_eth_address`];
   const pk: string = config[`${owner}_eth_address_private_key`];
 
@@ -55,7 +55,7 @@ async function depositEth () {
 
   console.log(`Depositing ${web3Utils.fromWei(depositAmount.toString(), 'ether')} ETH from the rootchain to the childchain`);
   const depositResult = await omgjs.deposit({
-    amount: 'abc',
+    amount: depositAmount,
     txOptions: {
       from: address,
       privateKey: pk
@@ -77,7 +77,4 @@ async function depositEth () {
   await logBalances(address);
 }
 
-depositEth().catch(e => {
-  console.log('message: ', e.message);
-  console.log('name: ', e.name);
-});
+depositEth();

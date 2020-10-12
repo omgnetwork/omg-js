@@ -44,54 +44,50 @@ async function logBalances (address: string): Promise<void> {
 }
 
 async function depositErc20 () {
-  try {
-    const { owner, amount } = getFlags('owner', 'amount');
-    const address: string = config[`${owner}_eth_address`];
-    const pk: string = config[`${owner}_eth_address_private_key`];
+  const { owner, amount } = getFlags('owner', 'amount');
+  const address: string = config[`${owner}_eth_address`];
+  const pk: string = config[`${owner}_eth_address_private_key`];
 
-    if (!config.erc20_contract_address) {
-      throw Error('Please define an ERC20 contract address in your .env');
-    }
-
-    await logBalances(address);
-    console.log('-----');
-
-    console.log('Approving ERC20 for deposit...');
-    const approveRes = await omgjs.approveERC20Deposit({
-      erc20Address: config.erc20_contract_address,
-      amount,
-      txOptions: {
-        from: address,
-        privateKey: pk
-      }
-    });
-    console.log('ERC20 approved: ', approveRes.transactionHash);
-
-    console.log(`Depositing ${amount} ERC20 from the rootchain to the childchain`);
-    const transactionReceipt = await omgjs.deposit({
-      amount,
-      currency: config.erc20_contract_address,
-      txOptions: {
-        from: address,
-        privateKey: pk
-      }
-    });
-    console.log('Deposit successful: ', transactionReceipt.transactionHash);
-
-    console.log('Waiting for transaction to be recorded by the watcher...');
-    await omgjs.waitForRootchainTransaction({
-      transactionHash: transactionReceipt.transactionHash,
-      checkIntervalMs: config.millis_to_wait_for_next_block,
-      blocksToWait: config.blocks_to_wait_for_txn,
-      onCountdown: remaining => console.log(`${remaining} blocks remaining before confirmation`)
-    });
-
-    await wait(5000);
-    console.log('-----');
-    await logBalances(address);
-  } catch (error) {
-    console.log('Error: ', error.message);
+  if (!config.erc20_contract_address) {
+    throw Error('Please define an ERC20 contract address in your .env');
   }
+
+  await logBalances(address);
+  console.log('-----');
+
+  console.log('Approving ERC20 for deposit...');
+  const approveRes = await omgjs.approveERC20Deposit({
+    erc20Address: config.erc20_contract_address,
+    amount,
+    txOptions: {
+      from: address,
+      privateKey: pk
+    }
+  });
+  console.log('ERC20 approved: ', approveRes.transactionHash);
+
+  console.log(`Depositing ${amount} ERC20 from the rootchain to the childchain`);
+  const transactionReceipt = await omgjs.deposit({
+    amount,
+    currency: config.erc20_contract_address,
+    txOptions: {
+      from: address,
+      privateKey: pk
+    }
+  });
+  console.log('Deposit successful: ', transactionReceipt.transactionHash);
+
+  console.log('Waiting for transaction to be recorded by the watcher...');
+  await omgjs.waitForRootchainTransaction({
+    transactionHash: transactionReceipt.transactionHash,
+    checkIntervalMs: config.millis_to_wait_for_next_block,
+    blocksToWait: config.blocks_to_wait_for_txn,
+    onCountdown: remaining => console.log(`${remaining} blocks remaining before confirmation`)
+  });
+
+  await wait(5000);
+  console.log('-----');
+  await logBalances(address);
 }
 
 depositErc20();

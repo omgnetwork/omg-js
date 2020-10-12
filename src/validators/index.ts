@@ -3,7 +3,7 @@ import * as Joi from '@hapi/joi';
 import * as helpers from '@lib/validators/helpers';
 import * as Errors from '@lib/errors';
 
-/** @internal Sanitizes joi validation error */
+/** @internal Sanitize joi validation error */
 export function validate (
   args: any, schema: Joi.Schema
 ): void {
@@ -206,7 +206,7 @@ export const getChallengeDataSchema: Joi.Schema = Joi.object({
 export const createTransactionSchema: Joi.Schema = Joi.object({
   owner: helpers.validateAddress.required(),
   payments: helpers.validatePayments.required(),
-  feeCurrency: helpers.validateFeeCurrency.required(),
+  feeCurrency: helpers.validateAddress.required(),
   metadata: helpers.validateMetadata
 });
 

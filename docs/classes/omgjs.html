@@ -179,13 +179,13 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>OmgJS<span class="tsd-signature-symbol">(</span>__namedParameters<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>plasmaContractAddress<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>watcherProxyUrl<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>watcherSecurityUrl<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>watcherUrl<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>web3Provider<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Partial</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">HttpProvider</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="omgjs.html" class="tsd-signature-type">OmgJS</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>OmgJS<span class="tsd-signature-symbol">(</span>args<span class="tsd-signature-symbol">: </span><a href="../interfaces/iomgjs.html" class="tsd-signature-type">IOmgJS</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="omgjs.html" class="tsd-signature-type">OmgJS</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/6fd1a7c/src/index.ts#L74">src/index.ts:74</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/2004847/src/index.ts#L74">src/index.ts:74</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -193,39 +193,7 @@
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>__namedParameters: <span class="tsd-signature-symbol">{ </span>plasmaContractAddress<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>watcherProxyUrl<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>watcherSecurityUrl<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>watcherUrl<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>web3Provider<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Partial</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">HttpProvider</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> }</span></h5>
-									<ul class="tsd-parameters">
-										<li class="tsd-parameter">
-											<h5>plasma<wbr>Contract<wbr>Address<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
-											<div class="tsd-comment tsd-typography">
-												<p>the address of the PlasmaFramework contract</p>
-											</div>
-										</li>
-										<li class="tsd-parameter">
-											<h5>watcher<wbr>Proxy<wbr>Url<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
-											<div class="tsd-comment tsd-typography">
-												<p><em>optional</em> the proxy url for requests made to the watcher server</p>
-											</div>
-										</li>
-										<li class="tsd-parameter">
-											<h5>watcher<wbr>Security<wbr>Url<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
-											<div class="tsd-comment tsd-typography">
-												<p><em>optional</em> the url of the watcher security server. If this is set, all security related endpoints will use this url instead</p>
-											</div>
-										</li>
-										<li class="tsd-parameter">
-											<h5>watcher<wbr>Url<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
-											<div class="tsd-comment tsd-typography">
-												<p>the url of the watcher-info server (running in both security-critical and informational mode)</p>
-											</div>
-										</li>
-										<li class="tsd-parameter">
-											<h5>web3<wbr>Provider<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Partial</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">HttpProvider</span><span class="tsd-signature-symbol">&gt;</span></h5>
-											<div class="tsd-comment tsd-typography">
-												<p>a web3 http provider</p>
-											</div>
-										</li>
-									</ul>
+									<h5>args: <a href="../interfaces/iomgjs.html" class="tsd-signature-type">IOmgJS</a></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="omgjs.html" class="tsd-signature-type">OmgJS</a></h4>
@@ -241,7 +209,7 @@
 					<div class="tsd-signature tsd-kind-icon">web3<wbr>Instance<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Web3</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/omisego/omg-js/blob/6fd1a7c/src/index.ts#L64">src/index.ts:64</a></li>
+							<li>Defined in <a href="https://github.com/omisego/omg-js/blob/2004847/src/index.ts#L64">src/index.ts:64</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -251,7 +219,7 @@
 					<div class="tsd-signature tsd-kind-icon">currency<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>ETH<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>OMG<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">object</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> = Constants.CURRENCY_MAP</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/omisego/omg-js/blob/6fd1a7c/src/index.ts#L56">src/index.ts:56</a></li>
+							<li>Defined in <a href="https://github.com/omisego/omg-js/blob/2004847/src/index.ts#L56">src/index.ts:56</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -289,7 +257,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/6fd1a7c/src/index.ts#L304">src/index.ts:304</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/2004847/src/index.ts#L292">src/index.ts:292</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -317,7 +285,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/6fd1a7c/src/index.ts#L219">src/index.ts:219</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/2004847/src/index.ts#L207">src/index.ts:207</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -345,7 +313,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/6fd1a7c/src/index.ts#L483">src/index.ts:483</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/2004847/src/index.ts#L468">src/index.ts:468</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -373,7 +341,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/6fd1a7c/src/index.ts#L352">src/index.ts:352</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/2004847/src/index.ts#L340">src/index.ts:340</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -401,7 +369,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/6fd1a7c/src/index.ts#L336">src/index.ts:336</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/2004847/src/index.ts#L324">src/index.ts:324</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -429,7 +397,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/6fd1a7c/src/index.ts#L360">src/index.ts:360</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/2004847/src/index.ts#L348">src/index.ts:348</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -457,7 +425,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/6fd1a7c/src/index.ts#L280">src/index.ts:280</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/2004847/src/index.ts#L268">src/index.ts:268</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -485,7 +453,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/6fd1a7c/src/index.ts#L441">src/index.ts:441</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/2004847/src/index.ts#L426">src/index.ts:426</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -513,7 +481,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/6fd1a7c/src/index.ts#L449">src/index.ts:449</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/2004847/src/index.ts#L434">src/index.ts:434</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -541,7 +509,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/6fd1a7c/src/index.ts#L157">src/index.ts:157</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/2004847/src/index.ts#L146">src/index.ts:146</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -569,7 +537,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/6fd1a7c/src/index.ts#L211">src/index.ts:211</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/2004847/src/index.ts#L194">src/index.ts:194</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -581,9 +549,6 @@
 							<ul class="tsd-parameters">
 								<li>
 									<h5>metadata: <span class="tsd-signature-type">string</span></h5>
-									<div class="tsd-comment tsd-typography">
-										<p>encoded metadata to decode</p>
-									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
@@ -600,7 +565,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/6fd1a7c/src/index.ts#L173">src/index.ts:173</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/2004847/src/index.ts#L162">src/index.ts:162</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -628,7 +593,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/6fd1a7c/src/index.ts#L189">src/index.ts:189</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/2004847/src/index.ts#L178">src/index.ts:178</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -656,7 +621,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/6fd1a7c/src/index.ts#L368">src/index.ts:368</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/2004847/src/index.ts#L356">src/index.ts:356</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -684,7 +649,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/6fd1a7c/src/index.ts#L232">src/index.ts:232</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/2004847/src/index.ts#L220">src/index.ts:220</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -712,7 +677,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/6fd1a7c/src/index.ts#L149">src/index.ts:149</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/2004847/src/index.ts#L138">src/index.ts:138</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -740,7 +705,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/6fd1a7c/src/index.ts#L200">src/index.ts:200</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/2004847/src/index.ts#L186">src/index.ts:186</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -752,9 +717,6 @@
 							<ul class="tsd-parameters">
 								<li>
 									<h5>metadata: <span class="tsd-signature-type">string</span></h5>
-									<div class="tsd-comment tsd-typography">
-										<p>string to encode as metadata</p>
-									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
@@ -771,7 +733,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/6fd1a7c/src/index.ts#L165">src/index.ts:165</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/2004847/src/index.ts#L154">src/index.ts:154</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -799,7 +761,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/6fd1a7c/src/index.ts#L181">src/index.ts:181</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/2004847/src/index.ts#L170">src/index.ts:170</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -827,7 +789,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/6fd1a7c/src/index.ts#L384">src/index.ts:384</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/2004847/src/index.ts#L372">src/index.ts:372</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -855,7 +817,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/6fd1a7c/src/index.ts#L432">src/index.ts:432</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/2004847/src/index.ts#L417">src/index.ts:417</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -883,7 +845,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/6fd1a7c/src/index.ts#L272">src/index.ts:272</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/2004847/src/index.ts#L260">src/index.ts:260</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -911,7 +873,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/6fd1a7c/src/index.ts#L416">src/index.ts:416</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/2004847/src/index.ts#L401">src/index.ts:401</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -939,7 +901,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/6fd1a7c/src/index.ts#L556">src/index.ts:556</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/2004847/src/index.ts#L538">src/index.ts:538</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -951,9 +913,6 @@
 							<ul class="tsd-parameters">
 								<li>
 									<h5>txHash: <span class="tsd-signature-type">string</span></h5>
-									<div class="tsd-comment tsd-typography">
-										<p>transaction hash of the failed transaction</p>
-									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -970,7 +929,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/6fd1a7c/src/index.ts#L424">src/index.ts:424</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/2004847/src/index.ts#L409">src/index.ts:409</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -998,7 +957,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/6fd1a7c/src/index.ts#L141">src/index.ts:141</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/2004847/src/index.ts#L130">src/index.ts:130</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1026,7 +985,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/6fd1a7c/src/index.ts#L133">src/index.ts:133</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/2004847/src/index.ts#L122">src/index.ts:122</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1054,7 +1013,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/6fd1a7c/src/index.ts#L411">src/index.ts:411</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/2004847/src/index.ts#L396">src/index.ts:396</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1076,7 +1035,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/6fd1a7c/src/index.ts#L256">src/index.ts:256</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/2004847/src/index.ts#L244">src/index.ts:244</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1104,7 +1063,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/6fd1a7c/src/index.ts#L248">src/index.ts:248</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/2004847/src/index.ts#L236">src/index.ts:236</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1132,7 +1091,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/6fd1a7c/src/index.ts#L568">src/index.ts:568</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/2004847/src/index.ts#L550">src/index.ts:550</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1160,7 +1119,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/6fd1a7c/src/index.ts#L240">src/index.ts:240</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/2004847/src/index.ts#L228">src/index.ts:228</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1188,7 +1147,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/6fd1a7c/src/index.ts#L508">src/index.ts:508</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/2004847/src/index.ts#L493">src/index.ts:493</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1210,7 +1169,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/6fd1a7c/src/index.ts#L395">src/index.ts:395</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/2004847/src/index.ts#L380">src/index.ts:380</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1222,9 +1181,6 @@
 							<ul class="tsd-parameters">
 								<li>
 									<h5>id: <span class="tsd-signature-type">string</span></h5>
-									<div class="tsd-comment tsd-typography">
-										<p>id of the transaction</p>
-									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/itransactiondata.html" class="tsd-signature-type">ITransactionData</a><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -1241,7 +1197,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/6fd1a7c/src/index.ts#L403">src/index.ts:403</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/2004847/src/index.ts#L388">src/index.ts:388</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1269,7 +1225,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/6fd1a7c/src/index.ts#L617">src/index.ts:617</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/2004847/src/index.ts#L593">src/index.ts:593</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1281,9 +1237,6 @@
 							<ul class="tsd-parameters">
 								<li>
 									<h5>transactionBody: <a href="../interfaces/itransactionbody.html" class="tsd-signature-type">ITransactionBody</a></h5>
-									<div class="tsd-comment tsd-typography">
-										<p>transaction body to transform into typed data</p>
-									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="../interfaces/itypeddata.html" class="tsd-signature-type">ITypedData</a></h4>
@@ -1300,7 +1253,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/6fd1a7c/src/index.ts#L628">src/index.ts:628</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/2004847/src/index.ts#L601">src/index.ts:601</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1312,9 +1265,6 @@
 							<ul class="tsd-parameters">
 								<li>
 									<h5>typedDataMessage: <a href="../interfaces/itypeddatamessage.html" class="tsd-signature-type">ITypedDataMessage</a></h5>
-									<div class="tsd-comment tsd-typography">
-										<p>message of the typed data to transform</p>
-									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -1331,7 +1281,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/6fd1a7c/src/index.ts#L376">src/index.ts:376</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/2004847/src/index.ts#L364">src/index.ts:364</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1359,7 +1309,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/6fd1a7c/src/index.ts#L296">src/index.ts:296</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/2004847/src/index.ts#L284">src/index.ts:284</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1387,7 +1337,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/6fd1a7c/src/index.ts#L606">src/index.ts:606</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/2004847/src/index.ts#L585">src/index.ts:585</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1399,9 +1349,6 @@
 							<ul class="tsd-parameters">
 								<li>
 									<h5>typedData: <a href="../interfaces/itypeddata.html" class="tsd-signature-type">ITypedData</a></h5>
-									<div class="tsd-comment tsd-typography">
-										<p>typed data to hash</p>
-									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Buffer</span></h4>
@@ -1418,7 +1365,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/6fd1a7c/src/index.ts#L537">src/index.ts:537</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/2004847/src/index.ts#L522">src/index.ts:522</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1446,7 +1393,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/6fd1a7c/src/index.ts#L529">src/index.ts:529</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/2004847/src/index.ts#L514">src/index.ts:514</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1474,7 +1421,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/6fd1a7c/src/index.ts#L513">src/index.ts:513</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/2004847/src/index.ts#L498">src/index.ts:498</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1502,7 +1449,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/6fd1a7c/src/index.ts#L521">src/index.ts:521</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/2004847/src/index.ts#L506">src/index.ts:506</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1530,7 +1477,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/6fd1a7c/src/index.ts#L545">src/index.ts:545</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/2004847/src/index.ts#L530">src/index.ts:530</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1558,7 +1505,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/6fd1a7c/src/index.ts#L500">src/index.ts:500</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/2004847/src/index.ts#L485">src/index.ts:485</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1586,7 +1533,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/6fd1a7c/src/index.ts#L328">src/index.ts:328</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/2004847/src/index.ts#L316">src/index.ts:316</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1614,7 +1561,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/6fd1a7c/src/index.ts#L320">src/index.ts:320</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/2004847/src/index.ts#L308">src/index.ts:308</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1642,7 +1589,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/6fd1a7c/src/index.ts#L288">src/index.ts:288</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/2004847/src/index.ts#L276">src/index.ts:276</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1670,7 +1617,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/6fd1a7c/src/index.ts#L344">src/index.ts:344</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/2004847/src/index.ts#L332">src/index.ts:332</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1698,7 +1645,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/6fd1a7c/src/index.ts#L475">src/index.ts:475</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/2004847/src/index.ts#L460">src/index.ts:460</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1726,7 +1673,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/6fd1a7c/src/index.ts#L458">src/index.ts:458</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/2004847/src/index.ts#L443">src/index.ts:443</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1754,7 +1701,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/6fd1a7c/src/index.ts#L312">src/index.ts:312</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/2004847/src/index.ts#L300">src/index.ts:300</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1782,7 +1729,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/6fd1a7c/src/index.ts#L264">src/index.ts:264</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/2004847/src/index.ts#L252">src/index.ts:252</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1810,7 +1757,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/6fd1a7c/src/index.ts#L492">src/index.ts:492</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/2004847/src/index.ts#L477">src/index.ts:477</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1838,7 +1785,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/6fd1a7c/src/index.ts#L467">src/index.ts:467</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/2004847/src/index.ts#L452">src/index.ts:452</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1866,7 +1813,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/6fd1a7c/src/index.ts#L595">src/index.ts:595</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/2004847/src/index.ts#L577">src/index.ts:577</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1894,7 +1841,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/6fd1a7c/src/index.ts#L582">src/index.ts:582</a></li>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/2004847/src/index.ts#L564">src/index.ts:564</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1921,7 +1868,7 @@
 					<div class="tsd-signature tsd-kind-icon">util<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/omisego/omg-js/blob/6fd1a7c/src/index.ts#L59">src/index.ts:59</a></li>
+							<li>Defined in <a href="https://github.com/omisego/omg-js/blob/2004847/src/index.ts#L59">src/index.ts:59</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -1935,7 +1882,7 @@
 						<div class="tsd-signature tsd-kind-icon">int192to<wbr>Hex<span class="tsd-signature-symbol">:</span> <a href="../globals.html#int192tohex" class="tsd-signature-type">int192toHex</a><span class="tsd-signature-symbol"> = Util.int192toHex</span></div>
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/omisego/omg-js/blob/6fd1a7c/src/index.ts#L61">src/index.ts:61</a></li>
+								<li>Defined in <a href="https://github.com/omisego/omg-js/blob/2004847/src/index.ts#L61">src/index.ts:61</a></li>
 							</ul>
 						</aside>
 					</section>
@@ -1945,7 +1892,7 @@
 						<div class="tsd-signature tsd-kind-icon">prefix<wbr>Hex<span class="tsd-signature-symbol">:</span> <a href="../globals.html#prefixhex" class="tsd-signature-type">prefixHex</a><span class="tsd-signature-symbol"> = Util.prefixHex</span></div>
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/omisego/omg-js/blob/6fd1a7c/src/index.ts#L60">src/index.ts:60</a></li>
+								<li>Defined in <a href="https://github.com/omisego/omg-js/blob/2004847/src/index.ts#L60">src/index.ts:60</a></li>
 							</ul>
 						</aside>
 					</section>

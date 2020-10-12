@@ -56,8 +56,4 @@ export const validateFee: Joi.Schema = Joi.object({
   currency: validateAddress.required()
 });
 
-export const validateFeeCurrency: Joi.Schema = Joi.object({
-  currency: validateAddress.required()
-});
-
 export const validateUtxos = Joi.array().items(Joi.object());

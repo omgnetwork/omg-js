@@ -74,34 +74,23 @@ class OmgJS {
   private paymentExitGame: ContractsModule.IPaymentExitGame;
 
   /**
-   * @param plasmaContractAddress the address of the PlasmaFramework contract
-   * @param watcherUrl the url of the watcher-info server (running in both security-critical and informational mode)
-   * @param web3Provider a web3 http provider
-   * @param watcherSecurityUrl *optional* the url of the watcher security server. If this is set, all security related endpoints will use this url instead
-   * @param watcherProxyUrl *optional* the proxy url for requests made to the watcher server
+   * @param args.plasmaContractAddress the address of the PlasmaFramework contract
+   * @param args.watcherUrl the url of the watcher-info server (running in both security-critical and informational mode)
+   * @param args.web3Provider a web3 http provider
+   * @param args.watcherSecurityUrl the url of the watcher security server. If this is set, all security related endpoints will use this url instead
+   * @param args.watcherProxyUrl the proxy url for requests made to the watcher server
    */
-  public constructor({
-    plasmaContractAddress,
-    watcherUrl,
-    watcherSecurityUrl,
-    watcherProxyUrl,
-    web3Provider
-  }: IOmgJS) {
-    Validators.validate({
-      plasmaContractAddress,
-      watcherUrl,
-      watcherProxyUrl,
-      web3Provider
-    }, Validators.constructorSchema);
+  public constructor(args: IOmgJS) {
+    Validators.validate(args, Validators.constructorSchema);
 
-    this.plasmaContractAddress = plasmaContractAddress;
-    this.watcherUrl = watcherUrl;
-    this.watcherSecurityUrl = watcherSecurityUrl;
-    this.watcherProxyUrl = watcherProxyUrl;
-    this.web3Instance = new (Web3 as any)(web3Provider, null, { transactionConfirmationBlocks: 1 });
+    this.plasmaContractAddress = args.plasmaContractAddress;
+    this.watcherUrl = args.watcherUrl;
+    this.watcherSecurityUrl = args.watcherSecurityUrl;
+    this.watcherProxyUrl = args.watcherProxyUrl;
+    this.web3Instance = new (Web3 as any)(args.web3Provider, null, { transactionConfirmationBlocks: 1 });
     this.plasmaContract = new this.web3Instance.eth.Contract(
       (PlasmaFrameworkContract as any).abi,
-      plasmaContractAddress
+      args.plasmaContractAddress
     );
   }
 
@@ -193,10 +182,7 @@ class OmgJS {
     return EncoderModule.decodeUtxoPos.call(this, utxoPos);
   }
 
-  /**
-   * Encode metadata
-   * @param metadata string to encode as metadata
-  */
+  /** Encode metadata */
   public encodeMetadata (
     metadata: string
   ): string {
@@ -204,10 +190,7 @@ class OmgJS {
     return EncoderModule.encodeMetadata.call(this, metadata);
   }
 
-  /**
-   * Decode encoded metadata
-   * @param metadata encoded metadata to decode
-  */
+  /** Decode encoded metadata */
   public decodeMetadata (
     metadata: string
   ): string {
@@ -215,7 +198,12 @@ class OmgJS {
     return EncoderModule.decodeMetadata.call(this, metadata);
   }
 
-  /** Approve an ERC20 for deposit into the OMG Network */
+  /**
+   * Approve an ERC20 for deposit into the OMG Network
+   * @param args.amount amount to approve
+   * @param args.erc20Address address of the ERC20 token
+   * @param args.txOptions transaction options
+  */
   public async approveERC20Deposit (
     args: RootchainDepositModule.IApproveDeposit
   ): Promise<Interfaces.ITransactionReceipt> {
@@ -388,10 +376,7 @@ class OmgJS {
     return WatcherAccountModule.getBalance.call(this, address);
   }
 
-  /**
-   * Get transaction information
-   * @param id id of the transaction
-  */
+  /** Get transaction information */
   public async getTransaction (
     id: string
   ): Promise<Interfaces.ITransactionData> {
@@ -436,8 +421,13 @@ class OmgJS {
     return WatcherUtxoModule.getChallengeData.call(this, utxoPos);
   }
 
-  // NMTODO: name both createtransactions differently to differentiate the two better
-  /** Create possible transactions using the utility from the Watcher */
+  /**
+   * Create possible transactions using the utility from the Watcher
+   * @param args.owner owner of the input utxos
+   * @param args.payments payments made as outputs
+   * @param args.feeCurrency address of the fee currency to be used
+   * @param args.metadata metadata to include in the transaction
+  */
   public async createTransaction (
     args: WatcherTransactionModule.ICreateTransaction
   ): Promise<WatcherTransactionModule.ICreatedTransactions> {
@@ -549,10 +539,7 @@ class OmgJS {
     return WatcherInflightExitModule.inFlightExitProveCanonical.call(this, txbytes);
   }
 
-  /**
-   * Retrieve the EVM revert reason from a transaction hash
-   * @param txHash transaction hash of the failed transaction
-  */
+  /** Retrieve the EVM revert reason from a transaction hash */
   public async getEVMErrorReason (
     txHash: string
   ): Promise<string> {
@@ -590,7 +577,7 @@ class OmgJS {
    * Wait for an address to have a specified balance on the OMG Network
    * @param address address to check the balance of
    * @param expectedAmount the amount expected
-   * @param currency the token address to check (defaults to ETH)
+   * @param currency the token address to check
   */
   public async waitForChildchainBalance (
     args: RootchainUtilModule.IWaitForChildchainBalance
@@ -599,10 +586,7 @@ class OmgJS {
     return RootchainUtilModule.waitForChildchainBalance.call(this, args);
   }
 
-  /**
-   * Hash typed data
-   * @param typedData typed data to hash
-  */
+  /** Hash typed data */
   public hashTypedData (
     typedData: TypedDataModule.ITypedData
   ): Buffer {
@@ -610,10 +594,7 @@ class OmgJS {
     return StructHashModule.hashTypedData.call(this, typedData);
   }
 
-  /**
-   * Get typed data from a transaction body
-   * @param transactionBody transaction body to transform into typed data
-  */
+  /** Get typed data from a transaction body */
   public getTypedData (
     transactionBody: Interfaces.ITransactionBody
   ): TypedDataModule.ITypedData {
@@ -621,10 +602,7 @@ class OmgJS {
     return TypedDataModule.getTypedData.call(this, transactionBody);
   }
 
-  /**
-   * Convert typed data into an array suitable for RLP encoding
-   * @param typedDataMessage message of the typed data to transform
-  */
+  /** Convert typed data into an array suitable for RLP encoding */
   public getTypedDataArray (
     typedDataMessage: TypedDataModule.ITypedDataMessage
   ): Array<any> {

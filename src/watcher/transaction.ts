@@ -38,8 +38,20 @@ export interface ICreateTransaction {
   metadata: string;
 }
 
-// NMTODO: figure out this interface
-export interface ICreatedTransactions {}
+export interface ICreatedTransaction {
+  fee: Interfaces.IFeeDetail;
+  inputs: Interfaces.IUTXO[];
+  outputs: Interfaces.IPayment[];
+  sign_hash: string;
+  txbytes: string;
+  typed_data: TypedDataModule.ITypedData,
+  metadata: string;
+}
+
+export interface ICreatedTransactions {
+  result: string;
+  transactions: ICreatedTransaction[]
+}
 
 /** @internal */
 export async function createTransaction ({
