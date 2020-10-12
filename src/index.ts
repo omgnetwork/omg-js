@@ -265,7 +265,7 @@ class OmgJS {
   public async getDepositExitData (
     args: RootchainStandardExitModule.IGetDepositExitData
   ): Promise<Interfaces.IExitData> {
-    Validators.validate(args, Validators.getExitDataSchema);
+    Validators.validate(args, Validators.getDepositExitDataSchema);
     return RootchainStandardExitModule.getDepositExitData.call(this, args);
   }
 
@@ -574,6 +574,14 @@ class OmgJS {
   ): Promise<string> {
     Validators.validate(args, Validators.getErc20BalanceSchema);
     return RootchainUtilModule.getRootchainERC20Balance.call(this, args);
+  }
+
+  /** Get the rootchain ETH balance of an address */
+  public async getRootchainETHBalance (
+    address: string
+  ): Promise<string> {
+    Validators.validate(address, Validators.getRootchainETHBalanceSchema);
+    return RootchainUtilModule.getRootchainETHBalance.call(this, address);
   }
 
   /**

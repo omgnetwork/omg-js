@@ -70,7 +70,9 @@ export const startStandardExitSchema: Joi.Schema = Joi.object({
   txOptions: helpers.validateTxOptions.required()
 });
 
-export const getExitDataSchema: Joi.Schema = Joi.object({
+export const getExitDataSchema: Joi.Schema = Joi.object().required();
+
+export const getDepositExitDataSchema: Joi.Schema = Joi.object({
   transactionHash: Joi.string().required()
 });
 
@@ -256,6 +258,8 @@ export const getErc20BalanceSchema: Joi.Schema = Joi.object({
   address: helpers.validateAddress.required(),
   erc20Address: helpers.validateAddress.required()
 });
+
+export const getRootchainETHBalanceSchema: Joi.Schema = helpers.validateAddress.required();
 
 export const waitForRootchainTransactionSchema: Joi.Schema = Joi.object({
   transactionHash: Joi.string().required(),

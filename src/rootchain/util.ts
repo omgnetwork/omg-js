@@ -39,6 +39,13 @@ export async function getRootchainERC20Balance ({
   return web3Utils.hexToNumberString(balance);
 }
 
+/** @internal */
+export async function getRootchainETHBalance (
+  address: string
+): Promise<string> {
+  return this.web3Instance.eth.getBalance(address);
+}
+
 export interface IWaitForRootchainTransaction {
   transactionHash: string;
   checkIntervalMs: number;

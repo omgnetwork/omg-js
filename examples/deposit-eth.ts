@@ -32,7 +32,7 @@ const omgjs = new OmgJS({
 });
 
 async function logBalances (address: string): Promise<void> {
-  const rootchainBalance = await omgjs.web3Instance.eth.getBalance(address);
+  const rootchainBalance = await omgjs.getRootchainETHBalance(address);
   const childchainBalanceArray = await omgjs.getBalance(address);
   const ethObject = childchainBalanceArray.find(i => i.currency === OmgJS.currency.ETH);
   const childchainETHBalance = ethObject

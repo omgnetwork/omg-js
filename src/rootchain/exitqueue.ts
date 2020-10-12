@@ -7,8 +7,8 @@ import * as Interfaces from '@lib/common/interfaces';
 import * as RootchainTransactionsModule from '@lib/rootchain/transaction';
 
 export interface IGetExitTime {
-  exitRequestBlockNumber: string,
-  submissionBlockNumber: string,
+  exitRequestBlockNumber: Interfaces.IComplexAmount,
+  submissionBlockNumber: Interfaces.IComplexAmount,
   retries?: number
 }
 
