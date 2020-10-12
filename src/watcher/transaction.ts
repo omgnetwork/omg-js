@@ -41,7 +41,7 @@ export interface ICreateTransaction {
 export interface ICreatedTransaction {
   fee: Interfaces.IFeeDetail;
   inputs: Interfaces.IUTXO[];
-  outputs: Interfaces.IPayment[];
+  outputs: Interfaces.IOutput[];
   sign_hash: string;
   txbytes: string;
   typed_data: TypedDataModule.ITypedData,
@@ -90,7 +90,7 @@ export async function submitTyped (
 /** @internal */
 export async function submitTransaction (
   transaction: string
-): Promise<any> {
+): Promise<Interfaces.IWatcherTransactionReceipt> {
   return Transporter.post({
     url: `${this.watcherSecurityUrl}/transaction.submit`,
     body: { transaction: Util.prefixHex(transaction) },

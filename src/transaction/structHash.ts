@@ -5,7 +5,11 @@ import { rawEncode } from 'ethereumjs-abi';
 import * as TypedDataModule from '@lib/transaction/typedData';
 
 /** @internal */
-function dependencies (types, primaryType, found = []) {
+function dependencies (
+  types: TypedDataModule.ITypedDataTypes,
+  primaryType: string,
+  found = []
+): Array<any> {
   if (found.includes(primaryType)) {
     return found
   }
@@ -24,7 +28,10 @@ function dependencies (types, primaryType, found = []) {
 }
 
 /** @internal */
-function encodeType (types, primaryType) {
+function encodeType (
+  types: TypedDataModule.ITypedDataTypes,
+  primaryType: string
+): string {
   // Get dependencies primary first, then alphabetical
   let deps = dependencies(types, primaryType)
   deps = deps.filter(t => t !== primaryType)
@@ -39,12 +46,19 @@ function encodeType (types, primaryType) {
 }
 
 /** @internal */
-function typeHash (types, primaryType) {
+function typeHash (
+  types: TypedDataModule.ITypedDataTypes,
+  primaryType: string
+): Buffer {
   return keccak256(Buffer.from(encodeType(types, primaryType)));
 }
 
 /** @internal */
-function encodeData (types, primaryType, data) {
+function encodeData (
+  types: TypedDataModule.ITypedDataTypes,
+  primaryType: string,
+  data: TypedDataModule.ITypedDataDomainData | TypedDataModule.ITypedDataMessage
+): Buffer {
   const encTypes = []
   const encValues = []
 
@@ -57,7 +71,7 @@ function encodeData (types, primaryType, data) {
     let value = data[field.name]
     if (field.type === 'string' || field.type === 'bytes') {
       encTypes.push('bytes32')
-      value = keccak256(value)
+      value = keccak256(Buffer.from(value))
       encValues.push(value)
     } else if (types[field.type] !== undefined) {
       encTypes.push('bytes32')
@@ -75,12 +89,17 @@ function encodeData (types, primaryType, data) {
 }
 
 /** @internal */
-function structHash (types, primaryType, data) {
-  return keccak256(encodeData(types, primaryType, data))
+function structHash (
+  types: TypedDataModule.ITypedDataTypes,
+  primaryType: string,
+  data: TypedDataModule.ITypedDataDomainData | TypedDataModule.ITypedDataMessage) {
+  return keccak256(encodeData(types, primaryType, data));
 }
 
 /** @internal */
-export function hashTypedData (typedData: TypedDataModule.ITypedData): Buffer {
+export function hashTypedData (
+  typedData: TypedDataModule.ITypedData
+): Buffer {
   return keccak256(
     Buffer.concat([
       Buffer.from('1901', 'hex'),

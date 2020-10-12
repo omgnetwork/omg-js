@@ -29,6 +29,12 @@ export interface ITransactionReceipt {
   transactionIndex: number;
 };
 
+export interface IWatcherTransactionReceipt {
+  blknum: number;
+  txhash: string;
+  txindex: number
+}
+
 export interface IUTXO {
   amount: number;
   blknum: number;
@@ -43,8 +49,8 @@ export interface IUTXO {
 };
 
 export interface IOutput {
-  outputType: number;
-  outputGuard: string;
+  outputType?: number;
+  outputGuard?: string;
   owner?: string;
   currency: string;
   amount: IComplexAmount;

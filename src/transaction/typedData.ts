@@ -1,18 +1,18 @@
 import * as Constants from '@lib/common/constants';
 import * as Interfaces from '@lib/common/interfaces';
 
-interface ITypedDataSpec {
+export interface ITypedDataSpec {
   name: string;
   type: string;
 };
 
-interface ITypedDataTypes {
+export interface ITypedDataTypes {
   EIP712Domain: Array<ITypedDataSpec>;
   Transaction: Array<ITypedDataSpec>;
   Input: Array<ITypedDataSpec>;
   Output: Array<ITypedDataSpec>;
 }
-interface ITypedDataDomainData {
+export interface ITypedDataDomainData {
   name: string;
   version: string;
   verifyingContract: string;

@@ -85,7 +85,7 @@ class OmgJS {
 
     this.plasmaContractAddress = args.plasmaContractAddress;
     this.watcherUrl = args.watcherUrl;
-    this.watcherSecurityUrl = args.watcherSecurityUrl;
+    this.watcherSecurityUrl = args.watcherSecurityUrl || args.watcherUrl;
     this.watcherProxyUrl = args.watcherProxyUrl;
     this.web3Instance = new (Web3 as any)(args.web3Provider, null, { transactionConfirmationBlocks: 1 });
     this.plasmaContract = new this.web3Instance.eth.Contract(
@@ -477,11 +477,10 @@ class OmgJS {
     return SignModule.buildSignedTransaction.call(this, args);
   }
 
-  // NMTODO: figure out the return interface here
   /** Submit an encoded signed transaction to the Watcher */
   public submitTransaction (
     transaction: string
-  ): Promise<any> {
+  ): Promise<Interfaces.IWatcherTransactionReceipt> {
     Validators.validate(transaction, Joi.string().required());
     return WatcherTransactionModule.submitTransaction.call(this, transaction);
   }

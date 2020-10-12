@@ -44,10 +44,10 @@ async function logBalances (address: string) {
 
 async function transactionEth (): Promise<void> {
   const { from, to, amount } = getFlags('from', 'to', 'amount');
-  const fromAddress = config[`${from}_eth_address`];
-  const fromPk = config[`${from}_eth_address_private_key`];
-  const toAddress = config[`${to}_eth_address`];
-  const transferAmount = new BN(web3Utils.toWei(amount, 'ether').toString());
+  const fromAddress: string = config[`${from}_eth_address`];
+  const fromPk: string = config[`${from}_eth_address_private_key`];
+  const toAddress: string = config[`${to}_eth_address`];
+  const transferAmount: BN = new BN(web3Utils.toWei(amount, 'ether').toString());
 
   const { ethBalance } = await logBalances(toAddress);
   console.log('-----');
@@ -63,18 +63,15 @@ async function transactionEth (): Promise<void> {
     metadata: 'hello'
   });
 
-  console.log(createdTxn);
-
   console.log(`Created a childchain transaction of ${transferAmount} ETH`);
 
   // type/sign/build/submit
-  const typedData = omgjs.getTypedData(createdTxn.transactions[0]);
-  const privateKeys = new Array(createdTxn.transactions[0].inputs.length).fill(fromPk);
+  const transactionBody = createdTxn.transactions[0];
+  const typedData = omgjs.getTypedData(transactionBody);
+  const privateKeys = new Array(transactionBody.inputs.length).fill(fromPk);
   const signatures = omgjs.signTransaction({ typedData, privateKeys });
   const signedTxn = omgjs.buildSignedTransaction({ typedData, signatures });
   const receipt = await omgjs.submitTransaction(signedTxn);
-
-  console.log(receipt);
 
   console.log('Transaction submitted: ', receipt.txhash);
 
