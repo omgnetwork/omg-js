@@ -55,7 +55,7 @@ async function depositEth () {
 
   console.log(`Depositing ${web3Utils.fromWei(depositAmount.toString(), 'ether')} ETH from the rootchain to the childchain`);
   const depositResult = await omgjs.deposit({
-    amount,
+    amount: 'abc',
     txOptions: {
       from: address,
       privateKey: pk
@@ -79,6 +79,5 @@ async function depositEth () {
 
 depositEth().catch(e => {
   console.log('message: ', e.message);
-  console.log('method: ', e.method);
   console.log('name: ', e.name);
 });

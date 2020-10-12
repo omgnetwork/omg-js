@@ -87,7 +87,7 @@ class OmgJS {
     watcherProxyUrl,
     web3Provider
   }: IOmgJS) {
-    Joi.assert({
+    Validators.validate({
       plasmaContractAddress,
       watcherUrl,
       watcherProxyUrl,
@@ -133,7 +133,7 @@ class OmgJS {
   public async getExitTime (
     args: RootchainExitQueueModule.IGetExitTime
   ): Promise<RootchainExitQueueModule.IExitTime> {
-    Joi.assert(args, Validators.getExitTimeSchema);
+    Validators.validate(args, Validators.getExitTimeSchema);
     return RootchainExitQueueModule.getExitTime.call(this, args);
   }
 
@@ -141,7 +141,7 @@ class OmgJS {
   public async getExitQueue (
     currency: string
   ): Promise<RootchainExitQueueModule.IExitQueue[]> {
-    Joi.assert(currency, Validators.getExitQueueSchema);
+    Validators.validate(currency, Validators.getExitQueueSchema);
     return RootchainExitQueueModule.getExitQueue.call(this, currency);
   }
 
@@ -149,7 +149,7 @@ class OmgJS {
   public encodeDeposit (
     args: EncoderModule.IDepositTransaction
   ): string {
-    Joi.assert(args, Validators.encodeDepositSchema);
+    Validators.validate(args, Validators.encodeDepositSchema);
     return EncoderModule.encodeDeposit.call(this, args);
   }
 
@@ -157,7 +157,7 @@ class OmgJS {
   public decodeDeposit (
     encodedDeposit: string
   ): EncoderModule.IDepositTransaction {
-    Joi.assert(encodedDeposit, Joi.string().required());
+    Validators.validate(encodedDeposit, Joi.string().required());
     return EncoderModule.decodeDeposit.call(this, encodedDeposit);
   }
 
@@ -165,7 +165,7 @@ class OmgJS {
   public encodeTransaction (
     args: EncoderModule.IEncodeTransaction
   ): string {
-    Joi.assert(args, Validators.encodeTransactionSchema);
+    Validators.validate(args, Validators.encodeTransactionSchema);
     return EncoderModule.encodeTransaction.call(this, args);
   }
 
@@ -173,7 +173,7 @@ class OmgJS {
   public decodeTransaction (
     encodedTransaction: string
   ): Interfaces.ITransactionBody {
-    Joi.assert(encodedTransaction, Joi.string().required());
+    Validators.validate(encodedTransaction, Joi.string().required());
     return EncoderModule.decodeTransaction.call(this, encodedTransaction);
   }
 
@@ -181,7 +181,7 @@ class OmgJS {
   public encodeUtxoPos (
     utxo: Interfaces.IUTXO
   ): BN {
-    Joi.assert({ utxo }, Validators.encodeUtxoPosSchema);
+    Validators.validate({ utxo }, Validators.encodeUtxoPosSchema);
     return EncoderModule.encodeUtxoPos.call(this, utxo);
   }
 
@@ -189,7 +189,7 @@ class OmgJS {
   public decodeUtxoPos (
     utxoPos: Interfaces.IComplexAmount
   ): Partial<Interfaces.IUTXO> {
-    Joi.assert({ utxoPos }, Validators.decodeUtxoPosSchema);
+    Validators.validate({ utxoPos }, Validators.decodeUtxoPosSchema);
     return EncoderModule.decodeUtxoPos.call(this, utxoPos);
   }
 
@@ -200,7 +200,7 @@ class OmgJS {
   public encodeMetadata (
     metadata: string
   ): string {
-    Joi.assert({ metadata }, Validators.encodeMetadataSchema);
+    Validators.validate({ metadata }, Validators.encodeMetadataSchema);
     return EncoderModule.encodeMetadata.call(this, metadata);
   }
 
@@ -211,7 +211,7 @@ class OmgJS {
   public decodeMetadata (
     metadata: string
   ): string {
-    Joi.assert({ metadata }, Validators.decodeMetadataSchema);
+    Validators.validate({ metadata }, Validators.decodeMetadataSchema);
     return EncoderModule.decodeMetadata.call(this, metadata);
   }
 
@@ -219,7 +219,7 @@ class OmgJS {
   public async approveERC20Deposit (
     args: RootchainDepositModule.IApproveDeposit
   ): Promise<Interfaces.ITransactionReceipt> {
-    Joi.assert(args, Validators.approveERC20DepositSchema);
+    Validators.validate(args, Validators.approveERC20DepositSchema);
     return RootchainDepositModule.approveERC20Deposit.call(this, args);
   }
 
@@ -232,20 +232,15 @@ class OmgJS {
   public async deposit (
     args: RootchainDepositModule.IDeposit
   ): Promise<Interfaces.ITransactionReceipt> {
-    return Util.formatResponse(
-      'deposit',
-      async () => {
-        await Joi.assert(args, Validators.depositSchema);
-        return RootchainDepositModule.deposit.call(this, args);
-      }
-    );
+    Validators.validate(args, Validators.depositSchema);
+    return RootchainDepositModule.deposit.call(this, args);
   }
 
   /** Get a standard exit id to process a standard exit */
   public async getStandardExitId (
     args: RootchainStandardExitModule.IGetStandardExitId
   ): Promise<string> {
-    Joi.assert(args, Validators.getStandardExitIdSchema);
+    Validators.validate(args, Validators.getStandardExitIdSchema);
     return RootchainStandardExitModule.getStandardExitId.call(this, args);
   }
 
@@ -253,7 +248,7 @@ class OmgJS {
   public async getInFlightExitId (
     args: RootchainInflightExitModule.IGetInflightExitId
   ): Promise<string> {
-    Joi.assert(args, Validators.getInFlightExitIdSchema);
+    Validators.validate(args, Validators.getInFlightExitIdSchema);
     return RootchainInflightExitModule.getInFlightExitId.call(this, args);
   }
 
@@ -261,7 +256,7 @@ class OmgJS {
   public async getInFlightExitData (
     args: RootchainInflightExitModule.IGetInflightExitData
   ): Promise<RootchainInflightExitModule.IInflightExitData> {
-    Joi.assert(args, Validators.getInFlightExitDataSchema);
+    Validators.validate(args, Validators.getInFlightExitDataSchema);
     return RootchainInflightExitModule.getInFlightExitData.call(this, args);
   }
 
@@ -269,7 +264,7 @@ class OmgJS {
   public async startStandardExit (
     args: RootchainStandardExitModule.IStartStandardExit
   ): Promise<Interfaces.ITransactionReceipt> {
-    Joi.assert(args, Validators.startStandardExitSchema);
+    Validators.validate(args, Validators.startStandardExitSchema);
     return RootchainStandardExitModule.startStandardExit.call(this, args);
   }
 
@@ -277,7 +272,7 @@ class OmgJS {
   public async getDepositExitData (
     args: RootchainStandardExitModule.IGetDepositExitData
   ): Promise<Interfaces.IExitData> {
-    Joi.assert(args, Validators.getExitDataSchema);
+    Validators.validate(args, Validators.getExitDataSchema);
     return RootchainStandardExitModule.getDepositExitData.call(this, args);
   }
 
@@ -285,7 +280,7 @@ class OmgJS {
   public async challengeStandardExit (
     args: RootchainStandardExitModule.IChallengeStandardExit
   ): Promise<Interfaces.ITransactionReceipt> {
-    Joi.assert(args, Validators.challengeStandardExitSchema);
+    Validators.validate(args, Validators.challengeStandardExitSchema);
     return RootchainStandardExitModule.challengeStandardExit.call(this, args);
   }
 
@@ -293,7 +288,7 @@ class OmgJS {
   public async processExits (
     args: RootchainExitQueueModule.IProcessExits
   ): Promise<Interfaces.ITransactionReceipt> {
-    Joi.assert(args, Validators.processExitsSchema);
+    Validators.validate(args, Validators.processExitsSchema);
     return RootchainExitQueueModule.processExits.call(this, args);
   }
 
@@ -301,7 +296,7 @@ class OmgJS {
   public async hasExitQueue (
     currency: string
   ): Promise<boolean> {
-    Joi.assert(currency, Validators.hasExitQueueSchema);
+    Validators.validate(currency, Validators.hasExitQueueSchema);
     return RootchainExitQueueModule.hasExitQueue.call(this, currency);
   } 
 
@@ -309,7 +304,7 @@ class OmgJS {
   public async addExitQueue (
     args: RootchainExitQueueModule.IAddExitQueue
   ): Promise<Interfaces.ITransactionReceipt> {
-    Joi.assert(args, Validators.addExitQueueSchema);
+    Validators.validate(args, Validators.addExitQueueSchema);
     return RootchainExitQueueModule.addExitQueue.call(this, args);
   }
 
@@ -317,7 +312,7 @@ class OmgJS {
   public async startInFlightExit (
     args: RootchainInflightExitModule.IStartInflightExit
   ): Promise<Interfaces.ITransactionReceipt> {
-    Joi.assert(args, Validators.startInFlightExitSchema);
+    Validators.validate(args, Validators.startInFlightExitSchema);
     return RootchainInflightExitModule.startInflightExit.call(this, args);
   }
 
@@ -325,7 +320,7 @@ class OmgJS {
   public async piggybackInFlightExitOnOutput (
     args: RootchainInflightExitModule.IPiggybackInflightExitOnOutput
   ): Promise<Interfaces.ITransactionReceipt> {
-    Joi.assert(args, Validators.piggybackInFlightExitOnOutputSchema);
+    Validators.validate(args, Validators.piggybackInFlightExitOnOutputSchema);
     return RootchainInflightExitModule.piggybackInFlightExitOnOutput.call(this, args);
   }
 
@@ -333,7 +328,7 @@ class OmgJS {
   public async piggybackInFlightExitOnInput (
     args: RootchainInflightExitModule.IPiggybackInflightExitOnInput
   ): Promise<Interfaces.ITransactionReceipt> {
-    Joi.assert(args, Validators.piggybackInFlightExitOnInputSchema);
+    Validators.validate(args, Validators.piggybackInFlightExitOnInputSchema);
     return RootchainInflightExitModule.piggybackInFlightExitOnInput.call(this, args);
   }
 
@@ -341,7 +336,7 @@ class OmgJS {
   public async challengeInFlightExitNotCanonical (
     args: RootchainInflightExitModule.IChallengeInflightExitNotCanonical
   ): Promise<Interfaces.ITransactionReceipt> {
-    Joi.assert(args, Validators.challengeInFlightExitNotCanonicalSchema);
+    Validators.validate(args, Validators.challengeInFlightExitNotCanonicalSchema);
     return RootchainInflightExitModule.challengeInFlightExitNotCanonical.call(this, args);
   }
 
@@ -349,7 +344,7 @@ class OmgJS {
   public async respondToNonCanonicalChallenge (
     args: RootchainInflightExitModule.IRespondToNonCanonicalChallenge
   ): Promise<Interfaces.ITransactionReceipt> {
-    Joi.assert(args, Validators.respondToNonCanonicalChallengeSchema);
+    Validators.validate(args, Validators.respondToNonCanonicalChallengeSchema);
     return RootchainInflightExitModule.respondToNonCanonicalChallenge.call(this, args);
   }
 
@@ -357,7 +352,7 @@ class OmgJS {
   public async challengeInFlightExitInputSpent (
     args: RootchainInflightExitModule.IChallengeInFlightExitInputSpent
   ): Promise<Interfaces.ITransactionReceipt> {
-    Joi.assert(args, Validators.challengeInFlightExitInputSpentSchema);
+    Validators.validate(args, Validators.challengeInFlightExitInputSpentSchema);
     return RootchainInflightExitModule.challengeInFlightExitInputSpent.call(this, args);
   }
 
@@ -365,7 +360,7 @@ class OmgJS {
   public async challengeInFlightExitOutputSpent (
     args: RootchainInflightExitModule.IChallengeInFlightExitOutputSpent
   ): Promise<Interfaces.ITransactionReceipt> {
-    Joi.assert(args, Validators.challengeInFlightExitOutputSpentSchema);
+    Validators.validate(args, Validators.challengeInFlightExitOutputSpentSchema);
     return RootchainInflightExitModule.challengeInFlightExitOutputSpent.call(this, args);
   }
 
@@ -373,7 +368,7 @@ class OmgJS {
   public async deleteNonPiggybackedInFlightExit (
     args: RootchainInflightExitModule.IDeleteNonPiggybackedInFlightExit
   ): Promise<Interfaces.ITransactionReceipt> {
-    Joi.assert(args, Validators.deleteNonPiggybackedInFlightExitSchema);
+    Validators.validate(args, Validators.deleteNonPiggybackedInFlightExitSchema);
     return RootchainInflightExitModule.deleteNonPiggybackedInFlightExit.call(this, args);
   }
 
@@ -381,7 +376,7 @@ class OmgJS {
   public async getUtxos (
     address: string
   ): Promise<Array<Interfaces.IUTXO>> {
-    Joi.assert(address, Validators.getUtxosSchema);
+    Validators.validate(address, Validators.getUtxosSchema);
     return WatcherAccountModule.getUtxos.call(this, address);
   }
 
@@ -389,15 +384,18 @@ class OmgJS {
   public async getBalance (
     address: string
   ): Promise<Array<WatcherAccountModule.IBalance>> {
-    Joi.assert(address, Validators.getBalanceSchema);
+    Validators.validate(address, Validators.getBalanceSchema);
     return WatcherAccountModule.getBalance.call(this, address);
   }
 
-  /** Get transaction information */
+  /**
+   * Get transaction information
+   * @param id id of the transaction
+  */
   public async getTransaction (
     id: string
   ): Promise<Interfaces.ITransactionData> {
-    Joi.assert({ id }, Validators.getTransactionSchema);
+    Validators.validate({ id }, Validators.getTransactionSchema);
     return WatcherTransactionModule.getTransaction.call(this, id);
   }
 
@@ -405,7 +403,7 @@ class OmgJS {
   public async getTransactions (
     filters: WatcherTransactionModule.ITransactionFilter
   ): Promise<Array<Interfaces.ITransactionData>> {
-    Joi.assert(filters, Validators.getTransactionsSchema);
+    Validators.validate(filters, Validators.getTransactionsSchema);
     return WatcherTransactionModule.getTransactions.call(this, filters);
   }
 
@@ -418,7 +416,7 @@ class OmgJS {
   public async getDeposits (
     filters: WatcherDepositModule.IDepositFilter
   ): Promise<Array<WatcherDepositModule.IDepositInfo>> {
-    Joi.assert(filters, Validators.getDepositsSchema);
+    Validators.validate(filters, Validators.getDepositsSchema);
     return WatcherDepositModule.getDeposits.call(this, filters);
   }
 
@@ -426,7 +424,7 @@ class OmgJS {
   public async getExitData (
     utxo: Interfaces.IUTXO
   ): Promise<Interfaces.IExitData> {
-    Joi.assert(utxo, Validators.getExitDataSchema);
+    Validators.validate(utxo, Validators.getExitDataSchema);
     return WatcherUtxoModule.getExitData.call(this, utxo);
   }
 
@@ -434,7 +432,7 @@ class OmgJS {
   public async getChallengeData (
     utxoPos: number
   ): Promise<WatcherUtxoModule.IChallengeData> {
-    Joi.assert({ utxoPos }, Validators.getChallengeDataSchema);
+    Validators.validate({ utxoPos }, Validators.getChallengeDataSchema);
     return WatcherUtxoModule.getChallengeData.call(this, utxoPos);
   }
 
@@ -443,7 +441,7 @@ class OmgJS {
   public async createTransaction (
     args: WatcherTransactionModule.ICreateTransaction
   ): Promise<WatcherTransactionModule.ICreatedTransactions> {
-    Joi.assert(args, Validators.createTransactionSchema);
+    Validators.validate(args, Validators.createTransactionSchema);
     return WatcherTransactionModule.createTransaction.call(this, args);
   }
 
@@ -451,7 +449,7 @@ class OmgJS {
   public createTransactionBody (
     args: TransactionBuilderModule.ICreateTransactionBody
   ): Partial<Interfaces.ITransactionBody> {
-    Joi.assert(args, Validators.createTransactionBodySchema);
+    Validators.validate(args, Validators.createTransactionBodySchema);
     return TransactionBuilderModule.createTransactionBody.call(this, args);
   }
 
@@ -460,7 +458,7 @@ class OmgJS {
   public signTypedData (
     args: SignModule.ISignTypedData
   ): TypedDataModule.ITypedData {
-    Joi.assert(args, Validators.signTypedDataSchema);
+    Validators.validate(args, Validators.signTypedDataSchema);
     return SignModule.signTypedData.call(this, args);
   }
 
@@ -469,7 +467,7 @@ class OmgJS {
   public submitTyped (
     typedData: TypedDataModule.ITypedData
   ): Promise<any> {
-    Joi.assert(typedData, Validators.submitTypedSchema);
+    Validators.validate(typedData, Validators.submitTypedSchema);
     return WatcherTransactionModule.submitTyped.call(this, typedData);
   }
 
@@ -477,7 +475,7 @@ class OmgJS {
   public signTransaction (
     args: SignModule.ISignTransaction
   ): Array<string> {
-    Joi.assert(args, Validators.signTransactionSchema);
+    Validators.validate(args, Validators.signTransactionSchema);
     return SignModule.signTransaction.call(this, args);
   }
 
@@ -485,7 +483,7 @@ class OmgJS {
   public buildSignedTransaction (
     args: SignModule.IBuildSignedTransaction
   ): string {
-    Joi.assert(args, Validators.buildSignedTransactionSchema);
+    Validators.validate(args, Validators.buildSignedTransactionSchema);
     return SignModule.buildSignedTransaction.call(this, args);
   }
 
@@ -494,7 +492,7 @@ class OmgJS {
   public submitTransaction (
     transaction: string
   ): Promise<any> {
-    Joi.assert(transaction, Joi.string().required());
+    Validators.validate(transaction, Joi.string().required());
     return WatcherTransactionModule.submitTransaction.call(this, transaction);
   }
 
@@ -502,7 +500,7 @@ class OmgJS {
   public mergeUtxos (
     args: TransactionBuilderModule.IMergeUtxos
   ): Promise<any> {
-    Joi.assert(args, Validators.mergeUtxosSchema);
+    Validators.validate(args, Validators.mergeUtxosSchema);
     return TransactionBuilderModule.mergeUtxos.call(this, args);
   }
 
@@ -515,7 +513,7 @@ class OmgJS {
   public async inFlightExitGetInputChallengeData (
     args: WatcherInflightExitModule.IInFlightExitGetInputChallengeData
   ): Promise<WatcherInflightExitModule.IInflightExitInputChallengeData> {
-    Joi.assert(args, Validators.inFlightExitGetInputChallengeDataSchema);
+    Validators.validate(args, Validators.inFlightExitGetInputChallengeDataSchema);
     return WatcherInflightExitModule.inFlightExitGetInputChallengeData.call(this, args);
   }
 
@@ -523,7 +521,7 @@ class OmgJS {
   public async inFlightExitGetOutputChallengeData (
     args: WatcherInflightExitModule.IInFlightExitGetOutputChallengeData
   ): Promise<WatcherInflightExitModule.IInflightExitOutputChallengeData> {
-    Joi.assert(args, Validators.inFlightExitGetOutputChallengeDataSchema);
+    Validators.validate(args, Validators.inFlightExitGetOutputChallengeDataSchema);
     return WatcherInflightExitModule.inFlightExitGetOutputChallengeData.call(this, args);
   }
 
@@ -531,7 +529,7 @@ class OmgJS {
   public async inFlightExitGetData (
     txbytes: string
   ): Promise<Interfaces.IExitData> {
-    Joi.assert(txbytes, Joi.string().required());
+    Validators.validate(txbytes, Joi.string().required());
     return WatcherInflightExitModule.inFlightExitGetData.call(this, txbytes);
   }
 
@@ -539,7 +537,7 @@ class OmgJS {
   public async inFlightExitGetCompetitor (
     txbytes: string
   ): Promise<WatcherInflightExitModule.IInflightExitCompetitor> {
-    Joi.assert(txbytes, Joi.string().required());
+    Validators.validate(txbytes, Joi.string().required());
     return WatcherInflightExitModule.inFlightExitGetCompetitor.call(this, txbytes);
   }
 
@@ -547,7 +545,7 @@ class OmgJS {
   public async inFlightExitProveCanonical (
     txbytes: string
   ): Promise<string> {
-    Joi.assert(txbytes, Joi.string().required());
+    Validators.validate(txbytes, Joi.string().required());
     return WatcherInflightExitModule.inFlightExitProveCanonical.call(this, txbytes);
   }
 
@@ -558,7 +556,7 @@ class OmgJS {
   public async getEVMErrorReason (
     txHash: string
   ): Promise<string> {
-    Joi.assert(txHash, Joi.string().required());
+    Validators.validate(txHash, Joi.string().required());
     return RootchainUtilModule.getEVMErrorReason.call(this, txHash);
   }
 
@@ -570,7 +568,7 @@ class OmgJS {
   public async getRootchainERC20Balance (
     args: RootchainUtilModule.IGetRootchainERC20Balance
   ): Promise<string> {
-    Joi.assert(args, Validators.getErc20BalanceSchema);
+    Validators.validate(args, Validators.getErc20BalanceSchema);
     return RootchainUtilModule.getRootchainERC20Balance.call(this, args);
   }
 
@@ -584,7 +582,7 @@ class OmgJS {
   public async waitForRootchainTransaction (
     args: RootchainUtilModule.IWaitForRootchainTransaction
   ): Promise<Interfaces.ITransactionReceipt> {
-    Joi.assert(args, Validators.waitForRootchainTransactionSchema);
+    Validators.validate(args, Validators.waitForRootchainTransactionSchema);
     return RootchainUtilModule.waitForRootchainTransaction.call(this, args);
   }
 
@@ -597,7 +595,7 @@ class OmgJS {
   public async waitForChildchainBalance (
     args: RootchainUtilModule.IWaitForChildchainBalance
   ): Promise<Array<WatcherAccountModule.IBalance>> {
-    Joi.assert(args, Validators.waitForChildchainBalanceSchema);
+    Validators.validate(args, Validators.waitForChildchainBalanceSchema);
     return RootchainUtilModule.waitForChildchainBalance.call(this, args);
   }
 
@@ -608,7 +606,7 @@ class OmgJS {
   public hashTypedData (
     typedData: TypedDataModule.ITypedData
   ): Buffer {
-    Joi.assert({ typedData }, Validators.hashTypedDataSchema);
+    Validators.validate({ typedData }, Validators.hashTypedDataSchema);
     return StructHashModule.hashTypedData.call(this, typedData);
   }
 
@@ -619,7 +617,7 @@ class OmgJS {
   public getTypedData (
     transactionBody: Interfaces.ITransactionBody
   ): TypedDataModule.ITypedData {
-    Joi.assert({ transactionBody }, Validators.getTypedDataSchema);
+    Validators.validate({ transactionBody }, Validators.getTypedDataSchema);
     return TypedDataModule.getTypedData.call(this, transactionBody);
   }
 

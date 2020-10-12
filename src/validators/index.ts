@@ -1,6 +1,21 @@
 import * as Joi from '@hapi/joi';
 
 import * as helpers from '@lib/validators/helpers';
+import * as Errors from '@lib/errors';
+
+/** @internal Sanitizes joi validation error */
+export function validate (
+  args: any, schema: Joi.Schema
+): void {
+  try {
+    Joi.assert(args, schema);
+  } catch (error) {
+    throw new Errors.ValidationError({
+      message: error.details[0].message,
+      stack: error.stack
+    });
+  }
+}
 
 export const constructorSchema: Joi.Schema = Joi.object({
   plasmaContractAddress: helpers.validateAddress.required(),
