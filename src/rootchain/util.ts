@@ -123,3 +123,36 @@ export async function waitForChildchainBalance ({
     retries: 50
   });
 }
+
+export interface IWaitForUtxo {
+  address: string;
+  oindex: number;
+  txindex: number;
+  blknum: number;
+}
+
+/** @internal */
+export async function waitForUtxo ({
+  address,
+  oindex,
+  txindex,
+  blknum
+}: IWaitForUtxo): Promise<Interfaces.IUTXO> {
+  return promiseRetry(async (retry, _number) => {
+    const utxos: Array<Interfaces.IUTXO> = await WatcherAccountModule.getUtxos.call(this, address);
+    const found = utxos.find(
+      u =>
+        u.oindex === oindex &&
+        u.txindex === txindex &&
+        u.blknum === blknum
+    );
+    return found
+      ? found
+      : retry();
+  },
+  {
+    minTimeout: 6000,
+    factor: 1,
+    retries: 50
+  });
+}

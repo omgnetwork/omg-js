@@ -166,7 +166,7 @@ export async function mergeUtxos ({
   utxos,
   privateKey,
   metadata = Constants.NULL_METADATA
-}: IMergeUtxos): Promise<any> {
+}: IMergeUtxos): Promise<Interfaces.IWatcherTransactionReceipt> {
   const transactionBody = {
     inputs: utxos,
     outputs: [mergeUtxosToOutput(utxos)],
@@ -174,7 +174,7 @@ export async function mergeUtxos ({
     metadata
   };
 
-  const typedData = TypedDataModule.getTypedData(transactionBody);
+  const typedData = TypedDataModule.getTypedData.call(this, transactionBody);
   const signatures = SignModule.signTransaction({
     typedData,
     privateKeys: new Array(utxos.length).fill(privateKey)

@@ -59,12 +59,12 @@ function encodeData (
   primaryType: string,
   data: TypedDataModule.ITypedDataDomainData | TypedDataModule.ITypedDataMessage
 ): Buffer {
-  const encTypes = []
-  const encValues = []
+  const encTypes: Array<string> = [];
+  const encValues: Array<Buffer | string> = [];
 
   // Add typehash
-  encTypes.push('bytes32')
-  encValues.push(typeHash(types, primaryType))
+  encTypes.push('bytes32');
+  encValues.push(typeHash(types, primaryType));
 
   // Add field contents
   for (const field of types[primaryType]) {
@@ -84,15 +84,15 @@ function encodeData (
       encValues.push(value)
     }
   }
-
-  return rawEncode(encTypes, encValues)
+  return rawEncode(encTypes, encValues);
 }
 
 /** @internal */
 function structHash (
   types: TypedDataModule.ITypedDataTypes,
   primaryType: string,
-  data: TypedDataModule.ITypedDataDomainData | TypedDataModule.ITypedDataMessage) {
+  data: TypedDataModule.ITypedDataDomainData | TypedDataModule.ITypedDataMessage
+): Buffer {
   return keccak256(encodeData(types, primaryType, data));
 }
 

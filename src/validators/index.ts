@@ -270,6 +270,13 @@ export const waitForChildchainBalanceSchema: Joi.Schema = Joi.object({
   currency: helpers.validateAddress.required()
 });
 
+export const waitForUtxoSchema: Joi.Schema = Joi.object({
+  address: helpers.validateAddress.required(),
+  oindex: Joi.number().integer().required(),
+  txindex: Joi.number().integer().required(),
+  blknum: Joi.number().integer().required()
+});
+
 export const encodeTransactionSchema: Joi.Schema = Joi.object({
   txType: Joi.number().required(),
   inputs: Joi.array().items(Joi.object()).required(),

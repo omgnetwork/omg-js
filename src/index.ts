@@ -493,10 +493,15 @@ class OmgJS {
     return WatcherTransactionModule.submitTransaction.call(this, transaction);
   }
 
-  /** Merge utxos to a single output and submit it to the Watcher */
+  /**
+   * Merge utxos to a single output and submit it to the Watcher
+   * @param utxos utxos to merge
+   * @param privateKey private key to sign transaction
+   * @param metadata metadata to include with the transaction
+  */
   public mergeUtxos (
     args: TransactionBuilderModule.IMergeUtxos
-  ): Promise<any> {
+  ): Promise<Interfaces.IWatcherTransactionReceipt> {
     Validators.validate(args, Validators.mergeUtxosSchema);
     return TransactionBuilderModule.mergeUtxos.call(this, args);
   }
@@ -591,6 +596,20 @@ class OmgJS {
   ): Promise<Array<WatcherAccountModule.IBalance>> {
     Validators.validate(args, Validators.waitForChildchainBalanceSchema);
     return RootchainUtilModule.waitForChildchainBalance.call(this, args);
+  }
+
+  /**
+   * Wait for an addess to have a specific utxo on the OMG Network
+   * @param address address to check for the utxo
+   * @param oindex oindex of the specified utxo
+   * @param txindex txindex of the specified utxo
+   * @param blknum blknum of the specified utxo
+   */
+  public async waitForUtxo (
+    args: RootchainUtilModule.IWaitForUtxo
+  ): Promise<Interfaces.IUTXO> {
+    Validators.validate(args, Validators.waitForUtxoSchema);
+    return RootchainUtilModule.waitForUtxo.call(this, args);
   }
 
   /** Hash typed data */
