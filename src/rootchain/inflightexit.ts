@@ -22,13 +22,10 @@ export interface IGetInflightExitData {
   exitIds: Array<string>;
 };
 
-// NMTODO: define this interface
-export interface IInflightExitData {};
-
 /** @internal */
 export async function getInFlightExitData ({
   exitIds
-}: IGetInflightExitData): Promise<IInflightExitData> {
+}: IGetInflightExitData): Promise<Interfaces.IInflightExitData> {
   const { contract } = await this.getPaymentExitGame();
   return contract.methods.inFlightExits(exitIds).call();
 };

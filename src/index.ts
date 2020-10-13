@@ -248,7 +248,7 @@ class OmgJS {
   /** Retrieve in-flight exit data from an array of exit IDs */
   public async getInFlightExitData (
     args: RootchainInflightExitModule.IGetInflightExitData
-  ): Promise<RootchainInflightExitModule.IInflightExitData> {
+  ): Promise<Interfaces.IInflightExitData> {
     Validators.validate(args, Validators.getInFlightExitDataSchema);
     return RootchainInflightExitModule.getInFlightExitData.call(this, args);
   }
@@ -535,7 +535,7 @@ class OmgJS {
   /** Get the exit data for an in-flight transaction */
   public async inFlightExitGetData (
     txbytes: string
-  ): Promise<Interfaces.IExitData> {
+  ): Promise<Interfaces.IInflightExitData> {
     Validators.validate(txbytes, Joi.string().required());
     return WatcherInflightExitModule.inFlightExitGetData.call(this, txbytes);
   }

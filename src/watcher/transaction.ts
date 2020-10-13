@@ -35,7 +35,7 @@ export interface ICreateTransaction {
   owner: string;
   payments: Array<Interfaces.IPayment>;
   feeCurrency: string;
-  metadata: string;
+  metadata?: string;
 }
 
 export interface ICreatedTransaction {

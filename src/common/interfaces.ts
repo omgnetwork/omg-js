@@ -80,6 +80,14 @@ export interface IExitData {
   utxo_pos: number;
 };
 
+export interface IInflightExitData {
+  in_flight_tx: string;
+  in_flight_tx_sigs: Array<string>;
+  input_txs: Array<string>;
+  input_txs_inclusion_proofs: Array<string>;
+  input_utxos_pos: Array<IComplexAmount>;
+};
+
 export interface IPayment {
   owner: string;
   currency: string;

@@ -43,15 +43,15 @@ async function mergeUtxos (): Promise<void> {
     throw Error('Not enough eth utxos to do a merge');
   }
 
-  console.log(`there are ${utxosToMerge.length} eth utxos`);
+  console.log(`There are ${utxosToMerge.length} eth utxos to merge`);
 
   const mergeResult = await omgjs.mergeUtxos({
     utxos: utxosToMerge,
     privateKey: pk
   });
 
-  console.log('merge utxo transaction completed: ', mergeResult.txhash);
-  console.log('waiting for merge confirmation...');
+  console.log('Merge utxo transaction completed: ', mergeResult.txhash);
+  console.log('Waiting for merge confirmation...');
 
   await omgjs.waitForUtxo({
     address,
@@ -61,7 +61,7 @@ async function mergeUtxos (): Promise<void> {
   });
   const newUtxos = await omgjs.getUtxos(address);
   const newEthUtxos = newUtxos.filter(u => u.currency === OmgJS.currency.ETH);
-  console.log(`there are now ${newEthUtxos.length} eth utxos`);
+  console.log(`There are now ${newEthUtxos.length} eth utxos`);
 }
 
 mergeUtxos().catch(e => console.log(e.message));

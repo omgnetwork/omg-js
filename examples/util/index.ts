@@ -18,15 +18,6 @@ export function wait (ms: number): Promise<void> {
   return new Promise((resolve, _reject) => setTimeout(resolve, ms));
 }
 
-export async function waitForChallengePeriodToEnd (rootChain) {
-  const minExitPeriod =
-    (await rootChain.plasmaContract.methods.minExitPeriod().call()) * 1000
-  const waitMs = Number(minExitPeriod) * 2
-
-  await wait(waitMs)
-  console.log('Challenge period finished')
-}
-
 export function getFlags (...keys): any {
   const argMap = {}
   for (const position in process.argv) {

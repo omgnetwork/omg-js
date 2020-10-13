@@ -49,7 +49,7 @@ export async function inFlightExitGetOutputChallengeData ({
 }
 
 /** @internal */
-export async function inFlightExitGetData (txbytes: string): Promise<Interfaces.IExitData> {
+export async function inFlightExitGetData (txbytes: string): Promise<Interfaces.IInflightExitData> {
   return Transporter.post({
     url: `${this.watcherSecurityUrl}/in_flight_exit.get_data`,
     body: {
