@@ -18,9 +18,8 @@ import Web3 from 'web3';
 
 import OmgJS from '..';
 
-import { wait } from './wait';
-import getFlags from './parse-args';
-import config from './config';
+import { wait, getFlags } from './util';
+import config from './util/config';
 
 const web3Provider = new Web3.providers.HttpProvider(config.eth_node);
 const omgjs = new OmgJS({
@@ -90,4 +89,4 @@ async function depositErc20 () {
   await logBalances(address);
 }
 
-depositErc20();
+depositErc20().catch(e => console.log(e.message));

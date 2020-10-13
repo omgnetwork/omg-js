@@ -15,7 +15,7 @@
 */
 
 require('dotenv').config();
-import OmgJS from '..';
+import OmgJS from '../..';
 
 export default {
   eth_node: process.env.ETH_NODE,

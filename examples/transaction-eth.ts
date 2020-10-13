@@ -20,8 +20,8 @@ import web3Utils from 'web3-utils';
 
 import OmgJS from '..';
 
-import getFlags from './parse-args';
-import config from './config';
+import { getFlags } from './util';
+import config from './util/config';
 
 const web3Provider = new Web3.providers.HttpProvider(config.eth_node);
 const omgjs = new OmgJS({
@@ -63,7 +63,7 @@ async function transactionEth (): Promise<void> {
     metadata: 'hello'
   });
 
-  console.log(`Created a childchain transaction of ${transferAmount} ETH`);
+  console.log(`Created a childchain transaction of ${amount} ETH`);
 
   // type/sign/build/submit
   const transactionBody = createdTxn.transactions[0];
@@ -87,4 +87,4 @@ async function transactionEth (): Promise<void> {
   await logBalances(toAddress);
 }
 
-transactionEth();
+transactionEth().catch(e => console.log(e.message));

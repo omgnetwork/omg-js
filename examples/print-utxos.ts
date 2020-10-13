@@ -19,8 +19,8 @@ import JSONBigNumber from 'omg-json-bigint';
 
 import OmgJS from '..';
 
-import getFlags from './parse-args';
-import config from './config';
+import { getFlags } from './util';
+import config from './util/config';
 
 const web3Provider = new Web3.providers.HttpProvider(config.eth_node);
 const omgjs = new OmgJS({
@@ -38,4 +38,4 @@ async function printUtxos (): Promise<void> {
   console.log(JSONBigNumber.stringify(utxos, undefined, 2));
 }
 
-printUtxos();
+printUtxos().catch(e => console.log(e.message));

@@ -19,8 +19,8 @@ import web3Utils from 'web3-utils';
 
 import OmgJS from '..';
 
-import getFlags from './parse-args';
-import config from './config';
+import { getFlags } from './util';
+import config from './util/config';
 
 const web3Provider = new Web3.providers.HttpProvider(config.eth_node);
 const omgjs = new OmgJS({
@@ -64,4 +64,4 @@ async function printBalance (): Promise<void> {
   console.log(`Childchain balance: ${JSON.stringify(childchainBalance, null, 2)}`);
 }
 
-printBalance();
+printBalance().catch(e => console.log(e.message));

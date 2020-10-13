@@ -19,8 +19,8 @@ import BN from 'bn.js';
 
 import OmgJS from '..';
 
-import getFlags from './parse-args';
-import config from './config';
+import { getFlags } from './util';
+import config from './util/config';
 
 const web3Provider = new Web3.providers.HttpProvider(config.eth_node);
 const omgjs = new OmgJS({
@@ -88,4 +88,4 @@ async function transactionErc20 (): Promise<void> {
   await logBalances(toAddress);
 }
 
-transactionErc20();
+transactionErc20().catch(e => console.log(e.message));

@@ -19,9 +19,8 @@ import web3Utils from 'web3-utils';
 
 import OmgJS from '..';
 
-import { wait } from './wait';
-import getFlags from './parse-args';
-import config from './config';
+import { wait, getFlags } from './util';
+import config from './util/config';
 
 const web3Provider = new Web3.providers.HttpProvider(config.eth_node);
 const omgjs = new OmgJS({
@@ -132,4 +131,4 @@ async function exitEth (): Promise<void> {
   await logBalances(address);
 }
 
-exitEth();
+exitEth().catch(e => console.log(e.message));
