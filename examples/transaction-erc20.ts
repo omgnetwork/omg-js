@@ -34,7 +34,7 @@ async function logBalances (address: string): Promise<{ erc20Balance: number | s
   const erc20Object = balanceArray.find(i => i.currency.toLowerCase() === config.erc20_contract_address.toLowerCase());
   const childchainErc20Balance = erc20Object ? erc20Object.amount : 0;
 
-  console.log(`Childchain ERC20 balance: ${childchainErc20Balance}`);
+  console.log(`Recipient childchain ERC20 balance: ${childchainErc20Balance}`);
   return { erc20Balance: childchainErc20Balance };
 }
 

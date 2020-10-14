@@ -101,4 +101,4 @@ async function processExits (): Promise<void> {
   }
 }
 
-processExits().catch(e => console.log(e.message));
+processExits() //.catch(e => console.log(e.message));

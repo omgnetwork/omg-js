@@ -11,11 +11,12 @@
     "/dist"
   ],
   "scripts": {
+    "preinstall": "npx npm-force-resolutions",
     "compile": "ttsc",
     "build-docs": "typedoc",
     "lint": "eslint . --ext .js",
     "lint-fix": "eslint . --ext .js --fix",
-    "mocha": "mocha --timeout=0 --bail --slow=0 --check-leaks --full-trace",
+    "mocha": "mocha -r ts-node/register --timeout=0 --bail --slow=0 --check-leaks --full-trace",
     "test": "npm run mocha src/test",
     "audit-check": "audit-ci --moderate"
   },
@@ -39,8 +40,6 @@
     "@types/hapi__joi": "^17.1.6",
     "@types/web3": "^1.2.2",
     "audit-ci": "^2.5.1",
-    "chai": "^4.1.2",
-    "chai-as-promised": "^7.1.1",
     "dotenv": "^6.0.0",
     "eslint": "^6.6.0",
     "eslint-config-standard": "^14.1.0",
@@ -50,8 +49,6 @@
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.0.1",
     "mocha": "^5.2.0",
-    "mocha-parallel-tests": "^2.2.2",
-    "sinon": "^7.5.0",
     "standard": "^12.0.1",
     "truffle": "^4.1.14",
     "ttypescript": "^1.5.12",

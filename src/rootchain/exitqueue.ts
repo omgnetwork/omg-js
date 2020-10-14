@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License. */
 
 import web3Utils from 'web3-utils';
+import { Contract } from 'web3-eth-contract';
 import BN from 'bn.js';
 
 import * as Constants from '@lib/common/constants';
@@ -101,9 +102,19 @@ export async function getExitQueue (
     { t: 'uint256', v: vaultId },
     { t: 'address', v: currency }
   );
-  const address: string = await this.plasmaContract.methods.exitsQueues(hashed).call();
-  const { contract } = await ContractsModule.getPriorityQueue.call(this, address);
-  const rawExitQueue: Array<string> = await contract.methods.heapList().call();
+
+  let address: string;
+  let contract: Contract;
+  let rawExitQueue: Array<string>;
+  try {
+    // if no queue exists, this will throw so we early return an empty queue
+    address = await this.plasmaContract.methods.exitsQueues(hashed).call();
+    const priorityVault = await ContractsModule.getPriorityQueue.call(this, address);
+    contract = priorityVault.contract;
+    rawExitQueue = await contract.methods.heapList().call();
+  } catch (error) {
+    return [];
+  }
 
   if (rawExitQueue && rawExitQueue.length) {
     // remove the first element since it is always 0 (because heap lists start from index 1)

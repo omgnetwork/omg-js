@@ -34,15 +34,15 @@ async function mergeUtxos (): Promise<void> {
   const pk: string = config[`${owner}_eth_address_private_key`];
 
   const utxos = await omgjs.getUtxos(address);
-  const utxosToMerge = utxos
-    .filter((u) => u.currency === OmgJS.currency.ETH)
-    .slice(0, 4);
+  const ethUtxos = utxos.filter(i => i.currency === OmgJS.currency.ETH);
+  const utxosToMerge = ethUtxos.slice(0, 4);
 
   if (utxosToMerge.length < 2) {
     throw Error('Not enough eth utxos to do a merge');
   }
 
-  console.log(`There are ${utxosToMerge.length} eth utxos to merge`);
+  console.log(`Owner has ${ethUtxos.length} eth utxos`);
+  console.log(`Preparing to merge ${utxosToMerge.length} eth utxos`);
 
   const mergeResult = await omgjs.mergeUtxos({
     utxos: utxosToMerge,
@@ -60,7 +60,7 @@ async function mergeUtxos (): Promise<void> {
   });
   const newUtxos = await omgjs.getUtxos(address);
   const newEthUtxos = newUtxos.filter(u => u.currency === OmgJS.currency.ETH);
-  console.log(`There are now ${newEthUtxos.length} eth utxos`);
+  console.log(`Owner has ${newEthUtxos.length} eth utxos`);
 }
 
 mergeUtxos().catch(e => console.log(e.message));

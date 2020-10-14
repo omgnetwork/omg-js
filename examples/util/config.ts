@@ -31,5 +31,5 @@ export default {
   bob_eth_address: OmgJS.util.prefixHex(process.env.BOB_ETH_ADDRESS),
   bob_eth_address_private_key: OmgJS.util.prefixHex(process.env.BOB_ETH_ADDRESS_PRIVATE_KEY),
   millis_to_wait_for_next_block: Number(process.env.MILLIS_TO_WAIT_FOR_NEXT_BLOCK) || 1000,
-  blocks_to_wait_for_txn: Number(process.env.BLOCKS_TO_WAIT_FOR_TXN) || 15
+  blocks_to_wait_for_txn: Number(process.env.BLOCKS_TO_WAIT_FOR_TXN) || 13
 }
