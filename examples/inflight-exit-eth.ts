@@ -89,9 +89,9 @@ async function inFlightExitEth (): Promise<void> {
       from: toAddress
     }
   });
-  console.log('--to address started an inflight exit: ', exitReceipt.transactionHash);
+  console.log(`${to} started an inflight exit: ', exitReceipt.transactionHash`);
 
-  const exitId = await omgjs.getInFlightExitId({ txBytes: exitData.in_flight_tx });
+  const exitId = await omgjs.getInFlightExitId(exitData.in_flight_tx);
   console.log('Exit id: ', exitId);
 
   // Decode the transaction to get the index of Bob's output
