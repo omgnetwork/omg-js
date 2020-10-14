@@ -82,9 +82,9 @@ export function waitForBalance (address, currency, callback) {
   })
 }
 
-export function waitForBalanceEq (address, expectedAmount, currency) {
+export function waitForBalanceEq (address: string, expectedAmount: number | string, currency?: string) {
   currency = currency || OmgJS.currency.ETH
-  const expectedBn = new BN(expectedAmount)
+  const expectedBn = new BN(expectedAmount.toString())
   return waitForBalance(address, currency, balance => new BN(balance.amount).eq(expectedBn))
 }
 

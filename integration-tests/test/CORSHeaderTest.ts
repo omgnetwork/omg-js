@@ -13,10 +13,10 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License. */
 
-const config = require('../test-config')
-const fetch = require('node-fetch')
-const chai = require('chai')
-const assert = chai.assert
+import fetch from 'node-fetch';
+import { assert } from 'chai';
+
+import config from '../test-config';
 
 describe('CORSHeaderTest.js', function () {
   describe('Watcher CORS Header test', function () {

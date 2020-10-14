@@ -12,11 +12,11 @@ limitations under the License. */
 
 import Web3 from 'web3';
 import web3Utils from 'web3-utils';
-
-import OmgJS from '../..';
-
+import path from 'path';
 import { assert, should, use } from 'chai';
 import chaiAsPromised from 'chai-as-promised';
+
+import OmgJS from '../..';
 
 import faucet from '../helpers/faucet';
 import * as rcHelper from '../helpers/rootChainHelper';
@@ -25,7 +25,6 @@ import config from '../test-config';
 should();
 use(chaiAsPromised);
 
-import path from 'path';
 const faucetName = path.basename(__filename);
 
 const web3Provider = new Web3.providers.HttpProvider(config.eth_node);
