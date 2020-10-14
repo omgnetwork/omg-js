@@ -58,3 +58,7 @@ npm install @omisego/react-native-omg-js
 ## Examples
 
 You can find examples and instructions on how to run them in the `/examples` folder.
+
+## Integration Tests
+
+You can find instructions on running the integrations tests in the `/integration-tests` folder.

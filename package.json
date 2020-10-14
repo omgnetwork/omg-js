@@ -16,21 +16,8 @@
     "lint": "eslint . --ext .js",
     "lint-fix": "eslint . --ext .js --fix",
     "mocha": "mocha --timeout=0 --bail --slow=0 --check-leaks --full-trace",
-    "test": "mocha packages/omg-js-childchain/test packages/omg-js-rootchain/test packages/omg-js-util/test",
-    "sequence-test": "npm run mocha packages/integration-tests/sequence-test",
-    "ci-min-smoke-test": "npm run mocha packages/integration-tests/ci-min-smoke-test",
-    "ci-baseline-test": "npm run mocha packages/integration-tests/ci-baseline-test",
-    "ci-ife-test": "npm run mocha packages/integration-tests/ci-ife-test",
-    "parallel-test": "node packages/integration-tests/parallel-test",
-    "cleanup-faucets": "node packages/integration-tests/cleanup-faucets",
-    "audit-check": "audit-ci --moderate",
-    "audit-check-omg-js": "cd packages/omg-js && npm run audit-check",
-    "audit-check-omg-browser": "cd packages/browser-omg-js && npm run audit-check",
-    "audit-check-omg-childchain": "cd packages/omg-js-childchain && npm run audit-check",
-    "audit-check-omg-rootchain": "cd packages/omg-js-rootchain && npm run audit-check",
-    "audit-check-omg-util": "cd packages/omg-js-util && npm run audit-check",
-    "audit-check-omg-react-native": "cd packages/react-native-omg-js && npm run audit-check",
-    "audit-all": "npm run audit-check-root && npm run audit-check-omg-js && npm run audit-check-omg-browser && npm run audit-check-omg-childchain && npm run audit-check-omg-rootchain && npm run audit-check-omg-util && npm run audit-check-omg-react-native"
+    "test": "npm run mocha src/test",
+    "audit-check": "audit-ci --moderate"
   },
   "author": "OMG Network",
   "contributors": [

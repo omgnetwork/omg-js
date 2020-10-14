@@ -1,6 +1,3 @@
 node_modules
 docs
 dist
-
-packages/browser-omg-js
-packages/react-native-omg-js

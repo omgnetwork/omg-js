@@ -1,9 +1,10 @@
 {
-  "name": "omg-js-examples",
+  "name": "examples",
   "version": "0.0.1",
   "scripts": {
     "example": "ts-node",
-    "audit-check": "audit-ci --moderate"
+    "audit-check": "audit-ci --moderate",
+    "deploy-test-erc20": "cd ../integration-tests && npm run deploy-test-erc20"
   },
   "license": "Apache-2.0",
   "dependencies": {
