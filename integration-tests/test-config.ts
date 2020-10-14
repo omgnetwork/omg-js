@@ -13,13 +13,15 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License. */
 
-require('dotenv').config()
+import dotenv from 'dotenv';
 
-const config = {
+dotenv.config();
+
+export default {
   eth_node: process.env.ETH_NODE,
   watcher_url: process.env.WATCHER_URL,
-  watcher_security_url: process.env.WATCHER_SECURITY_URL,
-  watcher_proxy_url: process.env.WATCHER_PROXY_URL,
+  watcher_security_url: process.env.WATCHER_SECURITY_URL || undefined,
+  watcher_proxy_url: process.env.WATCHER_PROXY_URL || undefined,
   childchain_url: process.env.CHILDCHAIN_URL,
   plasmaframework_contract_address: process.env.PLASMAFRAMEWORK_CONTRACT_ADDRESS,
   erc20_contract_address: process.env.ERC20_CONTRACT_ADDRESS,
@@ -29,6 +31,4 @@ const config = {
   min_amount_erc20_per_test: process.env.MIN_AMOUNT_ERC20_PER_TEST,
   topup_multipler: process.env.TOPUP_MULTIPLIER,
   faucet_salt: process.env.FAUCET_SALT
-}
-
-module.exports = config
+};

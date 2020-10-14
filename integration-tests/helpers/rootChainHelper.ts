@@ -13,28 +13,39 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License. */
 
-const promiseRetry = require('promise-retry')
-const { getErc20Balance } = require('@omisego/omg-js-util')
-const numberToBN = require('number-to-bn')
-const { utils } = require('web3')
+import Web3 from 'web3';
+import promiseRetry from 'promise-retry';
+import BN from 'bn.js';
 
-function createAccount (web3) {
-  const ret = web3.eth.accounts.create()
+import OmgJS from '../..';
+
+import config from '../test-config';
+
+const web3Provider = new Web3.providers.HttpProvider(config.eth_node);
+const omgjs = new OmgJS({
+  plasmaContractAddress: config.plasmaframework_contract_address,
+  watcherUrl: config.watcher_url,
+  watcherProxyUrl: config.watcher_proxy_url,
+  web3Provider
+});
+
+export function createAccount () {
+  const ret = omgjs.web3Instance.eth.accounts.create()
   ret.address = ret.address.toLowerCase()
   return ret
 }
 
-async function setGas (eth, txDetails) {
+export async function setGas (txDetails) {
   if (!txDetails.gas) {
     try {
-      txDetails.gas = await eth.estimateGas(txDetails)
+      txDetails.gas = await omgjs.web3Instance.eth.estimateGas(txDetails)
     } catch (err) {
       throw new Error(`Error estimating gas: ${err}`)
     }
   }
   if (!txDetails.gasPrice) {
     try {
-      txDetails.gasPrice = await eth.getGasPrice()
+      txDetails.gasPrice = await omgjs.web3Instance.eth.getGasPrice()
     } catch (err) {
       txDetails.gasPrice = '1000000000'
       console.warn('Error getting gas price: ', err)
@@ -42,25 +53,25 @@ async function setGas (eth, txDetails) {
   }
 }
 
-async function sendTransaction (web3, txDetails, privateKey) {
-  await setGas(web3.eth, txDetails)
+export async function sendTransaction (txDetails, privateKey) {
+  await setGas(txDetails)
   if (!privateKey) {
-    return web3.eth.sendTransaction(txDetails)
+    return omgjs.web3Instance.eth.sendTransaction(txDetails)
   } else {
-    const signedTx = await web3.eth.accounts.signTransaction(txDetails, privateKey)
-    return web3.eth.sendSignedTransaction(signedTx.rawTransaction)
+    const signedTx = await omgjs.web3Instance.eth.accounts.signTransaction(txDetails, privateKey)
+    return omgjs.web3Instance.eth.sendSignedTransaction(signedTx.rawTransaction)
   }
 }
 
-async function spentOnGas (web3, receipt) {
-  const tx = await web3.eth.getTransaction(receipt.transactionHash)
-  return utils.toBN(tx.gasPrice).muln(receipt.gasUsed)
+export async function spentOnGas (receipt) {
+  const tx = await omgjs.web3Instance.eth.getTransaction(receipt.transactionHash)
+  return new BN(tx.gasPrice.toString()).muln(receipt.gasUsed)
 }
 
-function waitForEthBalance (web3, address, callback) {
+export function waitForEthBalance (address, callback) {
   return promiseRetry(async (retry, number) => {
     console.log(`Waiting for ETH balance...  (${number})`)
-    const resp = await web3.eth.getBalance(address)
+    const resp = await omgjs.getRootchainETHBalance(address)
     if (!callback(resp)) {
       retry()
     }
@@ -72,15 +83,15 @@ function waitForEthBalance (web3, address, callback) {
   })
 }
 
-function waitForEthBalanceEq (web3, address, expectedAmount) {
-  const expectedBn = numberToBN(expectedAmount)
-  return waitForEthBalance(web3, address, balance => numberToBN(balance).eq(expectedBn))
+export function waitForEthBalanceEq (address, expectedAmount) {
+  const expectedBn = new BN(expectedAmount.toString())
+  return waitForEthBalance(address, balance => new BN(balance.toString()).eq(expectedBn))
 }
 
-function waitForERC20Balance (web3, address, contractAddress, callback) {
+export function waitForERC20Balance (address, contractAddress, callback) {
   return promiseRetry(async (retry, number) => {
     console.log(`Waiting for ERC20 balance...  (${number})`)
-    const resp = await getErc20Balance({ web3, erc20Address: contractAddress, address })
+    const resp = await omgjs.getRootchainERC20Balance({ erc20Address: contractAddress, address })
     if (!callback(resp)) {
       retry()
     }
@@ -92,24 +103,24 @@ function waitForERC20Balance (web3, address, contractAddress, callback) {
   })
 }
 
-function waitForERC20BalanceEq (web3, address, contractAddress, expectedAmount) {
-  const expectedBn = numberToBN(expectedAmount)
-  return waitForERC20Balance(web3, address, contractAddress, balance => numberToBN(balance).eq(expectedBn))
+export function waitForERC20BalanceEq (address, contractAddress, expectedAmount) {
+  const expectedBn = new BN(expectedAmount.toString())
+  return waitForERC20Balance(address, contractAddress, balance => new BN(balance.toString()).eq(expectedBn))
 }
 
-function sleep (ms) {
+export function sleep (ms) {
   return new Promise(resolve => {
     setTimeout(resolve, ms)
   })
 }
 
-function awaitTx (web3, txnHash, options) {
+export function awaitTx (txnHash, options) {
   const interval = options && options.interval ? options.interval : 1000
   const blocksToWait = options && options.blocksToWait ? options.blocksToWait : 1
 
   var transactionReceiptAsync = async function (txnHash, resolve, reject) {
     try {
-      var receipt = await web3.eth.getTransactionReceipt(txnHash)
+      var receipt = await omgjs.web3Instance.eth.getTransactionReceipt(txnHash)
       if (!receipt) {
         setTimeout(function () {
           transactionReceiptAsync(txnHash, resolve, reject)
@@ -123,10 +134,10 @@ function awaitTx (web3, txnHash, options) {
             }, interval)
           } else {
             try {
-              var block = await web3.eth.getBlock(resolvedReceipt.blockNumber)
-              var current = await web3.eth.getBlock('latest')
+              var block = await omgjs.web3Instance.eth.getBlock(resolvedReceipt.blockNumber)
+              var current = await omgjs.web3Instance.eth.getBlock('latest')
               if (current.number - block.number >= blocksToWait) {
-                var txn = await web3.eth.getTransaction(txnHash)
+                var txn = await omgjs.web3Instance.eth.getTransaction(txnHash)
                 if (txn.blockNumber != null) {
                   resolve(resolvedReceipt)
                 } else {
@@ -153,7 +164,7 @@ function awaitTx (web3, txnHash, options) {
   if (Array.isArray(txnHash)) {
     var promises = []
     txnHash.forEach(function (oneTxHash) {
-      promises.push(awaitTx(web3, oneTxHash, options))
+      promises.push(awaitTx(oneTxHash, options))
     })
     return Promise.all(promises)
   } else {
@@ -161,17 +172,4 @@ function awaitTx (web3, txnHash, options) {
       transactionReceiptAsync(txnHash, resolve, reject)
     })
   }
-}
-
-module.exports = {
-  createAccount,
-  waitForEthBalance,
-  waitForEthBalanceEq,
-  waitForERC20Balance,
-  waitForERC20BalanceEq,
-  sleep,
-  sendTransaction,
-  spentOnGas,
-  setGas,
-  awaitTx
 }

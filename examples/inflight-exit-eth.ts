@@ -134,4 +134,4 @@ async function inFlightExitEth (): Promise<void> {
   console.log('Exits processed');
 }
 
-inFlightExitEth() // .catch(e => console.log(e.message));
+inFlightExitEth().catch(e => console.log(e.message));

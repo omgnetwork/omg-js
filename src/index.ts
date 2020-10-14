@@ -109,7 +109,8 @@ class OmgJS {
     );
   }
 
-  private async getErc20Vault (): Promise<ContractsModule.IVault> {
+  /** Get the ERC20 vault */
+  public async getErc20Vault (): Promise<ContractsModule.IVault> {
     if (this.erc20Vault) {
       return this.erc20Vault;
     }
@@ -117,7 +118,8 @@ class OmgJS {
     return this.erc20Vault;
   }
 
-  private async getEthVault (): Promise<ContractsModule.IVault> {
+  /** Get the ETH vault */
+  public async getEthVault (): Promise<ContractsModule.IVault> {
     if (this.ethVault) {
       return this.ethVault;
     }
@@ -125,7 +127,8 @@ class OmgJS {
     return this.ethVault;
   }
 
-  private async getPaymentExitGame (): Promise<ContractsModule.IPaymentExitGame> {
+  /** Get the payment exit game vault */
+  public async getPaymentExitGame (): Promise<ContractsModule.IPaymentExitGame> {
     if (this.paymentExitGame) {
       return this.paymentExitGame;
     }
@@ -526,7 +529,7 @@ class OmgJS {
   }
 
   /** Get accepted fee information */
-  public async getFees (): Promise<WatcherFeesModule.IFeeInfo> {
+  public async getFees (): Promise<Array<WatcherFeesModule.IFeeInfo>> {
     return WatcherFeesModule.getFees.call(this);
   }
 

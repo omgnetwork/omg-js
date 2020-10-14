@@ -26,7 +26,7 @@ export interface IFeeInfo {
 };
 
 /** @internal */
-export async function getFees (): Promise<IFeeInfo> {
+export async function getFees (): Promise<Array<IFeeInfo>> {
   return Transporter.post({
     url: `${this.watcherUrl}/fees.all`,
     body: {},

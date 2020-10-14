@@ -10,44 +10,48 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License. */
 
-const { assert, should, use } = require('chai')
-const chaiAsPromised = require('chai-as-promised')
-const RootChain = require('@omisego/omg-js-rootchain')
-const ChildChain = require('@omisego/omg-js-childchain')
-const Web3 = require('web3')
-const erc20abi = require('human-standard-token-abi')
+import Web3 from 'web3';
+import web3Utils from 'web3-utils';
 
-const faucet = require('../helpers/faucet')
-const config = require('../test-config')
-const rcHelper = require('../helpers/rootChainHelper')
+import OmgJS from '../..';
 
-should()
-use(chaiAsPromised)
+import { assert, should, use } from 'chai';
+import chaiAsPromised from 'chai-as-promised';
 
-const path = require('path')
-const faucetName = path.basename(__filename)
+import faucet from '../helpers/faucet';
+import * as rcHelper from '../helpers/rootChainHelper';
+import config from '../test-config';
+
+should();
+use(chaiAsPromised);
+
+import path from 'path';
+const faucetName = path.basename(__filename);
+
+const web3Provider = new Web3.providers.HttpProvider(config.eth_node);
+const omgjs = new OmgJS({
+  plasmaContractAddress: config.plasmaframework_contract_address,
+  watcherUrl: config.watcher_url,
+  watcherProxyUrl: config.watcher_proxy_url,
+  web3Provider
+});
 
 describe('amountTypes.js', function () {
-  const web3 = new Web3(new Web3.providers.HttpProvider(config.eth_node))
-  const rootChain = new RootChain({ web3, plasmaContractAddress: config.plasmaframework_contract_address })
-  const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url, plasmaContractAddress: config.plasmaframework_contract_address })
-  const testErc20Contract = new web3.eth.Contract(erc20abi, config.erc20_contract_address)
-
   let aliceAccount
-  const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('0.5', 'ether')
+  const INTIIAL_ALICE_AMOUNT = web3Utils.toWei('0.5', 'ether')
   const INITIAL_AMOUNT_ERC20 = 3
 
   before(async function () {
-    await faucet.init({ rootChain, childChain, web3, config, faucetName })
+    await faucet.init({ faucetName })
   })
 
   beforeEach(async function () {
-    aliceAccount = rcHelper.createAccount(web3)
+    aliceAccount = rcHelper.createAccount()
     await faucet.fundRootchainEth(aliceAccount.address, INTIIAL_ALICE_AMOUNT)
-    await faucet.fundRootchainERC20(aliceAccount.address, INITIAL_AMOUNT_ERC20, testErc20Contract)
+    await faucet.fundRootchainERC20(aliceAccount.address, INITIAL_AMOUNT_ERC20)
     await Promise.all([
-      rcHelper.waitForEthBalanceEq(web3, aliceAccount.address, INTIIAL_ALICE_AMOUNT),
-      rcHelper.waitForERC20BalanceEq(web3, aliceAccount.address, config.erc20_contract_address, INITIAL_AMOUNT_ERC20)
+      rcHelper.waitForEthBalanceEq(aliceAccount.address, INTIIAL_ALICE_AMOUNT),
+      rcHelper.waitForERC20BalanceEq(aliceAccount.address, config.erc20_contract_address, INITIAL_AMOUNT_ERC20)
     ])
   })
 
@@ -60,7 +64,7 @@ describe('amountTypes.js', function () {
   })
 
   it('approveToken() should only accept safe integers and strings and BN', async function () {
-    const numberReceipt = await rootChain.approveToken({
+    const numberReceipt = await omgjs.approveERC20Deposit({
       erc20Address: config.erc20_contract_address,
       amount: 10,
       txOptions: {
@@ -70,7 +74,7 @@ describe('amountTypes.js', function () {
     })
     assert.hasAnyKeys(numberReceipt, ['transactionHash'])
 
-    const stringReceipt = await rootChain.approveToken({
+    const stringReceipt = await omgjs.approveERC20Deposit({
       erc20Address: config.erc20_contract_address,
       amount: '999999999999999999999999',
       txOptions: {
@@ -80,9 +84,9 @@ describe('amountTypes.js', function () {
     })
     assert.hasAnyKeys(stringReceipt, ['transactionHash'])
 
-    const bnReceipt = await rootChain.approveToken({
+    const bnReceipt = await omgjs.approveERC20Deposit({
       erc20Address: config.erc20_contract_address,
-      amount: web3.utils.toBN(1),
+      amount: web3Utils.toBN(1),
       txOptions: {
         from: aliceAccount.address,
         privateKey: aliceAccount.privateKey
@@ -90,7 +94,7 @@ describe('amountTypes.js', function () {
     })
     assert.hasAnyKeys(bnReceipt, ['transactionHash'])
 
-    const unsafeReceipt = rootChain.approveToken({
+    const unsafeReceipt = omgjs.approveERC20Deposit({
       erc20Address: config.erc20_contract_address,
       amount: 999999999999999999999999999999999999999999999999999999999999,
       txOptions: {
@@ -100,7 +104,7 @@ describe('amountTypes.js', function () {
     })
     assert.isRejected(unsafeReceipt)
 
-    const decimalReceipt = rootChain.approveToken({
+    const decimalReceipt = omgjs.approveERC20Deposit({
       erc20Address: config.erc20_contract_address,
       amount: 1.35,
       txOptions: {
@@ -110,7 +114,7 @@ describe('amountTypes.js', function () {
     })
     assert.isRejected(decimalReceipt)
 
-    const decimalStringReceipt = rootChain.approveToken({
+    const decimalStringReceipt = omgjs.approveERC20Deposit({
       erc20Address: config.erc20_contract_address,
       amount: '1.23',
       txOptions: {
@@ -122,7 +126,7 @@ describe('amountTypes.js', function () {
   })
 
   it('deposit() should only accept safe integers, strings, and BN', async function () {
-    const numberDeposit = await rootChain.deposit({
+    const numberDeposit = await omgjs.deposit({
       amount: 1,
       txOptions: {
         from: aliceAccount.address,
@@ -131,7 +135,7 @@ describe('amountTypes.js', function () {
     })
     assert.hasAnyKeys(numberDeposit, ['transactionHash'])
 
-    const stringDeposit = await rootChain.deposit({
+    const stringDeposit = await omgjs.deposit({
       amount: '1',
       txOptions: {
         from: aliceAccount.address,
@@ -140,8 +144,8 @@ describe('amountTypes.js', function () {
     })
     assert.hasAnyKeys(stringDeposit, ['transactionHash'])
 
-    const BNDeposit = await rootChain.deposit({
-      amount: web3.utils.toBN(1),
+    const BNDeposit = await omgjs.deposit({
+      amount: web3Utils.toBN(1),
       txOptions: {
         from: aliceAccount.address,
         privateKey: aliceAccount.privateKey
@@ -149,7 +153,7 @@ describe('amountTypes.js', function () {
     })
     assert.hasAnyKeys(BNDeposit, ['transactionHash'])
 
-    const unsafeDeposit = rootChain.deposit({
+    const unsafeDeposit = omgjs.deposit({
       amount: 99999999999999999999999999999999999,
       txOptions: {
         from: aliceAccount.address,
@@ -158,7 +162,7 @@ describe('amountTypes.js', function () {
     })
     assert.isRejected(unsafeDeposit)
 
-    const decimalDeposit = rootChain.deposit({
+    const decimalDeposit = omgjs.deposit({
       amount: 0.1,
       txOptions: {
         from: aliceAccount.address,
@@ -167,7 +171,7 @@ describe('amountTypes.js', function () {
     })
     assert.isRejected(decimalDeposit)
 
-    const stringDecimalDeposit = rootChain.deposit({
+    const stringDecimalDeposit = omgjs.deposit({
       amount: '1.23',
       txOptions: {
         from: aliceAccount.address,

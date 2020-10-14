@@ -35,8 +35,9 @@ export function validate (
 export const constructorSchema: Joi.Schema = Joi.object({
   plasmaContractAddress: helpers.validateAddress.required(),
   watcherUrl: Joi.string().required(),
+  web3Provider: Joi.any().required(),
+  watcherSecurityUrl: Joi.string(),
   watcherProxyUrl: Joi.string(),
-  web3Provider: Joi.any().required()
 });
 
 export const getExitTimeSchema: Joi.Schema = Joi.object({

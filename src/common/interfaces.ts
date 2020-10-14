@@ -86,7 +86,7 @@ export interface ITransactionBody {
   inputs: IUTXO[];
   outputs: IOutput[];
   txData?: number;
-  metadata: string;
+  metadata?: string;
 };
 
 export interface IExitData {
