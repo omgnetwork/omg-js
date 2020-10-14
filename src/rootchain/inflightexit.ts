@@ -6,26 +6,18 @@ import * as ContractsModule from '@lib/contracts';
 import * as RootchainTransactionsModule from '@lib/rootchain/transaction';
 import * as Interfaces from '@lib/common/interfaces';
 
-export interface IGetInflightExitId {
-  txBytes: string;
-};
-
 /** @internal */
-export async function getInFlightExitId ({
-  txBytes
-}: IGetInflightExitId): Promise<string> {
+export async function getInFlightExitId (
+  txBytes: string
+): Promise<string> {
   const { contract } = await this.getPaymentExitGame();
   return contract.methods.getInFlightExitId(txBytes).call();
 };
 
-export interface IGetInflightExitData {
-  exitIds: Array<string>;
-};
-
 /** @internal */
-export async function getInFlightExitData ({
-  exitIds
-}: IGetInflightExitData): Promise<Interfaces.IInflightExitData> {
+export async function getInFlightExitData (
+  exitIds: Array<string>
+): Promise<Interfaces.IInflightExitData> {
   const { contract } = await this.getPaymentExitGame();
   return contract.methods.inFlightExits(exitIds).call();
 };

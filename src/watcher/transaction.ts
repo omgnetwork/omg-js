@@ -77,7 +77,7 @@ export async function createTransaction ({
 }
 
 /** @internal */
-export async function submitTyped (
+export async function submitTypedData (
   typedData: TypedDataModule.ITypedData
 ): Promise<any> {
   return Transporter.post({

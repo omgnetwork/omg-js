@@ -123,7 +123,11 @@ class OmgJS {
     return RootchainUtilModule.getMinimumExitPeriod.call(this);
   }
 
-  /** Calculate the exit schedule required before exits can be processed and released */
+  /**
+   * Calculate the exit schedule required before exits can be processed and released
+   * @param args.exitRequestBlockNumber block number of the exit request
+   * @param args.submissionBlockNumber for standard exits: the block that contains the exiting UTXO, for in-flight exits: the block that contains the youngest input of the exiting transaction
+  */
   public async getExitTime (
     args: RootchainExitQueueModule.IGetExitTime
   ): Promise<RootchainExitQueueModule.IExitTime> {
@@ -139,7 +143,12 @@ class OmgJS {
     return RootchainExitQueueModule.getExitQueue.call(this, currency);
   }
 
-  /** Create and encodes a deposit transaction */
+  /**
+   * Create and encodes a deposit transaction
+   * @param args.owner address that is making the deposit
+   * @param args.amount amount of the deposit
+   * @param args.currency token address of the deposit
+  */
   public encodeDeposit (
     args: EncoderModule.IDepositTransaction
   ): string {
@@ -155,7 +164,16 @@ class OmgJS {
     return EncoderModule.decodeDeposit.call(this, encodedDeposit);
   }
 
-  /** RLP encode a transaction */
+  /**
+   * RLP encode a transaction
+   * @param args.txType transaction type
+   * @param args.inputs transaction inputs
+   * @param args.outputs transaction outputs
+   * @param args.txData transaction data
+   * @param args.metadata transaction metadata
+   * @param args.signatures transaction signatures
+   * @param args.signed whether the transaction is signed
+  */
   public encodeTransaction (
     args: EncoderModule.IEncodeTransaction
   ): string {
@@ -229,7 +247,12 @@ class OmgJS {
     return RootchainDepositModule.deposit.call(this, args);
   }
 
-  /** Get a standard exit id to process a standard exit */
+  /**
+   * Get a standard exit id to process a standard exit
+   * @param args.txBytes txBytes from the standard exit
+   * @param args.utxoPos UTXO position of the UTXO being exited
+   * @param args.isDeposit whether the standard exit is of a deposit UTXO
+  */
   public async getStandardExitId (
     args: RootchainStandardExitModule.IGetStandardExitId
   ): Promise<string> {
@@ -239,21 +262,27 @@ class OmgJS {
 
   /** Get an inflight exit id to process an inflight exit */
   public async getInFlightExitId (
-    args: RootchainInflightExitModule.IGetInflightExitId
+    txBytes: string
   ): Promise<string> {
-    Validators.validate(args, Validators.getInFlightExitIdSchema);
-    return RootchainInflightExitModule.getInFlightExitId.call(this, args);
+    Validators.validate(txBytes, Validators.getInFlightExitIdSchema);
+    return RootchainInflightExitModule.getInFlightExitId.call(this, txBytes);
   }
 
   /** Retrieve in-flight exit data from an array of exit IDs */
   public async getInFlightExitData (
-    args: RootchainInflightExitModule.IGetInflightExitData
+    exitIds: Array<string>
   ): Promise<Interfaces.IInflightExitData> {
-    Validators.validate(args, Validators.getInFlightExitDataSchema);
-    return RootchainInflightExitModule.getInFlightExitData.call(this, args);
+    Validators.validate(exitIds, Validators.getInFlightExitDataSchema);
+    return RootchainInflightExitModule.getInFlightExitData.call(this, exitIds);
   }
 
-  /** Start a standard withdrawal of a given output. Uses output-age priority */
+  /**
+   * Start a standard withdrawal of a given output. Uses output-age priority
+   * @param utxoPos identifier of the exiting output
+   * @param outputTx RLP encoded transaction that created the exiting output
+   * @param inclusionProof a Merkle proof showing that the transaction was included
+   * @param txOptions transaction options
+  */
   public async startStandardExit (
     args: RootchainStandardExitModule.IStartStandardExit
   ): Promise<Interfaces.ITransactionReceipt> {
@@ -263,13 +292,21 @@ class OmgJS {
 
   /** Get the exit data for a deposit without using the Watcher */
   public async getDepositExitData (
-    args: RootchainStandardExitModule.IGetDepositExitData
+    transactionHash: string
   ): Promise<Interfaces.IExitData> {
-    Validators.validate(args, Validators.getDepositExitDataSchema);
-    return RootchainStandardExitModule.getDepositExitData.call(this, args);
+    Validators.validate(transactionHash, Validators.getDepositExitDataSchema);
+    return RootchainStandardExitModule.getDepositExitData.call(this, transactionHash);
   }
 
-  /** Block a standard exit by showing the exiting output was spent */
+  /**
+   * Block a standard exit by showing the exiting output was spent
+   * @param args.standardExitId identifier of the exiting output
+   * @param args.exitingTx RLP encoded transaction that is exiting
+   * @param args.challengeTx RLP encoded transaction that spends the exiting output
+   * @param args.inputIndex which input to the challenging tx corresponds to the exiting output
+   * @param args.challengeTxSig signature from the exiting output owner over the spend
+   * @param args.txOptions transaction options
+  */
   public async challengeStandardExit (
     args: RootchainStandardExitModule.IChallengeStandardExit
   ): Promise<Interfaces.ITransactionReceipt> {
@@ -277,7 +314,13 @@ class OmgJS {
     return RootchainStandardExitModule.challengeStandardExit.call(this, args);
   }
 
-  /** Processes any exit that has completed the challenge period */
+  /**
+   * Processes any exit that has completed the challenge period
+   * @param args.currency an address of the token to exit
+   * @param args.exitId the exit id
+   * @param args.maxExitsToProcess the max number of exits to process
+   * @param args.txOptions transaction options
+  */
   public async processExits (
     args: RootchainExitQueueModule.IProcessExits
   ): Promise<Interfaces.ITransactionReceipt> {
@@ -293,7 +336,11 @@ class OmgJS {
     return RootchainExitQueueModule.hasExitQueue.call(this, currency);
   } 
 
-  /** Adds an exit queue to the OMG Network */
+  /**
+   * Adds an exit queue to the OMG Network
+   * @param currency address of the token to process
+   * @param txOptions transaction options
+  */
   public async addExitQueue (
     args: RootchainExitQueueModule.IAddExitQueue
   ): Promise<Interfaces.ITransactionReceipt> {
@@ -301,7 +348,15 @@ class OmgJS {
     return RootchainExitQueueModule.addExitQueue.call(this, args);
   }
 
-  /** Start an exit for an in-flight transaction */
+  /**
+   * Start an exit for an in-flight transaction
+   * @param args.inFlightTx RLP encoded in-flight transaction
+   * @param args.inputTxs transactions that created the inputs to the in-flight transaction
+   * @param args.inputUtxosPos utxo positions of the inputs
+   * @param args.inputTxsInclusionProofs merkle proofs that show the input-creating transactions are vali
+   * @param args.inFlightTxSigs in-flight transaction witnesse
+   * @param args.txOptions transaction options
+  */
   public async startInFlightExit (
     args: RootchainInflightExitModule.IStartInflightExit
   ): Promise<Interfaces.ITransactionReceipt> {
@@ -309,7 +364,12 @@ class OmgJS {
     return RootchainInflightExitModule.startInflightExit.call(this, args);
   }
 
-  /** Piggyback onto an output of an in-flight transaction */
+  /**
+   * Piggyback onto an output of an in-flight transaction
+   * @param args.inFlightTx RLP encoded in-flight transaction
+   * @param args.outputIndex index of the output to piggyback (0-3)
+   * @param args.txOptions transaction options
+  */
   public async piggybackInFlightExitOnOutput (
     args: RootchainInflightExitModule.IPiggybackInflightExitOnOutput
   ): Promise<Interfaces.ITransactionReceipt> {
@@ -317,7 +377,12 @@ class OmgJS {
     return RootchainInflightExitModule.piggybackInFlightExitOnOutput.call(this, args);
   }
 
-  /** Piggyback onto an input of an in-flight transaction */
+  /**
+   * Piggyback onto an input of an in-flight transaction
+   * @param args.inFlightTx RLP encoded in-flight transaction
+   * @param args.inputIndex index of the input to piggyback (0-3)
+   * @param args.txOptions transaction options
+  */
   public async piggybackInFlightExitOnInput (
     args: RootchainInflightExitModule.IPiggybackInflightExitOnInput
   ): Promise<Interfaces.ITransactionReceipt> {
@@ -325,7 +390,19 @@ class OmgJS {
     return RootchainInflightExitModule.piggybackInFlightExitOnInput.call(this, args);
   }
 
-  /** Prove that an in-flight exit is not canonical */
+  /**
+   * Prove that an in-flight exit is not canonical
+   * @param args.inputTx the input transaction
+   * @param args.inputUtxoPos input utxo position
+   * @param args.inFlightTx the in-flight transaction
+   * @param args.inFlightTxInputIndex index of the double-spent input in the in-flight transaction
+   * @param args.competingTx RLP encoded transaction that spent the input
+   * @param args.competingTxInputIndex index of the double-spent input in the competing transaction
+   * @param args.competingTxPos position of the competing transaction
+   * @param args.competingTxInclusionProof proof that the competing transaction was included
+   * @param args.competingTxWitness competing transaction witness
+   * @param args.txOptions transaction options
+  */
   public async challengeInFlightExitNotCanonical (
     args: RootchainInflightExitModule.IChallengeInflightExitNotCanonical
   ): Promise<Interfaces.ITransactionReceipt> {
@@ -333,7 +410,13 @@ class OmgJS {
     return RootchainInflightExitModule.challengeInFlightExitNotCanonical.call(this, args);
   }
 
-  /** Respond to competitors of an in-flight exit by showing the transaction is included */
+  /**
+   * Respond to competitors of an in-flight exit by showing the transaction is included
+   * @param args.inFlightTx RLP encoded in-flight transaction being exited
+   * @param args.inFlightTxPos position of the in-flight transaction in the chain
+   * @param args.inFlightTxInclusionProof proof that the in-flight transaction is included before the competitor
+   * @param args.txOptions transaction options
+  */
   public async respondToNonCanonicalChallenge (
     args: RootchainInflightExitModule.IRespondToNonCanonicalChallenge
   ): Promise<Interfaces.ITransactionReceipt> {
@@ -341,7 +424,17 @@ class OmgJS {
     return RootchainInflightExitModule.respondToNonCanonicalChallenge.call(this, args);
   }
 
-  /** Remove an input from list of exitable outputs in an in-flight transaction */
+  /**
+   * Remove an input from list of exitable outputs in an in-flight transaction
+   * @param args.inFlightTx RLP encoded in-flight transaction being exited
+   * @param args.inFlightTxInputIndex input that's been spent
+   * @param args.challengingTx the challenging transaction
+   * @param args.challengingTxInputIndex challenging transaction input index
+   * @param args.challengingTxWitness challenging transaction witness
+   * @param args.inputTx the input transaction
+   * @param args.inputUtxoPos input utxo position
+   * @param args.txOptions transaction options
+  */
   public async challengeInFlightExitInputSpent (
     args: RootchainInflightExitModule.IChallengeInFlightExitInputSpent
   ): Promise<Interfaces.ITransactionReceipt> {
@@ -349,7 +442,16 @@ class OmgJS {
     return RootchainInflightExitModule.challengeInFlightExitInputSpent.call(this, args);
   }
 
-  /** Remove an output from list of exitable outputs in an in-flight transaction */
+  /**
+   * Remove an output from list of exitable outputs in an in-flight transaction
+   * @param args.inFlightTx RLP encoded in-flight transaction being exited
+   * @param args.inFlightTxInclusionProof inclusion proof
+   * @param args.inFlightTxOutputPos output that's been spent
+   * @param args.challengingTx challenging transaction
+   * @param args.challengingTxInputIndex input index of challenging transaction
+   * @param args.challengingTxWitness witness of challenging transaction
+   * @param args.txOptions transaction options
+  */
   public async challengeInFlightExitOutputSpent (
     args: RootchainInflightExitModule.IChallengeInFlightExitOutputSpent
   ): Promise<Interfaces.ITransactionReceipt> {
@@ -357,7 +459,11 @@ class OmgJS {
     return RootchainInflightExitModule.challengeInFlightExitOutputSpent.call(this, args);
   }
 
-  /** Delete an in-flight exit if the first phase has passed and nobody has piggybacked the exit */
+  /**
+   * Delete an in-flight exit if the first phase has passed and nobody has piggybacked the exit
+   * @param args.exitId the exit id
+   * @param args.txOptions transaction options
+  */
   public async deleteNonPiggybackedInFlightExit (
     args: RootchainInflightExitModule.IDeleteNonPiggybackedInFlightExit
   ): Promise<Interfaces.ITransactionReceipt> {
@@ -389,7 +495,14 @@ class OmgJS {
     return WatcherTransactionModule.getTransaction.call(this, id);
   }
 
-  /** Get transaction information using various filters */
+  /**
+   * Get transaction information using various filters
+   * @param filters.address address to filter by
+   * @param filters.metadata metadata to filter by
+   * @param filters.blknum blknum to filter by
+   * @param filters.limit max number of transactions to return
+   * @param filters.page page of paginated request
+  */
   public async getTransactions (
     filters: WatcherTransactionModule.ITransactionFilter
   ): Promise<Array<Interfaces.ITransactionData>> {
@@ -402,7 +515,12 @@ class OmgJS {
     return WatcherFeesModule.getFees.call(this);
   }
 
-  /** Get deposit information */
+  /**
+   * Get deposit information
+   * @param filters.address address to filter by
+   * @param filters.limit max number of transactions to return
+   * @param filters.page page of paginated request
+  */
   public async getDeposits (
     filters: WatcherDepositModule.IDepositFilter
   ): Promise<Array<WatcherDepositModule.IDepositInfo>> {
@@ -440,7 +558,14 @@ class OmgJS {
     return WatcherTransactionModule.createTransaction.call(this, args);
   }
 
-  /** Create a transaction body locally with fine grain control */
+  /**
+   * Create a transaction body locally with fine grain control
+   * @param args.fromAddress the address of the sender
+   * @param args.fromUtxos the utxos to use as transaction inputs (in order of priority)
+   * @param args.payments payments objects specifying the outputs
+   * @param args.fee fee object specifying amount and currency
+   * @param args.metadata the metadata to send
+  */
   public createTransactionBody (
     args: TransactionBuilderModule.ICreateTransactionBody
   ): Partial<Interfaces.ITransactionBody> {
@@ -448,8 +573,11 @@ class OmgJS {
     return TransactionBuilderModule.createTransactionBody.call(this, args);
   }
 
-  // NMTODO: maybe have to rename as txData input is not typed data
-  /** Signs the transaction's typed data that is returned from `createTransaction` */
+  /**
+   * Signs the transaction's typed data that is returned from `createTransaction`
+   * @param txData the transaction data that is returned from `createTransaction`
+   * @param privateKeys an array of private keys to sign the inputs of the transaction
+  */
   public signTypedData (
     args: SignModule.ISignTypedData
   ): TypedDataModule.ITypedData {
@@ -459,11 +587,11 @@ class OmgJS {
 
   // NMTODO: figure out the return interface here
   /** Submits a transaction along with its typed data and signatures to the Watcher */
-  public submitTyped (
+  public submitTypedData (
     typedData: TypedDataModule.ITypedData
   ): Promise<any> {
-    Validators.validate(typedData, Validators.submitTypedSchema);
-    return WatcherTransactionModule.submitTyped.call(this, typedData);
+    Validators.validate(typedData, Validators.submitTypedDataSchema);
+    return WatcherTransactionModule.submitTypedData.call(this, typedData);
   }
 
   /**
@@ -500,9 +628,9 @@ class OmgJS {
 
   /**
    * Merge utxos to a single output and submit it to the Watcher
-   * @param utxos utxos to merge
-   * @param privateKey private key to sign transaction
-   * @param metadata metadata to include with the transaction
+   * @param args.utxos utxos to merge
+   * @param args.privateKey private key to sign transaction
+   * @param args.metadata metadata to include with the transaction
   */
   public mergeUtxos (
     args: TransactionBuilderModule.IMergeUtxos
@@ -516,7 +644,11 @@ class OmgJS {
     return WatcherStatusModule.getStatus.call(this);
   }
 
-  /** Get the data to challenge an invalid input piggybacked on an in-flight exit */
+  /**
+   * Get the data to challenge an invalid input piggybacked on an in-flight exit
+   * @param txbytes the hex-encoded transaction
+   * @param inputIndex invalid input index
+  */
   public async inFlightExitGetInputChallengeData (
     args: WatcherInflightExitModule.IInFlightExitGetInputChallengeData
   ): Promise<WatcherInflightExitModule.IInflightExitInputChallengeData> {
@@ -524,7 +656,11 @@ class OmgJS {
     return WatcherInflightExitModule.inFlightExitGetInputChallengeData.call(this, args);
   }
 
-  /** Get the data to challenge an invalid output piggybacked on an in-flight exit. */
+  /**
+   * Get the data to challenge an invalid output piggybacked on an in-flight exit.
+   * @param txbytes the hex-encoded transaction
+   * @param outputIndex invalid output index
+  */
   public async inFlightExitGetOutputChallengeData (
     args: WatcherInflightExitModule.IInFlightExitGetOutputChallengeData
   ): Promise<WatcherInflightExitModule.IInflightExitOutputChallengeData> {
@@ -532,6 +668,7 @@ class OmgJS {
     return WatcherInflightExitModule.inFlightExitGetOutputChallengeData.call(this, args);
   }
 
+  // NMTODO: rename as its the same as getInflightExitData
   /** Get the exit data for an in-flight transaction */
   public async inFlightExitGetData (
     txbytes: string
@@ -566,8 +703,8 @@ class OmgJS {
 
   /**
    * Get the rootchain ERC20 balance of an address
-   * @param address address to check
-   * @param erc20Address address of the ERC20 token
+   * @param args.address address to check
+   * @param args.erc20Address address of the ERC20 token
   */
   public async getRootchainERC20Balance (
     args: RootchainUtilModule.IGetRootchainERC20Balance
@@ -586,10 +723,10 @@ class OmgJS {
 
   /**
    * Wait for x number of blocks of a rootchain transaction
-   * @param transactionHash hash of the transaction to wait for
-   * @param checkIntervalMs millisecond polling interval to check the current block
-   * @param blocksToWait number of blocks to wait before transaction is confirmed
-   * @param onCountdown callback that's passed the remaining number of blocks before confirmation
+   * @param args.transactionHash hash of the transaction to wait for
+   * @param args.checkIntervalMs millisecond polling interval to check the current block
+   * @param args.blocksToWait number of blocks to wait before transaction is confirmed
+   * @param args.onCountdown callback that's passed the remaining number of blocks before confirmation
   */
   public async waitForRootchainTransaction (
     args: RootchainUtilModule.IWaitForRootchainTransaction
@@ -613,10 +750,10 @@ class OmgJS {
 
   /**
    * Wait for an addess to have a specific utxo on the OMG Network
-   * @param address address to check for the utxo
-   * @param oindex oindex of the specified utxo
-   * @param txindex txindex of the specified utxo
-   * @param blknum blknum of the specified utxo
+   * @param args.address address to check for the utxo
+   * @param args.oindex oindex of the specified utxo
+   * @param args.txindex txindex of the specified utxo
+   * @param args.blknum blknum of the specified utxo
    */
   public async waitForUtxo (
     args: RootchainUtilModule.IWaitForUtxo

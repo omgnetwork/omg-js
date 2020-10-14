@@ -55,13 +55,9 @@ export const getStandardExitIdSchema: Joi.Schema = Joi.object({
   isDeposit: Joi.boolean().required()
 });
 
-export const getInFlightExitIdSchema: Joi.Schema = Joi.object({
-  txBytes: Joi.string().required()
-});
+export const getInFlightExitIdSchema: Joi.Schema = Joi.string().required();
 
-export const getInFlightExitDataSchema: Joi.Schema = Joi.object({
-  exitIds: Joi.array().items(Joi.string().required())
-});
+export const getInFlightExitDataSchema: Joi.Schema = Joi.array().items(Joi.string().required());
 
 export const startStandardExitSchema: Joi.Schema = Joi.object({
   utxoPos: helpers.validateAmount.required(),
@@ -72,9 +68,7 @@ export const startStandardExitSchema: Joi.Schema = Joi.object({
 
 export const getExitDataSchema: Joi.Schema = Joi.object().required();
 
-export const getDepositExitDataSchema: Joi.Schema = Joi.object({
-  transactionHash: Joi.string().required()
-});
+export const getDepositExitDataSchema: Joi.Schema = Joi.string().required();
 
 export const challengeStandardExitSchema: Joi.Schema = Joi.object({
   standardExitId: helpers.validateAmount.required(),
@@ -217,7 +211,7 @@ export const signTypedDataSchema: Joi.Schema = Joi.object({
   privateKeys: Joi.array().items(Joi.string()).required()
 });
 
-export const submitTypedSchema: Joi.Schema = Joi.object().required()
+export const submitTypedDataSchema: Joi.Schema = Joi.object().required()
 
 export const signTransactionSchema: Joi.Schema = Joi.object({
   typedData: Joi.object().required(),

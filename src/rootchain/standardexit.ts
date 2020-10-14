@@ -64,14 +64,10 @@ export async function startStandardExit ({
   });
 }
 
-export interface IGetDepositExitData {
-  transactionHash: string;
-};
-
 /** @internal */
-export async function getDepositExitData ({
-  transactionHash
-}: IGetDepositExitData): Promise<Interfaces.IExitData> {
+export async function getDepositExitData (
+  transactionHash: string
+): Promise<Interfaces.IExitData> {
   // use a vault abi to decode the inputs and get the txbytes
   abiDecoder.addABI(EthVaultContract.abi);
   const rawTransaction = await this.web3Instance.eth.getTransaction(transactionHash);
