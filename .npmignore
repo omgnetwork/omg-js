@@ -1,4 +1,8 @@
-tsconfig.json
-typedoc.json
+.circleci
+docs
+examples
+integration-tests
 src
 Dockerfile
+tsconfig.json
+typedoc.json
