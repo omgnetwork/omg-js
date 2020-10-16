@@ -13,38 +13,47 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License. */
 
-const config = require('../test-config')
-const rcHelper = require('../helpers/rootChainHelper')
-const ccHelper = require('../helpers/childChainHelper')
-const faucet = require('../helpers/faucet')
-const Web3 = require('web3')
-const ChildChain = require('@omisego/omg-js-childchain')
-const RootChain = require('@omisego/omg-js-rootchain')
-const chai = require('chai')
-const assert = chai.assert
+import Web3 from 'web3';
+import web3Utils from 'web3-utils';
+import path from 'path';
+import { assert, should, use } from 'chai';
+import chaiAsPromised from 'chai-as-promised';
 
-const path = require('path')
+import OmgJS from '../..';
+
+import faucet from '../helpers/faucet';
+import * as rcHelper from '../helpers/rootChainHelper';
+import * as ccHelper from '../helpers/childChainHelper';
+import config from '../test-config';
+
+should();
+use(chaiAsPromised);
+
 const faucetName = path.basename(__filename)
 
-describe('exitWithoutWatcherTest.js', function () {
-  const web3 = new Web3(new Web3.providers.HttpProvider(config.eth_node))
-  const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url, plasmaContractAddress: config.plasmaframework_contract_address })
-  const rootChain = new RootChain({ web3, plasmaContractAddress: config.plasmaframework_contract_address })
+const web3Provider = new Web3.providers.HttpProvider(config.eth_node);
+const omgjs = new OmgJS({
+  plasmaContractAddress: config.plasmaframework_contract_address,
+  watcherUrl: config.watcher_url,
+  watcherProxyUrl: config.watcher_proxy_url,
+  web3Provider
+});
 
+describe('exitWithoutWatcherTest.js', function () {
   before(async function () {
-    await faucet.init({ rootChain, childChain, web3, config, faucetName })
+    await faucet.init({ faucetName })
   })
 
   describe('exiting a deposit without a watcher', function () {
-    const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.1', 'ether')
-    const TEST_AMOUNT = web3.utils.toWei('.0001', 'ether')
+    const INTIIAL_ALICE_AMOUNT = web3Utils.toWei('.1', 'ether')
+    const TEST_AMOUNT = web3Utils.toWei('.0001', 'ether')
 
     let aliceAccount
 
     beforeEach(async function () {
-      aliceAccount = rcHelper.createAccount(web3)
+      aliceAccount = rcHelper.createAccount()
       await faucet.fundRootchainEth(aliceAccount.address, INTIIAL_ALICE_AMOUNT)
-      await rcHelper.waitForEthBalanceEq(web3, aliceAccount.address, INTIIAL_ALICE_AMOUNT)
+      await rcHelper.waitForEthBalanceEq(aliceAccount.address, INTIIAL_ALICE_AMOUNT)
     })
 
     afterEach(async function () {
@@ -56,7 +65,7 @@ describe('exitWithoutWatcherTest.js', function () {
     })
 
     it('getDepositExitData creates required exit data', async function () {
-      const depositTransaction = await rootChain.deposit({
+      const depositTransaction = await omgjs.deposit({
         amount: TEST_AMOUNT,
         txOptions: {
           from: aliceAccount.address,
@@ -65,18 +74,16 @@ describe('exitWithoutWatcherTest.js', function () {
       })
 
       // wait for deposit to be recognized
-      await ccHelper.waitNumUtxos(childChain, aliceAccount.address, 1)
-      const aliceUtxos = await childChain.getUtxos(aliceAccount.address)
+      await ccHelper.waitNumUtxos(aliceAccount.address, 1)
+      const aliceUtxos = await omgjs.getUtxos(aliceAccount.address)
       assert.lengthOf(aliceUtxos, 1)
       console.log(`Alice deposited ${TEST_AMOUNT} wei into the RootChain contract`)
 
       // call the function we are testing
-      const exitData = await rootChain.getDepositExitData({
-        transactionHash: depositTransaction.transactionHash
-      })
+      const exitData = await omgjs.getDepositExitData(depositTransaction.transactionHash)
 
       // compare it to what the childchain returns
-      const ccExitData = await childChain.getExitData(aliceUtxos[0])
+      const ccExitData = await omgjs.getExitData(aliceUtxos[0])
 
       assert.deepEqual(ccExitData, exitData)
       console.log('Exit data matches what the childchain would return')
