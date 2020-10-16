@@ -106,13 +106,13 @@ export function waitForEvent (type, callback) {
   })
 }
 
-export async function sendAndWait (from, to, amount, currency, privateKey, expectedBalance, verifyingContract) {
-  const ret = await send(from, to, amount, currency, privateKey, verifyingContract)
+export async function sendAndWait (from, to, amount, currency, privateKey, expectedBalance) {
+  const ret = await send(from, to, amount, currency, privateKey)
   await waitForBalanceEq(to, expectedBalance, currency)
   return ret
 }
 
-export async function createTx (from, to, amount, currency, fromPrivateKey, verifyingContract) {
+export async function createTx (from, to, amount, currency, fromPrivateKey) {
   if (amount <= 0) {
     return
   }
@@ -180,8 +180,8 @@ export async function createTx (from, to, amount, currency, fromPrivateKey, veri
   return omgjs.buildSignedTransaction({ typedData, signatures })
 }
 
-export async function send (from, to, amount, currency, fromPrivateKey, verifyingContract) {
-  const signedTx = await createTx(from, to, amount, currency, fromPrivateKey, verifyingContract)
+export async function send (from, to, amount, currency, fromPrivateKey) {
+  const signedTx = await createTx(from, to, amount, currency, fromPrivateKey)
   // Submit the signed transaction to the childchain
   const result = await omgjs.submitTransaction(signedTx)
   return { result, txbytes: OmgJS.util.prefixHex(signedTx) }

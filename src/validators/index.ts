@@ -298,6 +298,7 @@ export const encodeTransactionSchema: Joi.Schema = Joi.object({
   txData: Joi.number().required(),
   metadata: helpers.validateMetadata,
   signatures: Joi.array().items(Joi.string()),
+  sigs: Joi.array().items(Joi.string()),
   signed: Joi.boolean()
 });
 

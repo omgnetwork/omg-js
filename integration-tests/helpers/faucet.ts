@@ -236,8 +236,7 @@ export default {
       address,
       amount,
       currency,
-      this.faucetAccount.privateKey,
-      config.plasmaframework_contract_address
+      this.faucetAccount.privateKey
     )
     console.log(`Faucet sent ${amount} ${currencyMap[currency] || currency} on childchain to ${address}`)
     return ret
@@ -297,8 +296,7 @@ export default {
           to.address,
           new BN(balance.amount).sub(new BN(feeEthAmountWei)),
           balance.currency,
-          from.privateKey,
-          config.plasmaframework_contract_address
+          from.privateKey
         ).catch(e => {
           console.log(`Error returning childchain funds from ${from.address}: ${e.message}`)
         })

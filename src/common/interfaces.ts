@@ -83,6 +83,7 @@ export interface ITransactionData {
 
 export interface ITransactionBody {
   txType?: number;
+  sigs?: Array<string>;
   inputs: IUTXO[];
   outputs: IOutput[];
   txData?: number;

@@ -98,8 +98,7 @@ describe('inFlightExitTest.js', function () {
         TRANSFER_AMOUNT,
         OmgJS.currency.ETH,
         aliceAccount.privateKey,
-        TRANSFER_AMOUNT,
-        config.plasmaframework_contract_address
+        TRANSFER_AMOUNT
       )
       console.log(`Transferred ${TRANSFER_AMOUNT} from Alice to Bob`)
 
@@ -118,9 +117,8 @@ describe('inFlightExitTest.js', function () {
 
       // test we can get more exit information from the contract using the exitId
       const exitId = await omgjs.getInFlightExitId(txbytes)
-      const alternativeExitData = await omgjs.getInFlightExitData([exitId])
-      console.log('alt: ', alternativeExitData);
-      // assert.lengthOf(alternativeExitData, 1)
+      const alternativeExitData = await omgjs.getInFlightExitContractData([exitId])
+      assert.lengthOf(alternativeExitData, 1)
 
       // Start an in-flight exit.
       const ifeReceipt = await omgjs.startInFlightExit({
@@ -134,9 +132,7 @@ describe('inFlightExitTest.js', function () {
           from: bobAccount.address
         }
       })
-      console.log(
-        `Bob called RootChain.startInFlightExit(): txhash = ${ifeReceipt.transactionHash}`
-      )
+      console.log(`Bob called RootChain.startInFlightExit(): txhash = ${ifeReceipt.transactionHash}`)
 
       // Keep track of how much Bob spends on gas
       bobSpentOnGas.iadd(await rcHelper.spentOnGas(ifeReceipt))
@@ -223,8 +219,7 @@ describe('inFlightExitTest.js', function () {
         bobAccount.address,
         TRANSFER_AMOUNT,
         OmgJS.currency.ETH,
-        aliceAccount.privateKey,
-        config.plasmaframework_contract_address
+        aliceAccount.privateKey
       )
       console.log(`Transferred ${TRANSFER_AMOUNT} from Alice to Bob`)
 
@@ -374,7 +369,6 @@ describe('inFlightExitTest.js', function () {
       }
 
       const typedData = omgjs.getTypedData(txBody)
-      // Sign it
       const signatures = omgjs.signTransaction({ typedData, privateKeys: [kelvinAccount.privateKey, aliceAccount.privateKey] })
       const signedTx = omgjs.buildSignedTransaction({ typedData, signatures })
       const exitData = await omgjs.inFlightExitGetData(signedTx)
@@ -385,8 +379,7 @@ describe('inFlightExitTest.js', function () {
         bobAccount.address,
         TRANSFER_AMOUNT,
         OmgJS.currency.ETH,
-        kelvinAccount.privateKey,
-        config.plasmaframework_contract_address
+        kelvinAccount.privateKey
       )
 
       // kelvin Start an in-flight exit because he wants to cheat the system
@@ -407,9 +400,6 @@ describe('inFlightExitTest.js', function () {
 
       // Alice sees that Kelvin is trying to exit the same input that Kelvin sent to bob.
       const kelvinToBobDecoded = omgjs.decodeTransaction(kelvinToBobTx)
-
-      console.log('kelvinToBobDecoded: ', kelvinToBobDecoded);
-
       const kInput = kelvinToBobDecoded.inputs[0]
 
       const inflightExit = await ccHelper.waitForEvent(
@@ -437,9 +427,7 @@ describe('inFlightExitTest.js', function () {
 
       aliceSpentOnGas.iadd(await rcHelper.spentOnGas(receipt))
 
-      console.log(
-        `Alice called RootChain.piggybackInFlightExitOnInput() : txhash = ${receipt.transactionHash}`
-      )
+      console.log(`Alice called RootChain.piggybackInFlightExitOnInput() : txhash = ${receipt.transactionHash}`)
 
       // alice need to prove that the IFE is non-canonical so she the piggyback input works
       const utxoPosOutput = omgjs.encodeUtxoPos({
@@ -459,7 +447,7 @@ describe('inFlightExitTest.js', function () {
         competingTxInputIndex: 0,
         competingTxPos: '0x',
         competingTxInclusionProof: '0x',
-        competingTxWitness: (kelvinToBobDecoded as any).sigs[0], // NMTODO: check why .sigs not on this interface
+        competingTxWitness: kelvinToBobDecoded.sigs[0],
         txOptions: {
           privateKey: aliceAccount.privateKey,
           from: aliceAccount.address

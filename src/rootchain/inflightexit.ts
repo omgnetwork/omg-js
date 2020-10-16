@@ -29,10 +29,30 @@ export async function getInFlightExitId (
   return contract.methods.getInFlightExitId(txBytes).call();
 };
 
+export interface IInflightExitInputOutput {
+  outputId: string;
+  exitTarget: string;
+  token: string;
+  amount: string;
+  piggybackBondSize: string;
+}
+
+export interface IInflightExitContractData {
+  isCanonical: boolean;
+  exitStartTimestamp: string;
+  exitMap: string;
+  position: string;
+  inputs: Array<IInflightExitInputOutput>;
+  outputs: Array<IInflightExitInputOutput>;
+  bondOwner: string;
+  bondSize: string;
+  oldestCompetitorPosition: string;
+}
+
 /** @internal */
-export async function getInFlightExitData (
+export async function getInFlightExitContractData (
   exitIds: Array<string>
-): Promise<Interfaces.IInflightExitData> {
+): Promise<Array<IInflightExitContractData>> {
   const { contract } = await this.getPaymentExitGame();
   return contract.methods.inFlightExits(exitIds).call();
 };

@@ -112,8 +112,7 @@ describe('simpleStartStandardExitTest.js', function () {
         TRANSFER_AMOUNT,
         OmgJS.currency.ETH,
         aliceAccount.privateKey,
-        TRANSFER_AMOUNT,
-        config.plasmaframework_contract_address
+        TRANSFER_AMOUNT
       )
 
       console.log(`Transferred ${TRANSFER_AMOUNT} from Alice to Bob`)
@@ -126,8 +125,7 @@ describe('simpleStartStandardExitTest.js', function () {
         TRANSFER_AMOUNT,
         OmgJS.currency.ETH,
         aliceAccount.privateKey,
-        TRANSFER_AMOUNT,
-        config.plasmaframework_contract_address
+        TRANSFER_AMOUNT
       )
 
       console.log(`Transferred another ${TRANSFER_AMOUNT} from Alice to Bob`)

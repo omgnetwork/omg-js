@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License. */
 
 import BN from 'bn.js';
+import web3Utils from 'web3-utils';
 import * as rlp from 'rlp';
 import { Buffer } from 'buffer';
 
@@ -128,7 +129,7 @@ export function decodeTransaction (transaction: string): Interfaces.ITransaction
         outputType: parseNumber(output[0]),
         outputGuard: parseString(outputData[0]),
         currency: parseString(outputData[1]),
-        amount: new BN(parseNumber(outputData[2])).toString()
+        amount: web3Utils.toBN(parseString(outputData[2])).toString()
       }
     }),
     txData: parseNumber(txData),
@@ -151,7 +152,7 @@ export function encodeUtxoPos (utxo: IEncodeUtxoPos): BN {
 
 /** @internal */
 export function decodeUtxoPos (utxoPos: Interfaces.IComplexAmount): Partial<Interfaces.IUTXO> {
-  const bn = new BN(utxoPos.toString());
+  const bn = web3Utils.toBN(utxoPos.toString());
   const blknum = bn.div(new BN(Constants.BLOCK_OFFSET.toString())).toNumber();
   const txindex = bn.mod(new BN(Constants.BLOCK_OFFSET.toString())).divn(Constants.TX_OFFSET).toNumber();
   const oindex = bn.modn(Constants.TX_OFFSET);

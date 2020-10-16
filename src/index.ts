@@ -286,12 +286,12 @@ class OmgJS {
     return RootchainInflightExitModule.getInFlightExitId.call(this, txBytes);
   }
 
-  /** Retrieve in-flight exit data from an array of exit IDs */
-  public async getInFlightExitData (
+  /** Retrieve in-flight exit data from an array of exit IDs directly from the payment exit game contract */
+  public async getInFlightExitContractData (
     exitIds: Array<string>
-  ): Promise<Interfaces.IInflightExitData> {
+  ): Promise<Array<RootchainInflightExitModule.IInflightExitContractData>> {
     Validators.validate(exitIds, Validators.getInFlightExitDataSchema);
-    return RootchainInflightExitModule.getInFlightExitData.call(this, exitIds);
+    return RootchainInflightExitModule.getInFlightExitContractData.call(this, exitIds);
   }
 
   /**
