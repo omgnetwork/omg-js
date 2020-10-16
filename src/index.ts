@@ -209,7 +209,7 @@ class OmgJS {
 
   /** Encode a UTXO */
   public encodeUtxoPos (
-    utxo: Interfaces.IUTXO
+    utxo: EncoderModule.IEncodeUtxoPos
   ): BN {
     Validators.validate({ utxo }, Validators.encodeUtxoPosSchema);
     return EncoderModule.encodeUtxoPos.call(this, utxo);

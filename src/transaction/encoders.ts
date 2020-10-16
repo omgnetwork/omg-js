@@ -136,8 +136,14 @@ export function decodeTransaction (transaction: string): Interfaces.ITransaction
   }
 }
 
+export interface IEncodeUtxoPos {
+  blknum: number;
+  txindex: number;
+  oindex: number;
+}
+
 /** @internal */
-export function encodeUtxoPos (utxo: Interfaces.IUTXO): BN {
+export function encodeUtxoPos (utxo: IEncodeUtxoPos): BN {
   const blk = new BN(utxo.blknum.toString()).mul(new BN(Constants.BLOCK_OFFSET.toString()));
   const tx = new BN(utxo.txindex.toString()).muln(Constants.TX_OFFSET);
   return blk.add(tx).addn(utxo.oindex);
