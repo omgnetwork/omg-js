@@ -114,7 +114,7 @@ export function sleep (ms) {
   })
 }
 
-export function awaitTx (txnHash, options) {
+export function awaitTx (txnHash, options?) {
   const interval = options && options.interval ? options.interval : 1000
   const blocksToWait = options && options.blocksToWait ? options.blocksToWait : 1
 
