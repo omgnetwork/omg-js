@@ -38,6 +38,7 @@ const omgjs = new OmgJS({
 const erc20Contract = new omgjs.web3Instance.eth.Contract(erc20abi, config.erc20_contract_address);
 
 export default {
+  fundAccount: null,
   init: async function ({
     faucetName,
     topup = true

@@ -16,7 +16,7 @@ import path from 'path';
 import { assert, should, use } from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 
-import OmgJS from '../../dist';
+import OmgJS from '../..';
 
 import faucet from '../helpers/faucet';
 import * as rcHelper from '../helpers/rootChainHelper';
