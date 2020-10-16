@@ -13,36 +13,45 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License. */
 
-const config = require('../../test-config')
-const rcHelper = require('../../helpers/rootChainHelper')
-const ccHelper = require('../../helpers/childChainHelper')
-const faucet = require('../../helpers/faucet')
-const Web3 = require('web3')
-const ChildChain = require('@omisego/omg-js-childchain')
-const RootChain = require('@omisego/omg-js-rootchain')
-const { transaction } = require('@omisego/omg-js-util')
-const chai = require('chai')
-const assert = chai.assert
+import Web3 from 'web3';
+import web3Utils from 'web3-utils';
+import path from 'path';
+import { assert, should, use } from 'chai';
+import chaiAsPromised from 'chai-as-promised';
 
-const path = require('path')
-const faucetName = path.basename(__filename)
+import OmgJS from '../../..';
+
+import faucet from '../../helpers/faucet';
+import * as rcHelper from '../../helpers/rootChainHelper';
+import * as ccHelper from '../../helpers/childChainHelper';
+import config from '../../test-config';
+
+should();
+use(chaiAsPromised);
+
+const faucetName = path.basename(__filename);
+
+const web3Provider = new Web3.providers.HttpProvider(config.eth_node);
+const omgjs = new OmgJS({
+  plasmaContractAddress: config.plasmaframework_contract_address,
+  watcherUrl: config.watcher_url,
+  watcherProxyUrl: config.watcher_proxy_url,
+  web3Provider
+});
 
 describe('simpleErc20TransferTest.js', function () {
-  const web3 = new Web3(config.eth_node)
-  const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url, plasmaContractAddress: config.plasmaframework_contract_address })
-  const rootChain = new RootChain({ web3, plasmaContractAddress: config.plasmaframework_contract_address })
   let feeEth
 
   before(async function () {
-    await faucet.init({ rootChain, childChain, web3, config, faucetName })
-    const fees = (await childChain.getFees())['1']
-    const { amount } = fees.find(f => f.currency === transaction.ETH_CURRENCY)
+    await faucet.init({ faucetName })
+    const fees = (await omgjs.getFees())['1']
+    const { amount } = fees.find(f => f.currency === OmgJS.currency.ETH)
     feeEth = amount
   })
 
   describe('ERC20 transfer', function () {
     const ERC20_CURRENCY = config.erc20_contract_address
-    const INTIIAL_ALICE_AMOUNT_ETH = web3.utils.toWei('.0001', 'ether')
+    const INTIIAL_ALICE_AMOUNT_ETH = web3Utils.toWei('.0001', 'ether')
     const INTIIAL_ALICE_AMOUNT = 4
     const TRANSFER_AMOUNT = 3
 
@@ -50,15 +59,15 @@ describe('simpleErc20TransferTest.js', function () {
     let bobAccount
 
     beforeEach(async function () {
-      aliceAccount = rcHelper.createAccount(web3)
-      bobAccount = rcHelper.createAccount(web3)
+      aliceAccount = rcHelper.createAccount()
+      bobAccount = rcHelper.createAccount()
 
       // Give some ETH to Alice on the childchain to pay fees
-      await faucet.fundChildchain(aliceAccount.address, INTIIAL_ALICE_AMOUNT_ETH, transaction.ETH_CURRENCY)
-      await ccHelper.waitForBalanceEq(childChain, aliceAccount.address, INTIIAL_ALICE_AMOUNT_ETH)
+      await faucet.fundChildchain(aliceAccount.address, INTIIAL_ALICE_AMOUNT_ETH, OmgJS.currency.ETH)
+      await ccHelper.waitForBalanceEq(aliceAccount.address, INTIIAL_ALICE_AMOUNT_ETH)
       // Give some ERC20 to Alice on the child chain
       await faucet.fundChildchain(aliceAccount.address, INTIIAL_ALICE_AMOUNT, ERC20_CURRENCY)
-      await ccHelper.waitForBalanceEq(childChain, aliceAccount.address, INTIIAL_ALICE_AMOUNT, ERC20_CURRENCY)
+      await ccHelper.waitForBalanceEq(aliceAccount.address, INTIIAL_ALICE_AMOUNT, ERC20_CURRENCY)
     })
 
     afterEach(async function () {
@@ -72,11 +81,11 @@ describe('simpleErc20TransferTest.js', function () {
 
     it('should transfer ERC20 tokens on the childchain', async function () {
       // Check utxos on the child chain
-      const utxos = await childChain.getUtxos(aliceAccount.address)
+      const utxos = await omgjs.getUtxos(aliceAccount.address)
       assert.equal(utxos.length, 2)
 
       const erc20Utxo = utxos.find(utxo => utxo.currency === ERC20_CURRENCY)
-      const ethUtxo = utxos.find(utxo => utxo.currency === transaction.ETH_CURRENCY)
+      const ethUtxo = utxos.find(utxo => utxo.currency === OmgJS.currency.ETH)
       assert.equal(erc20Utxo.amount, INTIIAL_ALICE_AMOUNT)
       assert.equal(erc20Utxo.currency, ERC20_CURRENCY)
 
@@ -97,28 +106,24 @@ describe('simpleErc20TransferTest.js', function () {
         }, {
           outputType: 1,
           outputGuard: aliceAccount.address,
-          currency: transaction.ETH_CURRENCY,
+          currency: OmgJS.currency.ETH,
           amount: CHANGE_AMOUNT_FEE
         }]
       }
 
-      // Get the transaction data
-      const typedData = transaction.getTypedData(txBody, rootChain.plasmaContractAddress)
-      // Sign it
-      const signatures = childChain.signTransaction(typedData, [aliceAccount.privateKey, aliceAccount.privateKey])
-      // Build the signed transaction
-      const signedTx = childChain.buildSignedTransaction(typedData, signatures)
-      // Submit the signed transaction to the childchain
-      const result = await childChain.submitTransaction(signedTx)
-      console.log(`Submitted transaction: ${JSON.stringify(result)}`)
+      const typedData = omgjs.getTypedData(txBody)
+      const signatures = omgjs.signTransaction({ typedData, privateKeys: [aliceAccount.privateKey, aliceAccount.privateKey] })
+      const signedTx = omgjs.buildSignedTransaction({ typedData, signatures })
+      const result = await omgjs.submitTransaction(signedTx)
+      console.log(`Submitted transaction: ${result.txhash}`)
 
       // Bob's balance should be TRANSFER_AMOUNT
-      let balance = await ccHelper.waitForBalanceEq(childChain, bobAccount.address, TRANSFER_AMOUNT, ERC20_CURRENCY)
+      let balance = await ccHelper.waitForBalanceEq(bobAccount.address, TRANSFER_AMOUNT, ERC20_CURRENCY)
       assert.equal(balance.length, 1)
       assert.equal(balance[0].amount, TRANSFER_AMOUNT)
 
       // Alice's balance should be CHANGE_AMOUNT
-      balance = await childChain.getBalance(aliceAccount.address)
+      balance = await omgjs.getBalance(aliceAccount.address)
       const erc20Balance = balance.filter(b => b.currency === ERC20_CURRENCY)
       assert.equal(erc20Balance[0].amount, CHANGE_AMOUNT)
     })
