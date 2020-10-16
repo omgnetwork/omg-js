@@ -13,39 +13,48 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License. */
 
-const config = require('../test-config')
-const rcHelper = require('../helpers/rootChainHelper')
-const ccHelper = require('../helpers/childChainHelper')
-const faucet = require('../helpers/faucet')
-const Web3 = require('web3')
-const ChildChain = require('@omisego/omg-js-childchain')
-const RootChain = require('@omisego/omg-js-rootchain')
-const { transaction } = require('@omisego/omg-js-util')
-const chai = require('chai')
-const assert = chai.assert
+import Web3 from 'web3';
+import BN from 'bn.js';
+import web3Utils from 'web3-utils';
+import path from 'path';
+import { assert, should, use } from 'chai';
+import chaiAsPromised from 'chai-as-promised';
 
-const path = require('path')
-const faucetName = path.basename(__filename)
+import OmgJS from '../..';
+
+import faucet from '../helpers/faucet';
+import * as rcHelper from '../helpers/rootChainHelper';
+import * as ccHelper from '../helpers/childChainHelper';
+import config from '../test-config';
+
+should();
+use(chaiAsPromised);
+
+const faucetName = path.basename(__filename);
+
+const web3Provider = new Web3.providers.HttpProvider(config.eth_node);
+const omgjs = new OmgJS({
+  plasmaContractAddress: config.plasmaframework_contract_address,
+  watcherUrl: config.watcher_url,
+  watcherProxyUrl: config.watcher_proxy_url,
+  web3Provider
+});
 
 describe('decodeTxBytesTest.js', function () {
-  const web3 = new Web3(new Web3.providers.HttpProvider(config.eth_node))
-  const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url, plasmaContractAddress: config.plasmaframework_contract_address })
-  const rootChain = new RootChain({ web3, plasmaContractAddress: config.plasmaframework_contract_address })
-
   before(async function () {
-    await faucet.init({ rootChain, childChain, web3, config, faucetName })
+    await faucet.init({ faucetName })
   })
 
   describe('Decode txBytes exit data', function () {
-    const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.1', 'ether')
-    const DEPOSIT_AMOUNT = web3.utils.toWei('.0001', 'ether')
+    const INTIIAL_ALICE_AMOUNT = web3Utils.toWei('.1', 'ether')
+    const DEPOSIT_AMOUNT = web3Utils.toWei('.0001', 'ether')
 
     let aliceAccount
 
     beforeEach(async function () {
-      aliceAccount = rcHelper.createAccount(web3)
+      aliceAccount = rcHelper.createAccount()
       await faucet.fundRootchainEth(aliceAccount.address, INTIIAL_ALICE_AMOUNT)
-      await rcHelper.waitForEthBalanceEq(web3, aliceAccount.address, INTIIAL_ALICE_AMOUNT)
+      await rcHelper.waitForEthBalanceEq(aliceAccount.address, INTIIAL_ALICE_AMOUNT)
     })
 
     afterEach(async function () {
@@ -56,30 +65,28 @@ describe('decodeTxBytesTest.js', function () {
       }
     })
 
-    it('should able to decode back the txBytesfrom exitData', async function () {
+    it('should be able to decode back the txBytesfrom exitData', async function () {
       // Alice deposits ETH into the Plasma contract
-      await rootChain.deposit({
+      await omgjs.deposit({
         amount: DEPOSIT_AMOUNT,
         txOptions: {
           from: aliceAccount.address,
           privateKey: aliceAccount.privateKey
         }
       })
-      await ccHelper.waitForBalanceEq(
-        childChain,
-        aliceAccount.address,
-        DEPOSIT_AMOUNT
-      )
+      await ccHelper.waitForBalanceEq(aliceAccount.address, DEPOSIT_AMOUNT)
       console.log(`Alice deposited ${DEPOSIT_AMOUNT} into RootChain contract`)
       // Get Alice's deposit utxo
-      const aliceUtxos = await childChain.getUtxos(aliceAccount.address)
+      const aliceUtxos = await omgjs.getUtxos(aliceAccount.address)
       assert.equal(aliceUtxos.length, 1)
       assert.equal(aliceUtxos[0].amount.toString(), DEPOSIT_AMOUNT)
 
       // Get the exit data
       const utxoToExit = aliceUtxos[0]
-      const exitData = await childChain.getExitData(utxoToExit)
+      const exitData = await omgjs.getExitData(utxoToExit)
       assert.containsAllKeys(exitData, ['txbytes', 'proof', 'utxo_pos'])
+
+      const decodedTransaction = omgjs.decodeTransaction(exitData.txbytes)
       assert.deepEqual(
         {
           txType: 1,
@@ -96,7 +103,7 @@ describe('decodeTxBytesTest.js', function () {
           metadata:
             '0x0000000000000000000000000000000000000000000000000000000000000000'
         },
-        transaction.decodeTxBytes(exitData.txbytes)
+        decodedTransaction
       )
     })
   })

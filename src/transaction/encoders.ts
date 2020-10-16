@@ -128,7 +128,7 @@ export function decodeTransaction (transaction: string): Interfaces.ITransaction
         outputType: parseNumber(output[0]),
         outputGuard: parseString(outputData[0]),
         currency: parseString(outputData[1]),
-        amount: new BN(parseString(outputData[2])).toString()
+        amount: new BN(parseNumber(outputData[2])).toString()
       }
     }),
     txData: parseNumber(txData),

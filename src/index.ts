@@ -605,7 +605,7 @@ class OmgJS {
 
   /** Submits a transaction along with its typed data and signatures to the Watcher */
   public submitTypedData (
-    typedData: TypedDataModule.ITypedData
+    typedData: TypedDataModule.ISignedTypedData
   ): Promise<Interfaces.IWatcherTransactionReceipt> {
     Validators.validate(typedData, Validators.submitTypedDataSchema);
     return WatcherTransactionModule.submitTypedData.call(this, typedData);
