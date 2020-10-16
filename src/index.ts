@@ -586,7 +586,7 @@ class OmgJS {
   */
   public createTransactionBody (
     args: TransactionBuilderModule.ICreateTransactionBody
-  ): Partial<Interfaces.ITransactionBody> {
+  ): Interfaces.ITransactionBody {
     Validators.validate(args, Validators.createTransactionBodySchema);
     return TransactionBuilderModule.createTransactionBody.call(this, args);
   }

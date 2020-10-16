@@ -29,10 +29,10 @@ const omgjs = new OmgJS({
   web3Provider
 });
 
-export function createAccount () {
-  const ret = omgjs.web3Instance.eth.accounts.create()
-  ret.address = ret.address.toLowerCase()
-  return ret
+export function createAccount (): { address: string, privateKey: string } {
+  const ret = omgjs.web3Instance.eth.accounts.create();
+  ret.address = ret.address.toLowerCase();
+  return ret;
 }
 
 export async function setGas (txDetails) {

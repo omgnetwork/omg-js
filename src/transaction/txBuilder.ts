@@ -38,7 +38,7 @@ export function createTransactionBody ({
   payments,
   fee,
   metadata
-}: ICreateTransactionBody): Partial<Interfaces.ITransactionBody> {
+}: ICreateTransactionBody): Interfaces.ITransactionBody {
   const allPayments = [...payments, fee]
   const neededCurrencies = uniq([...payments.map(i => i.currency), fee.currency])
 
