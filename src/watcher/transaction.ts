@@ -94,7 +94,7 @@ export async function createTransaction ({
 /** @internal */
 export async function submitTypedData (
   typedData: TypedDataModule.ITypedData
-): Promise<any> {
+): Promise<Interfaces.IWatcherTransactionReceipt> {
   return Transporter.post({
     url: `${this.watcherUrl}/transaction.submit_typed`,
     body: typedData,

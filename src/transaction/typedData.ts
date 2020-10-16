@@ -55,6 +55,10 @@ export interface ITypedData {
   message: ITypedDataMessage;
 };
 
+export interface ISignedTypedData extends ITypedData{
+  signatures: Array<string>;
+}
+
 /** @internal */
 const domainSpec: Array<ITypedDataSpec> = [
   { name: 'name', type: 'string' },

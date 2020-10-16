@@ -598,16 +598,15 @@ class OmgJS {
   */
   public signTypedData (
     args: SignModule.ISignTypedData
-  ): TypedDataModule.ITypedData {
+  ): TypedDataModule.ISignedTypedData {
     Validators.validate(args, Validators.signTypedDataSchema);
     return SignModule.signTypedData.call(this, args);
   }
 
-  // NMTODO: figure out the return interface here
   /** Submits a transaction along with its typed data and signatures to the Watcher */
   public submitTypedData (
     typedData: TypedDataModule.ITypedData
-  ): Promise<any> {
+  ): Promise<Interfaces.IWatcherTransactionReceipt> {
     Validators.validate(typedData, Validators.submitTypedDataSchema);
     return WatcherTransactionModule.submitTypedData.call(this, typedData);
   }

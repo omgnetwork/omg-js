@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>ITransactionBody | omg-js - v4.0.1-1.0.0</title>
+	<title>ISignedTypedData | omg-js - v4.0.1-1.0.0</title>
 	<meta name="description" content="Documentation for omg-js - v4.0.1-1.0.0">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -54,10 +54,10 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="itransactionbody.html">ITransactionBody</a>
+					<a href="isignedtypeddata.html">ISignedTypedData</a>
 				</li>
 			</ul>
-			<h1>Interface ITransactionBody</h1>
+			<h1>Interface ISignedTypedData</h1>
 		</div>
 	</div>
 </header>
@@ -68,10 +68,10 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">ITransactionBody</span>
+						<a href="itypeddata.html" class="tsd-signature-type">ITypedData</a>
 						<ul class="tsd-hierarchy">
 							<li>
-								<a href="iencodetransaction.html" class="tsd-signature-type">IEncodeTransaction</a>
+								<span class="target">ISignedTypedData</span>
 							</li>
 						</ul>
 					</li>
@@ -84,11 +84,11 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="itransactionbody.html#inputs" class="tsd-kind-icon">inputs</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="itransactionbody.html#metadata" class="tsd-kind-icon">metadata</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="itransactionbody.html#outputs" class="tsd-kind-icon">outputs</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="itransactionbody.html#txdata" class="tsd-kind-icon">tx<wbr>Data</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="itransactionbody.html#txtype" class="tsd-kind-icon">tx<wbr>Type</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="isignedtypeddata.html#domain" class="tsd-kind-icon">domain</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="isignedtypeddata.html#message" class="tsd-kind-icon">message</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="isignedtypeddata.html#primarytype" class="tsd-kind-icon">primary<wbr>Type</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="isignedtypeddata.html#signatures" class="tsd-kind-icon">signatures</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="isignedtypeddata.html#types" class="tsd-kind-icon">types</a></li>
 							</ul>
 						</section>
 					</div>
@@ -96,53 +96,57 @@
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="inputs" class="tsd-anchor"></a>
-					<h3>inputs</h3>
-					<div class="tsd-signature tsd-kind-icon">inputs<span class="tsd-signature-symbol">:</span> <a href="iutxo.html" class="tsd-signature-type">IUTXO</a><span class="tsd-signature-symbol">[]</span></div>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
+					<a name="domain" class="tsd-anchor"></a>
+					<h3>domain</h3>
+					<div class="tsd-signature tsd-kind-icon">domain<span class="tsd-signature-symbol">:</span> <a href="itypeddatadomaindata.html" class="tsd-signature-type">ITypedDataDomainData</a></div>
 					<aside class="tsd-sources">
+						<p>Inherited from <a href="itypeddata.html">ITypedData</a>.<a href="itypeddata.html#domain">domain</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/omisego/omg-js/blob/109d4f3/src/common/interfaces.ts#L86">src/common/interfaces.ts:86</a></li>
+							<li>Defined in <a href="https://github.com/omisego/omg-js/blob/109d4f3/src/transaction/typedData.ts#L53">src/transaction/typedData.ts:53</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
+					<a name="message" class="tsd-anchor"></a>
+					<h3>message</h3>
+					<div class="tsd-signature tsd-kind-icon">message<span class="tsd-signature-symbol">:</span> <a href="itypeddatamessage.html" class="tsd-signature-type">ITypedDataMessage</a></div>
+					<aside class="tsd-sources">
+						<p>Inherited from <a href="itypeddata.html">ITypedData</a>.<a href="itypeddata.html#message">message</a></p>
+						<ul>
+							<li>Defined in <a href="https://github.com/omisego/omg-js/blob/109d4f3/src/transaction/typedData.ts#L55">src/transaction/typedData.ts:55</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
+					<a name="primarytype" class="tsd-anchor"></a>
+					<h3>primary<wbr>Type</h3>
+					<div class="tsd-signature tsd-kind-icon">primary<wbr>Type<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<aside class="tsd-sources">
+						<p>Inherited from <a href="itypeddata.html">ITypedData</a>.<a href="itypeddata.html#primarytype">primaryType</a></p>
+						<ul>
+							<li>Defined in <a href="https://github.com/omisego/omg-js/blob/109d4f3/src/transaction/typedData.ts#L54">src/transaction/typedData.ts:54</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="metadata" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> metadata</h3>
-					<div class="tsd-signature tsd-kind-icon">metadata<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<a name="signatures" class="tsd-anchor"></a>
+					<h3>signatures</h3>
+					<div class="tsd-signature tsd-kind-icon">signatures<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/omisego/omg-js/blob/109d4f3/src/common/interfaces.ts#L89">src/common/interfaces.ts:89</a></li>
+							<li>Defined in <a href="https://github.com/omisego/omg-js/blob/109d4f3/src/transaction/typedData.ts#L59">src/transaction/typedData.ts:59</a></li>
 						</ul>
 					</aside>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="outputs" class="tsd-anchor"></a>
-					<h3>outputs</h3>
-					<div class="tsd-signature tsd-kind-icon">outputs<span class="tsd-signature-symbol">:</span> <a href="ioutput.html" class="tsd-signature-type">IOutput</a><span class="tsd-signature-symbol">[]</span></div>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
+					<a name="types" class="tsd-anchor"></a>
+					<h3>types</h3>
+					<div class="tsd-signature tsd-kind-icon">types<span class="tsd-signature-symbol">:</span> <a href="itypeddatatypes.html" class="tsd-signature-type">ITypedDataTypes</a></div>
 					<aside class="tsd-sources">
+						<p>Inherited from <a href="itypeddata.html">ITypedData</a>.<a href="itypeddata.html#types">types</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/omisego/omg-js/blob/109d4f3/src/common/interfaces.ts#L87">src/common/interfaces.ts:87</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="txdata" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> tx<wbr>Data</h3>
-					<div class="tsd-signature tsd-kind-icon">tx<wbr>Data<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/omisego/omg-js/blob/109d4f3/src/common/interfaces.ts#L88">src/common/interfaces.ts:88</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="txtype" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> tx<wbr>Type</h3>
-					<div class="tsd-signature tsd-kind-icon">tx<wbr>Type<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/omisego/omg-js/blob/109d4f3/src/common/interfaces.ts#L85">src/common/interfaces.ts:85</a></li>
+							<li>Defined in <a href="https://github.com/omisego/omg-js/blob/109d4f3/src/transaction/typedData.ts#L52">src/transaction/typedData.ts:52</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -161,22 +165,22 @@
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-interface">
-						<a href="itransactionbody.html" class="tsd-kind-icon">ITransaction<wbr>Body</a>
+						<a href="isignedtypeddata.html" class="tsd-kind-icon">ISigned<wbr>Typed<wbr>Data</a>
 						<ul>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="itransactionbody.html#inputs" class="tsd-kind-icon">inputs</a>
+							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
+								<a href="isignedtypeddata.html#domain" class="tsd-kind-icon">domain</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
+								<a href="isignedtypeddata.html#message" class="tsd-kind-icon">message</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
+								<a href="isignedtypeddata.html#primarytype" class="tsd-kind-icon">primary<wbr>Type</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="itransactionbody.html#metadata" class="tsd-kind-icon">metadata</a>
+								<a href="isignedtypeddata.html#signatures" class="tsd-kind-icon">signatures</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="itransactionbody.html#outputs" class="tsd-kind-icon">outputs</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="itransactionbody.html#txdata" class="tsd-kind-icon">tx<wbr>Data</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="itransactionbody.html#txtype" class="tsd-kind-icon">tx<wbr>Type</a>
+							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
+								<a href="isignedtypeddata.html#types" class="tsd-kind-icon">types</a>
 							</li>
 						</ul>
 					</li>

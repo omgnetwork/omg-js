@@ -19,6 +19,7 @@ import { concatSig } from 'eth-sig-util';
 import { ecsign } from 'ethereumjs-util';
 
 import * as Util from '@lib/common/util';
+import * as WatcherTransactionModule from '@lib/watcher/transaction';
 import * as TypedDataModule from '@lib/transaction/typedData';
 import * as StructHashModule from '@lib/transaction/structHash';
 import * as Encoders from '@lib/transaction/encoders';
@@ -37,9 +38,8 @@ export function sign (tx: Buffer, privateKeys: Array<string>) {
   return privateKeys.map(key => _ecsign(tx, key));
 }
 
-// NMTODO: figure out the txData interface
 export interface ISignTypedData {
-  txData: any;
+  txData: WatcherTransactionModule.ICreatedTransaction;
   privateKeys: Array<string>;
 };
 
@@ -47,10 +47,10 @@ export interface ISignTypedData {
 export function signTypedData ({
   txData,
   privateKeys
-}: ISignTypedData): TypedDataModule.ITypedData {
+}: ISignTypedData): TypedDataModule.ISignedTypedData {
   const toSign = Buffer.from(txData.sign_hash.replace('0x', ''), 'hex');
-  txData.typed_data.signatures = sign(toSign, privateKeys);
-  return txData.typed_data;
+  (txData.typed_data as TypedDataModule.ISignedTypedData).signatures = sign(toSign, privateKeys);
+  return (txData.typed_data as TypedDataModule.ISignedTypedData);
 }
 
 export interface ISignTransaction {
