@@ -328,7 +328,7 @@ describe('inFlightExitTest.js', function () {
       assert.equal(bobEthBalance.toString(), expected.toString())
     })
 
-    it('should succesfully exit a ChildChain with piggybacking input transaction that is not included', async function () {
+    it.only('should succesfully exit a ChildChain with piggybacking input transaction that is not included', async function () {
       const aliceSpentOnGas = new BN(0)
       const kelvinSpentOnGas = new BN(0)
       // fund some ETH for alice on rootchain so she can piggyback / challenge
@@ -452,7 +452,7 @@ describe('inFlightExitTest.js', function () {
           privateKey: aliceAccount.privateKey,
           from: aliceAccount.address
         }
-      })
+      });
 
       aliceSpentOnGas.iadd(await rcHelper.spentOnGas(receipt))
 
@@ -484,16 +484,17 @@ describe('inFlightExitTest.js', function () {
       const aliceEthBalance = await omgjs.getRootchainETHBalance(aliceAccount.address)
       // Expect Alice's balance to be INTIIAL_ALICE_AMOUNT - gas spent
 
-      const expected = web3Utils
-        .toBN(INTIIAL_ALICE_AMOUNT) // ETH exited amount that funded to cc directly
+      const expected = new BN(INTIIAL_ALICE_AMOUNT) // ETH exited amount that funded to cc directly
         .add(new BN(INTIIAL_ALICE_AMOUNT)) // ETH funded initially
         .sub(aliceSpentOnGas)
-        .add(new BN(bonds.inflightExit)) // since alice challenged the invalid IFE, she gets the bond
+        .add(new BN(bonds.inflightExit.toString())) // since alice challenged the invalid IFE, she gets the bond
       assert.equal(aliceEthBalance.toString(), expected.toString())
 
       // kelvin rootchain balance should be equal to initial because he double spent, hence the utxo should still be in childchain
       const kelvinEthBalance = await omgjs.getRootchainETHBalance(kelvinAccount.address)
-      const kelvinExpectedBalance = new BN(INTIIAL_KELVIN_AMOUNT).sub(kelvinSpentOnGas).sub(new BN(bonds.inflightExit))
+      const kelvinExpectedBalance = new BN(INTIIAL_KELVIN_AMOUNT)
+        .sub(kelvinSpentOnGas)
+        .sub(new BN(bonds.inflightExit.toString()))
       assert.equal(kelvinEthBalance.toString(), kelvinExpectedBalance.toString())
     })
   })
