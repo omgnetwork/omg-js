@@ -15,7 +15,6 @@
     "compile": "ttsc",
     "build-docs": "typedoc",
     "lint": "eslint . --ext .js",
-    "lint-fix": "eslint . --ext .js --fix",
     "mocha": "mocha -r ts-node/register --timeout=0 --bail --slow=0 --check-leaks --full-trace",
     "test": "npm run mocha src/test",
     "audit-check": "audit-ci --moderate"
