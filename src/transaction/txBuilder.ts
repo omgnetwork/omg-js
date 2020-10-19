@@ -25,7 +25,7 @@ import * as WatcherTransactionModule from '@lib/watcher/transaction';
 
 export interface ICreateTransactionBody {
   fromAddress: string;
-  fromUtxos: Array<Interfaces.IUTXO>;
+  fromUtxos: Array<Partial<Interfaces.IUTXO>>;
   payments: Array<Interfaces.IPayment>;
   fee: Interfaces.IFeeDetail;
   metadata?: string;
@@ -120,7 +120,7 @@ export function createTransactionBody ({
     metadata: encodedMetadata
   };
 
-  return txBody;
+  return (txBody as Interfaces.ITransactionBody);
 }
 
 /** @internal */
