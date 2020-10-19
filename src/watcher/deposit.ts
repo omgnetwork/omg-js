@@ -20,8 +20,14 @@ export interface IDepositFilter extends Interfaces.IPagination {
   address?: string;
 };
 
-// NMTODO: figure out this interface
-export interface IDepositInfo {};
+export interface IDepositInfo {
+  event_type: string;
+  inserted_at: string;
+  eth_height: number;
+  log_index: number;
+  root_chain_txhash: string;
+  txoutputs: Array<Interfaces.IUTXO>;
+};
 
 /** @internal */
 export async function getDeposits (

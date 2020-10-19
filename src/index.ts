@@ -685,7 +685,6 @@ class OmgJS {
     return WatcherInFlightExitModule.inFlightExitGetOutputChallengeData.call(this, args);
   }
 
-  // NMTODO: rename as its the same as getInFlightExitData
   /** Get the exit data for an in-flight transaction */
   public async inFlightExitGetData (
     txbytes: string
