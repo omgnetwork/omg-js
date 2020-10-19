@@ -39,59 +39,59 @@ export function createTransactionBody ({
   fee,
   metadata
 }: ICreateTransactionBody): Interfaces.ITransactionBody {
-  const allPayments = [...payments, fee]
-  const neededCurrencies = uniq([...payments.map(i => i.currency), fee.currency])
+  const allPayments = [...payments, fee];
+  const neededCurrencies = uniq([...payments.map(i => i.currency), fee.currency]);
 
   function calculateChange (inputs) {
     return neededCurrencies.map(currency => {
       const needed = allPayments.reduce((acc, i) => {
         return i.currency === currency
           ? acc.add(new BN(i.amount.toString()))
-          : acc
-      }, new BN(0))
+          : acc;
+      }, new BN(0));
       const supplied = inputs.reduce((acc, i) => {
         return i.currency === currency
           ? acc.add(new BN(i.amount.toString()))
-          : acc
-      }, new BN(0))
-      const change = supplied.sub(needed)
+          : acc;
+      }, new BN(0));
+      const change = supplied.sub(needed);
       return {
         currency,
         needed,
         supplied,
         change
-      }
-    })
+      };
+    });
   }
 
   // check if fromUtxos has sufficient amounts to cover payments and fees
   // compare how much we need vs how much supplied per currency
-  const change = calculateChange(fromUtxos)
+  const change = calculateChange(fromUtxos);
   for (const i of change) {
     if (i.needed.gt(i.supplied)) {
-      const diff = i.needed.sub(i.supplied)
-      throw new Error(`Insufficient funds. Needs ${diff.toString()} more of ${i.currency} to cover payments and fees`)
+      const diff = i.needed.sub(i.supplied);
+      throw new Error(`Insufficient funds. Needs ${diff.toString()} more of ${i.currency} to cover payments and fees`);
     }
   }
 
   // get inputs array by filtering the fromUtxos we will actually use (respecting order)
-  const changeCounter = [...change]
+  const changeCounter = [...change];
   const inputs = fromUtxos.filter(fromUtxo => {
-    const foundIndex = changeCounter.findIndex(i => i.currency === fromUtxo.currency)
-    const foundItem = changeCounter[foundIndex]
+    const foundIndex = changeCounter.findIndex(i => i.currency === fromUtxo.currency);
+    const foundItem = changeCounter[foundIndex];
     if (!foundItem || foundItem.needed.lte(new BN(0))) {
-      return false
+      return false;
     }
     changeCounter[foundIndex] = {
       ...foundItem,
       needed: foundItem.needed.sub(new BN(fromUtxo.amount.toString()))
-    }
-    return true
-  })
-  validateInputs(inputs)
+    };
+    return true;
+  });
+  validateInputs(inputs);
 
   // recalculate change with filtered fromUtxos array, and create outputs (payments + changeOutputs)
-  const recalculatedChange = calculateChange(inputs)
+  const recalculatedChange = calculateChange(inputs);
   const changeOutputs = recalculatedChange
     .filter(i => i.change.gt(new BN(0)))
     .map(i => ({
@@ -99,15 +99,15 @@ export function createTransactionBody ({
       outputGuard: fromAddress,
       currency: i.currency,
       amount: i.change
-    }))
+    }));
   const paymentOutputs = payments.map(i => ({
     outputType: 1,
     outputGuard: i.owner,
     currency: i.currency,
     amount: i.amount
-  }))
+  }));
   const outputs: Array<Interfaces.IOutput> = [...changeOutputs, ...paymentOutputs];
-  validateOutputs(outputs)
+  validateOutputs(outputs);
 
   const encodedMetadata = metadata
     ? Encoders.encodeMetadata(metadata)
@@ -118,7 +118,7 @@ export function createTransactionBody ({
     outputs,
     txData: 0,
     metadata: encodedMetadata
-  }
+  };
 
   return txBody;
 }
@@ -167,7 +167,7 @@ function mergeUtxosToOutput (utxos: Array<Interfaces.IUTXO>): Interfaces.IOutput
       (prev, curr) => prev.add(new BN(curr.amount.toString())),
       new BN(0)
     )
-  }
+  };
 }
 
 export interface IMergeUtxos {

@@ -38,138 +38,138 @@ export function createAccount (): { address: string, privateKey: string } {
 export async function setGas (txDetails) {
   if (!txDetails.gas) {
     try {
-      txDetails.gas = await omgjs.web3Instance.eth.estimateGas(txDetails)
+      txDetails.gas = await omgjs.web3Instance.eth.estimateGas(txDetails);
     } catch (err) {
-      throw new Error(`Error estimating gas: ${err}`)
+      throw new Error(`Error estimating gas: ${err}`);
     }
   }
   if (!txDetails.gasPrice) {
     try {
-      txDetails.gasPrice = await omgjs.web3Instance.eth.getGasPrice()
+      txDetails.gasPrice = await omgjs.web3Instance.eth.getGasPrice();
     } catch (err) {
-      txDetails.gasPrice = '1000000000'
-      console.warn('Error getting gas price: ', err)
+      txDetails.gasPrice = '1000000000';
+      console.warn('Error getting gas price: ', err);
     }
   }
 }
 
 export async function sendTransaction (txDetails, privateKey) {
-  await setGas(txDetails)
+  await setGas(txDetails);
   if (!privateKey) {
-    return omgjs.web3Instance.eth.sendTransaction(txDetails)
+    return omgjs.web3Instance.eth.sendTransaction(txDetails);
   } else {
-    const signedTx = await omgjs.web3Instance.eth.accounts.signTransaction(txDetails, privateKey)
-    return omgjs.web3Instance.eth.sendSignedTransaction(signedTx.rawTransaction)
+    const signedTx = await omgjs.web3Instance.eth.accounts.signTransaction(txDetails, privateKey);
+    return omgjs.web3Instance.eth.sendSignedTransaction(signedTx.rawTransaction);
   }
 }
 
 export async function spentOnGas (receipt) {
-  const tx = await omgjs.web3Instance.eth.getTransaction(receipt.transactionHash)
-  return new BN(tx.gasPrice.toString()).muln(receipt.gasUsed)
+  const tx = await omgjs.web3Instance.eth.getTransaction(receipt.transactionHash);
+  return new BN(tx.gasPrice.toString()).muln(receipt.gasUsed);
 }
 
 export function waitForEthBalance (address, callback) {
   return promiseRetry(async (retry, number) => {
-    console.log(`Waiting for ETH balance...  (${number})`)
-    const resp = await omgjs.getRootchainETHBalance(address)
+    console.log(`Waiting for ETH balance...  (${number})`);
+    const resp = await omgjs.getRootchainETHBalance(address);
     if (!callback(resp)) {
-      retry()
+      retry();
     }
-    return resp
+    return resp;
   }, {
     minTimeout: 2000,
     factor: 1,
     retries: 30
-  })
+  });
 }
 
 export function waitForEthBalanceEq (address, expectedAmount) {
-  const expectedBn = new BN(expectedAmount.toString())
-  return waitForEthBalance(address, balance => new BN(balance.toString()).eq(expectedBn))
+  const expectedBn = new BN(expectedAmount.toString());
+  return waitForEthBalance(address, balance => new BN(balance.toString()).eq(expectedBn));
 }
 
 export function waitForERC20Balance (address, contractAddress, callback) {
   return promiseRetry(async (retry, number) => {
-    console.log(`Waiting for ERC20 balance...  (${number})`)
-    const resp = await omgjs.getRootchainERC20Balance({ erc20Address: contractAddress, address })
+    console.log(`Waiting for ERC20 balance...  (${number})`);
+    const resp = await omgjs.getRootchainERC20Balance({ erc20Address: contractAddress, address });
     if (!callback(resp)) {
-      retry()
+      retry();
     }
-    return resp
+    return resp;
   }, {
     minTimeout: 2000,
     factor: 1,
     retries: 30
-  })
+  });
 }
 
 export function waitForERC20BalanceEq (address, contractAddress, expectedAmount) {
-  const expectedBn = new BN(expectedAmount.toString())
-  return waitForERC20Balance(address, contractAddress, balance => new BN(balance.toString()).eq(expectedBn))
+  const expectedBn = new BN(expectedAmount.toString());
+  return waitForERC20Balance(address, contractAddress, balance => new BN(balance.toString()).eq(expectedBn));
 }
 
 export function sleep (ms) {
   return new Promise(resolve => {
-    setTimeout(resolve, ms)
-  })
+    setTimeout(resolve, ms);
+  });
 }
 
 export function awaitTx (txnHash, options?) {
-  const interval = options && options.interval ? options.interval : 1000
-  const blocksToWait = options && options.blocksToWait ? options.blocksToWait : 1
+  const interval = options && options.interval ? options.interval : 1000;
+  const blocksToWait = options && options.blocksToWait ? options.blocksToWait : 1;
 
   const transactionReceiptAsync = async function (txnHash, resolve, reject) {
     try {
-      const receipt = await omgjs.web3Instance.eth.getTransactionReceipt(txnHash)
+      const receipt = await omgjs.web3Instance.eth.getTransactionReceipt(txnHash);
       if (!receipt) {
         setTimeout(function () {
-          transactionReceiptAsync(txnHash, resolve, reject)
-        }, interval)
+          transactionReceiptAsync(txnHash, resolve, reject);
+        }, interval);
       } else {
         if (blocksToWait > 0) {
-          const resolvedReceipt = await receipt
+          const resolvedReceipt = await receipt;
           if (!resolvedReceipt || !resolvedReceipt.blockNumber) {
             setTimeout(function () {
-              transactionReceiptAsync(txnHash, resolve, reject)
-            }, interval)
+              transactionReceiptAsync(txnHash, resolve, reject);
+            }, interval);
           } else {
             try {
-              const block = await omgjs.web3Instance.eth.getBlock(resolvedReceipt.blockNumber)
-              const current = await omgjs.web3Instance.eth.getBlock('latest')
+              const block = await omgjs.web3Instance.eth.getBlock(resolvedReceipt.blockNumber);
+              const current = await omgjs.web3Instance.eth.getBlock('latest');
               if (current.number - block.number >= blocksToWait) {
-                const txn = await omgjs.web3Instance.eth.getTransaction(txnHash)
+                const txn = await omgjs.web3Instance.eth.getTransaction(txnHash);
                 if (txn.blockNumber != null) {
-                  resolve(resolvedReceipt)
+                  resolve(resolvedReceipt);
                 } else {
-                  reject(new Error('Transaction with hash: ' + txnHash + ' ended up in an uncle block.'))
+                  reject(new Error('Transaction with hash: ' + txnHash + ' ended up in an uncle block.'));
                 }
               } else {
                 setTimeout(function () {
-                  transactionReceiptAsync(txnHash, resolve, reject)
-                }, interval)
+                  transactionReceiptAsync(txnHash, resolve, reject);
+                }, interval);
               }
             } catch (e) {
               setTimeout(function () {
-                transactionReceiptAsync(txnHash, resolve, reject)
-              }, interval)
+                transactionReceiptAsync(txnHash, resolve, reject);
+              }, interval);
             }
           }
-        } else resolve(receipt)
+        } else resolve(receipt);
       }
     } catch (e) {
-      reject(e)
+      reject(e);
     }
-  }
+  };
 
   if (Array.isArray(txnHash)) {
-    const promises = []
+    const promises = [];
     txnHash.forEach(function (oneTxHash) {
-      promises.push(awaitTx(oneTxHash, options))
-    })
-    return Promise.all(promises)
+      promises.push(awaitTx(oneTxHash, options));
+    });
+    return Promise.all(promises);
   } else {
     return new Promise(function (resolve, reject) {
-      transactionReceiptAsync(txnHash, resolve, reject)
-    })
+      transactionReceiptAsync(txnHash, resolve, reject);
+    });
   }
 }

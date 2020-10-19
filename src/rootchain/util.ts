@@ -110,7 +110,7 @@ export async function waitForRootchainTransaction ({
     } catch (e) {
       return reject(e);
     }
-  }
+  };
 
   return new Promise((resolve, reject) => transactionReceiptAsync(transactionHash, resolve, reject));
 }

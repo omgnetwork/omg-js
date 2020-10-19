@@ -146,5 +146,5 @@ export function getTypedData (
       txData: transactionBody.txData || 0,
       metadata: transactionBody.metadata || Constants.NULL_METADATA
     }
-  }
+  };
 }

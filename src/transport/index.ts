@@ -45,7 +45,7 @@ export async function get ({
       url,
       transformResponse: getTransformResponse(),
       httpsAgent: getHttpsProxyAgent(proxyUrl)
-    }
+    };
     const res: AxiosResponse = await axios.request(options);
     return parseResponse(res);
   } catch (err) {

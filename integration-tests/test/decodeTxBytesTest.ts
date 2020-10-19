@@ -41,28 +41,28 @@ const omgjs = new OmgJS({
 
 describe('decodeTxBytesTest.js', function () {
   before(async function () {
-    await faucet.init({ faucetName })
-  })
+    await faucet.init({ faucetName });
+  });
 
   describe('Decode txBytes exit data', function () {
-    const INTIIAL_ALICE_AMOUNT = web3Utils.toWei('.1', 'ether')
-    const DEPOSIT_AMOUNT = web3Utils.toWei('.0001', 'ether')
+    const INTIIAL_ALICE_AMOUNT = web3Utils.toWei('.1', 'ether');
+    const DEPOSIT_AMOUNT = web3Utils.toWei('.0001', 'ether');
 
-    let aliceAccount
+    let aliceAccount;
 
     beforeEach(async function () {
-      aliceAccount = rcHelper.createAccount()
-      await faucet.fundRootchainEth(aliceAccount.address, INTIIAL_ALICE_AMOUNT)
-      await rcHelper.waitForEthBalanceEq(aliceAccount.address, INTIIAL_ALICE_AMOUNT)
-    })
+      aliceAccount = rcHelper.createAccount();
+      await faucet.fundRootchainEth(aliceAccount.address, INTIIAL_ALICE_AMOUNT);
+      await rcHelper.waitForEthBalanceEq(aliceAccount.address, INTIIAL_ALICE_AMOUNT);
+    });
 
     afterEach(async function () {
       try {
-        await faucet.returnFunds(aliceAccount)
+        await faucet.returnFunds(aliceAccount);
       } catch (err) {
-        console.warn(`Error trying to return funds to the faucet: ${err}`)
+        console.warn(`Error trying to return funds to the faucet: ${err}`);
       }
-    })
+    });
 
     it('should be able to decode back the txBytesfrom exitData', async function () {
       // Alice deposits ETH into the Plasma contract
@@ -72,20 +72,20 @@ describe('decodeTxBytesTest.js', function () {
           from: aliceAccount.address,
           privateKey: aliceAccount.privateKey
         }
-      })
-      await ccHelper.waitForBalanceEq(aliceAccount.address, DEPOSIT_AMOUNT)
-      console.log(`Alice deposited ${DEPOSIT_AMOUNT} into RootChain contract`)
+      });
+      await ccHelper.waitForBalanceEq(aliceAccount.address, DEPOSIT_AMOUNT);
+      console.log(`Alice deposited ${DEPOSIT_AMOUNT} into RootChain contract`);
       // Get Alice's deposit utxo
-      const aliceUtxos = await omgjs.getUtxos(aliceAccount.address)
-      assert.equal(aliceUtxos.length, 1)
-      assert.equal(aliceUtxos[0].amount.toString(), DEPOSIT_AMOUNT)
+      const aliceUtxos = await omgjs.getUtxos(aliceAccount.address);
+      assert.equal(aliceUtxos.length, 1);
+      assert.equal(aliceUtxos[0].amount.toString(), DEPOSIT_AMOUNT);
 
       // Get the exit data
-      const utxoToExit = aliceUtxos[0]
-      const exitData = await omgjs.getExitData(utxoToExit)
-      assert.containsAllKeys(exitData, ['txbytes', 'proof', 'utxo_pos'])
+      const utxoToExit = aliceUtxos[0];
+      const exitData = await omgjs.getExitData(utxoToExit);
+      assert.containsAllKeys(exitData, ['txbytes', 'proof', 'utxo_pos']);
 
-      const decodedTransaction = omgjs.decodeTransaction(exitData.txbytes)
+      const decodedTransaction = omgjs.decodeTransaction(exitData.txbytes);
       assert.deepEqual(
         {
           txType: 1,
@@ -103,7 +103,7 @@ describe('decodeTxBytesTest.js', function () {
             '0x0000000000000000000000000000000000000000000000000000000000000000'
         },
         decodedTransaction
-      )
-    })
-  })
-})
+      );
+    });
+  });
+});

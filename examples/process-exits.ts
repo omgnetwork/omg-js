@@ -51,7 +51,7 @@ async function processExits (): Promise<void> {
       }
     });
     if (ethExitReceipt) {
-      console.log(`ETH exits processing: ${ethExitReceipt.transactionHash}`)
+      console.log(`ETH exits processing: ${ethExitReceipt.transactionHash}`);
       await omgjs.waitForRootchainTransaction({
         transactionHash: ethExitReceipt.transactionHash,
         checkIntervalMs: config.millis_to_wait_for_next_block,

@@ -293,7 +293,7 @@ export async function challengeInFlightExitInputSpent ({
       inputUtxoPos.toString(),
       keccak256(Buffer.from(txOptions.from))
     ]
-  )
+  );
   return RootchainTransactionsModule.sendTransaction.call(this, {
     from: txOptions.from,
     to: address,

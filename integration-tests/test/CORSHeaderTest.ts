@@ -21,7 +21,7 @@ import config from '../test-config';
 describe('CORSHeaderTest.js', function () {
   describe('Watcher CORS Header test', function () {
     it('should return CORS headers', async function () {
-      const url = `${config.watcher_url}/status.get`
+      const url = `${config.watcher_url}/status.get`;
       const response = await fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -29,16 +29,16 @@ describe('CORSHeaderTest.js', function () {
           jsonrpc: '2.0',
           id: 0
         })
-      })
-      assert.equal(response.headers.get('access-control-allow-origin'), '*')
-      assert.isNotNull(response.headers.get('access-control-expose-headers'))
-      assert.isNotNull(response.headers.get('access-control-allow-credentials'))
-    })
-  })
+      });
+      assert.equal(response.headers.get('access-control-allow-origin'), '*');
+      assert.isNotNull(response.headers.get('access-control-expose-headers'));
+      assert.isNotNull(response.headers.get('access-control-allow-credentials'));
+    });
+  });
 
   describe('Child chain CORS Header test', function () {
     it('should return CORS headers', async function () {
-      const url = `${config.childchain_url}/block.get`
+      const url = `${config.childchain_url}/block.get`;
       const response = await fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -47,10 +47,10 @@ describe('CORSHeaderTest.js', function () {
           id: 0,
           hash: '0x0017372421f9a92bedb7163310918e623557ab5310befc14e67212b660c33bec'
         })
-      })
-      assert.equal(response.headers.get('access-control-allow-origin'), '*')
-      assert.isNotNull(response.headers.get('access-control-expose-headers'))
-      assert.isNotNull(response.headers.get('access-control-allow-credentials'))
-    })
-  })
-})
+      });
+      assert.equal(response.headers.get('access-control-allow-origin'), '*');
+      assert.isNotNull(response.headers.get('access-control-expose-headers'));
+      assert.isNotNull(response.headers.get('access-control-allow-credentials'));
+    });
+  });
+});

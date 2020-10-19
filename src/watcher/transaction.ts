@@ -77,7 +77,7 @@ export async function createTransaction ({
 }: ICreateTransaction): Promise<ICreatedTransactions> {
   const _metadata = metadata
     ? Encoders.encodeMetadata(metadata)
-    : Constants.NULL_METADATA
+    : Constants.NULL_METADATA;
 
   return Transporter.post({
     url: `${this.watcherUrl}/transaction.create`,

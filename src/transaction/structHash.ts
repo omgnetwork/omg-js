@@ -26,20 +26,20 @@ function dependencies (
   found = []
 ): Array<any> {
   if (found.includes(primaryType)) {
-    return found
+    return found;
   }
   if (types[primaryType] === undefined) {
-    return found
+    return found;
   }
-  found.push(primaryType)
+  found.push(primaryType);
   for (const field of types[primaryType]) {
     for (const dep of dependencies(types, field.type, found)) {
       if (!found.includes(dep)) {
-        found.push(dep)
+        found.push(dep);
       }
     }
   }
-  return found
+  return found;
 }
 
 /** @internal */
@@ -48,16 +48,16 @@ function encodeType (
   primaryType: string
 ): string {
   // Get dependencies primary first, then alphabetical
-  let deps = dependencies(types, primaryType)
-  deps = deps.filter(t => t !== primaryType)
-  deps = [primaryType].concat(deps.sort())
+  let deps = dependencies(types, primaryType);
+  deps = deps.filter(t => t !== primaryType);
+  deps = [primaryType].concat(deps.sort());
 
   // Format as a string with fields
-  let result = ''
+  let result = '';
   for (const type of deps) {
-    result += `${type}(${types[type].map(({ name, type }) => `${type} ${name}`).join(',')})`
+    result += `${type}(${types[type].map(({ name, type }) => `${type} ${name}`).join(',')})`;
   }
-  return result
+  return result;
 }
 
 /** @internal */
@@ -83,20 +83,20 @@ function encodeData (
 
   // Add field contents
   for (const field of types[primaryType]) {
-    let value = data[field.name]
+    let value = data[field.name];
     if (field.type === 'string' || field.type === 'bytes') {
-      encTypes.push('bytes32')
-      value = keccak256(Buffer.from(value))
-      encValues.push(value)
+      encTypes.push('bytes32');
+      value = keccak256(Buffer.from(value));
+      encValues.push(value);
     } else if (types[field.type] !== undefined) {
-      encTypes.push('bytes32')
-      value = keccak256(encodeData(types, field.type, value))
-      encValues.push(value)
+      encTypes.push('bytes32');
+      value = keccak256(encodeData(types, field.type, value));
+      encValues.push(value);
     } else if (field.type.lastIndexOf(']') === field.type.length - 1) {
-      throw new Error('Arrays currently unimplemented in encodeData')
+      throw new Error('Arrays currently unimplemented in encodeData');
     } else {
-      encTypes.push(field.type)
-      encValues.push(value)
+      encTypes.push(field.type);
+      encValues.push(value);
     }
   }
   return rawEncode(encTypes, encValues);

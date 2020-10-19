@@ -29,7 +29,7 @@ import config from '../test-config';
 should();
 use(chaiAsPromised);
 
-const faucetName = path.basename(__filename)
+const faucetName = path.basename(__filename);
 
 const web3Provider = new Web3.providers.HttpProvider(config.eth_node);
 const omgjs = new OmgJS({
@@ -41,28 +41,28 @@ const omgjs = new OmgJS({
 
 describe('exitWithoutWatcherTest.js', function () {
   before(async function () {
-    await faucet.init({ faucetName })
-  })
+    await faucet.init({ faucetName });
+  });
 
   describe('exiting a deposit without a watcher', function () {
-    const INTIIAL_ALICE_AMOUNT = web3Utils.toWei('.1', 'ether')
-    const TEST_AMOUNT = web3Utils.toWei('.0001', 'ether')
+    const INTIIAL_ALICE_AMOUNT = web3Utils.toWei('.1', 'ether');
+    const TEST_AMOUNT = web3Utils.toWei('.0001', 'ether');
 
-    let aliceAccount
+    let aliceAccount;
 
     beforeEach(async function () {
-      aliceAccount = rcHelper.createAccount()
-      await faucet.fundRootchainEth(aliceAccount.address, INTIIAL_ALICE_AMOUNT)
-      await rcHelper.waitForEthBalanceEq(aliceAccount.address, INTIIAL_ALICE_AMOUNT)
-    })
+      aliceAccount = rcHelper.createAccount();
+      await faucet.fundRootchainEth(aliceAccount.address, INTIIAL_ALICE_AMOUNT);
+      await rcHelper.waitForEthBalanceEq(aliceAccount.address, INTIIAL_ALICE_AMOUNT);
+    });
 
     afterEach(async function () {
       try {
-        await faucet.returnFunds(aliceAccount)
+        await faucet.returnFunds(aliceAccount);
       } catch (err) {
-        console.warn(`Error trying to return funds to the faucet: ${err}`)
+        console.warn(`Error trying to return funds to the faucet: ${err}`);
       }
-    })
+    });
 
     it('getDepositExitData creates required exit data', async function () {
       const depositTransaction = await omgjs.deposit({
@@ -71,22 +71,22 @@ describe('exitWithoutWatcherTest.js', function () {
           from: aliceAccount.address,
           privateKey: aliceAccount.privateKey
         }
-      })
+      });
 
       // wait for deposit to be recognized
-      await ccHelper.waitNumUtxos(aliceAccount.address, 1)
-      const aliceUtxos = await omgjs.getUtxos(aliceAccount.address)
-      assert.lengthOf(aliceUtxos, 1)
-      console.log(`Alice deposited ${TEST_AMOUNT} wei into the RootChain contract`)
+      await ccHelper.waitNumUtxos(aliceAccount.address, 1);
+      const aliceUtxos = await omgjs.getUtxos(aliceAccount.address);
+      assert.lengthOf(aliceUtxos, 1);
+      console.log(`Alice deposited ${TEST_AMOUNT} wei into the RootChain contract`);
 
       // call the function we are testing
-      const exitData = await omgjs.getDepositExitData(depositTransaction.transactionHash)
+      const exitData = await omgjs.getDepositExitData(depositTransaction.transactionHash);
 
       // compare it to what the childchain returns
-      const ccExitData = await omgjs.getExitData(aliceUtxos[0])
+      const ccExitData = await omgjs.getExitData(aliceUtxos[0]);
 
-      assert.deepEqual(ccExitData, exitData)
-      console.log('Exit data matches what the childchain would return')
-    })
-  })
-})
+      assert.deepEqual(ccExitData, exitData);
+      console.log('Exit data matches what the childchain would return');
+    });
+  });
+});

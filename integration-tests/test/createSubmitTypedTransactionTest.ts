@@ -41,37 +41,37 @@ const omgjs = new OmgJS({
 });
 
 describe('createSubmitTypedTransactionTest.js', function () {
-  let FEE_ETH_AMOUNT
+  let FEE_ETH_AMOUNT;
 
   before(async function () {
-    await faucet.init({ faucetName })
-    const fees = (await omgjs.getFees())['1']
-    const { amount } = fees.find(f => f.currency === OmgJS.currency.ETH)
-    FEE_ETH_AMOUNT = new BN(amount.toString())
-  })
+    await faucet.init({ faucetName });
+    const fees = (await omgjs.getFees())['1'];
+    const { amount } = fees.find(f => f.currency === OmgJS.currency.ETH);
+    FEE_ETH_AMOUNT = new BN(amount.toString());
+  });
 
   describe('create a single currency transaction with submitTyped', function () {
-    const INTIIAL_ALICE_AMOUNT = web3Utils.toWei('.0001', 'ether')
-    const TRANSFER_AMOUNT = web3Utils.toWei('.0000001', 'ether')
+    const INTIIAL_ALICE_AMOUNT = web3Utils.toWei('.0001', 'ether');
+    const TRANSFER_AMOUNT = web3Utils.toWei('.0000001', 'ether');
 
-    let aliceAccount
-    let bobAccount
+    let aliceAccount;
+    let bobAccount;
 
     beforeEach(async function () {
-      aliceAccount = rcHelper.createAccount()
-      bobAccount = rcHelper.createAccount()
-      await faucet.fundChildchain(aliceAccount.address, INTIIAL_ALICE_AMOUNT, OmgJS.currency.ETH)
-      await ccHelper.waitForBalanceEq(aliceAccount.address, INTIIAL_ALICE_AMOUNT)
-    })
+      aliceAccount = rcHelper.createAccount();
+      bobAccount = rcHelper.createAccount();
+      await faucet.fundChildchain(aliceAccount.address, INTIIAL_ALICE_AMOUNT, OmgJS.currency.ETH);
+      await ccHelper.waitForBalanceEq(aliceAccount.address, INTIIAL_ALICE_AMOUNT);
+    });
 
     afterEach(async function () {
       try {
-        await faucet.returnFunds(aliceAccount)
-        await faucet.returnFunds(bobAccount)
+        await faucet.returnFunds(aliceAccount);
+        await faucet.returnFunds(bobAccount);
       } catch (err) {
-        console.warn(`Error trying to return funds to the faucet: ${err}`)
+        console.warn(`Error trying to return funds to the faucet: ${err}`);
       }
-    })
+    });
 
     it('should create and submit a single currency transaction using submitTyped', async function () {
       const createdTx = await omgjs.createTransaction({
@@ -82,24 +82,24 @@ describe('createSubmitTypedTransactionTest.js', function () {
           amount: Number(TRANSFER_AMOUNT)
         }],
         feeCurrency: OmgJS.currency.ETH
-      })
-      assert.equal(createdTx.result, 'complete')
-      assert.equal(createdTx.transactions.length, 1)
+      });
+      assert.equal(createdTx.result, 'complete');
+      assert.equal(createdTx.transactions.length, 1);
 
-      const txTypedData = omgjs.signTypedData({ txData: createdTx.transactions[0], privateKeys: [aliceAccount.privateKey] })
-      const result = await omgjs.submitTypedData(txTypedData)
-      console.log(`Submitted transaction: ${result.txhash}`)
+      const txTypedData = omgjs.signTypedData({ txData: createdTx.transactions[0], privateKeys: [aliceAccount.privateKey] });
+      const result = await omgjs.submitTypedData(txTypedData);
+      console.log(`Submitted transaction: ${result.txhash}`);
 
       // Bob's balance should be TRANSFER_AMOUNT
-      const bobBalance = await ccHelper.waitForBalanceEq(bobAccount.address, TRANSFER_AMOUNT)
-      assert.equal(bobBalance.length, 1)
-      assert.equal(bobBalance[0].amount.toString(), TRANSFER_AMOUNT)
+      const bobBalance = await ccHelper.waitForBalanceEq(bobAccount.address, TRANSFER_AMOUNT);
+      assert.equal(bobBalance.length, 1);
+      assert.equal(bobBalance[0].amount.toString(), TRANSFER_AMOUNT);
 
       // Alice's balance should be INTIIAL_ALICE_AMOUNT - TRANSFER_AMOUNT - FEE_AMOUNT
-      const aliceBalance = await omgjs.getBalance(aliceAccount.address)
-      assert.equal(aliceBalance.length, 1)
-      const expected = new BN(INTIIAL_ALICE_AMOUNT).sub(new BN(TRANSFER_AMOUNT)).sub(FEE_ETH_AMOUNT)
-      assert.equal(aliceBalance[0].amount.toString(), expected.toString())
-    })
-  })
-})
+      const aliceBalance = await omgjs.getBalance(aliceAccount.address);
+      assert.equal(aliceBalance.length, 1);
+      const expected = new BN(INTIIAL_ALICE_AMOUNT).sub(new BN(TRANSFER_AMOUNT)).sub(FEE_ETH_AMOUNT);
+      assert.equal(aliceBalance[0].amount.toString(), expected.toString());
+    });
+  });
+});

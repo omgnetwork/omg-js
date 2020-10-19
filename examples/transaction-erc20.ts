@@ -76,7 +76,7 @@ async function transactionErc20 (): Promise<void> {
   console.log('Transaction submitted: ', receipt.txhash);
 
   console.log('Waiting for transaction to be recorded by the watcher...');
-  const expectedAmount = Number(amount) + Number(erc20Balance)
+  const expectedAmount = Number(amount) + Number(erc20Balance);
   await omgjs.waitForChildchainBalance({
     address: toAddress,
     expectedAmount,

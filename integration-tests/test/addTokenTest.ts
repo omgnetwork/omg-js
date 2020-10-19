@@ -25,10 +25,10 @@ import faucet from '../helpers/faucet';
 import * as rcHelper from '../helpers/rootChainHelper';
 import config from '../test-config';
 
-should()
-use(chaiAsPromised)
+should();
+use(chaiAsPromised);
 
-const faucetName = path.basename(__filename)
+const faucetName = path.basename(__filename);
 
 const web3Provider = new Web3.providers.HttpProvider(config.eth_node);
 const omgjs = new OmgJS({
@@ -39,48 +39,48 @@ const omgjs = new OmgJS({
 });
 
 describe('addExitQueueTest.js', function () {
-  const INTIIAL_ALICE_AMOUNT = web3Utils.toWei('0.1', 'ether')
-  let aliceAccount
+  const INTIIAL_ALICE_AMOUNT = web3Utils.toWei('0.1', 'ether');
+  let aliceAccount;
 
   before(async function () {
-    await faucet.init({ faucetName })
-  })
+    await faucet.init({ faucetName });
+  });
 
   beforeEach(async function () {
-    aliceAccount = rcHelper.createAccount()
-    await faucet.fundRootchainEth(aliceAccount.address, INTIIAL_ALICE_AMOUNT)
-    await rcHelper.waitForEthBalanceEq(aliceAccount.address, INTIIAL_ALICE_AMOUNT)
-  })
+    aliceAccount = rcHelper.createAccount();
+    await faucet.fundRootchainEth(aliceAccount.address, INTIIAL_ALICE_AMOUNT);
+    await rcHelper.waitForEthBalanceEq(aliceAccount.address, INTIIAL_ALICE_AMOUNT);
+  });
 
   afterEach(async function () {
     try {
-      await faucet.returnFunds(aliceAccount)
+      await faucet.returnFunds(aliceAccount);
     } catch (err) {
-      console.warn(`Error trying to return funds to the faucet: ${err}`)
+      console.warn(`Error trying to return funds to the faucet: ${err}`);
     }
-  })
+  });
 
   it('add token should add token if not added before', async function () {
-    const fakeErc20 = rcHelper.createAccount()
-    const hasToken = await omgjs.hasExitQueue(fakeErc20.address)
-    assert.isFalse(hasToken)
+    const fakeErc20 = rcHelper.createAccount();
+    const hasToken = await omgjs.hasExitQueue(fakeErc20.address);
+    assert.isFalse(hasToken);
     return omgjs.addExitQueue({
       currency: fakeErc20.address,
       txOptions: { from: aliceAccount.address, privateKey: aliceAccount.privateKey }
-    }).should.be.fulfilled
-  })
+    }).should.be.fulfilled;
+  });
 
   it('add token should not add token if added before', async function () {
-    const fakeErc20 = rcHelper.createAccount()
+    const fakeErc20 = rcHelper.createAccount();
     await omgjs.addExitQueue({
       currency: fakeErc20.address,
       txOptions: { from: aliceAccount.address, privateKey: aliceAccount.privateKey }
-    }).should.be.fulfilled
-    const hasToken = await omgjs.hasExitQueue(fakeErc20.address)
-    assert.isTrue(hasToken)
+    }).should.be.fulfilled;
+    const hasToken = await omgjs.hasExitQueue(fakeErc20.address);
+    assert.isTrue(hasToken);
     return omgjs.addExitQueue({
       currency: fakeErc20.address,
       txOptions: { from: aliceAccount.address, privateKey: aliceAccount.privateKey }
-    }).should.be.rejected
-  })
-})
+    }).should.be.rejected;
+  });
+});

@@ -39,31 +39,31 @@ const omgjs = new OmgJS({
 });
 
 describe('amountTypes.js', function () {
-  let aliceAccount
-  const INTIIAL_ALICE_AMOUNT = web3Utils.toWei('0.5', 'ether')
-  const INITIAL_AMOUNT_ERC20 = 3
+  let aliceAccount;
+  const INTIIAL_ALICE_AMOUNT = web3Utils.toWei('0.5', 'ether');
+  const INITIAL_AMOUNT_ERC20 = 3;
 
   before(async function () {
-    await faucet.init({ faucetName })
-  })
+    await faucet.init({ faucetName });
+  });
 
   beforeEach(async function () {
-    aliceAccount = rcHelper.createAccount()
-    await faucet.fundRootchainEth(aliceAccount.address, INTIIAL_ALICE_AMOUNT)
-    await faucet.fundRootchainERC20(aliceAccount.address, INITIAL_AMOUNT_ERC20)
+    aliceAccount = rcHelper.createAccount();
+    await faucet.fundRootchainEth(aliceAccount.address, INTIIAL_ALICE_AMOUNT);
+    await faucet.fundRootchainERC20(aliceAccount.address, INITIAL_AMOUNT_ERC20);
     await Promise.all([
       rcHelper.waitForEthBalanceEq(aliceAccount.address, INTIIAL_ALICE_AMOUNT),
       rcHelper.waitForERC20BalanceEq(aliceAccount.address, config.erc20_contract_address, INITIAL_AMOUNT_ERC20)
-    ])
-  })
+    ]);
+  });
 
   afterEach(async function () {
     try {
-      await faucet.returnFunds(aliceAccount)
+      await faucet.returnFunds(aliceAccount);
     } catch (err) {
-      console.warn(`Error trying to return funds to the faucet: ${err}`)
+      console.warn(`Error trying to return funds to the faucet: ${err}`);
     }
-  })
+  });
 
   it('approveToken() should only accept safe integers and strings and BN', async function () {
     const numberReceipt = await omgjs.approveERC20Deposit({
@@ -73,8 +73,8 @@ describe('amountTypes.js', function () {
         from: aliceAccount.address,
         privateKey: aliceAccount.privateKey
       }
-    })
-    assert.hasAnyKeys(numberReceipt, ['transactionHash'])
+    });
+    assert.hasAnyKeys(numberReceipt, ['transactionHash']);
 
     const stringReceipt = await omgjs.approveERC20Deposit({
       erc20Address: config.erc20_contract_address,
@@ -83,8 +83,8 @@ describe('amountTypes.js', function () {
         from: aliceAccount.address,
         privateKey: aliceAccount.privateKey
       }
-    })
-    assert.hasAnyKeys(stringReceipt, ['transactionHash'])
+    });
+    assert.hasAnyKeys(stringReceipt, ['transactionHash']);
 
     const bnReceipt = await omgjs.approveERC20Deposit({
       erc20Address: config.erc20_contract_address,
@@ -93,8 +93,8 @@ describe('amountTypes.js', function () {
         from: aliceAccount.address,
         privateKey: aliceAccount.privateKey
       }
-    })
-    assert.hasAnyKeys(bnReceipt, ['transactionHash'])
+    });
+    assert.hasAnyKeys(bnReceipt, ['transactionHash']);
 
     const unsafeReceipt = omgjs.approveERC20Deposit({
       erc20Address: config.erc20_contract_address,
@@ -103,8 +103,8 @@ describe('amountTypes.js', function () {
         from: aliceAccount.address,
         privateKey: aliceAccount.privateKey
       }
-    })
-    assert.isRejected(unsafeReceipt)
+    });
+    assert.isRejected(unsafeReceipt);
 
     const decimalReceipt = omgjs.approveERC20Deposit({
       erc20Address: config.erc20_contract_address,
@@ -113,8 +113,8 @@ describe('amountTypes.js', function () {
         from: aliceAccount.address,
         privateKey: aliceAccount.privateKey
       }
-    })
-    assert.isRejected(decimalReceipt)
+    });
+    assert.isRejected(decimalReceipt);
 
     const decimalStringReceipt = omgjs.approveERC20Deposit({
       erc20Address: config.erc20_contract_address,
@@ -123,9 +123,9 @@ describe('amountTypes.js', function () {
         from: aliceAccount.address,
         privateKey: aliceAccount.privateKey
       }
-    })
-    assert.isRejected(decimalStringReceipt)
-  })
+    });
+    assert.isRejected(decimalStringReceipt);
+  });
 
   it('deposit() should only accept safe integers, strings, and BN', async function () {
     const numberDeposit = await omgjs.deposit({
@@ -134,8 +134,8 @@ describe('amountTypes.js', function () {
         from: aliceAccount.address,
         privateKey: aliceAccount.privateKey
       }
-    })
-    assert.hasAnyKeys(numberDeposit, ['transactionHash'])
+    });
+    assert.hasAnyKeys(numberDeposit, ['transactionHash']);
 
     const stringDeposit = await omgjs.deposit({
       amount: '1',
@@ -143,8 +143,8 @@ describe('amountTypes.js', function () {
         from: aliceAccount.address,
         privateKey: aliceAccount.privateKey
       }
-    })
-    assert.hasAnyKeys(stringDeposit, ['transactionHash'])
+    });
+    assert.hasAnyKeys(stringDeposit, ['transactionHash']);
 
     const BNDeposit = await omgjs.deposit({
       amount: web3Utils.toBN(1),
@@ -152,8 +152,8 @@ describe('amountTypes.js', function () {
         from: aliceAccount.address,
         privateKey: aliceAccount.privateKey
       }
-    })
-    assert.hasAnyKeys(BNDeposit, ['transactionHash'])
+    });
+    assert.hasAnyKeys(BNDeposit, ['transactionHash']);
 
     const unsafeDeposit = omgjs.deposit({
       amount: 99999999999999999999999999999999999,
@@ -161,8 +161,8 @@ describe('amountTypes.js', function () {
         from: aliceAccount.address,
         privateKey: aliceAccount.privateKey
       }
-    })
-    assert.isRejected(unsafeDeposit)
+    });
+    assert.isRejected(unsafeDeposit);
 
     const decimalDeposit = omgjs.deposit({
       amount: 0.1,
@@ -170,8 +170,8 @@ describe('amountTypes.js', function () {
         from: aliceAccount.address,
         privateKey: aliceAccount.privateKey
       }
-    })
-    assert.isRejected(decimalDeposit)
+    });
+    assert.isRejected(decimalDeposit);
 
     const stringDecimalDeposit = omgjs.deposit({
       amount: '1.23',
@@ -179,7 +179,7 @@ describe('amountTypes.js', function () {
         from: aliceAccount.address,
         privateKey: aliceAccount.privateKey
       }
-    })
-    assert.isRejected(stringDecimalDeposit)
-  })
-})
+    });
+    assert.isRejected(stringDecimalDeposit);
+  });
+});

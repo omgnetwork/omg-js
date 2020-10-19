@@ -41,70 +41,70 @@ const omgjs = new OmgJS({
 });
 
 describe('transferTest.js', function () {
-  let feeEth
+  let feeEth;
 
   before(async function () {
-    await faucet.init({ faucetName })
-    const fees = (await omgjs.getFees())['1']
-    const { amount } = fees.find(f => f.currency === OmgJS.currency.ETH)
-    feeEth = amount
-  })
+    await faucet.init({ faucetName });
+    const fees = (await omgjs.getFees())['1'];
+    const { amount } = fees.find(f => f.currency === OmgJS.currency.ETH);
+    feeEth = amount;
+  });
 
   describe('Transfer with 4 inputs and 4 outputs', function () {
-    const UTXO_AMOUNT = web3Utils.toWei('.0001', 'ether')
-    let aliceAccount
-    let bobAccount
+    const UTXO_AMOUNT = web3Utils.toWei('.0001', 'ether');
+    let aliceAccount;
+    let bobAccount;
 
     beforeEach(async function () {
-      aliceAccount = rcHelper.createAccount()
-      bobAccount = rcHelper.createAccount()
+      aliceAccount = rcHelper.createAccount();
+      bobAccount = rcHelper.createAccount();
 
       // Alice and Bob want 2 utxos each
-      await faucet.fundChildchain(aliceAccount.address, UTXO_AMOUNT, OmgJS.currency.ETH)
-      await ccHelper.waitForBalanceEq(aliceAccount.address, UTXO_AMOUNT)
-      await faucet.fundChildchain(bobAccount.address, UTXO_AMOUNT, OmgJS.currency.ETH)
-      await ccHelper.waitForBalanceEq(bobAccount.address, UTXO_AMOUNT)
+      await faucet.fundChildchain(aliceAccount.address, UTXO_AMOUNT, OmgJS.currency.ETH);
+      await ccHelper.waitForBalanceEq(aliceAccount.address, UTXO_AMOUNT);
+      await faucet.fundChildchain(bobAccount.address, UTXO_AMOUNT, OmgJS.currency.ETH);
+      await ccHelper.waitForBalanceEq(bobAccount.address, UTXO_AMOUNT);
 
-      await faucet.fundChildchain(aliceAccount.address, UTXO_AMOUNT, OmgJS.currency.ETH)
-      await ccHelper.waitForBalanceEq(aliceAccount.address, Number(UTXO_AMOUNT) * 2)
-      await faucet.fundChildchain(bobAccount.address, UTXO_AMOUNT, OmgJS.currency.ETH)
-      await ccHelper.waitForBalanceEq(bobAccount.address, Number(UTXO_AMOUNT) * 2)
-    })
+      await faucet.fundChildchain(aliceAccount.address, UTXO_AMOUNT, OmgJS.currency.ETH);
+      await ccHelper.waitForBalanceEq(aliceAccount.address, Number(UTXO_AMOUNT) * 2);
+      await faucet.fundChildchain(bobAccount.address, UTXO_AMOUNT, OmgJS.currency.ETH);
+      await ccHelper.waitForBalanceEq(bobAccount.address, Number(UTXO_AMOUNT) * 2);
+    });
 
     afterEach(async function () {
       try {
-        await faucet.returnFunds(aliceAccount)
-        await faucet.returnFunds(bobAccount)
+        await faucet.returnFunds(aliceAccount);
+        await faucet.returnFunds(bobAccount);
       } catch (err) {
-        console.warn(`Error trying to return funds to the faucet: ${err}`)
+        console.warn(`Error trying to return funds to the faucet: ${err}`);
       }
-    })
+    });
 
     it('should send a transaction with 4 inputs and 4 outputs', async function () {
       // Check Alice's utxos on the child chain
-      let aliceUtxos = await omgjs.getUtxos(aliceAccount.address)
-      assert.equal(aliceUtxos.length, 2)
-      assert.equal(aliceUtxos[0].amount.toString(), UTXO_AMOUNT)
-      assert.equal(aliceUtxos[0].currency, OmgJS.currency.ETH)
-      assert.equal(aliceUtxos[1].amount.toString(), UTXO_AMOUNT)
-      assert.equal(aliceUtxos[1].currency, OmgJS.currency.ETH)
+      let aliceUtxos = await omgjs.getUtxos(aliceAccount.address);
+      assert.equal(aliceUtxos.length, 2);
+      assert.equal(aliceUtxos[0].amount.toString(), UTXO_AMOUNT);
+      assert.equal(aliceUtxos[0].currency, OmgJS.currency.ETH);
+      assert.equal(aliceUtxos[1].amount.toString(), UTXO_AMOUNT);
+      assert.equal(aliceUtxos[1].currency, OmgJS.currency.ETH);
 
       // Check Bob's utxos on the child chain
-      let bobUtxos = await omgjs.getUtxos(bobAccount.address)
-      assert.equal(bobUtxos.length, 2)
-      assert.equal(bobUtxos[0].amount.toString(), UTXO_AMOUNT)
-      assert.equal(bobUtxos[0].currency, OmgJS.currency.ETH)
-      assert.equal(bobUtxos[1].amount.toString(), UTXO_AMOUNT)
-      assert.equal(bobUtxos[1].currency, OmgJS.currency.ETH)
+      let bobUtxos = await omgjs.getUtxos(bobAccount.address);
+      assert.equal(bobUtxos.length, 2);
+      assert.equal(bobUtxos[0].amount.toString(), UTXO_AMOUNT);
+      assert.equal(bobUtxos[0].currency, OmgJS.currency.ETH);
+      assert.equal(bobUtxos[1].amount.toString(), UTXO_AMOUNT);
+      assert.equal(bobUtxos[1].currency, OmgJS.currency.ETH);
 
       // Construct the transaction body using all 4 deposit utxos
-      const inputs = [aliceUtxos[0], aliceUtxos[1], bobUtxos[0], bobUtxos[1]]
+      const inputs = [aliceUtxos[0], aliceUtxos[1], bobUtxos[0], bobUtxos[1]];
 
       // Split the transaction into 4 different outputs:
-      const ALICE_OUTPUT_0 = Number(UTXO_AMOUNT) * 0.2
-      const ALICE_OUTPUT_1 = Number(UTXO_AMOUNT) * 1.3
-      const BOB_OUTPUT_0 = Number(UTXO_AMOUNT) * 1
-      const BOB_OUTPUT_1 = new BN(UTXO_AMOUNT).mul(new BN(3)).div(new BN(2)).sub(new BN(feeEth))
+      const ALICE_OUTPUT_0 = Number(UTXO_AMOUNT) * 0.2;
+      const ALICE_OUTPUT_1 = Number(UTXO_AMOUNT) * 1.3;
+      const BOB_OUTPUT_0 = Number(UTXO_AMOUNT) * 1;
+      const BOB_OUTPUT_1 = new BN(UTXO_AMOUNT).mul(new BN(3)).div(new BN(2)).sub(new BN(feeEth));
       const outputs = [
         {
           outputType: 1,
@@ -130,10 +130,10 @@ describe('transferTest.js', function () {
           currency: OmgJS.currency.ETH,
           amount: BOB_OUTPUT_1
         }
-      ]
+      ];
 
       // Get the transaction data
-      const typedData = omgjs.getTypedData({ inputs, outputs })
+      const typedData = omgjs.getTypedData({ inputs, outputs });
       // Sign it with the correct private key for each input
       const signatures = omgjs.signTransaction({ typedData,
         privateKeys: [
@@ -142,35 +142,35 @@ describe('transferTest.js', function () {
           bobAccount.privateKey,
           bobAccount.privateKey
         ]
-      })
-      assert.equal(signatures.length, 4)
+      });
+      assert.equal(signatures.length, 4);
       // Build the signed transaction
-      const signedTx = omgjs.buildSignedTransaction({ typedData, signatures })
+      const signedTx = omgjs.buildSignedTransaction({ typedData, signatures });
 
       // Submit the signed transaction to the childchain
-      const result = await omgjs.submitTransaction(signedTx)
-      console.log(`Submitted transaction: ${result.txhash}`)
+      const result = await omgjs.submitTransaction(signedTx);
+      console.log(`Submitted transaction: ${result.txhash}`);
 
       // Alice's balance should be ALICE_OUTPUT_0 + ALICE_OUTPUT_1
-      const expected = web3Utils.toBN(ALICE_OUTPUT_0).add(web3Utils.toBN(ALICE_OUTPUT_1))
-      const balance = await ccHelper.waitForBalanceEq(aliceAccount.address, expected.toString())
-      assert.equal(balance[0].amount.toString(), expected.toString())
+      const expected = web3Utils.toBN(ALICE_OUTPUT_0).add(web3Utils.toBN(ALICE_OUTPUT_1));
+      const balance = await ccHelper.waitForBalanceEq(aliceAccount.address, expected.toString());
+      assert.equal(balance[0].amount.toString(), expected.toString());
 
       // Check Alice's utxos on the child chain again
-      aliceUtxos = await omgjs.getUtxos(aliceAccount.address)
-      assert.equal(aliceUtxos.length, 2)
-      assert.equal(aliceUtxos[0].amount.toString(), ALICE_OUTPUT_0.toString())
-      assert.equal(aliceUtxos[0].currency, OmgJS.currency.ETH)
-      assert.equal(aliceUtxos[1].amount.toString(), ALICE_OUTPUT_1.toString())
-      assert.equal(aliceUtxos[1].currency, OmgJS.currency.ETH)
+      aliceUtxos = await omgjs.getUtxos(aliceAccount.address);
+      assert.equal(aliceUtxos.length, 2);
+      assert.equal(aliceUtxos[0].amount.toString(), ALICE_OUTPUT_0.toString());
+      assert.equal(aliceUtxos[0].currency, OmgJS.currency.ETH);
+      assert.equal(aliceUtxos[1].amount.toString(), ALICE_OUTPUT_1.toString());
+      assert.equal(aliceUtxos[1].currency, OmgJS.currency.ETH);
 
       // Check Bob's utxos on the child chain again
-      bobUtxos = await omgjs.getUtxos(bobAccount.address)
-      assert.equal(bobUtxos.length, 2)
-      assert.equal(bobUtxos[0].amount.toString(), BOB_OUTPUT_0.toString())
-      assert.equal(bobUtxos[0].currency, OmgJS.currency.ETH)
-      assert.equal(bobUtxos[1].amount.toString(), BOB_OUTPUT_1.toString())
-      assert.equal(bobUtxos[1].currency, OmgJS.currency.ETH)
-    })
-  })
-})
+      bobUtxos = await omgjs.getUtxos(bobAccount.address);
+      assert.equal(bobUtxos.length, 2);
+      assert.equal(bobUtxos[0].amount.toString(), BOB_OUTPUT_0.toString());
+      assert.equal(bobUtxos[0].currency, OmgJS.currency.ETH);
+      assert.equal(bobUtxos[1].amount.toString(), BOB_OUTPUT_1.toString());
+      assert.equal(bobUtxos[1].currency, OmgJS.currency.ETH);
+    });
+  });
+});

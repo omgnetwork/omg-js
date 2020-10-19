@@ -27,7 +27,7 @@ export const validateBn: Joi.Schema = Joi.any().custom((value, helpers) => {
     return (helpers as any).message(`${value} is not an instance of BN.js`);
   }
   return value;
-})
+});
 
 export const validateAmount: Joi.Schema = Joi.alternatives().try(
   Joi.number().integer().required(),

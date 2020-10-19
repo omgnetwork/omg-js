@@ -102,7 +102,7 @@ async function exitEth (): Promise<void> {
   const { msUntilFinalization } = await omgjs.getExitTime({
     exitRequestBlockNumber: standardExitReceipt.blockNumber,
     submissionBlockNumber: utxoToExit.blknum
-  })
+  });
 
   await wait(msUntilFinalization);
   const processExitReceipt = await omgjs.processExits({
@@ -116,7 +116,7 @@ async function exitEth (): Promise<void> {
   });
 
   if (processExitReceipt) {
-    console.log(`ETH exits processing: ${processExitReceipt.transactionHash}`)
+    console.log(`ETH exits processing: ${processExitReceipt.transactionHash}`);
     await omgjs.waitForRootchainTransaction({
       transactionHash: processExitReceipt.transactionHash,
       checkIntervalMs: config.millis_to_wait_for_next_block,

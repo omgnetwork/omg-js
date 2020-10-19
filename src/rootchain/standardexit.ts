@@ -101,7 +101,7 @@ export async function getDepositExitData (
     proof,
     txbytes,
     utxo_pos: blknum * 1000000000
-  }
+  };
 }
 
 export interface IChallengeStandardExit {

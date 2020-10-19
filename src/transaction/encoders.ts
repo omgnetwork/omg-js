@@ -83,7 +83,7 @@ export function encodeTransaction ({
     addInput(inputArray,
       i < inputs.length
         ? inputs[i]
-        : Constants.NULL_INPUT)
+        : Constants.NULL_INPUT);
   }
   txArray.push(inputArray);
   for (let i = 0; i < Constants.MAX_OUTPUTS; i++) {
@@ -124,17 +124,17 @@ export function decodeTransaction (transaction: string): Interfaces.ITransaction
     txType: parseNumber(txType),
     inputs: inputs.map(input => decodeUtxoPos(parseString(input))),
     outputs: outputs.map(output => {
-      const outputData = output[1]
+      const outputData = output[1];
       return {
         outputType: parseNumber(output[0]),
         outputGuard: parseString(outputData[0]),
         currency: parseString(outputData[1]),
         amount: web3Utils.toBN(parseString(outputData[2])).toString()
-      }
+      };
     }),
     txData: parseNumber(txData),
     metadata: parseString(metadata)
-  }
+  };
 }
 
 export interface IEncodeUtxoPos {
@@ -165,7 +165,7 @@ export function encodeMetadata (metadata: string): string {
     return metadata;
   }
   const encodedMetadata = Buffer.from(metadata).toString('hex').padStart(64, '0');
-  return `0x${encodedMetadata}`
+  return `0x${encodedMetadata}`;
 }
 
 /** @internal */

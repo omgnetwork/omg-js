@@ -29,7 +29,7 @@ import config from '../test-config';
 should();
 use(chaiAsPromised);
 
-const faucetName = path.basename(__filename)
+const faucetName = path.basename(__filename);
 
 const web3Provider = new Web3.providers.HttpProvider(config.eth_node);
 const omgjs = new OmgJS({
@@ -41,28 +41,28 @@ const omgjs = new OmgJS({
 
 describe('depositTest.js', function () {
   before(async function () {
-    await faucet.init({ faucetName })
-  })
+    await faucet.init({ faucetName });
+  });
 
   describe('deposit ETH', function () {
-    const INTIIAL_ALICE_AMOUNT = web3Utils.toWei('.1', 'ether')
-    const TEST_AMOUNT = web3Utils.toWei('.0001', 'ether')
+    const INTIIAL_ALICE_AMOUNT = web3Utils.toWei('.1', 'ether');
+    const TEST_AMOUNT = web3Utils.toWei('.0001', 'ether');
 
-    let aliceAccount
+    let aliceAccount;
 
     beforeEach(async function () {
-      aliceAccount = rcHelper.createAccount()
-      await faucet.fundRootchainEth(aliceAccount.address, INTIIAL_ALICE_AMOUNT)
-      await rcHelper.waitForEthBalanceEq(aliceAccount.address, INTIIAL_ALICE_AMOUNT)
-    })
+      aliceAccount = rcHelper.createAccount();
+      await faucet.fundRootchainEth(aliceAccount.address, INTIIAL_ALICE_AMOUNT);
+      await rcHelper.waitForEthBalanceEq(aliceAccount.address, INTIIAL_ALICE_AMOUNT);
+    });
 
     afterEach(async function () {
       try {
-        await faucet.returnFunds(aliceAccount)
+        await faucet.returnFunds(aliceAccount);
       } catch (err) {
-        console.warn(`Error trying to return funds to the faucet: ${err}`)
+        console.warn(`Error trying to return funds to the faucet: ${err}`);
       }
-    })
+    });
 
     // it('deposit calls event emitter if passed', async function () {
     //   let confirmationNum
@@ -98,68 +98,68 @@ describe('depositTest.js', function () {
           from: aliceAccount.address,
           privateKey: aliceAccount.privateKey
         }
-      })
-      assert.isObject(depositRes)
-      assert.isString(depositRes.transactionHash)
-    })
+      });
+      assert.isObject(depositRes);
+      assert.isString(depositRes.transactionHash);
+    });
 
     it('should deposit ETH to the Plasma contract', async function () {
       // The new account should have no initial balance
-      const initialBalance = await omgjs.getBalance(aliceAccount.address)
-      assert.equal(initialBalance.length, 0)
+      const initialBalance = await omgjs.getBalance(aliceAccount.address);
+      assert.equal(initialBalance.length, 0);
 
       // Deposit ETH into the Plasma contract
       await omgjs.deposit({
         amount: TEST_AMOUNT,
         txOptions: { from: aliceAccount.address, privateKey: aliceAccount.privateKey }
-      })
+      });
 
       // Wait for transaction to be mined and reflected in the account's balance
-      const balance = await ccHelper.waitForBalanceEq(aliceAccount.address, TEST_AMOUNT)
+      const balance = await ccHelper.waitForBalanceEq(aliceAccount.address, TEST_AMOUNT);
 
       // Check balance is correct
-      assert.equal(balance[0].currency, OmgJS.currency.ETH)
-      assert.equal(balance[0].amount.toString(), TEST_AMOUNT)
-      console.log(`Balance: ${balance[0].amount.toString()}`)
+      assert.equal(balance[0].currency, OmgJS.currency.ETH);
+      assert.equal(balance[0].amount.toString(), TEST_AMOUNT);
+      console.log(`Balance: ${balance[0].amount.toString()}`);
 
       // THe account should have one utxo on the child chain
-      const utxos = await omgjs.getUtxos(aliceAccount.address)
-      assert.equal(utxos.length, 1)
-      assert.equal(utxos[0].amount.toString(), TEST_AMOUNT)
-      assert.equal(utxos[0].currency, OmgJS.currency.ETH)
-    })
-  })
+      const utxos = await omgjs.getUtxos(aliceAccount.address);
+      assert.equal(utxos.length, 1);
+      assert.equal(utxos[0].amount.toString(), TEST_AMOUNT);
+      assert.equal(utxos[0].currency, OmgJS.currency.ETH);
+    });
+  });
 
   describe('deposit ERC20', function () {
-    const INTIIAL_AMOUNT_ETH = web3Utils.toWei('.1', 'ether')
-    const INITIAL_AMOUNT_ERC20 = 3
-    const TEST_AMOUNT = 2
+    const INTIIAL_AMOUNT_ETH = web3Utils.toWei('.1', 'ether');
+    const INITIAL_AMOUNT_ERC20 = 3;
+    const TEST_AMOUNT = 2;
 
-    let aliceAccount
+    let aliceAccount;
 
     beforeEach(async function () {
-      aliceAccount = rcHelper.createAccount()
-      await faucet.fundRootchainEth(aliceAccount.address, INTIIAL_AMOUNT_ETH)
-      await faucet.fundRootchainERC20(aliceAccount.address, INITIAL_AMOUNT_ERC20)
+      aliceAccount = rcHelper.createAccount();
+      await faucet.fundRootchainEth(aliceAccount.address, INTIIAL_AMOUNT_ETH);
+      await faucet.fundRootchainERC20(aliceAccount.address, INITIAL_AMOUNT_ERC20);
 
       await Promise.all([
         rcHelper.waitForEthBalanceEq(aliceAccount.address, INTIIAL_AMOUNT_ETH),
         rcHelper.waitForERC20BalanceEq(aliceAccount.address, config.erc20_contract_address, INITIAL_AMOUNT_ERC20)
-      ])
-    })
+      ]);
+    });
 
     afterEach(async function () {
       try {
-        await faucet.returnFunds(aliceAccount)
+        await faucet.returnFunds(aliceAccount);
       } catch (err) {
-        console.warn(`Error trying to return funds to the faucet: ${err}`)
+        console.warn(`Error trying to return funds to the faucet: ${err}`);
       }
-    })
+    });
 
     it('should deposit ERC20 tokens to the Plasma contract', async function () {
       // The new account should have no initial balance
-      const initialBalance = await omgjs.getBalance(aliceAccount.address)
-      assert.equal(initialBalance.length, 0)
+      const initialBalance = await omgjs.getBalance(aliceAccount.address);
+      assert.equal(initialBalance.length, 0);
 
       // Account must approve the Plasma contract
       await omgjs.approveERC20Deposit({
@@ -169,27 +169,27 @@ describe('depositTest.js', function () {
           from: aliceAccount.address,
           privateKey: aliceAccount.privateKey
         }
-      })
+      });
 
       // Deposit ERC20 tokens into the Plasma contract
       await omgjs.deposit({
         amount: TEST_AMOUNT,
         currency: config.erc20_contract_address,
         txOptions: { from: aliceAccount.address, privateKey: aliceAccount.privateKey }
-      })
+      });
 
       // Wait for transaction to be mined and reflected in the account's balance
-      const balance = await ccHelper.waitForBalanceEq(aliceAccount.address, TEST_AMOUNT, config.erc20_contract_address)
+      const balance = await ccHelper.waitForBalanceEq(aliceAccount.address, TEST_AMOUNT, config.erc20_contract_address);
 
       // Check balance is correct
-      assert.equal(balance[0].amount.toString(), TEST_AMOUNT)
-      console.log(`Balance: ${balance[0].amount.toString()}`)
+      assert.equal(balance[0].amount.toString(), TEST_AMOUNT);
+      console.log(`Balance: ${balance[0].amount.toString()}`);
 
       // THe account should have one utxo on the child chain
-      const utxos = await omgjs.getUtxos(aliceAccount.address)
-      assert.equal(utxos.length, 1)
-      assert.equal(utxos[0].amount.toString(), TEST_AMOUNT.toString())
-      assert.equal(utxos[0].currency.toLowerCase(), config.erc20_contract_address.toLowerCase())
-    })
-  })
-})
+      const utxos = await omgjs.getUtxos(aliceAccount.address);
+      assert.equal(utxos.length, 1);
+      assert.equal(utxos[0].amount.toString(), TEST_AMOUNT.toString());
+      assert.equal(utxos[0].currency.toLowerCase(), config.erc20_contract_address.toLowerCase());
+    });
+  });
+});

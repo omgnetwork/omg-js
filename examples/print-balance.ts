@@ -38,7 +38,7 @@ async function printBalance (): Promise<void> {
     return {
       currency: i.currency === OmgJS.currency.ETH ? 'ETH' : i.currency,
       amount: i.currency === OmgJS.currency.ETH ? `${web3Utils.fromWei(i.amount.toString())} ETH` : i.amount
-    }
+    };
   });
   const rootchainBalance = await omgjs.getRootchainETHBalance(address);
   const rootchainBalances = [

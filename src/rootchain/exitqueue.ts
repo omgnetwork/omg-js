@@ -56,7 +56,7 @@ export async function getExitTime ({
           exitRequestBlockNumber: _exitRequestBlockNumber,
           submissionBlockNumber: _submissionBlockNumber,
           retries: retries - 1
-        })
+        });
       }, retryInterval);
     } else {
       throw Error(`Could not get exit request block data: ${_exitRequestBlockNumber}`);
@@ -84,7 +84,7 @@ export async function getExitTime ({
   return {
     scheduledFinalizationTime: scheduledFinalizationTime + bufferSeconds,
     msUntilFinalization
-  }
+  };
 }
 
 export interface IExitQueue {
@@ -138,7 +138,7 @@ export async function getExitQueue (
         priority,
         exitableAt: exitableAt.toString(),
         exitId: exitId.toString()
-      }
+      };
     });
     return exitQueue;
   } else {

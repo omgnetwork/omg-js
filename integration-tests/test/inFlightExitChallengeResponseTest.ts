@@ -30,7 +30,7 @@ import config from '../test-config';
 should();
 use(chaiAsPromised);
 
-const faucetName = path.basename(__filename)
+const faucetName = path.basename(__filename);
 
 const web3Provider = new Web3.providers.HttpProvider(config.eth_node);
 const omgjs = new OmgJS({
@@ -42,69 +42,69 @@ const omgjs = new OmgJS({
 
 describe('inFlightExitChallengeResponseTest.js', function () {
   before(async function () {
-    await faucet.init({ faucetName })
-  })
+    await faucet.init({ faucetName });
+  });
 
   describe('in-flight transaction challenge response', function () {
-    const INTIIAL_ALICE_AMOUNT = web3Utils.toWei('.001', 'ether')
-    const INTIIAL_BOB_RC_AMOUNT = web3Utils.toWei('.9', 'ether')
-    const TRANSFER_AMOUNT = web3Utils.toWei('0.0002', 'ether')
+    const INTIIAL_ALICE_AMOUNT = web3Utils.toWei('.001', 'ether');
+    const INTIIAL_BOB_RC_AMOUNT = web3Utils.toWei('.9', 'ether');
+    const TRANSFER_AMOUNT = web3Utils.toWei('0.0002', 'ether');
 
-    let aliceAccount
-    let bobAccount
-    let carolAccount
-    let fundAliceTx
+    let aliceAccount;
+    let bobAccount;
+    let carolAccount;
+    let fundAliceTx;
 
     beforeEach(async function () {
-      aliceAccount = rcHelper.createAccount()
-      bobAccount = rcHelper.createAccount()
-      carolAccount = rcHelper.createAccount()
+      aliceAccount = rcHelper.createAccount();
+      bobAccount = rcHelper.createAccount();
+      carolAccount = rcHelper.createAccount();
 
       await Promise.all([
         // Give some ETH to Alice on the child chain
         faucet.fundChildchain(aliceAccount.address, INTIIAL_ALICE_AMOUNT, OmgJS.currency.ETH),
         // Give some ETH to Bob on the root chain
         faucet.fundRootchainEth(bobAccount.address, INTIIAL_BOB_RC_AMOUNT)
-      ]).then(([tx]) => (fundAliceTx = tx))
+      ]).then(([tx]) => (fundAliceTx = tx));
 
       // Give some ETH to Carol on the root chain
-      await faucet.fundRootchainEth(carolAccount.address, INTIIAL_BOB_RC_AMOUNT)
+      await faucet.fundRootchainEth(carolAccount.address, INTIIAL_BOB_RC_AMOUNT);
 
       // Wait for finality
       await Promise.all([
         ccHelper.waitForBalanceEq(aliceAccount.address, INTIIAL_ALICE_AMOUNT),
         rcHelper.waitForEthBalanceEq(carolAccount.address, INTIIAL_BOB_RC_AMOUNT),
         rcHelper.waitForEthBalanceEq(bobAccount.address, INTIIAL_BOB_RC_AMOUNT)
-      ])
-    })
+      ]);
+    });
 
     afterEach(async function () {
       try {
-        await faucet.returnFunds(aliceAccount)
-        await faucet.returnFunds(bobAccount)
-        await faucet.returnFunds(carolAccount)
+        await faucet.returnFunds(aliceAccount);
+        await faucet.returnFunds(bobAccount);
+        await faucet.returnFunds(carolAccount);
       } catch (err) {
-        console.warn(`Error trying to return funds to the faucet: ${err}`)
+        console.warn(`Error trying to return funds to the faucet: ${err}`);
       }
-    })
+    });
 
     it('should respond to an invalid IFE challenge', async function () {
       // Alice creates a transaction to send funds to Bob
-      const bobSpentOnGas = new BN(0)
+      const bobSpentOnGas = new BN(0);
       const bobTx = await ccHelper.createTx(
         aliceAccount.address,
         bobAccount.address,
         TRANSFER_AMOUNT,
         OmgJS.currency.ETH,
         aliceAccount.privateKey
-      )
+      );
 
       // Bob doesn't see the transaction get put into a block. He assumes that the operator
       // is witholding, so he attempts to exit his spent utxo as an in-flight exit
 
       // Get the exit data
-      const exitData = await omgjs.inFlightExitGetData(bobTx)
-      assert.containsAllKeys(exitData, ['in_flight_tx', 'in_flight_tx_sigs', 'input_txs', 'input_txs_inclusion_proofs', 'input_utxos_pos'])
+      const exitData = await omgjs.inFlightExitGetData(bobTx);
+      assert.containsAllKeys(exitData, ['in_flight_tx', 'in_flight_tx_sigs', 'input_txs', 'input_txs_inclusion_proofs', 'input_utxos_pos']);
 
       // Starts the in-flight exit
       const ifeExitReceipt = await omgjs.startInFlightExit({
@@ -117,13 +117,13 @@ describe('inFlightExitChallengeResponseTest.js', function () {
           privateKey: bobAccount.privateKey,
           from: bobAccount.address
         }
-      })
-      console.log(`Bob called RootChain.startInFlightExit(): txhash = ${ifeExitReceipt.transactionHash}`)
+      });
+      console.log(`Bob called RootChain.startInFlightExit(): txhash = ${ifeExitReceipt.transactionHash}`);
 
       // Keep track of how much Bob spends on gas
-      bobSpentOnGas.iadd(await rcHelper.spentOnGas(ifeExitReceipt))
-      const decodedTx = omgjs.decodeTransaction(bobTx)
-      const outputIndex = decodedTx.outputs.findIndex(e => e.outputGuard === bobAccount.address)
+      bobSpentOnGas.iadd(await rcHelper.spentOnGas(ifeExitReceipt));
+      const decodedTx = omgjs.decodeTransaction(bobTx);
+      const outputIndex = decodedTx.outputs.findIndex(e => e.outputGuard === bobAccount.address);
 
       // Bob piggybacks his output on the in-flight exit
       let receipt = await omgjs.piggybackInFlightExitOnOutput({
@@ -133,10 +133,10 @@ describe('inFlightExitChallengeResponseTest.js', function () {
           privateKey: bobAccount.privateKey,
           from: bobAccount.address
         }
-      })
+      });
 
-      console.log(`Bob called RootChain.piggybackInFlightExit() : txhash = ${receipt.transactionHash}`)
-      bobSpentOnGas.iadd(await rcHelper.spentOnGas(receipt))
+      console.log(`Bob called RootChain.piggybackInFlightExit() : txhash = ${receipt.transactionHash}`);
+      bobSpentOnGas.iadd(await rcHelper.spentOnGas(receipt));
 
       // Meanwhile, Alice also sends funds to Carol (double spend). This transaction doesn't get put into a block either.
       const carolTx = await ccHelper.createTx(
@@ -145,36 +145,36 @@ describe('inFlightExitChallengeResponseTest.js', function () {
         TRANSFER_AMOUNT,
         OmgJS.currency.ETH,
         aliceAccount.privateKey
-      )
+      );
 
       // Bob's transaction eventually does get put into a block
-      await omgjs.submitTransaction(bobTx)
-      await ccHelper.waitForBalanceEq(bobAccount.address, TRANSFER_AMOUNT)
+      await omgjs.submitTransaction(bobTx);
+      await ccHelper.waitForBalanceEq(bobAccount.address, TRANSFER_AMOUNT);
 
       // Carol sees that Bob is trying to exit the same input that Alice sent to her.
-      const carolTxDecoded = omgjs.decodeTransaction(carolTx)
-      const cInput = carolTxDecoded.inputs[0]
+      const carolTxDecoded = omgjs.decodeTransaction(carolTx);
+      const cInput = carolTxDecoded.inputs[0];
       const inflightExit = await ccHelper.waitForEvent(
         'in_flight_exits',
         e => {
-          const decoded = omgjs.decodeTransaction(e.txbytes)
+          const decoded = omgjs.decodeTransaction(e.txbytes);
           return decoded.inputs.find(input =>
             input.blknum === cInput.blknum &&
             input.txindex === cInput.txindex &&
             input.oindex === cInput.oindex
-          )
+          );
         }
-      )
+      );
 
       // Carol's tx was not put into a block, but it can still be used to challenge Bob's IFE as non-canonical
       const utxoPosOutput = omgjs.encodeUtxoPos({
         blknum: fundAliceTx.result.blknum,
         txindex: fundAliceTx.result.txindex,
         oindex: 0
-      }).toNumber()
+      }).toNumber();
 
-      const unsignInput = omgjs.encodeTransaction({ ...omgjs.decodeTransaction(fundAliceTx.txbytes), signed: false })
-      const unsignCarolTx = omgjs.encodeTransaction({ ...carolTxDecoded, signed: false })
+      const unsignInput = omgjs.encodeTransaction({ ...omgjs.decodeTransaction(fundAliceTx.txbytes), signed: false });
+      const unsignCarolTx = omgjs.encodeTransaction({ ...carolTxDecoded, signed: false });
       receipt = await omgjs.challengeInFlightExitNotCanonical({
         inputTx: unsignInput,
         inputUtxoPos: utxoPosOutput,
@@ -189,16 +189,16 @@ describe('inFlightExitChallengeResponseTest.js', function () {
           privateKey: carolAccount.privateKey,
           from: carolAccount.address
         }
-      })
+      });
 
       // Bob sees the invalid challenge to his IFE
       const invalidChallenge = await ccHelper.waitForEvent(
         'byzantine_events',
         e => e.event === 'invalid_ife_challenge' && e.details.txbytes === exitData.in_flight_tx
-      )
+      );
 
       // Bob gets the inclusion proof of his transaction
-      const proof = await omgjs.inFlightExitProveCanonical(invalidChallenge.details.txbytes)
+      const proof = await omgjs.inFlightExitProveCanonical(invalidChallenge.details.txbytes);
 
       // Bob responds to the challenge
       receipt = await omgjs.respondToNonCanonicalChallenge({
@@ -209,17 +209,17 @@ describe('inFlightExitChallengeResponseTest.js', function () {
           privateKey: bobAccount.privateKey,
           from: bobAccount.address
         }
-      })
-      console.log(`Bob called RootChain.respondToNonCanonicalChallenge() txhash = ${receipt.transactionHash}`)
-      bobSpentOnGas.iadd(await rcHelper.spentOnGas(receipt))
+      });
+      console.log(`Bob called RootChain.respondToNonCanonicalChallenge() txhash = ${receipt.transactionHash}`);
+      bobSpentOnGas.iadd(await rcHelper.spentOnGas(receipt));
 
       // Wait for challenge period
       const { msUntilFinalization } = await omgjs.getExitTime({
         exitRequestBlockNumber: ifeExitReceipt.blockNumber,
         submissionBlockNumber: fundAliceTx.result.blknum
-      })
-      console.log(`Waiting for challenge period... ${msUntilFinalization / 60000} minutes`)
-      await rcHelper.sleep(msUntilFinalization)
+      });
+      console.log(`Waiting for challenge period... ${msUntilFinalization / 60000} minutes`);
+      await rcHelper.sleep(msUntilFinalization);
 
       // Call processExits.
       receipt = await omgjs.processExits({
@@ -230,21 +230,21 @@ describe('inFlightExitChallengeResponseTest.js', function () {
           privateKey: bobAccount.privateKey,
           from: bobAccount.address,
         }
-      })
+      });
       if (receipt) {
-        console.log(`Bob called RootChain.processExits() after challenge period: txhash = ${receipt.transactionHash}`)
-        bobSpentOnGas.iadd(await rcHelper.spentOnGas(receipt))
-        await rcHelper.awaitTx(receipt.transactionHash)
+        console.log(`Bob called RootChain.processExits() after challenge period: txhash = ${receipt.transactionHash}`);
+        bobSpentOnGas.iadd(await rcHelper.spentOnGas(receipt));
+        await rcHelper.awaitTx(receipt.transactionHash);
       }
 
       // Get Bob's ETH balance
-      const bobEthBalance = await omgjs.getRootchainETHBalance(bobAccount.address)
+      const bobEthBalance = await omgjs.getRootchainETHBalance(bobAccount.address);
       // Bob's IFE was successful, so expect his balance to be
       // INTIIAL_BOB_AMOUNT + TRANSFER_AMOUNT - gas spent
       const expected = new BN(INTIIAL_BOB_RC_AMOUNT)
         .add(new BN(TRANSFER_AMOUNT.toString()))
-        .sub(bobSpentOnGas)
-      assert.equal(bobEthBalance.toString(), expected.toString())
-    })
-  })
-})
+        .sub(bobSpentOnGas);
+      assert.equal(bobEthBalance.toString(), expected.toString());
+    });
+  });
+});

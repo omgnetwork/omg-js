@@ -41,33 +41,33 @@ const omgjs = new OmgJS({
 
 describe('mergeUtxoTest.js', function () {
   before(async function () {
-    await faucet.init({ faucetName })
-  })
+    await faucet.init({ faucetName });
+  });
 
   describe('merge utxos', function () {
-    const INTIIAL_ALICE_AMOUNT = web3Utils.toWei('.1', 'ether')
-    const TEST_AMOUNT = Number(web3Utils.toWei('.0001', 'ether'))
+    const INTIIAL_ALICE_AMOUNT = web3Utils.toWei('.1', 'ether');
+    const TEST_AMOUNT = Number(web3Utils.toWei('.0001', 'ether'));
 
-    let aliceAccount
+    let aliceAccount;
 
     beforeEach(async function () {
-      aliceAccount = rcHelper.createAccount()
-      await faucet.fundRootchainEth(aliceAccount.address, INTIIAL_ALICE_AMOUNT)
-      await rcHelper.waitForEthBalanceEq(aliceAccount.address, INTIIAL_ALICE_AMOUNT)
-    })
+      aliceAccount = rcHelper.createAccount();
+      await faucet.fundRootchainEth(aliceAccount.address, INTIIAL_ALICE_AMOUNT);
+      await rcHelper.waitForEthBalanceEq(aliceAccount.address, INTIIAL_ALICE_AMOUNT);
+    });
 
     afterEach(async function () {
       try {
-        await faucet.returnFunds(aliceAccount)
+        await faucet.returnFunds(aliceAccount);
       } catch (err) {
-        console.warn(`Error trying to return funds to the faucet: ${err}`)
+        console.warn(`Error trying to return funds to the faucet: ${err}`);
       }
-    })
+    });
 
     it('should merge utxos to a single utxo', async function () {
       // The new account should have no initial balance
-      const initialBalance = await omgjs.getBalance(aliceAccount.address)
-      assert.equal(initialBalance.length, 0)
+      const initialBalance = await omgjs.getBalance(aliceAccount.address);
+      assert.equal(initialBalance.length, 0);
 
       // Deposit ETH into the Plasma contract
       await omgjs.deposit({
@@ -76,10 +76,10 @@ describe('mergeUtxoTest.js', function () {
           from: aliceAccount.address,
           privateKey: aliceAccount.privateKey
         }
-      })
+      });
 
       // Wait for transaction to be mined and reflected in the account's balance
-      await ccHelper.waitForBalanceEq(aliceAccount.address, TEST_AMOUNT)
+      await ccHelper.waitForBalanceEq(aliceAccount.address, TEST_AMOUNT);
 
       await omgjs.deposit({
         amount: TEST_AMOUNT,
@@ -87,21 +87,21 @@ describe('mergeUtxoTest.js', function () {
           from: aliceAccount.address,
           privateKey: aliceAccount.privateKey
         }
-      })
+      });
 
-      await ccHelper.waitForBalanceEq(aliceAccount.address, TEST_AMOUNT * 2)
+      await ccHelper.waitForBalanceEq(aliceAccount.address, TEST_AMOUNT * 2);
 
       // THe account should have one utxo on the child chain
-      const utxos = await omgjs.getUtxos(aliceAccount.address)
-      assert.equal(utxos.length, 2)
+      const utxos = await omgjs.getUtxos(aliceAccount.address);
+      assert.equal(utxos.length, 2);
       await omgjs.mergeUtxos({
         utxos,
         privateKey: aliceAccount.privateKey
-      })
-      await ccHelper.waitNumUtxos(aliceAccount.address, 1)
-      const utxosMerged = await omgjs.getUtxos(aliceAccount.address)
-      assert.equal(utxosMerged.length, 1)
-      assert.equal(utxosMerged[0].amount.toString(), (TEST_AMOUNT * 2).toString())
-    })
-  })
-})
+      });
+      await ccHelper.waitNumUtxos(aliceAccount.address, 1);
+      const utxosMerged = await omgjs.getUtxos(aliceAccount.address);
+      assert.equal(utxosMerged.length, 1);
+      assert.equal(utxosMerged[0].amount.toString(), (TEST_AMOUNT * 2).toString());
+    });
+  });
+});

@@ -73,7 +73,7 @@ async function exitErc20 (): Promise<void> {
   // check if queue exists for this token
   const hasToken = await omgjs.hasExitQueue(config.erc20_contract_address);
   if (!hasToken) {
-    console.log(`Adding a ${config.erc20_contract_address} exit queue`)
+    console.log(`Adding a ${config.erc20_contract_address} exit queue`);
     await omgjs.addExitQueue({
       currency: config.erc20_contract_address,
       txOptions: {
@@ -120,7 +120,7 @@ async function exitErc20 (): Promise<void> {
   });
 
   if (processExitReceipt) {
-    console.log(`ERC20 exits processing: ${processExitReceipt.transactionHash}`)
+    console.log(`ERC20 exits processing: ${processExitReceipt.transactionHash}`);
     await omgjs.waitForRootchainTransaction({
       transactionHash: processExitReceipt.transactionHash,
       checkIntervalMs: config.millis_to_wait_for_next_block,

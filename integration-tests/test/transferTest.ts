@@ -14,8 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License. */
 
 describe('transferTest.js', function () {
-  require('./transfer/simpleEthTransferTest')
-  require('./transfer/simpleErc20TransferTest')
-  require('./transfer/mixCurrencyTransferTest')
-  require('./transfer/transferWith4InputsAndOutputsTest')
-})
+  require('./transfer/simpleEthTransferTest');
+  require('./transfer/simpleErc20TransferTest');
+  require('./transfer/mixCurrencyTransferTest');
+  require('./transfer/transferWith4InputsAndOutputsTest');
+});

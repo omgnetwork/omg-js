@@ -21,8 +21,8 @@ export interface IRpcError {
 export class RpcError extends Error {
   public code;
   constructor ({ code, description, messages }: IRpcError) {
-    super(description || code + (messages ? `, ${messages.code}` : ''))
-    this.code = code
+    super(description || code + (messages ? `, ${messages.code}` : ''));
+    this.code = code;
   }
 }
 

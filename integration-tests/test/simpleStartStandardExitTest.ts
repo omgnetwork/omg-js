@@ -29,7 +29,7 @@ import config from '../test-config';
 should();
 use(chaiAsPromised);
 
-const faucetName = path.basename(__filename)
+const faucetName = path.basename(__filename);
 
 const web3Provider = new Web3.providers.HttpProvider(config.eth_node);
 const omgjs = new OmgJS({
@@ -43,14 +43,14 @@ const omgjs = new OmgJS({
 
 describe('simpleStartStandardExitTest.js', function () {
   before(async function () {
-    await faucet.init({ faucetName })
+    await faucet.init({ faucetName });
 
     // This test itself would introduce some exits inside the queue
     // As a result, being a nice member that each time it tries to clean up the queue
     // so the next time the test is run (if after challenge period) it will garbage collect its own exit
-    const queue = await omgjs.getExitQueue(OmgJS.currency.ETH)
+    const queue = await omgjs.getExitQueue(OmgJS.currency.ETH);
     if (queue.length) {
-      console.log(`Help cleaning up ${queue.length} exits inside the queue...`)
+      console.log(`Help cleaning up ${queue.length} exits inside the queue...`);
       const ethExitReceipt = await omgjs.processExits({
         currency: OmgJS.currency.ETH,
         exitId: 0,
@@ -60,24 +60,24 @@ describe('simpleStartStandardExitTest.js', function () {
           from: faucet.fundAccount.address,
           gasLimit: 3000000
         }
-      })
+      });
       if (ethExitReceipt) {
-        console.log(`ETH exits processing: ${ethExitReceipt.transactionHash}`)
-        await rcHelper.awaitTx(ethExitReceipt.transactionHash)
+        console.log(`ETH exits processing: ${ethExitReceipt.transactionHash}`);
+        await rcHelper.awaitTx(ethExitReceipt.transactionHash);
       }
     }
-  })
+  });
 
   describe('childchain transaction start exit', function () {
-    const INTIIAL_ALICE_AMOUNT = web3Utils.toWei('.001', 'ether')
-    const INTIIAL_BOB_RC_AMOUNT = web3Utils.toWei('.1', 'ether')
-    const TRANSFER_AMOUNT = web3Utils.toWei('0.0002', 'ether')
-    let aliceAccount
-    let bobAccount
+    const INTIIAL_ALICE_AMOUNT = web3Utils.toWei('.001', 'ether');
+    const INTIIAL_BOB_RC_AMOUNT = web3Utils.toWei('.1', 'ether');
+    const TRANSFER_AMOUNT = web3Utils.toWei('0.0002', 'ether');
+    let aliceAccount;
+    let bobAccount;
 
     beforeEach(async function () {
-      aliceAccount = rcHelper.createAccount()
-      bobAccount = rcHelper.createAccount()
+      aliceAccount = rcHelper.createAccount();
+      bobAccount = rcHelper.createAccount();
       await Promise.all([
         // Give some ETH to Alice on the child chain
         faucet.fundChildchain(
@@ -87,22 +87,22 @@ describe('simpleStartStandardExitTest.js', function () {
         ),
         // Give some ETH to Bob on the root chain
         faucet.fundRootchainEth(bobAccount.address, INTIIAL_BOB_RC_AMOUNT)
-      ])
+      ]);
       // Wait for finality
       await Promise.all([
         ccHelper.waitForBalanceEq(aliceAccount.address, INTIIAL_ALICE_AMOUNT),
         rcHelper.waitForEthBalanceEq(bobAccount.address, INTIIAL_BOB_RC_AMOUNT)
-      ])
-    })
+      ]);
+    });
 
     afterEach(async function () {
       try {
-        await faucet.returnFunds(aliceAccount)
-        await faucet.returnFunds(bobAccount)
+        await faucet.returnFunds(aliceAccount);
+        await faucet.returnFunds(bobAccount);
       } catch (err) {
-        console.warn(`Error trying to return funds to the faucet: ${err}`)
+        console.warn(`Error trying to return funds to the faucet: ${err}`);
       }
-    })
+    });
 
     it('should successfully start standard exit for a ChildChain transaction', async function () {
       // Send TRANSFER_AMOUNT from Alice to Bob
@@ -113,9 +113,9 @@ describe('simpleStartStandardExitTest.js', function () {
         OmgJS.currency.ETH,
         aliceAccount.privateKey,
         TRANSFER_AMOUNT
-      )
+      );
 
-      console.log(`Transferred ${TRANSFER_AMOUNT} from Alice to Bob`)
+      console.log(`Transferred ${TRANSFER_AMOUNT} from Alice to Bob`);
 
       // Send TRANSFER_AMOUNT from Alice to Bob again to avoid exit all utxos
       // childchain.getBalance does not works well when there is no utxo
@@ -126,23 +126,23 @@ describe('simpleStartStandardExitTest.js', function () {
         OmgJS.currency.ETH,
         aliceAccount.privateKey,
         TRANSFER_AMOUNT
-      )
+      );
 
-      console.log(`Transferred another ${TRANSFER_AMOUNT} from Alice to Bob`)
+      console.log(`Transferred another ${TRANSFER_AMOUNT} from Alice to Bob`);
 
-      await ccHelper.waitForBalanceEq(bobAccount.address, 2 * Number(TRANSFER_AMOUNT))
+      await ccHelper.waitForBalanceEq(bobAccount.address, 2 * Number(TRANSFER_AMOUNT));
 
       // Bob wants to exit
-      const bobUtxos = await omgjs.getUtxos(bobAccount.address)
-      assert.equal(bobUtxos.length, 2)
-      assert.equal(bobUtxos[0].amount.toString(), TRANSFER_AMOUNT)
+      const bobUtxos = await omgjs.getUtxos(bobAccount.address);
+      assert.equal(bobUtxos.length, 2);
+      assert.equal(bobUtxos[0].amount.toString(), TRANSFER_AMOUNT);
 
       // Get the exit data
-      const utxoToExit = bobUtxos[0]
-      const exitData = await omgjs.getExitData(utxoToExit)
-      assert.containsAllKeys(exitData, ['txbytes', 'proof', 'utxo_pos'])
+      const utxoToExit = bobUtxos[0];
+      const exitData = await omgjs.getExitData(utxoToExit);
+      assert.containsAllKeys(exitData, ['txbytes', 'proof', 'utxo_pos']);
 
-      const preBalance = await omgjs.getBalance(bobAccount.address)
+      const preBalance = await omgjs.getBalance(bobAccount.address);
 
       const startStandardExitReceipt = await omgjs.startStandardExit({
         utxoPos: exitData.utxo_pos,
@@ -152,10 +152,10 @@ describe('simpleStartStandardExitTest.js', function () {
           privateKey: bobAccount.privateKey,
           from: bobAccount.address
         }
-      })
-      console.log(`Bob called RootChain.startExit(): txhash = ${startStandardExitReceipt.transactionHash}`)
+      });
+      console.log(`Bob called RootChain.startExit(): txhash = ${startStandardExitReceipt.transactionHash}`);
 
-      await ccHelper.waitForBalanceEq(bobAccount.address, Number(preBalance[0].amount) - utxoToExit.amount)
-    })
-  })
-})
+      await ccHelper.waitForBalanceEq(bobAccount.address, Number(preBalance[0].amount) - utxoToExit.amount);
+    });
+  });
+});

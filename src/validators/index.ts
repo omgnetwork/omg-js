@@ -227,7 +227,7 @@ export const signTypedDataSchema: Joi.Schema = Joi.object({
   privateKeys: Joi.array().items(Joi.string()).required()
 });
 
-export const submitTypedDataSchema: Joi.Schema = Joi.object().required()
+export const submitTypedDataSchema: Joi.Schema = Joi.object().required();
 
 export const signTransactionSchema: Joi.Schema = Joi.object({
   typedData: Joi.object().required(),

@@ -30,7 +30,7 @@ import config from '../test-config';
 should();
 use(chaiAsPromised);
 
-const faucetName = path.basename(__filename)
+const faucetName = path.basename(__filename);
 
 const web3Provider = new Web3.providers.HttpProvider(config.eth_node);
 const omgjs = new OmgJS({
@@ -42,20 +42,20 @@ const omgjs = new OmgJS({
 
 describe('deleteNonPiggybackedInFlightExitTest.js', function () {
   before(async function () {
-    await faucet.init({ faucetName })
-  })
+    await faucet.init({ faucetName });
+  });
 
   describe('delete ife if not piggybacked', function () {
-    const INTIIAL_ALICE_AMOUNT = web3Utils.toWei('.1', 'ether')
-    const INTIIAL_BOB_RC_AMOUNT = web3Utils.toWei('.5', 'ether')
-    const TRANSFER_AMOUNT = web3Utils.toWei('0.0002', 'ether')
+    const INTIIAL_ALICE_AMOUNT = web3Utils.toWei('.1', 'ether');
+    const INTIIAL_BOB_RC_AMOUNT = web3Utils.toWei('.5', 'ether');
+    const TRANSFER_AMOUNT = web3Utils.toWei('0.0002', 'ether');
 
-    let aliceAccount
-    let bobAccount
+    let aliceAccount;
+    let bobAccount;
 
     beforeEach(async function () {
-      aliceAccount = rcHelper.createAccount()
-      bobAccount = rcHelper.createAccount()
+      aliceAccount = rcHelper.createAccount();
+      bobAccount = rcHelper.createAccount();
 
       await Promise.all([
         // Give some ETH to Alice on the child chain
@@ -66,7 +66,7 @@ describe('deleteNonPiggybackedInFlightExitTest.js', function () {
         ),
         // Give some ETH to Bob on the root chain
         faucet.fundRootchainEth(bobAccount.address, INTIIAL_BOB_RC_AMOUNT)
-      ])
+      ]);
       // Wait for finality
       await Promise.all([
         ccHelper.waitForBalanceEq(
@@ -77,17 +77,17 @@ describe('deleteNonPiggybackedInFlightExitTest.js', function () {
           bobAccount.address,
           INTIIAL_BOB_RC_AMOUNT
         )
-      ])
-    })
+      ]);
+    });
 
     afterEach(async function () {
       try {
-        await faucet.returnFunds(aliceAccount)
-        await faucet.returnFunds(bobAccount)
+        await faucet.returnFunds(aliceAccount);
+        await faucet.returnFunds(bobAccount);
       } catch (err) {
-        console.warn(`Error trying to return funds to the faucet: ${err}`)
+        console.warn(`Error trying to return funds to the faucet: ${err}`);
       }
-    })
+    });
 
     it('should succesfully delete an ife if not piggybacked after the first phase and return ife bond', async function () {
       // Send TRANSFER_AMOUNT from Alice to Bob
@@ -98,11 +98,11 @@ describe('deleteNonPiggybackedInFlightExitTest.js', function () {
         OmgJS.currency.ETH,
         aliceAccount.privateKey,
         TRANSFER_AMOUNT
-      )
-      console.log(`Transferred ${TRANSFER_AMOUNT} from Alice to Bob`)
+      );
+      console.log(`Transferred ${TRANSFER_AMOUNT} from Alice to Bob`);
 
       // Bob starts an in-flight exit.
-      const exitData = await omgjs.inFlightExitGetData(txbytes)
+      const exitData = await omgjs.inFlightExitGetData(txbytes);
       const ifeReceipt = await omgjs.startInFlightExit({
         inFlightTx: exitData.in_flight_tx,
         inputTxs: exitData.input_txs,
@@ -113,46 +113,46 @@ describe('deleteNonPiggybackedInFlightExitTest.js', function () {
           privateKey: bobAccount.privateKey,
           from: bobAccount.address
         }
-      })
-      console.log(`Bob called RootChain.startInFlightExit(): txhash = ${ifeReceipt.transactionHash}`)
+      });
+      console.log(`Bob called RootChain.startInFlightExit(): txhash = ${ifeReceipt.transactionHash}`);
 
       // Keep track of how much Bob spends on gas
-      const bobSpentOnGas = new BN(0)
-      bobSpentOnGas.iadd(await rcHelper.spentOnGas(ifeReceipt))
+      const bobSpentOnGas = new BN(0);
+      bobSpentOnGas.iadd(await rcHelper.spentOnGas(ifeReceipt));
 
       // Check Bob has paid the ife bond
-      const { bonds } = await omgjs.getPaymentExitGame()
-      let bobEthBalance = await omgjs.getRootchainETHBalance(bobAccount.address)
+      const { bonds } = await omgjs.getPaymentExitGame();
+      let bobEthBalance = await omgjs.getRootchainETHBalance(bobAccount.address);
       let expected = new BN(INTIIAL_BOB_RC_AMOUNT)
         .sub(bobSpentOnGas)
-        .sub(web3Utils.toBN(bonds.inflightExit.toString()))
-      assert.equal(bobEthBalance.toString(), expected.toString())
+        .sub(web3Utils.toBN(bonds.inflightExit.toString()));
+      assert.equal(bobEthBalance.toString(), expected.toString());
 
       // Wait for half of the challenge period
       const { msUntilFinalization } = await omgjs.getExitTime({
         exitRequestBlockNumber: ifeReceipt.blockNumber,
         submissionBlockNumber: result.blknum
-      })
-      const msUntilSecondPhase = msUntilFinalization / 2
-      console.log(`Waiting for second phase of challenge period... ${msUntilSecondPhase / 60000} minutes`)
-      await rcHelper.sleep(msUntilSecondPhase)
+      });
+      const msUntilSecondPhase = msUntilFinalization / 2;
+      console.log(`Waiting for second phase of challenge period... ${msUntilSecondPhase / 60000} minutes`);
+      await rcHelper.sleep(msUntilSecondPhase);
 
-      const exitId = await omgjs.getInFlightExitId(exitData.in_flight_tx)
+      const exitId = await omgjs.getInFlightExitId(exitData.in_flight_tx);
       const deleteIFEReceipt = await omgjs.deleteNonPiggybackedInFlightExit({
         exitId,
         txOptions: {
           privateKey: bobAccount.privateKey,
           from: bobAccount.address
         }
-      })
-      bobSpentOnGas.iadd(await rcHelper.spentOnGas(deleteIFEReceipt))
-      console.log('Bob called deleteNonPiggybackedInFlightExit: ', deleteIFEReceipt.transactionHash)
+      });
+      bobSpentOnGas.iadd(await rcHelper.spentOnGas(deleteIFEReceipt));
+      console.log('Bob called deleteNonPiggybackedInFlightExit: ', deleteIFEReceipt.transactionHash);
 
       // Bob started an ife and paid a bond, but after deleting the ife, he should get his bond back
       // therefore, it is expected the cost of this cycle only cost Bob gas
-      bobEthBalance = await omgjs.getRootchainETHBalance(bobAccount.address)
-      expected = new BN(INTIIAL_BOB_RC_AMOUNT).sub(bobSpentOnGas)
-      assert.equal(bobEthBalance.toString(), expected.toString())
-    })
-  })
-})
+      bobEthBalance = await omgjs.getRootchainETHBalance(bobAccount.address);
+      expected = new BN(INTIIAL_BOB_RC_AMOUNT).sub(bobSpentOnGas);
+      assert.equal(bobEthBalance.toString(), expected.toString());
+    });
+  });
+});

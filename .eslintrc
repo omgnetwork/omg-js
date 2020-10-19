@@ -17,6 +17,7 @@
   "rules": {
     "mocha/no-setup-in-describe": 0,
     "mocha/no-hooks-for-single-case": 0,
-    "mocha/no-top-level-hooks": 0
+    "mocha/no-top-level-hooks": 0,
+    "semi": "warn"
   }
 }
