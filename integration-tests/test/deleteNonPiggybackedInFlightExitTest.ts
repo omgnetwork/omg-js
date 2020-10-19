@@ -13,48 +13,56 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License. */
 
-const config = require('../test-config')
-const rcHelper = require('../helpers/rootChainHelper')
-const ccHelper = require('../helpers/childChainHelper')
-const faucet = require('../helpers/faucet')
-const Web3 = require('web3')
-const ChildChain = require('@omisego/omg-js-childchain')
-const RootChain = require('@omisego/omg-js-rootchain')
-const { transaction } = require('@omisego/omg-js-util')
-const numberToBN = require('number-to-bn')
-const chai = require('chai')
-const assert = chai.assert
+import Web3 from 'web3';
+import BN from 'bn.js';
+import web3Utils from 'web3-utils';
+import path from 'path';
+import { assert, should, use } from 'chai';
+import chaiAsPromised from 'chai-as-promised';
 
-const path = require('path')
+import OmgJS from '../..';
+
+import faucet from '../helpers/faucet';
+import * as rcHelper from '../helpers/rootChainHelper';
+import * as ccHelper from '../helpers/childChainHelper';
+import config from '../test-config';
+
+should();
+use(chaiAsPromised);
+
 const faucetName = path.basename(__filename)
 
-describe('deleteNonPiggybackedInFlightExitTest.js', function () {
-  const web3 = new Web3(new Web3.providers.HttpProvider(config.eth_node))
-  const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url, plasmaContractAddress: config.plasmaframework_contract_address })
-  const rootChain = new RootChain({ web3, plasmaContractAddress: config.plasmaframework_contract_address })
+const web3Provider = new Web3.providers.HttpProvider(config.eth_node);
+const omgjs = new OmgJS({
+  plasmaContractAddress: config.plasmaframework_contract_address,
+  watcherUrl: config.watcher_url,
+  watcherProxyUrl: config.watcher_proxy_url,
+  web3Provider
+});
 
+describe('deleteNonPiggybackedInFlightExitTest.js', function () {
   before(async function () {
-    await faucet.init({ rootChain, childChain, web3, config, faucetName })
+    await faucet.init({ faucetName })
   })
 
   describe('delete ife if not piggybacked', function () {
-    const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.1', 'ether')
-    const INTIIAL_BOB_RC_AMOUNT = web3.utils.toWei('.5', 'ether')
-    const TRANSFER_AMOUNT = web3.utils.toWei('0.0002', 'ether')
+    const INTIIAL_ALICE_AMOUNT = web3Utils.toWei('.1', 'ether')
+    const INTIIAL_BOB_RC_AMOUNT = web3Utils.toWei('.5', 'ether')
+    const TRANSFER_AMOUNT = web3Utils.toWei('0.0002', 'ether')
 
     let aliceAccount
     let bobAccount
 
     beforeEach(async function () {
-      aliceAccount = rcHelper.createAccount(web3)
-      bobAccount = rcHelper.createAccount(web3)
+      aliceAccount = rcHelper.createAccount()
+      bobAccount = rcHelper.createAccount()
 
       await Promise.all([
         // Give some ETH to Alice on the child chain
         faucet.fundChildchain(
           aliceAccount.address,
           INTIIAL_ALICE_AMOUNT,
-          transaction.ETH_CURRENCY
+          OmgJS.currency.ETH
         ),
         // Give some ETH to Bob on the root chain
         faucet.fundRootchainEth(bobAccount.address, INTIIAL_BOB_RC_AMOUNT)
@@ -62,12 +70,10 @@ describe('deleteNonPiggybackedInFlightExitTest.js', function () {
       // Wait for finality
       await Promise.all([
         ccHelper.waitForBalanceEq(
-          childChain,
           aliceAccount.address,
           INTIIAL_ALICE_AMOUNT
         ),
         rcHelper.waitForEthBalanceEq(
-          web3,
           bobAccount.address,
           INTIIAL_BOB_RC_AMOUNT
         )
@@ -86,20 +92,18 @@ describe('deleteNonPiggybackedInFlightExitTest.js', function () {
     it('should succesfully delete an ife if not piggybacked after the first phase and return ife bond', async function () {
       // Send TRANSFER_AMOUNT from Alice to Bob
       const { txbytes, result } = await ccHelper.sendAndWait(
-        childChain,
         aliceAccount.address,
         bobAccount.address,
         TRANSFER_AMOUNT,
-        transaction.ETH_CURRENCY,
+        OmgJS.currency.ETH,
         aliceAccount.privateKey,
-        TRANSFER_AMOUNT,
-        rootChain.plasmaContractAddress
+        TRANSFER_AMOUNT
       )
       console.log(`Transferred ${TRANSFER_AMOUNT} from Alice to Bob`)
 
       // Bob starts an in-flight exit.
-      const exitData = await childChain.inFlightExitGetData(txbytes)
-      const ifeReceipt = await rootChain.startInFlightExit({
+      const exitData = await omgjs.inFlightExitGetData(txbytes)
+      const ifeReceipt = await omgjs.startInFlightExit({
         inFlightTx: exitData.in_flight_tx,
         inputTxs: exitData.input_txs,
         inputUtxosPos: exitData.input_utxos_pos,
@@ -113,19 +117,19 @@ describe('deleteNonPiggybackedInFlightExitTest.js', function () {
       console.log(`Bob called RootChain.startInFlightExit(): txhash = ${ifeReceipt.transactionHash}`)
 
       // Keep track of how much Bob spends on gas
-      const bobSpentOnGas = numberToBN(0)
-      bobSpentOnGas.iadd(await rcHelper.spentOnGas(web3, ifeReceipt))
+      const bobSpentOnGas = new BN(0)
+      bobSpentOnGas.iadd(await rcHelper.spentOnGas(ifeReceipt))
 
       // Check Bob has paid the ife bond
-      const { bonds } = await rootChain.getPaymentExitGame()
-      let bobEthBalance = await web3.eth.getBalance(bobAccount.address)
-      let expected = web3.utils.toBN(INTIIAL_BOB_RC_AMOUNT)
+      const { bonds } = await omgjs.getPaymentExitGame()
+      let bobEthBalance = await omgjs.getRootchainETHBalance(bobAccount.address)
+      let expected = new BN(INTIIAL_BOB_RC_AMOUNT)
         .sub(bobSpentOnGas)
-        .sub(web3.utils.toBN(bonds.inflightExit))
+        .sub(web3Utils.toBN(bonds.inflightExit.toString()))
       assert.equal(bobEthBalance.toString(), expected.toString())
 
       // Wait for half of the challenge period
-      const { msUntilFinalization } = await rootChain.getExitTime({
+      const { msUntilFinalization } = await omgjs.getExitTime({
         exitRequestBlockNumber: ifeReceipt.blockNumber,
         submissionBlockNumber: result.blknum
       })
@@ -133,21 +137,21 @@ describe('deleteNonPiggybackedInFlightExitTest.js', function () {
       console.log(`Waiting for second phase of challenge period... ${msUntilSecondPhase / 60000} minutes`)
       await rcHelper.sleep(msUntilSecondPhase)
 
-      const exitId = await rootChain.getInFlightExitId({ txBytes: exitData.in_flight_tx })
-      const deleteIFEReceipt = await rootChain.deleteNonPiggybackedInFlightExit({
+      const exitId = await omgjs.getInFlightExitId(exitData.in_flight_tx)
+      const deleteIFEReceipt = await omgjs.deleteNonPiggybackedInFlightExit({
         exitId,
         txOptions: {
           privateKey: bobAccount.privateKey,
           from: bobAccount.address
         }
       })
-      bobSpentOnGas.iadd(await rcHelper.spentOnGas(web3, deleteIFEReceipt))
+      bobSpentOnGas.iadd(await rcHelper.spentOnGas(deleteIFEReceipt))
       console.log('Bob called deleteNonPiggybackedInFlightExit: ', deleteIFEReceipt.transactionHash)
 
       // Bob started an ife and paid a bond, but after deleting the ife, he should get his bond back
       // therefore, it is expected the cost of this cycle only cost Bob gas
-      bobEthBalance = await web3.eth.getBalance(bobAccount.address)
-      expected = web3.utils.toBN(INTIIAL_BOB_RC_AMOUNT).sub(bobSpentOnGas)
+      bobEthBalance = await omgjs.getRootchainETHBalance(bobAccount.address)
+      expected = new BN(INTIIAL_BOB_RC_AMOUNT).sub(bobSpentOnGas)
       assert.equal(bobEthBalance.toString(), expected.toString())
     })
   })

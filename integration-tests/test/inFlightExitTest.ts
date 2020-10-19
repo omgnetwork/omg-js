@@ -328,7 +328,7 @@ describe('inFlightExitTest.js', function () {
       assert.equal(bobEthBalance.toString(), expected.toString())
     })
 
-    it.only('should succesfully exit a ChildChain with piggybacking input transaction that is not included', async function () {
+    it('should succesfully exit a ChildChain with piggybacking input transaction that is not included', async function () {
       const aliceSpentOnGas = new BN(0)
       const kelvinSpentOnGas = new BN(0)
       // fund some ETH for alice on rootchain so she can piggyback / challenge
