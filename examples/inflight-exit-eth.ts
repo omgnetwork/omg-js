@@ -89,7 +89,7 @@ async function inFlightExitEth (): Promise<void> {
       from: toAddress
     }
   });
-  console.log(`${to} started an inflight exit: ', exitReceipt.transactionHash`);
+  console.log(`${to} started an inflight exit: ', ${exitReceipt.transactionHash}`);
 
   const exitId = await omgjs.getInFlightExitId(exitData.in_flight_tx);
   console.log('Exit id: ', exitId);

@@ -27,7 +27,7 @@ export interface IDepositTransaction {
   owner: string;
   amount: Interfaces.IComplexAmount;
   currency: string;
-};
+}
 
 /** @internal */
 export function encodeDeposit ({
@@ -84,21 +84,21 @@ export function encodeTransaction ({
       i < inputs.length
         ? inputs[i]
         : Constants.NULL_INPUT)
-  };
+  }
   txArray.push(inputArray);
   for (let i = 0; i < Constants.MAX_OUTPUTS; i++) {
     addOutput(outputArray,
       i < outputs.length
         ? outputs[i]
         : Constants.NULL_OUTPUT);
-  };
+  }
   txArray.push(outputArray);
   txArray.push(txData);
   txArray.push(metadata);
 
   const encoded = rlp.encode(txArray).toString('hex');
   return Util.prefixHex(encoded);
-};
+}
 
 /** @internal */
 export function decodeTransaction (transaction: string): Interfaces.ITransactionBody {
@@ -166,7 +166,7 @@ export function encodeMetadata (metadata: string): string {
   }
   const encodedMetadata = Buffer.from(metadata).toString('hex').padStart(64, '0');
   return `0x${encodedMetadata}`
-};
+}
 
 /** @internal */
 export function decodeMetadata (metadata: string): string {

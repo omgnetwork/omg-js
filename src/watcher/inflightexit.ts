@@ -20,7 +20,7 @@ import * as Util from '@lib/common/util';
 export interface IInFlightExitGetInputChallengeData {
   txbytes: string;
   inputIndex: number;
-};
+}
 
 export interface IInFlightExitInputChallengeData {
   in_flight_txbytes: string;
@@ -30,7 +30,7 @@ export interface IInFlightExitInputChallengeData {
   spending_sig: string;
   input_tx: string;
   input_utxo_pos: Interfaces.IComplexAmount;
-};
+}
 
 /** @internal */
 export async function inFlightExitGetInputChallengeData ({
@@ -50,7 +50,7 @@ export async function inFlightExitGetInputChallengeData ({
 export interface IInFlightExitGetOutputChallengeData {
   txbytes: string;
   outputIndex: number;
-};
+}
 
 export interface IInFlightExitOutputChallengeData {
   in_flight_txbytes: string;
@@ -59,7 +59,7 @@ export interface IInFlightExitOutputChallengeData {
   spending_txbytes: string;
   spending_input_index: number;
   spending_sig: string;
-};
+}
 
 /** @internal */
 export async function inFlightExitGetOutputChallengeData ({
@@ -97,7 +97,7 @@ export interface IInFlightExitCompetitor {
   competing_tx_pos: Interfaces.IComplexAmount;
   competing_proof: string;
   competing_sig: string;
-};
+}
 
 /** @internal */
 export async function inFlightExitGetCompetitor (txbytes: string): Promise<IInFlightExitCompetitor> {

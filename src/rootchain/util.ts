@@ -36,7 +36,7 @@ export async function getEVMErrorReason (txhash: string): Promise<string> {
 export interface IGetRootchainERC20Balance {
   address: string;
   erc20Address: string;
-};
+}
 
 /** @internal */
 export async function getRootchainERC20Balance ({
@@ -66,7 +66,7 @@ export interface IWaitForRootchainTransaction {
   checkIntervalMs: number;
   blocksToWait: number;
   onCountdown: (blocksRemaining: number) => void;
-};
+}
 
 /** @internal */
 export async function waitForRootchainTransaction ({
@@ -127,7 +127,7 @@ export async function waitForChildchainBalance ({
   expectedAmount,
   currency
 }: IWaitForChildchainBalance): Promise<Array<WatcherAccountModule.IBalance>> {
-  return promiseRetry(async (retry, _number) => {
+  return promiseRetry(async retry => {
     const resp = await this.getBalance(address);
     if (resp.length === 0) retry();
 
@@ -160,7 +160,7 @@ export async function waitForUtxo ({
   txindex,
   blknum
 }: IWaitForUtxo): Promise<Interfaces.IUTXO> {
-  return promiseRetry(async (retry, _number) => {
+  return promiseRetry(async retry => {
     const utxos: Array<Interfaces.IUTXO> = await WatcherAccountModule.getUtxos.call(this, address);
     const found = utxos.find(
       u =>

@@ -40,7 +40,7 @@ export async function sendTransaction (
     );
     return this.web3Instance.eth.sendSignedTransaction(signedTransaction.rawTransaction);
   }
-};
+}
 
 /** @internal */
 export async function setGasLimit (
@@ -51,7 +51,7 @@ export async function setGasLimit (
   }
   const gasLimitEstimation = await this.web3Instance.eth.estimateGas(transactionDetails);
   return gasLimitEstimation;
-};
+}
 
 /** @internal */
 export async function setGasPrice (
@@ -67,4 +67,4 @@ export async function setGasPrice (
     // default gas to 1 gwei
     return '1000000000';
   }
-};
+}

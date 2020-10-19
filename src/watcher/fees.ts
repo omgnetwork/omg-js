@@ -23,7 +23,7 @@ export interface IFeeInfo {
   pegged_subunit_to_unit: number;
   subunit_to_unit: number;
   updated_at: string;
-};
+}
 
 /** @internal */
 export async function getFees (): Promise<Array<IFeeInfo>> {

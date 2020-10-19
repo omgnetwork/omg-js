@@ -19,7 +19,7 @@ import * as Interfaces from '@lib/common/interfaces';
 export interface ITypedDataSpec {
   name: string;
   type: string;
-};
+}
 
 export interface ITypedDataTypes {
   EIP712Domain: Array<ITypedDataSpec>;
@@ -46,14 +46,14 @@ export interface ITypedDataMessage {
   output3: Interfaces.IOutput;
   txData: number;
   metadata: string;
-};
+}
 
 export interface ITypedData {
   types: ITypedDataTypes;
   domain: ITypedDataDomainData;
   primaryType: string;
   message: ITypedDataMessage;
-};
+}
 
 export interface ISignedTypedData extends ITypedData{
   signatures: Array<string>;

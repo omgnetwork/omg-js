@@ -85,7 +85,7 @@ export async function getExitTime ({
     scheduledFinalizationTime: scheduledFinalizationTime + bufferSeconds,
     msUntilFinalization
   }
-};
+}
 
 export interface IExitQueue {
   priority: string,

@@ -14,7 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License. */
 
 import Web3 from 'web3';
-import BN from 'bn.js';
 import web3Utils from 'web3-utils';
 import path from 'path';
 import { assert, should, use } from 'chai';

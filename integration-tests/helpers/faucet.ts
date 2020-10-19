@@ -42,7 +42,10 @@ export default {
   init: async function ({
     faucetName,
     topup = true
-  }) {
+  }: {
+    faucetName: string;
+    topup: boolean;
+  }): Promise<void> {
     this.faucetAccount = this.createAccountFromString(faucetName, config.faucet_salt);
     this.fundAccount = {
       address: config.fund_account,
@@ -58,7 +61,7 @@ export default {
     }
   },
 
-  createAccountFromString: function (string: string, salt: string = '') {
+  createAccountFromString: function (string: string, salt = ''): { address: string; privateKey: string; } {
     const privateKey = web3Utils.sha3(`${string}${salt}`)
     const account = omgjs.web3Instance.eth.accounts.privateKeyToAccount(privateKey)
     return { address: account.address, privateKey: account.privateKey }
@@ -80,7 +83,7 @@ export default {
     }
   },
 
-  showInfo: async function () {
+  showInfo: async function (): Promise<void> {
     console.info('----------------- Faucet -----------------------')
     console.info(`Address: ${this.faucetAccount.address}`)
     console.info(`ERC20 token: ${config.erc20_contract_address}`)

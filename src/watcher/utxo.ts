@@ -34,7 +34,7 @@ export interface IChallengeData {
   txbytes: string;
   input_index: number;
   sig: string;
-};
+}
 
 /** @internal */
 export async function getChallengeData (utxoPos: number): Promise<IChallengeData> {

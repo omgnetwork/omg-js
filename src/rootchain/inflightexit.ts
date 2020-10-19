@@ -26,7 +26,7 @@ export async function getInFlightExitId (
 ): Promise<string> {
   const { contract } = await this.getPaymentExitGame();
   return contract.methods.getInFlightExitId(txBytes).call();
-};
+}
 
 export interface IInFlightExitInputOutput {
   outputId: string;
@@ -54,16 +54,16 @@ export async function getInFlightExitContractData (
 ): Promise<Array<IInFlightExitContractData>> {
   const { contract } = await this.getPaymentExitGame();
   return contract.methods.inFlightExits(exitIds).call();
-};
+}
 
 export interface IStartInFlightExit {
   inFlightTx: string;
-  inputTxs: Array<any>;
+  inputTxs: Array<string>;
   inputUtxosPos: Array<Interfaces.IComplexAmount>;
   inputTxsInclusionProofs: Array<string>;
   inFlightTxSigs: Array<string>;
   txOptions: Interfaces.ITransactionOptions
-};
+}
 
 /** @internal */
 export async function startInFlightExit ({
@@ -98,13 +98,13 @@ export async function startInFlightExit ({
     gasPrice: txOptions.gasPrice,
     privateKey: txOptions.privateKey
   });
-};
+}
 
 export interface IPiggybackInFlightExitOnOutput {
   inFlightTx: string;
   outputIndex: number;
   txOptions: Interfaces.ITransactionOptions;
-};
+}
 
 /** @internal */
 export async function piggybackInFlightExitOnOutput ({
@@ -138,7 +138,7 @@ export interface IPiggybackInFlightExitOnInput {
   inFlightTx: string;
   inputIndex: number;
   txOptions: Interfaces.ITransactionOptions;
-};
+}
 
 /** @internal */
 export async function piggybackInFlightExitOnInput ({
@@ -179,7 +179,7 @@ export interface IChallengeInFlightExitNotCanonical {
   competingTxInclusionProof: string;
   competingTxWitness: string;
   txOptions: Interfaces.ITransactionOptions;
-};
+}
 
 /** @internal */
 export async function challengeInFlightExitNotCanonical ({
@@ -227,7 +227,7 @@ export interface IRespondToNonCanonicalChallenge {
   inFlightTxPos: Interfaces.IComplexAmount;
   inFlightTxInclusionProof: string;
   txOptions: Interfaces.ITransactionOptions;
-};
+}
 
 /** @internal */
 export async function respondToNonCanonicalChallenge ({
@@ -265,7 +265,7 @@ export interface IChallengeInFlightExitInputSpent {
   inputTx: string;
   inputUtxoPos: Interfaces.IComplexAmount;
   txOptions: Interfaces.ITransactionOptions;
-};
+}
 
 /** @internal */
 export async function challengeInFlightExitInputSpent ({
@@ -312,7 +312,7 @@ export interface IChallengeInFlightExitOutputSpent {
   challengingTxInputIndex: number;
   challengingTxWitness: string;
   txOptions: Interfaces.ITransactionOptions;
-};
+}
 
 /** @internal */
 export async function challengeInFlightExitOutputSpent ({
@@ -353,7 +353,7 @@ export async function challengeInFlightExitOutputSpent ({
 export interface IDeleteNonPiggybackedInFlightExit {
   exitId: string;
   txOptions: Interfaces.ITransactionOptions;
-};
+}
 
 /** @internal */
 export async function deleteNonPiggybackedInFlightExit ({

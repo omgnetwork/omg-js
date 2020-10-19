@@ -29,7 +29,7 @@ export interface IGetStandardExitId {
   txBytes: string;
   utxoPos: Interfaces.IComplexAmount;
   isDeposit: boolean;
-};
+}
 
 /** @internal */
 export async function getStandardExitId ({
@@ -39,14 +39,14 @@ export async function getStandardExitId ({
 }: IGetStandardExitId): Promise<string> {
   const { contract } = await this.getPaymentExitGame();
   return contract.methods.getStandardExitId(isDeposit, txBytes, utxoPos.toString()).call();
-};
+}
 
 export interface IStartStandardExit {
   utxoPos: Interfaces.IComplexAmount;
   outputTx: string;
   inclusionProof: string;
   txOptions: Interfaces.ITransactionOptions
-};
+}
 
 /** @internal */
 export async function startStandardExit ({

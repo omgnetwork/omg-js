@@ -18,7 +18,7 @@ import * as Transporter from '@lib/transport';
 
 export interface IDepositFilter extends Interfaces.IPagination {
   address?: string;
-};
+}
 
 export interface IDepositInfo {
   event_type: string;
@@ -27,7 +27,7 @@ export interface IDepositInfo {
   log_index: number;
   root_chain_txhash: string;
   txoutputs: Array<Interfaces.IUTXO>;
-};
+}
 
 /** @internal */
 export async function getDeposits (

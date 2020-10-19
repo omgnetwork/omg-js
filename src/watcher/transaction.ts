@@ -33,7 +33,7 @@ export interface ITransactionFilter extends Interfaces.IPagination {
   address?: string;
   metadata?: string;
   blknum?: number;
-};
+}
 
 /** @internal */
 export async function getTransactions (

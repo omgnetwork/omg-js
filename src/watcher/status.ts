@@ -15,8 +15,13 @@ limitations under the License. */
 
 import * as Transporter from '@lib/transport';
 
+export interface IByzantineEvent {
+  event: string;
+  details: any;
+}
+
 export interface IStatus {
-  byzantine_events: Array<any>;
+  byzantine_events: Array<IByzantineEvent>;
   contract_addr: {
     erc20_vault: string;
     eth_vault: string;
@@ -24,7 +29,13 @@ export interface IStatus {
     plasma_framework: string;
   };
   eth_syncing: boolean;
-  in_flight_exits: Array<any>;
+  in_flight_exits: Array<{
+    txhash: string;
+    txbytes: string;
+    eth_height: number;
+    piggybacked_inputs: Array<number>;
+    piggybacked_outputs: Array<number>;
+  }>;
   last_mined_child_block_number: number;
   last_mined_child_block_timestamp: number;
   last_seen_eth_block_number: number;
@@ -35,7 +46,7 @@ export interface IStatus {
     height: number;
     service: string;
   }>
-};
+}
 
 /** @internal */
 export async function getStatus (): Promise<IStatus> {

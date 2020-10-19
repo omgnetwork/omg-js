@@ -1,17 +1,22 @@
 {
-    "extends": [
-        "standard",
-        "plugin:mocha/recommended"
-    ],
-    "plugins": [
-        "mocha"
-    ],
-    "env": {
-        "mocha": true
-    },
-    "rules": {
-        "mocha/no-hooks-for-single-case": 0,
-        "mocha/max-top-level-suites": 0,
-        "mocha/no-setup-in-describe": 0
-    }
+  "parser": "@typescript-eslint/parser",
+  "extends": [
+    "plugin:mocha/recommended",
+    "eslint:recommended",
+    "plugin:@typescript-eslint/eslint-recommended",
+    "plugin:@typescript-eslint/recommended"
+  ],
+  "plugins": [
+    "mocha",
+    "@typescript-eslint"
+  ],
+  "env": {
+    "mocha": true,
+    "node": true
+  },
+  "rules": {
+    "mocha/no-setup-in-describe": 0,
+    "mocha/no-hooks-for-single-case": 0,
+    "mocha/no-top-level-hooks": 0
+  }
 }

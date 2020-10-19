@@ -118,26 +118,26 @@ export function awaitTx (txnHash, options?) {
   const interval = options && options.interval ? options.interval : 1000
   const blocksToWait = options && options.blocksToWait ? options.blocksToWait : 1
 
-  var transactionReceiptAsync = async function (txnHash, resolve, reject) {
+  const transactionReceiptAsync = async function (txnHash, resolve, reject) {
     try {
-      var receipt = await omgjs.web3Instance.eth.getTransactionReceipt(txnHash)
+      const receipt = await omgjs.web3Instance.eth.getTransactionReceipt(txnHash)
       if (!receipt) {
         setTimeout(function () {
           transactionReceiptAsync(txnHash, resolve, reject)
         }, interval)
       } else {
         if (blocksToWait > 0) {
-          var resolvedReceipt = await receipt
+          const resolvedReceipt = await receipt
           if (!resolvedReceipt || !resolvedReceipt.blockNumber) {
             setTimeout(function () {
               transactionReceiptAsync(txnHash, resolve, reject)
             }, interval)
           } else {
             try {
-              var block = await omgjs.web3Instance.eth.getBlock(resolvedReceipt.blockNumber)
-              var current = await omgjs.web3Instance.eth.getBlock('latest')
+              const block = await omgjs.web3Instance.eth.getBlock(resolvedReceipt.blockNumber)
+              const current = await omgjs.web3Instance.eth.getBlock('latest')
               if (current.number - block.number >= blocksToWait) {
-                var txn = await omgjs.web3Instance.eth.getTransaction(txnHash)
+                const txn = await omgjs.web3Instance.eth.getTransaction(txnHash)
                 if (txn.blockNumber != null) {
                   resolve(resolvedReceipt)
                 } else {
@@ -162,7 +162,7 @@ export function awaitTx (txnHash, options?) {
   }
 
   if (Array.isArray(txnHash)) {
-    var promises = []
+    const promises = []
     txnHash.forEach(function (oneTxHash) {
       promises.push(awaitTx(oneTxHash, options))
     })

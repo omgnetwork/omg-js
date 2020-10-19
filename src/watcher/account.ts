@@ -28,7 +28,7 @@ export async function getUtxos (address: string): Promise<Array<Interfaces.IUTXO
 export interface IBalance {
   amount: Interfaces.IComplexAmount;
   currency: string;
-};
+}
 
 /** @internal */
 export async function getBalance (address: string): Promise<Array<IBalance>> {

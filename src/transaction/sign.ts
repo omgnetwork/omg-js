@@ -34,14 +34,14 @@ function _ecsign (tosign: Buffer, privateKey: string): string {
 }
 
 /** @internal */
-export function sign (tx: Buffer, privateKeys: Array<string>) {
+export function sign (tx: Buffer, privateKeys: Array<string>): Array<string> {
   return privateKeys.map(key => _ecsign(tx, key));
 }
 
 export interface ISignTypedData {
   txData: WatcherTransactionModule.ICreatedTransaction;
   privateKeys: Array<string>;
-};
+}
 
 /** @internal */
 export function signTypedData ({

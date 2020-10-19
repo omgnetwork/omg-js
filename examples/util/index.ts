@@ -15,10 +15,10 @@ limitations under the License. */
 
 export function wait (ms: number): Promise<void> {
   console.log(`Waiting for ${ms * 0.00001667} min...`);
-  return new Promise((resolve, _reject) => setTimeout(resolve, ms));
+  return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-export function getFlags (...keys): any {
+export function getFlags (...keys: Array<string>): {[key: string]: string } {
   const argMap = {}
   for (const position in process.argv) {
     const arg = process.argv[position]

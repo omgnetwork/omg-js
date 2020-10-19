@@ -13,9 +13,14 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License. */
 
+export interface IRpcError {
+  code: number;
+  description: string;
+  messages: Record<string, unknown>;
+}
 export class RpcError extends Error {
   public code;
-  constructor ({ code, description, messages }) {
+  constructor ({ code, description, messages }: IRpcError) {
     super(description || code + (messages ? `, ${messages.code}` : ''))
     this.code = code
   }
@@ -28,7 +33,7 @@ export interface IError {
 }
 
 export class ValidationError extends Error {
-  public name: string = 'ValidationError';
+  public name = 'ValidationError';
   public message: string;
   public stack: any;
 
@@ -40,7 +45,7 @@ export class ValidationError extends Error {
 }
 
 export class OmgJSError extends Error {
-  public name: string = 'OmgJSError';
+  public name = 'OmgJSError';
   public message: string;
   public stack: any;
 
