@@ -13,52 +13,61 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License. */
 
-const config = require('../test-config')
-const rcHelper = require('../helpers/rootChainHelper')
-const ccHelper = require('../helpers/childChainHelper')
-const faucet = require('../helpers/faucet')
-const Web3 = require('web3')
-const ChildChain = require('@omisego/omg-js-childchain')
-const RootChain = require('@omisego/omg-js-rootchain')
-const { transaction } = require('@omisego/omg-js-util')
-const chai = require('chai')
-const assert = chai.assert
+import Web3 from 'web3';
+import BN from 'bn.js';
+import web3Utils from 'web3-utils';
+import path from 'path';
+import { assert, should, use } from 'chai';
+import chaiAsPromised from 'chai-as-promised';
 
-const path = require('path')
+import OmgJS from '../..';
+
+import faucet from '../helpers/faucet';
+import * as rcHelper from '../helpers/rootChainHelper';
+import * as ccHelper from '../helpers/childChainHelper';
+import config from '../test-config';
+
+should();
+use(chaiAsPromised);
+
 const faucetName = path.basename(__filename)
 
-describe('challengeExitTest.js', function () {
-  const web3 = new Web3(new Web3.providers.HttpProvider(config.eth_node))
-  const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url, plasmaContractAddress: config.plasmaframework_contract_address })
-  const rootChain = new RootChain({ web3, plasmaContractAddress: config.plasmaframework_contract_address })
+const web3Provider = new Web3.providers.HttpProvider(config.eth_node);
+const omgjs = new OmgJS({
+  plasmaContractAddress: config.plasmaframework_contract_address,
+  watcherUrl: config.watcher_url,
+  watcherProxyUrl: config.watcher_proxy_url,
+  web3Provider
+});
 
+describe('challengeExitTest.js', function () {
   before(async function () {
-    await faucet.init({ rootChain, childChain, web3, config, faucetName })
+    await faucet.init({ faucetName })
   })
 
   describe('Challenge a standard exit', function () {
-    const INTIIAL_ALICE_RC_AMOUNT = web3.utils.toWei('.1', 'ether')
-    const INTIIAL_BOB_RC_AMOUNT = web3.utils.toWei('.1', 'ether')
-    const INTIIAL_ALICE_CC_AMOUNT = web3.utils.toWei('.001', 'ether')
-    const TRANSFER_AMOUNT = web3.utils.toWei('0.0002', 'ether')
+    const INTIIAL_ALICE_RC_AMOUNT = web3Utils.toWei('.1', 'ether')
+    const INTIIAL_BOB_RC_AMOUNT = web3Utils.toWei('.1', 'ether')
+    const INTIIAL_ALICE_CC_AMOUNT = web3Utils.toWei('.001', 'ether')
+    const TRANSFER_AMOUNT = web3Utils.toWei('0.0002', 'ether')
 
     let aliceAccount
     let bobAccount
 
     beforeEach(async function () {
-      aliceAccount = rcHelper.createAccount(web3)
-      bobAccount = rcHelper.createAccount(web3)
+      aliceAccount = rcHelper.createAccount()
+      bobAccount = rcHelper.createAccount()
 
       await Promise.all([
-        faucet.fundChildchain(aliceAccount.address, INTIIAL_ALICE_CC_AMOUNT, transaction.ETH_CURRENCY),
+        faucet.fundChildchain(aliceAccount.address, INTIIAL_ALICE_CC_AMOUNT, OmgJS.currency.ETH),
         faucet.fundRootchainEth(aliceAccount.address, INTIIAL_ALICE_RC_AMOUNT)
       ])
       await faucet.fundRootchainEth(bobAccount.address, INTIIAL_BOB_RC_AMOUNT)
 
       await Promise.all([
-        ccHelper.waitForBalanceEq(childChain, aliceAccount.address, INTIIAL_ALICE_CC_AMOUNT),
-        rcHelper.waitForEthBalanceEq(web3, aliceAccount.address, INTIIAL_ALICE_RC_AMOUNT),
-        rcHelper.waitForEthBalanceEq(web3, bobAccount.address, INTIIAL_BOB_RC_AMOUNT)
+        ccHelper.waitForBalanceEq(aliceAccount.address, INTIIAL_ALICE_CC_AMOUNT),
+        rcHelper.waitForEthBalanceEq(aliceAccount.address, INTIIAL_ALICE_RC_AMOUNT),
+        rcHelper.waitForEthBalanceEq(bobAccount.address, INTIIAL_BOB_RC_AMOUNT)
       ])
     })
 
@@ -74,39 +83,35 @@ describe('challengeExitTest.js', function () {
     it('should succesfully challenge a dishonest exit', async function () {
       // Send TRANSFER_AMOUNT from Alice to Bob
       await ccHelper.sendAndWait(
-        childChain,
         aliceAccount.address,
         bobAccount.address,
         TRANSFER_AMOUNT,
-        transaction.ETH_CURRENCY,
+        OmgJS.currency.ETH,
         aliceAccount.privateKey,
-        TRANSFER_AMOUNT,
-        rootChain.plasmaContractAddress
+        TRANSFER_AMOUNT
       )
 
       console.log(`Transferred ${TRANSFER_AMOUNT} from Alice to Bob`)
 
       // Save Alice's latest utxo
-      const aliceUtxos = await childChain.getUtxos(aliceAccount.address)
+      const aliceUtxos = await omgjs.getUtxos(aliceAccount.address)
       const aliceDishonestUtxo = aliceUtxos[0]
 
       // Send another TRANSFER_AMOUNT from Alice to Bob
       await ccHelper.sendAndWait(
-        childChain,
         aliceAccount.address,
         bobAccount.address,
         TRANSFER_AMOUNT,
-        transaction.ETH_CURRENCY,
+        OmgJS.currency.ETH,
         aliceAccount.privateKey,
-        TRANSFER_AMOUNT * 2,
-        rootChain.plasmaContractAddress
+        Number(TRANSFER_AMOUNT) * 2
       )
       console.log(`Transferred ${TRANSFER_AMOUNT} from Alice to Bob again`)
 
       // Now Alice wants to cheat and exit with the dishonest utxo
 
-      const exitData = await childChain.getExitData(aliceDishonestUtxo)
-      const standardExitReceipt = await rootChain.startStandardExit({
+      const exitData = await omgjs.getExitData(aliceDishonestUtxo)
+      const standardExitReceipt = await omgjs.startStandardExit({
         utxoPos: exitData.utxo_pos,
         outputTx: exitData.txbytes,
         inclusionProof: exitData.proof,
@@ -116,20 +121,21 @@ describe('challengeExitTest.js', function () {
         }
       })
       console.log(`Alice called RootChain.startExit(): txhash = ${standardExitReceipt.transactionHash}`)
-      const aliceSpentOnGas = await rcHelper.spentOnGas(web3, standardExitReceipt)
+      const aliceSpentOnGas = await rcHelper.spentOnGas(standardExitReceipt)
 
       // Bob calls watcher/status.get and sees the invalid exit attempt...
-      const invalidExitUtxoPos = transaction.encodeUtxoPos(aliceDishonestUtxo).toString()
+      const invalidExitUtxoPos = omgjs.encodeUtxoPos(aliceDishonestUtxo).toString()
       const invalidExit = await ccHelper.waitForEvent(
-        childChain,
         'byzantine_events',
         e => e.event === 'invalid_exit' && e.details.utxo_pos.toString() === invalidExitUtxoPos
       )
 
       // ...and challenges the exit
-      const challengeData = await childChain.getChallengeData(invalidExit.details.utxo_pos)
+      const challengeData = await omgjs.getChallengeData(invalidExit.details.utxo_pos)
       assert.containsAllKeys(challengeData, ['input_index', 'exit_id', 'exiting_tx', 'sig', 'txbytes'])
-      let receipt = await rootChain.challengeStandardExit({
+
+      // NMTODO: failing test here...
+      let receipt = await omgjs.challengeStandardExit({
         standardExitId: challengeData.exit_id,
         exitingTx: challengeData.exiting_tx,
         challengeTx: challengeData.txbytes,
@@ -143,10 +149,10 @@ describe('challengeExitTest.js', function () {
       console.log(`Bob called RootChain.challengeExit(): txhash = ${receipt.transactionHash}`)
 
       // Keep track of how much Bob spends on gas
-      const bobSpentOnGas = await rcHelper.spentOnGas(web3, receipt)
+      const bobSpentOnGas = await rcHelper.spentOnGas(receipt)
 
       // Alice waits for the challenge period to be over...
-      const { msUntilFinalization } = await rootChain.getExitTime({
+      const { msUntilFinalization } = await omgjs.getExitTime({
         exitRequestBlockNumber: standardExitReceipt.blockNumber,
         submissionBlockNumber: aliceDishonestUtxo.blknum
       })
@@ -154,36 +160,35 @@ describe('challengeExitTest.js', function () {
       await rcHelper.sleep(msUntilFinalization)
 
       // ...and calls finalize exits.
-      receipt = await rootChain.processExits({
-        token: transaction.ETH_CURRENCY,
+      receipt = await omgjs.processExits({
+        currency: OmgJS.currency.ETH,
         exitId: 0,
         maxExitsToProcess: 20,
         txOptions: {
           privateKey: aliceAccount.privateKey,
-          from: aliceAccount.address,
-          gas: 2000000
+          from: aliceAccount.address
         }
       })
       if (receipt) {
         console.log(`Alice called RootChain.processExits(): txhash = ${receipt.transactionHash}`)
-        aliceSpentOnGas.iadd(await rcHelper.spentOnGas(web3, receipt))
-        await rcHelper.awaitTx(web3, receipt.transactionHash)
+        aliceSpentOnGas.iadd(await rcHelper.spentOnGas(receipt))
+        await rcHelper.awaitTx(receipt.transactionHash)
       }
 
       // Get Alice's ETH balance
-      const aliceEthBalance = await web3.eth.getBalance(aliceAccount.address)
+      const aliceEthBalance = await omgjs.getRootchainETHBalance(aliceAccount.address)
       // Alice's dishonest exit did not successfully complete, so her balance should be
       // INTIIAL_ALICE_RC_AMOUNT - STANDARD_EXIT_BOND - gas spent
-      const { bonds } = await rootChain.getPaymentExitGame()
-      const expected = web3.utils.toBN(INTIIAL_ALICE_RC_AMOUNT)
-        .sub(web3.utils.toBN(bonds.standardExit))
+      const { bonds } = await omgjs.getPaymentExitGame()
+      const expected = new BN(INTIIAL_ALICE_RC_AMOUNT)
+        .sub(new BN(bonds.standardExit.toString()))
         .sub(aliceSpentOnGas)
       assert.equal(aliceEthBalance.toString(), expected.toString())
 
       // Bob successfully challenged the exit, so he should have received the exit bond
-      const bobEthBalance = await web3.eth.getBalance(bobAccount.address)
-      const bobExpectedBalance = web3.utils.toBN(INTIIAL_BOB_RC_AMOUNT)
-        .add(web3.utils.toBN(bonds.standardExit))
+      const bobEthBalance = await omgjs.getRootchainETHBalance(bobAccount.address)
+      const bobExpectedBalance = new BN(INTIIAL_BOB_RC_AMOUNT)
+        .add(new BN(bonds.standardExit.toString()))
         .sub(bobSpentOnGas)
       assert.equal(bobEthBalance.toString(), bobExpectedBalance.toString())
     })

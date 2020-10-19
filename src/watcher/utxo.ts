@@ -28,8 +28,13 @@ export async function getExitData (utxo: Interfaces.IUTXO): Promise<Interfaces.I
   });
 }
 
-// NMTODO: figure out this interface
-export interface IChallengeData {};
+export interface IChallengeData {
+  exit_id: Interfaces.IComplexAmount;
+  exiting_tx: string;
+  txbytes: string;
+  input_index: number;
+  sig: string;
+};
 
 /** @internal */
 export async function getChallengeData (utxoPos: number): Promise<IChallengeData> {

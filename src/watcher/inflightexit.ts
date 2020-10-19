@@ -23,13 +23,13 @@ export interface IInFlightExitGetInputChallengeData {
 };
 
 // NMTODO: figure out this interface
-export interface IInflightExitInputChallengeData {};
+export interface IInFlightExitInputChallengeData {};
 
 /** @internal */
 export async function inFlightExitGetInputChallengeData ({
   txbytes,
   inputIndex
-}: IInFlightExitGetInputChallengeData): Promise<IInflightExitInputChallengeData> {
+}: IInFlightExitGetInputChallengeData): Promise<IInFlightExitInputChallengeData> {
   return Transporter.post({
     url: `${this.watcherSecurityUrl}/in_flight_exit.get_input_challenge_data`,
     body: {
@@ -46,13 +46,13 @@ export interface IInFlightExitGetOutputChallengeData {
 };
 
 // NMTODO: figure out this interface
-export interface IInflightExitOutputChallengeData {};
+export interface IInFlightExitOutputChallengeData {};
 
 /** @internal */
 export async function inFlightExitGetOutputChallengeData ({
   txbytes,
   outputIndex
-}: IInFlightExitGetOutputChallengeData): Promise<IInflightExitOutputChallengeData> {
+}: IInFlightExitGetOutputChallengeData): Promise<IInFlightExitOutputChallengeData> {
   return Transporter.post({
     url: `${this.watcherSecurityUrl}/in_flight_exit.get_output_challenge_data`,
     body: {
@@ -64,7 +64,7 @@ export async function inFlightExitGetOutputChallengeData ({
 }
 
 /** @internal */
-export async function inFlightExitGetData (txbytes: string): Promise<Interfaces.IInflightExitData> {
+export async function inFlightExitGetData (txbytes: string): Promise<Interfaces.IInFlightExitData> {
   return Transporter.post({
     url: `${this.watcherSecurityUrl}/in_flight_exit.get_data`,
     body: {
@@ -74,7 +74,7 @@ export async function inFlightExitGetData (txbytes: string): Promise<Interfaces.
   });
 }
 
-export interface IInflightExitCompetitor {
+export interface IInFlightExitCompetitor {
   input_tx: string;
   input_utxo_pos: Interfaces.IComplexAmount;
   in_flight_txbytes: string;
@@ -87,7 +87,7 @@ export interface IInflightExitCompetitor {
 };
 
 /** @internal */
-export async function inFlightExitGetCompetitor (txbytes: string): Promise<IInflightExitCompetitor> {
+export async function inFlightExitGetCompetitor (txbytes: string): Promise<IInFlightExitCompetitor> {
   return Transporter.post({
     url: `${this.watcherSecurityUrl}/in_flight_exit.get_competitor`,
     body: {
@@ -97,8 +97,14 @@ export async function inFlightExitGetCompetitor (txbytes: string): Promise<IInfl
   });
 }
 
+export interface IInFlightExitCanonicalProof {
+  in_flight_txbytes: string;
+  in_flight_tx_pos: Interfaces.IComplexAmount;
+  in_flight_proof: string;
+}
+
 /** @internal */
-export async function inFlightExitProveCanonical (txbytes: string): Promise<string> {
+export async function inFlightExitProveCanonical (txbytes: string): Promise<IInFlightExitCanonicalProof> {
   return Transporter.post({
     url: `${this.watcherSecurityUrl}/in_flight_exit.prove_canonical`,
     body: {

@@ -20,7 +20,7 @@ import { HttpProvider } from 'web3-providers-http';
 import * as Joi from '@hapi/joi';
 
 import * as RootchainStandardExitModule from '@lib/rootchain/standardexit';
-import * as RootchainInflightExitModule from '@lib/rootchain/inflightexit';
+import * as RootchainInFlightExitModule from '@lib/rootchain/inflightexit';
 import * as RootchainExitQueueModule from '@lib/rootchain/exitqueue';
 import * as RootchainDepositModule from '@lib/rootchain/deposit';
 import * as RootchainUtilModule from '@lib/rootchain/util';
@@ -31,7 +31,7 @@ import * as WatcherFeesModule from '@lib/watcher/fees';
 import * as WatcherDepositModule from '@lib/watcher/deposit';
 import * as WatcherUtxoModule from '@lib/watcher/utxo';
 import * as WatcherStatusModule from '@lib/watcher/status';
-import * as WatcherInflightExitModule from '@lib/watcher/inflightexit';
+import * as WatcherInFlightExitModule from '@lib/watcher/inflightexit';
 
 import * as EncoderModule from '@lib/transaction/encoders';
 import * as TypedDataModule from '@lib/transaction/typedData';
@@ -283,15 +283,15 @@ class OmgJS {
     txBytes: string
   ): Promise<string> {
     Validators.validate(txBytes, Validators.getInFlightExitIdSchema);
-    return RootchainInflightExitModule.getInFlightExitId.call(this, txBytes);
+    return RootchainInFlightExitModule.getInFlightExitId.call(this, txBytes);
   }
 
   /** Retrieve in-flight exit data from an array of exit IDs directly from the payment exit game contract */
   public async getInFlightExitContractData (
     exitIds: Array<string>
-  ): Promise<Array<RootchainInflightExitModule.IInflightExitContractData>> {
+  ): Promise<Array<RootchainInFlightExitModule.IInFlightExitContractData>> {
     Validators.validate(exitIds, Validators.getInFlightExitDataSchema);
-    return RootchainInflightExitModule.getInFlightExitContractData.call(this, exitIds);
+    return RootchainInFlightExitModule.getInFlightExitContractData.call(this, exitIds);
   }
 
   /**
@@ -376,10 +376,10 @@ class OmgJS {
    * @param args.txOptions transaction options
   */
   public async startInFlightExit (
-    args: RootchainInflightExitModule.IStartInflightExit
+    args: RootchainInFlightExitModule.IStartInFlightExit
   ): Promise<Interfaces.ITransactionReceipt> {
     Validators.validate(args, Validators.startInFlightExitSchema);
-    return RootchainInflightExitModule.startInflightExit.call(this, args);
+    return RootchainInFlightExitModule.startInFlightExit.call(this, args);
   }
 
   /**
@@ -389,10 +389,10 @@ class OmgJS {
    * @param args.txOptions transaction options
   */
   public async piggybackInFlightExitOnOutput (
-    args: RootchainInflightExitModule.IPiggybackInflightExitOnOutput
+    args: RootchainInFlightExitModule.IPiggybackInFlightExitOnOutput
   ): Promise<Interfaces.ITransactionReceipt> {
     Validators.validate(args, Validators.piggybackInFlightExitOnOutputSchema);
-    return RootchainInflightExitModule.piggybackInFlightExitOnOutput.call(this, args);
+    return RootchainInFlightExitModule.piggybackInFlightExitOnOutput.call(this, args);
   }
 
   /**
@@ -402,10 +402,10 @@ class OmgJS {
    * @param args.txOptions transaction options
   */
   public async piggybackInFlightExitOnInput (
-    args: RootchainInflightExitModule.IPiggybackInflightExitOnInput
+    args: RootchainInFlightExitModule.IPiggybackInFlightExitOnInput
   ): Promise<Interfaces.ITransactionReceipt> {
     Validators.validate(args, Validators.piggybackInFlightExitOnInputSchema);
-    return RootchainInflightExitModule.piggybackInFlightExitOnInput.call(this, args);
+    return RootchainInFlightExitModule.piggybackInFlightExitOnInput.call(this, args);
   }
 
   /**
@@ -422,10 +422,10 @@ class OmgJS {
    * @param args.txOptions transaction options
   */
   public async challengeInFlightExitNotCanonical (
-    args: RootchainInflightExitModule.IChallengeInflightExitNotCanonical
+    args: RootchainInFlightExitModule.IChallengeInFlightExitNotCanonical
   ): Promise<Interfaces.ITransactionReceipt> {
     Validators.validate(args, Validators.challengeInFlightExitNotCanonicalSchema);
-    return RootchainInflightExitModule.challengeInFlightExitNotCanonical.call(this, args);
+    return RootchainInFlightExitModule.challengeInFlightExitNotCanonical.call(this, args);
   }
 
   /**
@@ -436,10 +436,10 @@ class OmgJS {
    * @param args.txOptions transaction options
   */
   public async respondToNonCanonicalChallenge (
-    args: RootchainInflightExitModule.IRespondToNonCanonicalChallenge
+    args: RootchainInFlightExitModule.IRespondToNonCanonicalChallenge
   ): Promise<Interfaces.ITransactionReceipt> {
     Validators.validate(args, Validators.respondToNonCanonicalChallengeSchema);
-    return RootchainInflightExitModule.respondToNonCanonicalChallenge.call(this, args);
+    return RootchainInFlightExitModule.respondToNonCanonicalChallenge.call(this, args);
   }
 
   /**
@@ -454,10 +454,10 @@ class OmgJS {
    * @param args.txOptions transaction options
   */
   public async challengeInFlightExitInputSpent (
-    args: RootchainInflightExitModule.IChallengeInFlightExitInputSpent
+    args: RootchainInFlightExitModule.IChallengeInFlightExitInputSpent
   ): Promise<Interfaces.ITransactionReceipt> {
     Validators.validate(args, Validators.challengeInFlightExitInputSpentSchema);
-    return RootchainInflightExitModule.challengeInFlightExitInputSpent.call(this, args);
+    return RootchainInFlightExitModule.challengeInFlightExitInputSpent.call(this, args);
   }
 
   /**
@@ -471,10 +471,10 @@ class OmgJS {
    * @param args.txOptions transaction options
   */
   public async challengeInFlightExitOutputSpent (
-    args: RootchainInflightExitModule.IChallengeInFlightExitOutputSpent
+    args: RootchainInFlightExitModule.IChallengeInFlightExitOutputSpent
   ): Promise<Interfaces.ITransactionReceipt> {
     Validators.validate(args, Validators.challengeInFlightExitOutputSpentSchema);
-    return RootchainInflightExitModule.challengeInFlightExitOutputSpent.call(this, args);
+    return RootchainInFlightExitModule.challengeInFlightExitOutputSpent.call(this, args);
   }
 
   /**
@@ -483,10 +483,10 @@ class OmgJS {
    * @param args.txOptions transaction options
   */
   public async deleteNonPiggybackedInFlightExit (
-    args: RootchainInflightExitModule.IDeleteNonPiggybackedInFlightExit
+    args: RootchainInFlightExitModule.IDeleteNonPiggybackedInFlightExit
   ): Promise<Interfaces.ITransactionReceipt> {
     Validators.validate(args, Validators.deleteNonPiggybackedInFlightExitSchema);
-    return RootchainInflightExitModule.deleteNonPiggybackedInFlightExit.call(this, args);
+    return RootchainInFlightExitModule.deleteNonPiggybackedInFlightExit.call(this, args);
   }
 
   /** Get the UTXOs of an address */
@@ -667,10 +667,10 @@ class OmgJS {
    * @param inputIndex invalid input index
   */
   public async inFlightExitGetInputChallengeData (
-    args: WatcherInflightExitModule.IInFlightExitGetInputChallengeData
-  ): Promise<WatcherInflightExitModule.IInflightExitInputChallengeData> {
+    args: WatcherInFlightExitModule.IInFlightExitGetInputChallengeData
+  ): Promise<WatcherInFlightExitModule.IInFlightExitInputChallengeData> {
     Validators.validate(args, Validators.inFlightExitGetInputChallengeDataSchema);
-    return WatcherInflightExitModule.inFlightExitGetInputChallengeData.call(this, args);
+    return WatcherInFlightExitModule.inFlightExitGetInputChallengeData.call(this, args);
   }
 
   /**
@@ -679,35 +679,35 @@ class OmgJS {
    * @param outputIndex invalid output index
   */
   public async inFlightExitGetOutputChallengeData (
-    args: WatcherInflightExitModule.IInFlightExitGetOutputChallengeData
-  ): Promise<WatcherInflightExitModule.IInflightExitOutputChallengeData> {
+    args: WatcherInFlightExitModule.IInFlightExitGetOutputChallengeData
+  ): Promise<WatcherInFlightExitModule.IInFlightExitOutputChallengeData> {
     Validators.validate(args, Validators.inFlightExitGetOutputChallengeDataSchema);
-    return WatcherInflightExitModule.inFlightExitGetOutputChallengeData.call(this, args);
+    return WatcherInFlightExitModule.inFlightExitGetOutputChallengeData.call(this, args);
   }
 
-  // NMTODO: rename as its the same as getInflightExitData
+  // NMTODO: rename as its the same as getInFlightExitData
   /** Get the exit data for an in-flight transaction */
   public async inFlightExitGetData (
     txbytes: string
-  ): Promise<Interfaces.IInflightExitData> {
+  ): Promise<Interfaces.IInFlightExitData> {
     Validators.validate(txbytes, Joi.string().required());
-    return WatcherInflightExitModule.inFlightExitGetData.call(this, txbytes);
+    return WatcherInFlightExitModule.inFlightExitGetData.call(this, txbytes);
   }
 
   /** Get the competitor for an in-flight transaction */
   public async inFlightExitGetCompetitor (
     txbytes: string
-  ): Promise<WatcherInflightExitModule.IInflightExitCompetitor> {
+  ): Promise<WatcherInFlightExitModule.IInFlightExitCompetitor> {
     Validators.validate(txbytes, Joi.string().required());
-    return WatcherInflightExitModule.inFlightExitGetCompetitor.call(this, txbytes);
+    return WatcherInFlightExitModule.inFlightExitGetCompetitor.call(this, txbytes);
   }
 
   /** Prove that a transaction has been put into a block (and therefore is canonical) */
   public async inFlightExitProveCanonical (
     txbytes: string
-  ): Promise<string> {
+  ): Promise<WatcherInFlightExitModule.IInFlightExitCanonicalProof> {
     Validators.validate(txbytes, Joi.string().required());
-    return WatcherInflightExitModule.inFlightExitProveCanonical.call(this, txbytes);
+    return WatcherInFlightExitModule.inFlightExitProveCanonical.call(this, txbytes);
   }
 
   /** Retrieve the EVM revert reason from a transaction hash */

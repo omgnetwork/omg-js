@@ -96,7 +96,7 @@ export interface IExitData {
   utxo_pos: number;
 };
 
-export interface IInflightExitData {
+export interface IInFlightExitData {
   in_flight_tx: string;
   in_flight_tx_sigs: Array<string>;
   input_txs: Array<string>;

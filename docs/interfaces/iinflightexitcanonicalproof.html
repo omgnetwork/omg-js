@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>IDeleteNonPiggybackedInFlightExit | omg-js - v4.0.1-1.0.0</title>
+	<title>IInFlightExitCanonicalProof | omg-js - v4.0.1-1.0.0</title>
 	<meta name="description" content="Documentation for omg-js - v4.0.1-1.0.0">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -54,10 +54,10 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="ideletenonpiggybackedinflightexit.html">IDeleteNonPiggybackedInFlightExit</a>
+					<a href="iinflightexitcanonicalproof.html">IInFlightExitCanonicalProof</a>
 				</li>
 			</ul>
-			<h1>Interface IDeleteNonPiggybackedInFlightExit</h1>
+			<h1>Interface IInFlightExitCanonicalProof</h1>
 		</div>
 	</div>
 </header>
@@ -68,7 +68,7 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">IDeleteNonPiggybackedInFlightExit</span>
+						<span class="target">IInFlightExitCanonicalProof</span>
 					</li>
 				</ul>
 			</section>
@@ -79,8 +79,9 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="ideletenonpiggybackedinflightexit.html#exitid" class="tsd-kind-icon">exit<wbr>Id</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="ideletenonpiggybackedinflightexit.html#txoptions" class="tsd-kind-icon">tx<wbr>Options</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="iinflightexitcanonicalproof.html#in_flight_proof" class="tsd-kind-icon">in_<wbr>flight_<wbr>proof</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="iinflightexitcanonicalproof.html#in_flight_tx_pos" class="tsd-kind-icon">in_<wbr>flight_<wbr>tx_<wbr>pos</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="iinflightexitcanonicalproof.html#in_flight_txbytes" class="tsd-kind-icon">in_<wbr>flight_<wbr>txbytes</a></li>
 							</ul>
 						</section>
 					</div>
@@ -89,22 +90,32 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="exitid" class="tsd-anchor"></a>
-					<h3>exit<wbr>Id</h3>
-					<div class="tsd-signature tsd-kind-icon">exit<wbr>Id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<a name="in_flight_proof" class="tsd-anchor"></a>
+					<h3>in_<wbr>flight_<wbr>proof</h3>
+					<div class="tsd-signature tsd-kind-icon">in_<wbr>flight_<wbr>proof<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/omisego/omg-js/blob/4fc3292/src/rootchain/inflightexit.ts#L355">src/rootchain/inflightexit.ts:355</a></li>
+							<li>Defined in <a href="https://github.com/omisego/omg-js/blob/4fc3292/src/watcher/inflightexit.ts#L103">src/watcher/inflightexit.ts:103</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="txoptions" class="tsd-anchor"></a>
-					<h3>tx<wbr>Options</h3>
-					<div class="tsd-signature tsd-kind-icon">tx<wbr>Options<span class="tsd-signature-symbol">:</span> <a href="itransactionoptions.html" class="tsd-signature-type">ITransactionOptions</a></div>
+					<a name="in_flight_tx_pos" class="tsd-anchor"></a>
+					<h3>in_<wbr>flight_<wbr>tx_<wbr>pos</h3>
+					<div class="tsd-signature tsd-kind-icon">in_<wbr>flight_<wbr>tx_<wbr>pos<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Interfaces.IComplexAmount</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/omisego/omg-js/blob/4fc3292/src/rootchain/inflightexit.ts#L356">src/rootchain/inflightexit.ts:356</a></li>
+							<li>Defined in <a href="https://github.com/omisego/omg-js/blob/4fc3292/src/watcher/inflightexit.ts#L102">src/watcher/inflightexit.ts:102</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="in_flight_txbytes" class="tsd-anchor"></a>
+					<h3>in_<wbr>flight_<wbr>txbytes</h3>
+					<div class="tsd-signature tsd-kind-icon">in_<wbr>flight_<wbr>txbytes<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/omisego/omg-js/blob/4fc3292/src/watcher/inflightexit.ts#L101">src/watcher/inflightexit.ts:101</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -123,13 +134,16 @@
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-interface">
-						<a href="ideletenonpiggybackedinflightexit.html" class="tsd-kind-icon">IDelete<wbr>Non<wbr>Piggybacked<wbr>InFlight<wbr>Exit</a>
+						<a href="iinflightexitcanonicalproof.html" class="tsd-kind-icon">IIn<wbr>Flight<wbr>Exit<wbr>Canonical<wbr>Proof</a>
 						<ul>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="ideletenonpiggybackedinflightexit.html#exitid" class="tsd-kind-icon">exit<wbr>Id</a>
+								<a href="iinflightexitcanonicalproof.html#in_flight_proof" class="tsd-kind-icon">in_<wbr>flight_<wbr>proof</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="ideletenonpiggybackedinflightexit.html#txoptions" class="tsd-kind-icon">tx<wbr>Options</a>
+								<a href="iinflightexitcanonicalproof.html#in_flight_tx_pos" class="tsd-kind-icon">in_<wbr>flight_<wbr>tx_<wbr>pos</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="iinflightexitcanonicalproof.html#in_flight_txbytes" class="tsd-kind-icon">in_<wbr>flight_<wbr>txbytes</a>
 							</li>
 						</ul>
 					</li>
