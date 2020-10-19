@@ -45,8 +45,14 @@ export interface IInFlightExitGetOutputChallengeData {
   outputIndex: number;
 };
 
-// NMTODO: figure out this interface
-export interface IInFlightExitOutputChallengeData {};
+export interface IInFlightExitOutputChallengeData {
+  in_flight_txbytes: string;
+  in_flight_proof: string;
+  in_flight_output_pos: number;
+  spending_txbytes: string;
+  spending_input_index: number;
+  spending_sig: string;
+};
 
 /** @internal */
 export async function inFlightExitGetOutputChallengeData ({

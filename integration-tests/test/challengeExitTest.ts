@@ -136,7 +136,7 @@ describe('challengeExitTest.js', function () {
 
       // NMTODO: failing test here...
       let receipt = await omgjs.challengeStandardExit({
-        standardExitId: challengeData.exit_id,
+        standardExitId: challengeData.exit_id.toString(),
         exitingTx: challengeData.exiting_tx,
         challengeTx: challengeData.txbytes,
         inputIndex: challengeData.input_index,

@@ -13,35 +13,43 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License. */
 
-const config = require('../test-config')
-const rcHelper = require('../helpers/rootChainHelper')
-const ccHelper = require('../helpers/childChainHelper')
-const faucet = require('../helpers/faucet')
-const Web3 = require('web3')
-const ChildChain = require('@omisego/omg-js-childchain')
-const RootChain = require('@omisego/omg-js-rootchain')
-const { transaction } = require('@omisego/omg-js-util')
-const chai = require('chai')
-const numberToBN = require('number-to-bn')
-const assert = chai.assert
+import Web3 from 'web3';
+import BN from 'bn.js';
+import web3Utils from 'web3-utils';
+import path from 'path';
+import { assert, should, use } from 'chai';
+import chaiAsPromised from 'chai-as-promised';
 
-const path = require('path')
+import OmgJS from '../..';
+
+import faucet from '../helpers/faucet';
+import * as rcHelper from '../helpers/rootChainHelper';
+import * as ccHelper from '../helpers/childChainHelper';
+import config from '../test-config';
+
+should();
+use(chaiAsPromised);
+
 const faucetName = path.basename(__filename)
 
-describe('challengeInFlightExitInputSpentTest.js', function () {
-  const web3 = new Web3(new Web3.providers.HttpProvider(config.eth_node))
-  const rootChain = new RootChain({ web3, plasmaContractAddress: config.plasmaframework_contract_address })
-  const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url, plasmaContractAddress: config.plasmaframework_contract_address })
+const web3Provider = new Web3.providers.HttpProvider(config.eth_node);
+const omgjs = new OmgJS({
+  plasmaContractAddress: config.plasmaframework_contract_address,
+  watcherUrl: config.watcher_url,
+  watcherProxyUrl: config.watcher_proxy_url,
+  web3Provider
+});
 
+describe('challengeInFlightExitInputSpentTest.js', function () {
   before(async function () {
-    await faucet.init({ rootChain, childChain, web3, config, faucetName })
+    await faucet.init({ faucetName })
   })
 
   describe('in-flight transaction challenge with a invalid input piggybacking', function () {
-    const INTIIAL_ALICE_AMOUNT = web3.utils.toWei('.1', 'ether')
-    const INTIIAL_BOB_RC_AMOUNT = web3.utils.toWei('.5', 'ether')
-    const INTIIAL_CAROL_RC_AMOUNT = web3.utils.toWei('.5', 'ether')
-    const TRANSFER_AMOUNT = web3.utils.toWei('0.0002', 'ether')
+    const INTIIAL_ALICE_AMOUNT = web3Utils.toWei('.1', 'ether')
+    const INTIIAL_BOB_RC_AMOUNT = web3Utils.toWei('.5', 'ether')
+    const INTIIAL_CAROL_RC_AMOUNT = web3Utils.toWei('.5', 'ether')
+    const TRANSFER_AMOUNT = web3Utils.toWei('0.0002', 'ether')
 
     let aliceAccount
     let bobAccount
@@ -49,16 +57,16 @@ describe('challengeInFlightExitInputSpentTest.js', function () {
     let fundAliceTx
 
     beforeEach(async function () {
-      aliceAccount = rcHelper.createAccount(web3)
-      bobAccount = rcHelper.createAccount(web3)
-      carolAccount = rcHelper.createAccount(web3)
+      aliceAccount = rcHelper.createAccount()
+      bobAccount = rcHelper.createAccount()
+      carolAccount = rcHelper.createAccount()
 
       await Promise.all([
         // Give some ETH to Alice on the child chain
         faucet.fundChildchain(
           aliceAccount.address,
           INTIIAL_ALICE_AMOUNT,
-          transaction.ETH_CURRENCY
+          OmgJS.currency.ETH
         ),
         // Give some ETH to Bob on the root chain
         faucet.fundRootchainEth(bobAccount.address, INTIIAL_BOB_RC_AMOUNT)
@@ -70,22 +78,18 @@ describe('challengeInFlightExitInputSpentTest.js', function () {
       // Wait for finality
       await Promise.all([
         ccHelper.waitForBalanceEq(
-          childChain,
           aliceAccount.address,
           INTIIAL_ALICE_AMOUNT
         ),
         rcHelper.waitForEthBalanceEq(
-          web3,
           carolAccount.address,
           INTIIAL_CAROL_RC_AMOUNT
         ),
         rcHelper.waitForEthBalanceEq(
-          web3,
           bobAccount.address,
           INTIIAL_BOB_RC_AMOUNT
         ),
         rcHelper.waitForEthBalanceEq(
-          web3,
           aliceAccount.address,
           INTIIAL_ALICE_AMOUNT
         )
@@ -104,24 +108,22 @@ describe('challengeInFlightExitInputSpentTest.js', function () {
 
     it('should challenge an in-flight exit as non canonical and challenge an invalid input piggyback', async function () {
       // Alice creates a transaction to send funds to Bob
-      const bobSpentOnGas = numberToBN(0)
-      const carolSpentOnGas = numberToBN(0)
-      const aliceSpentOnGas = numberToBN(0)
+      const bobSpentOnGas = new BN(0)
+      const carolSpentOnGas = new BN(0)
+      const aliceSpentOnGas = new BN(0)
       const bobTx = await ccHelper.createTx(
-        childChain,
         aliceAccount.address,
         bobAccount.address,
         TRANSFER_AMOUNT,
-        transaction.ETH_CURRENCY,
-        aliceAccount.privateKey,
-        rootChain.plasmaContractAddress
+        OmgJS.currency.ETH,
+        aliceAccount.privateKey
       )
 
       // Bob doesn't see the transaction get put into a block. He assumes that the operator
       // is witholding, so he attempts to exit his spent utxo as an in-flight exit
 
       // Get the exit data
-      const exitData = await childChain.inFlightExitGetData(bobTx)
+      const exitData = await omgjs.inFlightExitGetData(bobTx)
       assert.containsAllKeys(exitData, [
         'in_flight_tx',
         'in_flight_tx_sigs',
@@ -131,7 +133,7 @@ describe('challengeInFlightExitInputSpentTest.js', function () {
       ])
 
       // Starts the in-flight exit
-      const ifeReceipt = await rootChain.startInFlightExit({
+      const ifeReceipt = await omgjs.startInFlightExit({
         inFlightTx: exitData.in_flight_tx,
         inputTxs: exitData.input_txs,
         inputUtxosPos: exitData.input_utxos_pos,
@@ -142,14 +144,12 @@ describe('challengeInFlightExitInputSpentTest.js', function () {
           from: bobAccount.address
         }
       })
-      console.log(
-        `Bob called RootChain.startInFlightExit(): txhash = ${ifeReceipt.transactionHash}`
-      )
+      console.log(`Bob called RootChain.startInFlightExit(): txhash = ${ifeReceipt.transactionHash}`)
       // Keep track of how much Bob spends on gas
-      bobSpentOnGas.iadd(await rcHelper.spentOnGas(web3, ifeReceipt))
+      bobSpentOnGas.iadd(await rcHelper.spentOnGas(ifeReceipt))
 
       // alice piggybacks his input on the in-flight exit
-      let receipt = await rootChain.piggybackInFlightExitOnInput({
+      let receipt = await omgjs.piggybackInFlightExitOnInput({
         inFlightTx: exitData.in_flight_tx,
         inputIndex: 0,
         txOptions: {
@@ -157,30 +157,25 @@ describe('challengeInFlightExitInputSpentTest.js', function () {
           from: aliceAccount.address
         }
       })
-      aliceSpentOnGas.iadd(await rcHelper.spentOnGas(web3, receipt))
-      console.log(
-        `Alice called RootChain.piggybackInFlightExit() : txhash = ${receipt.transactionHash}`
-      )
+      aliceSpentOnGas.iadd(await rcHelper.spentOnGas(receipt))
+      console.log(`Alice called RootChain.piggybackInFlightExit() : txhash = ${receipt.transactionHash}`)
 
       // Meanwhile, Alice also sends funds to Carol (double spend). This transaction doesn't get put into a block either.
       const carolTx = await ccHelper.createTx(
-        childChain,
         aliceAccount.address,
         carolAccount.address,
         TRANSFER_AMOUNT,
-        transaction.ETH_CURRENCY,
-        aliceAccount.privateKey,
-        rootChain.plasmaContractAddress
+        OmgJS.currency.ETH,
+        aliceAccount.privateKey
       )
 
       // Carol sees that Bob is trying to exit the same input that Alice sent to her.
-      const carolTxDecoded = transaction.decodeTxBytes(carolTx)
+      const carolTxDecoded = omgjs.decodeTransaction(carolTx)
       const cInput = carolTxDecoded.inputs[0]
       const inflightExit = await ccHelper.waitForEvent(
-        childChain,
         'in_flight_exits',
         e => {
-          const decoded = transaction.decodeTxBytes(e.txbytes)
+          const decoded = omgjs.decodeTransaction(e.txbytes)
           return decoded.inputs.find(
             input =>
               input.blknum === cInput.blknum &&
@@ -191,16 +186,17 @@ describe('challengeInFlightExitInputSpentTest.js', function () {
       )
 
       // Carol's tx was not put into a block, but it can still be used to challenge Bob's IFE as non-canonical
-      const utxoPosOutput = transaction.encodeUtxoPos({
+      const utxoPosOutput = omgjs.encodeUtxoPos({
         blknum: fundAliceTx.result.blknum,
         txindex: fundAliceTx.result.txindex,
         oindex: 0
       }).toNumber()
 
-      const unsignInput = transaction.encode(transaction.decodeTxBytes(fundAliceTx.txbytes), { signed: false })
-      const unsignCarolTx = transaction.encode(carolTxDecoded, { signed: false })
+      const unsignInput = omgjs.encodeTransaction({ ...omgjs.decodeTransaction(fundAliceTx.txbytes), signed: false })
+      const unsignCarolTx = omgjs.encodeTransaction({ ...carolTxDecoded, signed: false })
 
-      receipt = await rootChain.challengeInFlightExitNotCanonical({
+      // NMTODO: failing test here
+      receipt = await omgjs.challengeInFlightExitNotCanonical({
         inputTx: unsignInput,
         inputUtxoPos: utxoPosOutput,
         inFlightTx: inflightExit.txbytes,
@@ -216,11 +212,11 @@ describe('challengeInFlightExitInputSpentTest.js', function () {
         }
       })
 
-      carolSpentOnGas.iadd(await rcHelper.spentOnGas(web3, receipt))
+      carolSpentOnGas.iadd(await rcHelper.spentOnGas(receipt))
       // now the IFE is non-canonical, if we process exit here then alice will get her utxo out which is wrong
       // carol need to challengeInFlightExitInputSpent to prevent alice getting her utxo out
 
-      receipt = await rootChain.challengeInFlightExitInputSpent({
+      receipt = await omgjs.challengeInFlightExitInputSpent({
         inFlightTx: inflightExit.txbytes,
         inFlightTxInputIndex: 0,
         challengingTx: unsignCarolTx,
@@ -233,10 +229,10 @@ describe('challengeInFlightExitInputSpentTest.js', function () {
           from: carolAccount.address
         }
       })
-      carolSpentOnGas.iadd(await rcHelper.spentOnGas(web3, receipt))
+      carolSpentOnGas.iadd(await rcHelper.spentOnGas(receipt))
 
       // Wait for challenge period
-      const { msUntilFinalization } = await rootChain.getExitTime({
+      const { msUntilFinalization } = await omgjs.getExitTime({
         exitRequestBlockNumber: ifeReceipt.blockNumber,
         submissionBlockNumber: fundAliceTx.result.blknum
       })
@@ -244,8 +240,8 @@ describe('challengeInFlightExitInputSpentTest.js', function () {
       await rcHelper.sleep(msUntilFinalization)
 
       // Call processExits again.
-      receipt = await rootChain.processExits({
-        token: transaction.ETH_CURRENCY,
+      receipt = await omgjs.processExits({
+        currency: OmgJS.currency.ETH,
         exitId: 0,
         maxExitsToProcess: 5,
         txOptions: {
@@ -255,37 +251,34 @@ describe('challengeInFlightExitInputSpentTest.js', function () {
       })
       if (receipt) {
         console.log(`Bob called RootChain.processExits() after challenge period: txhash = ${receipt.transactionHash}`)
-        bobSpentOnGas.iadd(await rcHelper.spentOnGas(web3, receipt))
-        await rcHelper.awaitTx(web3, receipt.transactionHash)
+        bobSpentOnGas.iadd(await rcHelper.spentOnGas(receipt))
+        await rcHelper.awaitTx(receipt.transactionHash)
       }
 
       // Get Bob's ETH balance
-      const bobEthBalance = await web3.eth.getBalance(bobAccount.address)
+      const bobEthBalance = await omgjs.getRootchainETHBalance(bobAccount.address)
       // Bob's IFE was not successful, so he loses his exit bond.
       // INTIIAL_BOB_AMOUNT - INFLIGHT_EXIT_BOND - PIGGYBACK_BOND - gas spent
-      const { bonds } = await rootChain.getPaymentExitGame()
-      const expected = web3.utils
-        .toBN(INTIIAL_BOB_RC_AMOUNT)
-        .sub(web3.utils.toBN(bonds.inflightExit))
+      const { bonds } = await omgjs.getPaymentExitGame()
+      const expected = new BN(INTIIAL_BOB_RC_AMOUNT)
+        .sub(new BN(bonds.inflightExit.toString()))
         .sub(bobSpentOnGas)
       assert.equal(bobEthBalance.toString(), expected.toString())
 
       // Get carol's ETH balance
-      const carolEthBalance = await web3.eth.getBalance(carolAccount.address)
+      const carolEthBalance = await omgjs.getRootchainETHBalance(carolAccount.address)
       // carol got Bob's exit bond, and piggyback of alice input so expect her balance to be
       // INTIIAL_CAROL_AMOUNT + INFLIGHT_EXIT_BOND  + INFLIGHT_PIGGYBACK_BOND - gas spent
-      const carolExpected = web3.utils
-        .toBN(INTIIAL_CAROL_RC_AMOUNT)
-        .add(web3.utils.toBN(bonds.inflightExit))
-        .add(web3.utils.toBN(bonds.piggyback))
+      const carolExpected = new BN(INTIIAL_CAROL_RC_AMOUNT)
+        .add(new BN(bonds.inflightExit.toString()))
+        .add(new BN(bonds.piggyback.toString()))
         .sub(carolSpentOnGas)
       assert.equal(carolEthBalance.toString(), carolExpected.toString())
 
       // alice input failed to exit, hence rootchain balance should be zero
-      const aliceEthBalance = await web3.eth.getBalance(aliceAccount.address)
-      const aliceExpected = web3.utils
-        .toBN(INTIIAL_ALICE_AMOUNT)
-        .sub(web3.utils.toBN(bonds.piggyback))
+      const aliceEthBalance = await omgjs.getRootchainETHBalance(aliceAccount.address)
+      const aliceExpected = new BN(INTIIAL_ALICE_AMOUNT)
+        .sub(new BN(bonds.piggyback.toString()))
         .sub(aliceSpentOnGas)
       assert.equal(aliceEthBalance.toString(), aliceExpected.toString())
     })
