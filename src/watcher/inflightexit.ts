@@ -74,8 +74,17 @@ export async function inFlightExitGetData (txbytes: string): Promise<Interfaces.
   });
 }
 
-// NMTODO: figure out this interface
-export interface IInflightExitCompetitor {};
+export interface IInflightExitCompetitor {
+  input_tx: string;
+  input_utxo_pos: Interfaces.IComplexAmount;
+  in_flight_txbytes: string;
+  in_flight_input_index: number;
+  competing_txbytes: string;
+  competing_input_index: number;
+  competing_tx_pos: Interfaces.IComplexAmount;
+  competing_proof: string;
+  competing_sig: string;
+};
 
 /** @internal */
 export async function inFlightExitGetCompetitor (txbytes: string): Promise<IInflightExitCompetitor> {

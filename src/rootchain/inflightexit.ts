@@ -176,7 +176,7 @@ export interface IChallengeInflightExitNotCanonical {
   inFlightTxInputIndex: number;
   competingTx: string;
   competingTxInputIndex: number;
-  competingTxPos: string | number | BN;
+  competingTxPos: Interfaces.IComplexAmount;
   competingTxInclusionProof: string;
   competingTxWitness: string;
   txOptions: Interfaces.ITransactionOptions;
