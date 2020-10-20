@@ -101,7 +101,7 @@ export function encodeTransaction ({
 }
 
 /** @internal */
-export function decodeTransaction (transaction: string): Interfaces.ITransactionBody {
+export function decodeTransaction (transaction: string | Buffer): Interfaces.ITransactionBody {
   let txType, inputs, outputs, txData, metadata, sigs;
   const rawTx = Buffer.isBuffer(transaction)
     ? transaction

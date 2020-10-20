@@ -201,7 +201,7 @@ class OmgJS {
 
   /** Decode a RLP encoded transaction */
   public decodeTransaction (
-    encodedTransaction: string
+    encodedTransaction: string | Buffer
   ): Interfaces.ITransactionBody {
     Validators.validate(encodedTransaction, Joi.string().required());
     return EncoderModule.decodeTransaction.call(this, encodedTransaction);

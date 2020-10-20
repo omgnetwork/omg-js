@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License. */
 
 // Use this script to return any funds in faucet accounts back to the fund account
+/* eslint-disable @typescript-eslint/no-var-requires */
 
 const RootChain = require('@omisego/omg-js-rootchain');
 const ChildChain = require('@omisego/omg-js-childchain');

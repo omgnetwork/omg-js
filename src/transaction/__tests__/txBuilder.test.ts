@@ -17,14 +17,13 @@ import { assert, should, use } from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import BN from 'bn.js';
 
-import * as TxBuilder from '../txBuilder';
-import * as Constants from '../../common/constants';
+import * as TxBuilder from '@lib/transaction/txBuilder';
+import * as Constants from '@lib/common/constants';
 
 should();
 use(chaiAsPromised);
 
 describe('transaction/txBuilder test', function () {
-
   describe('createTransactionBody', function () {
     it('should create a transaction body from one input and give change', function () {
       const fromAddress = '0xf4ebbe787311bb955bb353b7a4d8b97af8ed1c9b';
