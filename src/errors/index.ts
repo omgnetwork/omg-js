@@ -18,6 +18,7 @@ export interface IRpcError {
   description: string;
   messages: Record<string, unknown>;
 }
+
 export class RpcError extends Error {
   public code;
   constructor ({ code, description, messages }: IRpcError) {
