@@ -1,5 +1,3 @@
-// mocha will run these in order
-
 import './test/CORSHeaderTest';
 import './test/metadataTest';
 import './test/amountTypes';

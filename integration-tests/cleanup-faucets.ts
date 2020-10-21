@@ -1,5 +1,5 @@
 /*
-Copyright 2019 OmiseGO Pte Ltd
+Copyright 2020 OmiseGO Pte Ltd
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -13,28 +13,18 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License. */
 
-// Use this script to return any funds in faucet accounts back to the fund account
-/* eslint-disable @typescript-eslint/no-var-requires */
+import fs from 'fs';
 
-const RootChain = require('@omisego/omg-js-rootchain');
-const ChildChain = require('@omisego/omg-js-childchain');
-const Web3 = require('web3');
-const fs = require('fs');
+import faucet from './helpers/faucet';
+import config from './test-config';
 
-const faucet = require('./helpers/faucet');
-const config = require('./test-config');
-
-const web3 = new Web3(new Web3.providers.HttpProvider(config.eth_node));
-const rootChain = new RootChain({ web3, plasmaContractAddress: config.plasmaframework_contract_address });
-const childChain = new ChildChain({ watcherUrl: config.watcher_url, watcherProxyUrl: config.watcher_proxy_url, plasmaContractAddress: config.plasmaframework_contract_address });
-
-async function cleanup () {
+async function cleanup (): Promise<void> {
   console.log(`🧹 Returning faucet funds back to the fund account: ${config.fund_account}`);
   const allFiles = fs.readdirSync(`${__dirname}/test/`);
   const fundingPromises = [];
 
   for (const faucetName of allFiles) {
-    await faucet.init({ rootChain, childChain, web3, config, faucetName, topup: false });
+    await faucet.init({ faucetName, topup: false });
     fundingPromises.push(
       faucet.returnFunds(faucet.faucetAccount, faucet.fundAccount)
     );

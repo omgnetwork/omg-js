@@ -13,8 +13,8 @@
     "ci-min-smoke-test": "npm run mocha ci-min-smoke-test",
     "ci-baseline-test": "npm run mocha ci-baseline-test",
     "ci-ife-test": "npm run mocha ci-ife-test",
-    "parallel-test": "node parallel-test",
-    "cleanup-faucets": "node cleanup-faucets"
+    "parallel-test": "ts-node parallel-test",
+    "cleanup-faucets": "ts-node cleanup-faucets"
   },
   "license": "Apache-2.0",
   "dependencies": {
