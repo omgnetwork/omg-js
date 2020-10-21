@@ -19,7 +19,7 @@ import erc20abi from 'human-standard-token-abi';
 import BN from 'bn.js';
 
 import OmgJS from '../..';
-import { ITransactionReceipt } from '../..';
+import { ITransactionReceipt, IWatcherTransactionReceipt } from '../..';
 
 import * as ccHelper from './childChainHelper';
 import * as rcHelper from './rootChainHelper';
@@ -100,7 +100,7 @@ export default {
     console.info('------------------------------------------------');
   },
 
-  initEthBalance: async function (minAmount, topupMultipler) {
+  initEthBalance: async function (minAmount: number, topupMultipler: number): Promise<void> {
     if (new BN(minAmount.toString()).eqn(0)) {
       return;
     }
@@ -150,7 +150,7 @@ export default {
     }
   },
 
-  initERC20Balance: async function (minAmount, topupMultipler) {
+  initERC20Balance: async function (minAmount: number, topupMultipler: number): Promise<void> {
     if (new BN(minAmount).eqn(0)) {
       return;
     }
@@ -207,7 +207,7 @@ export default {
     }
   },
 
-  topUpEth: async function (amount, address) {
+  topUpEth: async function (amount: number, address: string): Promise<void> {
     const topup = new BN(amount).add(new BN(web3Utils.toWei('0.1', 'ether'))); // A bit extra for gas
     console.log(`Not enough Root chain ETH in faucet ${address}, attempting to top up with ${topup.toString()}`);
     const txDetails = {
@@ -221,20 +221,21 @@ export default {
     return rcHelper.waitForEthBalance(address, balance => new BN(balance).gte(topup));
   },
 
-  topUpERC20: async function (amount, address) {
+  topUpERC20: async function (amount: BN | number, address: string): Promise<void> {
     console.log(`Not enough Root chain erc20 tokens in faucet ${address}, attempting to top up with ${amount.toString()} tokens`);
     const txDetails = {
       from: this.fundAccount.address,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       to: (erc20Contract as any)._address,
       data: erc20Contract.methods.transfer(address, amount.toString()).encodeABI()
     };
     await rcHelper.setGas(txDetails);
     const signedTx = await omgjs.web3Instance.eth.accounts.signTransaction(txDetails, this.fundAccount.privateKey);
     await omgjs.web3Instance.eth.sendSignedTransaction(signedTx.rawTransaction);
-    return rcHelper.waitForERC20Balance(address, config.erc20_contract_address, balance => new BN(balance).gte(amount));
+    return rcHelper.waitForERC20Balance(address, config.erc20_contract_address, balance => new BN(balance).gte(new BN(amount.toString())));
   },
 
-  fundChildchain: async function (address, amount, currency) {
+  fundChildchain: async function (address: string, amount: number, currency: string): Promise<{ result: IWatcherTransactionReceipt, txbytes: string }> {
     const ret = await ccHelper.send(
       this.faucetAccount.address,
       address,
@@ -246,7 +247,8 @@ export default {
     return ret;
   },
 
-  fundRootchainEth: async function (address, amount) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  fundRootchainEth: async function (address: string, amount: number): Promise<any> {
     if (amount <= 0) {
       return;
     }
@@ -260,7 +262,8 @@ export default {
     return ret;
   },
 
-  fundRootchainERC20: async function (address, amount) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  fundRootchainERC20: async function (address: string, amount: number): Promise<any> {
     if (amount <= 0) {
       return;
     }
@@ -280,7 +283,7 @@ export default {
     return rcHelper.sendTransaction(txDetails, this.faucetAccount.privateKey);
   },
 
-  returnFunds: function (from, to?: string) {
+  returnFunds: function (from: string, to?: string): Promise<void> {
     return this.returnRootchainFunds(from, to);
     // we don't return childchain fund because it messed up the utxo
     // return Promise.all([
@@ -289,7 +292,7 @@ export default {
     // ])
   },
 
-  returnChildchainFunds: async function (from, to = this.faucetAccount) {
+  returnChildchainFunds: async function (from: { address: string, privateKey: string }, to = this.faucetAccount): Promise<void> {
     const balances = await omgjs.getBalance(from.address);
     for (const balance of balances) {
       if (balance.currency === OmgJS.currency.ETH) {
@@ -319,7 +322,7 @@ export default {
     }
   },
 
-  returnRootchainFunds: async function (from, to = this.faucetAccount) {
+  returnRootchainFunds: async function (from: { address: string, privateKey: string }, to = this.faucetAccount): Promise<void> {
     try {
       const balance = await omgjs.web3Instance.eth.getBalance(from.address);
       if (balance.toString() !== '0') {

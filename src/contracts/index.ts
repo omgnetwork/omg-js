@@ -27,6 +27,7 @@ import PriorityQueueContract from '@lib/contracts/abi/PriorityQueue.json';
 /** @internal */
 export async function getErc20Vault (): Promise<Interfaces.IVault> {
   const address: string = await this.plasmaContract.methods.vaults(Constants.ERC20_VAULT_ID).call();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const contract: Contract = new this.web3Instance.eth.Contract((Erc20VaultContract as any).abi, address);
   return { contract, address };
 }
@@ -34,6 +35,7 @@ export async function getErc20Vault (): Promise<Interfaces.IVault> {
 /** @internal */
 export async function getEthVault (): Promise<Interfaces.IVault> {
   const address: string = await this.plasmaContract.methods.vaults(Constants.ETH_VAULT_ID).call();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const contract: Contract = new this.web3Instance.eth.Contract((EthVaultContract as any).abi, address);
   return { contract, address };
 }
@@ -41,6 +43,7 @@ export async function getEthVault (): Promise<Interfaces.IVault> {
 /** @internal */
 export async function getPaymentExitGame (): Promise<Interfaces.IPaymentExitGame> {
   const address: string = await this.plasmaContract.methods.exitGames(Constants.EXIT_GAME_PAYMENT_TYPE).call();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const contract: Contract = new this.web3Instance.eth.Contract((PaymentExitGameContract as any).abi, address);
 
   const bondSizes = await Promise.all([
@@ -62,6 +65,7 @@ export async function getPaymentExitGame (): Promise<Interfaces.IPaymentExitGame
 
 /** @internal */
 export async function getPriorityQueue (address: string): Promise<Interfaces.IVault> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const contract: Contract = new this.web3Instance.eth.Contract((PriorityQueueContract as any).abi, address);
   return { contract, address };
 }
@@ -73,6 +77,11 @@ export async function getErc20 (address: string): Promise<Interfaces.IVault> {
 }
 
 /** @internal */
-export function getTxData (contract: Contract, method: string, ...args: any): string {
+export function getTxData (
+  contract: Contract,
+  method: string,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  ...args: Array<any>
+): string {
   return contract.methods[method](...args).encodeABI();
 }

@@ -93,9 +93,11 @@ class OmgJS {
     this.watcherUrl = args.watcherUrl;
     this.watcherSecurityUrl = args.watcherSecurityUrl || args.watcherUrl;
     this.watcherProxyUrl = args.watcherProxyUrl;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     this.web3Instance = new (Web3 as any)(args.web3Provider, null, { transactionConfirmationBlocks: 1 });
     this.plasmaContract = new this.web3Instance.eth.Contract(
-      (PlasmaFrameworkContract as any).abi,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (PlasmaFrameworkContract.abi as any),
       args.plasmaContractAddress
     );
   }
@@ -788,7 +790,7 @@ class OmgJS {
   /** Convert typed data into an array suitable for RLP encoding */
   public getTypedDataArray (
     typedDataMessage: Interfaces.ITypedDataMessage
-  ): Array<any> {
+  ): Array<unknown> {
     return EncoderModule.getTypedDataArray.call(this, typedDataMessage);
   }
 }

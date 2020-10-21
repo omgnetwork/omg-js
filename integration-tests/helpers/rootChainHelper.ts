@@ -29,13 +29,26 @@ const omgjs = new OmgJS({
   web3Provider
 });
 
+export interface ITxDetails {
+  gas: number;
+  gasPrice: string;
+  from: string;
+  to: string;
+  value: string;
+}
+
+export interface ITxReceipt {
+  transactionHash: string;
+  gasUsed: number;
+}
+
 export function createAccount (): { address: string, privateKey: string } {
   const ret = omgjs.web3Instance.eth.accounts.create();
   ret.address = ret.address.toLowerCase();
   return ret;
 }
 
-export async function setGas (txDetails) {
+export async function setGas (txDetails: Partial<ITxDetails>): Promise<void> {
   if (!txDetails.gas) {
     try {
       txDetails.gas = await omgjs.web3Instance.eth.estimateGas(txDetails);
@@ -53,7 +66,8 @@ export async function setGas (txDetails) {
   }
 }
 
-export async function sendTransaction (txDetails, privateKey) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function sendTransaction (txDetails: ITxDetails, privateKey: string): Promise<any> {
   await setGas(txDetails);
   if (!privateKey) {
     return omgjs.web3Instance.eth.sendTransaction(txDetails);
@@ -63,12 +77,12 @@ export async function sendTransaction (txDetails, privateKey) {
   }
 }
 
-export async function spentOnGas (receipt) {
+export async function spentOnGas (receipt: Partial<ITxReceipt>): Promise<BN> {
   const tx = await omgjs.web3Instance.eth.getTransaction(receipt.transactionHash);
   return new BN(tx.gasPrice.toString()).muln(receipt.gasUsed);
 }
 
-export function waitForEthBalance (address, callback) {
+export function waitForEthBalance (address: string, callback: (string) => boolean): Promise<void> {
   return promiseRetry(async (retry, number) => {
     console.log(`Waiting for ETH balance...  (${number})`);
     const resp = await omgjs.getRootchainETHBalance(address);
@@ -83,12 +97,12 @@ export function waitForEthBalance (address, callback) {
   });
 }
 
-export function waitForEthBalanceEq (address, expectedAmount) {
+export function waitForEthBalanceEq (address: string, expectedAmount: number | BN): Promise<void> {
   const expectedBn = new BN(expectedAmount.toString());
   return waitForEthBalance(address, balance => new BN(balance.toString()).eq(expectedBn));
 }
 
-export function waitForERC20Balance (address, contractAddress, callback) {
+export function waitForERC20Balance (address: string, contractAddress: string, callback: (string) => boolean): Promise<void> {
   return promiseRetry(async (retry, number) => {
     console.log(`Waiting for ERC20 balance...  (${number})`);
     const resp = await omgjs.getRootchainERC20Balance({ erc20Address: contractAddress, address });
@@ -103,18 +117,23 @@ export function waitForERC20Balance (address, contractAddress, callback) {
   });
 }
 
-export function waitForERC20BalanceEq (address, contractAddress, expectedAmount) {
+export function waitForERC20BalanceEq (address: string, contractAddress: string, expectedAmount: number | BN): Promise<void> {
   const expectedBn = new BN(expectedAmount.toString());
   return waitForERC20Balance(address, contractAddress, balance => new BN(balance.toString()).eq(expectedBn));
 }
 
-export function sleep (ms) {
+export function sleep (ms: number): Promise<void> {
   return new Promise(resolve => {
     setTimeout(resolve, ms);
   });
 }
 
-export function awaitTx (txnHash, options?) {
+export interface IAwaitOptions {
+  interval: number;
+  blocksToWait: number;
+}
+
+export function awaitTx (txnHash: string, options?: IAwaitOptions): Promise<Array<void>> {
   const interval = options && options.interval ? options.interval : 1000;
   const blocksToWait = options && options.blocksToWait ? options.blocksToWait : 1;
 

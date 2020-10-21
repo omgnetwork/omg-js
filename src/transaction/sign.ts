@@ -16,7 +16,7 @@ limitations under the License. */
 import { Buffer } from 'buffer';
 import * as rlp from 'rlp';
 import { concatSig } from 'eth-sig-util';
-import { ecsign } from 'ethereumjs-util';
+import { ecsign, ECDSASignature } from 'ethereumjs-util';
 
 import * as Util from '@lib/common/util';
 import * as Interfaces from '@lib/interfaces';
@@ -25,11 +25,12 @@ import * as Encoders from '@lib/transaction/encoders';
 
 /** @internal */
 function _ecsign (tosign: Buffer, privateKey: string): string {
-  const signed: any = ecsign(
+  const signed: ECDSASignature = ecsign(
     tosign,
     Buffer.from(privateKey.replace('0x', ''), 'hex')
   );
-  return concatSig(signed.v, signed.r, signed.s);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return concatSig((signed as any).v, signed.r, signed.s);
 }
 
 /** @internal */
@@ -63,5 +64,5 @@ export function buildSignedTransaction ({
 }: Interfaces.IBuildSignedTransaction): string {
   const txArray = Encoders.getTypedDataArray(typedData.message);
   const signedTx = [signatures, typedData.message.txType, ...txArray];
-  return Util.prefixHex(rlp.encode(signedTx).toString('hex'));
+  return Util.prefixHex(rlp.encode(signedTx as rlp.Input).toString('hex'));
 }

@@ -152,6 +152,7 @@ export interface IRpcError {
 export interface IError {
   name?: string;
   message: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   stack: any;
 }
 
@@ -424,6 +425,7 @@ export interface ISignedTypedData extends ITypedData{
 export interface IRequestBody {
   id?: string | number;
   jsonrpc?: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any;
 }
 
@@ -511,6 +513,7 @@ export interface IInFlightExitCanonicalProof {
 
 export interface IByzantineEvent {
   event: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   details: any;
 }
 

@@ -24,7 +24,7 @@ function dependencies (
   types: Interfaces.ITypedDataTypes,
   primaryType: string,
   found = []
-): Array<any> {
+): Array<string> {
   if (found.includes(primaryType)) {
     return found;
   }

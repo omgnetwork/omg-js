@@ -63,7 +63,7 @@ export function encodeTransaction ({
   signatures,
   signed = true
 }: Interfaces.IEncodeTransaction): string {
-  const txArray: Array<any> = [txType];
+  const txArray: Array<unknown> = [txType];
   signatures && signed && txArray.unshift(signatures);
   const inputArray = [];
   const outputArray = [];
@@ -84,7 +84,7 @@ export function encodeTransaction ({
   txArray.push(txData);
   txArray.push(metadata);
 
-  const encoded = rlp.encode(txArray).toString('hex');
+  const encoded = rlp.encode(txArray as rlp.Input).toString('hex');
   return Util.prefixHex(encoded);
 }
 
@@ -157,7 +157,7 @@ export function decodeMetadata (metadata: string): string {
 }
 
 /** @internal */
-export function getTypedDataArray (typedDataMessage: Interfaces.ITypedDataMessage): Array<any> {
+export function getTypedDataArray (typedDataMessage: Interfaces.ITypedDataMessage): Array<unknown> {
   const txArray = [];
 
   const inputArray = [];
@@ -181,7 +181,7 @@ export function getTypedDataArray (typedDataMessage: Interfaces.ITypedDataMessag
 }
 
 /** @internal */
-function addInput (array: Array<any>, input): void {
+function addInput (array: Array<unknown>, input: Partial<Interfaces.IUTXO>): void {
   if (input.blknum !== 0) {
     const blk = new BN(input.blknum.toString()).mul(new BN(Constants.BLOCK_OFFSET));
     const tx = new BN(input.txindex.toString()).muln(Constants.TX_OFFSET);
@@ -194,7 +194,7 @@ function addInput (array: Array<any>, input): void {
 }
 
 /** @internal */
-function addOutput (array: Array<any>, output): void {
+function addOutput (array: Array<unknown>, output: Interfaces.IOutput): void {
   if (output.amount > 0) {
     array.push([
       output.outputType,

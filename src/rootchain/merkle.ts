@@ -41,7 +41,7 @@ class MerkleTree {
   public tree;
   public root;
 
-  public constructor (leaves, height = 0) {
+  public constructor (leaves: Array<string>, height = 0) {
     const minHeightForLeaves = leaves.length === 1
       ? 1
       : parseInt(Math.ceil(Math.log2(leaves.length)).toString(), 10);
@@ -66,15 +66,15 @@ class MerkleTree {
     this.root = this.createTree(this.tree[0]);
   }
 
-  static hashLeaf (leaf) {
+  static hashLeaf (leaf: string): string {
     return web3Utils.sha3('0x00' + leaf.slice(2));
   }
 
-  static createNodes (leaves) {
+  static createNodes (leaves: Array<string>): Array<MerkleNode> {
     return leaves.map(leaf => new MerkleNode(leaf));
   }
 
-  public createTree (level) {
+  public createTree (level: Array<MerkleNode>): string {
     if (level.length === 1) {
       return level[0].data;
     }
@@ -96,7 +96,7 @@ class MerkleTree {
     return this.createTree(nextLevel);
   }
 
-  public getInclusionProof (leaf) {
+  public getInclusionProof (leaf: string): string {
     const hashedLeaf = MerkleTree.hashLeaf(leaf);
 
     let index = this.leaves.indexOf(hashedLeaf);

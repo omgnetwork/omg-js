@@ -20,7 +20,7 @@ import * as Errors from '@lib/errors';
 
 /** @internal Sanitize joi validation error */
 export function validate (
-  args: any, schema: Joi.Schema
+  args: unknown, schema: Joi.Schema
 ): void {
   try {
     Joi.assert(args, schema);

@@ -15,7 +15,7 @@ limitations under the License. */
 
 import debug from 'debug';
 import JSONBigNumber from 'omg-json-bigint';
-import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
+import axios, { AxiosRequestConfig, AxiosResponse, AxiosTransformer } from 'axios';
 import { HttpsProxyAgent } from 'https-proxy-agent';
 
 import * as Errors from '@lib/errors';
@@ -27,6 +27,7 @@ debug('omg.childchain.rpc');
 export async function get ({
   url,
   proxyUrl
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 }: Interfaces.IRequestOptions): Promise<any> {
   try {
     const options: AxiosRequestConfig = {
@@ -47,6 +48,7 @@ export async function post ({
   url,
   body,
   proxyUrl
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 }: Interfaces.IRequestOptions): Promise<any> {
   body.jsonrpc = body.jsonrpc || '2.0';
   body.id = body.id || 0;
@@ -68,7 +70,7 @@ export async function post ({
 
 // override default behavior of axios, so it doesn't use native JSON.parse
 /** @internal */
-function getTransformResponse (): Array<any> {
+function getTransformResponse (): Array<AxiosTransformer> {
   return [(data) => data];
 }
 
@@ -80,7 +82,7 @@ function getHttpsProxyAgent (proxyUrl: string): HttpsProxyAgent {
 }
 
 /** @internal */
-async function parseResponse (res: AxiosResponse): Promise<any> {
+async function parseResponse (res: AxiosResponse): Promise<unknown> {
   let data;
   try {
     // Need to use a JSON parser capable of handling uint256

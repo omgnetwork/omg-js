@@ -18,6 +18,7 @@ import promiseRetry from 'promise-retry';
 import BN from 'bn.js';
 
 import OmgJS from '../..';
+import { IUTXO, IWatcherTransactionReceipt } from '../..';
 
 import config from '../test-config';
 
@@ -29,14 +30,18 @@ const omgjs = new OmgJS({
   web3Provider
 });
 
-export async function selectUtxos (utxos, amount, currency) {
+export async function selectUtxos (
+  utxos: IUTXO[],
+  amount: BN | number,
+  currency: string
+): Promise<Array<IUTXO>> {
   // Filter by desired currency and sort in descending order
   const fees = (await omgjs.getFees())['1'];
   const { amount: feeEthAmountWei } = fees.find(f => f.currency === OmgJS.currency.ETH);
 
   const sorted = utxos
     .filter(utxo => utxo.currency.toLowerCase() === currency.toLowerCase())
-    .sort((a, b) => new BN(b.amount).sub(new BN(a.amount)));
+    .sort((a, b) => Number(new BN(b.amount).sub(new BN(a.amount))));
 
   if (sorted) {
     const selected = [];
@@ -61,7 +66,11 @@ export async function selectUtxos (utxos, amount, currency) {
   }
 }
 
-export function waitForBalance (address, currency, callback) {
+export function waitForBalance (
+  address: string,
+  currency: string,
+  callback: (boolean) => boolean
+): Promise<void> {
   return promiseRetry(async (retry, number) => {
     console.log(`Waiting for childchain balance...  (${number})`);
     const resp = await omgjs.getBalance(address);
@@ -82,13 +91,20 @@ export function waitForBalance (address, currency, callback) {
   });
 }
 
-export function waitForBalanceEq (address: string, expectedAmount: number | string, currency?: string) {
+export function waitForBalanceEq (
+  address: string,
+  expectedAmount: number | string,
+  currency?: string
+): Promise<void> {
   currency = currency || OmgJS.currency.ETH;
   const expectedBn = new BN(expectedAmount.toString());
   return waitForBalance(address, currency, balance => new BN(balance.amount).eq(expectedBn));
 }
 
-export function waitForEvent (type, callback) {
+export function waitForEvent (
+  type: string,
+  callback: () => void
+): Promise<void> {
   return promiseRetry(async (retry, number) => {
     console.log(`Waiting for event...  (${number})`);
     const status = await omgjs.getStatus();
@@ -106,13 +122,26 @@ export function waitForEvent (type, callback) {
   });
 }
 
-export async function sendAndWait (from, to, amount, currency, privateKey, expectedBalance) {
+export async function sendAndWait (
+  from: string,
+  to: string,
+  amount: number,
+  currency: string,
+  privateKey: string,
+  expectedBalance: number
+): Promise<{ result: IWatcherTransactionReceipt, txbytes: string }> {
   const ret = await send(from, to, amount, currency, privateKey);
   await waitForBalanceEq(to, expectedBalance, currency);
   return ret;
 }
 
-export async function createTx (from, to, amount, currency, fromPrivateKey) {
+export async function createTx (
+  from: string,
+  to: string,
+  amount: BN | number,
+  currency: string,
+  fromPrivateKey: string
+): Promise<string> {
   if (amount <= 0) {
     return;
   }
@@ -149,7 +178,7 @@ export async function createTx (from, to, amount, currency, fromPrivateKey) {
         outputType: 1,
         outputGuard: from,
         currency,
-        amount: CHANGE_AMOUNT
+        amount: Number(CHANGE_AMOUNT)
       });
     }
 
@@ -159,7 +188,7 @@ export async function createTx (from, to, amount, currency, fromPrivateKey) {
       outputType: 1,
       outputGuard: from,
       currency: OmgJS.currency.ETH,
-      amount: CHANGE_AMOUNT_FEE
+      amount: Number(CHANGE_AMOUNT_FEE)
     });
   } else {
     const totalDeduct = new BN(amount).add(new BN(feeEthAmountWei));
@@ -169,7 +198,7 @@ export async function createTx (from, to, amount, currency, fromPrivateKey) {
         outputType: 1,
         outputGuard: from,
         currency: OmgJS.currency.ETH,
-        amount: CHANGE_AMOUNT
+        amount: Number(CHANGE_AMOUNT)
       });
     }
   }
@@ -180,7 +209,13 @@ export async function createTx (from, to, amount, currency, fromPrivateKey) {
   return omgjs.buildSignedTransaction({ typedData, signatures });
 }
 
-export async function send (from, to, amount, currency, fromPrivateKey) {
+export async function send (
+  from: string,
+  to: string,
+  amount: BN | number,
+  currency: string,
+  fromPrivateKey: string
+): Promise<{ result: IWatcherTransactionReceipt, txbytes: string }> {
   const signedTx = await createTx(from, to, amount, currency, fromPrivateKey);
   // Submit the signed transaction to the childchain
   const result = await omgjs.submitTransaction(signedTx);
@@ -188,7 +223,11 @@ export async function send (from, to, amount, currency, fromPrivateKey) {
 }
 
 // works only with ETH for now
-export async function splitUtxo (account, utxo, split) {
+export async function splitUtxo (
+  account: { address: string, privateKey: string },
+  utxo: IUTXO,
+  split: number
+): Promise<IWatcherTransactionReceipt> {
   console.log(`Splitting utxo ${omgjs.encodeUtxoPos(utxo).toString()}`);
   const fees = (await omgjs.getFees())['1'];
   const { amount } = fees.find(f => f.currency === OmgJS.currency.ETH);
@@ -213,7 +252,10 @@ export async function splitUtxo (account, utxo, split) {
   return omgjs.submitTransaction(signedTx);
 }
 
-export function waitNumUtxos (address, num) {
+export function waitNumUtxos (
+  address: string,
+  num: number
+): Promise<void> {
   return promiseRetry(async (retry, number) => {
     console.log(`Waiting for utxos...  (${number})`);
     const utxos = await omgjs.getUtxos(address);

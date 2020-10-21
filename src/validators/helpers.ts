@@ -24,6 +24,7 @@ export const validateAddress: Joi.Schema = Joi.string().custom(value => {
 
 export const validateBn: Joi.Schema = Joi.any().custom((value, helpers) => {
   if (!BN.isBN(value)) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return (helpers as any).message(`${value} is not an instance of BN.js`);
   }
   return value;
@@ -54,6 +55,7 @@ export const validateMetadata: Joi.Schema = Joi.string().custom((value, helpers)
   if (value.startsWith('0x')) {
     const hex = Buffer.from(value.replace('0x', ''), 'hex');
     if (hex.length !== 32) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       return (helpers as any).message(`"${value}" metadata must be a 32-byte hex string`);
     }
     return value;
@@ -61,6 +63,7 @@ export const validateMetadata: Joi.Schema = Joi.string().custom((value, helpers)
 
   const bytesSize = Buffer.from(value).length;
   if (bytesSize > 32) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return (helpers as any).message(`"${value}" is too large. metadata cannot be larger than 32 bytes`);
   }
   return value;

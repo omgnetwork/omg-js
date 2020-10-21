@@ -26,6 +26,7 @@ export class RpcError extends Error {
 export class ValidationError extends Error {
   public name = 'ValidationError';
   public message: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public stack: any;
 
   public constructor (args: Interfaces.IError) {
@@ -38,6 +39,7 @@ export class ValidationError extends Error {
 export class OmgJSError extends Error {
   public name = 'OmgJSError';
   public message: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public stack: any;
 
   public constructor (args: Interfaces.IError) {
