@@ -670,4 +670,280 @@ describe('transaction/txBuilder test', function () {
       assert.equal(paymentOutputs[1].amount.toString(), payments[1].amount.toString());
     });
   });
+
+  describe('mergeUtxosToOutput', function () {
+    it('should merge utxo inputs to an output', function () {
+      const utxos = [
+        {
+          amount: 1,
+          blknum: 1,
+          creating_txhash: 'hash',
+          currency: Constants.CURRENCY_MAP.ETH,
+          oindex: 1,
+          otype: 1,
+          owner: '0x14c2f6ee17a2026ca320b2f677220861abaae525',
+          spending_txhash: '0x',
+          txindex: 1,
+          utxo_pos: 1
+        },
+        {
+          amount: 2,
+          blknum: 1,
+          creating_txhash: 'hash',
+          currency: Constants.CURRENCY_MAP.ETH,
+          oindex: 1,
+          otype: 1,
+          owner: '0x14c2f6ee17a2026ca320b2f677220861abaae525',
+          spending_txhash: '0x',
+          txindex: 1,
+          utxo_pos: 1
+        },
+        {
+          amount: 10,
+          blknum: 1,
+          creating_txhash: 'hash',
+          currency: Constants.CURRENCY_MAP.ETH,
+          oindex: 1,
+          otype: 1,
+          owner: '0x14c2f6ee17a2026ca320b2f677220861abaae525',
+          spending_txhash: '0x',
+          txindex: 1,
+          utxo_pos: 1
+        }
+      ];
+  
+      const outputUtxo = TxBuilder.mergeUtxosToOutput(utxos);
+      assert.equal(outputUtxo.amount.toString(), '13');
+    });
+  
+    it('should throw error if provide less than 2 utxos', function () {
+      const utxos = [
+        {
+          amount: 1,
+          blknum: 1,
+          creating_txhash: 'hash',
+          currency: Constants.CURRENCY_MAP.ETH,
+          oindex: 1,
+          otype: 1,
+          owner: '0x14c2f6ee17a2026ca320b2f677220861abaae525',
+          spending_txhash: '0x',
+          txindex: 1,
+          utxo_pos: 1
+        }
+      ];
+  
+      assert.throws(
+        () => TxBuilder.mergeUtxosToOutput(utxos),
+        Error,
+        /Must merge at least 2 utxos/
+      );
+    });
+  
+    it('should throw error if provide more than 4 utxos', function () {
+      const utxos = [
+        {
+          amount: 1,
+          blknum: 1,
+          creating_txhash: 'hash',
+          currency: Constants.CURRENCY_MAP.ETH,
+          oindex: 1,
+          otype: 1,
+          owner: '0x14c2f6ee17a2026ca320b2f677220861abaae525',
+          spending_txhash: '0x',
+          txindex: 1,
+          utxo_pos: 1
+        },
+        {
+          amount: 2,
+          blknum: 1,
+          creating_txhash: 'hash',
+          currency: Constants.CURRENCY_MAP.ETH,
+          oindex: 1,
+          otype: 1,
+          owner: '0x14c2f6ee17a2026ca320b2f677220861abaae525',
+          spending_txhash: '0x',
+          txindex: 1,
+          utxo_pos: 1
+        },
+        {
+          amount: 10,
+          blknum: 1,
+          creating_txhash: 'hash',
+          currency: Constants.CURRENCY_MAP.ETH,
+          oindex: 1,
+          otype: 1,
+          owner: '0x14c2f6ee17a2026ca320b2f677220861abaae525',
+          spending_txhash: '0x',
+          txindex: 1,
+          utxo_pos: 1
+        },
+        {
+          amount: 11,
+          blknum: 1,
+          creating_txhash: 'hash',
+          currency: Constants.CURRENCY_MAP.ETH,
+          oindex: 1,
+          otype: 1,
+          owner: '0x14c2f6ee17a2026ca320b2f677220861abaae525',
+          spending_txhash: '0x',
+          txindex: 1,
+          utxo_pos: 1
+        },
+        {
+          amount: 15,
+          blknum: 1,
+          creating_txhash: 'hash',
+          currency: Constants.CURRENCY_MAP.ETH,
+          oindex: 1,
+          otype: 1,
+          owner: '0x14c2f6ee17a2026ca320b2f677220861abaae525',
+          spending_txhash: '0x',
+          txindex: 1,
+          utxo_pos: 1
+        }
+      ];
+  
+      assert.throws(
+        () => TxBuilder.mergeUtxosToOutput(utxos),
+        Error,
+        /Cannot merge more than 4 utxos/
+      );
+    });
+
+    it('should throw error if currency is different', function () {
+      const utxos = [
+        {
+          amount: 1,
+          blknum: 1,
+          creating_txhash: 'hash',
+          currency: Constants.CURRENCY_MAP.ETH,
+          oindex: 1,
+          otype: 1,
+          owner: '0x14c2f6ee17a2026ca320b2f677220861abaae525',
+          spending_txhash: '0x',
+          txindex: 1,
+          utxo_pos: 1
+        },
+        {
+          amount: 2,
+          blknum: 1,
+          creating_txhash: 'hash',
+          currency: Constants.CURRENCY_MAP.ETH,
+          oindex: 1,
+          otype: 1,
+          owner: '0x14c2f6ee17a2026ca320b2f677220861abaae525',
+          spending_txhash: '0x',
+          txindex: 1,
+          utxo_pos: 1
+        },
+        {
+          amount: 10,
+          blknum: 1,
+          creating_txhash: 'hash',
+          currency: '0xabc',
+          oindex: 1,
+          otype: 1,
+          owner: '0x14c2f6ee17a2026ca320b2f677220861abaae525',
+          spending_txhash: '0x',
+          txindex: 1,
+          utxo_pos: 1
+        },
+        {
+          amount: 11,
+          blknum: 1,
+          creating_txhash: 'hash',
+          currency: Constants.CURRENCY_MAP.ETH,
+          oindex: 1,
+          otype: 1,
+          owner: '0x14c2f6ee17a2026ca320b2f677220861abaae525',
+          spending_txhash: '0x',
+          txindex: 1,
+          utxo_pos: 1
+        }
+      ];
+  
+      assert.throws(() => TxBuilder.mergeUtxosToOutput(utxos), Error, /All utxo currency must be the same/);
+    });
+  
+    it('should throw error if owner is different', function () {
+      const utxos = [
+        {
+          amount: 1,
+          blknum: 1,
+          creating_txhash: 'hash',
+          currency: Constants.CURRENCY_MAP.ETH,
+          oindex: 1,
+          otype: 1,
+          owner: '0x14c2f6ee17a2026ca320b2f677220861abaae523',
+          spending_txhash: '0x',
+          txindex: 1,
+          utxo_pos: 1
+        },
+        {
+          amount: 2,
+          blknum: 1,
+          creating_txhash: 'hash',
+          currency: Constants.CURRENCY_MAP.ETH,
+          oindex: 1,
+          otype: 1,
+          owner: '0x14c2f6ee17a2026ca320b2f677220861abaae525',
+          spending_txhash: '0x',
+          txindex: 1,
+          utxo_pos: 1
+        },
+        {
+          amount: 10,
+          blknum: 1,
+          creating_txhash: 'hash',
+          currency: Constants.CURRENCY_MAP.ETH,
+          oindex: 1,
+          otype: 1,
+          owner: '0x14c2f6ee17a2026ca320b2f677220861abaae525',
+          spending_txhash: '0x',
+          txindex: 1,
+          utxo_pos: 1
+        },
+        {
+          amount: 11,
+          blknum: 1,
+          creating_txhash: 'hash',
+          currency: Constants.CURRENCY_MAP.ETH,
+          oindex: 1,
+          otype: 1,
+          owner: '0x14c2f6ee17a2026ca320b2f677220861abaae525',
+          spending_txhash: '0x',
+          txindex: 1,
+          utxo_pos: 1
+        }
+      ];
+  
+      assert.throws(() => TxBuilder.mergeUtxosToOutput(utxos), Error, /All utxo owner must be the same/);
+    });
+  });
+
+  describe('validateInputs and validateOutputs', function () {
+    it('should fail to create a transaction with 0 inputs', function () {
+      return assert.throws(
+        () => TxBuilder.validateInputs([]),
+        Error,
+        /Inputs must be an array of size/
+      );
+    });
+  
+    it('should fail to create a transaction with too many inputs', function () {
+      return assert.throws(
+        () => TxBuilder.validateInputs([{}, {}, {}, {}, {}]),
+        Error,
+        /Inputs must be an array of size/
+      );
+    });
+  
+    it('should fail to create a transaction with too many outputs', function () {
+      return assert.throws(
+        () => TxBuilder.validateOutputs([{}, {}, {}, {}, {}]),
+        Error,
+        /Outputs must be an array of size/
+      );
+    });
+  });
 });

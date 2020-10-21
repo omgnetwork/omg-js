@@ -124,7 +124,7 @@ export function createTransactionBody ({
 }
 
 /** @internal */
-function validateInputs (arg): void {
+export function validateInputs (arg: Array<Partial<Interfaces.IUTXO>>): void {
   if (!Array.isArray(arg)) {
     throw new Error('Inputs must be an array');
   }
@@ -134,7 +134,7 @@ function validateInputs (arg): void {
 }
 
 /** @internal */
-function validateOutputs (arg): void {
+export function validateOutputs (arg: Array<Partial<Interfaces.IOutput>>): void {
   if (!Array.isArray(arg)) {
     throw new Error('Outputs must be an array');
   }
@@ -144,7 +144,7 @@ function validateOutputs (arg): void {
 }
 
 /** @internal */
-function mergeUtxosToOutput (utxos: Array<Interfaces.IUTXO>): Interfaces.IOutput {
+export function mergeUtxosToOutput (utxos: Array<Interfaces.IUTXO>): Interfaces.IOutput {
   if (utxos.length < 2) {
     throw new Error('Must merge at least 2 utxos');
   }
