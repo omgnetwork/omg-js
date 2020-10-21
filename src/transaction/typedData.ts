@@ -14,53 +14,10 @@ See the License for the specific language governing permissions and
 limitations under the License. */
 
 import * as Constants from '@lib/common/constants';
-import * as Interfaces from '@lib/common/interfaces';
-
-export interface ITypedDataSpec {
-  name: string;
-  type: string;
-}
-
-export interface ITypedDataTypes {
-  EIP712Domain: Array<ITypedDataSpec>;
-  Transaction: Array<ITypedDataSpec>;
-  Input: Array<ITypedDataSpec>;
-  Output: Array<ITypedDataSpec>;
-}
-export interface ITypedDataDomainData {
-  name: string;
-  version: string;
-  verifyingContract: string;
-  salt: string;
-}
-
-export interface ITypedDataMessage {
-  txType: number
-  input0: Partial<Interfaces.IUTXO>;
-  input1: Partial<Interfaces.IUTXO>;
-  input2: Partial<Interfaces.IUTXO>;
-  input3: Partial<Interfaces.IUTXO>;
-  output0: Interfaces.IOutput;
-  output1: Interfaces.IOutput;
-  output2: Interfaces.IOutput;
-  output3: Interfaces.IOutput;
-  txData: number;
-  metadata: string;
-}
-
-export interface ITypedData {
-  types: ITypedDataTypes;
-  domain: ITypedDataDomainData;
-  primaryType: string;
-  message: ITypedDataMessage;
-}
-
-export interface ISignedTypedData extends ITypedData{
-  signatures: Array<string>;
-}
+import * as Interfaces from '@lib/interfaces';
 
 /** @internal */
-const domainSpec: Array<ITypedDataSpec> = [
+const domainSpec: Array<Interfaces.ITypedDataSpec> = [
   { name: 'name', type: 'string' },
   { name: 'version', type: 'string' },
   { name: 'verifyingContract', type: 'address' },
@@ -68,7 +25,7 @@ const domainSpec: Array<ITypedDataSpec> = [
 ];
 
 /** @internal */
-const txSpec: Array<ITypedDataSpec> = [
+const txSpec: Array<Interfaces.ITypedDataSpec> = [
   { name: 'txType', type: 'uint256' },
   { name: 'input0', type: 'Input' },
   { name: 'input1', type: 'Input' },
@@ -83,14 +40,14 @@ const txSpec: Array<ITypedDataSpec> = [
 ];
 
 /** @internal */
-const inputSpec: Array<ITypedDataSpec> = [
+const inputSpec: Array<Interfaces.ITypedDataSpec> = [
   { name: 'blknum', type: 'uint256' },
   { name: 'txindex', type: 'uint256' },
   { name: 'oindex', type: 'uint256' }
 ];
 
 /** @internal */
-const outputSpec: Array<ITypedDataSpec> = [
+const outputSpec: Array<Interfaces.ITypedDataSpec> = [
   { name: 'outputType', type: 'uint256' },
   { name: 'outputGuard', type: 'bytes20' },
   { name: 'currency', type: 'address' },
@@ -98,7 +55,7 @@ const outputSpec: Array<ITypedDataSpec> = [
 ];
 
 /** @internal */
-const domainData: ITypedDataDomainData = {
+const domainData: Interfaces.ITypedDataDomainData = {
   name: 'OMG Network',
   version: '1',
   verifyingContract: '',
@@ -108,7 +65,7 @@ const domainData: ITypedDataDomainData = {
 /** @internal */
 export function getTypedData (
   transactionBody: Interfaces.ITransactionBody
-): ITypedData {
+): Interfaces.ITypedData {
   domainData.verifyingContract = this.plasmaContractAddress;
 
   const inputs = transactionBody.inputs.map(i => ({

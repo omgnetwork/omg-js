@@ -13,30 +13,15 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License. */
 
-import * as Interfaces from '@lib/common/interfaces';
+import * as Interfaces from '@lib/interfaces';
 import * as Transporter from '@lib/transport';
 import * as Util from '@lib/common/util';
-
-export interface IInFlightExitGetInputChallengeData {
-  txbytes: string;
-  inputIndex: number;
-}
-
-export interface IInFlightExitInputChallengeData {
-  in_flight_txbytes: string;
-  in_flight_input_index: number;
-  spending_txbytes: string;
-  spending_input_index: number;
-  spending_sig: string;
-  input_tx: string;
-  input_utxo_pos: Interfaces.IComplexAmount;
-}
 
 /** @internal */
 export async function inFlightExitGetInputChallengeData ({
   txbytes,
   inputIndex
-}: IInFlightExitGetInputChallengeData): Promise<IInFlightExitInputChallengeData> {
+}: Interfaces.IInFlightExitGetInputChallengeData): Promise<Interfaces.IInFlightExitInputChallengeData> {
   return Transporter.post({
     url: `${this.watcherSecurityUrl}/in_flight_exit.get_input_challenge_data`,
     body: {
@@ -47,25 +32,11 @@ export async function inFlightExitGetInputChallengeData ({
   });
 }
 
-export interface IInFlightExitGetOutputChallengeData {
-  txbytes: string;
-  outputIndex: number;
-}
-
-export interface IInFlightExitOutputChallengeData {
-  in_flight_txbytes: string;
-  in_flight_proof: string;
-  in_flight_output_pos: number;
-  spending_txbytes: string;
-  spending_input_index: number;
-  spending_sig: string;
-}
-
 /** @internal */
 export async function inFlightExitGetOutputChallengeData ({
   txbytes,
   outputIndex
-}: IInFlightExitGetOutputChallengeData): Promise<IInFlightExitOutputChallengeData> {
+}: Interfaces.IInFlightExitGetOutputChallengeData): Promise<Interfaces.IInFlightExitOutputChallengeData> {
   return Transporter.post({
     url: `${this.watcherSecurityUrl}/in_flight_exit.get_output_challenge_data`,
     body: {
@@ -87,20 +58,8 @@ export async function inFlightExitGetData (txbytes: string): Promise<Interfaces.
   });
 }
 
-export interface IInFlightExitCompetitor {
-  input_tx: string;
-  input_utxo_pos: Interfaces.IComplexAmount;
-  in_flight_txbytes: string;
-  in_flight_input_index: number;
-  competing_txbytes: string;
-  competing_input_index: number;
-  competing_tx_pos: Interfaces.IComplexAmount;
-  competing_proof: string;
-  competing_sig: string;
-}
-
 /** @internal */
-export async function inFlightExitGetCompetitor (txbytes: string): Promise<IInFlightExitCompetitor> {
+export async function inFlightExitGetCompetitor (txbytes: string): Promise<Interfaces.IInFlightExitCompetitor> {
   return Transporter.post({
     url: `${this.watcherSecurityUrl}/in_flight_exit.get_competitor`,
     body: {
@@ -110,14 +69,8 @@ export async function inFlightExitGetCompetitor (txbytes: string): Promise<IInFl
   });
 }
 
-export interface IInFlightExitCanonicalProof {
-  in_flight_txbytes: string;
-  in_flight_tx_pos: Interfaces.IComplexAmount;
-  in_flight_proof: string;
-}
-
 /** @internal */
-export async function inFlightExitProveCanonical (txbytes: string): Promise<IInFlightExitCanonicalProof> {
+export async function inFlightExitProveCanonical (txbytes: string): Promise<Interfaces.IInFlightExitCanonicalProof> {
   return Transporter.post({
     url: `${this.watcherSecurityUrl}/in_flight_exit.prove_canonical`,
     body: {

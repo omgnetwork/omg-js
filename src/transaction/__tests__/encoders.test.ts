@@ -16,7 +16,7 @@ limitations under the License. */
 import { assert } from 'chai';
 import * as rlp from 'rlp';
 
-import * as Interfaces from '@lib/common/interfaces';
+import * as Interfaces from '@lib/interfaces';
 import * as Constants from '@lib/common/constants';
 import * as Encoders from '@lib/transaction/encoders';
 import * as TypedData from '@lib/transaction/typedData';

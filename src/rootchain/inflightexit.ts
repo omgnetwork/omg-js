@@ -18,7 +18,7 @@ import { Buffer } from 'buffer';
 
 import * as ContractsModule from '@lib/contracts';
 import * as RootchainTransactionsModule from '@lib/rootchain/transaction';
-import * as Interfaces from '@lib/common/interfaces';
+import * as Interfaces from '@lib/interfaces';
 
 /** @internal */
 export async function getInFlightExitId (
@@ -28,41 +28,12 @@ export async function getInFlightExitId (
   return contract.methods.getInFlightExitId(txBytes).call();
 }
 
-export interface IInFlightExitInputOutput {
-  outputId: string;
-  exitTarget: string;
-  token: string;
-  amount: string;
-  piggybackBondSize: string;
-}
-
-export interface IInFlightExitContractData {
-  isCanonical: boolean;
-  exitStartTimestamp: string;
-  exitMap: string;
-  position: string;
-  inputs: Array<IInFlightExitInputOutput>;
-  outputs: Array<IInFlightExitInputOutput>;
-  bondOwner: string;
-  bondSize: string;
-  oldestCompetitorPosition: string;
-}
-
 /** @internal */
 export async function getInFlightExitContractData (
   exitIds: Array<string>
-): Promise<Array<IInFlightExitContractData>> {
+): Promise<Array<Interfaces.IInFlightExitContractData>> {
   const { contract } = await this.getPaymentExitGame();
   return contract.methods.inFlightExits(exitIds).call();
-}
-
-export interface IStartInFlightExit {
-  inFlightTx: string;
-  inputTxs: Array<string>;
-  inputUtxosPos: Array<Interfaces.IComplexAmount>;
-  inputTxsInclusionProofs: Array<string>;
-  inFlightTxSigs: Array<string>;
-  txOptions: Interfaces.ITransactionOptions
 }
 
 /** @internal */
@@ -73,7 +44,7 @@ export async function startInFlightExit ({
   inputTxsInclusionProofs,
   inFlightTxSigs,
   txOptions
-}: IStartInFlightExit): Promise<Interfaces.ITransactionReceipt> {
+}: Interfaces.IStartInFlightExit): Promise<Interfaces.ITransactionReceipt> {
   const _inputUtxoPos = inputUtxosPos.map(i => i.toString());
   const { address, contract, bonds } = await this.getPaymentExitGame();
 
@@ -100,18 +71,12 @@ export async function startInFlightExit ({
   });
 }
 
-export interface IPiggybackInFlightExitOnOutput {
-  inFlightTx: string;
-  outputIndex: number;
-  txOptions: Interfaces.ITransactionOptions;
-}
-
 /** @internal */
 export async function piggybackInFlightExitOnOutput ({
   inFlightTx,
   outputIndex,
   txOptions
-}: IPiggybackInFlightExitOnOutput): Promise<Interfaces.ITransactionReceipt> {
+}: Interfaces.IPiggybackInFlightExitOnOutput): Promise<Interfaces.ITransactionReceipt> {
   const { address, contract, bonds } = await this.getPaymentExitGame();
 
   const transactionData = ContractsModule.getTxData(
@@ -134,18 +99,12 @@ export async function piggybackInFlightExitOnOutput ({
   });
 }
 
-export interface IPiggybackInFlightExitOnInput {
-  inFlightTx: string;
-  inputIndex: number;
-  txOptions: Interfaces.ITransactionOptions;
-}
-
 /** @internal */
 export async function piggybackInFlightExitOnInput ({
   inFlightTx,
   inputIndex,
   txOptions
-}: IPiggybackInFlightExitOnInput): Promise<Interfaces.ITransactionReceipt> {
+}: Interfaces.IPiggybackInFlightExitOnInput): Promise<Interfaces.ITransactionReceipt> {
   const { address, contract, bonds } = await this.getPaymentExitGame();
 
   const transactionData = ContractsModule.getTxData(
@@ -168,19 +127,6 @@ export async function piggybackInFlightExitOnInput ({
   });
 }
 
-export interface IChallengeInFlightExitNotCanonical {
-  inputTx: string;
-  inputUtxoPos: Interfaces.IComplexAmount;
-  inFlightTx: string;
-  inFlightTxInputIndex: number;
-  competingTx: string;
-  competingTxInputIndex: number;
-  competingTxPos: Interfaces.IComplexAmount;
-  competingTxInclusionProof: string;
-  competingTxWitness: string;
-  txOptions: Interfaces.ITransactionOptions;
-}
-
 /** @internal */
 export async function challengeInFlightExitNotCanonical ({
   inputTx,
@@ -193,7 +139,7 @@ export async function challengeInFlightExitNotCanonical ({
   competingTxInclusionProof,
   competingTxWitness,
   txOptions
-}: IChallengeInFlightExitNotCanonical): Promise<Interfaces.ITransactionReceipt> {
+}: Interfaces.IChallengeInFlightExitNotCanonical): Promise<Interfaces.ITransactionReceipt> {
   const { address, contract } = await this.getPaymentExitGame();
 
   const transactionData = ContractsModule.getTxData(
@@ -222,20 +168,13 @@ export async function challengeInFlightExitNotCanonical ({
   });
 }
 
-export interface IRespondToNonCanonicalChallenge {
-  inFlightTx: string;
-  inFlightTxPos: Interfaces.IComplexAmount;
-  inFlightTxInclusionProof: string;
-  txOptions: Interfaces.ITransactionOptions;
-}
-
 /** @internal */
 export async function respondToNonCanonicalChallenge ({
   inFlightTx,
   inFlightTxPos,
   inFlightTxInclusionProof,
   txOptions
-}: IRespondToNonCanonicalChallenge): Promise<Interfaces.ITransactionReceipt> {
+}: Interfaces.IRespondToNonCanonicalChallenge): Promise<Interfaces.ITransactionReceipt> {
   const { address, contract } = await this.getPaymentExitGame();
 
   const transactionData = ContractsModule.getTxData(
@@ -256,17 +195,6 @@ export async function respondToNonCanonicalChallenge ({
   });
 }
 
-export interface IChallengeInFlightExitInputSpent {
-  inFlightTx: string;
-  inFlightTxInputIndex: number;
-  challengingTx: string;
-  challengingTxInputIndex: number;
-  challengingTxWitness: string;
-  inputTx: string;
-  inputUtxoPos: Interfaces.IComplexAmount;
-  txOptions: Interfaces.ITransactionOptions;
-}
-
 /** @internal */
 export async function challengeInFlightExitInputSpent ({
   inFlightTx,
@@ -277,7 +205,7 @@ export async function challengeInFlightExitInputSpent ({
   inputTx,
   inputUtxoPos,
   txOptions
-}: IChallengeInFlightExitInputSpent): Promise<Interfaces.ITransactionReceipt> {
+}: Interfaces.IChallengeInFlightExitInputSpent): Promise<Interfaces.ITransactionReceipt> {
   const { address, contract } = await this.getPaymentExitGame();
 
   const transactionData = ContractsModule.getTxData(
@@ -304,16 +232,6 @@ export async function challengeInFlightExitInputSpent ({
   });
 }
 
-export interface IChallengeInFlightExitOutputSpent {
-  inFlightTx: string;
-  inFlightTxInclusionProof: string;
-  inFlightTxOutputPos: Interfaces.IComplexAmount;
-  challengingTx: string;
-  challengingTxInputIndex: number;
-  challengingTxWitness: string;
-  txOptions: Interfaces.ITransactionOptions;
-}
-
 /** @internal */
 export async function challengeInFlightExitOutputSpent ({
   inFlightTx,
@@ -323,7 +241,7 @@ export async function challengeInFlightExitOutputSpent ({
   challengingTxInputIndex,
   challengingTxWitness,
   txOptions
-}: IChallengeInFlightExitOutputSpent): Promise<Interfaces.ITransactionReceipt> {
+}: Interfaces.IChallengeInFlightExitOutputSpent): Promise<Interfaces.ITransactionReceipt> {
   const { address, contract } = await this.getPaymentExitGame();
 
   const transactionData = ContractsModule.getTxData(
@@ -350,16 +268,11 @@ export async function challengeInFlightExitOutputSpent ({
   });
 }
 
-export interface IDeleteNonPiggybackedInFlightExit {
-  exitId: string;
-  txOptions: Interfaces.ITransactionOptions;
-}
-
 /** @internal */
 export async function deleteNonPiggybackedInFlightExit ({
   exitId,
   txOptions
-}: IDeleteNonPiggybackedInFlightExit): Promise<Interfaces.ITransactionReceipt> {
+}: Interfaces.IDeleteNonPiggybackedInFlightExit): Promise<Interfaces.ITransactionReceipt> {
   const { address, contract } = await this.getPaymentExitGame();
 
   const transactionData = ContractsModule.getTxData(

@@ -14,19 +14,10 @@ See the License for the specific language governing permissions and
 limitations under the License. */
 
 import * as Transporter from '@lib/transport';
-
-export interface IFeeInfo {
-  amount: number;
-  currency: string;
-  pegged_amount: number;
-  pegged_currency: string;
-  pegged_subunit_to_unit: number;
-  subunit_to_unit: number;
-  updated_at: string;
-}
+import * as Interfaces from '@lib/interfaces';
 
 /** @internal */
-export async function getFees (): Promise<Array<IFeeInfo>> {
+export async function getFees (): Promise<Array<Interfaces.IFeeInfo>> {
   return Transporter.post({
     url: `${this.watcherUrl}/fees.all`,
     body: {},

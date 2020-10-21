@@ -16,7 +16,6 @@ limitations under the License. */
 import Web3 from 'web3';
 import BN from 'bn.js';
 import { Contract } from 'web3-eth-contract';
-import { HttpProvider } from 'web3-providers-http';
 import * as Joi from '@hapi/joi';
 
 import * as RootchainStandardExitModule from '@lib/rootchain/standardexit';
@@ -41,19 +40,11 @@ import * as SignModule from '@lib/transaction/sign';
 
 import * as Util from '@lib/common/util';
 import * as Constants from '@lib/common/constants';
-import * as Interfaces from '@lib/common/interfaces';
 import * as ContractsModule from '@lib/contracts';
 import * as Validators from '@lib/validators';
+import * as Interfaces from '@lib/interfaces';
 
 import PlasmaFrameworkContract from '@lib/contracts/abi/PlasmaFramework.json';
-
-interface IOmgJS {
-  plasmaContractAddress: string;
-  watcherUrl: string;
-  watcherSecurityUrl?: string;
-  watcherProxyUrl?: string;
-  web3Provider: Partial<HttpProvider>;
-}
 
 /**
  * Instantiate an OmgJS object to interact with the OMG Network
@@ -95,7 +86,7 @@ class OmgJS {
    * @param args.watcherSecurityUrl the url of the watcher security server. If this is set, all security related endpoints will use this url instead
    * @param args.watcherProxyUrl the proxy url for requests made to the watcher server
    */
-  public constructor(args: IOmgJS) {
+  public constructor(args: Interfaces.IOmgJS) {
     Validators.validate(args, Validators.constructorSchema);
 
     this.plasmaContractAddress = args.plasmaContractAddress;
@@ -803,3 +794,4 @@ class OmgJS {
 }
 
 export default OmgJS;
+export * from '@lib/interfaces';

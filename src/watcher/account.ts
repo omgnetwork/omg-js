@@ -13,7 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License. */
 
-import * as Interfaces from '@lib/common/interfaces';
+import * as Interfaces from '@lib/interfaces';
 import * as Transporter from '@lib/transport';
 
 /** @internal */
@@ -25,13 +25,8 @@ export async function getUtxos (address: string): Promise<Array<Interfaces.IUTXO
   });
 }
 
-export interface IBalance {
-  amount: Interfaces.IComplexAmount;
-  currency: string;
-}
-
 /** @internal */
-export async function getBalance (address: string): Promise<Array<IBalance>> {
+export async function getBalance (address: string): Promise<Array<Interfaces.IBalance>> {
   return Transporter.post({
     url: `${this.watcherUrl}/account.get_balance`,
     body: { address },

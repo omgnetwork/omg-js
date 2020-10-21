@@ -19,6 +19,7 @@ import erc20abi from 'human-standard-token-abi';
 import BN from 'bn.js';
 
 import OmgJS from '../..';
+import { ITransactionReceipt } from '../..';
 
 import * as ccHelper from './childChainHelper';
 import * as rcHelper from './rootChainHelper';
@@ -44,7 +45,7 @@ export default {
     topup = true
   }: {
     faucetName: string;
-    topup: boolean;
+    topup?: boolean;
   }): Promise<void> {
     this.faucetAccount = this.createAccountFromString(faucetName, config.faucet_salt);
     this.fundAccount = {
@@ -67,7 +68,7 @@ export default {
     return { address: account.address, privateKey: account.privateKey };
   },
 
-  addToken: async function (currency: string) {
+  addToken: async function (currency: string): Promise<ITransactionReceipt> {
     const hasToken = await omgjs.hasExitQueue(currency);
     if (!hasToken) {
       console.log(`Adding ${currency} to exit queue`);

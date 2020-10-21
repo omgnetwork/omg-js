@@ -14,42 +14,10 @@ See the License for the specific language governing permissions and
 limitations under the License. */
 
 import * as Transporter from '@lib/transport';
-
-export interface IByzantineEvent {
-  event: string;
-  details: any;
-}
-
-export interface IStatus {
-  byzantine_events: Array<IByzantineEvent>;
-  contract_addr: {
-    erc20_vault: string;
-    eth_vault: string;
-    payment_exit_game: string;
-    plasma_framework: string;
-  };
-  eth_syncing: boolean;
-  in_flight_exits: Array<{
-    txhash: string;
-    txbytes: string;
-    eth_height: number;
-    piggybacked_inputs: Array<number>;
-    piggybacked_outputs: Array<number>;
-  }>;
-  last_mined_child_block_number: number;
-  last_mined_child_block_timestamp: number;
-  last_seen_eth_block_number: number;
-  last_seen_eth_block_timestamp: number;
-  last_validated_child_block_number: number;
-  last_validated_child_block_timestamp: number;
-  services_synced_heights: Array<{
-    height: number;
-    service: string;
-  }>
-}
+import * as Interfaces from '@lib/interfaces';
 
 /** @internal */
-export async function getStatus (): Promise<IStatus> {
+export async function getStatus (): Promise<Interfaces.IStatus> {
   return Transporter.post({
     url: `${this.watcherUrl}/status.get`,
     body: {},

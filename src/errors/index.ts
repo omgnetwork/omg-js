@@ -13,24 +13,14 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License. */
 
-export interface IRpcError {
-  code: number;
-  description: string;
-  messages: Record<string, unknown>;
-}
+import * as Interfaces from '@lib/interfaces';
 
 export class RpcError extends Error {
   public code;
-  constructor ({ code, description, messages }: IRpcError) {
+  constructor ({ code, description, messages }: Interfaces.IRpcError) {
     super(description || code + (messages ? `, ${messages.code}` : ''));
     this.code = code;
   }
-}
-
-export interface IError {
-  name?: string;
-  message: string;
-  stack: any;
 }
 
 export class ValidationError extends Error {
@@ -38,7 +28,7 @@ export class ValidationError extends Error {
   public message: string;
   public stack: any;
 
-  public constructor (args: IError) {
+  public constructor (args: Interfaces.IError) {
     super(args.message);
     this.message = args.message;
     this.stack = args.stack;
@@ -50,7 +40,7 @@ export class OmgJSError extends Error {
   public message: string;
   public stack: any;
 
-  public constructor (args: IError) {
+  public constructor (args: Interfaces.IError) {
     super(args.message);
     this.message = args.message;
     this.stack = args.stack;

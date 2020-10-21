@@ -16,21 +16,15 @@ limitations under the License. */
 import * as ContractsModule from '@lib/contracts';
 import * as RootchainTransactionsModule from '@lib/rootchain/transaction';
 import * as Constants from '@lib/common/constants';
-import * as Interfaces from '@lib/common/interfaces';
 import * as Encoders from '@lib/transaction/encoders';
-
-export interface IApproveDeposit {
-  erc20Address: string;
-  amount: Interfaces.IComplexAmount;
-  txOptions: Interfaces.ITransactionOptions
-}
+import * as Interfaces from '@lib/interfaces';
 
 /** @internal */
 export async function approveERC20Deposit ({
   erc20Address,
   amount,
   txOptions
-}: IApproveDeposit): Promise<Interfaces.ITransactionReceipt> {
+}: Interfaces.IApproveDeposit): Promise<Interfaces.ITransactionReceipt> {
   const { address: spender } = await this.getErc20Vault();
   const { contract } = await ContractsModule.getErc20.call(this, erc20Address);
 
@@ -44,18 +38,12 @@ export async function approveERC20Deposit ({
   });
 }
 
-export interface IDeposit {
-  amount: Interfaces.IComplexAmount;
-  currency?: string;
-  txOptions: Interfaces.ITransactionOptions;
-}
-
 /** @internal */
 export async function deposit ({
   amount,
   currency = Constants.CURRENCY_MAP.ETH,
   txOptions
-}: IDeposit): Promise<Interfaces.ITransactionReceipt> {
+}: Interfaces.IDeposit): Promise<Interfaces.ITransactionReceipt> {
   const _amount = amount.toString();
   const isEth = currency === Constants.CURRENCY_MAP.ETH;
 

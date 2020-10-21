@@ -20,21 +20,15 @@ import { Buffer } from 'buffer';
 
 import * as Util from '@lib/common/util';
 import * as Constants from '@lib/common/constants';
-import * as Interfaces from '@lib/common/interfaces';
+import * as Interfaces from '@lib/interfaces';
 import * as TypedDataModule from '@lib/transaction/typedData';
-
-export interface IDepositTransaction {
-  owner: string;
-  amount: Interfaces.IComplexAmount;
-  currency: string;
-}
 
 /** @internal */
 export function encodeDeposit ({
   owner,
   amount,
   currency
-}: IDepositTransaction): string {
+}: Interfaces.IDepositTransaction): string {
   return encodeTransaction({
     txType: 1,
     inputs: [],
@@ -50,7 +44,7 @@ export function encodeDeposit ({
 }
 
 /** @internal */
-export function decodeDeposit (encodedDeposit: string): IDepositTransaction {
+export function decodeDeposit (encodedDeposit: string): Interfaces.IDepositTransaction {
   const { outputs } = decodeTransaction(encodedDeposit);
   const [{ outputGuard, amount, currency }] = outputs;
   return {
@@ -58,11 +52,6 @@ export function decodeDeposit (encodedDeposit: string): IDepositTransaction {
     amount,
     currency
   };
-}
-
-export interface IEncodeTransaction extends Interfaces.ITransactionBody {
-  signatures?: Array<string>;
-  signed?: boolean;
 }
 
 /** @internal */
@@ -74,7 +63,7 @@ export function encodeTransaction ({
   metadata,
   signatures,
   signed = true
-}: IEncodeTransaction): string {
+}: Interfaces.IEncodeTransaction): string {
   const txArray: Array<any> = [txType];
   signatures && signed && txArray.unshift(signatures);
   const inputArray = [];
@@ -137,14 +126,8 @@ export function decodeTransaction (transaction: string | Buffer): Interfaces.ITr
   };
 }
 
-export interface IEncodeUtxoPos {
-  blknum: number;
-  txindex: number;
-  oindex: number;
-}
-
 /** @internal */
-export function encodeUtxoPos (utxo: IEncodeUtxoPos): BN {
+export function encodeUtxoPos (utxo: Interfaces.IEncodeUtxoPos): BN {
   const blk = new BN(utxo.blknum.toString()).mul(new BN(Constants.BLOCK_OFFSET.toString()));
   const tx = new BN(utxo.txindex.toString()).muln(Constants.TX_OFFSET);
   return blk.add(tx).addn(utxo.oindex);

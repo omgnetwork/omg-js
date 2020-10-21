@@ -19,26 +19,15 @@ import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 import { HttpsProxyAgent } from 'https-proxy-agent';
 
 import * as Errors from '@lib/errors';
+import * as Interfaces from '@lib/interfaces';
 
 debug('omg.childchain.rpc');
-
-export interface IRequestBody {
-  id?: string | number;
-  jsonrpc?: string;
-  [key: string]: any;
-}
-
-export interface IRequestOptions {
-  url: string;
-  body?: IRequestBody;
-  proxyUrl?: string;
-}
 
 /** @internal */
 export async function get ({
   url,
   proxyUrl
-}: IRequestOptions): Promise<any> {
+}: Interfaces.IRequestOptions): Promise<any> {
   try {
     const options: AxiosRequestConfig = {
       method: 'GET',
@@ -58,7 +47,7 @@ export async function post ({
   url,
   body,
   proxyUrl
-}: IRequestOptions): Promise<any> {
+}: Interfaces.IRequestOptions): Promise<any> {
   body.jsonrpc = body.jsonrpc || '2.0';
   body.id = body.id || 0;
   try {

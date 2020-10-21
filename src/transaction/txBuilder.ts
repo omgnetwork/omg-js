@@ -17,19 +17,11 @@ import BN from 'bn.js';
 import { uniq, uniqBy } from 'lodash';
 
 import * as Encoders from '@lib/transaction/encoders';
-import * as Interfaces from '@lib/common/interfaces';
+import * as Interfaces from '@lib/interfaces';
 import * as Constants from '@lib/common/constants';
 import * as SignModule from '@lib/transaction/sign';
 import * as TypedDataModule from '@lib/transaction/typedData';
 import * as WatcherTransactionModule from '@lib/watcher/transaction';
-
-export interface ICreateTransactionBody {
-  fromAddress: string;
-  fromUtxos: Array<Partial<Interfaces.IUTXO>>;
-  payments: Array<Interfaces.IPayment>;
-  fee: Interfaces.IFeeDetail;
-  metadata?: string;
-}
 
 /** @internal */
 export function createTransactionBody ({
@@ -38,7 +30,7 @@ export function createTransactionBody ({
   payments,
   fee,
   metadata
-}: ICreateTransactionBody): Interfaces.ITransactionBody {
+}: Interfaces.ICreateTransactionBody): Interfaces.ITransactionBody {
   const allPayments = [...payments, fee];
   const neededCurrencies = uniq([...payments.map(i => i.currency), fee.currency]);
 
@@ -170,18 +162,12 @@ export function mergeUtxosToOutput (utxos: Array<Interfaces.IUTXO>): Interfaces.
   };
 }
 
-export interface IMergeUtxos {
-  utxos: Array<Interfaces.IUTXO>;
-  privateKey: string;
-  metadata?: string;
-}
-
 /** @internal */
 export async function mergeUtxos ({
   utxos,
   privateKey,
   metadata = Constants.NULL_METADATA
-}: IMergeUtxos): Promise<Interfaces.IWatcherTransactionReceipt> {
+}: Interfaces.IMergeUtxos): Promise<Interfaces.IWatcherTransactionReceipt> {
   const transactionBody = {
     inputs: utxos,
     outputs: [mergeUtxosToOutput(utxos)],

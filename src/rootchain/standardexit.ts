@@ -20,32 +20,19 @@ import { Buffer } from 'buffer';
 import * as ContractsModule from '@lib/contracts';
 import * as RootchainTransactionsModule from '@lib/rootchain/transaction';
 import * as Util from '@lib/common/util';
-import * as Interfaces from '@lib/common/interfaces';
+import * as Interfaces from '@lib/interfaces';
 import MerkleTree from '@lib/rootchain/merkle';
 
 import EthVaultContract from '@lib/contracts/abi/EthVault.json';
-
-export interface IGetStandardExitId {
-  txBytes: string;
-  utxoPos: Interfaces.IComplexAmount;
-  isDeposit: boolean;
-}
 
 /** @internal */
 export async function getStandardExitId ({
   txBytes,
   utxoPos,
   isDeposit
-}: IGetStandardExitId): Promise<string> {
+}: Interfaces.IGetStandardExitId): Promise<string> {
   const { contract } = await this.getPaymentExitGame();
   return contract.methods.getStandardExitId(isDeposit, txBytes, utxoPos.toString()).call();
-}
-
-export interface IStartStandardExit {
-  utxoPos: Interfaces.IComplexAmount;
-  outputTx: string;
-  inclusionProof: string;
-  txOptions: Interfaces.ITransactionOptions
 }
 
 /** @internal */
@@ -54,7 +41,7 @@ export async function startStandardExit ({
   outputTx,
   inclusionProof,
   txOptions
-}: IStartStandardExit): Promise<Interfaces.ITransactionReceipt> {
+}: Interfaces.IStartStandardExit): Promise<Interfaces.ITransactionReceipt> {
   const { contract, address, bonds } = await this.getPaymentExitGame();
 
   const transactionData = ContractsModule.getTxData(
@@ -104,15 +91,6 @@ export async function getDepositExitData (
   };
 }
 
-export interface IChallengeStandardExit {
-  standardExitId: Interfaces.IComplexAmount;
-  exitingTx: string;
-  challengeTx: string;
-  inputIndex: number;
-  challengeTxSig: string;
-  txOptions: Interfaces.ITransactionOptions
-}
-
 /** @internal */
 export async function challengeStandardExit ({
   standardExitId,
@@ -121,7 +99,7 @@ export async function challengeStandardExit ({
   inputIndex,
   challengeTxSig,
   txOptions
-}: IChallengeStandardExit): Promise<Interfaces.ITransactionReceipt> {
+}: Interfaces.IChallengeStandardExit): Promise<Interfaces.ITransactionReceipt> {
   // standardExitId is an extremely large number as it uses the entire int192.
   // It's too big to be represented as a Number, so we convert it to a hex string
   const exitId = Util.int192toHex(standardExitId.toString());
