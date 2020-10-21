@@ -13,13 +13,9 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License. */
 
-import { assert, should, use } from 'chai';
-import chaiAsPromised from 'chai-as-promised';
+import { assert } from 'chai';
 
 import * as Util from '../util';
-
-should();
-use(chaiAsPromised);
 
 describe('common/util test', function () {
   it('prefixHex works as intended', function () {
