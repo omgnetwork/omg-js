@@ -18,7 +18,7 @@ import promiseRetry from 'promise-retry';
 import BN from 'bn.js';
 
 import OmgJS from '../..';
-import { IUTXO, IWatcherTransactionReceipt } from '../..';
+import { IUTXO, IWatcherTransactionReceipt, IBalance } from '../..';
 
 import config from '../test-config';
 
@@ -32,7 +32,7 @@ const omgjs = new OmgJS({
 
 export async function selectUtxos (
   utxos: IUTXO[],
-  amount: BN | number,
+  amount: BN | number | string,
   currency: string
 ): Promise<Array<IUTXO>> {
   // Filter by desired currency and sort in descending order
@@ -70,7 +70,7 @@ export function waitForBalance (
   address: string,
   currency: string,
   callback: (boolean) => boolean
-): Promise<void> {
+): Promise<IBalance[]> {
   return promiseRetry(async (retry, number) => {
     console.log(`Waiting for childchain balance...  (${number})`);
     const resp = await omgjs.getBalance(address);
@@ -93,9 +93,9 @@ export function waitForBalance (
 
 export function waitForBalanceEq (
   address: string,
-  expectedAmount: number | string,
+  expectedAmount: number | string | BN,
   currency?: string
-): Promise<void> {
+): Promise<IBalance[]> {
   currency = currency || OmgJS.currency.ETH;
   const expectedBn = new BN(expectedAmount.toString());
   return waitForBalance(address, currency, balance => new BN(balance.amount).eq(expectedBn));
@@ -103,8 +103,10 @@ export function waitForBalanceEq (
 
 export function waitForEvent (
   type: string,
-  callback: () => void
-): Promise<void> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  callback: (event) => any
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+): Promise<any> {
   return promiseRetry(async (retry, number) => {
     console.log(`Waiting for event...  (${number})`);
     const status = await omgjs.getStatus();
@@ -125,10 +127,10 @@ export function waitForEvent (
 export async function sendAndWait (
   from: string,
   to: string,
-  amount: number,
+  amount: number | BN | string,
   currency: string,
   privateKey: string,
-  expectedBalance: number
+  expectedBalance: number | BN | string
 ): Promise<{ result: IWatcherTransactionReceipt, txbytes: string }> {
   const ret = await send(from, to, amount, currency, privateKey);
   await waitForBalanceEq(to, expectedBalance, currency);
@@ -138,7 +140,7 @@ export async function sendAndWait (
 export async function createTx (
   from: string,
   to: string,
-  amount: BN | number,
+  amount: BN | number | string,
   currency: string,
   fromPrivateKey: string
 ): Promise<string> {
@@ -212,7 +214,7 @@ export async function createTx (
 export async function send (
   from: string,
   to: string,
-  amount: BN | number,
+  amount: BN | number | string,
   currency: string,
   fromPrivateKey: string
 ): Promise<{ result: IWatcherTransactionReceipt, txbytes: string }> {

@@ -235,7 +235,7 @@ export default {
     return rcHelper.waitForERC20Balance(address, config.erc20_contract_address, balance => new BN(balance).gte(new BN(amount.toString())));
   },
 
-  fundChildchain: async function (address: string, amount: number, currency: string): Promise<{ result: IWatcherTransactionReceipt, txbytes: string }> {
+  fundChildchain: async function (address: string, amount: number | BN | string, currency: string): Promise<{ result: IWatcherTransactionReceipt, txbytes: string }> {
     const ret = await ccHelper.send(
       this.faucetAccount.address,
       address,
@@ -248,7 +248,7 @@ export default {
   },
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  fundRootchainEth: async function (address: string, amount: number): Promise<any> {
+  fundRootchainEth: async function (address: string, amount: number | BN | string): Promise<any> {
     if (amount <= 0) {
       return;
     }
@@ -258,7 +258,7 @@ export default {
       value: amount
     };
     const ret = await rcHelper.sendTransaction(txDetails, this.faucetAccount.privateKey);
-    console.log(`Faucet sent ${amount / 10 ** 18} ETH on root chain to ${address}`);
+    console.log(`Faucet sent ${Number(amount) / 10 ** 18} ETH on root chain to ${address}`);
     return ret;
   },
 

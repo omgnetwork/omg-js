@@ -34,7 +34,8 @@ export interface ITxDetails {
   gasPrice: string;
   from: string;
   to: string;
-  value: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  value: any;
 }
 
 export interface ITxReceipt {
@@ -67,7 +68,7 @@ export async function setGas (txDetails: Partial<ITxDetails>): Promise<void> {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export async function sendTransaction (txDetails: ITxDetails, privateKey: string): Promise<any> {
+export async function sendTransaction (txDetails: Partial<ITxDetails>, privateKey: string): Promise<any> {
   await setGas(txDetails);
   if (!privateKey) {
     return omgjs.web3Instance.eth.sendTransaction(txDetails);
@@ -97,7 +98,7 @@ export function waitForEthBalance (address: string, callback: (string) => boolea
   });
 }
 
-export function waitForEthBalanceEq (address: string, expectedAmount: number | BN): Promise<void> {
+export function waitForEthBalanceEq (address: string, expectedAmount: number | BN | string): Promise<void> {
   const expectedBn = new BN(expectedAmount.toString());
   return waitForEthBalance(address, balance => new BN(balance.toString()).eq(expectedBn));
 }

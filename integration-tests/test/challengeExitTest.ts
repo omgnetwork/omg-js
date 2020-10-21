@@ -85,10 +85,10 @@ describe('challengeExitTest.js', function () {
       await ccHelper.sendAndWait(
         aliceAccount.address,
         bobAccount.address,
-        TRANSFER_AMOUNT,
+        Number(TRANSFER_AMOUNT),
         OmgJS.currency.ETH,
         aliceAccount.privateKey,
-        TRANSFER_AMOUNT
+        Number(TRANSFER_AMOUNT)
       );
 
       console.log(`Transferred ${TRANSFER_AMOUNT} from Alice to Bob`);
@@ -101,7 +101,7 @@ describe('challengeExitTest.js', function () {
       await ccHelper.sendAndWait(
         aliceAccount.address,
         bobAccount.address,
-        TRANSFER_AMOUNT,
+        Number(TRANSFER_AMOUNT),
         OmgJS.currency.ETH,
         aliceAccount.privateKey,
         Number(TRANSFER_AMOUNT) * 2

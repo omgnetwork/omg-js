@@ -182,7 +182,7 @@ describe('depositTest.js', function () {
       const balance = await ccHelper.waitForBalanceEq(aliceAccount.address, TEST_AMOUNT, config.erc20_contract_address);
 
       // Check balance is correct
-      assert.equal(balance[0].amount.toString(), TEST_AMOUNT);
+      assert.equal(balance[0].amount.toString(), TEST_AMOUNT.toString());
       console.log(`Balance: ${balance[0].amount.toString()}`);
 
       // THe account should have one utxo on the child chain

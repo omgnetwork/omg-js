@@ -293,7 +293,7 @@ describe('createTransactionTest.js', function () {
       // Bob's balance should be INTIIAL_ALICE_AMOUNT
       const bobBalance = await ccHelper.waitForBalanceEq(bobAccount.address, toSendAmount.toString());
       assert.equal(bobBalance.length, 1);
-      assert.equal(bobBalance[0].amount.toString(), toSendAmount);
+      assert.equal(bobBalance[0].amount.toString(), toSendAmount.toString());
 
       // Alice's balance should be 0
       const aliceBalance = await omgjs.getBalance(aliceAccount.address);
