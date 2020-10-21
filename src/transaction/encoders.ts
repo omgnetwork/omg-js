@@ -21,7 +21,6 @@ import { Buffer } from 'buffer';
 import * as Util from '@lib/common/util';
 import * as Constants from '@lib/common/constants';
 import * as Interfaces from '@lib/interfaces';
-import * as TypedDataModule from '@lib/transaction/typedData';
 
 /** @internal */
 export function encodeDeposit ({
@@ -158,7 +157,7 @@ export function decodeMetadata (metadata: string): string {
 }
 
 /** @internal */
-export function getTypedDataArray (typedDataMessage: TypedDataModule.ITypedDataMessage): Array<any> {
+export function getTypedDataArray (typedDataMessage: Interfaces.ITypedDataMessage): Array<any> {
   const txArray = [];
 
   const inputArray = [];

@@ -108,7 +108,7 @@ export async function waitForChildchainBalance ({
   address,
   expectedAmount,
   currency
-}: Interfaces.IWaitForChildchainBalance): Promise<Array<WatcherAccountModule.IBalance>> {
+}: Interfaces.IWaitForChildchainBalance): Promise<Array<Interfaces.IBalance>> {
   return promiseRetry(async retry => {
     const resp = await this.getBalance(address);
     if (resp.length === 0) retry();

@@ -75,9 +75,9 @@ class OmgJS {
   private readonly watcherProxyUrl: string;
   private readonly plasmaContract: Contract;
   
-  private erc20Vault: ContractsModule.IVault;
-  private ethVault: ContractsModule.IVault;
-  private paymentExitGame: ContractsModule.IPaymentExitGame;
+  private erc20Vault: Interfaces.IVault;
+  private ethVault: Interfaces.IVault;
+  private paymentExitGame: Interfaces.IPaymentExitGame;
 
   /**
    * @param args.plasmaContractAddress the address of the PlasmaFramework contract
@@ -101,7 +101,7 @@ class OmgJS {
   }
 
   /** Get the ERC20 vault */
-  public async getErc20Vault (): Promise<ContractsModule.IVault> {
+  public async getErc20Vault (): Promise<Interfaces.IVault> {
     if (this.erc20Vault) {
       return this.erc20Vault;
     }
@@ -110,7 +110,7 @@ class OmgJS {
   }
 
   /** Get the ETH vault */
-  public async getEthVault (): Promise<ContractsModule.IVault> {
+  public async getEthVault (): Promise<Interfaces.IVault> {
     if (this.ethVault) {
       return this.ethVault;
     }
@@ -119,7 +119,7 @@ class OmgJS {
   }
 
   /** Get the payment exit game vault */
-  public async getPaymentExitGame (): Promise<ContractsModule.IPaymentExitGame> {
+  public async getPaymentExitGame (): Promise<Interfaces.IPaymentExitGame> {
     if (this.paymentExitGame) {
       return this.paymentExitGame;
     }
@@ -138,8 +138,8 @@ class OmgJS {
    * @param args.submissionBlockNumber for standard exits: the block that contains the exiting UTXO, for in-flight exits: the block that contains the youngest input of the exiting transaction
   */
   public async getExitTime (
-    args: RootchainExitQueueModule.IGetExitTime
-  ): Promise<RootchainExitQueueModule.IExitTime> {
+    args: Interfaces.IGetExitTime
+  ): Promise<Interfaces.IExitTime> {
     Validators.validate(args, Validators.getExitTimeSchema);
     return RootchainExitQueueModule.getExitTime.call(this, args);
   }
@@ -147,7 +147,7 @@ class OmgJS {
   /** Retrieve the exit queue for a particular currency */
   public async getExitQueue (
     currency: string
-  ): Promise<RootchainExitQueueModule.IExitQueue[]> {
+  ): Promise<Interfaces.IExitQueue[]> {
     Validators.validate(currency, Validators.getExitQueueSchema);
     return RootchainExitQueueModule.getExitQueue.call(this, currency);
   }
@@ -159,7 +159,7 @@ class OmgJS {
    * @param args.currency token address of the deposit
   */
   public encodeDeposit (
-    args: EncoderModule.IDepositTransaction
+    args: Interfaces.IDepositTransaction
   ): string {
     Validators.validate(args, Validators.encodeDepositSchema);
     return EncoderModule.encodeDeposit.call(this, args);
@@ -168,7 +168,7 @@ class OmgJS {
   /** Decode a RLP encoded deposit transaction */
   public decodeDeposit (
     encodedDeposit: string
-  ): EncoderModule.IDepositTransaction {
+  ): Interfaces.IDepositTransaction {
     Validators.validate(encodedDeposit, Joi.string().required());
     return EncoderModule.decodeDeposit.call(this, encodedDeposit);
   }
@@ -184,7 +184,7 @@ class OmgJS {
    * @param args.signed whether the transaction is signed
   */
   public encodeTransaction (
-    args: EncoderModule.IEncodeTransaction
+    args: Interfaces.IEncodeTransaction
   ): string {
     Validators.validate(args, Validators.encodeTransactionSchema);
     return EncoderModule.encodeTransaction.call(this, args);
@@ -200,7 +200,7 @@ class OmgJS {
 
   /** Encode a UTXO */
   public encodeUtxoPos (
-    utxo: EncoderModule.IEncodeUtxoPos
+    utxo: Interfaces.IEncodeUtxoPos
   ): BN {
     Validators.validate({ utxo }, Validators.encodeUtxoPosSchema);
     return EncoderModule.encodeUtxoPos.call(this, utxo);
@@ -237,7 +237,7 @@ class OmgJS {
    * @param args.txOptions transaction options
   */
   public async approveERC20Deposit (
-    args: RootchainDepositModule.IApproveDeposit
+    args: Interfaces.IApproveDeposit
   ): Promise<Interfaces.ITransactionReceipt> {
     Validators.validate(args, Validators.approveERC20DepositSchema);
     return RootchainDepositModule.approveERC20Deposit.call(this, args);
@@ -250,7 +250,7 @@ class OmgJS {
    * @param args.txOptions transaction options
    */
   public async deposit (
-    args: RootchainDepositModule.IDeposit
+    args: Interfaces.IDeposit
   ): Promise<Interfaces.ITransactionReceipt> {
     Validators.validate(args, Validators.depositSchema);
     return RootchainDepositModule.deposit.call(this, args);
@@ -263,7 +263,7 @@ class OmgJS {
    * @param args.isDeposit whether the standard exit is of a deposit UTXO
   */
   public async getStandardExitId (
-    args: RootchainStandardExitModule.IGetStandardExitId
+    args: Interfaces.IGetStandardExitId
   ): Promise<string> {
     Validators.validate(args, Validators.getStandardExitIdSchema);
     return RootchainStandardExitModule.getStandardExitId.call(this, args);
@@ -280,7 +280,7 @@ class OmgJS {
   /** Retrieve in-flight exit data from an array of exit IDs directly from the payment exit game contract */
   public async getInFlightExitContractData (
     exitIds: Array<string>
-  ): Promise<Array<RootchainInFlightExitModule.IInFlightExitContractData>> {
+  ): Promise<Array<Interfaces.IInFlightExitContractData>> {
     Validators.validate(exitIds, Validators.getInFlightExitDataSchema);
     return RootchainInFlightExitModule.getInFlightExitContractData.call(this, exitIds);
   }
@@ -293,7 +293,7 @@ class OmgJS {
    * @param txOptions transaction options
   */
   public async startStandardExit (
-    args: RootchainStandardExitModule.IStartStandardExit
+    args: Interfaces.IStartStandardExit
   ): Promise<Interfaces.ITransactionReceipt> {
     Validators.validate(args, Validators.startStandardExitSchema);
     return RootchainStandardExitModule.startStandardExit.call(this, args);
@@ -317,7 +317,7 @@ class OmgJS {
    * @param args.txOptions transaction options
   */
   public async challengeStandardExit (
-    args: RootchainStandardExitModule.IChallengeStandardExit
+    args: Interfaces.IChallengeStandardExit
   ): Promise<Interfaces.ITransactionReceipt> {
     Validators.validate(args, Validators.challengeStandardExitSchema);
     return RootchainStandardExitModule.challengeStandardExit.call(this, args);
@@ -331,7 +331,7 @@ class OmgJS {
    * @param args.txOptions transaction options
   */
   public async processExits (
-    args: RootchainExitQueueModule.IProcessExits
+    args: Interfaces.IProcessExits
   ): Promise<Interfaces.ITransactionReceipt> {
     Validators.validate(args, Validators.processExitsSchema);
     return RootchainExitQueueModule.processExits.call(this, args);
@@ -351,7 +351,7 @@ class OmgJS {
    * @param txOptions transaction options
   */
   public async addExitQueue (
-    args: RootchainExitQueueModule.IAddExitQueue
+    args: Interfaces.IAddExitQueue
   ): Promise<Interfaces.ITransactionReceipt> {
     Validators.validate(args, Validators.addExitQueueSchema);
     return RootchainExitQueueModule.addExitQueue.call(this, args);
@@ -367,7 +367,7 @@ class OmgJS {
    * @param args.txOptions transaction options
   */
   public async startInFlightExit (
-    args: RootchainInFlightExitModule.IStartInFlightExit
+    args: Interfaces.IStartInFlightExit
   ): Promise<Interfaces.ITransactionReceipt> {
     Validators.validate(args, Validators.startInFlightExitSchema);
     return RootchainInFlightExitModule.startInFlightExit.call(this, args);
@@ -380,7 +380,7 @@ class OmgJS {
    * @param args.txOptions transaction options
   */
   public async piggybackInFlightExitOnOutput (
-    args: RootchainInFlightExitModule.IPiggybackInFlightExitOnOutput
+    args: Interfaces.IPiggybackInFlightExitOnOutput
   ): Promise<Interfaces.ITransactionReceipt> {
     Validators.validate(args, Validators.piggybackInFlightExitOnOutputSchema);
     return RootchainInFlightExitModule.piggybackInFlightExitOnOutput.call(this, args);
@@ -393,7 +393,7 @@ class OmgJS {
    * @param args.txOptions transaction options
   */
   public async piggybackInFlightExitOnInput (
-    args: RootchainInFlightExitModule.IPiggybackInFlightExitOnInput
+    args: Interfaces.IPiggybackInFlightExitOnInput
   ): Promise<Interfaces.ITransactionReceipt> {
     Validators.validate(args, Validators.piggybackInFlightExitOnInputSchema);
     return RootchainInFlightExitModule.piggybackInFlightExitOnInput.call(this, args);
@@ -413,7 +413,7 @@ class OmgJS {
    * @param args.txOptions transaction options
   */
   public async challengeInFlightExitNotCanonical (
-    args: RootchainInFlightExitModule.IChallengeInFlightExitNotCanonical
+    args: Interfaces.IChallengeInFlightExitNotCanonical
   ): Promise<Interfaces.ITransactionReceipt> {
     Validators.validate(args, Validators.challengeInFlightExitNotCanonicalSchema);
     return RootchainInFlightExitModule.challengeInFlightExitNotCanonical.call(this, args);
@@ -427,7 +427,7 @@ class OmgJS {
    * @param args.txOptions transaction options
   */
   public async respondToNonCanonicalChallenge (
-    args: RootchainInFlightExitModule.IRespondToNonCanonicalChallenge
+    args: Interfaces.IRespondToNonCanonicalChallenge
   ): Promise<Interfaces.ITransactionReceipt> {
     Validators.validate(args, Validators.respondToNonCanonicalChallengeSchema);
     return RootchainInFlightExitModule.respondToNonCanonicalChallenge.call(this, args);
@@ -445,7 +445,7 @@ class OmgJS {
    * @param args.txOptions transaction options
   */
   public async challengeInFlightExitInputSpent (
-    args: RootchainInFlightExitModule.IChallengeInFlightExitInputSpent
+    args: Interfaces.IChallengeInFlightExitInputSpent
   ): Promise<Interfaces.ITransactionReceipt> {
     Validators.validate(args, Validators.challengeInFlightExitInputSpentSchema);
     return RootchainInFlightExitModule.challengeInFlightExitInputSpent.call(this, args);
@@ -462,7 +462,7 @@ class OmgJS {
    * @param args.txOptions transaction options
   */
   public async challengeInFlightExitOutputSpent (
-    args: RootchainInFlightExitModule.IChallengeInFlightExitOutputSpent
+    args: Interfaces.IChallengeInFlightExitOutputSpent
   ): Promise<Interfaces.ITransactionReceipt> {
     Validators.validate(args, Validators.challengeInFlightExitOutputSpentSchema);
     return RootchainInFlightExitModule.challengeInFlightExitOutputSpent.call(this, args);
@@ -474,7 +474,7 @@ class OmgJS {
    * @param args.txOptions transaction options
   */
   public async deleteNonPiggybackedInFlightExit (
-    args: RootchainInFlightExitModule.IDeleteNonPiggybackedInFlightExit
+    args: Interfaces.IDeleteNonPiggybackedInFlightExit
   ): Promise<Interfaces.ITransactionReceipt> {
     Validators.validate(args, Validators.deleteNonPiggybackedInFlightExitSchema);
     return RootchainInFlightExitModule.deleteNonPiggybackedInFlightExit.call(this, args);
@@ -491,7 +491,7 @@ class OmgJS {
   /** Get the balances of an address */
   public async getBalance (
     address: string
-  ): Promise<Array<WatcherAccountModule.IBalance>> {
+  ): Promise<Array<Interfaces.IBalance>> {
     Validators.validate(address, Validators.getBalanceSchema);
     return WatcherAccountModule.getBalance.call(this, address);
   }
@@ -513,14 +513,14 @@ class OmgJS {
    * @param filters.page page of paginated request
   */
   public async getTransactions (
-    filters: WatcherTransactionModule.ITransactionFilter
+    filters: Interfaces.ITransactionFilter
   ): Promise<Array<Interfaces.ITransactionData>> {
     Validators.validate(filters, Validators.getTransactionsSchema);
     return WatcherTransactionModule.getTransactions.call(this, filters);
   }
 
   /** Get accepted fee information */
-  public async getFees (): Promise<Array<WatcherFeesModule.IFeeInfo>> {
+  public async getFees (): Promise<Array<Interfaces.IFeeInfo>> {
     return WatcherFeesModule.getFees.call(this);
   }
 
@@ -531,8 +531,8 @@ class OmgJS {
    * @param filters.page page of paginated request
   */
   public async getDeposits (
-    filters: WatcherDepositModule.IDepositFilter
-  ): Promise<Array<WatcherDepositModule.IDepositInfo>> {
+    filters: Interfaces.IDepositFilter
+  ): Promise<Array<Interfaces.IDepositInfo>> {
     Validators.validate(filters, Validators.getDepositsSchema);
     return WatcherDepositModule.getDeposits.call(this, filters);
   }
@@ -548,7 +548,7 @@ class OmgJS {
   /** Get the challenge data for a UTXO */
   public async getChallengeData (
     utxoPos: number
-  ): Promise<WatcherUtxoModule.IChallengeData> {
+  ): Promise<Interfaces.IChallengeData> {
     Validators.validate({ utxoPos }, Validators.getChallengeDataSchema);
     return WatcherUtxoModule.getChallengeData.call(this, utxoPos);
   }
@@ -561,8 +561,8 @@ class OmgJS {
    * @param args.metadata metadata to include in the transaction
   */
   public async createTransaction (
-    args: WatcherTransactionModule.ICreateTransaction
-  ): Promise<WatcherTransactionModule.ICreatedTransactions> {
+    args: Interfaces.ICreateTransaction
+  ): Promise<Interfaces.ICreatedTransactions> {
     Validators.validate(args, Validators.createTransactionSchema);
     return WatcherTransactionModule.createTransaction.call(this, args);
   }
@@ -576,7 +576,7 @@ class OmgJS {
    * @param args.metadata the metadata to send
   */
   public createTransactionBody (
-    args: TransactionBuilderModule.ICreateTransactionBody
+    args: Interfaces.ICreateTransactionBody
   ): Interfaces.ITransactionBody {
     Validators.validate(args, Validators.createTransactionBodySchema);
     return TransactionBuilderModule.createTransactionBody.call(this, args);
@@ -588,15 +588,15 @@ class OmgJS {
    * @param privateKeys an array of private keys to sign the inputs of the transaction
   */
   public signTypedData (
-    args: SignModule.ISignTypedData
-  ): TypedDataModule.ISignedTypedData {
+    args: Interfaces.ISignTypedData
+  ): Interfaces.ISignedTypedData {
     Validators.validate(args, Validators.signTypedDataSchema);
     return SignModule.signTypedData.call(this, args);
   }
 
   /** Submits a transaction along with its typed data and signatures to the Watcher */
   public submitTypedData (
-    typedData: TypedDataModule.ISignedTypedData
+    typedData: Interfaces.ISignedTypedData
   ): Promise<Interfaces.IWatcherTransactionReceipt> {
     Validators.validate(typedData, Validators.submitTypedDataSchema);
     return WatcherTransactionModule.submitTypedData.call(this, typedData);
@@ -608,7 +608,7 @@ class OmgJS {
    * @param privateKeys array of private keys to sign each input of the transaction
   */
   public signTransaction (
-    args: SignModule.ISignTransaction
+    args: Interfaces.ISignTransaction
   ): Array<string> {
     Validators.validate(args, Validators.signTransactionSchema);
     return SignModule.signTransaction.call(this, args);
@@ -620,7 +620,7 @@ class OmgJS {
    * @param signatures array of signatures to sign the transaction
   */
   public buildSignedTransaction (
-    args: SignModule.IBuildSignedTransaction
+    args: Interfaces.IBuildSignedTransaction
   ): string {
     Validators.validate(args, Validators.buildSignedTransactionSchema);
     return SignModule.buildSignedTransaction.call(this, args);
@@ -641,14 +641,14 @@ class OmgJS {
    * @param args.metadata metadata to include with the transaction
   */
   public mergeUtxos (
-    args: TransactionBuilderModule.IMergeUtxos
+    args: Interfaces.IMergeUtxos
   ): Promise<Interfaces.IWatcherTransactionReceipt> {
     Validators.validate(args, Validators.mergeUtxosSchema);
     return TransactionBuilderModule.mergeUtxos.call(this, args);
   }
 
   /** Get the status of the Watcher */
-  public async getStatus (): Promise<WatcherStatusModule.IStatus> {
+  public async getStatus (): Promise<Interfaces.IStatus> {
     return WatcherStatusModule.getStatus.call(this);
   }
 
@@ -658,8 +658,8 @@ class OmgJS {
    * @param inputIndex invalid input index
   */
   public async inFlightExitGetInputChallengeData (
-    args: WatcherInFlightExitModule.IInFlightExitGetInputChallengeData
-  ): Promise<WatcherInFlightExitModule.IInFlightExitInputChallengeData> {
+    args: Interfaces.IInFlightExitGetInputChallengeData
+  ): Promise<Interfaces.IInFlightExitInputChallengeData> {
     Validators.validate(args, Validators.inFlightExitGetInputChallengeDataSchema);
     return WatcherInFlightExitModule.inFlightExitGetInputChallengeData.call(this, args);
   }
@@ -670,8 +670,8 @@ class OmgJS {
    * @param outputIndex invalid output index
   */
   public async inFlightExitGetOutputChallengeData (
-    args: WatcherInFlightExitModule.IInFlightExitGetOutputChallengeData
-  ): Promise<WatcherInFlightExitModule.IInFlightExitOutputChallengeData> {
+    args: Interfaces.IInFlightExitGetOutputChallengeData
+  ): Promise<Interfaces.IInFlightExitOutputChallengeData> {
     Validators.validate(args, Validators.inFlightExitGetOutputChallengeDataSchema);
     return WatcherInFlightExitModule.inFlightExitGetOutputChallengeData.call(this, args);
   }
@@ -687,7 +687,7 @@ class OmgJS {
   /** Get the competitor for an in-flight transaction */
   public async inFlightExitGetCompetitor (
     txbytes: string
-  ): Promise<WatcherInFlightExitModule.IInFlightExitCompetitor> {
+  ): Promise<Interfaces.IInFlightExitCompetitor> {
     Validators.validate(txbytes, Joi.string().required());
     return WatcherInFlightExitModule.inFlightExitGetCompetitor.call(this, txbytes);
   }
@@ -695,7 +695,7 @@ class OmgJS {
   /** Prove that a transaction has been put into a block (and therefore is canonical) */
   public async inFlightExitProveCanonical (
     txbytes: string
-  ): Promise<WatcherInFlightExitModule.IInFlightExitCanonicalProof> {
+  ): Promise<Interfaces.IInFlightExitCanonicalProof> {
     Validators.validate(txbytes, Joi.string().required());
     return WatcherInFlightExitModule.inFlightExitProveCanonical.call(this, txbytes);
   }
@@ -714,7 +714,7 @@ class OmgJS {
    * @param args.erc20Address address of the ERC20 token
   */
   public async getRootchainERC20Balance (
-    args: RootchainUtilModule.IGetRootchainERC20Balance
+    args: Interfaces.IGetRootchainERC20Balance
   ): Promise<string> {
     Validators.validate(args, Validators.getErc20BalanceSchema);
     return RootchainUtilModule.getRootchainERC20Balance.call(this, args);
@@ -736,7 +736,7 @@ class OmgJS {
    * @param args.onCountdown callback that's passed the remaining number of blocks before confirmation
   */
   public async waitForRootchainTransaction (
-    args: RootchainUtilModule.IWaitForRootchainTransaction
+    args: Interfaces.IWaitForRootchainTransaction
   ): Promise<Interfaces.ITransactionReceipt> {
     Validators.validate(args, Validators.waitForRootchainTransactionSchema);
     return RootchainUtilModule.waitForRootchainTransaction.call(this, args);
@@ -749,8 +749,8 @@ class OmgJS {
    * @param currency the token address to check
   */
   public async waitForChildchainBalance (
-    args: RootchainUtilModule.IWaitForChildchainBalance
-  ): Promise<Array<WatcherAccountModule.IBalance>> {
+    args: Interfaces.IWaitForChildchainBalance
+  ): Promise<Array<Interfaces.IBalance>> {
     Validators.validate(args, Validators.waitForChildchainBalanceSchema);
     return RootchainUtilModule.waitForChildchainBalance.call(this, args);
   }
@@ -763,7 +763,7 @@ class OmgJS {
    * @param args.blknum blknum of the specified utxo
    */
   public async waitForUtxo (
-    args: RootchainUtilModule.IWaitForUtxo
+    args: Interfaces.IWaitForUtxo
   ): Promise<Interfaces.IUTXO> {
     Validators.validate(args, Validators.waitForUtxoSchema);
     return RootchainUtilModule.waitForUtxo.call(this, args);
@@ -771,7 +771,7 @@ class OmgJS {
 
   /** Hash typed data */
   public hashTypedData (
-    typedData: TypedDataModule.ITypedData
+    typedData: Interfaces.ITypedData
   ): Buffer {
     Validators.validate({ typedData }, Validators.hashTypedDataSchema);
     return StructHashModule.hashTypedData.call(this, typedData);
@@ -780,14 +780,14 @@ class OmgJS {
   /** Get typed data from a transaction body */
   public getTypedData (
     transactionBody: Interfaces.ITransactionBody
-  ): TypedDataModule.ITypedData {
+  ): Interfaces.ITypedData {
     Validators.validate({ transactionBody }, Validators.getTypedDataSchema);
     return TypedDataModule.getTypedData.call(this, transactionBody);
   }
 
   /** Convert typed data into an array suitable for RLP encoding */
   public getTypedDataArray (
-    typedDataMessage: TypedDataModule.ITypedDataMessage
+    typedDataMessage: Interfaces.ITypedDataMessage
   ): Array<any> {
     return EncoderModule.getTypedDataArray.call(this, typedDataMessage);
   }

@@ -17,11 +17,11 @@ import { Buffer } from 'buffer';
 import { keccak256 } from 'ethereumjs-util';
 import { rawEncode } from 'ethereumjs-abi';
 
-import * as TypedDataModule from '@lib/transaction/typedData';
+import * as Interfaces from '@lib/interfaces';
 
 /** @internal */
 function dependencies (
-  types: TypedDataModule.ITypedDataTypes,
+  types: Interfaces.ITypedDataTypes,
   primaryType: string,
   found = []
 ): Array<any> {
@@ -44,7 +44,7 @@ function dependencies (
 
 /** @internal */
 function encodeType (
-  types: TypedDataModule.ITypedDataTypes,
+  types: Interfaces.ITypedDataTypes,
   primaryType: string
 ): string {
   // Get dependencies primary first, then alphabetical
@@ -62,7 +62,7 @@ function encodeType (
 
 /** @internal */
 function typeHash (
-  types: TypedDataModule.ITypedDataTypes,
+  types: Interfaces.ITypedDataTypes,
   primaryType: string
 ): Buffer {
   return keccak256(Buffer.from(encodeType(types, primaryType)));
@@ -70,9 +70,9 @@ function typeHash (
 
 /** @internal */
 function encodeData (
-  types: TypedDataModule.ITypedDataTypes,
+  types: Interfaces.ITypedDataTypes,
   primaryType: string,
-  data: TypedDataModule.ITypedDataDomainData | TypedDataModule.ITypedDataMessage
+  data: Interfaces.ITypedDataDomainData | Interfaces.ITypedDataMessage
 ): Buffer {
   const encTypes: Array<string> = [];
   const encValues: Array<Buffer | string> = [];
@@ -104,16 +104,16 @@ function encodeData (
 
 /** @internal */
 function structHash (
-  types: TypedDataModule.ITypedDataTypes,
+  types: Interfaces.ITypedDataTypes,
   primaryType: string,
-  data: TypedDataModule.ITypedDataDomainData | TypedDataModule.ITypedDataMessage
+  data: Interfaces.ITypedDataDomainData | Interfaces.ITypedDataMessage
 ): Buffer {
   return keccak256(encodeData(types, primaryType, data));
 }
 
 /** @internal */
 export function hashTypedData (
-  typedData: TypedDataModule.ITypedData
+  typedData: Interfaces.ITypedData
 ): Buffer {
   return keccak256(
     Buffer.concat([

@@ -20,7 +20,6 @@ import { ecsign } from 'ethereumjs-util';
 
 import * as Util from '@lib/common/util';
 import * as Interfaces from '@lib/interfaces';
-import * as TypedDataModule from '@lib/transaction/typedData';
 import * as StructHashModule from '@lib/transaction/structHash';
 import * as Encoders from '@lib/transaction/encoders';
 
@@ -42,10 +41,10 @@ export function sign (tx: Buffer, privateKeys: Array<string>): Array<string> {
 export function signTypedData ({
   txData,
   privateKeys
-}: Interfaces.ISignTypedData): TypedDataModule.ISignedTypedData {
+}: Interfaces.ISignTypedData): Interfaces.ISignedTypedData {
   const toSign = Buffer.from(txData.sign_hash.replace('0x', ''), 'hex');
-  (txData.typed_data as TypedDataModule.ISignedTypedData).signatures = sign(toSign, privateKeys);
-  return (txData.typed_data as TypedDataModule.ISignedTypedData);
+  (txData.typed_data as Interfaces.ISignedTypedData).signatures = sign(toSign, privateKeys);
+  return (txData.typed_data as Interfaces.ISignedTypedData);
 }
 
 /** @internal */
