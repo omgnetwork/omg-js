@@ -10,7 +10,7 @@ const validateTxOption = Joi.object({
   gas: Joi.number().integer(),
   gasPrice: Joi.string(),
   privateKey: Joi.string(),
-  from: validateAddress
+  from: validateAddress.required()
 })
 
 const validateBn = Joi.any().custom((value, helpers) => {
