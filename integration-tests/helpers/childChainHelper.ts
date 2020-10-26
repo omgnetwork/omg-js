@@ -180,7 +180,7 @@ export async function createTx (
         outputType: 1,
         outputGuard: from,
         currency,
-        amount: Number(CHANGE_AMOUNT)
+        amount: CHANGE_AMOUNT
       });
     }
 
@@ -190,7 +190,7 @@ export async function createTx (
       outputType: 1,
       outputGuard: from,
       currency: OmgJS.currency.ETH,
-      amount: Number(CHANGE_AMOUNT_FEE)
+      amount: CHANGE_AMOUNT_FEE
     });
   } else {
     const totalDeduct = new BN(amount).add(new BN(feeEthAmountWei));
@@ -200,7 +200,7 @@ export async function createTx (
         outputType: 1,
         outputGuard: from,
         currency: OmgJS.currency.ETH,
-        amount: Number(CHANGE_AMOUNT)
+        amount: CHANGE_AMOUNT
       });
     }
   }

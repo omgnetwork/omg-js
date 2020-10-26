@@ -47,7 +47,7 @@ async function exitErc20 (): Promise<void> {
     console.log('Please define an ERC20 contract in your .env');
     return;
   }
-  const { owner }: { owner: string} = getFlags('owner');
+  const { owner } = getFlags('owner');
   const address: string = config[`${owner}_eth_address`];
   const pk: string = config[`${owner}_eth_address_private_key`];
 

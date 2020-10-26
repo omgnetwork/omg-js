@@ -18,7 +18,7 @@ export function wait (ms: number): Promise<void> {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-export function getFlags (...keys: Array<string>): {[key: string]: string } {
+export function getFlags (...keys: Array<string>): Record<string, string> {
   const argMap = {};
   for (const position in process.argv) {
     const arg = process.argv[position];

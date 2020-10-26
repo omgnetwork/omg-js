@@ -42,7 +42,7 @@ async function logBalances (address: string): Promise<void> {
 }
 
 async function exitEth (): Promise<void> {
-  const { owner }: { owner: string } = getFlags('owner');
+  const { owner } = getFlags('owner');
   const address: string = config[`${owner}_eth_address`];
   const pk: string = config[`${owner}_eth_address_private_key`];
 
