@@ -15,7 +15,6 @@ limitations under the License. */
 
 import abiDecoder from 'abi-decoder';
 import { keccak256 } from 'ethereumjs-util';
-import { Buffer } from 'buffer';
 
 import * as ContractsModule from '@lib/contracts';
 import * as RootchainTransactionsModule from '@lib/rootchain/transaction';
@@ -102,7 +101,7 @@ export async function challengeStandardExit ({
 }: Interfaces.IChallengeStandardExit): Promise<Interfaces.ITransactionReceipt> {
   // standardExitId is an extremely large number as it uses the entire int192.
   // It's too big to be represented as a Number, so we convert it to a hex string
-  const exitId = Util.int192toHex(standardExitId.toString());
+  const exitId = Util.int192toHex(standardExitId);
   const { address, contract } = await this.getPaymentExitGame();
 
   const transactionData = ContractsModule.getTxData(
@@ -114,7 +113,7 @@ export async function challengeStandardExit ({
       challengeTx,
       inputIndex,
       challengeTxSig,
-      keccak256(Buffer.from(txOptions.from))
+      keccak256(txOptions.from)
     ]
   );
 

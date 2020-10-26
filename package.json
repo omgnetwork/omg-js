@@ -68,7 +68,7 @@
     "debug": "^4.2.0",
     "eth-sig-util": "^2.5.3",
     "ethereumjs-abi": "^0.6.8",
-    "ethereumjs-util": "^7.0.5",
+    "ethereumjs-util": "6.2.0",
     "https-proxy-agent": "^5.0.0",
     "human-standard-token-abi": "^2.0.0",
     "lodash": "^4.17.20",

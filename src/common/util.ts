@@ -13,6 +13,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License. */
 
+import BN from 'bn.js';
+
 /** Prefix a hex string with 0x */
 export function prefixHex (hex: string): string {
   return hex.startsWith('0x')
@@ -21,7 +23,7 @@ export function prefixHex (hex: string): string {
 }
 
 /** Turn a int192 into a prefixed hex string */
-export function int192toHex (int192: number | string): string {
+export function int192toHex (int192: number | string | BN): string {
   return typeof int192 === 'string'
     ? prefixHex(int192)
     : prefixHex(int192.toString(16));

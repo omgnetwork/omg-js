@@ -85,10 +85,10 @@ describe('challengeExitTest.js', function () {
       await ccHelper.sendAndWait(
         aliceAccount.address,
         bobAccount.address,
-        Number(TRANSFER_AMOUNT),
+        TRANSFER_AMOUNT,
         OmgJS.currency.ETH,
         aliceAccount.privateKey,
-        Number(TRANSFER_AMOUNT)
+        TRANSFER_AMOUNT
       );
 
       console.log(`Transferred ${TRANSFER_AMOUNT} from Alice to Bob`);
@@ -101,7 +101,7 @@ describe('challengeExitTest.js', function () {
       await ccHelper.sendAndWait(
         aliceAccount.address,
         bobAccount.address,
-        Number(TRANSFER_AMOUNT),
+        TRANSFER_AMOUNT,
         OmgJS.currency.ETH,
         aliceAccount.privateKey,
         Number(TRANSFER_AMOUNT) * 2
@@ -124,19 +124,18 @@ describe('challengeExitTest.js', function () {
       const aliceSpentOnGas = await rcHelper.spentOnGas(standardExitReceipt);
 
       // Bob calls watcher/status.get and sees the invalid exit attempt...
-      const invalidExitUtxoPos = omgjs.encodeUtxoPos(aliceDishonestUtxo).toString();
+      const invalidExitUtxoPos = omgjs.encodeUtxoPos(aliceDishonestUtxo);
       const invalidExit = await ccHelper.waitForEvent(
         'byzantine_events',
-        e => e.event === 'invalid_exit' && e.details.utxo_pos.toString() === invalidExitUtxoPos
+        e => e.event === 'invalid_exit' && e.details.utxo_pos.toString() === invalidExitUtxoPos.toString()
       );
 
       // ...and challenges the exit
       const challengeData = await omgjs.getChallengeData(invalidExit.details.utxo_pos);
       assert.containsAllKeys(challengeData, ['input_index', 'exit_id', 'exiting_tx', 'sig', 'txbytes']);
 
-      // NMTODO: failing test here...
       let receipt = await omgjs.challengeStandardExit({
-        standardExitId: challengeData.exit_id.toString(),
+        standardExitId: challengeData.exit_id,
         exitingTx: challengeData.exiting_tx,
         challengeTx: challengeData.txbytes,
         inputIndex: challengeData.input_index,
