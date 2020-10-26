@@ -195,7 +195,6 @@ describe('challengeInFlightExitInputSpentTest.js', function () {
       const unsignInput = omgjs.encodeTransaction({ ...omgjs.decodeTransaction(fundAliceTx.txbytes), signed: false });
       const unsignCarolTx = omgjs.encodeTransaction({ ...carolTxDecoded, signed: false });
 
-      // NMTODO: failing test here
       receipt = await omgjs.challengeInFlightExitNotCanonical({
         inputTx: unsignInput,
         inputUtxoPos: utxoPosOutput,

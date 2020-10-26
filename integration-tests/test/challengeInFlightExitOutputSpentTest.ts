@@ -167,7 +167,6 @@ describe('challengeInFlightExitOutputSpentTest.js', function () {
       await rcHelper.sleep(30000);
       const challengeData = await omgjs.inFlightExitGetOutputChallengeData({ txbytes: exitData.in_flight_tx, outputIndex: 0 });
 
-      // NMTODO: failing test
       const challengeReceipt = await omgjs.challengeInFlightExitOutputSpent({
         inFlightTx: challengeData.in_flight_txbytes,
         inFlightTxInclusionProof: challengeData.in_flight_proof,

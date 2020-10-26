@@ -14,7 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License. */
 
 import { keccak256 } from 'ethereumjs-util';
-import { Buffer } from 'buffer';
 
 import * as ContractsModule from '@lib/contracts';
 import * as RootchainTransactionsModule from '@lib/rootchain/transaction';
@@ -219,7 +218,7 @@ export async function challengeInFlightExitInputSpent ({
       challengingTxWitness,
       inputTx,
       inputUtxoPos.toString(),
-      keccak256(Buffer.from(txOptions.from))
+      keccak256(txOptions.from)
     ]
   );
   return RootchainTransactionsModule.sendTransaction.call(this, {
@@ -254,7 +253,7 @@ export async function challengeInFlightExitOutputSpent ({
       challengingTx,
       challengingTxInputIndex,
       challengingTxWitness,
-      keccak256(Buffer.from(txOptions.from))
+      keccak256(txOptions.from)
     ]
   );
 
