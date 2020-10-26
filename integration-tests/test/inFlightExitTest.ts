@@ -59,24 +59,14 @@ describe('inFlightExitTest.js', function () {
 
       await Promise.all([
         // Give some ETH to Alice on the child chain
-        faucet.fundChildchain(
-          aliceAccount.address,
-          INTIIAL_ALICE_AMOUNT,
-          OmgJS.currency.ETH
-        ),
         // Give some ETH to Bob on the root chain
+        faucet.fundChildchain(aliceAccount.address, INTIIAL_ALICE_AMOUNT, OmgJS.currency.ETH),
         faucet.fundRootchainEth(bobAccount.address, INTIIAL_BOB_RC_AMOUNT)
       ]);
-      // Wait for finality
+
       await Promise.all([
-        ccHelper.waitForBalanceEq(
-          aliceAccount.address,
-          INTIIAL_ALICE_AMOUNT
-        ),
-        rcHelper.waitForEthBalanceEq(
-          bobAccount.address,
-          INTIIAL_BOB_RC_AMOUNT
-        )
+        ccHelper.waitForBalanceEq(aliceAccount.address, INTIIAL_ALICE_AMOUNT),
+        rcHelper.waitForEthBalanceEq(bobAccount.address, INTIIAL_BOB_RC_AMOUNT)
       ]);
     });
 

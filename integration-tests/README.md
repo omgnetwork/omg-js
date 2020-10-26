@@ -17,8 +17,8 @@ npm run mocha test/<filename.ts>
 ```
 
 To run the entire test suite there are 2 options:
-1. The quickest option is to run them in parallel using `npm run parallel-test`.
-2. The slowest option is to run them all in sequence using `npm run sequence-test`
+1. Run them in parallel using `npm run parallel-test`.
+2. Run them in sequence using `npm run sequence-test`
 
 ## Returning Test Funds
 
