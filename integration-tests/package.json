@@ -39,6 +39,7 @@
     "web3-utils": "1.2.2"
   },
   "resolutions": {
-    "elliptic": "6.5.3"
+    "elliptic": "^6.5.3",
+    "bl": "4.0.3"
   }
 }

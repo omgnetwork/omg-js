@@ -19,5 +19,8 @@
     "ts-node": "^9.0.0",
     "web3": "1.2.2",
     "web3-utils": "1.2.2"
+  },
+  "resolutions": {
+    "elliptic": "^6.5.3"
   }
 }

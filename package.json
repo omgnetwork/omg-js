@@ -79,5 +79,8 @@
     "web3-eth-contract": "1.2.2",
     "web3-providers-http": "1.2.2",
     "web3-utils": "1.2.2"
+  },
+  "resolutions": {
+    "elliptic": "^6.5.3"
   }
 }
