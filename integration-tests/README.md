@@ -16,9 +16,10 @@ To run an individual test file run the following:
 npm run mocha test/<filename.ts>
 ```
 
-To run the entire test suite there are 2 options:
-1. Run them in parallel using `npm run parallel-test`.
-2. Run them in sequence using `npm run sequence-test`
+To run a test suite there are a few options:
+- Run all of them in sequence using `npm run sequence-test`
+- Run the baseline suite using `npm run ci-baseline-test`
+- Run the minimum deposit/transfer suite using `npm run ci-min-smoke-test`
 
 ## Returning Test Funds
 
