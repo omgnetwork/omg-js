@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License. */
 
 import { Buffer } from 'buffer';
-import { keccak256 } from 'ethereumjs-util';
+import { keccak256, bufferToHex } from 'ethereumjs-util';
 import { rawEncode } from 'ethereumjs-abi';
 
 import * as Interfaces from '@lib/interfaces';
@@ -122,4 +122,20 @@ export function hashTypedData (
       structHash(typedData.types, typedData.primaryType, typedData.message)
     ])
   );
+}
+
+/** @internal */
+export function hashTypedDataMessage (
+  typedData: Interfaces.ITypedData
+): string {
+  const messageHash = structHash(typedData.types, typedData.primaryType, typedData.message);
+  return bufferToHex(messageHash);
+}
+
+/** @internal */
+export function hashTypedDataDomain (
+  typedData: Interfaces.ITypedData
+): string {
+  const domainHash = structHash(typedData.types, 'EIP712Domain', typedData.domain);
+  return bufferToHex(domainHash);
 }

@@ -779,6 +779,22 @@ class OmgJS {
     return StructHashModule.hashTypedData.call(this, typedData);
   }
 
+  /** Hash typed data message for Ledger */
+  public hashTypedDataMessage (
+    typedData: Interfaces.ITypedData
+  ): string {
+    Validators.validate({ typedData }, Validators.hashTypedDataSchema);
+    return StructHashModule.hashTypedDataMessage.call(this, typedData);
+  }
+  
+  /** Hash typed data domain for Ledger */
+  public hashTypedDataDomain (
+    typedData: Interfaces.ITypedData
+  ): string {
+    Validators.validate({ typedData }, Validators.hashTypedDataSchema);
+    return StructHashModule.hashTypedDataDomain.call(this, typedData);
+  }
+
   /** Get typed data from a transaction body */
   public getTypedData (
     transactionBody: Interfaces.ITransactionBody
