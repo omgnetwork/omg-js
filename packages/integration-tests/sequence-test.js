@@ -1,6 +1,7 @@
 // add new test files to the list below
 // mocha will run these in order
 
+require('./test/mergeUtxoTest')
 require('./test/CORSHeaderTest')
 require('./test/metadataTest')
 require('./test/amountTypes')
@@ -20,4 +21,3 @@ require('./test/inFlightExitChallengeTest')
 require('./test/inFlightExitChallengeResponseTest')
 require('./test/challengeInFlightExitInputSpentTest')
 require('./test/challengeInFlightExitOutputSpentTest')
-require('./test/mergeUtxoTest')
