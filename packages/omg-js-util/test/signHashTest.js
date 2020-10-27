@@ -1,4 +1,4 @@
-const { transaction, hashTypedDataMessage, getDomainSeperatorHash } = require('../src')
+const { transaction, hashTypedDataMessage, hashTypedDataDomain } = require('../src')
 const assert = require('chai').assert
 
 const verifyingContract = '0xecda6da8fddd416837bdcf38d6e17a4a898534eb'
@@ -40,8 +40,8 @@ describe('hashTypedDataMessage', function () {
   })
 })
 
-describe('getDomainSeperatorHash', function () {
+describe('hashTypedDataDomain', function () {
   it('should get domain seperator hash correctly', function () {
-    assert.equal(getDomainSeperatorHash(typedData), '0x6c650db4cf8537eca556551a536134f12df128b0628180c031ec65cdb08e6295')
+    assert.equal(hashTypedDataDomain(typedData), '0x6c650db4cf8537eca556551a536134f12df128b0628180c031ec65cdb08e6295')
   })
 })

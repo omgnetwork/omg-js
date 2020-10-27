@@ -110,7 +110,7 @@ function hashTypedDataMessage (typedData) {
   return ethUtil.bufferToHex(messageHash)
 }
 
-function getDomainSeperatorHash (typedData) {
+function hashTypedDataDomain (typedData) {
   const domainHash = structHash(typedData.types, 'EIP712Domain', typedData.domain)
   return ethUtil.bufferToHex(domainHash)
 }
@@ -118,5 +118,5 @@ function getDomainSeperatorHash (typedData) {
 module.exports = {
   getToSignHash,
   hashTypedDataMessage,
-  getDomainSeperatorHash
+  hashTypedDataDomain
 }
