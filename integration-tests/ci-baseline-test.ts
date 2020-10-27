@@ -13,6 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License. */
 
+import './test/mergeUtxoTest';
 import './test/metadataTest';
 import './test/amountTypes';
 import './test/decodeTxBytesTest';
@@ -22,4 +23,3 @@ import './test/createTransactionTest';
 import './test/createSubmitTypedTransactionTest';
 import './test/getExitQueueTest';
 import './test/exitWithoutWatcherTest';
-import './test/mergeUtxoTest';
