@@ -13,6 +13,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License. */
 
+const { getToSignHash, hashTypedDataMessage, getDomainSeperatorHash } = require('./signHash')
+
 module.exports = {
   transaction: require('./transaction'),
   sign: require('./sign'),
@@ -22,5 +24,8 @@ module.exports = {
   getErc20Balance: require('./getErc20Balance'),
   waitForRootchainTransaction: require('./waitForRootchainTransaction'),
   waitForChildchainBalance: require('./waitForChildchainBalance'),
-  utxo: require('./utxo')
+  utxo: require('./utxo'),
+  getToSignHash,
+  hashTypedDataMessage,
+  getDomainSeperatorHash
 }

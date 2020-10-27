@@ -105,4 +105,18 @@ function getToSignHash (typedData) {
   )
 }
 
-module.exports = getToSignHash
+function hashTypedDataMessage (typedData) {
+  const messageHash = structHash(typedData.types, typedData.primaryType, typedData.message)
+  return ethUtil.bufferToHex(messageHash)
+}
+
+function getDomainSeperatorHash (typedData) {
+  const domainHash = structHash(typedData.types, 'EIP712Domain', typedData.domain)
+  return ethUtil.bufferToHex(domainHash)
+}
+
+module.exports = {
+  getToSignHash,
+  hashTypedDataMessage,
+  getDomainSeperatorHash
+}
