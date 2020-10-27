@@ -50,6 +50,7 @@
     "eslint": "^6.6.0",
     "eslint-plugin-mocha": "^8.0.0",
     "mocha": "^5.2.0",
+    "sinon": "^9.2.0",
     "truffle": "^4.1.14",
     "ts-mocha": "^7.0.0",
     "ts-node": "^9.0.0",

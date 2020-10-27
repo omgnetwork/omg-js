@@ -13,6 +13,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License. */
 
+import BN from 'bn.js';
+
 import * as Constants from '@lib/common/constants';
 import * as Interfaces from '@lib/interfaces';
 import * as Transporter from '@lib/transport';
@@ -50,11 +52,16 @@ export async function createTransaction ({
     ? Encoders.encodeMetadata(metadata)
     : Constants.NULL_METADATA;
 
+  const _payments = payments.map((payment) => ({
+    ...payment,
+    amount: new BN(payment.amount.toString())
+  }));
+
   return Transporter.post({
     url: `${this.watcherUrl}/transaction.create`,
     body: {
       owner,
-      payments,
+      payments: _payments,
       fee: { currency: feeCurrency },
       metadata: _metadata
     },

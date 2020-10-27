@@ -17,8 +17,8 @@ import { assert, should, use } from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import BN from 'bn.js';
 
-import * as TxBuilder from '@lib/transaction/txBuilder';
-import * as Constants from '@lib/common/constants';
+import * as TxBuilder from '../txBuilder';
+import * as Constants from '../../common/constants';
 
 should();
 use(chaiAsPromised);

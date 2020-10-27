@@ -16,12 +16,13 @@ limitations under the License. */
 import { assert } from 'chai';
 import * as rlp from 'rlp';
 
-import * as Interfaces from '@lib/interfaces';
-import * as Constants from '@lib/common/constants';
-import * as Encoders from '@lib/transaction/encoders';
-import * as TypedData from '@lib/transaction/typedData';
-import * as StructHash from '@lib/transaction/structHash';
-import * as Sign from '@lib/transaction/sign';
+import * as Interfaces from '../../interfaces';
+import * as Constants from '../../common/constants';
+
+import * as Encoders from '../encoders';
+import * as TypedData from '../typedData';
+import * as StructHash from '../structHash';
+import * as Sign from '../sign';
 
 describe('transaction/encoders test', function () {
   describe('Decode transaction tests', function () {
