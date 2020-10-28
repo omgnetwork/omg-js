@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset='utf-8'>
-  <title>omg-js 4.0.1-1.0.0 | Documentation</title>
+  <title>omg-js 4.1.0-1.0.4 | Documentation</title>
   <meta name='description' content='JavaScript Library to interact with OMG Network'>
   <meta name='viewport' content='width=device-width,initial-scale=1'>
   <link href='assets/bass.css' rel='stylesheet'>
@@ -15,7 +15,7 @@
       <div id='split-left' class='overflow-auto fs0 height-viewport-100'>
         <div class='py1 px2'>
           <h3 class='mb0 no-anchor'>omg-js</h3>
-          <div class='mb1'><code>4.0.1-1.0.0</code></div>
+          <div class='mb1'><code>4.1.0-1.0.4</code></div>
           <input
             placeholder='Filter'
             id='filter-input'
@@ -527,6 +527,16 @@
                   
                   
                 </div>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#getdeposits'
+                  class="">
+                  getDeposits
+                  
+                </a>
                 
                 </li>
               
@@ -2328,7 +2338,7 @@ Should be called periodically to see if there are any byzantine_events to be act
                 <tr>
   <td class='break-word'><span class='code bold'>config.watcherUrl</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
   </td>
-  <td class='break-word'><span>the url of the watcher server (running in security-critical and informational mode)
+  <td class='break-word'><span>the url of the watcher-info server (running in both security-critical and informational mode)
 </span></td>
 </tr>
 
@@ -2339,6 +2349,16 @@ Should be called periodically to see if there are any byzantine_events to be act
   </td>
   <td class='break-word'><span><em>optional</em>
  the proxy url for requests made to the watcher server
+</span></td>
+</tr>
+
+
+              
+                <tr>
+  <td class='break-word'><span class='code bold'>config.watcherSecurityUrl</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
+  </td>
+  <td class='break-word'><span><em>optional</em>
+ the url of the watcher security server. If this is set, all security related endpoints would be using from this url instead.
 </span></td>
 </tr>
 
@@ -8235,6 +8255,119 @@ This method decodes a string that was encoded with encodeMetadata().</p>
     </div>
   
 </div>
+
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+          <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='getdeposits'>
+      getDeposits
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>Get deposits</p>
+
+    <div class='pre p1 fill-light mt0'>getDeposits(filters: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;DepositInfo></div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>filters</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>)</code>
+	    filter object
+
+          </div>
+          
+          <table class='mt1 mb2 fixed-table h5 col-12'>
+            <colgroup>
+              <col width='30%' />
+              <col width='70%' />
+            </colgroup>
+            <thead>
+              <tr class='bold fill-light'>
+                <th>Name</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody class='mt1'>
+              
+                <tr>
+  <td class='break-word'><span class='code bold'>filters.address</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>?</code>
+  </td>
+  <td class='break-word'><span>address to filter by
+</span></td>
+</tr>
+
+
+              
+                <tr>
+  <td class='break-word'><span class='code bold'>filters.limit</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>?</code>
+  </td>
+  <td class='break-word'><span>max number of transactions to return
+</span></td>
+</tr>
+
+
+              
+                <tr>
+  <td class='break-word'><span class='code bold'>filters.page</span> <code class='quiet'><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>?</code>
+  </td>
+  <td class='break-word'><span>page of paginated request
+</span></td>
+</tr>
+
+
+              
+            </tbody>
+          </table>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;DepositInfo></code>:
+        promise that resolves with an array of confirmed deposits
+
+      
+    
+  
+
+  
+
+  
 
   
 
