@@ -20,7 +20,8 @@
     "build-docs": "typedoc",
     "lint": "eslint . --ext .ts,.js",
     "test": "ts-mocha --paths ./src/**/*.test.ts",
-    "audit-check": "audit-ci --moderate"
+    "audit-check": "audit-ci --moderate",
+    "release": "npm run compile && npm run lint && npm run audit-check && np"
   },
   "author": "OMG Network",
   "contributors": [
@@ -54,6 +55,7 @@
     "eslint": "^6.6.0",
     "eslint-plugin-mocha": "^8.0.0",
     "mocha": "^5.2.0",
+    "np": "^6.5.0",
     "sinon": "^9.2.0",
     "truffle": "^4.1.14",
     "ts-mocha": "^7.0.0",

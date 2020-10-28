@@ -1,0 +1,7 @@
+{
+  "anyBranch": false,
+  "branch": "master",
+  "yarn": false,
+  "releaseDraft": true,
+  "testScript": "test"
+}
