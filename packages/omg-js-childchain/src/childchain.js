@@ -37,6 +37,7 @@ const Joi = require('@hapi/joi')
 const rpcApi = require('./rpc/rpcApi')
 const rlp = require('rlp')
 const { transaction, sign, hexPrefix, utxo } = require('@omisego/omg-js-util')
+const BN = require('bn.js')
 global.Buffer = global.Buffer || require('buffer').Buffer
 
 class ChildChain {
@@ -213,11 +214,16 @@ class ChildChain {
       ? transaction.encodeMetadata(metadata)
       : transaction.NULL_METADATA
 
+    const _payments = payments.map((payment) => ({
+      ...payment,
+      amount: new BN(payment.amount)
+    }))
+
     return rpcApi.post({
       url: `${this.watcherUrl}/transaction.create`,
       body: {
         owner,
-        payments,
+        payments: _payments,
         fee,
         metadata: _metadata
       },
@@ -458,7 +464,7 @@ class ChildChain {
    * @method inFlightExitGetCompetitor
    * @param {string} txbytes the hex-encoded transaction
    * @return {Promise<Object>} promise that resolves with a competitor to the in-flight transaction
-  */
+   */
   async inFlightExitGetCompetitor (txbytes) {
     Joi.assert(txbytes, Joi.string().required())
     return rpcApi.post({

@@ -29,6 +29,7 @@
     "truffle": "^4.1.14"
   },
   "resolutions": {
-    "elliptic": "6.5.3"
+    "elliptic": "6.5.3",
+    "bl": "4.0.3"
   }
 }
