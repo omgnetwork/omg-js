@@ -20,8 +20,8 @@ const numberToBN = require('number-to-bn')
 const { uniq } = require('lodash')
 const rlp = require('rlp')
 const typedData = require('./typedData')
-const getToSignHash = require('./signHash')
 const hexPrefix = require('./hexPrefix')
+const { getToSignHash } = require('./signHash')
 const { NULL_ADDRESS } = require('./address.js')
 const {
   encodeDepositSchema,
