@@ -1,7 +1,9 @@
 {
   "anyBranch": false,
   "branch": "master",
+  "cleanup": false,
   "yarn": false,
   "releaseDraft": true,
-  "testScript": "test"
+  "testScript": "test",
+  "tag": "latest"
 }
