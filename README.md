@@ -14,7 +14,7 @@ This is a Javascript/Typescript library that allows you to interact with OMG Net
 
 ## Compatibility
 
-`omg-js` follows a modified semver with the first part referring to its own library versioning and the second part referring to its compatible [`elixir-omg`](https://github.com/omgnetwork/elixir-omg) version.
+`omg-js` follows a modified semver with the first part referring to its own library versioning and the second part referring to its compatible [`elixir-omg`](https://github.com/omgnetwork/elixir-omg/releases) version.
 
 ```
 ie. v1.0.3-2.0.1
@@ -59,7 +59,7 @@ npm install @omisego/omg-js
 
 ## Usage
 
-1. Instantiate an omgjs instance passing configuration values and a Web3 provider
+1. Instantiate an omgjs instance passing configuration values and a Web3 provider.
 ```js
 import Web3 from 'web3';
 import OmgJS from '@omisego/omg-js';
@@ -92,7 +92,7 @@ console.log(`Deposit success! ${depositResult.transactionHash}`);
 
 ## Examples
 
-You can find examples and instructions on how to run them in the [`/examples`](./examples) folder.
+You can find examples on common library methods and instructions on how to run them in the [`/examples`](./examples) folder.
 
 ## Integration Tests
 

@@ -13,6 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License. */
 
+import './test/mergeUtxoTest';
 import './test/CORSHeaderTest';
 import './test/metadataTest';
 import './test/amountTypes';
@@ -32,4 +33,3 @@ import './test/inFlightExitChallengeTest';
 import './test/inFlightExitChallengeResponseTest';
 import './test/challengeInFlightExitInputSpentTest';
 import './test/challengeInFlightExitOutputSpentTest';
-import './test/mergeUtxoTest';
