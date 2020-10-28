@@ -68,7 +68,7 @@
 				<p><a href="http://www.typescriptlang.org/"><img src="https://img.shields.io/badge/%3C%2F%3E-TypeScript-%230074c1.svg" alt="TypeScript"></a>
 				<a href="https://opensource.org/licenses/Apache-2.0"><img src="https://img.shields.io/badge/License-Apache%202.0-blue.svg" alt="License"></a></p>
 				<p><a href="https://circleci.com/gh/omgnetwork/omg-js/tree/master"><img src="https://circleci.com/gh/omgnetwork/omg-js/tree/master.svg?style=svg" alt="CircleCI"></a></p>
-				<p>This is a Javascript library that allows you to interact with OMG Network&#39;s MoreVP implementation of Plasma. It provides functions to:</p>
+				<p>This is a Javascript/Typescript library that allows you to interact with OMG Network&#39;s MoreVP implementation of Plasma. It provides functions to:</p>
 				<ol>
 					<li>Deposit (Eth/ERC20) from the Rootchain into the Childchain.</li>
 					<li>Transact on the Childchain.</li>
@@ -99,13 +99,15 @@
 				<a href="#react-native" id="react-native" style="color: inherit; text-decoration: none;">
 					<h4>React Native</h4>
 				</a>
-				<p><code>omg-js</code> can easily be integrated with React Native projects.
-				First, add this postinstall script to your project&#39;s <code>package.json</code></p>
+				<p><code>omg-js</code> can easily be integrated with React Native projects. Only some Node specific modules will need to be pollyfilled using the process below.</p>
+				<p>First install <code>rn-nodeify</code> to your project</p>
+				<pre><code>npm <span class="hljs-keyword">install</span> rn-nodeify</code></pre>
+				<p>Then, add this postinstall script to your project&#39;s <code>package.json</code></p>
 				<pre><code><span class="hljs-string">&quot;scripts&quot;</span>: {
-    <span class="hljs-string">&quot;postinstall&quot;</span>: <span class="hljs-string">&quot;omgjs-nodeify&quot;</span>
+    <span class="hljs-string">&quot;postinstall&quot;</span>: <span class="hljs-string">&quot;omgjs-polyfill&quot;</span>
 }</code></pre>
-				<p>Then install the react native compatible library.</p>
-				<pre><code><span class="hljs-built_in">npm</span> install @omisego/react-<span class="hljs-keyword">native</span>-omg-js</code></pre>
+				<p>Then install the omg-js library</p>
+				<pre><code><span class="hljs-built_in">npm</span> install @omisego/omg-js</code></pre>
 				<a href="#api-documentation" id="api-documentation" style="color: inherit; text-decoration: none;">
 					<h2>API Documentation</h2>
 				</a>

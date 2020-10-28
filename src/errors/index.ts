@@ -16,6 +16,7 @@ limitations under the License. */
 import * as Interfaces from '@lib/interfaces';
 
 export class RpcError extends Error {
+  public name = 'RpcError';
   public code;
   constructor ({ code, description, messages }: Interfaces.IRpcError) {
     super(description || code + (messages ? `, ${messages.code}` : ''));
@@ -25,19 +26,6 @@ export class RpcError extends Error {
 
 export class ValidationError extends Error {
   public name = 'ValidationError';
-  public message: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  public stack: any;
-
-  public constructor (args: Interfaces.IError) {
-    super(args.message);
-    this.message = args.message;
-    this.stack = args.stack;
-  }
-}
-
-export class OmgJSError extends Error {
-  public name = 'OmgJSError';
   public message: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public stack: any;
