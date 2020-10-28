@@ -4,7 +4,7 @@ version: 2.1
 parameters:
   elixir-omg-sha:
     type: string
-    default: "d950ebe"
+    default: "5f599c2"
 
 workflows:
   version: 2
