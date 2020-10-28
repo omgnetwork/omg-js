@@ -57,14 +57,43 @@ Then install the omg-js library
 npm install @omisego/omg-js
 ```
 
-## API Documentation
+## Usage
+
+1. Instantiate an omgjs instance passing configuration values and a Web3 provider
+```js
+import Web3 from 'web3';
+import OmgJS from '@omisego/omg-js';
+
+const web3Provider = new Web3.providers.HttpProvider(eth_node);
+const omgjs = new OmgJS({
+  plasmaContractAddress: plasmaframework_contract_address,
+  watcherUrl: watcher_url,
+  web3Provider
+});
+```
+
+2. Call a method on the instance. If you're using Typescript, you can access any of the library interfaces.
+```js
+import { ITransactionReceipt } from '@omisego/omg-js';
+
+const depositResult: ITransactionReceipt = await omgjs.deposit({
+  amount: 1,
+  txOptions: { from, privateKey }
+});
+
+console.log(`Deposit success! ${depositResult.transactionHash}`);
+```
+
+3. Check out the [documentation](https://docs.omg.network/omg-js/) or [examples](./examples) for more information.
+
+## Documentation
 
 [Documentation for omg-js ](https://docs.omg.network/omg-js/)
 
 ## Examples
 
-You can find examples and instructions on how to run them in the `/examples` folder.
+You can find examples and instructions on how to run them in the [`/examples`](./examples) folder.
 
 ## Integration Tests
 
-You can find instructions on running the integrations tests in the `/integration-tests` folder.
+You can find instructions on running the integrations tests in the [`/integration-tests`](./integration-tests) folder.
