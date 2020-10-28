@@ -14,7 +14,7 @@ This is a Javascript/Typescript library that allows you to interact with OMG Net
 
 ## Compatibility
 
-`omg-js` follows a modified semver with the first part referring to its own library versioning and the second part referring to its compatible `elixir-omg` version.
+`omg-js` follows a modified semver with the first part referring to its own library versioning and the second part referring to its compatible [`elixir-omg`](https://github.com/omgnetwork/elixir-omg) version.
 
 ```
 ie. v1.0.3-2.0.1
