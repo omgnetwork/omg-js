@@ -5,7 +5,7 @@
 
 [![CircleCI](https://circleci.com/gh/omgnetwork/omg-js/tree/master.svg?style=svg)](https://circleci.com/gh/omgnetwork/omg-js/tree/master)
 
-This is a Javascript library that allows you to interact with OMG Network's MoreVP implementation of Plasma. It provides functions to:
+This is a Javascript/Typescript library that allows you to interact with OMG Network's MoreVP implementation of Plasma. It provides functions to:
 
 1. Deposit (Eth/ERC20) from the Rootchain into the Childchain.
 2. Transact on the Childchain.
@@ -38,17 +38,23 @@ You can add `omg-js` to a website quickly. Just add this script tag.
 ```
 
 #### React Native
-`omg-js` can easily be integrated with React Native projects.
-First, add this postinstall script to your project's `package.json`
+`omg-js` can easily be integrated with React Native projects. Only some Node specific modules will need to be pollyfilled using the process below.
+
+First install `rn-nodeify` to your project
+```
+npm install rn-nodeify
+```
+
+Then, add this postinstall script to your project's `package.json`
 ```
 "scripts": {
-    "postinstall": "omgjs-nodeify"
+    "postinstall": "omgjs-polyfill"
 }
 ```
 
-Then install the react native compatible library.
+Then install the omg-js library
 ```
-npm install @omisego/react-native-omg-js
+npm install @omisego/omg-js
 ```
 
 ## API Documentation

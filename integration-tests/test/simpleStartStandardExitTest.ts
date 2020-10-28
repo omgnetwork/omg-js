@@ -39,7 +39,7 @@ const omgjs = new OmgJS({
   web3Provider
 });
 
-// NMTODO: run tests with watchersecurity url
+// NMTODO: run these tests with both info and securityurl
 
 describe('simpleStartStandardExitTest.js', function () {
   before(async function () {

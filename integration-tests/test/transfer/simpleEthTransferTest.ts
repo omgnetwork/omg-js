@@ -40,7 +40,7 @@ const omgjs = new OmgJS({
   web3Provider
 });
 
-// NMTODO: run these tests with watchersecurityurl instead
+// NMTODO: run these tests with both info and securityurl
 
 describe('simpleEthTransferTest.js', function () {
   let feeEth;

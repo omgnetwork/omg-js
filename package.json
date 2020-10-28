@@ -4,11 +4,15 @@
   "description": "JavaScript Library to interact with the OMG Network",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "bin": {
+    "omgjs-polyfill": "./polyfill.sh"
+  },
   "engines": {
     "node": "12.16.1"
   },
   "files": [
-    "/dist"
+    "/dist",
+    "polyfill.sh"
   ],
   "scripts": {
     "preinstall": "npx npm-force-resolutions",
