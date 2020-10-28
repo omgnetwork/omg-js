@@ -1,6 +1,6 @@
 {
   "name": "@omisego/react-native-omg-js",
-  "version": "4.0.1-1.0.0",
+  "version": "4.1.0-1.0.4",
   "description": "omg-js for React Native",
   "bin": {
     "omgjs-nodeify": "./hack.sh"
@@ -31,9 +31,9 @@
     "url": "https://github.com/omisego/omg-js/issues"
   },
   "dependencies": {
-    "@omisego/omg-js-childchain": "4.0.1-1.0.0",
-    "@omisego/omg-js-rootchain": "4.0.1-1.0.0",
-    "@omisego/omg-js-util": "4.0.1-1.0.0",
+    "@omisego/omg-js-childchain": "4.1.0-1.0.4",
+    "@omisego/omg-js-rootchain": "4.1.0-1.0.4",
+    "@omisego/omg-js-util": "4.1.0-1.0.4",
     "@tradle/react-native-http": "^2.0.1",
     "assert": "^1.5.0",
     "browserify-zlib": "^0.1.4",
