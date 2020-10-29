@@ -83,11 +83,12 @@ commands:
             nvm install v12.16.1
             nvm alias default v12.16.1
       - run:
-          name: Install Dependencies
+          name: Install dependencies and compile library
           command: |
             export NVM_DIR="/opt/circleci/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
             npm install
+            npm run compile
             cd ~/project/integration-tests
             npm install
       - run:
