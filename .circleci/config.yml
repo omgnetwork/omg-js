@@ -178,6 +178,7 @@ jobs:
       - run:
           name: Run All Integration Tests
           command: |
+            cd ~/project/integration-tests
             npm run sequence-test
           environment:
             ETH_NODE: http://localhost:8545
@@ -202,6 +203,7 @@ jobs:
       - run:
           name: Run minimum Smoke Integration Tests
           command: |
+            cd ~/project/integration-tests
             npm run ci-min-smoke-test
           environment:
             ETH_NODE: http://localhost:8545
@@ -225,6 +227,7 @@ jobs:
       - run:
           name: Run Baseline Integration Tests
           command: |
+            cd ~/project/integration-tests
             npm run ci-baseline-test
           environment:
             ETH_NODE: http://localhost:8545
@@ -248,6 +251,7 @@ jobs:
       - run:
           name: Run IFE Integration Tests
           command: |
+            cd ~/project/integration-tests
             npm run ci-ife-test
           environment:
             ETH_NODE: http://localhost:8545
