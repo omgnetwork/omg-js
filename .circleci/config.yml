@@ -91,32 +91,32 @@ commands:
       - run:
           name: Setup elixir-omg
           command: |
-            cd ~/project/integration-tests
+            cd integration-tests
             wget https://raw.githubusercontent.com/omisego/elixir-omg/<< pipeline.parameters.elixir-omg-sha >>/Makefile
             wget https://raw.githubusercontent.com/omisego/elixir-omg/<< pipeline.parameters.elixir-omg-sha >>/snapshots.env
             wget https://raw.githubusercontent.com/omisego/elixir-omg/<< pipeline.parameters.elixir-omg-sha >>/contract_addresses_template.env
             mkdir -p priv/dev-artifacts
             mkdir -p data
-            cd ~/project/integration-tests/priv/dev-artifacts
+            cd integration-tests/priv/dev-artifacts
             wget https://raw.githubusercontent.com/omisego/elixir-omg/<< pipeline.parameters.elixir-omg-sha >>/priv/dev-artifacts/fee_specs.dev.json
-            cd ~/project/integration-tests
+            cd integration-tests
             mkdir -p bin
             cd bin
             wget https://raw.githubusercontent.com/omisego/elixir-omg/<< pipeline.parameters.elixir-omg-sha >>/bin/generate-localchain-env
-            cd ~/project/integration-tests
+            cd integration-tests
             SNAPSHOT=SNAPSHOT_MIX_EXIT_PERIOD_SECONDS_120 make init-contracts
       - run:
           name: Start elixir-omg
           background: true
           command: |
-            cd ~/project/integration-tests
+            cd integration-tests
             ELIXIR_OMG_SHA=<< pipeline.parameters.elixir-omg-sha >> docker-compose up || (START_RESULT=$?; docker-compose logs; exit $START_RESULT;)
       - run:
           name: Setup Integration Test with ERC20
           command: |
             export NVM_DIR="/opt/circleci/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-            cd ~/project/integration-tests
+            cd integration-tests
             wget --retry-connrefused --waitretry=10 --read-timeout=10 --timeout=10 -t 20 http://localhost:7534/status.get
             npm run deploy-test-erc20
 
@@ -137,6 +137,10 @@ jobs:
           name: integration-test
           command: |
             cd integration-tests && npm install && npm run audit-check
+      - run:
+          name: examples
+          command: |
+            cd examples && npm install && npm run audit-check
 
   unit-test:
     docker:
