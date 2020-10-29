@@ -57,7 +57,6 @@
     "mocha": "^5.2.0",
     "np": "^6.5.0",
     "sinon": "^9.2.0",
-    "truffle": "^4.1.17",
     "ts-mocha": "^7.0.0",
     "ts-node": "^9.0.0",
     "tsconfig-paths": "^3.9.0",

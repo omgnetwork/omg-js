@@ -88,6 +88,8 @@ commands:
             export NVM_DIR="/opt/circleci/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
             npm install
+            cd ~/project/integration-tests
+            npm install
       - run:
           name: Setup elixir-omg
           command: |
