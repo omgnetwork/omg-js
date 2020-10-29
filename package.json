@@ -1,6 +1,6 @@
 {
   "name": "omg-js",
-  "version": "4.0.1-1.0.0",
+  "version": "4.1.0-1.0.4",
   "description": "JavaScript Library to interact with the OMG Network",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
