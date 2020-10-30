@@ -75,7 +75,7 @@ class RootChain {
 
   async getErc20Vault () {
     if (!this.erc20Vault) {
-      const address = await this.plasmaContract.methods.vaults(ERC20_VAULT_ID).call()
+      const address = await this.plasmaContract.methods.vaults(ERC20_VAULT_ID).call({ from: this.plasmaContractAddress })
       const contract = getContract(this.web3, erc20VaultAbi.abi, address)
       this.erc20Vault = { contract, address }
     }
@@ -84,7 +84,7 @@ class RootChain {
 
   async getEthVault () {
     if (!this.ethVault) {
-      const address = await this.plasmaContract.methods.vaults(ETH_VAULT_ID).call()
+      const address = await this.plasmaContract.methods.vaults(ETH_VAULT_ID).call({ from: this.plasmaContractAddress })
       const contract = getContract(this.web3, ethVaultAbi.abi, address)
       this.ethVault = { contract, address }
     }
@@ -93,7 +93,7 @@ class RootChain {
 
   async getPaymentExitGame () {
     if (!this.paymentExitGame) {
-      const address = await this.plasmaContract.methods.exitGames(PAYMENT_TYPE).call()
+      const address = await this.plasmaContract.methods.exitGames(PAYMENT_TYPE).call({ from: this.plasmaContractAddress })
       const contract = getContract(this.web3, paymentExitGameAbi.abi, address)
 
       const bondSizes = await Promise.all([
@@ -136,7 +136,7 @@ class RootChain {
     const bufferSeconds = 5
     const retryInterval = 5000
 
-    const _minExitPeriodSeconds = await this.plasmaContract.methods.minExitPeriod().call()
+    const _minExitPeriodSeconds = await this.plasmaContract.methods.minExitPeriod().call({ from: this.plasmaContractAddress })
     const minExitPeriodSeconds = Number(_minExitPeriodSeconds)
 
     const exitBlock = await this.web3.eth.getBlock(_exitRequestBlockNumber)
@@ -154,7 +154,7 @@ class RootChain {
       }
     }
 
-    const submissionBlock = await this.plasmaContract.methods.blocks(_submissionBlockNumber).call()
+    const submissionBlock = await this.plasmaContract.methods.blocks(_submissionBlockNumber).call({ from: this.plasmaContractAddress })
 
     let scheduledFinalizationTime
     if (_submissionBlockNumber % 1000 !== 0) {
@@ -192,9 +192,9 @@ class RootChain {
       { t: 'uint256', v: vaultId },
       { t: 'address', v: token }
     )
-    const address = await this.plasmaContract.methods.exitsQueues(hashed).call()
+    const address = await this.plasmaContract.methods.exitsQueues(hashed).call({ from: this.plasmaContractAddress })
     const contract = getContract(this.web3, priorityQueueAbi.abi, address)
-    const rawExitQueue = await contract.methods.heapList().call()
+    const rawExitQueue = await contract.methods.heapList().call({ from: this.plasmaContractAddress })
 
     if (rawExitQueue && rawExitQueue.length) {
       // remove the first element since it is always 0 (because heap lists start from index 1)
@@ -305,7 +305,7 @@ class RootChain {
   async getStandardExitId ({ txBytes, utxoPos, isDeposit }) {
     Joi.assert({ txBytes, utxoPos, isDeposit }, getStandardExitIdSchema)
     const { contract } = await this.getPaymentExitGame()
-    return contract.methods.getStandardExitId(isDeposit, txBytes, utxoPos.toString()).call()
+    return contract.methods.getStandardExitId(isDeposit, txBytes, utxoPos.toString()).call({ from: this.plasmaContractAddress })
   }
 
   /**
@@ -319,7 +319,7 @@ class RootChain {
   async getInFlightExitId ({ txBytes }) {
     Joi.assert({ txBytes }, getInFlightExitIdSchema)
     const { contract } = await this.getPaymentExitGame()
-    return contract.methods.getInFlightExitId(txBytes).call()
+    return contract.methods.getInFlightExitId(txBytes).call({ from: this.plasmaContractAddress })
   }
 
   /**
@@ -333,7 +333,7 @@ class RootChain {
   async getInFlightExitData ({ exitIds }) {
     Joi.assert({ exitIds }, getInFlightExitDataSchema)
     const { contract } = await this.getPaymentExitGame()
-    return contract.methods.inFlightExits(exitIds).call()
+    return contract.methods.inFlightExits(exitIds).call({ from: this.plasmaContractAddress })
   }
 
   /**
@@ -517,7 +517,7 @@ class RootChain {
   hasToken (token) {
     Joi.assert(token, hasTokenSchema)
     const vaultId = token === transaction.ETH_CURRENCY ? 1 : 2
-    return this.plasmaContract.methods.hasExitQueue(vaultId, token).call()
+    return this.plasmaContract.methods.hasExitQueue(vaultId, token).call({ from: this.plasmaContractAddress })
   }
 
   /**
