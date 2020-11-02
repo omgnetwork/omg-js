@@ -21,7 +21,7 @@ function wait (ms) {
 
 async function waitForChallengePeriodToEnd (rootChain) {
   const minExitPeriod =
-    (await rootChain.plasmaContract.methods.minExitPeriod().call()) * 1000
+    (await rootChain.plasmaContract.methods.minExitPeriod().call({ from: rootChain.plasmaContractAddress })) * 1000
   const waitMs = Number(minExitPeriod) * 2
 
   await wait(waitMs)
