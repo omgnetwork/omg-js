@@ -12,16 +12,20 @@
   },
   "files": [
     "/dist",
-    "polyfill.sh"
+    "polyfill.sh",
+    "postinstall.js"
   ],
+  "browser": "dist/omg-js.min.js",
   "scripts": {
     "preinstall": "npx npm-force-resolutions",
-    "compile": "ttsc",
-    "build-docs": "typedoc",
+    "postinstall": "node postinstall.js",
+    "build": "ttsc && npm run build:browser",
+    "build:browser": "rollup -c",
+    "build:docs": "typedoc",
     "lint": "eslint . --ext .ts,.js",
     "test": "ts-mocha --paths ./src/**/*.test.ts",
     "audit-check": "audit-ci --moderate",
-    "release": "npm run compile && npm run lint && npm run audit-check && np"
+    "release": "npm run build && npm run lint && npm run audit-check && np"
   },
   "author": "OMG Network",
   "contributors": [
@@ -33,12 +37,15 @@
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/omisego/omg-js.git"
+    "url": "https://github.com/omgnetwork/omg-js.git"
   },
   "bugs": {
-    "url": "https://github.com/omisego/omg-js/issues"
+    "url": "https://github.com/omgnetwork/omg-js/issues"
   },
   "devDependencies": {
+    "@rollup/plugin-commonjs": "^16.0.0",
+    "@rollup/plugin-json": "^4.1.0",
+    "@rollup/plugin-node-resolve": "^10.0.0",
     "@types/bn.js": "^4.11.6",
     "@types/chai": "^4.2.14",
     "@types/chai-as-promised": "^7.1.3",
@@ -56,6 +63,8 @@
     "eslint-plugin-mocha": "^8.0.0",
     "mocha": "^5.2.0",
     "np": "^6.5.0",
+    "rollup": "^2.33.2",
+    "rollup-plugin-terser": "^7.0.2",
     "sinon": "^9.2.0",
     "ts-mocha": "^7.0.0",
     "ts-node": "^9.0.0",

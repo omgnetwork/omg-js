@@ -7,7 +7,7 @@ If you want to run the ERC20 examples, make sure the token address is recorded i
 
 To run the examples:
 - `npm install` from root of `omg-js`.
-- `npm run compile` from root of `omg-js`.
+- `npm run build` from root of `omg-js`.
 - `npm install` from `/examples` directory.
 - Create `.env` file inside the root of the `/examples` directory with the appropriate values (see `/examples/.env.example` for example values)
 

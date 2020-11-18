@@ -88,7 +88,7 @@ commands:
             export NVM_DIR="/opt/circleci/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
             npm install
-            npm run compile
+            npm run build
             cd ~/project/integration-tests
             npm install
       - run:
@@ -162,13 +162,13 @@ jobs:
           command: npm run lint
       - run:
           name: Run Compiler
-          command: npm run compile
+          command: npm run build
       - run:
           name: Run Unit Tests
           command: npm run test
       - run:
           name: Run Build Docs
-          command: npm run build-docs
+          command: npm run build:docs
 
   full-integration-test:
     machine:
