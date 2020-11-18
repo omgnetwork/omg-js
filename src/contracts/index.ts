@@ -26,7 +26,9 @@ import PriorityQueueContract from '@lib/contracts/abi/PriorityQueue.json';
 
 /** @internal */
 export async function getErc20Vault (): Promise<Interfaces.IVault> {
-  const address: string = await this.plasmaContract.methods.vaults(Constants.ERC20_VAULT_ID).call();
+  const address: string = await this.plasmaContract.methods
+    .vaults(Constants.ERC20_VAULT_ID)
+    .call({ from: this.plasmaContractAddress });
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const contract: Contract = new this.web3Instance.eth.Contract((Erc20VaultContract as any).abi, address);
   return { contract, address };
@@ -34,7 +36,9 @@ export async function getErc20Vault (): Promise<Interfaces.IVault> {
 
 /** @internal */
 export async function getEthVault (): Promise<Interfaces.IVault> {
-  const address: string = await this.plasmaContract.methods.vaults(Constants.ETH_VAULT_ID).call();
+  const address: string = await this.plasmaContract.methods
+    .vaults(Constants.ETH_VAULT_ID)
+    .call({ from: this.plasmaContractAddress });
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const contract: Contract = new this.web3Instance.eth.Contract((EthVaultContract as any).abi, address);
   return { contract, address };
@@ -42,14 +46,16 @@ export async function getEthVault (): Promise<Interfaces.IVault> {
 
 /** @internal */
 export async function getPaymentExitGame (): Promise<Interfaces.IPaymentExitGame> {
-  const address: string = await this.plasmaContract.methods.exitGames(Constants.EXIT_GAME_PAYMENT_TYPE).call();
+  const address: string = await this.plasmaContract.methods
+    .exitGames(Constants.EXIT_GAME_PAYMENT_TYPE)
+    .call({ from: this.plasmaContractAddress });
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const contract: Contract = new this.web3Instance.eth.Contract((PaymentExitGameContract as any).abi, address);
 
   const bondSizes = await Promise.all([
-    contract.methods.startStandardExitBondSize().call(),
-    contract.methods.piggybackBondSize().call(),
-    contract.methods.startIFEBondSize().call()
+    contract.methods.startStandardExitBondSize().call({ from: this.plasmaContractAddress }),
+    contract.methods.piggybackBondSize().call({ from: this.plasmaContractAddress }),
+    contract.methods.startIFEBondSize().call({ from: this.plasmaContractAddress })
   ]);
 
   return {

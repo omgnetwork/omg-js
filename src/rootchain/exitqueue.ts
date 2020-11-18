@@ -34,7 +34,9 @@ export async function getExitTime ({
   const bufferSeconds = 5;
   const retryInterval = 5000;
 
-  const _minExitPeriodSeconds = await this.plasmaContract.methods.minExitPeriod().call();
+  const _minExitPeriodSeconds = await this.plasmaContract.methods
+    .minExitPeriod()
+    .call({ from: this.plasmaContractAddress });
   const minExitPeriodSeconds = Number(_minExitPeriodSeconds);
 
   const exitBlock = await this.web3Instance.eth.getBlock(_exitRequestBlockNumber);
@@ -52,7 +54,9 @@ export async function getExitTime ({
     }
   }
 
-  const submissionBlock = await this.plasmaContract.methods.blocks(_submissionBlockNumber).call();
+  const submissionBlock = await this.plasmaContract.methods
+    .blocks(_submissionBlockNumber)
+    .call({ from: this.plasmaContractAddress });
 
   let scheduledFinalizationTime: number;
   if (Number(_submissionBlockNumber) % 1000 !== 0) {
@@ -91,10 +95,14 @@ export async function getExitQueue (
   let rawExitQueue: Array<string>;
   try {
     // if no queue exists, this will throw so we early return an empty queue
-    address = await this.plasmaContract.methods.exitsQueues(hashed).call();
+    address = await this.plasmaContract.methods
+      .exitsQueues(hashed)
+      .call({ from: this.plasmaContractAddress });
     const priorityVault = await ContractsModule.getPriorityQueue.call(this, address);
     contract = priorityVault.contract;
-    rawExitQueue = await contract.methods.heapList().call();
+    rawExitQueue = await contract.methods
+      .heapList()
+      .call({ from: this.plasmaContractAddress });
   } catch (error) {
     return [];
   }
@@ -160,7 +168,9 @@ export async function processExits ({
 /** @internal */
 export async function hasExitQueue (currency: string): Promise<boolean> {
   const vaultId = currency === Constants.CURRENCY_MAP.ETH ? 1 : 2;
-  return this.plasmaContract.methods.hasExitQueue(vaultId, currency).call();
+  return this.plasmaContract.methods
+    .hasExitQueue(vaultId, currency)
+    .call({ from: this.plasmaContractAddress });
 }
 
 /** @internal */

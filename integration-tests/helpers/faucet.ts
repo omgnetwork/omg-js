@@ -184,7 +184,9 @@ export default {
           }
         });
         const { address: erc20VaultAddress } = await omgjs.getErc20Vault();
-        const allowed = await erc20Contract.methods.allowance(this.faucetAccount.address, erc20VaultAddress).call();
+        const allowed = await erc20Contract.methods
+          .allowance(this.faucetAccount.address, erc20VaultAddress)
+          .call({ from: erc20VaultAddress });
         if (allowed === '0') {
           throw new Error('ERC20 approval failed!');
         }

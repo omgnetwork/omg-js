@@ -156,5 +156,7 @@ export async function waitForUtxo ({
 
 /** @internal */
 export async function getMinimumExitPeriod (): Promise<string> {
-  return this.plasmaContract.methods.minExitPeriod().call();
+  return this.plasmaContract.methods
+    .minExitPeriod()
+    .call({ from: this.plasmaContractAddress });
 }

@@ -24,7 +24,9 @@ export async function getInFlightExitId (
   txBytes: string
 ): Promise<string> {
   const { contract } = await this.getPaymentExitGame();
-  return contract.methods.getInFlightExitId(txBytes).call();
+  return contract.methods
+    .getInFlightExitId(txBytes)
+    .call({ from: this.plasmaContractAddress });
 }
 
 /** @internal */
@@ -32,7 +34,9 @@ export async function getInFlightExitContractData (
   exitIds: Array<string>
 ): Promise<Array<Interfaces.IInFlightExitContractData>> {
   const { contract } = await this.getPaymentExitGame();
-  return contract.methods.inFlightExits(exitIds).call();
+  return contract.methods
+    .inFlightExits(exitIds)
+    .call({ from: this.plasmaContractAddress });
 }
 
 /** @internal */

@@ -31,7 +31,9 @@ export async function getStandardExitId ({
   isDeposit
 }: Interfaces.IGetStandardExitId): Promise<string> {
   const { contract } = await this.getPaymentExitGame();
-  return contract.methods.getStandardExitId(isDeposit, txBytes, utxoPos.toString()).call();
+  return contract.methods
+    .getStandardExitId(isDeposit, txBytes, utxoPos.toString())
+    .call({ from: this.plasmaContractAddress });
 }
 
 /** @internal */
