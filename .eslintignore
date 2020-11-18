@@ -1,5 +1,6 @@
-node_modules
+.circleci
 docs
+node_modules
 dist
 Dockerfile
 shim.ts
