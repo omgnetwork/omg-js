@@ -39,8 +39,6 @@ const omgjs = new OmgJS({
   web3Provider
 });
 
-// NMTODO: run these tests with both info and securityurl
-
 describe('simpleStartStandardExitTest.js', function () {
   before(async function () {
     await faucet.init({ faucetName });
