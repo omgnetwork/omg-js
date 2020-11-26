@@ -1,0 +1,2368 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>OmgJS | omg-js - v4.0.1-1.0.0</title>
+	<meta name="description" content="Documentation for omg-js - v4.0.1-1.0.0">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="../assets/css/main.css">
+</head>
+<body>
+<header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="../assets/js/search.json" data-base="..">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="../index.html" class="title">omg-js - v4.0.1-1.0.0</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+							<input type="checkbox" id="tsd-filter-externals" checked />
+							<label class="tsd-widget" for="tsd-filter-externals">Externals</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<ul class="tsd-breadcrumb">
+				<li>
+					<a href="../globals.html">Globals</a>
+				</li>
+				<li>
+					<a href="omgjs.html">OmgJS</a>
+				</li>
+			</ul>
+			<h1>Class OmgJS</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-comment">
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p>Instantiate an OmgJS object to interact with the OMG Network</p>
+					</div>
+					<pre><code class="language-ts"><span class="hljs-keyword">const</span> omgjs = <span class="hljs-keyword">new</span> OmgJS({
+ plasmaContractAddress: <span class="hljs-string">&#x27;0x123&#x27;</span>,
+ watcherUrl: <span class="hljs-string">&#x27;https://watcherurl&#x27;</span>,
+ web3Provider: <span class="hljs-keyword">new</span> Web3.providers.HTTPProvider(eth_node);
+});</code></pre>
+				</div>
+			</section>
+			<section class="tsd-panel tsd-hierarchy">
+				<h3>Hierarchy</h3>
+				<ul class="tsd-hierarchy">
+					<li>
+						<span class="target">OmgJS</span>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel-group tsd-index-group">
+				<h2>Index</h2>
+				<section class="tsd-panel tsd-index-panel">
+					<div class="tsd-index-content">
+						<section class="tsd-index-section ">
+							<h3>Constructors</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="omgjs.html#constructor" class="tsd-kind-icon">constructor</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Properties</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="omgjs.html#web3instance" class="tsd-kind-icon">web3<wbr>Instance</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="omgjs.html#currency" class="tsd-kind-icon">currency</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Methods</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#addexitqueue" class="tsd-kind-icon">add<wbr>Exit<wbr>Queue</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#approveerc20deposit" class="tsd-kind-icon">approveERC20<wbr>Deposit</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#buildsignedtransaction" class="tsd-kind-icon">build<wbr>Signed<wbr>Transaction</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#challengeinflightexitinputspent" class="tsd-kind-icon">challenge<wbr>InFlight<wbr>Exit<wbr>Input<wbr>Spent</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#challengeinflightexitnotcanonical" class="tsd-kind-icon">challenge<wbr>InFlight<wbr>Exit<wbr>Not<wbr>Canonical</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#challengeinflightexitoutputspent" class="tsd-kind-icon">challenge<wbr>InFlight<wbr>Exit<wbr>Output<wbr>Spent</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#challengestandardexit" class="tsd-kind-icon">challenge<wbr>Standard<wbr>Exit</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#createtransaction" class="tsd-kind-icon">create<wbr>Transaction</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#createtransactionbody" class="tsd-kind-icon">create<wbr>Transaction<wbr>Body</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#decodedeposit" class="tsd-kind-icon">decode<wbr>Deposit</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#decodemetadata" class="tsd-kind-icon">decode<wbr>Metadata</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#decodetransaction" class="tsd-kind-icon">decode<wbr>Transaction</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#decodeutxopos" class="tsd-kind-icon">decode<wbr>Utxo<wbr>Pos</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#deletenonpiggybackedinflightexit" class="tsd-kind-icon">delete<wbr>Non<wbr>Piggybacked<wbr>InFlight<wbr>Exit</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#deposit" class="tsd-kind-icon">deposit</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#encodedeposit" class="tsd-kind-icon">encode<wbr>Deposit</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#encodemetadata" class="tsd-kind-icon">encode<wbr>Metadata</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#encodetransaction" class="tsd-kind-icon">encode<wbr>Transaction</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#encodeutxopos" class="tsd-kind-icon">encode<wbr>Utxo<wbr>Pos</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#getbalance" class="tsd-kind-icon">get<wbr>Balance</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#getchallengedata" class="tsd-kind-icon">get<wbr>Challenge<wbr>Data</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#getdepositexitdata" class="tsd-kind-icon">get<wbr>Deposit<wbr>Exit<wbr>Data</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#getdeposits" class="tsd-kind-icon">get<wbr>Deposits</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#getevmerrorreason" class="tsd-kind-icon">getEVMError<wbr>Reason</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#geterc20vault" class="tsd-kind-icon">get<wbr>Erc20<wbr>Vault</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#getethvault" class="tsd-kind-icon">get<wbr>Eth<wbr>Vault</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#getexitdata" class="tsd-kind-icon">get<wbr>Exit<wbr>Data</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#getexitqueue" class="tsd-kind-icon">get<wbr>Exit<wbr>Queue</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#getexittime" class="tsd-kind-icon">get<wbr>Exit<wbr>Time</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#getfees" class="tsd-kind-icon">get<wbr>Fees</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#getinflightexitcontractdata" class="tsd-kind-icon">get<wbr>InFlight<wbr>Exit<wbr>Contract<wbr>Data</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#getinflightexitid" class="tsd-kind-icon">get<wbr>InFlight<wbr>Exit<wbr>Id</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#getminimumexitperiod" class="tsd-kind-icon">get<wbr>Minimum<wbr>Exit<wbr>Period</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#getpaymentexitgame" class="tsd-kind-icon">get<wbr>Payment<wbr>Exit<wbr>Game</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#getrootchainerc20balance" class="tsd-kind-icon">get<wbr>RootchainERC20<wbr>Balance</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#getrootchainethbalance" class="tsd-kind-icon">get<wbr>RootchainETHBalance</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#getstandardexitid" class="tsd-kind-icon">get<wbr>Standard<wbr>Exit<wbr>Id</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#getstatus" class="tsd-kind-icon">get<wbr>Status</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#gettransaction" class="tsd-kind-icon">get<wbr>Transaction</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#gettransactions" class="tsd-kind-icon">get<wbr>Transactions</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#gettypeddata" class="tsd-kind-icon">get<wbr>Typed<wbr>Data</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#gettypeddataarray" class="tsd-kind-icon">get<wbr>Typed<wbr>Data<wbr>Array</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#getutxos" class="tsd-kind-icon">get<wbr>Utxos</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#hasexitqueue" class="tsd-kind-icon">has<wbr>Exit<wbr>Queue</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#hashtypeddata" class="tsd-kind-icon">hash<wbr>Typed<wbr>Data</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#hashtypeddatadomain" class="tsd-kind-icon">hash<wbr>Typed<wbr>Data<wbr>Domain</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#hashtypeddatamessage" class="tsd-kind-icon">hash<wbr>Typed<wbr>Data<wbr>Message</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#inflightexitgetcompetitor" class="tsd-kind-icon">in<wbr>Flight<wbr>Exit<wbr>Get<wbr>Competitor</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#inflightexitgetdata" class="tsd-kind-icon">in<wbr>Flight<wbr>Exit<wbr>Get<wbr>Data</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#inflightexitgetinputchallengedata" class="tsd-kind-icon">in<wbr>Flight<wbr>Exit<wbr>Get<wbr>Input<wbr>Challenge<wbr>Data</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#inflightexitgetoutputchallengedata" class="tsd-kind-icon">in<wbr>Flight<wbr>Exit<wbr>Get<wbr>Output<wbr>Challenge<wbr>Data</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#inflightexitprovecanonical" class="tsd-kind-icon">in<wbr>Flight<wbr>Exit<wbr>Prove<wbr>Canonical</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#mergeutxos" class="tsd-kind-icon">merge<wbr>Utxos</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#piggybackinflightexitoninput" class="tsd-kind-icon">piggyback<wbr>InFlight<wbr>Exit<wbr>OnInput</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#piggybackinflightexitonoutput" class="tsd-kind-icon">piggyback<wbr>InFlight<wbr>Exit<wbr>OnOutput</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#processexits" class="tsd-kind-icon">process<wbr>Exits</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#respondtononcanonicalchallenge" class="tsd-kind-icon">respond<wbr>ToNon<wbr>Canonical<wbr>Challenge</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#signtransaction" class="tsd-kind-icon">sign<wbr>Transaction</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#signtypeddata" class="tsd-kind-icon">sign<wbr>Typed<wbr>Data</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#startinflightexit" class="tsd-kind-icon">start<wbr>InFlight<wbr>Exit</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#startstandardexit" class="tsd-kind-icon">start<wbr>Standard<wbr>Exit</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#submittransaction" class="tsd-kind-icon">submit<wbr>Transaction</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#submittypeddata" class="tsd-kind-icon">submit<wbr>Typed<wbr>Data</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#waitforchildchainbalance" class="tsd-kind-icon">wait<wbr>For<wbr>Childchain<wbr>Balance</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#waitforrootchaintransaction" class="tsd-kind-icon">wait<wbr>For<wbr>Rootchain<wbr>Transaction</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="omgjs.html#waitforutxo" class="tsd-kind-icon">wait<wbr>For<wbr>Utxo</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Object literals</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-object-literal tsd-parent-kind-class tsd-is-static"><a href="omgjs.html#util" class="tsd-kind-icon">util</a></li>
+							</ul>
+						</section>
+					</div>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Constructors</h2>
+				<section class="tsd-panel tsd-member tsd-kind-constructor tsd-parent-kind-class">
+					<a name="constructor" class="tsd-anchor"></a>
+					<h3>constructor</h3>
+					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">new <wbr>OmgJS<span class="tsd-signature-symbol">(</span>args<span class="tsd-signature-symbol">: </span><a href="../interfaces/iomgjs.html" class="tsd-signature-type">IOmgJS</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="omgjs.html" class="tsd-signature-type">OmgJS</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/9208df5/src/index.ts#L82">src/index.ts:82</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>args: <a href="../interfaces/iomgjs.html" class="tsd-signature-type">IOmgJS</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="omgjs.html" class="tsd-signature-type">OmgJS</a></h4>
+						</li>
+					</ul>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Properties</h2>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="web3instance" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> web3<wbr>Instance</h3>
+					<div class="tsd-signature tsd-kind-icon">web3<wbr>Instance<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Web3</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/omisego/omg-js/blob/9208df5/src/index.ts#L72">src/index.ts:72</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
+					<a name="currency" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> currency</h3>
+					<div class="tsd-signature tsd-kind-icon">currency<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>ETH<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>OMG<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">object</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> = Constants.CURRENCY_MAP</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/omisego/omg-js/blob/9208df5/src/index.ts#L64">src/index.ts:64</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Helper currency map</p>
+						</div>
+					</div>
+					<div class="tsd-type-declaration">
+						<h4>Type declaration</h4>
+						<ul class="tsd-parameters">
+							<li class="tsd-parameter">
+								<h5>ETH<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+							</li>
+							<li class="tsd-parameter">
+								<h5>OMG<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">object</span></h5>
+								<ul class="tsd-parameters">
+									<li class="tsd-parameter">
+										<h5>MAINNET<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+									</li>
+								</ul>
+							</li>
+						</ul>
+					</div>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Methods</h2>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="addexitqueue" class="tsd-anchor"></a>
+					<h3>add<wbr>Exit<wbr>Queue</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">add<wbr>Exit<wbr>Queue<span class="tsd-signature-symbol">(</span>args<span class="tsd-signature-symbol">: </span><a href="../interfaces/iaddexitqueue.html" class="tsd-signature-type">IAddExitQueue</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/itransactionreceipt.html" class="tsd-signature-type">ITransactionReceipt</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/9208df5/src/index.ts#L357">src/index.ts:357</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Adds an exit queue to the OMG Network</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>args: <a href="../interfaces/iaddexitqueue.html" class="tsd-signature-type">IAddExitQueue</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/itransactionreceipt.html" class="tsd-signature-type">ITransactionReceipt</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="approveerc20deposit" class="tsd-anchor"></a>
+					<h3>approveERC20<wbr>Deposit</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">approveERC20<wbr>Deposit<span class="tsd-signature-symbol">(</span>args<span class="tsd-signature-symbol">: </span><a href="../interfaces/iapprovedeposit.html" class="tsd-signature-type">IApproveDeposit</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/itransactionreceipt.html" class="tsd-signature-type">ITransactionReceipt</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/9208df5/src/index.ts#L243">src/index.ts:243</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Approve an ERC20 for deposit into the OMG Network</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>args: <a href="../interfaces/iapprovedeposit.html" class="tsd-signature-type">IApproveDeposit</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/itransactionreceipt.html" class="tsd-signature-type">ITransactionReceipt</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="buildsignedtransaction" class="tsd-anchor"></a>
+					<h3>build<wbr>Signed<wbr>Transaction</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">build<wbr>Signed<wbr>Transaction<span class="tsd-signature-symbol">(</span>args<span class="tsd-signature-symbol">: </span><a href="../interfaces/ibuildsignedtransaction.html" class="tsd-signature-type">IBuildSignedTransaction</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/9208df5/src/index.ts#L626">src/index.ts:626</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Build a signed transaction into the format expected by submitTransaction</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>args: <a href="../interfaces/ibuildsignedtransaction.html" class="tsd-signature-type">IBuildSignedTransaction</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="challengeinflightexitinputspent" class="tsd-anchor"></a>
+					<h3>challenge<wbr>InFlight<wbr>Exit<wbr>Input<wbr>Spent</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">challenge<wbr>InFlight<wbr>Exit<wbr>Input<wbr>Spent<span class="tsd-signature-symbol">(</span>args<span class="tsd-signature-symbol">: </span><a href="../interfaces/ichallengeinflightexitinputspent.html" class="tsd-signature-type">IChallengeInFlightExitInputSpent</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/itransactionreceipt.html" class="tsd-signature-type">ITransactionReceipt</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/9208df5/src/index.ts#L451">src/index.ts:451</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Remove an input from list of exitable outputs in an in-flight transaction</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>args: <a href="../interfaces/ichallengeinflightexitinputspent.html" class="tsd-signature-type">IChallengeInFlightExitInputSpent</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/itransactionreceipt.html" class="tsd-signature-type">ITransactionReceipt</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="challengeinflightexitnotcanonical" class="tsd-anchor"></a>
+					<h3>challenge<wbr>InFlight<wbr>Exit<wbr>Not<wbr>Canonical</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">challenge<wbr>InFlight<wbr>Exit<wbr>Not<wbr>Canonical<span class="tsd-signature-symbol">(</span>args<span class="tsd-signature-symbol">: </span><a href="../interfaces/ichallengeinflightexitnotcanonical.html" class="tsd-signature-type">IChallengeInFlightExitNotCanonical</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/itransactionreceipt.html" class="tsd-signature-type">ITransactionReceipt</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/9208df5/src/index.ts#L419">src/index.ts:419</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Prove that an in-flight exit is not canonical</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>args: <a href="../interfaces/ichallengeinflightexitnotcanonical.html" class="tsd-signature-type">IChallengeInFlightExitNotCanonical</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/itransactionreceipt.html" class="tsd-signature-type">ITransactionReceipt</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="challengeinflightexitoutputspent" class="tsd-anchor"></a>
+					<h3>challenge<wbr>InFlight<wbr>Exit<wbr>Output<wbr>Spent</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">challenge<wbr>InFlight<wbr>Exit<wbr>Output<wbr>Spent<span class="tsd-signature-symbol">(</span>args<span class="tsd-signature-symbol">: </span><a href="../interfaces/ichallengeinflightexitoutputspent.html" class="tsd-signature-type">IChallengeInFlightExitOutputSpent</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/itransactionreceipt.html" class="tsd-signature-type">ITransactionReceipt</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/9208df5/src/index.ts#L468">src/index.ts:468</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Remove an output from list of exitable outputs in an in-flight transaction</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>args: <a href="../interfaces/ichallengeinflightexitoutputspent.html" class="tsd-signature-type">IChallengeInFlightExitOutputSpent</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/itransactionreceipt.html" class="tsd-signature-type">ITransactionReceipt</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="challengestandardexit" class="tsd-anchor"></a>
+					<h3>challenge<wbr>Standard<wbr>Exit</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">challenge<wbr>Standard<wbr>Exit<span class="tsd-signature-symbol">(</span>args<span class="tsd-signature-symbol">: </span><a href="../interfaces/ichallengestandardexit.html" class="tsd-signature-type">IChallengeStandardExit</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/itransactionreceipt.html" class="tsd-signature-type">ITransactionReceipt</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/9208df5/src/index.ts#L323">src/index.ts:323</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Block a standard exit by showing the exiting output was spent</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>args: <a href="../interfaces/ichallengestandardexit.html" class="tsd-signature-type">IChallengeStandardExit</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/itransactionreceipt.html" class="tsd-signature-type">ITransactionReceipt</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="createtransaction" class="tsd-anchor"></a>
+					<h3>create<wbr>Transaction</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">create<wbr>Transaction<span class="tsd-signature-symbol">(</span>args<span class="tsd-signature-symbol">: </span><a href="../interfaces/icreatetransaction.html" class="tsd-signature-type">ICreateTransaction</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/icreatedtransactions.html" class="tsd-signature-type">ICreatedTransactions</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/9208df5/src/index.ts#L567">src/index.ts:567</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Create possible transactions using the utility from the Watcher</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>args: <a href="../interfaces/icreatetransaction.html" class="tsd-signature-type">ICreateTransaction</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/icreatedtransactions.html" class="tsd-signature-type">ICreatedTransactions</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="createtransactionbody" class="tsd-anchor"></a>
+					<h3>create<wbr>Transaction<wbr>Body</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">create<wbr>Transaction<wbr>Body<span class="tsd-signature-symbol">(</span>args<span class="tsd-signature-symbol">: </span><a href="../interfaces/icreatetransactionbody.html" class="tsd-signature-type">ICreateTransactionBody</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/itransactionbody.html" class="tsd-signature-type">ITransactionBody</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/9208df5/src/index.ts#L582">src/index.ts:582</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Create a transaction body locally with fine grain control</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>args: <a href="../interfaces/icreatetransactionbody.html" class="tsd-signature-type">ICreateTransactionBody</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="../interfaces/itransactionbody.html" class="tsd-signature-type">ITransactionBody</a></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="decodedeposit" class="tsd-anchor"></a>
+					<h3>decode<wbr>Deposit</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">decode<wbr>Deposit<span class="tsd-signature-symbol">(</span>encodedDeposit<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/ideposittransaction.html" class="tsd-signature-type">IDepositTransaction</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/9208df5/src/index.ts#L173">src/index.ts:173</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Decode a RLP encoded deposit transaction</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>encodedDeposit: <span class="tsd-signature-type">string</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="../interfaces/ideposittransaction.html" class="tsd-signature-type">IDepositTransaction</a></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="decodemetadata" class="tsd-anchor"></a>
+					<h3>decode<wbr>Metadata</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">decode<wbr>Metadata<span class="tsd-signature-symbol">(</span>metadata<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/9208df5/src/index.ts#L230">src/index.ts:230</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Decode encoded metadata</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>metadata: <span class="tsd-signature-type">string</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="decodetransaction" class="tsd-anchor"></a>
+					<h3>decode<wbr>Transaction</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">decode<wbr>Transaction<span class="tsd-signature-symbol">(</span>encodedTransaction<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Buffer</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/itransactionbody.html" class="tsd-signature-type">ITransactionBody</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/9208df5/src/index.ts#L198">src/index.ts:198</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Decode a RLP encoded transaction</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>encodedTransaction: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Buffer</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="../interfaces/itransactionbody.html" class="tsd-signature-type">ITransactionBody</a></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="decodeutxopos" class="tsd-anchor"></a>
+					<h3>decode<wbr>Utxo<wbr>Pos</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">decode<wbr>Utxo<wbr>Pos<span class="tsd-signature-symbol">(</span>utxoPos<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Interfaces.IComplexAmount</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Partial</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/iutxo.html" class="tsd-signature-type">IUTXO</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/9208df5/src/index.ts#L214">src/index.ts:214</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Decode an encoded UTXO</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>utxoPos: <span class="tsd-signature-type">Interfaces.IComplexAmount</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Partial</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/iutxo.html" class="tsd-signature-type">IUTXO</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="deletenonpiggybackedinflightexit" class="tsd-anchor"></a>
+					<h3>delete<wbr>Non<wbr>Piggybacked<wbr>InFlight<wbr>Exit</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">delete<wbr>Non<wbr>Piggybacked<wbr>InFlight<wbr>Exit<span class="tsd-signature-symbol">(</span>args<span class="tsd-signature-symbol">: </span><a href="../interfaces/ideletenonpiggybackedinflightexit.html" class="tsd-signature-type">IDeleteNonPiggybackedInFlightExit</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/itransactionreceipt.html" class="tsd-signature-type">ITransactionReceipt</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/9208df5/src/index.ts#L480">src/index.ts:480</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Delete an in-flight exit if the first phase has passed and nobody has piggybacked the exit</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>args: <a href="../interfaces/ideletenonpiggybackedinflightexit.html" class="tsd-signature-type">IDeleteNonPiggybackedInFlightExit</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/itransactionreceipt.html" class="tsd-signature-type">ITransactionReceipt</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="deposit" class="tsd-anchor"></a>
+					<h3>deposit</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">deposit<span class="tsd-signature-symbol">(</span>args<span class="tsd-signature-symbol">: </span><a href="../interfaces/ideposit.html" class="tsd-signature-type">IDeposit</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/itransactionreceipt.html" class="tsd-signature-type">ITransactionReceipt</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/9208df5/src/index.ts#L256">src/index.ts:256</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Deposit funds into the OMG Network</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>args: <a href="../interfaces/ideposit.html" class="tsd-signature-type">IDeposit</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/itransactionreceipt.html" class="tsd-signature-type">ITransactionReceipt</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="encodedeposit" class="tsd-anchor"></a>
+					<h3>encode<wbr>Deposit</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">encode<wbr>Deposit<span class="tsd-signature-symbol">(</span>args<span class="tsd-signature-symbol">: </span><a href="../interfaces/ideposittransaction.html" class="tsd-signature-type">IDepositTransaction</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/9208df5/src/index.ts#L165">src/index.ts:165</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Create and encodes a deposit transaction</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>args: <a href="../interfaces/ideposittransaction.html" class="tsd-signature-type">IDepositTransaction</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="encodemetadata" class="tsd-anchor"></a>
+					<h3>encode<wbr>Metadata</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">encode<wbr>Metadata<span class="tsd-signature-symbol">(</span>metadata<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/9208df5/src/index.ts#L222">src/index.ts:222</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Encode metadata</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>metadata: <span class="tsd-signature-type">string</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="encodetransaction" class="tsd-anchor"></a>
+					<h3>encode<wbr>Transaction</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">encode<wbr>Transaction<span class="tsd-signature-symbol">(</span>args<span class="tsd-signature-symbol">: </span><a href="../interfaces/iencodetransaction.html" class="tsd-signature-type">IEncodeTransaction</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/9208df5/src/index.ts#L190">src/index.ts:190</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>RLP encode a transaction</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>args: <a href="../interfaces/iencodetransaction.html" class="tsd-signature-type">IEncodeTransaction</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="encodeutxopos" class="tsd-anchor"></a>
+					<h3>encode<wbr>Utxo<wbr>Pos</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">encode<wbr>Utxo<wbr>Pos<span class="tsd-signature-symbol">(</span>utxo<span class="tsd-signature-symbol">: </span><a href="../interfaces/iencodeutxopos.html" class="tsd-signature-type">IEncodeUtxoPos</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">BN</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/9208df5/src/index.ts#L206">src/index.ts:206</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Encode a UTXO</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>utxo: <a href="../interfaces/iencodeutxopos.html" class="tsd-signature-type">IEncodeUtxoPos</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">BN</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="getbalance" class="tsd-anchor"></a>
+					<h3>get<wbr>Balance</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Balance<span class="tsd-signature-symbol">(</span>address<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/ibalance.html" class="tsd-signature-type">IBalance</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/9208df5/src/index.ts#L496">src/index.ts:496</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Get the balances of an address</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>address: <span class="tsd-signature-type">string</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/ibalance.html" class="tsd-signature-type">IBalance</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="getchallengedata" class="tsd-anchor"></a>
+					<h3>get<wbr>Challenge<wbr>Data</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Challenge<wbr>Data<span class="tsd-signature-symbol">(</span>utxoPos<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/ichallengedata.html" class="tsd-signature-type">IChallengeData</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/9208df5/src/index.ts#L553">src/index.ts:553</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Get the challenge data for a UTXO</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>utxoPos: <span class="tsd-signature-type">number</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/ichallengedata.html" class="tsd-signature-type">IChallengeData</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="getdepositexitdata" class="tsd-anchor"></a>
+					<h3>get<wbr>Deposit<wbr>Exit<wbr>Data</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Deposit<wbr>Exit<wbr>Data<span class="tsd-signature-symbol">(</span>transactionHash<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/iexitdata.html" class="tsd-signature-type">IExitData</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/9208df5/src/index.ts#L307">src/index.ts:307</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Get the exit data for a deposit without using the Watcher</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>transactionHash: <span class="tsd-signature-type">string</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/iexitdata.html" class="tsd-signature-type">IExitData</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="getdeposits" class="tsd-anchor"></a>
+					<h3>get<wbr>Deposits</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Deposits<span class="tsd-signature-symbol">(</span>filters<span class="tsd-signature-symbol">: </span><a href="../interfaces/idepositfilter.html" class="tsd-signature-type">IDepositFilter</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/idepositinfo.html" class="tsd-signature-type">IDepositInfo</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/9208df5/src/index.ts#L537">src/index.ts:537</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Get deposit information</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>filters: <a href="../interfaces/idepositfilter.html" class="tsd-signature-type">IDepositFilter</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/idepositinfo.html" class="tsd-signature-type">IDepositInfo</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="getevmerrorreason" class="tsd-anchor"></a>
+					<h3>getEVMError<wbr>Reason</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">getEVMError<wbr>Reason<span class="tsd-signature-symbol">(</span>txHash<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/9208df5/src/index.ts#L708">src/index.ts:708</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Retrieve the EVM revert reason from a transaction hash</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>txHash: <span class="tsd-signature-type">string</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="geterc20vault" class="tsd-anchor"></a>
+					<h3>get<wbr>Erc20<wbr>Vault</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Erc20<wbr>Vault<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/ivault.html" class="tsd-signature-type">IVault</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/9208df5/src/index.ts#L108">src/index.ts:108</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Get the ERC20 vault</p>
+								</div>
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/ivault.html" class="tsd-signature-type">IVault</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="getethvault" class="tsd-anchor"></a>
+					<h3>get<wbr>Eth<wbr>Vault</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Eth<wbr>Vault<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/ivault.html" class="tsd-signature-type">IVault</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/9208df5/src/index.ts#L117">src/index.ts:117</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Get the ETH vault</p>
+								</div>
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/ivault.html" class="tsd-signature-type">IVault</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="getexitdata" class="tsd-anchor"></a>
+					<h3>get<wbr>Exit<wbr>Data</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Exit<wbr>Data<span class="tsd-signature-symbol">(</span>utxo<span class="tsd-signature-symbol">: </span><a href="../interfaces/iutxo.html" class="tsd-signature-type">IUTXO</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/iexitdata.html" class="tsd-signature-type">IExitData</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/9208df5/src/index.ts#L545">src/index.ts:545</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Get the exit data for a UTXO</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>utxo: <a href="../interfaces/iutxo.html" class="tsd-signature-type">IUTXO</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/iexitdata.html" class="tsd-signature-type">IExitData</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="getexitqueue" class="tsd-anchor"></a>
+					<h3>get<wbr>Exit<wbr>Queue</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Exit<wbr>Queue<span class="tsd-signature-symbol">(</span>currency<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/iexitqueue.html" class="tsd-signature-type">IExitQueue</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/9208df5/src/index.ts#L152">src/index.ts:152</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Retrieve the exit queue for a particular currency</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>currency: <span class="tsd-signature-type">string</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/iexitqueue.html" class="tsd-signature-type">IExitQueue</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="getexittime" class="tsd-anchor"></a>
+					<h3>get<wbr>Exit<wbr>Time</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Exit<wbr>Time<span class="tsd-signature-symbol">(</span>args<span class="tsd-signature-symbol">: </span><a href="../interfaces/igetexittime.html" class="tsd-signature-type">IGetExitTime</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/iexittime.html" class="tsd-signature-type">IExitTime</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/9208df5/src/index.ts#L144">src/index.ts:144</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Calculate the exit schedule required before exits can be processed and released</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>args: <a href="../interfaces/igetexittime.html" class="tsd-signature-type">IGetExitTime</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/iexittime.html" class="tsd-signature-type">IExitTime</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="getfees" class="tsd-anchor"></a>
+					<h3>get<wbr>Fees</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Fees<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/ifeeinfo.html" class="tsd-signature-type">IFeeInfo</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/9208df5/src/index.ts#L527">src/index.ts:527</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Get accepted fee information</p>
+								</div>
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/ifeeinfo.html" class="tsd-signature-type">IFeeInfo</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="getinflightexitcontractdata" class="tsd-anchor"></a>
+					<h3>get<wbr>InFlight<wbr>Exit<wbr>Contract<wbr>Data</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>InFlight<wbr>Exit<wbr>Contract<wbr>Data<span class="tsd-signature-symbol">(</span>exitIds<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/iinflightexitcontractdata.html" class="tsd-signature-type">IInFlightExitContractData</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/9208df5/src/index.ts#L285">src/index.ts:285</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Retrieve in-flight exit data from an array of exit IDs directly from the payment exit game contract</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>exitIds: <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/iinflightexitcontractdata.html" class="tsd-signature-type">IInFlightExitContractData</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="getinflightexitid" class="tsd-anchor"></a>
+					<h3>get<wbr>InFlight<wbr>Exit<wbr>Id</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>InFlight<wbr>Exit<wbr>Id<span class="tsd-signature-symbol">(</span>txBytes<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/9208df5/src/index.ts#L277">src/index.ts:277</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Get an inflight exit id to process an inflight exit</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>txBytes: <span class="tsd-signature-type">string</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="getminimumexitperiod" class="tsd-anchor"></a>
+					<h3>get<wbr>Minimum<wbr>Exit<wbr>Period</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Minimum<wbr>Exit<wbr>Period<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/9208df5/src/index.ts#L135">src/index.ts:135</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Get the minimum exit period set on the plasma framework contract</p>
+								</div>
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="getpaymentexitgame" class="tsd-anchor"></a>
+					<h3>get<wbr>Payment<wbr>Exit<wbr>Game</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Payment<wbr>Exit<wbr>Game<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/ipaymentexitgame.html" class="tsd-signature-type">IPaymentExitGame</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/9208df5/src/index.ts#L126">src/index.ts:126</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Get the payment exit game vault</p>
+								</div>
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/ipaymentexitgame.html" class="tsd-signature-type">IPaymentExitGame</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="getrootchainerc20balance" class="tsd-anchor"></a>
+					<h3>get<wbr>RootchainERC20<wbr>Balance</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>RootchainERC20<wbr>Balance<span class="tsd-signature-symbol">(</span>args<span class="tsd-signature-symbol">: </span><a href="../interfaces/igetrootchainerc20balance.html" class="tsd-signature-type">IGetRootchainERC20Balance</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/9208df5/src/index.ts#L720">src/index.ts:720</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Get the rootchain ERC20 balance of an address</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>args: <a href="../interfaces/igetrootchainerc20balance.html" class="tsd-signature-type">IGetRootchainERC20Balance</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="getrootchainethbalance" class="tsd-anchor"></a>
+					<h3>get<wbr>RootchainETHBalance</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>RootchainETHBalance<span class="tsd-signature-symbol">(</span>address<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/9208df5/src/index.ts#L728">src/index.ts:728</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Get the rootchain ETH balance of an address</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>address: <span class="tsd-signature-type">string</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="getstandardexitid" class="tsd-anchor"></a>
+					<h3>get<wbr>Standard<wbr>Exit<wbr>Id</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Standard<wbr>Exit<wbr>Id<span class="tsd-signature-symbol">(</span>args<span class="tsd-signature-symbol">: </span><a href="../interfaces/igetstandardexitid.html" class="tsd-signature-type">IGetStandardExitId</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/9208df5/src/index.ts#L269">src/index.ts:269</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Get a standard exit id to process a standard exit</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>args: <a href="../interfaces/igetstandardexitid.html" class="tsd-signature-type">IGetStandardExitId</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="getstatus" class="tsd-anchor"></a>
+					<h3>get<wbr>Status</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Status<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/istatus.html" class="tsd-signature-type">IStatus</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/9208df5/src/index.ts#L655">src/index.ts:655</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Get the status of the Watcher</p>
+								</div>
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/istatus.html" class="tsd-signature-type">IStatus</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="gettransaction" class="tsd-anchor"></a>
+					<h3>get<wbr>Transaction</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Transaction<span class="tsd-signature-symbol">(</span>id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/itransactiondata.html" class="tsd-signature-type">ITransactionData</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/9208df5/src/index.ts#L504">src/index.ts:504</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Get transaction information</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>id: <span class="tsd-signature-type">string</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/itransactiondata.html" class="tsd-signature-type">ITransactionData</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="gettransactions" class="tsd-anchor"></a>
+					<h3>get<wbr>Transactions</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Transactions<span class="tsd-signature-symbol">(</span>filters<span class="tsd-signature-symbol">: </span><a href="../interfaces/itransactionfilter.html" class="tsd-signature-type">ITransactionFilter</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/itransactiondata.html" class="tsd-signature-type">ITransactionData</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/9208df5/src/index.ts#L519">src/index.ts:519</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Get transaction information using various filters</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>filters: <a href="../interfaces/itransactionfilter.html" class="tsd-signature-type">ITransactionFilter</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/itransactiondata.html" class="tsd-signature-type">ITransactionData</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="gettypeddata" class="tsd-anchor"></a>
+					<h3>get<wbr>Typed<wbr>Data</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Typed<wbr>Data<span class="tsd-signature-symbol">(</span>transactionBody<span class="tsd-signature-symbol">: </span><a href="../interfaces/itransactionbody.html" class="tsd-signature-type">ITransactionBody</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/itypeddata.html" class="tsd-signature-type">ITypedData</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/9208df5/src/index.ts#L801">src/index.ts:801</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Get typed data from a transaction body</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>transactionBody: <a href="../interfaces/itransactionbody.html" class="tsd-signature-type">ITransactionBody</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="../interfaces/itypeddata.html" class="tsd-signature-type">ITypedData</a></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="gettypeddataarray" class="tsd-anchor"></a>
+					<h3>get<wbr>Typed<wbr>Data<wbr>Array</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Typed<wbr>Data<wbr>Array<span class="tsd-signature-symbol">(</span>typedDataMessage<span class="tsd-signature-symbol">: </span><a href="../interfaces/itypeddatamessage.html" class="tsd-signature-type">ITypedDataMessage</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/9208df5/src/index.ts#L809">src/index.ts:809</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Convert typed data into an array suitable for RLP encoding</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>typedDataMessage: <a href="../interfaces/itypeddatamessage.html" class="tsd-signature-type">ITypedDataMessage</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="getutxos" class="tsd-anchor"></a>
+					<h3>get<wbr>Utxos</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Utxos<span class="tsd-signature-symbol">(</span>address<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/iutxo.html" class="tsd-signature-type">IUTXO</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/9208df5/src/index.ts#L488">src/index.ts:488</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Get the UTXOs of an address</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>address: <span class="tsd-signature-type">string</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/iutxo.html" class="tsd-signature-type">IUTXO</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="hasexitqueue" class="tsd-anchor"></a>
+					<h3>has<wbr>Exit<wbr>Queue</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">has<wbr>Exit<wbr>Queue<span class="tsd-signature-symbol">(</span>currency<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/9208df5/src/index.ts#L345">src/index.ts:345</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Check if an exit queue exists for this currency</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>currency: <span class="tsd-signature-type">string</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="hashtypeddata" class="tsd-anchor"></a>
+					<h3>hash<wbr>Typed<wbr>Data</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">hash<wbr>Typed<wbr>Data<span class="tsd-signature-symbol">(</span>typedData<span class="tsd-signature-symbol">: </span><a href="../interfaces/itypeddata.html" class="tsd-signature-type">ITypedData</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Buffer</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/9208df5/src/index.ts#L777">src/index.ts:777</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Hash typed data</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>typedData: <a href="../interfaces/itypeddata.html" class="tsd-signature-type">ITypedData</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Buffer</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="hashtypeddatadomain" class="tsd-anchor"></a>
+					<h3>hash<wbr>Typed<wbr>Data<wbr>Domain</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">hash<wbr>Typed<wbr>Data<wbr>Domain<span class="tsd-signature-symbol">(</span>typedData<span class="tsd-signature-symbol">: </span><a href="../interfaces/itypeddata.html" class="tsd-signature-type">ITypedData</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/9208df5/src/index.ts#L793">src/index.ts:793</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Hash typed data domain for Ledger</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>typedData: <a href="../interfaces/itypeddata.html" class="tsd-signature-type">ITypedData</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="hashtypeddatamessage" class="tsd-anchor"></a>
+					<h3>hash<wbr>Typed<wbr>Data<wbr>Message</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">hash<wbr>Typed<wbr>Data<wbr>Message<span class="tsd-signature-symbol">(</span>typedData<span class="tsd-signature-symbol">: </span><a href="../interfaces/itypeddata.html" class="tsd-signature-type">ITypedData</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/9208df5/src/index.ts#L785">src/index.ts:785</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Hash typed data message for Ledger</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>typedData: <a href="../interfaces/itypeddata.html" class="tsd-signature-type">ITypedData</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="inflightexitgetcompetitor" class="tsd-anchor"></a>
+					<h3>in<wbr>Flight<wbr>Exit<wbr>Get<wbr>Competitor</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">in<wbr>Flight<wbr>Exit<wbr>Get<wbr>Competitor<span class="tsd-signature-symbol">(</span>txbytes<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/iinflightexitcompetitor.html" class="tsd-signature-type">IInFlightExitCompetitor</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/9208df5/src/index.ts#L692">src/index.ts:692</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Get the competitor for an in-flight transaction</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>txbytes: <span class="tsd-signature-type">string</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/iinflightexitcompetitor.html" class="tsd-signature-type">IInFlightExitCompetitor</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="inflightexitgetdata" class="tsd-anchor"></a>
+					<h3>in<wbr>Flight<wbr>Exit<wbr>Get<wbr>Data</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">in<wbr>Flight<wbr>Exit<wbr>Get<wbr>Data<span class="tsd-signature-symbol">(</span>txbytes<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/iinflightexitdata.html" class="tsd-signature-type">IInFlightExitData</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/9208df5/src/index.ts#L684">src/index.ts:684</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Get the exit data for an in-flight transaction</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>txbytes: <span class="tsd-signature-type">string</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/iinflightexitdata.html" class="tsd-signature-type">IInFlightExitData</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="inflightexitgetinputchallengedata" class="tsd-anchor"></a>
+					<h3>in<wbr>Flight<wbr>Exit<wbr>Get<wbr>Input<wbr>Challenge<wbr>Data</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">in<wbr>Flight<wbr>Exit<wbr>Get<wbr>Input<wbr>Challenge<wbr>Data<span class="tsd-signature-symbol">(</span>args<span class="tsd-signature-symbol">: </span><a href="../interfaces/iinflightexitgetinputchallengedata.html" class="tsd-signature-type">IInFlightExitGetInputChallengeData</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/iinflightexitinputchallengedata.html" class="tsd-signature-type">IInFlightExitInputChallengeData</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/9208df5/src/index.ts#L664">src/index.ts:664</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Get the data to challenge an invalid input piggybacked on an in-flight exit</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>args: <a href="../interfaces/iinflightexitgetinputchallengedata.html" class="tsd-signature-type">IInFlightExitGetInputChallengeData</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/iinflightexitinputchallengedata.html" class="tsd-signature-type">IInFlightExitInputChallengeData</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="inflightexitgetoutputchallengedata" class="tsd-anchor"></a>
+					<h3>in<wbr>Flight<wbr>Exit<wbr>Get<wbr>Output<wbr>Challenge<wbr>Data</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">in<wbr>Flight<wbr>Exit<wbr>Get<wbr>Output<wbr>Challenge<wbr>Data<span class="tsd-signature-symbol">(</span>args<span class="tsd-signature-symbol">: </span><a href="../interfaces/iinflightexitgetoutputchallengedata.html" class="tsd-signature-type">IInFlightExitGetOutputChallengeData</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/iinflightexitoutputchallengedata.html" class="tsd-signature-type">IInFlightExitOutputChallengeData</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/9208df5/src/index.ts#L676">src/index.ts:676</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Get the data to challenge an invalid output piggybacked on an in-flight exit.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>args: <a href="../interfaces/iinflightexitgetoutputchallengedata.html" class="tsd-signature-type">IInFlightExitGetOutputChallengeData</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/iinflightexitoutputchallengedata.html" class="tsd-signature-type">IInFlightExitOutputChallengeData</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="inflightexitprovecanonical" class="tsd-anchor"></a>
+					<h3>in<wbr>Flight<wbr>Exit<wbr>Prove<wbr>Canonical</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">in<wbr>Flight<wbr>Exit<wbr>Prove<wbr>Canonical<span class="tsd-signature-symbol">(</span>txbytes<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/iinflightexitcanonicalproof.html" class="tsd-signature-type">IInFlightExitCanonicalProof</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/9208df5/src/index.ts#L700">src/index.ts:700</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Prove that a transaction has been put into a block (and therefore is canonical)</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>txbytes: <span class="tsd-signature-type">string</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/iinflightexitcanonicalproof.html" class="tsd-signature-type">IInFlightExitCanonicalProof</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="mergeutxos" class="tsd-anchor"></a>
+					<h3>merge<wbr>Utxos</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">merge<wbr>Utxos<span class="tsd-signature-symbol">(</span>args<span class="tsd-signature-symbol">: </span><a href="../interfaces/imergeutxos.html" class="tsd-signature-type">IMergeUtxos</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/iwatchertransactionreceipt.html" class="tsd-signature-type">IWatcherTransactionReceipt</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/9208df5/src/index.ts#L647">src/index.ts:647</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Merge utxos to a single output and submit it to the Watcher</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>args: <a href="../interfaces/imergeutxos.html" class="tsd-signature-type">IMergeUtxos</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/iwatchertransactionreceipt.html" class="tsd-signature-type">IWatcherTransactionReceipt</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="piggybackinflightexitoninput" class="tsd-anchor"></a>
+					<h3>piggyback<wbr>InFlight<wbr>Exit<wbr>OnInput</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">piggyback<wbr>InFlight<wbr>Exit<wbr>OnInput<span class="tsd-signature-symbol">(</span>args<span class="tsd-signature-symbol">: </span><a href="../interfaces/ipiggybackinflightexitoninput.html" class="tsd-signature-type">IPiggybackInFlightExitOnInput</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/itransactionreceipt.html" class="tsd-signature-type">ITransactionReceipt</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/9208df5/src/index.ts#L399">src/index.ts:399</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Piggyback onto an input of an in-flight transaction</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>args: <a href="../interfaces/ipiggybackinflightexitoninput.html" class="tsd-signature-type">IPiggybackInFlightExitOnInput</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/itransactionreceipt.html" class="tsd-signature-type">ITransactionReceipt</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="piggybackinflightexitonoutput" class="tsd-anchor"></a>
+					<h3>piggyback<wbr>InFlight<wbr>Exit<wbr>OnOutput</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">piggyback<wbr>InFlight<wbr>Exit<wbr>OnOutput<span class="tsd-signature-symbol">(</span>args<span class="tsd-signature-symbol">: </span><a href="../interfaces/ipiggybackinflightexitonoutput.html" class="tsd-signature-type">IPiggybackInFlightExitOnOutput</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/itransactionreceipt.html" class="tsd-signature-type">ITransactionReceipt</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/9208df5/src/index.ts#L386">src/index.ts:386</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Piggyback onto an output of an in-flight transaction</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>args: <a href="../interfaces/ipiggybackinflightexitonoutput.html" class="tsd-signature-type">IPiggybackInFlightExitOnOutput</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/itransactionreceipt.html" class="tsd-signature-type">ITransactionReceipt</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="processexits" class="tsd-anchor"></a>
+					<h3>process<wbr>Exits</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">process<wbr>Exits<span class="tsd-signature-symbol">(</span>args<span class="tsd-signature-symbol">: </span><a href="../interfaces/iprocessexits.html" class="tsd-signature-type">IProcessExits</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/itransactionreceipt.html" class="tsd-signature-type">ITransactionReceipt</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/9208df5/src/index.ts#L337">src/index.ts:337</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Processes any exit that has completed the challenge period</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>args: <a href="../interfaces/iprocessexits.html" class="tsd-signature-type">IProcessExits</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/itransactionreceipt.html" class="tsd-signature-type">ITransactionReceipt</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="respondtononcanonicalchallenge" class="tsd-anchor"></a>
+					<h3>respond<wbr>ToNon<wbr>Canonical<wbr>Challenge</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">respond<wbr>ToNon<wbr>Canonical<wbr>Challenge<span class="tsd-signature-symbol">(</span>args<span class="tsd-signature-symbol">: </span><a href="../interfaces/irespondtononcanonicalchallenge.html" class="tsd-signature-type">IRespondToNonCanonicalChallenge</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/itransactionreceipt.html" class="tsd-signature-type">ITransactionReceipt</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/9208df5/src/index.ts#L433">src/index.ts:433</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Respond to competitors of an in-flight exit by showing the transaction is included</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>args: <a href="../interfaces/irespondtononcanonicalchallenge.html" class="tsd-signature-type">IRespondToNonCanonicalChallenge</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/itransactionreceipt.html" class="tsd-signature-type">ITransactionReceipt</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="signtransaction" class="tsd-anchor"></a>
+					<h3>sign<wbr>Transaction</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">sign<wbr>Transaction<span class="tsd-signature-symbol">(</span>args<span class="tsd-signature-symbol">: </span><a href="../interfaces/isigntransaction.html" class="tsd-signature-type">ISignTransaction</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/9208df5/src/index.ts#L614">src/index.ts:614</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Signs typed data using passed private keys and returns an array of signatures</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>args: <a href="../interfaces/isigntransaction.html" class="tsd-signature-type">ISignTransaction</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="signtypeddata" class="tsd-anchor"></a>
+					<h3>sign<wbr>Typed<wbr>Data</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">sign<wbr>Typed<wbr>Data<span class="tsd-signature-symbol">(</span>args<span class="tsd-signature-symbol">: </span><a href="../interfaces/isigntypeddata.html" class="tsd-signature-type">ISignTypedData</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/isignedtypeddata.html" class="tsd-signature-type">ISignedTypedData</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/9208df5/src/index.ts#L594">src/index.ts:594</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Signs the transaction&#39;s typed data that is returned from <code>createTransaction</code></p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>args: <a href="../interfaces/isigntypeddata.html" class="tsd-signature-type">ISignTypedData</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="../interfaces/isignedtypeddata.html" class="tsd-signature-type">ISignedTypedData</a></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="startinflightexit" class="tsd-anchor"></a>
+					<h3>start<wbr>InFlight<wbr>Exit</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">start<wbr>InFlight<wbr>Exit<span class="tsd-signature-symbol">(</span>args<span class="tsd-signature-symbol">: </span><a href="../interfaces/istartinflightexit.html" class="tsd-signature-type">IStartInFlightExit</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/itransactionreceipt.html" class="tsd-signature-type">ITransactionReceipt</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/9208df5/src/index.ts#L373">src/index.ts:373</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Start an exit for an in-flight transaction</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>args: <a href="../interfaces/istartinflightexit.html" class="tsd-signature-type">IStartInFlightExit</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/itransactionreceipt.html" class="tsd-signature-type">ITransactionReceipt</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="startstandardexit" class="tsd-anchor"></a>
+					<h3>start<wbr>Standard<wbr>Exit</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">start<wbr>Standard<wbr>Exit<span class="tsd-signature-symbol">(</span>args<span class="tsd-signature-symbol">: </span><a href="../interfaces/istartstandardexit.html" class="tsd-signature-type">IStartStandardExit</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/itransactionreceipt.html" class="tsd-signature-type">ITransactionReceipt</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/9208df5/src/index.ts#L299">src/index.ts:299</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Start a standard withdrawal of a given output. Uses output-age priority</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>args: <a href="../interfaces/istartstandardexit.html" class="tsd-signature-type">IStartStandardExit</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/itransactionreceipt.html" class="tsd-signature-type">ITransactionReceipt</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="submittransaction" class="tsd-anchor"></a>
+					<h3>submit<wbr>Transaction</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">submit<wbr>Transaction<span class="tsd-signature-symbol">(</span>transaction<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/iwatchertransactionreceipt.html" class="tsd-signature-type">IWatcherTransactionReceipt</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/9208df5/src/index.ts#L634">src/index.ts:634</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Submit an encoded signed transaction to the Watcher</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>transaction: <span class="tsd-signature-type">string</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/iwatchertransactionreceipt.html" class="tsd-signature-type">IWatcherTransactionReceipt</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="submittypeddata" class="tsd-anchor"></a>
+					<h3>submit<wbr>Typed<wbr>Data</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">submit<wbr>Typed<wbr>Data<span class="tsd-signature-symbol">(</span>typedData<span class="tsd-signature-symbol">: </span><a href="../interfaces/isignedtypeddata.html" class="tsd-signature-type">ISignedTypedData</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/iwatchertransactionreceipt.html" class="tsd-signature-type">IWatcherTransactionReceipt</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/9208df5/src/index.ts#L602">src/index.ts:602</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Submits a transaction along with its typed data and signatures to the Watcher</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>typedData: <a href="../interfaces/isignedtypeddata.html" class="tsd-signature-type">ISignedTypedData</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/iwatchertransactionreceipt.html" class="tsd-signature-type">IWatcherTransactionReceipt</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="waitforchildchainbalance" class="tsd-anchor"></a>
+					<h3>wait<wbr>For<wbr>Childchain<wbr>Balance</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">wait<wbr>For<wbr>Childchain<wbr>Balance<span class="tsd-signature-symbol">(</span>args<span class="tsd-signature-symbol">: </span><a href="../interfaces/iwaitforchildchainbalance.html" class="tsd-signature-type">IWaitForChildchainBalance</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/ibalance.html" class="tsd-signature-type">IBalance</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/9208df5/src/index.ts#L755">src/index.ts:755</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Wait for an address to have a specified balance on the OMG Network</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>args: <a href="../interfaces/iwaitforchildchainbalance.html" class="tsd-signature-type">IWaitForChildchainBalance</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/ibalance.html" class="tsd-signature-type">IBalance</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="waitforrootchaintransaction" class="tsd-anchor"></a>
+					<h3>wait<wbr>For<wbr>Rootchain<wbr>Transaction</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">wait<wbr>For<wbr>Rootchain<wbr>Transaction<span class="tsd-signature-symbol">(</span>args<span class="tsd-signature-symbol">: </span><a href="../interfaces/iwaitforrootchaintransaction.html" class="tsd-signature-type">IWaitForRootchainTransaction</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/itransactionreceipt.html" class="tsd-signature-type">ITransactionReceipt</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/9208df5/src/index.ts#L742">src/index.ts:742</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Wait for x number of blocks of a rootchain transaction</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>args: <a href="../interfaces/iwaitforrootchaintransaction.html" class="tsd-signature-type">IWaitForRootchainTransaction</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/itransactionreceipt.html" class="tsd-signature-type">ITransactionReceipt</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="waitforutxo" class="tsd-anchor"></a>
+					<h3>wait<wbr>For<wbr>Utxo</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">wait<wbr>For<wbr>Utxo<span class="tsd-signature-symbol">(</span>args<span class="tsd-signature-symbol">: </span><a href="../interfaces/iwaitforutxo.html" class="tsd-signature-type">IWaitForUtxo</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/iutxo.html" class="tsd-signature-type">IUTXO</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/omisego/omg-js/blob/9208df5/src/index.ts#L769">src/index.ts:769</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Wait for an addess to have a specific utxo on the OMG Network</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>args: <a href="../interfaces/iwaitforutxo.html" class="tsd-signature-type">IWaitForUtxo</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/iutxo.html" class="tsd-signature-type">IUTXO</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Object literals</h2>
+				<section class="tsd-panel tsd-member tsd-kind-object-literal tsd-parent-kind-class tsd-is-static">
+					<a name="util" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> util</h3>
+					<div class="tsd-signature tsd-kind-icon">util<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/omisego/omg-js/blob/9208df5/src/index.ts#L67">src/index.ts:67</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Utility functions</p>
+						</div>
+					</div>
+					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
+						<a name="util.int192tohex" class="tsd-anchor"></a>
+						<h3>int192to<wbr>Hex</h3>
+						<div class="tsd-signature tsd-kind-icon">int192to<wbr>Hex<span class="tsd-signature-symbol">:</span> <a href="../globals.html#int192tohex" class="tsd-signature-type">int192toHex</a><span class="tsd-signature-symbol"> = Util.int192toHex</span></div>
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/omisego/omg-js/blob/9208df5/src/index.ts#L69">src/index.ts:69</a></li>
+							</ul>
+						</aside>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
+						<a name="util.prefixhex" class="tsd-anchor"></a>
+						<h3>prefix<wbr>Hex</h3>
+						<div class="tsd-signature tsd-kind-icon">prefix<wbr>Hex<span class="tsd-signature-symbol">:</span> <a href="../globals.html#prefixhex" class="tsd-signature-type">prefixHex</a><span class="tsd-signature-symbol"> = Util.prefixHex</span></div>
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/omisego/omg-js/blob/9208df5/src/index.ts#L68">src/index.ts:68</a></li>
+							</ul>
+						</aside>
+					</section>
+				</section>
+			</section>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class="globals  ">
+						<a href="../globals.html"><em>Globals</em></a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+				</ul>
+				<ul class="current">
+					<li class="current tsd-kind-class">
+						<a href="omgjs.html" class="tsd-kind-icon">OmgJS</a>
+						<ul>
+							<li class=" tsd-kind-constructor tsd-parent-kind-class">
+								<a href="omgjs.html#constructor" class="tsd-kind-icon">constructor</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="omgjs.html#web3instance" class="tsd-kind-icon">web3<wbr>Instance</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
+								<a href="omgjs.html#currency" class="tsd-kind-icon">currency</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#addexitqueue" class="tsd-kind-icon">add<wbr>Exit<wbr>Queue</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#approveerc20deposit" class="tsd-kind-icon">approveERC20<wbr>Deposit</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#buildsignedtransaction" class="tsd-kind-icon">build<wbr>Signed<wbr>Transaction</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#challengeinflightexitinputspent" class="tsd-kind-icon">challenge<wbr>InFlight<wbr>Exit<wbr>Input<wbr>Spent</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#challengeinflightexitnotcanonical" class="tsd-kind-icon">challenge<wbr>InFlight<wbr>Exit<wbr>Not<wbr>Canonical</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#challengeinflightexitoutputspent" class="tsd-kind-icon">challenge<wbr>InFlight<wbr>Exit<wbr>Output<wbr>Spent</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#challengestandardexit" class="tsd-kind-icon">challenge<wbr>Standard<wbr>Exit</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#createtransaction" class="tsd-kind-icon">create<wbr>Transaction</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#createtransactionbody" class="tsd-kind-icon">create<wbr>Transaction<wbr>Body</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#decodedeposit" class="tsd-kind-icon">decode<wbr>Deposit</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#decodemetadata" class="tsd-kind-icon">decode<wbr>Metadata</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#decodetransaction" class="tsd-kind-icon">decode<wbr>Transaction</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#decodeutxopos" class="tsd-kind-icon">decode<wbr>Utxo<wbr>Pos</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#deletenonpiggybackedinflightexit" class="tsd-kind-icon">delete<wbr>Non<wbr>Piggybacked<wbr>InFlight<wbr>Exit</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#deposit" class="tsd-kind-icon">deposit</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#encodedeposit" class="tsd-kind-icon">encode<wbr>Deposit</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#encodemetadata" class="tsd-kind-icon">encode<wbr>Metadata</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#encodetransaction" class="tsd-kind-icon">encode<wbr>Transaction</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#encodeutxopos" class="tsd-kind-icon">encode<wbr>Utxo<wbr>Pos</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#getbalance" class="tsd-kind-icon">get<wbr>Balance</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#getchallengedata" class="tsd-kind-icon">get<wbr>Challenge<wbr>Data</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#getdepositexitdata" class="tsd-kind-icon">get<wbr>Deposit<wbr>Exit<wbr>Data</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#getdeposits" class="tsd-kind-icon">get<wbr>Deposits</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#getevmerrorreason" class="tsd-kind-icon">getEVMError<wbr>Reason</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#geterc20vault" class="tsd-kind-icon">get<wbr>Erc20<wbr>Vault</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#getethvault" class="tsd-kind-icon">get<wbr>Eth<wbr>Vault</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#getexitdata" class="tsd-kind-icon">get<wbr>Exit<wbr>Data</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#getexitqueue" class="tsd-kind-icon">get<wbr>Exit<wbr>Queue</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#getexittime" class="tsd-kind-icon">get<wbr>Exit<wbr>Time</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#getfees" class="tsd-kind-icon">get<wbr>Fees</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#getinflightexitcontractdata" class="tsd-kind-icon">get<wbr>InFlight<wbr>Exit<wbr>Contract<wbr>Data</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#getinflightexitid" class="tsd-kind-icon">get<wbr>InFlight<wbr>Exit<wbr>Id</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#getminimumexitperiod" class="tsd-kind-icon">get<wbr>Minimum<wbr>Exit<wbr>Period</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#getpaymentexitgame" class="tsd-kind-icon">get<wbr>Payment<wbr>Exit<wbr>Game</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#getrootchainerc20balance" class="tsd-kind-icon">get<wbr>RootchainERC20<wbr>Balance</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#getrootchainethbalance" class="tsd-kind-icon">get<wbr>RootchainETHBalance</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#getstandardexitid" class="tsd-kind-icon">get<wbr>Standard<wbr>Exit<wbr>Id</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#getstatus" class="tsd-kind-icon">get<wbr>Status</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#gettransaction" class="tsd-kind-icon">get<wbr>Transaction</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#gettransactions" class="tsd-kind-icon">get<wbr>Transactions</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#gettypeddata" class="tsd-kind-icon">get<wbr>Typed<wbr>Data</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#gettypeddataarray" class="tsd-kind-icon">get<wbr>Typed<wbr>Data<wbr>Array</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#getutxos" class="tsd-kind-icon">get<wbr>Utxos</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#hasexitqueue" class="tsd-kind-icon">has<wbr>Exit<wbr>Queue</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#hashtypeddata" class="tsd-kind-icon">hash<wbr>Typed<wbr>Data</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#hashtypeddatadomain" class="tsd-kind-icon">hash<wbr>Typed<wbr>Data<wbr>Domain</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#hashtypeddatamessage" class="tsd-kind-icon">hash<wbr>Typed<wbr>Data<wbr>Message</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#inflightexitgetcompetitor" class="tsd-kind-icon">in<wbr>Flight<wbr>Exit<wbr>Get<wbr>Competitor</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#inflightexitgetdata" class="tsd-kind-icon">in<wbr>Flight<wbr>Exit<wbr>Get<wbr>Data</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#inflightexitgetinputchallengedata" class="tsd-kind-icon">in<wbr>Flight<wbr>Exit<wbr>Get<wbr>Input<wbr>Challenge<wbr>Data</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#inflightexitgetoutputchallengedata" class="tsd-kind-icon">in<wbr>Flight<wbr>Exit<wbr>Get<wbr>Output<wbr>Challenge<wbr>Data</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#inflightexitprovecanonical" class="tsd-kind-icon">in<wbr>Flight<wbr>Exit<wbr>Prove<wbr>Canonical</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#mergeutxos" class="tsd-kind-icon">merge<wbr>Utxos</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#piggybackinflightexitoninput" class="tsd-kind-icon">piggyback<wbr>InFlight<wbr>Exit<wbr>OnInput</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#piggybackinflightexitonoutput" class="tsd-kind-icon">piggyback<wbr>InFlight<wbr>Exit<wbr>OnOutput</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#processexits" class="tsd-kind-icon">process<wbr>Exits</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#respondtononcanonicalchallenge" class="tsd-kind-icon">respond<wbr>ToNon<wbr>Canonical<wbr>Challenge</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#signtransaction" class="tsd-kind-icon">sign<wbr>Transaction</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#signtypeddata" class="tsd-kind-icon">sign<wbr>Typed<wbr>Data</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#startinflightexit" class="tsd-kind-icon">start<wbr>InFlight<wbr>Exit</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#startstandardexit" class="tsd-kind-icon">start<wbr>Standard<wbr>Exit</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#submittransaction" class="tsd-kind-icon">submit<wbr>Transaction</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#submittypeddata" class="tsd-kind-icon">submit<wbr>Typed<wbr>Data</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#waitforchildchainbalance" class="tsd-kind-icon">wait<wbr>For<wbr>Childchain<wbr>Balance</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#waitforrootchaintransaction" class="tsd-kind-icon">wait<wbr>For<wbr>Rootchain<wbr>Transaction</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="omgjs.html#waitforutxo" class="tsd-kind-icon">wait<wbr>For<wbr>Utxo</a>
+							</li>
+							<li class=" tsd-kind-object-literal tsd-parent-kind-class tsd-is-static">
+								<a href="omgjs.html#util" class="tsd-kind-icon">util</a>
+							</li>
+						</ul>
+					</li>
+				</ul>
+				<ul class="after-current">
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer>
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited property</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static property</span></li>
+			</ul>
+		</div>
+	</div>
+</footer>
+<div class="overlay"></div>
+<script src="../assets/js/main.js"></script>
+</body>
+</html>

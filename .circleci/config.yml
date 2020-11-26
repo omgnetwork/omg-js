@@ -83,40 +83,43 @@ commands:
             nvm install v12.16.1
             nvm alias default v12.16.1
       - run:
-          name: Install Dependencies
+          name: Install dependencies and compile library
           command: |
             export NVM_DIR="/opt/circleci/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
             npm install
+            npm run build
+            cd ~/project/integration-tests
+            npm install
       - run:
           name: Setup elixir-omg
           command: |
-            cd ~/project/packages/integration-tests
+            cd ~/project/integration-tests
             wget https://raw.githubusercontent.com/omisego/elixir-omg/<< pipeline.parameters.elixir-omg-sha >>/Makefile
             wget https://raw.githubusercontent.com/omisego/elixir-omg/<< pipeline.parameters.elixir-omg-sha >>/snapshots.env
             wget https://raw.githubusercontent.com/omisego/elixir-omg/<< pipeline.parameters.elixir-omg-sha >>/contract_addresses_template.env
             mkdir -p priv/dev-artifacts
             mkdir -p data
-            cd ~/project/packages/integration-tests/priv/dev-artifacts
+            cd ~/project/integration-tests/priv/dev-artifacts
             wget https://raw.githubusercontent.com/omisego/elixir-omg/<< pipeline.parameters.elixir-omg-sha >>/priv/dev-artifacts/fee_specs.dev.json
-            cd ~/project/packages/integration-tests
+            cd ~/project/integration-tests
             mkdir -p bin
             cd bin
             wget https://raw.githubusercontent.com/omisego/elixir-omg/<< pipeline.parameters.elixir-omg-sha >>/bin/generate-localchain-env
-            cd ~/project/packages/integration-tests
+            cd ~/project/integration-tests
             SNAPSHOT=SNAPSHOT_MIX_EXIT_PERIOD_SECONDS_120 make init-contracts
       - run:
           name: Start elixir-omg
           background: true
           command: |
-            cd ~/project/packages/integration-tests
+            cd ~/project/integration-tests
             ELIXIR_OMG_SHA=<< pipeline.parameters.elixir-omg-sha >> docker-compose up || (START_RESULT=$?; docker-compose logs; exit $START_RESULT;)
       - run:
           name: Setup Integration Test with ERC20
           command: |
             export NVM_DIR="/opt/circleci/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-            cd ~/project/packages/integration-tests
+            cd ~/project/integration-tests
             wget --retry-connrefused --waitretry=10 --read-timeout=10 --timeout=10 -t 20 http://localhost:7534/status.get
             npm run deploy-test-erc20
 
@@ -130,33 +133,17 @@ jobs:
           apk update && apk upgrade
           apk add --no-cache git openssh make gcc g++ python
       - run:
-          name: omg-js-root-repo
+          name: omg-js
           command: |
             npm install && npm run audit-check
       - run:
-          name: omg-js
-          command: |
-            cd packages/omg-js && npm install && npm run audit-check
-      - run:
-          name: omg-js-childchain
-          command: |
-            cd packages/omg-js-childchain && npm install && npm run audit-check
-      - run:
-          name: omg-js-rootchain
-          command: |
-            cd packages/omg-js-rootchain && npm install && npm run audit-check
-      - run:
-          name: omg-js-util
-          command: |
-            cd packages/omg-js-util && npm install && npm run audit-check
-      - run:
-          name: omg-js-react-native-omg-js
-          command: |
-            cd packages/react-native-omg-js && npm install && npm run audit-check
-      - run:
           name: integration-test
           command: |
-            cd packages/integration-tests && npm install && npm run audit-check
+            cd integration-tests && npm install && npm run audit-check
+      - run:
+          name: examples
+          command: |
+            cd examples && npm install && npm run audit-check
 
   unit-test:
     docker:
@@ -169,20 +156,22 @@ jobs:
       - run:
           name: Install Dependencies
           command: |
-            npm install --no-audit
-            npm run lerna-reset
+            npm install
       - run:
           name: Run Linter
           command: npm run lint
       - run:
+          name: Run Compiler
+          command: npm run build
+      - run:
+          name: Run Browserify
+          command: npm run build:browser
+      - run:
           name: Run Unit Tests
           command: npm run test
       - run:
-          name: Run build browser omg-js test
-          command: npm run build
-      - run:
-          name: Run build doc test
-          command: npm run build-doc
+          name: Run Build Docs
+          command: npm run build:docs
 
   full-integration-test:
     machine:
@@ -193,6 +182,7 @@ jobs:
       - run:
           name: Run All Integration Tests
           command: |
+            cd ~/project/integration-tests
             npm run sequence-test
           environment:
             ETH_NODE: http://localhost:8545
@@ -217,6 +207,7 @@ jobs:
       - run:
           name: Run minimum Smoke Integration Tests
           command: |
+            cd ~/project/integration-tests
             npm run ci-min-smoke-test
           environment:
             ETH_NODE: http://localhost:8545
@@ -240,6 +231,7 @@ jobs:
       - run:
           name: Run Baseline Integration Tests
           command: |
+            cd ~/project/integration-tests
             npm run ci-baseline-test
           environment:
             ETH_NODE: http://localhost:8545
@@ -263,6 +255,7 @@ jobs:
       - run:
           name: Run IFE Integration Tests
           command: |
+            cd ~/project/integration-tests
             npm run ci-ife-test
           environment:
             ETH_NODE: http://localhost:8545

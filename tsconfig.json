@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es2015",
+    "sourceMap": true,
+    "declaration": true,
+    "declarationDir": "./dist",
+    "outDir": "./dist",
+    "baseUrl": "./",
+    "paths": {
+      "@lib/*": ["src/*"]
+    },
+    "plugins": [
+      { "transform": "typescript-transform-paths" },
+      { "transform": "typescript-transform-paths", "afterDeclarations": true }
+    ],
+    "esModuleInterop": true,
+    "resolveJsonModule": true
+  },
+  "include": [
+    "src/**/*",
+  ],
+  "exclude": [
+    "src/**/__tests__/*",
+  ]
+}

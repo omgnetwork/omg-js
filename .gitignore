@@ -2,14 +2,15 @@ node_modules
 *.log
 .env
 .DS_Store
-
-# VS Code directories
 .vscode
-
 .idea
 
+# ignore build directories
 build
 dist
 
 # ignore browserified build
 packages/browser-omg-js/omg.js
+
+# force npm usage
+yarn.lock

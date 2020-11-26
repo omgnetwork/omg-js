@@ -1,5 +1,6 @@
-node_modules
+.circleci
 docs
-
-packages/browser-omg-js
-packages/react-native-omg-js
+node_modules
+dist
+Dockerfile
+shim.ts

@@ -1,22 +1,26 @@
 {
-  "name": "omg-js-examples",
-  "version": "0.1.0",
-  "description": "",
-  "main": "",
+  "name": "examples",
+  "version": "0.0.1",
+  "engines": {
+    "node": "12.16.1"
+  },
   "scripts": {
-    "audit-check": "audit-ci --moderate"
+    "preinstall": "npx npm-force-resolutions",
+    "example": "ts-node",
+    "audit-check": "audit-ci --moderate",
+    "deploy-test-erc20": "cd ../integration-tests && npm run deploy-test-erc20"
   },
-  "author": "",
-  "license": "ISC",
+  "license": "Apache-2.0",
   "dependencies": {
+    "audit-ci": "^2.5.1",
     "bn.js": "^5.0.0",
-    "human-standard-token-abi": "^2.0.0",
-    "number-to-bn": "^1.7.0",
+    "dotenv": "^8.2.0",
     "omg-json-bigint": "^1.0.0",
-    "promise-retry": "^1.1.1",
-    "web3": "1.2.2"
+    "ts-node": "^9.0.0",
+    "web3": "1.2.2",
+    "web3-utils": "1.2.2"
   },
-  "devDependencies": {
-    "audit-ci": "^2.5.1"
+  "resolutions": {
+    "elliptic": "^6.5.3"
   }
 }

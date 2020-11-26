@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <script type="text/javascript" src="../dist/omg-js.min.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function() {
+        const OmgJS = window.omgjs.default;
+        const mainnetAddress = OmgJS.currency.OMG.MAINNET;
+
+        const element = document.createElement("p");
+        const node = document.createTextNode(mainnetAddress);
+        element.appendChild(node);
+
+        const target = document.getElementById("mainnet-address");
+        target.appendChild(element);
+      });
+    </script>
+  </head>
+  <body>
+    <h1>Example Script Import</h1>
+    <p>Import and use omg-js in the browser.</p>
+    <div id='mainnet-address'></div>
+  </body>
+</html>
