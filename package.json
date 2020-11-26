@@ -18,13 +18,13 @@
   "scripts": {
     "preinstall": "npx npm-force-resolutions",
     "postinstall": "node postinstall.js",
-    "build": "ttsc && npm run build:browser",
+    "build": "ttsc",
     "build:browser": "browserify browserify.js -o ./dist/omg-js.min.js",
     "build:docs": "typedoc",
     "lint": "eslint . --ext .ts,.js",
     "test": "ts-mocha --paths ./src/**/*.test.ts",
     "audit-check": "audit-ci --moderate",
-    "release": "npm run build && npm run lint && npm run audit-check && np"
+    "release": "npm run lint && npm run build && npm run build:browser && npm run audit-check && np"
   },
   "author": "OMG Network",
   "contributors": [

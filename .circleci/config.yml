@@ -164,6 +164,9 @@ jobs:
           name: Run Compiler
           command: npm run build
       - run:
+          name: Run Browserify
+          command: npm run build:browser
+      - run:
           name: Run Unit Tests
           command: npm run test
       - run:
