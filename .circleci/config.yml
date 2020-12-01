@@ -40,30 +40,29 @@ workflows:
               only: master
   build-other-branches:
     jobs:
-      - publish_test_runner
-      # - unit-test:
-      #     filters:
-      #       branches:
-      #         ignore: master
-      # - smoke-integration-test:
-      #     requires: [unit-test]
-      #     filters:
-      #       branches:
-      #         ignore: master
-      # - baseline-integration-test:
-      #     requires: [unit-test]
-      #     filters:
-      #       branches:
-      #         ignore: master
-      # - ife-integration-test:
-      #     requires: [unit-test]
-      #     filters:
-      #       branches:
-      #         ignore: master
-      # - dependencies-audit:
-      #     filters:
-      #       branches:
-      #         ignore: master
+      - unit-test:
+          filters:
+            branches:
+              ignore: master
+      - smoke-integration-test:
+          requires: [unit-test]
+          filters:
+            branches:
+              ignore: master
+      - baseline-integration-test:
+          requires: [unit-test]
+          filters:
+            branches:
+              ignore: master
+      - ife-integration-test:
+          requires: [unit-test]
+          filters:
+            branches:
+              ignore: master
+      - dependencies-audit:
+          filters:
+            branches:
+              ignore: master
 
 commands:
   setup_integration_tests:
