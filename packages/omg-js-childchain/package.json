@@ -29,7 +29,7 @@
   "dependencies": {
     "@hapi/joi": "^16.1.8",
     "@omisego/omg-js-util": "4.1.1-1.0.4",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "bn.js": "^5.0.0",
     "debug": "^4.0.1",
     "https-proxy-agent": "^5.0.0",
