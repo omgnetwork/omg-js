@@ -1,6 +1,6 @@
 {
   "name": "@omisego/omg-js-childchain",
-  "version": "4.1.1-1.0.4",
+  "version": "4.1.2-1.0.4",
   "description": "Module to interact with OMG ChildChain",
   "keywords": [
     "OMG",
@@ -28,7 +28,7 @@
   },
   "dependencies": {
     "@hapi/joi": "^16.1.8",
-    "@omisego/omg-js-util": "4.1.1-1.0.4",
+    "@omisego/omg-js-util": "4.1.2-1.0.4",
     "axios": "^0.21.1",
     "bn.js": "^5.0.0",
     "debug": "^4.0.1",
