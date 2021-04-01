@@ -283,6 +283,16 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Docker login
+          command: |
+            echo $OMGBOT_DOCKER_TOKEN | docker login --username omisegobot --password-stdin
+      - run:
+          name: publish to public dockerhub
+          command: |
+            GIT_COMMIT_SHA=$(git rev-parse --short=7 HEAD)
+            TEST_RUNNER_TAG=omisego/omg-js-testrunner:$GIT_COMMIT_SHA
+            sh .circleci/ci_publish.sh $TEST_RUNNER_TAG
+      - run:
           name: authenticate GCP with circle ci
           command: |
             echo $GCLOUD_SERVICE_KEY | gcloud auth activate-service-account --key-file=-
@@ -290,4 +300,6 @@ jobs:
       - run:
           name: publish to GCP container registry
           command: |
-            sh .circleci/ci_publish.sh
+            GIT_COMMIT_SHA=$(git rev-parse --short=7 HEAD)
+            TEST_RUNNER_TAG=gcr.io/omisego-development/omg-js-testrunner:$GIT_COMMIT_SHA
+            sh .circleci/ci_publish.sh $TEST_RUNNER_TAG
