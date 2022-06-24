@@ -17,7 +17,7 @@
     "@omisego/omg-js-rootchain": "4.1.2-1.0.4",
     "@omisego/omg-js-util": "4.1.2-1.0.4",
     "human-standard-token-abi": "^2.0.0",
-    "node-fetch": "^2.6.0",
+    "node-fetch": "^2.6.7",
     "npm-force-resolutions": "0.0.3",
     "promise-retry": "^1.1.1",
     "web3": "1.2.2"
