@@ -24,7 +24,7 @@
   },
   "devDependencies": {
     "audit-ci": "^2.5.1",
-    "mocha": "^6.2.3",
+    "mocha": "^10.2.0",
     "mocha-parallel-tests": "^2.2.2",
     "truffle": "^4.1.14"
   },
