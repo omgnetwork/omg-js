@@ -26,7 +26,7 @@
     "audit-ci": "^2.5.1",
     "mocha": "^6.2.3",
     "mocha-parallel-tests": "^2.2.2",
-    "truffle": "^4.1.14"
+    "truffle": "^5.7.8"
   },
   "resolutions": {
     "elliptic": "6.5.3",
